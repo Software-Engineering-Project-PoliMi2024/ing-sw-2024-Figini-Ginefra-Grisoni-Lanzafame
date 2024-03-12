@@ -131,7 +131,7 @@ classDiagram
     Codex --> Placement
     Codex --> Collectable
 
-    Frontier --> Placement
+    Frontier --> Position
     Frontier --> CardFace
 
     namespace PlayerRelated{
@@ -157,15 +157,15 @@ classDiagram
             - Queue~Placement~ placementsHistory
             - int points
             + addPlacement(Placement placement) : void
+            + getPlacementAt(Position position) : Placement
         }
 
         class Frontier{
-            - HashMap ~CardFace, List~Placement~~ frontier
+            - frontier: List ~Position~
             + updateFrontier(Codex codex, Frontier frontier, Placement placement) : void$
-            + getFrontier() : HashMap ~CardFace, List~Placement~~
-            + getFrontier(CardFace face) : List~Placement~
-            + addPlacement(Placement placement) : void
-            + removePlacement(Placement placement) : void
+            + getFrontier() : List ~Position~
+            + addPosition(Position position) : void
+            + removePosition(Position position) : void
         }
     }
 
