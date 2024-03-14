@@ -2,7 +2,7 @@
 
 ```mermaid
 ---
-title: Codex in Naturalis UML - Model
+title: Codex in Naturalis UML - Model 2.0
 ---
 classDiagram
     direction TB
