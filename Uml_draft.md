@@ -2,34 +2,28 @@
 
 ```mermaid
 ---
-title: Codex in Naturalis UML
+title: Codex in Naturalis UML - Model
 ---
 classDiagram
     direction TB
     Card <|-- CardWithCorners
     Card <|-- ObjectiveCard
-    CardWithCorners <|-- ResourceCard
+    CardWithCorners <|-- CardInHand
     CardWithCorners <|-- StartCard
-    CardWithCorners --> CornerModel
 
-    ResourceCard <|-- GoldCard
+    CardInHand <|--ResourceCard
+    CardInHand <|--GoldCard
 
     GoldCard --> CardPointMultiplier
-
-    ResourceCard --> Resource
-
 
     CardPointMultiplier <|-- ResourceCardPointMultiplier
     CardPointMultiplier <|-- TopologicalCardPointMultiplier
     CardPointMultiplier --* ObjectiveCard
 
-    Collectable <|-- Resource
-    Collectable <|-- Object
-    Collectable <|-- Special
 
-    CornerModel --> Collectable
-    CornerModel --> CardCorner
-    CornerModel --> CardFace
+    Collectable <|-- Resource
+    Collectable <|-- WritingMaterials
+    Collectable <|-- Special
 
 
 
@@ -41,7 +35,7 @@ classDiagram
         }
 
         class Collectable{
-            <<Interface>>
+            <<Abstract>>
         }
 
         class Resource{
@@ -52,7 +46,7 @@ classDiagram
             INSECT
         }
 
-        class Object{
+        class WritingMaterials{
             <<Enumeration>>
             QUILL
             INKWELL
@@ -63,15 +57,16 @@ classDiagram
             <<Enumeration>>
             EMPTY
         }
+
         class CardWithCorners{
-            - CornerModel cornerModel
+            <<Abstract>>
+            + getCollectableAt(CardCorner corner, CardFace face) : Collectable
+            + isVisible(CardCorner corner, CardFace face) : boolean
             + getCollectableAt(CardCorner corner, CardFace face) : Collectable
         }
 
-
-        class CornerModel{
-            - HashMap~CardFace,HashMap~CardCorner, Collectable~~ cornerMap
-            + getCollectableAt(CardCorner corner, CardFace face) : Collectable
+        class CardInHand{
+            <<Abstract>>
         }
 
         class GoldCard{
@@ -86,7 +81,7 @@ classDiagram
 
         class CardPointMultiplier{
             <<Interface>>
-            + int getMultiplier()
+            + getMultiplier() : int
         }
 
         class ResourceCardPointMultiplier{
@@ -97,7 +92,7 @@ classDiagram
 
         class ResourceCard{
             - permanetResource : ResourceCard
-            + isVisible(CardCorner corner, CardFace face) : boolean
+
         }
 
         class StartCard{
@@ -118,23 +113,16 @@ classDiagram
             FRONT
             BACK
         }
-
-        class Deck~Element~{
-        }
     }
 
     Placement --> Position
     Placement --> CardWithCorners
-    Placement --> CardFace
-    Placement --> Collectable
 
     Codex --> Placement
-    Codex --> Collectable
 
     Frontier --> Position
-    Frontier --> CardFace
 
-    namespace PlayerRelated{
+    namespace PerPlayerRelated{
         class Position{
             <<Final>>
             - x:int
@@ -167,17 +155,35 @@ classDiagram
             + addPosition(Position position) : void
             + removePosition(Position position) : void
         }
+
+        class Hand{
+            - secrectObjective : ObjectiveCard
+            - actualHand : Set ~CardInHand~
+            + addCard(card: CardInHand)
+            + getHand() : Set ~CardInHand~
+            + getSecretObjective() : ObjectiveCard
+            + removeCard(card: CardInHand)
+        }
     }
 
     User --> Codex
     User --> Frontier
+    User --> Hand
     GameParty --> User
 
-    namespace GameLoopRelated{
+    Hand --> ObjectiveCard
+    Hand --> CardInHand
+
+    Game --> Deck
+    Game --> GameParty
+
+
+    namespace TableRelated{
         class User{
             - String nickname
             - Codex codex
             - Frontier frontier
+            - Hand hand
             + getNickname() : String
         }
 
@@ -187,6 +193,24 @@ classDiagram
 
             + addUser(User user) : void
             + removeUser(User user) : void
+        }
+
+        class Deck~Element~{
+            final bufferSize : int
+            buffer : Set~Element~
+            actualDeck : QueueSet~Element~
+            - shuffle()
+            + getBuffer() : Set~Element~
+            + drawFromBuffer(Element element) : Element
+            + drawFromDeck() : Element
+        }
+
+        class Game{
+            - gameParty : GameParty
+            - objectiveCardDeck : Deck~ObjectiveCard~
+            - resourceCardDeck : Deck~resourceCardDeck~
+            - goldCardDeck : Deck~goldCardDeck~
+            - startCardDeck : Deck~startCardDeck~
         }
 
     }
