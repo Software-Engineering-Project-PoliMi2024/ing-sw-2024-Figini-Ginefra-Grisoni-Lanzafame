@@ -1,5 +1,7 @@
 package it.polimi.ingsw.model.cardReleted;
 
+import it.polimi.ingsw.model.playerReleted.Codex;
+
 public class LCardPointMultiplier implements ObjectiveCardPointMultiplier{
     final private CardCorner corner;
     final private Resource singleResource;
