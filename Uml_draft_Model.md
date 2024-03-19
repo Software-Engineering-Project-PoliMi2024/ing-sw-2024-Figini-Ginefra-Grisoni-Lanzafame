@@ -5,11 +5,11 @@
 title: Codex in Naturalis UML - Model 2.0
 ---
 classDiagram
-    direction TB
-    Card <|-- CardWithCorners
-    Card <|-- ObjectiveCard
-    CardWithCorners <|-- CardInHand
-    CardWithCorners <|-- StartCard
+direction TB
+Card <|-- CardWithCorners
+Card <|-- ObjectiveCard
+CardWithCorners <|-- CardInHand
+CardWithCorners <|-- StartCard
 
     CardInHand <|--ResourceCard
     CardInHand <|--GoldCard
@@ -58,7 +58,7 @@ classDiagram
             <<Enumeration>>
             QUILL
             INKWELL
-            MANUSCPRIPT
+            MANUSCRIPT
         }
 
         class Special{
@@ -75,8 +75,8 @@ classDiagram
 
         class CardInHand{
             <<Abstract>>
-            - permanetResource : ResourceCard
-            + getPermanentResource : ResourceCard
+            - permanentResource : Resource
+            + getPermanentResource() : Resource
         }
 
         class GoldCard{
