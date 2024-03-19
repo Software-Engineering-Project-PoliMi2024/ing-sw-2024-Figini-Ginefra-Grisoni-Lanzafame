@@ -1,5 +1,9 @@
 package it.polimi.ingsw.model.tableReleted;
 
+import it.polimi.ingsw.model.cardReleted.ObjectiveCard;
+import it.polimi.ingsw.model.cardReleted.ResourceCard;
+import it.polimi.ingsw.model.cardReleted.GoldCard;
+import it.polimi.ingsw.model.cardReleted.StartingCard;
 import java.util.LinkedList;
 
 public abstract class Game {
