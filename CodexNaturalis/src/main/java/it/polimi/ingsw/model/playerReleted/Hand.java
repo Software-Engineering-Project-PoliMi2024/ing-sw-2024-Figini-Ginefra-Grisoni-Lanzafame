@@ -1,5 +1,8 @@
 package it.polimi.ingsw.model.playerReleted;
 
+import it.polimi.ingsw.model.cardReleted.CardInHand;
+import it.polimi.ingsw.model.cardReleted.ObjectiveCard;
+
 import java.util.Set;
 
 public class Hand {
