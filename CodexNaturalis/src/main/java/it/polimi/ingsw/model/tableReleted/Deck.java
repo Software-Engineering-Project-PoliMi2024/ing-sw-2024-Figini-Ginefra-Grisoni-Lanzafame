@@ -7,8 +7,8 @@ import java.util.Set;
 
 public class Deck<Element> {
     private final int bufferSize;
-    private Set<Element> buffer = new HashSet<Element>();
-    private Queue<Element> actualDeck = new LinkedList<Element>();
+    private Set<Element> buffer;
+    private Queue<Element> actualDeck;
 
     public Deck(int bufferSize) {
         this.bufferSize = bufferSize;
