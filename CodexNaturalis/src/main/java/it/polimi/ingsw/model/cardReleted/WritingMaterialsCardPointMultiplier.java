@@ -2,13 +2,12 @@ package it.polimi.ingsw.model.cardReleted;
 
 import it.polimi.ingsw.model.playerReleted.Codex;
 
-import java.util.Collection;
 import java.util.Map;
 
-public class CollectableCardPointMultiplier implements ObjectiveCardPointMultiplier{
-    final private Map<Collectable, Integer> targets;
+public class WritingMaterialsCardPointMultiplier implements GoldCardPointMultiplier{
+    final private Map<WritingMaterial, Integer> targets;
 
-    public CollectableCardPointMultiplier(){
+    public WritingMaterialsCardPointMultiplier(){
         targets = null;
     }
 
