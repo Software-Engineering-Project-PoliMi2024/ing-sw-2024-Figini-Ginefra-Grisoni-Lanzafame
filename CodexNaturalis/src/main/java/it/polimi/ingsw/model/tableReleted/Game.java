@@ -6,11 +6,11 @@ import it.polimi.ingsw.model.cardReleted.GoldCard;
 import it.polimi.ingsw.model.cardReleted.StartCard;
 
 public abstract class Game {
-    private Deck<ObjectiveCard> objectiveCardDeck = new Deck<ObjectiveCard>(0);
-    private Deck<ResourceCard> resourceCardDeck = new Deck<ResourceCard>(2);
-    private Deck<GoldCard> goldCardDeck = new Deck<GoldCard>(2);
-    private Deck<StartCard> startingCardDeck = new Deck<StartCard>(0);
-    private List<User> users; //played by
+    final private Deck<ObjectiveCard> objectiveCardDeck = new Deck<>(0);
+    final private Deck<ResourceCard> resourceCardDeck = new Deck<>(2);
+    final private Deck<GoldCard> goldCardDeck = new Deck<>(2);
+    final private Deck<StartCard> startingCardDeck = new Deck<>(0);
+    final private List<User> users; //played by
     private User currentPlayer;
     private final int numberOfPlayer;
     public Game(int numberOfPlayer){
