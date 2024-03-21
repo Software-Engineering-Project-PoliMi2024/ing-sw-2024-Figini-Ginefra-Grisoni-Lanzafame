@@ -6,30 +6,20 @@ import it.polimi.ingsw.model.cardReleted.Collectable;
 
 import java.util.Map;
 
-public class Placement {
-    final CardWithCorners card;
-    final Position position;
-    final CardFace finalFace;
-
-    final Map<Collectable, Integer> consequences;
-
-    public Placement(Position position, CardWithCorners card, CardFace finalFace){
-        this.finalFace = finalFace;
-        this.position = position;
-        this.card = card;
-        this.consequences = null;
-    }
-
-    public CardWithCorners getCard(){
-        return this.card;
-    }
-    public Position getPosition(){
-        return this.position;
-    }
-    public CardFace getFace(){
-        return this.finalFace;
-    }
-    public Map<Collectable, Integer> getConsequences(){
-        return null;
+/**
+ * This class represents a placement of a card on the board
+ * It contains the card, the position, the card face and the consequences of the placement
+ */
+public record Placement(Position position, CardWithCorners card, CardFace face,
+                        Map<Collectable, Integer> consequences) {
+    /**
+     * The constructor of the class
+     *
+     * @param position     the position of the placement
+     * @param card         the card to place
+     * @param face         the face of the card
+     * @param consequences the consequences of the placement
+     */
+    public Placement {
     }
 }

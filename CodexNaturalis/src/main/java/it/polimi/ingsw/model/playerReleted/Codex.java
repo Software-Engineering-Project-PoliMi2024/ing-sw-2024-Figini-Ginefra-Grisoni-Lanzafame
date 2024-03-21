@@ -29,6 +29,8 @@ public class Codex {
     public void setEarnedCollectables(Collectable collectable, int number){
 
     }
+
+    // Should return null if there is no placement at the given position
     public Placement getPlacementAt(Position position){
         return null;
     }
