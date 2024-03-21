@@ -13,7 +13,7 @@ public class Frontier {
     List<Position> frontier;
 
     public Frontier(){
-        frontier = new ArrayList<Position>();
+        frontier = new ArrayList<>();
     }
 
     /**
