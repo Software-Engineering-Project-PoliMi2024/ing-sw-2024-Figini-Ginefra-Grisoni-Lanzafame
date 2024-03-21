@@ -1,0 +1,39 @@
+
+
+{
+    "comments":"corners se non ci sono, eliminare TR, TL, BR, BL",
+    "comments1": "multiplier la writing material direttamente (quill, inkwell, manuscript",
+    "GoldCards":[
+       {    
+        "corners": {"TR" : "EMPTY", "TL" : "EMPTY", "BR" : "EMPTY", "BL": "EMPTY"},
+       "requirments" : {"plant": 0, "animal" : 0, "fungi": 0, "insect": 0},
+       "permanentResource" : "",
+       "multiplier": "", 
+       "imgID": ""
+    }
+    ],
+    "ResourcesCards":[
+        {
+            "points" : "",
+            "corners": {"TR" : "", "TL" : "", "BR" : "", "BL": ""},
+            "permanentResource" : "",
+            "imgID": ""
+        }
+    ],
+    "StartingCard" : [
+        {
+            "frontCorners": {"TR" : "", "TL" : "", "BR" : "", "BL": ""},
+            "backCorners": {"TR" : "", "TL" : "", "BR" : "", "BL": ""},
+            "permanentResource" : ["", ""],
+            "imgID": ""
+        }
+    ],
+    "ObjectiveCard" : [
+        {
+            "points" : "",
+            "multiplierL" : {"corner" : "", "singleResource" :"", "multiResource" : ""},
+            "multiplierD" : {"upwards": "", "resource" :""},
+            "multiplierCollectable" : {"plant": 0, "animal" : 0, "fungi": 0, "insect": 0, "manuscript" : 0, "quill" : 0, "inkwell":0}
+        }
+    ]
+}
