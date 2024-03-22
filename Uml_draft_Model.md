@@ -8,11 +8,8 @@ classDiagram
     direction TB
     Card <|-- CardWithCorners
     Card <|-- ObjectiveCard
-    CardWithCorners <|-- CardInHand
-    CardWithCorners <|-- StartCard
     direction TB
-    Card <|-- CardWithCorners
-    Card <|-- ObjectiveCard
+
     CardWithCorners <|-- CardInHand
     CardWithCorners <|-- StartCard
 
@@ -90,11 +87,7 @@ classDiagram
             + getPermanentResource() : Resource
             + canBePlaced() : bool
         }
-            class CardInHand{
-                <<Abstract>>
-                - permanentResource : Resource
-                + getPermanentResource() : Resource
-            }
+            
 
         class GoldCard{
             - HashMap~Resource, int~ requirements
