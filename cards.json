@@ -182,9 +182,182 @@
     "ResourcesCards":[
         {
             "points" : 0,
-            "corners": {"TR" : "", "TL" : "", "BR" : "", "BL": ""},
-            "permanentResource" : "",
-            "imgID": 0
+            "corners": {"TR" : "EMPTY", "TL" : "FUNGI", "BL": "FUNGI"},
+            "permanentResource" : "FUNGI",
+            "imgID": 1
+        },
+        {
+            "points" : 0,
+            "corners": {"TR" : "FUNGI", "TL" : "FUNGI", "BR": "EMPTY"},
+            "permanentResource" : "FUNGI",
+            "imgID": 2
+        },
+        {
+            "points" : 0,
+            "corners": {"TL" : "EMPTY", "BR": "FUNGI", "BL" : "FUNGI" },
+            "permanentResource" : "FUNGI",
+            "imgID": 3
+        },
+        {
+            "points" : 0,
+            "corners": {"TR" : "FUNGI", "BR":  "FUNGI","BL": "EMPTY" },
+            "permanentResource" : "FUNGI",
+            "imgID": 4
+        },
+        {
+            "points" : 0,
+            "corners": {"TR" : "QUILL", "BR": "FUNGI", "BL" : "PLANT"},
+            "permanentResource" : "FUNGI",
+            "imgID": 5
+        },
+        {
+            "points" : 0,
+            "corners": {"TR" : "FUNGI", "TL" : "INKWELL", "BR": "ANIMAL"},
+            "permanentResource" : "FUNGI",
+            "imgID": 6
+        },
+        {
+            "points" : 0,
+            "corners": {"TR" : "INSECT", "TL" : "FUNGI",  "BR": "EMPTY", "BL": "MANUSCRIPT" },
+            "permanentResource" : "FUNGI",
+            "imgID": 7
+        },
+        {
+            "points" : 1,
+            "corners": {"TR" : "FUNGI", "TL" : "EMPTY", "BL": "EMPTY"},
+            "permanentResource" : "FUNGI",
+            "imgID": 8
+        },
+        {
+            "points" : 1,
+            "corners": {"TL" : "FUNGI", "BR": "EMPTY", "BL" : "EMPTY"},
+            "permanentResource" : "FUNGI",
+            "imgID": 9
+        },
+        {
+            "points" : 1,
+            "corners": {"TR" : "EMPTY", "BR" : "EMPTY", "BL": "FUNGI"},
+            "permanentResource" : "FUNGI",
+            "imgID": 10
+        },
+        {
+            "points" : 0,
+            "corners": {"TR" : "EMPTY", "TL" : "PLANT", "BL": "PLANT"},
+            "permanentResource" : "PLANT",
+            "imgID": 11
+        },
+        {
+            "points" : 0,
+            "corners": {"TR" : "PLANT", "TL" : "PLANT", "BR": "EMPTY"},
+            "permanentResource" : "PLANT",
+            "imgID": 12
+        },
+        {
+            "points" : 0,
+            "corners": {"TL" : "EMPTY", "BR" : "PLANT", "BL": "PLANT"},
+            "permanentResource" : "PLANT",
+            "imgID": 13
+        },
+        {
+            "points" : 0,
+            "corners": {"TR" : "PLANT", "BR" : "PLANT", "BL": "EMPTY"},
+            "permanentResource" : "PLANT",
+            "imgID": 14
+        },
+        {
+            "points" : 0,
+            "corners": {"TR" : "INSECT", "BR" : "PLANT", "BL": "QUILL"},
+            "permanentResource" : "PLANT",
+            "imgID": 15
+        },
+        {
+            "points" : 0,
+            "corners": {"TR" : "PLANT", "TL" : "FUNGI", "BR": "INKWELL"},
+            "permanentResource" : "PLANT",
+            "imgID": 16
+        },
+        {
+            "points" : 0,
+            "corners": {"TL" : "MANUSCRIPT", "BR" : "ANIMAL", "BL": "PLANT"},
+            "permanentResource" : "PLANT",
+            "imgID": 17
+        },
+        {
+            "points" : 1,
+            "corners": {"TR" : "EMPTY" ,"TL" : "EMPTY", "BL": "PLANT"},
+            "permanentResource" : "PLANT",
+            "imgID": 18
+        },
+        {
+            "points" : 1,
+            "corners": {"TR" : "EMPTY", "TL" : "EMPTY", "BR": "PLANT"},
+            "permanentResource" : "PLANT",
+            "imgID": 19
+        },
+        {
+            "points" : 1,
+            "corners": {"TR" : "PLANT", "BR" : "EMPTY", "BL": "EMPTY"},
+            "permanentResource" : "PLANT",
+            "imgID": 19
+        },
+        {
+            "points" : 0,
+            "corners": {"TR" : "ANIMAL", "TL" : "ANIMAL", "BL": "EMPTY"},
+            "permanentResource" : "ANIMAL",
+            "imgID": 21
+        },
+        {
+            "points" : 0,
+            "corners": {"TR" : "EMPTY", "BR" : "ANIMAL", "BL": "ANIMAL"},
+            "permanentResource" : "ANIMAL",
+            "imgID": 22
+        },
+        {
+            "points" : 0,
+            "corners": {"TL" : "ANIMAL", "BR" : "EMPTY", "BL": "ANIMAL"},
+            "permanentResource" : "ANIMAL",
+            "imgID": 23
+        },
+        {
+            "points" : 0,
+            "corners": {"TR" : "ANIMAL", "TL" : "EMPTY", "BR": "ANIMAL"},
+            "permanentResource" : "ANIMAL",
+            "imgID": 24
+        },        {
+            "points" : 0,
+            "corners": {"TR" : "INSECT", "BR" : "ANIMAL", "BL": "INKWELL"},
+            "permanentResource" : "ANIMAL",
+            "imgID": 25
+        },
+        {
+            "points" : 0,
+            "corners": {"TR" : "ANIMAL", "TL" : "PLANT", "BR": "MANUSCRIPT"},
+            "permanentResource" : "ANIMAL",
+            "imgID": 26
+        },
+        {
+            "points" : 0,
+            "corners": {"TL" : "QUILL", "BR" : "FUNGI", "BL": "ANIMAL"},
+            "permanentResource" : "ANIMAL",
+            "imgID": 27
+        },
+        {
+            "points" : 1,
+            "corners": {"TR" : "EMPTY", "BR" : "EMPTY", "BL": "ANIMAL"},
+            "permanentResource" : "ANIMAL",
+            "imgID": 28
+        },
+        {
+            "points" : 1,
+            "corners": {"TL" : "EMPTY", "BR" : "ANIMAL", "BL": "EMPTY"},
+            "permanentResource" : "ANIMAL",
+            "imgID": 29
+        },
+        {
+            "points" : 1,
+            "corners": {"TR" : "ANIMAL", "TL" : "EMPTY", "BL": "EMPTY"},
+            "permanentResource" : "ANIMAL",
+            "imgID": 30
         },
         {
             "points" : 0,
