@@ -21,8 +21,8 @@ class PlacementTest {
         consequences2.put(Resource.INSECT, 5);
 
 
-        Placement placement = new Placement(new Position(1, 1), new ResourceCard(), CardFace.FRONT, consequences1);
-        Placement placement2 = new Placement(new Position(1, 1), new ResourceCard(), CardFace.FRONT, consequences2);
+        Placement placement = new Placement(new Position(1, 1), new ResourceCard(), CardFace.FRONT);
+        Placement placement2 = new Placement(new Position(1, 1), new ResourceCard(), CardFace.FRONT);
         assertEquals(placement, placement2);
     }
 
@@ -36,8 +36,8 @@ class PlacementTest {
         consequences2.put(Resource.ANIMAL, 2);
         consequences2.put(Resource.INSECT, 7);
 
-        Placement placement = new Placement(new Position(1, 1), new ResourceCard(), CardFace.FRONT, consequences1);
-        Placement placement2 = new Placement(new Position(1, 1), new ResourceCard(), CardFace.FRONT, consequences2);
+        Placement placement = new Placement(new Position(1, 1), new ResourceCard(), CardFace.FRONT);
+        Placement placement2 = new Placement(new Position(1, 1), new ResourceCard(), CardFace.FRONT);
         assertNotEquals(placement, placement2);
     }
 }

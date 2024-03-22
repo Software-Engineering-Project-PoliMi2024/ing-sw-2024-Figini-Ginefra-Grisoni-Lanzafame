@@ -16,7 +16,7 @@ public class Frontier {
         frontier = new ArrayList<>();
     }
 
-    /**
+    /**returns the map describing for each
      * Updates the frontier after a placement
      * @throws IllegalArgumentException if codex or position are null
      * @param codex the codex
