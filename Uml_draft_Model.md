@@ -1,9 +1,6 @@
 # This is a first draft of the UML diagram for the project.
 
 ```mermaid
----
-title: Codex in Naturalis UML - Model 2.0
----
 classDiagram
     direction TB
     Card <|-- CardWithCorners
@@ -79,12 +76,12 @@ classDiagram
             # final frontCorners: HashMap~CardCorner, Collectable~
             + getCollectableAt(CardCorner corner, CardFace face) : Collectable
             + isCorner(CardCorner corner, CardFace face) : boolean
+            + getPermanentResource(CardFace) : Set~Resource~
         }
 
         class CardInHand{
             <<Abstract>>
             - permanentResource : Resource
-            + getPermanentResource() : Resource
             + canBePlaced() : bool
         }
             
@@ -143,7 +140,6 @@ classDiagram
         class StartCard{
             - backCorners: HashMap~CardCorner, Collectable~
             - Set~Resource~ permanentResources
-            + getPermanentResource(CardFace) : Set~Resource~
         }
 
         class CardCorner{
@@ -165,6 +161,7 @@ classDiagram
     Placement o-- "1" CardWithCorners : card to be placed
 
     Codex *-- "0..*" Placement : Made of
+    Codex *-- "1" Frontier : compute
 
     Frontier *-- "0..*" Position : Composed
 
@@ -215,7 +212,6 @@ classDiagram
     }
 
     User *-- "1" Codex : build
-    User *-- "1" Frontier : compute
     User *-- "1" Hand : have in hand
     Game *-- "1..4" User : played by
 
