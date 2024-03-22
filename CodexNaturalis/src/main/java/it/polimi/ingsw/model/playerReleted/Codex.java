@@ -1,8 +1,6 @@
 package it.polimi.ingsw.model.playerReleted;
 
-import it.polimi.ingsw.model.cardReleted.Collectable;
-import it.polimi.ingsw.model.cardReleted.Resource;
-import it.polimi.ingsw.model.cardReleted.WritingMaterial;
+import it.polimi.ingsw.model.cardReleted.*;
 
 import java.util.Arrays;
 import java.util.HashMap;
@@ -57,7 +55,8 @@ public class Codex {
                 Arrays.stream(WritingMaterial.values()).anyMatch(res -> res == collectable))
             throw new IllegalArgumentException("collectable must be a writing material or a resource");
         if (number < 0)
-            throw new IllegalArgumentException("the number of collectables in the codex cannot be less than 0");
+            throw new IllegalArgumentException("the number of collectables " +
+                    "                           in the codex cannot be less than 0");
 
         this.collectables.put(collectable, number);
     }
@@ -82,31 +81,59 @@ public class Codex {
         this.placementHistory.put(placement.position(), placement);
     }
 
-    /** requires placement != null,
-     * */
+    /** method that given a placement calculates the consequences on codex collectables of the placement
+     * @param placement requires placement != null, the placement that adds the collectables
+     * @throws IllegalArgumentException if placement == null */
     private void calculateConsequencesCollectables(Placement placement){
-
-    }
-
-    private void calculateConsequencesPoints(Placement placement){
-
-    }
-
-    /** method that given a placement updates the codex Collectables and Points
-     * @
-     * */
-    private void updateCodex(Placement placement){
         if (placement == null)
             throw new IllegalArgumentException("placement cannot be null");
 
+        // collectables from the corners
+        for (CardCorner corner : CardCorner.values()){
+            if(placement.card().isCorner(corner, placement.face()) &&
+                    placement.card().getCollectableAt(corner, placement.face()) != SpecialCollectable.EMPTY)
+                this.collectables.put(placement.card().getCollectableAt(corner, placement.face()),
+                        this.collectables.get(placement.card().getCollectableAt(corner, placement.face())) + 1);
+        }
+
+        // collectables from the permanent resources
+        for (Collectable c : placement.card().getPermanentResources())
+            if(c != SpecialCollectable.EMPTY)
+                this.collectables.put(c, this.collectables.get(c) + 1);
+
+    }
+
+    /** method that given a placement calculates the points that the placement gives to the codex
+     * @param placement the placement that contains the card of which calculates the points
+     * @throws IllegalArgumentException if placement == null */
+    private void calculateConsequencesPoints(Placement placement){
+        if (placement == null)
+            throw new IllegalArgumentException("placement cannot be null");
+        this.points += placement.card().getPoints();
+    }
+
+    /** method that given a placement updates the codex Collectables and Points
+     * @param placement requires placement != null, the placement added to the codex
+     * @throws IllegalArgumentException if placement == null */
+    private void updateCodex(Placement placement){
+        if (placement == null)
+            throw new IllegalArgumentException("placement cannot be null");
+        calculateConsequencesCollectables(placement);
+        calculateConsequencesPoints(placement);
     }
 
     /** method that
      * 1) adds the placement to the placement history if valid
      * 2) update the frontier
-     * 3) calculate and updates the consequences given a placement*/
+     * 3) calculate and updates the consequences given a placement
+     * @param placement contains the card to be played
+     * @throws IllegalArgumentException if placement == null*/
     public void playCard(Placement placement){
-
+        if (placement == null)
+            throw new IllegalArgumentException("placement cannot be null");
+        addPlacement(placement);
+        this.frontier.updateFrontier(this, placement.position());
+        updateCodex(placement);
     }
 
 }

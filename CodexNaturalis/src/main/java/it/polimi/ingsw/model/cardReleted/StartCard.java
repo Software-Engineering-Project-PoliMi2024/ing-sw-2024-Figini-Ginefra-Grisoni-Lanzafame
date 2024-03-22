@@ -13,7 +13,4 @@ public class StartCard extends CardWithCorners{
         this.backCorners = null;
         this.permanentResources = null;
     }
-    public Set<Resource> getPermanentResources(CardFace cardFace){
-        return null;
-    }
 }

@@ -8,10 +8,6 @@ public abstract class CardInHand extends CardWithCorners{
         this.permanentResource = null;
     }
 
-    public Resource getPermanentResource(){
-        return permanentResource;
-    }
-
     public boolean canBePlaced(){
         return true;
     }
