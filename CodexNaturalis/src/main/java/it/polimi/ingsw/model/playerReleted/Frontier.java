@@ -57,19 +57,27 @@ public class Frontier {
 
     /**
     * Adds a position to the frontier if it is not already present
+     * @throws IllegalArgumentException if position is null
     * @param position position to add
     */
     public void addPosition(Position position){
-        if(!this.isInFrontier(position))
+        if(position == null)
+            throw new IllegalArgumentException("Position cannot be null");
+
+        if(!frontier.contains(position))
             frontier.add(position);
     }
 
     /**
-    * Removes a position from the frontier
-    * @param position position to remove
-    */
+     * Removes a position from the frontier
+     * @throws IllegalArgumentException if position is null
+     * @param position position to remove
+     */
 
     public void removePosition(Position position){
+        if(position == null)
+            throw new IllegalArgumentException("Position cannot be null");
+
         frontier.remove(position);
     }
 

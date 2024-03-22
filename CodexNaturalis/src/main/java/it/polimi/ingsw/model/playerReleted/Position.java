@@ -18,10 +18,14 @@ public record Position(int x, int y) {
     /**
      * Returns a new position with the sum of the coordinates
      *
+     * @throws IllegalArgumentException if position is null
      * @param position position to add
      * @return a new position with the sum of the coordinates
      */
     public Position add(Position position) {
+        if(position == null)
+            throw new IllegalArgumentException("Position cannot be null");
+
         return new Position(this.x + position.x, this.y + position.y);
     }
 

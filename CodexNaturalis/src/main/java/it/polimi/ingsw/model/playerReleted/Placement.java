@@ -22,4 +22,5 @@ public record Placement(Position position, CardWithCorners card, CardFace face,
      */
     public Placement {
     }
+
 }
