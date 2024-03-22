@@ -19,4 +19,14 @@ class CodexTest {
         Position pos = new Position(0, 0);
         assertNull(codex.getPlacementAt(pos));
     }
+
+    @Test
+    void playCard() {
+        Codex codex = new Codex();
+
+    }
+
+    @Test
+    void savePlacementHistory() {
+    }
 }

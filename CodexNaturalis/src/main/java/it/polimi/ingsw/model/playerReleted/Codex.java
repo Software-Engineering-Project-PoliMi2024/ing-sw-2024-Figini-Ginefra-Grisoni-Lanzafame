@@ -2,18 +2,24 @@ package it.polimi.ingsw.model.playerReleted;
 
 import it.polimi.ingsw.model.cardReleted.*;
 
+import java.io.*;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.Map;
 
-public class Codex {
+public class Codex implements Serializable {
     private int points;
     private final HashMap<Collectable, Integer> collectables;
     private final LinkedHashMap<Position, Placement> placementHistory;
     private final Frontier frontier;
 
-
+    /** Constructor of the Codex class
+     * initializes the points to 0
+     * initializes the collectables to 0 for each collectable
+     * initializes the frontier
+     * initializes the placement history
+     * */
     public Codex(){
         this.points = 0;
 
@@ -136,4 +142,34 @@ public class Codex {
         updateCodex(placement);
     }
 
+    /** method that serializes the PlacementHistory of the codex
+     * @param filePath the path where to save the placement history
+     * @throws FileNotFoundException if the file is not found
+     * @throws IOException if there is an error while saving the placement history
+     * */
+    public void savePlacementHistory(String filePath) throws IOException {
+        File f = new File(filePath);
+        if (!f.exists())
+            throw new FileNotFoundException("File not found");
+        try {
+            FileOutputStream fileOut = new FileOutputStream(filePath);
+            ObjectOutputStream out = new ObjectOutputStream(fileOut);
+            out.writeObject(this.toString());
+            out.close();
+            fileOut.close();
+        } catch (IOException e) {
+            throw new IOException("Error while saving the placement history");
+        }
+    }
+
+    @Override
+    public String toString(){
+        return "{" + "\n" +
+                "\"Codex\" : [ " + ",\n" +
+                "\"points\" : " + this.points + ",\n" +
+                "\"collectables\" : " + this.collectables + ",\n" +
+                "\"placementHistory\" : " + this.placementHistory + "\n" +
+                "]\n" +
+                '}';
+    }
 }
