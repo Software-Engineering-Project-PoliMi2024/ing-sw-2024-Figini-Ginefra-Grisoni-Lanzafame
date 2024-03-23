@@ -89,11 +89,47 @@ public class Game {
         }
     }
 
+    /** @return list of active player in this match*/
     public List<User> getUsersList() {
         return usersList;
     }
 
+    /** @return the Objective Card Deck*/
+    public Deck<ObjectiveCard> getObjectiveCardDeck() {
+        return objectiveCardDeck;
+    }
+
+    /** @return the Resource Card Deck*/
+    public Deck<ResourceCard> getResourceCardDeck() {
+        return resourceCardDeck;
+    }
+
+    /** @return the Gold Card Deck*/
+    public Deck<GoldCard> getGoldCardDeck() {
+        return goldCardDeck;
+    }
+
+    /** @return the Starting Card Deck*/
+    public Deck<StartCard> getStartingCardDeck() {
+        return startingCardDeck;
+    }
+
+    /** @return the current Player*/
     public User getCurrentPlayer() {
         return currentPlayer;
+    }
+
+    @Override
+    public String toString() {
+        StringBuilder userListName = new StringBuilder();
+        for (User user : usersList) {
+            userListName.append(user.getNickname()).append(", ");
+        }
+        return "Game{" +
+                ", usersList=" + userListName +
+                ", currentPlayer=" + currentPlayer.getNickname() +
+                ", currentPlayerIndex=" + currentPlayerIndex +
+                ", numberOfMaxPlayer=" + numberOfMaxPlayer +
+                '}';
     }
 }
