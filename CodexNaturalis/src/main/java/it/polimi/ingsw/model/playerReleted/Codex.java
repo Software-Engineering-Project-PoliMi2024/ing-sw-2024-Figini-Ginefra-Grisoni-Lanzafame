@@ -3,10 +3,7 @@ package it.polimi.ingsw.model.playerReleted;
 import it.polimi.ingsw.model.cardReleted.*;
 
 import java.io.*;
-import java.util.Arrays;
-import java.util.HashMap;
-import java.util.LinkedHashMap;
-import java.util.Map;
+import java.util.*;
 
 public class Codex implements Serializable {
     private int points;
@@ -67,7 +64,11 @@ public class Codex implements Serializable {
         this.collectables.put(collectable, number);
     }
 
-    // Should return null if there is no placement at the given position
+    /** @return all the placement history of the codex */
+    public ArrayList<Placement> getPlacementHistory(){
+        return new ArrayList<>(this.placementHistory.values());
+    }
+
     /** @return the placement at a certain position
      * @throws IllegalArgumentException if the position is null
      * @param position is the position of the placement to get
@@ -103,7 +104,7 @@ public class Codex implements Serializable {
         }
 
         // collectables from the permanent resources
-        for (Collectable c : placement.card().getPermanentResources())
+        for (Collectable c : placement.card().getPermanentResources(placement.face()))
             if(c != SpecialCollectable.EMPTY)
                 this.collectables.put(c, this.collectables.get(c) + 1);
 
@@ -115,13 +116,13 @@ public class Codex implements Serializable {
     private void calculateConsequencesPoints(Placement placement){
         if (placement == null)
             throw new IllegalArgumentException("placement cannot be null");
-        this.points += placement.card().getPoints();
+        this.points += placement.card().getPoints(this);
     }
 
     /** method that given a placement updates the codex Collectables and Points
      * @param placement requires placement != null, the placement added to the codex
      * @throws IllegalArgumentException if placement == null */
-    private void updateCodex(Placement placement){
+    private void updateCodexConsequences(Placement placement){
         if (placement == null)
             throw new IllegalArgumentException("placement cannot be null");
         calculateConsequencesCollectables(placement);
@@ -139,7 +140,11 @@ public class Codex implements Serializable {
             throw new IllegalArgumentException("placement cannot be null");
         addPlacement(placement);
         this.frontier.updateFrontier(this, placement.position());
-        updateCodex(placement);
+        updateCodexConsequences(placement);
+    }
+
+    public void pointsFromObjective(ObjectiveCard card){
+        this.points += card.getPoints(this);
     }
 
     /** method that serializes the PlacementHistory of the codex

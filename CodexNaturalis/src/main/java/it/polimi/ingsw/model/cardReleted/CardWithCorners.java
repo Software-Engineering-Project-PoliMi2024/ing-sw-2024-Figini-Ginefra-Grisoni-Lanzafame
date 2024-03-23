@@ -18,7 +18,7 @@ public abstract class CardWithCorners extends Card{
         return true;
     }
 
-    public Set <Resource> getPermanentResources(){
+    public Set <Resource> getPermanentResources(CardFace face){
         return null;
     }
 }

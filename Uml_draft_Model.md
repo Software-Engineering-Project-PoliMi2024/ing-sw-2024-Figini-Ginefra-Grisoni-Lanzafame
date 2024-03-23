@@ -39,6 +39,7 @@ classDiagram
             <<Abstract>>
             - final int points
             + int getPoints()
+            + int getPoints(Codex codex);
         }
 
         class Collectable{
@@ -77,6 +78,7 @@ classDiagram
             + getCollectableAt(CardCorner corner, CardFace face) : Collectable
             + isCorner(CardCorner corner, CardFace face) : boolean
             + getPermanentResource(CardFace) : Set~Resource~
+
         }
 
         class CardInHand{
@@ -89,11 +91,9 @@ classDiagram
         class GoldCard{
             - HashMap~Resource, int~ requirements
             + getRequiredResources() : HashMap~Resource, int~
-            + getEarnedPoints() : int
         }
 
         class ObjectiveCard{
-            + getEarnedPoints() : int
         }
 
         class ObjectiveCardPointMultiplier{
