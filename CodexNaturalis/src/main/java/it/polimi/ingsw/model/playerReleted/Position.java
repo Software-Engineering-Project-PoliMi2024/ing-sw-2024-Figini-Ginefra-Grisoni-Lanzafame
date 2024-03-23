@@ -29,6 +29,16 @@ public record Position(int x, int y) {
         return new Position(this.x + position.x, this.y + position.y);
     }
 
+    /** @return the x coordinate */
+    public Integer getX() {
+        return x;
+    }
+
+    /** @return the y coordinate*/
+    public Integer getY() {
+        return y;
+    }
+
     /**
      * Returns a new position with the sum of the coordinates
      *
