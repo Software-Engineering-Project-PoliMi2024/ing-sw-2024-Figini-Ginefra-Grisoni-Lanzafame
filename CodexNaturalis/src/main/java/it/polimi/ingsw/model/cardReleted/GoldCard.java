@@ -2,9 +2,7 @@ package it.polimi.ingsw.model.cardReleted;
 
 import it.polimi.ingsw.model.playerReleted.Codex;
 
-import java.util.HashSet;
 import java.util.Map;
-import java.util.Set;
 
 public class GoldCard extends CardInHand{
     final private Map<Resource, Integer> requirements;
