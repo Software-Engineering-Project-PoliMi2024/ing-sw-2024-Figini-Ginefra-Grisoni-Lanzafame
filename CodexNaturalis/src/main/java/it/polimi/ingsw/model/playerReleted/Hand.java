@@ -48,4 +48,16 @@ public class Hand {
     public ObjectiveCard getSecretObjective(){
         return this.secretObjective;
     }
+
+    @Override
+    public String toString() {
+        StringBuilder cardSetName = new StringBuilder();
+        for (CardInHand card : playableHand) {
+            cardSetName.append(card.toString()).append(", ");
+        }
+        return "Hand{" +
+                "secretObjective is: " + secretObjective +
+                ", playableHand is made of: " + cardSetName +
+                '}';
+    }
 }
