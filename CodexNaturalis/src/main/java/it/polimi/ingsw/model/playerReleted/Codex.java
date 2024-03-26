@@ -7,8 +7,8 @@ import java.util.*;
 
 public class Codex implements Serializable {
     private int points;
-    private final HashMap<Collectable, Integer> collectables;
-    private final LinkedHashMap<Position, Placement> placementHistory;
+    private final Map<Collectable, Integer> collectables;
+    private final Map<Position, Placement> placementHistory;
     private final Frontier frontier;
 
     /** Constructor of the Codex class
