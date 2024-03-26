@@ -147,26 +147,6 @@ public class Codex implements Serializable {
         this.points += card.getPoints(this);
     }
 
-    /** method that serializes the PlacementHistory of the codex
-     * @param filePath the path where to save the placement history
-     * @throws FileNotFoundException if the file is not found
-     * @throws IOException if there is an error while saving the placement history
-     * */
-    public void savePlacementHistory(String filePath) throws IOException {
-        File f = new File(filePath);
-        if (!f.exists())
-            throw new FileNotFoundException("File not found");
-        try {
-            FileOutputStream fileOut = new FileOutputStream(filePath);
-            ObjectOutputStream out = new ObjectOutputStream(fileOut);
-            out.writeObject(this.toString());
-            out.close();
-            fileOut.close();
-        } catch (IOException e) {
-            throw new IOException("Error while saving the placement history");
-        }
-    }
-
     @Override
     public String toString(){
         return "{" + "\n" +
