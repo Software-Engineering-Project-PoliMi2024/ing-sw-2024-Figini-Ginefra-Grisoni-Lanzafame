@@ -5,7 +5,7 @@ import java.util.Queue;
 /**
  * The concreteFactory for the Resource type of Card
  */
-public class StartCardFactory implements CardFactoryInterface<StartCard>{
+public class StartCardFactory extends AbstractCardFactory<StartCard>{
     @Override
     public Queue<StartCard> getCards() {
         //cardCreationLogic

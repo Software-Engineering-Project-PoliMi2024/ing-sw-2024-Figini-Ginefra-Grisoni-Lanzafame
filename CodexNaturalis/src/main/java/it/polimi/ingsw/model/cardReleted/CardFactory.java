@@ -12,18 +12,18 @@ public class CardFactory {
      * @throws IllegalArgumentException if the Class c is not one of the 4 card-Class type
      */
     @SuppressWarnings("unchecked")
-    public <Element> CardFactoryInterface<Element> getFactoryOf(Class<Element> c) {
+    public <Element> AbstractCardFactory<Element> getFactoryOf(Class<Element> c) {
         if (c == ResourceCard.class) {
-            return (CardFactoryInterface<Element>) new ResourceCardFactory();
+            return (AbstractCardFactory<Element>) new ResourceCardFactory();
         }
         if (c == ObjectiveCard.class) {
-            return (CardFactoryInterface<Element>) new ObjectiveCardFactory();
+            return (AbstractCardFactory<Element>) new ObjectiveCardFactory();
         }
         if (c== GoldCard.class){
-            return (CardFactoryInterface<Element>) new GoldCardFactory();
+            return (AbstractCardFactory<Element>) new GoldCardFactory();
         }
         if (c== StartCard.class){
-            return (CardFactoryInterface<Element>) new StartCardFactory();
+            return (AbstractCardFactory<Element>) new StartCardFactory();
         }
         throw new IllegalArgumentException();
     }
