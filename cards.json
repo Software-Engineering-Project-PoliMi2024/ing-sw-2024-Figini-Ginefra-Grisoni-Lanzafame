@@ -10,14 +10,6 @@
 
     "GoldCards":[
         {    
-            "points" : 0,
-            "corners": {"TR" : "EMPTY", "TL" : "EMPTY", "BR" : "EMPTY", "BL": "EMPTY"},
-            "requirements": {"plant": 0, "animal" : 0, "fungi": 0, "insect": 0},
-            "permanentResource" : "",
-            "multiplier": "", 
-            "imgID": 0
-        },
-        {    
             "points" : 1,
             "corners": {"TR" : "EMPTY", "BR" : "QUILL", "BL": "EMPTY"},
             "requirements": {"plant": 0, "animal" : 1, "fungi": 2, "insect": 0},
