@@ -583,75 +583,62 @@
     ],
     "StartingCard" : [
         {
-            "frontCorners": {"TR" : "", "TL" : "", "BR" : "", "BL": ""},
-            "backCorners": {"TR" : "", "TL" : "", "BR" : "", "BL": ""},
-            "permanentResource" : ["", ""],
-            "imgID": ""
-        },
-        {
             "frontCorners": {"TR" : "PLANT", "TL" : "FUNGI", "BR" : "ANIMAL", "BL": "INSECT"},
             "backCorners": {"TR" : "PLANT", "TL" : "EMPTY", "BR" : "EMPTY", "BL": "INSECT"},
             "permanentResource" : ["INSECT"],
-            "imgID": "81"
+            "imgID": 81
         },
         {
             "frontCorners": {"TR" : "ANIMAL", "TL" : "PLANT", "BR" : "INSECT", "BL": "FUNGI"},
             "backCorners": {"TR" : "EMPTY", "TL" : "ANIMAL", "BR" : "FUNGI", "BL": "EMPTY"},
             "permanentResource" : ["FUNGI"],
-            "imgID": "82"
+            "imgID": 82
         },
         {
             "frontCorners": {"TR" : "ANIMAL", "TL" : "INSECT", "BR" : "PLANT", "BL": "FUNGI"},
             "backCorners": {"TR" : "EMPTY", "TL" : "EMPTY", "BR" : "EMPTY", "BL": "EMPTY"},
             "permanentResource" : ["PLANT", "FUNGI"],
-            "imgID": "83"
+            "imgID": 83
         },
         {
             "frontCorners": {"TR" : "INSECT", "TL" : "PLANT", "BR" : "FUNGI", "BL": "ANIMAL"},
             "backCorners": {"TR" : "EMPTY", "TL" : "EMPTY", "BR" : "EMPTY", "BL": "EMPTY"},
             "permanentResource" : ["ANIMAL", "INSECT"],
-            "imgID": "84"
+            "imgID": 84
         },
         {
             "frontCorners": {"TR" : "FUNGI", "TL" : "INSECT", "BR" : "ANIMAL", "BL": "PLANT"},
             "backCorners": {"TR" : "EMPTY", "TL" : "EMPTY"},
             "permanentResource" : ["ANIMAL", "INSECT", "PLANT"],
-            "imgID": "85"
+            "imgID": 85
         },
         {
             "frontCorners": {"TR" : "ANIMAL", "TL" : "FUNGI", "BR" : "INSECT", "BL": "PLANT"},
             "backCorners": {"TR" : "EMPTY", "TL" : "EMPTY"},
             "permanentResource" : ["PLANT", "ANIMAL", "FUNGI"],
-            "imgID": "86"
+            "imgID": 86
         }
     ],
     "ObjectiveCard" : [
         {
-            "points" : "",
-            "multiplierL" : {"corner" : "", "singleResource" :"", "multiResource" : ""},
-            "multiplierD" : {"upwards": "", "resource" :""},
-            "multiplierCollectable" : {"plant": 0, "animal" : 0, "fungi": 0, "insect": 0, "manuscript" : 0, "quill" : 0, "inkwell":0},
-            "imgID": ""
+            "points" : 2,
+            "multiplierD" : {"upwards": 1, "resource" :"FUNGI"},
+            "imgID": 87
         },
         {
-            "points" : "2",
-            "multiplierD" : {"upwards": "1", "resource" :"FUNGI"},
-            "imgID": "87"
+            "points" : 2,
+            "multiplierD" : {"upwards": 0, "resource" :"PLANT"},
+            "imgID": 88
         },
         {
-            "points" : "2",
-            "multiplierD" : {"upwards": "0", "resource" :"PLANT"},
-            "imgID": "88"
+            "points" : 2,
+            "multiplierD" : {"upwards": 1, "resource" :""},
+            "imgID": 89
         },
         {
-            "points" : "2",
-            "multiplierD" : {"upwards": "1", "resource" :""},
-            "imgID": "89"
-        },
-        {
-            "points" : "2",
-            "multiplierD" : {"upwards": "0", "resource" :""},
-            "imgID": "90"
+            "points" : 2,
+            "multiplierD" : {"upwards": 0, "resource" :""},
+            "imgID": 90
         }
     ]
 }

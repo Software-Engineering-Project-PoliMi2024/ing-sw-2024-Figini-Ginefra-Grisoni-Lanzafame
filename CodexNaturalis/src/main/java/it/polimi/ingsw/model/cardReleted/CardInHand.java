@@ -10,6 +10,8 @@ public abstract class CardInHand extends CardWithCorners{
     /**
      * this is the constructor of the class
      * @param permanentResource the permanent resource of the card
+     * @param points the points of the card
+     * @param frontCorners the corners of the front of the card
      */
     public CardInHand(Resource permanentResource, int points,  Map<CardCorner, Collectable> frontCorners){
         super(points, frontCorners);

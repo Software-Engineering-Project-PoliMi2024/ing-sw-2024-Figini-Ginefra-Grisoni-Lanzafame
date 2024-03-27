@@ -6,8 +6,7 @@ import it.polimi.ingsw.model.cardReleted.GoldCard;
 import it.polimi.ingsw.model.cardReleted.StartCard;
 import it.polimi.ingsw.model.playerReleted.User;
 
-import java.util.ArrayList;
-import java.util.List;
+import java.util.*;
 
 /**
  * @author Samuele
@@ -45,10 +44,6 @@ public class Game {
     public void addUser(User user) throws FullMatchException {
         if (usersList.size() == numberOfMaxPlayer) {
             throw new FullMatchException("The match is already full");
-        } else if (usersList.isEmpty()) {
-            usersList.add(user);
-            currentPlayerIndex = 0;
-            currentPlayer = usersList.get(currentPlayerIndex);
         } else {
             usersList.add(user);
         }
@@ -69,6 +64,7 @@ public class Game {
                 currentPlayer=null;
                 throw new EmptyMatchException("There are more not active player in this game");
             }
+            assert user != null;        //handle the case of user being null while currentPlayer is null
             if(user==currentPlayer){
                 nextPlayer();
             }
@@ -77,16 +73,28 @@ public class Game {
 
     /**
      * This method advances the game to the next player in the rotation sequence.
-     *
-     * @throws EmptyMatchException if the game is empty, meaning there is no current player to advance.
+     * if there is no currentPlayer, it creates it by launching the chooseStartingOrder method
+     * @throws EmptyMatchException if the game is empty.
      */
     public void nextPlayer() throws EmptyMatchException {
-        if (currentPlayer == null) {
+        if(usersList.isEmpty()){
             throw new EmptyMatchException("The game is empty, there is no next player");
+        }
+        if (currentPlayer == null) {
+            chooseStartingOrder();
         } else {
             currentPlayerIndex = (currentPlayerIndex + 1) % usersList.size();
             currentPlayer = usersList.get(currentPlayerIndex);
         }
+    }
+
+    /**
+     * Randomize the userList and set the currentPlayer to the first of the list
+     */
+    public void chooseStartingOrder(){
+        Collections.shuffle(usersList);
+        currentPlayerIndex = 0;
+        currentPlayer=usersList.getFirst();
     }
 
     /** @return list of active player in this match*/
@@ -118,7 +126,6 @@ public class Game {
     public User getCurrentPlayer() {
         return currentPlayer;
     }
-
     @Override
     public String toString() {
         StringBuilder userListName = new StringBuilder();
@@ -128,7 +135,6 @@ public class Game {
         return "Game{" +
                 ", usersList=" + userListName +
                 ", currentPlayer=" + currentPlayer.getNickname() +
-                ", currentPlayerIndex=" + currentPlayerIndex +
                 ", numberOfMaxPlayer=" + numberOfMaxPlayer +
                 '}';
     }
