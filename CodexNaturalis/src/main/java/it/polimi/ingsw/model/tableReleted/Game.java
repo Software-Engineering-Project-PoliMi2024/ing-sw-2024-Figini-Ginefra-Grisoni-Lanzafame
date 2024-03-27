@@ -13,10 +13,14 @@ import java.util.*;
  */
 public class Game {
     final private CardFactory cardFactory = new CardFactory();
-    final private Deck<ObjectiveCard> objectiveCardDeck = new Deck<>(0, cardFactory.getFactoryOf(ObjectiveCard.class).getCards());
-    final private Deck<ResourceCard> resourceCardDeck = new Deck<>(2, cardFactory.getFactoryOf(ResourceCard.class).getCards());
-    final private Deck<GoldCard> goldCardDeck = new Deck<>(2, cardFactory.getFactoryOf(GoldCard.class).getCards());
-    final private Deck<StartCard> startingCardDeck = new Deck<>(0, cardFactory.getFactoryOf(StartCard.class).getCards());
+    final private Deck<ObjectiveCard> objectiveCardDeck =
+            new Deck<>(0, cardFactory.getFactoryOf(ObjectiveCard.class).getCards());
+    final private Deck<ResourceCard> resourceCardDeck =
+            new Deck<>(2, cardFactory.getFactoryOf(ResourceCard.class).getCards());
+    final private Deck<GoldCard> goldCardDeck =
+            new Deck<>(2, cardFactory.getFactoryOf(GoldCard.class).getCards());
+    final private Deck<StartCard> startingCardDeck =
+            new Deck<>(0, cardFactory.getFactoryOf(StartCard.class).getCards());
     final private List<User> usersList; //played by
     private User currentPlayer;
     private int currentPlayerIndex;

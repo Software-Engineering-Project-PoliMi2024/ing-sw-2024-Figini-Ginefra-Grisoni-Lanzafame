@@ -18,7 +18,9 @@ public enum CardCorner {
         return offset;
     }
 
-    public String toString(){
+    /*public String toString(){
         return "CardCorner[" + this.name() + "]";
-    }
+    }*/
+
 }
+

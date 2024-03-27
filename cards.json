@@ -459,7 +459,7 @@
             "points" : 1,
             "corners": {"TR" : "PLANT", "BR" : "EMPTY", "BL": "EMPTY"},
             "permanentResource" : "PLANT",
-            "imgID": 19
+            "imgID": 20
         },
         {
             "points" : 0,
