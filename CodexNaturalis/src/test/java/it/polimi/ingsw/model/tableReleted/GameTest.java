@@ -29,7 +29,7 @@ public class GameTest {
         assertEquals(1, game.getUsersList().size());
         assertEquals(user1, game.getCurrentPlayer());
         game.addUser(user2);
-        assertEquals(user1, game.getCurrentPlayer()); //Checking if adding player don't change currentPlayer
+        assertEquals(user1, game.getCurrentPlayer()); //Checking if adding player doesn't change currentPlayer
     }
 
     //Testing the FullMatchException exception
