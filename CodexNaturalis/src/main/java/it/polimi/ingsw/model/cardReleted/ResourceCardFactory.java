@@ -15,21 +15,12 @@ public class ResourceCardFactory extends AbstractCardFactory<ResourceCard>{
      */
     @Override
     public Queue<ResourceCard> getCards() {
-        /*JsonArray ResourceCards = getCardArray("ResourcesCards");
-        for(int i=0; i<ResourceCards.size(); i++){
-            JsonObject card = ResourceCards.get(i).getAsJsonObject();
-            deckBuilder.add(new ResourceCard(getPermanentResource(card),
-                    card.get("points").getAsInt(), getFrontCorner(card)));
-        }*/
         JsonArray ResourceCards = getCardArray("ResourcesCards");
         for(int i=0; i<ResourceCards.size(); i++){
             JsonObject card = ResourceCards.get(i).getAsJsonObject();
-            System.out.println(getFrontCorner(card) + " " + card.get("points").getAsInt() + " " + getPermanentResource(card));
+            deckBuilder.add(new ResourceCard(getPermanentResource(card),
+                    card.get("points").getAsInt(), getFrontCornerMap(card)));
         }
         return deckBuilder;
-    }
-    public static void main(String[] args){
-        ResourceCardFactory factory = new ResourceCardFactory();
-        factory.getCards();
     }
 }

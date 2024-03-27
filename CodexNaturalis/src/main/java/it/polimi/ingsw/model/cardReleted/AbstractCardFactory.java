@@ -40,7 +40,7 @@ public abstract class AbstractCardFactory<Element> {
      * @param card that is being build
      * @return a Map with the Collectable in the frontCorner
      */
-    protected Map<CardCorner, Collectable> getFrontCorner(JsonObject card){
+    protected Map<CardCorner, Collectable> getFrontCornerMap(JsonObject card){
         Map<CardCorner, Collectable> frontCornerMap = new HashMap<>();
         JsonObject frontCorner = card.getAsJsonObject("corners");
         //For each "element" in the frontCorner object
