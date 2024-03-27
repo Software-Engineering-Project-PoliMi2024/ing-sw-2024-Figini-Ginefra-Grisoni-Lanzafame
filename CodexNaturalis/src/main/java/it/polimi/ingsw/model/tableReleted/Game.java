@@ -1,9 +1,6 @@
 package it.polimi.ingsw.model.tableReleted;
 
-import it.polimi.ingsw.model.cardReleted.ObjectiveCard;
-import it.polimi.ingsw.model.cardReleted.ResourceCard;
-import it.polimi.ingsw.model.cardReleted.GoldCard;
-import it.polimi.ingsw.model.cardReleted.StartCard;
+import it.polimi.ingsw.model.cardReleted.*;
 import it.polimi.ingsw.model.playerReleted.User;
 
 import java.util.*;
@@ -15,10 +12,11 @@ import java.util.*;
  * and the decks that are being used.
  */
 public class Game {
-    final private Deck<ObjectiveCard> objectiveCardDeck = new Deck<>(0);
-    final private Deck<ResourceCard> resourceCardDeck = new Deck<>(2);
-    final private Deck<GoldCard> goldCardDeck = new Deck<>(2);
-    final private Deck<StartCard> startingCardDeck = new Deck<>(0);
+    final private CardFactory cardFactory = new CardFactory();
+    final private Deck<ObjectiveCard> objectiveCardDeck = new Deck<>(0, cardFactory.getFactoryOf(ObjectiveCard.class).getCards());
+    final private Deck<ResourceCard> resourceCardDeck = new Deck<>(2, cardFactory.getFactoryOf(ResourceCard.class).getCards());
+    final private Deck<GoldCard> goldCardDeck = new Deck<>(2, cardFactory.getFactoryOf(GoldCard.class).getCards());
+    final private Deck<StartCard> startingCardDeck = new Deck<>(0, cardFactory.getFactoryOf(StartCard.class).getCards());
     final private List<User> usersList; //played by
     private User currentPlayer;
     private int currentPlayerIndex;
