@@ -10,10 +10,13 @@ import java.util.Map;
 import java.util.Queue;
 
 /**
- * The concreteFactory for the Resource type of Card
+ * The concreteFactory for the Gold type of Card
  */
 public class GoldCardFactory extends AbstractCardFactory<GoldCard>{
     private final Queue<GoldCard> deckBuilder = new LinkedList<>();
+    /**
+     * @return the QueueOfCards
+     */
     @Override
     public Queue<GoldCard> getCards() {
         JsonArray GoldCards = getCardArray("GoldCards");
@@ -25,7 +28,11 @@ public class GoldCardFactory extends AbstractCardFactory<GoldCard>{
         }
         return deckBuilder;
     }
-
+    /**
+     * This method use the toString define in the Resource enum
+     * @param card that is being build
+     * @return a Map with the requirement needed to place the card
+     */
     private Map<Resource, Integer> getRequirmentMap(JsonObject card){
         Map<Resource, Integer> requirmentMap = new HashMap<>();
         JsonObject requirementsList = card.getAsJsonObject("requirements");
@@ -37,6 +44,10 @@ public class GoldCardFactory extends AbstractCardFactory<GoldCard>{
         return requirmentMap;
     }
 
+    /**
+     * @param card that is being build
+     * @return a pointer to the correct Multiplier
+     */
     private GoldCardPointMultiplier getPointMultiplier(JsonObject card){
         String multiplierType = card.get("multiplier").getAsString().toUpperCase();
         if(multiplierType.isEmpty()){
@@ -46,10 +57,6 @@ public class GoldCardFactory extends AbstractCardFactory<GoldCard>{
         }else{
             return new WritingMaterialsCardPointMultiplier(WritingMaterial.valueOf(multiplierType));
         }
-    }
-    public static void main(String[] arg){
-        GoldCardFactory factory = new GoldCardFactory();
-        factory.getCards();
     }
 }
 
