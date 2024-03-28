@@ -29,7 +29,8 @@ public class ObjectiveCardFactory extends AbstractCardFactory<ObjectiveCard>{
      * @param card that is being build
      * @return a pointer to the correct Multiplier
      */
-    private void getPointMultiplier(JsonObject card){
-        //TODO return type: ObjectiveCardPointMultiplier, add method functionality
+    private ObjectiveCardPointMultiplier getPointMultiplier(JsonObject card){
+        //TODO add method functionality
+        return null;
     }
 }

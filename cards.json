@@ -575,37 +575,37 @@
     ],
     "StartingCard" : [
         {
-            "frontCorners": {"TR" : "PLANT", "TL" : "FUNGI", "BR" : "ANIMAL", "BL": "INSECT"},
+            "corners": {"TR" : "PLANT", "TL" : "FUNGI", "BR" : "ANIMAL", "BL": "INSECT"},
             "backCorners": {"TR" : "PLANT", "TL" : "EMPTY", "BR" : "EMPTY", "BL": "INSECT"},
             "permanentResource" : ["INSECT"],
             "imgID": 81
         },
         {
-            "frontCorners": {"TR" : "ANIMAL", "TL" : "PLANT", "BR" : "INSECT", "BL": "FUNGI"},
+            "corners": {"TR" : "ANIMAL", "TL" : "PLANT", "BR" : "INSECT", "BL": "FUNGI"},
             "backCorners": {"TR" : "EMPTY", "TL" : "ANIMAL", "BR" : "FUNGI", "BL": "EMPTY"},
             "permanentResource" : ["FUNGI"],
             "imgID": 82
         },
         {
-            "frontCorners": {"TR" : "ANIMAL", "TL" : "INSECT", "BR" : "PLANT", "BL": "FUNGI"},
+            "corners": {"TR" : "ANIMAL", "TL" : "INSECT", "BR" : "PLANT", "BL": "FUNGI"},
             "backCorners": {"TR" : "EMPTY", "TL" : "EMPTY", "BR" : "EMPTY", "BL": "EMPTY"},
             "permanentResource" : ["PLANT", "FUNGI"],
             "imgID": 83
         },
         {
-            "frontCorners": {"TR" : "INSECT", "TL" : "PLANT", "BR" : "FUNGI", "BL": "ANIMAL"},
+            "corners": {"TR" : "INSECT", "TL" : "PLANT", "BR" : "FUNGI", "BL": "ANIMAL"},
             "backCorners": {"TR" : "EMPTY", "TL" : "EMPTY", "BR" : "EMPTY", "BL": "EMPTY"},
             "permanentResource" : ["ANIMAL", "INSECT"],
             "imgID": 84
         },
         {
-            "frontCorners": {"TR" : "FUNGI", "TL" : "INSECT", "BR" : "ANIMAL", "BL": "PLANT"},
+            "corners": {"TR" : "FUNGI", "TL" : "INSECT", "BR" : "ANIMAL", "BL": "PLANT"},
             "backCorners": {"TR" : "EMPTY", "TL" : "EMPTY"},
             "permanentResource" : ["ANIMAL", "INSECT", "PLANT"],
             "imgID": 85
         },
         {
-            "frontCorners": {"TR" : "ANIMAL", "TL" : "FUNGI", "BR" : "INSECT", "BL": "PLANT"},
+            "corners": {"TR" : "ANIMAL", "TL" : "FUNGI", "BR" : "INSECT", "BL": "PLANT"},
             "backCorners": {"TR" : "EMPTY", "TL" : "EMPTY"},
             "permanentResource" : ["PLANT", "ANIMAL", "FUNGI"],
             "imgID": 86
