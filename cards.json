@@ -652,6 +652,65 @@
             "points" : "2",
             "multiplierD" : {"upwards": "0", "resource" :""},
             "imgID": "90"
-        }
-    ]
+        },
+        {
+            "points" : "3",
+            "multiplierL" : {"corner" : "TL", "singleResource" :"plant", "multiResource" : "fungi"},
+            "imgID": "91"
+        },
+        {
+            "points" : "3",
+            "multiplierL" : {"corner" : "TR", "singleResource" :"insect", "multiResource" : "plant"},
+            "imgID": "92"
+        },
+        {
+            "points" : "3",
+            "multiplierL" : {"corner" : "BL", "singleResource" :"fungi", "multiResource" : "animal"},
+            "imgID": "93"
+        },
+        {
+            "points" : "3",
+            "multiplierL" : {"corner" : "BR", "singleResource" :"animal", "multiResource" : "insect"},
+            "imgID": "94"
+        },
+        {
+            "points" : "3",
+            "multiplierCollectable" : {"plant": 0, "animal" : 0, "fungi": 3, "insect": 0, "manuscript" : 0, "quill" : 0, "inkwell":0},
+            "imgID": "95"
+        },
+        {
+            "points" : "3",
+            "multiplierCollectable" : {"plant": 3, "animal" : 0, "fungi": 0, "insect": 0, "manuscript" : 0, "quill" : 0, "inkwell":0},
+            "imgID": "96"
+        },
+        {
+            "points" : "3",
+            "multiplierCollectable" : {"plant": 0, "animal" : 3, "fungi": 0, "insect": 0, "manuscript" : 0, "quill" : 0, "inkwell":0},
+            "imgID": "97"
+        },
+        {
+            "points" : "3",
+            "multiplierCollectable" : {"plant": 0, "animal" : 0, "fungi": 0, "insect": 3, "manuscript" : 0, "quill" : 0, "inkwell":0},
+            "imgID": "98"
+        },
+        {
+            "points" : "3",
+            "multiplierCollectable" : {"plant": 0, "animal" : 0, "fungi": 0, "insect": 0, "manuscript" : 1, "quill" : 1, "inkwell":1},
+            "imgID": "99"
+        },
+        {
+            "points" : "3",
+            "multiplierCollectable" : {"plant": 0, "animal" : 0, "fungi": 0, "insect": 0, "manuscript" : 2, "quill" : 0, "inkwell":0},
+            "imgID": "100"
+        }, 
+        {
+            "points" : "3",
+            "multiplierCollectable" : {"plant": 0, "animal" : 0, "fungi": 0, "insect": 0, "manuscript" : 0, "quill" : 0, "inkwell":2},
+            "imgID": "101"
+        },  
+        {
+            "points" : "3",
+            "multiplierCollectable" : {"plant": 0, "animal" : 0, "fungi": 0, "insect": 0, "manuscript" : 0, "quill" : 2, "inkwell":0},
+            "imgID": "102"
+        }]
 }
