@@ -19,7 +19,7 @@ public class StartCard extends CardWithCorners{
     }
 
     /**@param corner the corner to check
-     * @param face the face from which retrive the corner
+     * @param face the face from which  retrieve the corner
      * @return the Collectable at given position
      * @throws IllegalArgumentException if there is no corner*/
     @Override
@@ -37,7 +37,7 @@ public class StartCard extends CardWithCorners{
     }
 
     /**@param corner the corner to check
-     * @param face the face from which retrive the corner
+     * @param face the face from which retrieve the corner
      * @return true if the corner is present, false otherwise*/
     @Override
     public boolean isCorner(CardCorner corner, CardFace face){
@@ -47,7 +47,7 @@ public class StartCard extends CardWithCorners{
             return frontCorners.containsKey(corner);
     }
 
-    /** @param face the face from which retrive the resources
+    /** @param face the face from which retrieve the resources
      * @return the HashSet containing the permanent Resources */
     @Override
     public HashSet <Resource> getPermanentResources(CardFace face){

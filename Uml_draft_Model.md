@@ -60,12 +60,6 @@ classDiagram
             INKWELL
             MANUSCRIPT
         }
-            class WritingMaterials{
-                <<Enumeration>>
-                QUILL
-                INKWELL
-                MANUSCRIPT
-            }
 
         class Special{
             <<Enumeration>>
