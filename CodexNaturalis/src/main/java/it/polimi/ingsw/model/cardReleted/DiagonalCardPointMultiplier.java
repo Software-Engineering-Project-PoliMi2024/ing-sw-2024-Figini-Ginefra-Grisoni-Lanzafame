@@ -20,7 +20,7 @@ public class DiagonalCardPointMultiplier implements ObjectiveCardPointMultiplier
     /**@return the multiplier of the points
      * @param codex the codex from which to calc the multiplier factor*/
     public int getMultiplier(Codex codex){
-        Integer multiplier = 0;
+        int multiplier = 0;
         ArrayList <Position> positions = new ArrayList<>();
         if(upwards) {
             positions.add(CardCorner.TR.getOffset().add(CardCorner.TR.getOffset()));
