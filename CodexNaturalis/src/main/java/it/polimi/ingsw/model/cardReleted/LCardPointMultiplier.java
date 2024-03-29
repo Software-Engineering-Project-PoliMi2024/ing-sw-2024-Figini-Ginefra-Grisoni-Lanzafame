@@ -22,8 +22,7 @@ public class LCardPointMultiplier implements ObjectiveCardPointMultiplier{
      * @return the multiplier of the points*/
     @Override
     public int getMultiplier(Codex codex) {
-        Integer multiplier = 0;
-
+        int multiplier = 0;
         for(Placement p : codex.getPlacementHistory()){
             if(p.card().getPermanentResources(CardFace.BACK).contains(singleResource) &&
                     codex.getPlacementAt(p.position()
