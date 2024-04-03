@@ -27,7 +27,7 @@ public abstract class AbstractCardFactory<Element> {
         final Gson gson = new Gson();
         FileReader fileReader;
         try {
-            fileReader = new FileReader("cards.json");
+            fileReader = new FileReader("C:\\Polimi\\3rd_Year\\2ndSem\\ProgettoSoftEng\\cards.json");
             JsonObject jsonObject = gson.fromJson(fileReader, JsonObject.class);
             return  jsonObject.getAsJsonArray(cardType);
         } catch (FileNotFoundException e) {

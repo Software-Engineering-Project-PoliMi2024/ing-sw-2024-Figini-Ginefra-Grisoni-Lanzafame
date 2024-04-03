@@ -16,7 +16,7 @@ public class GameTest {
 
     @BeforeEach
     public void setUp() {
-        game = new Game(4);
+        game = new Game("Yolo", 4);
         user1 = new User("a");
         user2 = new User("b");
         user3 = new User("c");
@@ -25,61 +25,61 @@ public class GameTest {
 
     @Test
     public void testAddUserAndCheckNewCurrentPlayer() throws FullMatchException{
-        game.addUser(user1);
-        assertEquals(1, game.getUsersList().size());
-        assertEquals(user1, game.getCurrentPlayer());
-        game.addUser(user2);
-        assertEquals(user1, game.getCurrentPlayer()); //Checking if adding player doesn't change currentPlayer
+        game.getGameParty().addUser(user1);
+        assertEquals(1, game.getGameParty().getUsersList().size());
+        assertEquals(user1, game.getGameParty().getCurrentPlayer());
+        game.getGameParty().addUser(user2);
+        assertEquals(user1, game.getGameParty().getCurrentPlayer()); //Checking if adding player doesn't change currentPlayer
     }
 
     //Testing the FullMatchException exception
     @Test
     public void testAddUserToFullGame() {
         assertThrows(FullMatchException.class, () -> {
-            game.addUser(user1);
-            game.addUser(user2);
-            game.addUser(user3);
-            game.addUser(user4);
-            game.addUser(new User("e"));
+            game.getGameParty().addUser(user1);
+            game.getGameParty().addUser(user2);
+            game.getGameParty().addUser(user3);
+            game.getGameParty().addUser(user4);
+            game.getGameParty().addUser(new User("e"));
         });
     }
 
     @Test
     public void removeUserAndCheckNewCurrentPlayer() throws FullMatchException, UserNotFoundException, EmptyMatchException {
-        game.addUser(user1);
-        game.addUser(user2);
-        game.removeUser(user1);
-        assertEquals(1, game.getUsersList().size());
-        assertEquals(user2, game.getCurrentPlayer());
+        game.getGameParty().addUser(user1);
+        game.getGameParty().addUser(user2);
+        game.getGameParty().removeUser(user1);
+        assertEquals(1, game.getGameParty().getUsersList().size());
+        assertEquals(user2, game.getGameParty().getCurrentPlayer());
     }
 
     @Test
     public void testRemoveUserNotFound(){
         assertThrows(UserNotFoundException.class, () -> {
-           game.removeUser(user1);
+           game.getGameParty().removeUser(user1);
         });
     }
 
     @Test
     public void testRemoveUserToEmptyMatch(){
         assertThrows(EmptyMatchException.class, () -> {
-            game.addUser(user1);
-            game.removeUser(user1);
+            game.getGameParty().addUser(user1);
+            game.getGameParty().removeUser(user1);
         });
     }
 
     @Test
     public void testNextPlayer() throws EmptyMatchException, FullMatchException {
-        game.addUser(user1);
-        assertEquals(user1, game.getCurrentPlayer());
-        game.addUser(user2);
-        game.nextPlayer();
-        assertEquals(user2, game.getCurrentPlayer()); //checking new CurrentPlayer
-        game.addUser(user3);
-        game.addUser(user4);
-        game.nextPlayer();
-        game.nextPlayer();
-        game.nextPlayer();
-        assertEquals(user1, game.getCurrentPlayer()); //checking if the "fifth" nextPlayer is actually the first
+        game.getGameParty().addUser(user1);
+        assertEquals(user1, game.getGameParty().getCurrentPlayer());
+        game.getGameParty().addUser(user2);
+        game.getGameParty().nextPlayer();
+        assertEquals(user2, game.getGameParty().getCurrentPlayer()); //checking new CurrentPlayer
+        game.getGameParty().addUser(user3);
+        game.getGameParty().addUser(user4);
+        game.getGameParty().nextPlayer();
+        game.getGameParty().nextPlayer();
+        game.getGameParty().nextPlayer();
+        assertEquals(user1, game.getGameParty().getCurrentPlayer()); //checking if the "fifth" nextPlayer is actually the first
     }
 }
