@@ -13,6 +13,11 @@ import java.util.Queue;
  * The concreteFactory for the Gold type of Card
  */
 public class GoldCardFactory extends AbstractCardFactory<GoldCard>{
+
+    public GoldCardFactory(String filePath) {
+        super(filePath);
+    }
+
     private final Queue<GoldCard> deckBuilder = new LinkedList<>();
     /**
      * @return the QueueOfCards
@@ -59,5 +64,4 @@ public class GoldCardFactory extends AbstractCardFactory<GoldCard>{
         }
     }
 }
-
 

@@ -10,6 +10,11 @@ import java.util.*;
  * The concreteFactory for the StartCard type of Card
  */
 public class StartCardFactory extends AbstractCardFactory<StartCard>{
+
+    public StartCardFactory(String filePath) {
+        super(filePath);
+    }
+
     private final Queue<StartCard> deckBuilder = new LinkedList<>();
     /**
      * @return the QueueOfCards

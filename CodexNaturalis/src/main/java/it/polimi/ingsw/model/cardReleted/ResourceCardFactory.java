@@ -9,6 +9,11 @@ import java.util.*;
  */
 public class ResourceCardFactory extends AbstractCardFactory<ResourceCard>{
 
+    public ResourceCardFactory(String filePath) {
+        super(filePath);
+    }
+
+
     private final Queue<ResourceCard> deckBuilder = new LinkedList<>();
     /**
      * @return the QueueOfCards

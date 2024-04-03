@@ -1,12 +1,9 @@
 package it.polimi.ingsw.model.tableReleted;
 
-import it.polimi.ingsw.designPatterns.Observer.Observed;
-import it.polimi.ingsw.designPatterns.Observer.Observer;
+
 import it.polimi.ingsw.model.cardReleted.*;
 import it.polimi.ingsw.model.playerReleted.User;
 
-import java.util.*;
-import java.util.function.Function;
 
 /**
  * @author Samuele
@@ -16,15 +13,10 @@ import java.util.function.Function;
  */
 public class Game{
 
-    final private CardFactory cardFactory = new CardFactory();
-    final private Deck<ObjectiveCard> objectiveCardDeck =
-            new Deck<>(0, cardFactory.getFactoryOf(ObjectiveCard.class).getCards());
-    final private Deck<ResourceCard> resourceCardDeck =
-            new Deck<>(2, cardFactory.getFactoryOf(ResourceCard.class).getCards());
-    final private Deck<GoldCard> goldCardDeck =
-            new Deck<>(2, cardFactory.getFactoryOf(GoldCard.class).getCards());
-    final private Deck<StartCard> startingCardDeck =
-            new Deck<>(0, cardFactory.getFactoryOf(StartCard.class).getCards());
+    final private Deck<ObjectiveCard> objectiveCardDeck;
+    final private Deck<ResourceCard> resourceCardDeck;
+    final private Deck<GoldCard> goldCardDeck;
+    final private Deck<StartCard> startingCardDeck;
 
     private final String name;
 
@@ -36,12 +28,16 @@ public class Game{
     public Game(String name, int numberOfMaxPlayer) {
         this.name = name;
         this.gameParty = new GameParty(numberOfMaxPlayer);
+        CardFactory cardFactory = new CardFactory( "cards.json");
+        objectiveCardDeck =
+                new Deck<>(0, cardFactory.getFactoryOf(ObjectiveCard.class).getCards());
+        resourceCardDeck =
+                new Deck<>(2, cardFactory.getFactoryOf(ResourceCard.class).getCards());
+        goldCardDeck =
+                new Deck<>(2, cardFactory.getFactoryOf(GoldCard.class).getCards());
+        startingCardDeck =
+                new Deck<>(0, cardFactory.getFactoryOf(StartCard.class).getCards());
     }
-
-
-
-
-
 
     /** @return the Objective Card Deck*/
     public Deck<ObjectiveCard> getObjectiveCardDeck() {

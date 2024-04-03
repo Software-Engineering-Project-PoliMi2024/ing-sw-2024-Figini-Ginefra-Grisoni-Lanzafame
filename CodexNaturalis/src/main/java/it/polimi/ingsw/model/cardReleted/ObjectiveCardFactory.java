@@ -13,6 +13,10 @@ import java.util.Queue;
  * The concreteFactory for the Objective type of Card
  */
 public class ObjectiveCardFactory extends AbstractCardFactory<ObjectiveCard>{
+    public ObjectiveCardFactory(String filePath) {
+        super(filePath);
+    }
+
     private final Queue<ObjectiveCard> deckBuilder = new LinkedList<>();
     /**
      * @return the QueueOfCards
