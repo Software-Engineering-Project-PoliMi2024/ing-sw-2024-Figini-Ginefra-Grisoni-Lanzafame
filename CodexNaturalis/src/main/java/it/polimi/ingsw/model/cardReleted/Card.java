@@ -2,8 +2,10 @@ package it.polimi.ingsw.model.cardReleted;
 
 import it.polimi.ingsw.model.playerReleted.Codex;
 
+import java.io.Serializable;
 
-public abstract class Card {
+
+public abstract class Card implements Serializable {
     final private int points;
 
     /** @param  points given by the card*/

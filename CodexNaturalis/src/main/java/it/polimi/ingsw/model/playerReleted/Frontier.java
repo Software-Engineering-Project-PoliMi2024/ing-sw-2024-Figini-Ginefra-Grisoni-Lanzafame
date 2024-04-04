@@ -2,6 +2,7 @@ package it.polimi.ingsw.model.playerReleted;
 
 import it.polimi.ingsw.model.cardReleted.CardCorner;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -9,7 +10,7 @@ import java.util.List;
  * Represents the frontier of a codex
  * The frontier is the set of positions that are free and adjacent to a placement
  */
-public class Frontier {
+public class Frontier implements Serializable {
     List<Position> frontier;
 
     public Frontier(){

@@ -4,6 +4,8 @@ import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
 import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.Map;
@@ -14,16 +16,48 @@ import java.util.Queue;
  */
 public class GoldCardFactory extends AbstractCardFactory<GoldCard>{
 
+    /**
+     * The constructor of the class
+     * @param filePath the path of the card.json file
+     */
     public GoldCardFactory(String filePath) {
         super(filePath);
     }
 
-    private final Queue<GoldCard> deckBuilder = new LinkedList<>();
     /**
-     * @return the QueueOfCards
+     * Retrieves a Queue of GoldCard objects.
+     * If a binary file containing serialized GoldCard objects exists, it deserializes and returns the Queue from it.
+     * If the binary file does not exist, call getCardsFromJson()
+     *
+     * @return A Queue of GoldCard objects obtained either from existing binary file or serialized from JSON.
+     * @throws RuntimeException If an error occurs during file operations or deserialization.
      */
     @Override
     public Queue<GoldCard> getCards() {
+        String fileSerializedName = "GoldCards.bin";
+        FileInputStream file;
+        try { //check if the .bin file exist
+            file = new FileInputStream(fileSerializedName);
+            return deserializeQueue(file);
+        } catch (FileNotFoundException e) { //the .bin file doesn't exist
+            serializeQueue(fileSerializedName, getCardsFromJson()); //create the .bin file
+            try {
+                file = new FileInputStream(fileSerializedName);
+            } catch (FileNotFoundException ex) {
+                throw new RuntimeException(ex);
+            }
+            return deserializeQueue(file);
+        }
+    }
+
+    private final Queue<GoldCard> deckBuilder = new LinkedList<>();
+
+    /**
+     * Retrieves a queue of Gold cards from JSON file
+     * It calls StartCard() for building the actual card
+     * @return A queue containing StartCard objects parsed from the JSON data.
+     */
+    public Queue<GoldCard> getCardsFromJson() {
         JsonArray GoldCards = getCardArray("GoldCards");
         for(int i =0; i<GoldCards.size(); i++){
             JsonObject card = GoldCards.get(i).getAsJsonObject();

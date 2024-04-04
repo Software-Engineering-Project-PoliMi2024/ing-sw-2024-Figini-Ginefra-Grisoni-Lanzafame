@@ -14,7 +14,7 @@ public class GoldCard extends CardInHand{
      * @param requirements it's a map of the requirements needed by the card and the number of them
      * @param multiplier define
      * @param frontCorner the front corners map
-     * @param permanentResource the resource in the midde of the card's back
+     * @param permanentResource the resource in the middle of the card's back
      */
     public GoldCard(int points, Map<Resource, Integer> requirements, GoldCardPointMultiplier multiplier, Map<CardCorner, Collectable> frontCorner, Resource permanentResource){
         super(permanentResource, points, frontCorner);

@@ -1,4 +1,6 @@
 package it.polimi.ingsw.model.cardReleted;
 
-public interface Collectable {
+import java.io.Serializable;
+
+public interface Collectable extends Serializable {
 }

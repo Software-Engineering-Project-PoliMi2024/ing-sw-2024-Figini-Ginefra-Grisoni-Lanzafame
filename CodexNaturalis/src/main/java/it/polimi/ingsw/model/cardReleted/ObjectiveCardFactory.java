@@ -4,6 +4,8 @@ import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
 import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.Map;
@@ -13,16 +15,50 @@ import java.util.Queue;
  * The concreteFactory for the Objective type of Card
  */
 public class ObjectiveCardFactory extends AbstractCardFactory<ObjectiveCard>{
+
+    private final Queue<ObjectiveCard> deckBuilder = new LinkedList<>();
+
+    /**
+     * The constructor of the class
+     * @param filePath the path of the card.json file
+     */
     public ObjectiveCardFactory(String filePath) {
         super(filePath);
     }
 
-    private final Queue<ObjectiveCard> deckBuilder = new LinkedList<>();
+
     /**
-     * @return the QueueOfCards
+     Retrieves a Queue of ObjectiveCard objects.
+     If a binary file containing serialized GoldCard objects exists, it deserializes and returns the Queue from it.
+     If the binary file does not exist, call getCardsFromJson()
+     @return A Queue of GoldCard objects obtained either from existing binary file or serialized from JSON.
+     @throws RuntimeException If an error occurs during file operations or deserialization.
      */
     @Override
     public Queue<ObjectiveCard> getCards() {
+        String fileSerializedName = "ObjectiveCards.bin";
+        FileInputStream file;
+        try { //check if the .bin file exist
+            file = new FileInputStream(fileSerializedName);
+            return deserializeQueue(file);
+        } catch (FileNotFoundException e) { //the .bin file doesn't exist
+            serializeQueue(fileSerializedName, getCardsFromJson()); //create the .bin file
+            try {
+                file = new FileInputStream(fileSerializedName);
+            } catch (FileNotFoundException ex) {
+                throw new RuntimeException(ex);
+            }
+            return deserializeQueue(file);
+        }
+    }
+
+    /**
+     * Retrieves a queue of Objective cards from JSON file
+     * It calls StartCard() for building the actual card
+     * @return A queue containing StartCard objects parsed from the JSON data.
+     */
+    @Override
+    public Queue<ObjectiveCard> getCardsFromJson() {
         JsonArray ResourceCards = getCardArray("ObjectiveCard");
         for(int i=0; i<ResourceCards.size(); i++) {
             JsonObject card = ResourceCards.get(i).getAsJsonObject();

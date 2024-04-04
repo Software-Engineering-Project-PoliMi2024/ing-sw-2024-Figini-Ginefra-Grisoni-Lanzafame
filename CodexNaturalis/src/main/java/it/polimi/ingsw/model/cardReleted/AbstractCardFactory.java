@@ -16,12 +16,20 @@ import java.util.Queue;
  */
 public abstract class AbstractCardFactory<Element> {
     public abstract Queue<Element> getCards();
+
+    public abstract Queue<Element> getCardsFromJson();
     String filePath;
+
+    /**
+     * The constructor of all concrete factories
+     * @param filePath the path of the card.json file
+     */
     public AbstractCardFactory(String filePath) {
         this.filePath = filePath;
     }
 
     /**
+     * Read from the Json File the Card Array
      * @param cardType the name of the card type (the array name) in the JSON (
      * @return the array made of Resources Cards
      * @throws RuntimeException if cards.json is not present
@@ -39,12 +47,13 @@ public abstract class AbstractCardFactory<Element> {
     }
 
     /**
-     * This method use the toString define in the Resource/Special/WritingMaterial enum
+     * Read the JsonObject corners from the Json File
+     * This method use the toString define in the Resource/Special/WritingMaterial Enum
      * @param card that is being build
-     * @return a Map with the Collectable in the frontCorner
+     * @return a Map with the Collectable in frontCorner
      */
     protected Map<CardCorner, Collectable> getFrontCornerMap(JsonObject card){
-            Map<CardCorner, Collectable> frontCornerMap = new HashMap<>();
+        Map<CardCorner, Collectable> frontCornerMap = new HashMap<>();
         JsonObject frontCorner = card.getAsJsonObject("corners");
         //For each "element" in the frontCorner object
         for (Map.Entry<String, JsonElement> element : frontCorner.entrySet()) {
@@ -74,24 +83,34 @@ public abstract class AbstractCardFactory<Element> {
      * serialize a Queue of card and create the appropriate serialized file
      * @param filename the name of the final file
      * @param queue the queue of card that need to be serialized
-     * @throws IOException if an error occurs during the opening/writing
+     * @throws RuntimeException if an error occurs during the opening/writing
      */
-    public void serializeQueue(String filename, Queue<Element> queue) throws IOException {
-        FileOutputStream fileOut = new FileOutputStream(filename);
-        ObjectOutputStream out = new ObjectOutputStream(fileOut);
-        out.writeObject(queue);
-        out.close();
-        fileOut.close();
+    public void serializeQueue(String filename, Queue<Element> queue){
+        FileOutputStream fileOut;
+        ObjectOutputStream objOut;
+        try {
+            fileOut = new FileOutputStream(filename);
+            objOut = new ObjectOutputStream(fileOut);
+            objOut.writeObject(queue);
+            objOut.close();
+            fileOut.close();
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
     }
 
-    @SuppressWarnings("unchecked")
-    public Queue<Element> deserializeQueue(String filename) throws IOException, ClassNotFoundException{
-        FileInputStream fileIn = new FileInputStream(filename);
-        ObjectInputStream in = new ObjectInputStream(fileIn);
-        Queue<Element> queue = (Queue<Element>) in.readObject();
-        in.close();
-        fileIn.close();
-        System.out.println("Deserialized data from " + filename + ".ser");
+    @SuppressWarnings("unchecked") //The warning are due to the same reason as the CardFactory class
+    public Queue<Element> deserializeQueue(FileInputStream filename){
+        ObjectInputStream objectInputStream;
+        Queue<Element> queue;
+        try {
+            objectInputStream = new ObjectInputStream(filename);
+            queue = (Queue<Element>) objectInputStream.readObject();
+            objectInputStream.close();
+            filename.close();
+        } catch (IOException | ClassNotFoundException e) {
+            throw new RuntimeException(e);
+        }
         return queue;
     }
 }
