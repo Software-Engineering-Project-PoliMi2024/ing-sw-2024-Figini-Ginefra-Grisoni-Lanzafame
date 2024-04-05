@@ -11,5 +11,4 @@ public abstract class View {
     void clearActions(){}
     void clearVisualizations(){}
     void render(){}
-
 }
