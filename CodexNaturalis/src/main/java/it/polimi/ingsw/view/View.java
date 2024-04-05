@@ -11,5 +11,9 @@ public abstract class View {
     void clearActions(){}
     void clearVisualizations(){}
     void render(){}
-
+    void addActions(List<Action> actions){}
+    void addVisualizations(List<Visualization> visualizations){}
+    void removeAction(List<Action> actions){}
+    void removeVisualization(List<Visualization> visualizations){
+    }
 }
