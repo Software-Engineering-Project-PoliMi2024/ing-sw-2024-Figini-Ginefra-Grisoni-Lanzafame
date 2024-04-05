@@ -1,7 +1,7 @@
 package it.polimi.ingsw.view;
 
 import it.polimi.ingsw.view.Action;
-import it.polimi.ingsw.view.stateMachine.Visualization;
+import it.polimi.ingsw.view.Visualization;
 
 import java.util.List;
 

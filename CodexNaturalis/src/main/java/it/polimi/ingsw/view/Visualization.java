@@ -12,5 +12,6 @@ public enum Visualization {
     SHOW_LOG,
     DRAW_FORM,
     PLACEMENT_FORM,
-    POST_GAME_VIEW
+    POST_GAME_VIEW,
+    SHOW_HAND
 }

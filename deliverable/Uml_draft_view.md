@@ -23,8 +23,6 @@ classDiagram
 
 
     Action <|-- Connect
-    Action <|-- PlaceCard
-    Action <|-- ChooseDraw
     Action <|-- GoTo
     Action <|-- JoinGame
     Action <|-- LeaveLobby
@@ -32,6 +30,8 @@ classDiagram
     Action <|-- SelectStartCardFace
     Action <|-- Peek
     Action <|-- SelectObjective
+    Action <|-- PlaceCard
+    Action <|-- ChooseDraw
 
     GoTo --> ViewState : target
 
@@ -99,15 +99,16 @@ classDiagram
     class PostGameState{
 
     }
-    note for PlaceCardState "ACTIONS: GoTo(JoinGameState)"
-    note for PlaceCardState "VISUALIZATIONS: PostGameView"
+    note for PostGameState "ACTIONS: GoTo(JoinGameState)"
+    note for PostGameState "VISUALIZATIONS: PostGameView"
 
 
     class View{
         <<Abstract>>
-        +displayCodex()
         +clearActions()
         +clearVisualizations()
+        +addActions(List<Action>)
+        +addVisualizations(List<Visualization>)
         +render()
     }
 
@@ -135,11 +136,12 @@ classDiagram
         SHOW_START_CARD
         SHOW_DECK
         SHOW_CODEX
-        PEEK_FROM
+        PEEK_FORM
         SHOW_LOG
         DRAW_FORM
         PLACEMENT_FORM
         POST_GAME_VIEW
+        SHOW_HAND
     }
 
     class Action{

@@ -11,8 +11,8 @@ import java.util.Arrays;
 import java.util.List;
 
 public class ChooseStartCardState extends ViewState{
-    static final List<Action> actions = Arrays.asList(new SelectCardFace(), new Peek());
-    static final List<Visualization> visualizations = Arrays.asList(Visualization.SHOW_START_CARD, Visualization.SHOW_CODEX, Visualization.SHOW_DECK, Visualization.PEEK_FORM);
+    static final List<Action> actions = List.of(new SelectCardFace(), new Peek());
+    static final List<Visualization> visualizations = List.of(Visualization.SHOW_START_CARD, Visualization.SHOW_CODEX, Visualization.SHOW_DECK, Visualization.PEEK_FORM);
     public static void run(View view) {
         view.clearVisualizations();
         view.clearActions();
