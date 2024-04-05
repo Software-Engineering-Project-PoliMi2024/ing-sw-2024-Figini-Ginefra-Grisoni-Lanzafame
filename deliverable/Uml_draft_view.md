@@ -131,6 +131,8 @@ classDiagram
         CONNECT_FORM
         GAME_LIST
         SHOW_LOBBY
+        SHOW_HAND
+        SHOW_OBJECTIVE_OPTIONS
         CREATE_GAME_FORM
         SHOW_START_CARD
         SHOW_DECK

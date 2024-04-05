@@ -21,3 +21,4 @@ public class ChooseStartCardState extends ViewState{
 
     }
 }
+
