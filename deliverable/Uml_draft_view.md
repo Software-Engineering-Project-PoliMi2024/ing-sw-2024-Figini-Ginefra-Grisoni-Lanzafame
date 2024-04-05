@@ -23,6 +23,8 @@ classDiagram
 
 
     Action <|-- Connect
+    Action <|-- PlaceCard
+    Action <|-- ChooseDraw
     Action <|-- GoTo
     Action <|-- JoinGame
     Action <|-- LeaveLobby
