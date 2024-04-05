@@ -15,8 +15,6 @@ public class CreateGameState extends ViewState{
     static final List<Action> actions = List.of(new GoTo(), new JoinGame());
     static final List<Visualization> visualizations = List.of(Visualization.CREATE_GAME_FORM);
     public static void run(View view) {
-        view.clearVisualizations();
-        view.clearActions();
         view.setVisualizations(visualizations);
         view.setActions(actions);
 
