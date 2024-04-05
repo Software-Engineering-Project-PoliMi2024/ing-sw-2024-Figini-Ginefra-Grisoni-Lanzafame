@@ -1,7 +1,8 @@
-package it.polimi.ingsw.view.stateMachine;
+package it.polimi.ingsw.view;
+
+import java.util.List;
 
 public abstract class View {
-    public void displayCodex(){}
     void clearActions(){}
     void clearVisualizations(){}
     void render(){}
