@@ -1,4 +1,4 @@
-package it.polimi.ingsw.view.stateMachine;
+package it.polimi.ingsw.view;
 
 public enum Visualization {
     CONNECT_FORM,
@@ -8,7 +8,7 @@ public enum Visualization {
     SHOW_START_CARD,
     SHOW_DECK,
     SHOW_CODEX,
-    PEEK_FROM,
+    PEEK_FORM,
     SHOW_LOG,
     DRAW_FORM,
     PLACEMENT_FORM,

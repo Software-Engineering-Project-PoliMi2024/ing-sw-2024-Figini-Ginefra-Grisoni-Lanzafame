@@ -8,12 +8,11 @@ import java.util.List;
 public abstract class View {
     List<Visualization> visualizations;
     List<Action> actions;
-    void clearActions(){}
-    void clearVisualizations(){}
-    void render(){}
-    void addActions(List<Action> actions){}
-    void addVisualizations(List<Visualization> visualizations){}
-    void removeAction(List<Action> actions){}
-    void removeVisualization(List<Visualization> visualizations){
-    }
+    public void clearActions(){}
+    public void clearVisualizations(){}
+    public void render(){}
+    /**@param actions the list of action to add to the view*/
+    public void setActions(List<Action> actions){}
+    /**@param  visualizations the list of visualizations to add to the view*/
+    public void setVisualizations(List<Visualization> visualizations){}
 }
