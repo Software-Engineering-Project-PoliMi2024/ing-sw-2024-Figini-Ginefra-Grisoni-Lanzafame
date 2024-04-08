@@ -1,11 +1,8 @@
 package it.polimi.ingsw.controller.socket.messages.serverMessages.answerMessages;
 
-import it.polimi.ingsw.controller.socket.client.ServerHandler;
-import it.polimi.ingsw.controller.socket.messages.NetworkMessage;
 import it.polimi.ingsw.controller.socket.messages.actionMessages.ActionMsg;
 import it.polimi.ingsw.controller.socket.messages.serverMessages.ServerMsg;
 
-import java.io.IOException;
 import java.util.UUID;
 
 public abstract class AnswerMsg extends ServerMsg {

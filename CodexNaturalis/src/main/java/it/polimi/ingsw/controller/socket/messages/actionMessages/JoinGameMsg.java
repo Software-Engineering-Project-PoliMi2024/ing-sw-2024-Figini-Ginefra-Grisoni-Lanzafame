@@ -2,8 +2,7 @@ package it.polimi.ingsw.controller.socket.messages.actionMessages;
 
 import it.polimi.ingsw.controller.socket.messages.serverMessages.answerMessages.JoinGameAnswerMsg;
 import it.polimi.ingsw.controller.socket.messages.serverMessages.notificationMessages.JoinGameNotificationMsg;
-import it.polimi.ingsw.controller.socket.server.ClientHandler;
-import it.polimi.ingsw.designPatterns.Observer.Observer;
+import it.polimi.ingsw.controller.socket.server.SocketClientHandler;
 import it.polimi.ingsw.model.playerReleted.User;
 import it.polimi.ingsw.model.tableReleted.FullMatchException;
 import it.polimi.ingsw.model.tableReleted.Game;
@@ -27,25 +26,27 @@ public class JoinGameMsg extends ActionMsg{
     }
 
     @Override
-    public void processMessage(ClientHandler clientHandler) throws IOException {
-        User user = new User(nickname);
+    public void processMessage(SocketClientHandler socketClientHandler) throws IOException {
         try{
-            Game targetGame = clientHandler.getGames().stream().filter(game -> game.getName().equals(gameName)).findFirst().orElse(null);
-            clientHandler.setGame(targetGame);
-            clientHandler.getGame().getGameParty().addUser(user);
+            Game targetGame = socketClientHandler.getGames().getGame(gameName);
 
-            final String joiningNickname = nickname;
+            if(targetGame == null){
+                System.out.println("Game " + gameName + " not found.");
+                socketClientHandler.sendServerMessage(new JoinGameAnswerMsg(this, gameName, JoinGameAnswerMsg.Status.ERROR));
+                return;
+            }
 
-            clientHandler.getGame().getGameParty().notifyObservers();
+            socketClientHandler.setGame(targetGame);
+            socketClientHandler.getGame().getGameParty().addUser(socketClientHandler.getUser());
 
-            clientHandler.getGame().getGameParty().attach(clientHandler);
+            socketClientHandler.getGame().getGameParty().notifyObservers(new JoinGameNotificationMsg(nickname));
+
+            socketClientHandler.getGame().getGameParty().attach(socketClientHandler);
 
             System.out.println("User " + nickname + " joined game " + gameName);
-            System.out.println("Active Players:" + clientHandler.getGame().getGameParty().getUsersList().stream().map(User::getNickname).reduce("", (a, b) -> a + " " + b));
+            System.out.println("Active Players:" + socketClientHandler.getGame().getGameParty().getUsersList().stream().map(User::getNickname).reduce("", (a, b) -> a + " " + b));
 
-            clientHandler.setUser(user);
-
-            clientHandler.sendServerMessage(new JoinGameAnswerMsg(this, gameName));
+            socketClientHandler.sendServerMessage(new JoinGameAnswerMsg(this, gameName, JoinGameAnswerMsg.Status.OK));
 
         } catch (FullMatchException e) {
             e.printStackTrace();

@@ -11,14 +11,16 @@ import java.net.Socket;
 import java.util.Scanner;
 import java.util.concurrent.atomic.AtomicBoolean;
 
-public class ServerHandler implements Runnable{
+public class SocketServerHandler implements Runnable{
     private Socket server;
     private ObjectOutputStream output;
     private ObjectInputStream input;
-    private Client owner;
+    private SocketClient owner;
     private AtomicBoolean shouldStop = new AtomicBoolean(false);
 
     private String nickname;
+
+    private boolean ready = false;
 
 
     /**
@@ -26,10 +28,11 @@ public class ServerHandler implements Runnable{
      * a server.
      * @param server The socket connection to the server.
      */
-    ServerHandler(Socket server, Client owner)
+    public SocketServerHandler(Socket server, SocketClient owner, String nickname)
     {
         this.server = server;
         this.owner = owner;
+        this.nickname = nickname;
     }
 
 
@@ -42,6 +45,7 @@ public class ServerHandler implements Runnable{
         try {
             output = new ObjectOutputStream(server.getOutputStream());
             input = new ObjectInputStream(server.getInputStream());
+            ready = true;
         } catch (IOException e) {
             System.out.println("could not open connection to " + server.getInetAddress());
             owner.terminate();
@@ -73,11 +77,6 @@ public class ServerHandler implements Runnable{
     {
         try {
             boolean stop = false;
-            Scanner scanner = new Scanner(System.in);
-            System.out.println("Choose a nickname: ");
-            this.nickname = scanner.nextLine();
-
-            sendActionMessage(new GetActiveGameListActionMsg());
 
             while (!stop) {
 
@@ -115,9 +114,13 @@ public class ServerHandler implements Runnable{
      * The game instance associated with this client.
      * @return The game instance.
      */
-    public Client getClient()
+    public SocketClient getClient()
     {
         return owner;
+    }
+
+    public boolean isReady() {
+        return ready;
     }
 
 

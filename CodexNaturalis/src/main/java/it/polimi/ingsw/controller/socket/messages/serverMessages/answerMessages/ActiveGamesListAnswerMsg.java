@@ -1,6 +1,6 @@
 package it.polimi.ingsw.controller.socket.messages.serverMessages.answerMessages;
 
-import it.polimi.ingsw.controller.socket.client.ServerHandler;
+import it.polimi.ingsw.controller.socket.client.SocketServerHandler;
 import it.polimi.ingsw.controller.socket.messages.actionMessages.ActionMsg;
 import it.polimi.ingsw.controller.socket.messages.actionMessages.CreateGameMsg;
 import it.polimi.ingsw.controller.socket.messages.actionMessages.JoinGameMsg;
@@ -19,23 +19,30 @@ public class ActiveGamesListAnswerMsg extends AnswerMsg{
     }
 
     @Override
-    public void processMessage(ServerHandler serverHandler) throws IOException {
+    public void processMessage(SocketServerHandler socketServerHandler) throws IOException {
         System.out.println("Active games: " + Arrays.toString(games));
 
-        Scanner scanner = new Scanner(System.in);
+        //View Update
 
-        if(games.length == 0) {
-            ActionMsg createGameMsg = new CreateGameMsg("game1", 2);
-            System.out.println("No active games. Creating One");
-            serverHandler.sendActionMessage(createGameMsg);
-        }
-        else {
-            //Read the nickname and the chosen game
-            System.out.println("Choose a game to join: ");
+        System.out.println("Do you want to create a game? (y/n)");
+        Scanner scanner = new Scanner(System.in);
+        String answer = scanner.nextLine();
+
+        if(answer.equals("y")) {
+            System.out.println("Choose a name for the game:");
             String gameName = scanner.nextLine();
 
-            //Send the join game message
-            serverHandler.sendActionMessage(new JoinGameMsg(gameName, serverHandler.getNickname()));
+            System.out.println("How many players?");
+            int players = scanner.nextInt();
+
+            socketServerHandler.sendActionMessage(new CreateGameMsg(gameName, players));
+            return;
         }
+
+        System.out.println("Choose a game to join:");
+        String gameName = scanner.nextLine();
+
+        socketServerHandler.sendActionMessage(new JoinGameMsg(gameName, socketServerHandler.getNickname()));
+
     }
 }

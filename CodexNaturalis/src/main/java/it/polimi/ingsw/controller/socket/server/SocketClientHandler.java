@@ -1,11 +1,10 @@
 package it.polimi.ingsw.controller.socket.server;
 
 import it.polimi.ingsw.controller.socket.messages.actionMessages.ActionMsg;
+import it.polimi.ingsw.controller.socket.messages.observers.ServerMsgObserved;
+import it.polimi.ingsw.controller.socket.messages.observers.ServerMsgObserver;
 import it.polimi.ingsw.controller.socket.messages.serverMessages.ServerMsg;
-import it.polimi.ingsw.controller.socket.messages.serverMessages.answerMessages.AnswerMsg;
-import it.polimi.ingsw.controller.socket.messages.serverMessages.notificationMessages.GamePartyNotificationMsg;
-import it.polimi.ingsw.controller.socket.messages.serverMessages.notificationMessages.JoinGameNotificationMsg;
-import it.polimi.ingsw.designPatterns.Observer.Observer;
+import it.polimi.ingsw.model.MultiGame;
 import it.polimi.ingsw.model.playerReleted.User;
 import it.polimi.ingsw.model.tableReleted.Game;
 
@@ -13,18 +12,14 @@ import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.net.Socket;
-import java.util.List;
-import java.util.function.Function;
 
-public class ClientHandler implements Runnable, Observer {
+public class SocketClientHandler implements Runnable, ServerMsgObserver {
     private Socket client;
     private ObjectOutputStream output;
     private ObjectInputStream input;
     private Game game;
-
     private User user;
-
-    private List<Game> games;
+    private MultiGame games;
 
 
     /**
@@ -32,16 +27,16 @@ public class ClientHandler implements Runnable, Observer {
      * a client.
      * @param client The socket connection to the client.
      */
-    ClientHandler(Socket client, List<Game> games)
+    SocketClientHandler(Socket client, MultiGame games)
     {
         this.client = client;
         this.games = games;
     }
 
 
-    public void update(){
+    public void update(ServerMsg serverMsg) {
         try {
-            sendServerMessage(new GamePartyNotificationMsg(this.game.getGameParty().getUsersList().stream().map(User::getNickname).toArray(String[]::new)));
+            sendServerMessage(serverMsg);
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
@@ -86,8 +81,16 @@ public class ClientHandler implements Runnable, Observer {
             while (true) {
                 /* read commands from the client, process them, and send replies */
                 Object next = input.readObject();
-                ActionMsg command = (ActionMsg)next;
-                command.processMessage(this);
+                ActionMsg command = (ActionMsg) next;
+
+                Thread thread = new Thread(() -> {
+                    try {
+                        command.processMessage(this);
+                    } catch (IOException e) {
+                        throw new RuntimeException(e);
+                    }
+                });
+                thread.start();
             }
         } catch (ClassNotFoundException | ClassCastException e) {
             System.out.println("invalid stream from client");
@@ -104,14 +107,13 @@ public class ClientHandler implements Runnable, Observer {
         return game;
     }
 
-    public void addGame(Game game)
-    {
-        games.add(game);
-    }
-
     public void setGame(Game game)
     {
         this.game = game;
+    }
+
+    public MultiGame getGames(){
+        return games;
     }
 
     public User getUser()
@@ -124,10 +126,6 @@ public class ClientHandler implements Runnable, Observer {
         this.user = user;
     }
 
-    public List<Game> getGames()
-    {
-        return games;
-    }
 
     /**
      * Sends a message to the client.

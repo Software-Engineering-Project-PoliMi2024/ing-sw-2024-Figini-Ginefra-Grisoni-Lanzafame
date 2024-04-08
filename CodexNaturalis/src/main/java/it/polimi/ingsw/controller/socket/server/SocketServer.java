@@ -1,5 +1,6 @@
 package it.polimi.ingsw.controller.socket.server;
 
+import it.polimi.ingsw.model.MultiGame;
 import it.polimi.ingsw.model.tableReleted.Game;
 
 import java.io.IOException;
@@ -9,37 +10,40 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
-public class Server {
+public class SocketServer implements Runnable{
     /**
      * The socket port where the server listens to client connections.
      * @implNote In a real project, this must not be a constant!
      */
-    public final static int SOCKET_PORT = 7777;
-    private static final List<Game> games = Collections.synchronizedList(new ArrayList<>());
+    private final MultiGame games;
 
+    public SocketServer(MultiGame games)
+    {
+        this.games = games;
+    }
 
-    public static void main(String[] args)
+    public void run()
     {
         ServerSocket socket;
 
         try {
-            socket = new ServerSocket(SOCKET_PORT);
+            socket = new ServerSocket(4444);
+
         } catch (IOException e) {
             System.out.println("cannot open server socket");
             System.exit(1);
             return;
         }
 
-        System.out.println("Server started");
-        System.out.println("Accepting connections on port " + SOCKET_PORT + "...");
+        System.out.println("Socket Server started on port " + socket.getLocalPort() + "🚔!");
 
         while (true) {
             try {
                 /* accepts connections; for every connection we accept,
                  * create a new Thread executing a ClientHandler */
                 Socket client = socket.accept();
-                ClientHandler clientHandler = new ClientHandler(client, Server.games);
-                Thread thread = new Thread(clientHandler, "server_" + client.getInetAddress());
+                SocketClientHandler socketClientHandler = new SocketClientHandler(client, games);
+                Thread thread = new Thread(socketClientHandler, "sokcetServer_" + client.getInetAddress());
                 thread.start();
             } catch (IOException e) {
                 System.out.println("connection dropped");

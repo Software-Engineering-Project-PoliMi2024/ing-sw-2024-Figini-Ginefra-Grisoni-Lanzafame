@@ -1,6 +1,6 @@
 package it.polimi.ingsw.controller.socket.messages.serverMessages.answerMessages;
 
-import it.polimi.ingsw.controller.socket.client.ServerHandler;
+import it.polimi.ingsw.controller.socket.client.SocketServerHandler;
 import it.polimi.ingsw.controller.socket.messages.actionMessages.ActionMsg;
 import it.polimi.ingsw.controller.socket.messages.actionMessages.GetActiveGameListActionMsg;
 
@@ -13,9 +13,9 @@ public class LeaveLobbyAnswerMessage extends AnswerMsg{
     }
 
     @Override
-    public void processMessage(ServerHandler serverHandler) throws IOException {
+    public void processMessage(SocketServerHandler socketServerHandler) throws IOException {
         System.out.println("Leaving lobby");
 
-        serverHandler.sendActionMessage(new GetActiveGameListActionMsg());
+        socketServerHandler.sendActionMessage(new GetActiveGameListActionMsg());
     }
 }

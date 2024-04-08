@@ -1,5 +1,8 @@
 package it.polimi.ingsw.model.tableReleted;
 
+import it.polimi.ingsw.controller.socket.messages.observers.ServerMsgObserved;
+import it.polimi.ingsw.controller.socket.messages.observers.ServerMsgObserver;
+import it.polimi.ingsw.controller.socket.messages.serverMessages.ServerMsg;
 import it.polimi.ingsw.designPatterns.Observer.Observed;
 import it.polimi.ingsw.designPatterns.Observer.Observer;
 import it.polimi.ingsw.model.playerReleted.User;
@@ -9,8 +12,8 @@ import java.util.Collections;
 import java.util.List;
 import java.util.function.Function;
 
-public class GameParty implements Observed {
-    final List<Observer> observers = new ArrayList<>();
+public class GameParty implements ServerMsgObserved {
+    final List<ServerMsgObserver> observers = new ArrayList<>();
     final private List<User> usersList; //played by
     private User currentPlayer;
 
@@ -108,17 +111,17 @@ public class GameParty implements Observed {
     }
 
 
-    public void attach(Observer observer){
+    public void attach(ServerMsgObserver observer){
         observers.add(observer);
     }
 
-    public void detach(Observer observer){
+    public void detach(ServerMsgObserver observer){
         observers.remove(observer);
     }
 
-    public void notifyObservers(){
-        for(Observer observer : observers){
-            observer.update();
+    public void notifyObservers(ServerMsg serverMsg){
+        for(ServerMsgObserver observer : observers){
+            observer.update(serverMsg);
         }
     }
 }

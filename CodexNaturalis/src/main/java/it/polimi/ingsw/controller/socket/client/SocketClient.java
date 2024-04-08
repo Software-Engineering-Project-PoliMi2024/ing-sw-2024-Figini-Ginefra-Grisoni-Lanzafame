@@ -1,45 +1,44 @@
 package it.polimi.ingsw.controller.socket.client;
 
-import it.polimi.ingsw.controller.socket.server.Server;
-
 import java.io.IOException;
 import java.net.Socket;
-import java.util.Scanner;
 
-public class Client implements Runnable{
-    private ServerHandler serverHandler;
+public class SocketClient implements Runnable{
+    private SocketServerHandler socketServerHandler;
     private boolean shallTerminate;
 
+    private String ip;
+    private int port;
+    private String nickname;
 
-    public static void main(String[] args)
+    public SocketClient(String ip, int port, String nickname)
     {
-        /* Instantiate a new Client. The main thread will become the
-         * thread where user interaction is handled. */
-        Client client = new Client();
-        client.run();
+        super();
+        this.ip = ip;
+        this.port = port;
+        this.nickname = nickname;
     }
-
 
     @Override
     public void run()
     {
-        Scanner scanner = new Scanner(System.in);
-
-        System.out.println("IP address of server?");
-        String ip = scanner.nextLine();
-
         /* Open connection to the server and start a thread for handling
          * communication. */
         Socket server;
+
         try {
-            server = new Socket(ip, Server.SOCKET_PORT);
+            server = new Socket(ip, port);
+
         } catch (IOException e) {
             System.out.println("server unreachable");
             return;
         }
-        serverHandler = new ServerHandler(server, this);
-        Thread serverHandlerThread = new Thread(serverHandler, "server_" + server.getInetAddress().getHostAddress());
+
+        socketServerHandler = new SocketServerHandler(server, this, nickname);
+        Thread serverHandlerThread = new Thread(socketServerHandler, "server_" + server.getInetAddress().getHostAddress());
         serverHandlerThread.start();
+
+
 
         /* We are going to stop the application, so ask the server thread
          * to stop as well. Note that we are invoking the stop() method on
@@ -52,7 +51,7 @@ public class Client implements Runnable{
                 e.printStackTrace();
             }
         }
-        serverHandler.stop();
+        socketServerHandler.stop();
     }
 
 
@@ -60,13 +59,10 @@ public class Client implements Runnable{
      * The handler object responsible for communicating with the server.
      * @return The server handler.
      */
-    public ServerHandler getServerHandler()
+    public SocketServerHandler getServerHandler()
     {
-        return serverHandler;
+        return socketServerHandler;
     }
-
-
-
 
     /**
      * Terminates the application as soon as possible.

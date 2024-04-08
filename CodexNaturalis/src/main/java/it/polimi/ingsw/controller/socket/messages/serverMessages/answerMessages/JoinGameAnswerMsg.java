@@ -1,24 +1,47 @@
 package it.polimi.ingsw.controller.socket.messages.serverMessages.answerMessages;
 
-import it.polimi.ingsw.controller.socket.client.ServerHandler;
+import it.polimi.ingsw.controller.socket.client.SocketServerHandler;
 import it.polimi.ingsw.controller.socket.messages.actionMessages.ActionMsg;
-import it.polimi.ingsw.controller.socket.messages.actionMessages.GetActiveGameListActionMsg;
 import it.polimi.ingsw.controller.socket.messages.actionMessages.LeaveLobbyMsg;
 
 import java.io.IOException;
 import java.util.Scanner;
 
 public class JoinGameAnswerMsg extends AnswerMsg{
-    private final String gameName;
 
-    public JoinGameAnswerMsg(ActionMsg parent, String gameName)
+    public enum Status {
+        OK,
+        ERROR
+    }
+
+    private final String gameName;
+    private final Status status;
+
+    public JoinGameAnswerMsg(ActionMsg parent, String gameName, Status status)
+
     {
         super(parent);
         this.gameName = gameName;
+        this.status = status;
+    }
+
+    public String getGameName()
+    {
+        return this.gameName;
+    }
+
+    public Status getStatus()
+    {
+        return this.status;
     }
 
     @Override
-    public void processMessage(ServerHandler serverHandler) throws IOException {
+    public void processMessage(SocketServerHandler socketServerHandler) throws IOException {
+        if(status == Status.ERROR) {
+            System.out.println("Game " + gameName + " not found.");
+            return;
+        }
+
         System.out.println("Joined game: " + gameName);
 
         Scanner scanner = new Scanner(System.in);
@@ -26,7 +49,7 @@ public class JoinGameAnswerMsg extends AnswerMsg{
 
         String answer = scanner.nextLine();
         if(answer.equals("y")) {
-            serverHandler.sendActionMessage(new LeaveLobbyMsg());
+            socketServerHandler.sendActionMessage(new LeaveLobbyMsg());
         }
     }
 }

@@ -1,6 +1,6 @@
 package it.polimi.ingsw.controller.socket.messages.serverMessages.notificationMessages;
 
-import it.polimi.ingsw.controller.socket.client.ServerHandler;
+import it.polimi.ingsw.controller.socket.client.SocketServerHandler;
 import it.polimi.ingsw.controller.socket.messages.serverMessages.ServerMsg;
 
 public class JoinGameNotificationMsg extends ServerMsg {
@@ -15,7 +15,7 @@ public class JoinGameNotificationMsg extends ServerMsg {
     }
 
     @Override
-    public void processMessage(ServerHandler serverHandler) {
+    public void processMessage(SocketServerHandler socketServerHandler) {
         System.out.println(this.nickname + " joined the game. HERE");
     }
 }
