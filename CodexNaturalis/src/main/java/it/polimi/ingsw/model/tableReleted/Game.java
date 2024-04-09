@@ -28,6 +28,7 @@ public class Game{
     public Game(String name, int numberOfMaxPlayer) {
         this.name = name;
         this.gameParty = new GameParty(numberOfMaxPlayer);
+
         CardFactory cardFactory = new CardFactory( "../cards.json");
         objectiveCardDeck =
                 new Deck<>(0, cardFactory.getFactoryOf(ObjectiveCard.class).getCards());

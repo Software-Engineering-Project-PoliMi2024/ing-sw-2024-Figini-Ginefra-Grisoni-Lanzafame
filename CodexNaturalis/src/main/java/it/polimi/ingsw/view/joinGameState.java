@@ -1,4 +1,7 @@
 package it.polimi.ingsw.view;
 
-public class joinGameState {
+import it.polimi.ingsw.view.States.viewState;
+
+public class joinGameState extends viewState {
+
 }
