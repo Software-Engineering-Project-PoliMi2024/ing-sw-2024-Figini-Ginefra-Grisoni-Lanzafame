@@ -1,6 +1,5 @@
 package it.polimi.ingsw;
 
-import it.polimi.ingsw.controller.ModelController;
 import it.polimi.ingsw.controller.socket.server.SocketServer;
 import it.polimi.ingsw.model.MultiGame;
 

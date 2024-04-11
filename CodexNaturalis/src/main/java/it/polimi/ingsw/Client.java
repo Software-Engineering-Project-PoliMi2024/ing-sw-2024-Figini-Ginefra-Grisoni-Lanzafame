@@ -1,13 +1,13 @@
 package it.polimi.ingsw;
 
-import it.polimi.ingsw.controller.ViewController;
-import it.polimi.ingsw.controller.socket.SocketViewController;
+import it.polimi.ingsw.controller.Controller;
+import it.polimi.ingsw.controller.socket.SocketController;
 
 import java.util.Scanner;
 
 public class Client {
     public static void main(String[] args) {
-        ViewController viewController;
+        Controller controller;
 
         System.out.println("Hi there 👋!");
         System.out.println("Which interface would you prefer?");
@@ -44,13 +44,13 @@ public class Client {
 
         if (choice == 0) {
             System.out.println("You chose the Socket protocol!");
-            viewController = new SocketViewController();
+            controller = new SocketController();
             //TODO: View stuff
 
             System.out.println("Please enter your nickname:");
             String nickname = scanner.next();
 
-            viewController.connect("0.0.0.0", 4444, nickname);
+            controller.connect("0.0.0.0", 4444, nickname);
         } else{
             System.out.println("You chose the RMI protocol!");
         }
