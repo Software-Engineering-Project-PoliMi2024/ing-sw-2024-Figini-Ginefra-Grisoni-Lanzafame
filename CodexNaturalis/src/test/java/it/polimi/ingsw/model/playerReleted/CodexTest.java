@@ -26,4 +26,14 @@ class CodexTest {
 
     }
 
+
+    /*void savePlacementHistory() {
+        Codex codex = new Codex();
+        System.out.println(codex.toString());
+        try {
+            codex.savePlacementHistory("./codexserialized.txt");
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }*/
 }
