@@ -30,7 +30,7 @@ public class StartCardFactory extends AbstractCardFactory<StartCard>{
      */
     @Override
     public Queue<StartCard> getCards() {
-        String fileSerializedName = "StartCards.bin";
+        String fileSerializedName = "CodexNaturalis/Cards/StartCards.bin";
         FileInputStream file;
         try { //check if the .bin file exist
             file = new FileInputStream(fileSerializedName);

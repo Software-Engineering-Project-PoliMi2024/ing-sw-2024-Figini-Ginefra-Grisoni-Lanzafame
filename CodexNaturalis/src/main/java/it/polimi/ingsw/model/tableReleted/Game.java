@@ -29,7 +29,7 @@ public class Game{
         this.name = name;
         this.gameParty = new GameParty(numberOfMaxPlayer);
 
-        CardFactory cardFactory = new CardFactory( "cards.json");
+        CardFactory cardFactory = new CardFactory( "CodexNaturalis/Cards/cards.json");
         objectiveCardDeck =
                 new Deck<>(0, cardFactory.getFactoryOf(ObjectiveCard.class).getCards());
         resourceCardDeck =

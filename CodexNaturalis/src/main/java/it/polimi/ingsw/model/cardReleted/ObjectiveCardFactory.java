@@ -36,7 +36,7 @@ public class ObjectiveCardFactory extends AbstractCardFactory<ObjectiveCard>{
      */
     @Override
     public Queue<ObjectiveCard> getCards() {
-        String fileSerializedName = "ObjectiveCards.bin";
+        String fileSerializedName = "CodexNaturalis/Cards/ObjectiveCards.bin";
         FileInputStream file;
         try { //check if the .bin file exist
             file = new FileInputStream(fileSerializedName);

@@ -43,7 +43,7 @@ public class ResourceCardFactory extends AbstractCardFactory<ResourceCard>{
      */
     @Override
     public Queue<ResourceCard> getCards() {
-        String fileSerializedName = "ResourceCards.bin";
+        String fileSerializedName = "CodexNaturalis/Cards/ResourceCards.bin";
         FileInputStream file;
         try { //check if the .bin file exist
             file = new FileInputStream(fileSerializedName);
