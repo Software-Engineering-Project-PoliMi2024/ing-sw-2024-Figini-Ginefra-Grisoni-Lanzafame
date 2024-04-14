@@ -30,8 +30,9 @@ public abstract class CardInHand extends CardWithCorners{
             throw new IllegalArgumentException("corner and face can't be null");
         if ( face == CardFace.BACK )
             return SpecialCollectable.EMPTY;
-        if ( ! this.isCorner(corner, face))
-            throw new IllegalArgumentException("the selected corner is not a corner");
+        if (!this.isCorner(corner, face))
+            return null;
+
         assert this.frontCorners != null;
         return this.frontCorners.get(corner);
     }
@@ -54,20 +55,20 @@ public abstract class CardInHand extends CardWithCorners{
 
     /**
      * gets the permanent resource from the selected face of the chosen card
-     * @param face is one of side of the card either front or back
-     * @return a set of permanent resources from the selected face of the chosen card if the selected face is front there aren't any permanent resources
+     * @param face For the card In hand this parameter is irrelevant
+     * @return A set with the permanent resource of the card
      */
     @Override
     public Set<Resource> getPermanentResources(CardFace face){
         if ( face == null)
             throw new IllegalArgumentException("face can't be null");
-        Set<Resource> temp= new HashSet<Resource>();
-        if ( face == CardFace.FRONT)
-           return temp;
-        temp.add(this.permanentResource);
-        return temp;
+        return new HashSet<>(Set.of(permanentResource));
     }
 
+    /**
+     * checks if the card can be placed
+     * @return true if the card can be placed, false otherwise
+     */
     public boolean canBePlaced(){
         return true;
     }
