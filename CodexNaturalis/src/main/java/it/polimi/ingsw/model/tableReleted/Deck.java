@@ -1,8 +1,9 @@
 package it.polimi.ingsw.model.tableReleted;
 
+import java.io.Serializable;
 import java.util.*;
 
-public class Deck<Element> {
+public class Deck<Element> implements Serializable {
     private final int bufferSize;
     private final Set<Element> buffer;
     private final Queue<Element> actualDeck;

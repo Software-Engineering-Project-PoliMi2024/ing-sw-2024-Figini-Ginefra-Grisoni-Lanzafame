@@ -1,6 +1,8 @@
 package it.polimi.ingsw.model.playerReleted;
 
-public class toManyCardException extends Exception{
+import java.io.Serializable;
+
+public class toManyCardException extends Exception implements Serializable {
     public toManyCardException(String errorMessage){
         super(errorMessage);
     }

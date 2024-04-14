@@ -1,6 +1,7 @@
 package it.polimi.ingsw.model.playerReleted;
 
-import it.polimi.ingsw.model.cardReleted.*;
+import it.polimi.ingsw.model.cardReleted.cards.ObjectiveCard;
+import it.polimi.ingsw.model.cardReleted.utilityEnums.*;
 
 import java.io.*;
 import java.util.*;

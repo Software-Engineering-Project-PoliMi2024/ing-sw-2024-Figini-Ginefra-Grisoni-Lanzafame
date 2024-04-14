@@ -1,6 +1,7 @@
 package it.polimi.ingsw;
 
 import it.polimi.ingsw.controller.Controller;
+import it.polimi.ingsw.controller.RMI.controllerRMI;
 import it.polimi.ingsw.controller.socket.SocketController;
 import it.polimi.ingsw.view.TUI.TUI;
 import it.polimi.ingsw.view.View;
@@ -8,6 +9,7 @@ import it.polimi.ingsw.view.View;
 import java.util.Scanner;
 
 public class Client {
+    private static int port;
     public static void main(String[] args) {
         Controller controller;
         View view;
@@ -27,9 +29,11 @@ public class Client {
         if (choice == 0) {
             System.out.println("You chose the Socket protocol!");
             controller = new SocketController();
+            port = 4444;
         } else{
             System.out.println("You chose the RMI protocol!");
-            controller = null;
+            controller = new controllerRMI();
+            port = 4445;
         }
 
         System.out.println("Great choice! Let's move on! 🎉");
@@ -55,6 +59,6 @@ public class Client {
         System.out.println("Please enter your nickname(This will be done by the view_Connect_From):");
         String nickname = scanner.next();
         System.out.println("Great choice! Let's PLAY! 🎉🎉🎉");
-        controller.connect("0.0.0.0", 4444, nickname, view, controller);
+        controller.connect("0.0.0.0", port, nickname, view, controller);
     }
 }

@@ -1,7 +1,7 @@
 package it.polimi.ingsw.controller;
 
-import it.polimi.ingsw.model.cardReleted.CardFace;
-import it.polimi.ingsw.model.cardReleted.ObjectiveCard;
+import it.polimi.ingsw.model.cardReleted.utilityEnums.CardFace;
+import it.polimi.ingsw.model.cardReleted.cards.ObjectiveCard;
 import it.polimi.ingsw.model.playerReleted.Placement;
 import it.polimi.ingsw.view.View;
 

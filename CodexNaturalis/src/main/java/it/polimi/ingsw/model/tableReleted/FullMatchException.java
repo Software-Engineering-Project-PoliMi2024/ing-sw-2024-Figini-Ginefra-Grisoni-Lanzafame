@@ -1,6 +1,8 @@
 package it.polimi.ingsw.model.tableReleted;
 
-public class FullMatchException extends Exception{
+import java.io.Serializable;
+
+public class FullMatchException extends Exception implements Serializable {
     public FullMatchException(String errorMessage){
         super(errorMessage);
     }

@@ -1,10 +1,12 @@
 package it.polimi.ingsw.model.playerReleted;
 
+import java.io.Serializable;
+
 /**
  * Class representing a position in a 2D space
  * @author Paolo
  */
-public record Position(int x, int y) {
+public record Position(int x, int y) implements Serializable {
     /**
      * Class constructor
      *

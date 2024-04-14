@@ -7,12 +7,13 @@ import it.polimi.ingsw.designPatterns.Observer.Observed;
 import it.polimi.ingsw.designPatterns.Observer.Observer;
 import it.polimi.ingsw.model.playerReleted.User;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.function.Function;
 
-public class GameParty implements ServerMsgObserved {
+public class GameParty implements ServerMsgObserved, Serializable {
     final List<ServerMsgObserver> observers = new ArrayList<>();
     final private List<User> usersList; //played by
     private User currentPlayer;

@@ -1,6 +1,6 @@
 package it.polimi.ingsw.model.playerReleted;
 
-import it.polimi.ingsw.model.cardReleted.CardCorner;
+import it.polimi.ingsw.model.cardReleted.utilityEnums.CardCorner;
 
 import java.io.Serializable;
 import java.util.ArrayList;

@@ -1,10 +1,12 @@
-package it.polimi.ingsw.model.cardReleted;
+package it.polimi.ingsw.model.cardReleted.cards;
+
+import it.polimi.ingsw.model.cardReleted.utilityEnums.*;
 
 import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
 
-public abstract class CardInHand extends CardWithCorners{
+public abstract class CardInHand extends CardWithCorners {
     private final Resource permanentResource;
 
     /**

@@ -18,6 +18,11 @@ package it.polimi.ingsw.model.cardReleted;
 
  * Sorry for the rant but I wasted too many hours working in this classes*/
 
+import it.polimi.ingsw.model.cardReleted.cards.GoldCard;
+import it.polimi.ingsw.model.cardReleted.cards.ObjectiveCard;
+import it.polimi.ingsw.model.cardReleted.cards.ResourceCard;
+import it.polimi.ingsw.model.cardReleted.cards.StartCard;
+
 public record CardFactory(String filePath) {
     /**
      * The constructor of the class

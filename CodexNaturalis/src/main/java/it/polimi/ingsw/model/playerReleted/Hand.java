@@ -1,12 +1,14 @@
 package it.polimi.ingsw.model.playerReleted;
 
-import it.polimi.ingsw.model.cardReleted.CardInHand;
-import it.polimi.ingsw.model.cardReleted.ObjectiveCard;
+import it.polimi.ingsw.model.cardReleted.cards.CardInHand;
+import it.polimi.ingsw.model.cardReleted.cards.ObjectiveCard;
+
+import java.io.Serializable;
 import java.util.HashSet;
 import java.util.Set;
 
 /**The class constructor*/
-public class Hand {
+public class Hand implements Serializable {
     private ObjectiveCard secretObjective;
     final private Set<CardInHand> playableHand;
     public Hand(){

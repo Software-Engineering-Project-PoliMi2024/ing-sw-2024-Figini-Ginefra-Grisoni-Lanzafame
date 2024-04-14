@@ -2,6 +2,7 @@ package it.polimi.ingsw.model.cardReleted;
 
 import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
+import it.polimi.ingsw.model.cardReleted.cards.GoldCard;
 import org.junit.Test;
 import static org.junit.Assert.*;
 

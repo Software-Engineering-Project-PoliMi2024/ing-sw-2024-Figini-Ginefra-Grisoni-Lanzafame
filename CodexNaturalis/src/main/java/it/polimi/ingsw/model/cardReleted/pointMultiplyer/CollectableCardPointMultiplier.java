@@ -1,13 +1,12 @@
-package it.polimi.ingsw.model.cardReleted;
+package it.polimi.ingsw.model.cardReleted.pointMultiplyer;
 
+import it.polimi.ingsw.model.cardReleted.utilityEnums.Collectable;
 import it.polimi.ingsw.model.playerReleted.Codex;
 
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.HashMap;
-import java.util.Map;
 
-public class CollectableCardPointMultiplier implements ObjectiveCardPointMultiplier{
+public class CollectableCardPointMultiplier implements ObjectiveCardPointMultiplier {
     final private HashMap<Collectable, Integer> targets;
 
     /** @param targets HashMap of the collectables that the player has to collect to get the multiplier*/

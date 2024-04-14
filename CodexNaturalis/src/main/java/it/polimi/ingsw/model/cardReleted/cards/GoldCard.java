@@ -1,10 +1,14 @@
-package it.polimi.ingsw.model.cardReleted;
+package it.polimi.ingsw.model.cardReleted.cards;
 
+import it.polimi.ingsw.model.cardReleted.utilityEnums.CardCorner;
+import it.polimi.ingsw.model.cardReleted.utilityEnums.Collectable;
+import it.polimi.ingsw.model.cardReleted.pointMultiplyer.GoldCardPointMultiplier;
+import it.polimi.ingsw.model.cardReleted.utilityEnums.Resource;
 import it.polimi.ingsw.model.playerReleted.Codex;
 
 import java.util.Map;
 
-public class GoldCard extends CardInHand{
+public class GoldCard extends CardInHand {
     final private Map<Resource, Integer> requirements;
     final private GoldCardPointMultiplier multiplier;
 

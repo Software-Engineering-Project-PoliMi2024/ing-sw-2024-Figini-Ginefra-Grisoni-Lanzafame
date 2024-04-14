@@ -2,7 +2,13 @@ package it.polimi.ingsw.model.tableReleted;
 
 
 import it.polimi.ingsw.model.cardReleted.*;
+import it.polimi.ingsw.model.cardReleted.cards.GoldCard;
+import it.polimi.ingsw.model.cardReleted.cards.ObjectiveCard;
+import it.polimi.ingsw.model.cardReleted.cards.ResourceCard;
+import it.polimi.ingsw.model.cardReleted.cards.StartCard;
 import it.polimi.ingsw.model.playerReleted.User;
+
+import java.io.Serializable;
 
 
 /**
@@ -11,7 +17,7 @@ import it.polimi.ingsw.model.playerReleted.User;
  * It contains a reference to all the players who are playing the match
  * and the decks that are being used.
  */
-public class Game{
+public class Game implements Serializable {
 
     final private Deck<ObjectiveCard> objectiveCardDeck;
     final private Deck<ResourceCard> resourceCardDeck;
