@@ -1,8 +1,9 @@
 package it.polimi.ingsw.view.TUI.Renderables;
 
 import it.polimi.ingsw.model.cardReleted.*;
+import it.polimi.ingsw.view.TUI.Renderables.drawables.Drawable;
 
-public class CardRenderable extends Renderable{
+public class CardRenderable extends Drawable {
 
     private final CardWithCorners targetCard;
     private final CardFace face;

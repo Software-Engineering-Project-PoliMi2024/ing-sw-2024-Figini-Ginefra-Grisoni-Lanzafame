@@ -4,7 +4,7 @@ public class EchoRenderable extends Renderable{
     private String input = "";
 
     public EchoRenderable(){
-        super(0, 0);
+        super();
     }
 
     @Override
