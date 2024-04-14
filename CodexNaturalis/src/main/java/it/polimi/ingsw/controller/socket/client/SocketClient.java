@@ -51,8 +51,6 @@ public class SocketClient extends clientImplementation{
         Thread serverHandlerThread = new Thread(socketServerHandler, "server_" + server.getInetAddress().getHostAddress());
         serverHandlerThread.start();
 
-
-
         /* We are going to stop the application, so ask the server thread
          * to stop as well. Note that we are invoking the stop() method on
          * ServerHandler, not on Thread */

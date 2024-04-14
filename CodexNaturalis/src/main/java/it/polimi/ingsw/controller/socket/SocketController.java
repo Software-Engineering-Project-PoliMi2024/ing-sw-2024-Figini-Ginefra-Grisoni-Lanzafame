@@ -2,6 +2,9 @@ package it.polimi.ingsw.controller.socket;
 
 import it.polimi.ingsw.controller.Controller;
 import it.polimi.ingsw.controller.socket.client.SocketClient;
+import it.polimi.ingsw.controller.socket.messages.actionMessages.*;
+import it.polimi.ingsw.model.cardReleted.CardFace;
+import it.polimi.ingsw.model.cardReleted.ObjectiveCard;
 import it.polimi.ingsw.controller.socket.messages.actionMessages.GetActiveGameListActionMsg;
 import it.polimi.ingsw.controller.socket.messages.actionMessages.JoinGameMsg;
 import it.polimi.ingsw.controller.socket.messages.actionMessages.LoginMsg;
@@ -27,8 +30,8 @@ public class SocketController extends Controller {
      * @param ip         the IP address of the server
      * @param port       the socketPort of the server
      * @param nickname   of the User
-     * @param view
-     * @param controller
+     * @param view       set by the Client during the setup
+     * @param controller set by the Client during the setup
      */
     @Override
     public void connect(String ip, int port, String nickname, View view, Controller controller) {
@@ -65,17 +68,17 @@ public class SocketController extends Controller {
 
     @Override
     public void disconnect() {
-
+        socketClient.getServerHandler().sendActionMessage(new DisconnectMsg());
     }
 
     @Override
     public void leaveLobby() {
-
+        socketClient.getServerHandler().sendActionMessage(new LeaveLobbyMsg());
     }
 
     @Override
     public void createGame(String gameName, int maxPlayerCount) {
-
+        socketClient.getServerHandler().sendActionMessage(new CreateGameMsg(gameName, maxPlayerCount));
     }
 
     @Override

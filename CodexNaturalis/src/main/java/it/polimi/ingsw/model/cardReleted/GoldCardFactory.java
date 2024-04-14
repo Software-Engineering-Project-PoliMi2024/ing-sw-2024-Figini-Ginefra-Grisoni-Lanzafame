@@ -40,7 +40,7 @@ public class GoldCardFactory extends AbstractCardFactory<GoldCard>{
      */
     @Override
     public Queue<GoldCard> getCards() {
-        String fileSerializedName = "CodexNaturalis/cards/goldCards.bin";
+        String fileSerializedName = "./cards/goldCards.bin";
         FileInputStream file;
         try { //check if the .bin file exist
             file = new FileInputStream(fileSerializedName);

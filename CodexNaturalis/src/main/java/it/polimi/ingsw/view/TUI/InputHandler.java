@@ -5,6 +5,7 @@ import it.polimi.ingsw.view.TUI.observers.InputObserver;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Scanner;
 
 public class InputHandler implements InputObserved, Runnable {
     private boolean keepGoing = true;
@@ -15,8 +16,9 @@ public class InputHandler implements InputObserved, Runnable {
     }
 
     public void run() {
+        Scanner scanner = new Scanner(System.in);
         while (keepGoing) {
-            String input = System.console().readLine();
+            String input = scanner.nextLine();
             notifyObservers(input);
         }
     }

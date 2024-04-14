@@ -3,14 +3,16 @@ package it.polimi.ingsw.controller.socket.messages.serverMessages.notificationMe
 import it.polimi.ingsw.controller.socket.client.SocketServerHandler;
 import it.polimi.ingsw.controller.socket.messages.serverMessages.ServerMsg;
 
-public class JoinGameNotificationMsg extends ServerMsg {
+
+public class LeaveGameNotificationMsg extends ServerMsg {
+
     private final String nickname;
 
     /**
      * The constructor of the class
-     * @param nickname of the player who is joining
+     * @param nickname of the player who is leaving
      */
-    public JoinGameNotificationMsg(String nickname) {
+    public LeaveGameNotificationMsg(String nickname){
         this.nickname = nickname;
     }
 
@@ -22,12 +24,12 @@ public class JoinGameNotificationMsg extends ServerMsg {
     }
 
     /**
-      * Update the view
-      * @param socketServerHandler who received an answer/notification from the server
+     * Update the view
+     * @param socketServerHandler who received an answer/notification from the server
      */
     @Override
     public void processMessage(SocketServerHandler socketServerHandler) {
         //view.update
-        System.out.println(this.nickname + " joined the game");
+        System.out.println(nickname + " left the game.");
     }
 }
