@@ -2,6 +2,8 @@ package it.polimi.ingsw.controller.socket;
 
 import it.polimi.ingsw.controller.Controller;
 import it.polimi.ingsw.controller.socket.client.SocketClient;
+import it.polimi.ingsw.controller.socket.messages.actionMessages.GetActiveGameListActionMsg;
+import it.polimi.ingsw.controller.socket.messages.actionMessages.JoinGameMsg;
 import it.polimi.ingsw.controller.socket.messages.actionMessages.LoginMsg;
 import it.polimi.ingsw.model.cardReleted.CardFace;
 import it.polimi.ingsw.model.cardReleted.ObjectiveCard;
@@ -17,6 +19,13 @@ public class SocketController extends Controller {
         super();
     }
 
+    /**
+     * Create a new Thread with a socketClient.
+     * Send a LoginMsg to the server
+     * @param ip the IP address of the server
+     * @param port the socketPort of the server
+     * @param nickname of the User
+     */
     @Override
     public void connect(String ip, int port, String nickname) {
         socketClient = new SocketClient(ip, port, nickname);
@@ -36,14 +45,17 @@ public class SocketController extends Controller {
         //Update view composition
     }
 
+    /**
+     * Send a GetActiveGameListActionMsg to the server
+     */
     @Override
     public void getActiveGameList() {
-
+        socketClient.getServerHandler().sendActionMessage(new GetActiveGameListActionMsg());
     }
 
     @Override
-    public void joinGame(String gameName) {
-
+    public void joinGame(String gameName, String nickname) {
+        socketClient.getServerHandler().sendActionMessage(new JoinGameMsg(gameName, nickname));
     }
 
     @Override

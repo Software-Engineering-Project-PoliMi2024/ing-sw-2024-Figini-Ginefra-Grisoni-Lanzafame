@@ -11,7 +11,6 @@ public class Client {
     public static void main(String[] args) {
         Controller controller;
         View view;
-
         System.out.println("Hi there 👋!");
         System.out.println("Which communication protocol do you fancy today?🎩");
         System.out.println("   [0] Socket");

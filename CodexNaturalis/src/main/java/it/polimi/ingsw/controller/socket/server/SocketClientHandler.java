@@ -102,7 +102,7 @@ public class SocketClientHandler implements Runnable, ServerMsgObserver {
 
 
     /**
-     * The game instance associated with this client.
+     * The game instance associated with this clientHandler.
      * @return The game instance.
      */
     public Game getGame()

@@ -8,7 +8,7 @@ import it.polimi.ingsw.model.playerReleted.Placement;
 public abstract class Controller {
     public abstract void connect(String ip, int port, String nickname);
     public abstract void getActiveGameList();
-    public abstract void joinGame(String gameName);
+    public abstract void joinGame(String gameName, String nickname);
     public abstract void disconnect();
     public abstract void leaveLobby();
     public abstract void createGame(String gameName, int maxPlayerCount);

@@ -110,9 +110,8 @@ public class SocketServerHandler implements Runnable{
     }
 
 
-    /**
-     * The game instance associated with this client.
-     * @return The game instance.
+    /**.
+     * @return The socketClient bound to this socketServer.
      */
     public SocketClient getClient()
     {
