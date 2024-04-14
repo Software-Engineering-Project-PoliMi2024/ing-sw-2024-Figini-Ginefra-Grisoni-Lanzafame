@@ -1,4 +1,4 @@
-package it.polimi.ingsw.view.TUI;
+package it.polimi.ingsw.view.TUI.Renderables;
 
 import it.polimi.ingsw.view.TUI.observers.InputObserver;
 
