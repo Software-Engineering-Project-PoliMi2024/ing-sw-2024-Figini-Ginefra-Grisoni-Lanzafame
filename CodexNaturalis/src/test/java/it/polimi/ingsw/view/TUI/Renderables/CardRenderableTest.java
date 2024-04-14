@@ -1,6 +1,6 @@
 package it.polimi.ingsw.view.TUI.Renderables;
 
-import it.polimi.ingsw.model.cardReleted.CardFace;
+import it.polimi.ingsw.model.cardReleted.utilityEnums.CardFace;
 import it.polimi.ingsw.model.tableReleted.Game;
 import it.polimi.ingsw.view.TUI.Renderables.drawables.CardRenderable;
 import org.junit.jupiter.api.Test;
