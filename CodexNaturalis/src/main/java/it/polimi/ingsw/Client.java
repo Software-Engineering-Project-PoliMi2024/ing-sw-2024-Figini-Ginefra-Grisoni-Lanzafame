@@ -33,6 +33,8 @@ public class Client {
             controller = null;
         }
 
+        System.out.println("Great choice! Let's move on! 🎉");
+
         System.out.println("Which interface would you prefer?");
         System.out.println("   [0] Textual");
         System.out.println("   [1] Graphical");
@@ -51,5 +53,9 @@ public class Client {
             view = null;
         }
         //view.transitionTo(CONNECT_FORM);
+        System.out.println("Please enter your nickname(This will be done by the view_Connect_From):");
+        String nickname = scanner.next();
+        System.out.println("Great choice! Let's PLAY! 🎉🎉🎉");
+        controller.connect("0.0.0.0", 4444, nickname);
     }
 }

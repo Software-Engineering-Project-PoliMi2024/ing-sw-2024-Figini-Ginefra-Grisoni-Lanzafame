@@ -13,6 +13,11 @@ public class JoinGameMsg extends ActionMsg{
     private final String gameName;
     private final String nickname;
 
+    /**
+     * The constructor of the class
+     * @param gameName of the game that the player want to join
+     * @param nickname of the player
+     */
     public JoinGameMsg(String gameName, String nickname)
     {
         super();
@@ -20,11 +25,20 @@ public class JoinGameMsg extends ActionMsg{
         this.nickname = nickname;
     }
 
+    /**
+     * @return the game that the player want to join
+     */
     public String getGameName()
     {
         return this.gameName;
     }
 
+    /**
+     * Try to add the user to the gameName game. Send a JoinGameAnswerMsg with the status OK-ERROR
+     * If the player is successfully added to the game, add his ClientHandler to the list of client to be notified
+     * @param socketClientHandler the ClientHandler who received the ActionMsg from the client
+     * @throws IOException If an error occurs during the sending of the message, such as a network failure.
+     */
     @Override
     public void processMessage(SocketClientHandler socketClientHandler) throws IOException {
         try{

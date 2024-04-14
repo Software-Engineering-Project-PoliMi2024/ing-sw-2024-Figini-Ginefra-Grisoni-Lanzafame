@@ -1,7 +1,6 @@
 package it.polimi.ingsw.controller.socket.server;
 
 import it.polimi.ingsw.controller.socket.messages.actionMessages.ActionMsg;
-import it.polimi.ingsw.controller.socket.messages.observers.ServerMsgObserved;
 import it.polimi.ingsw.controller.socket.messages.observers.ServerMsgObserver;
 import it.polimi.ingsw.controller.socket.messages.serverMessages.ServerMsg;
 import it.polimi.ingsw.model.MultiGame;
@@ -33,7 +32,10 @@ public class SocketClientHandler implements Runnable, ServerMsgObserver {
         this.games = games;
     }
 
-
+    /**
+     * Send un update to a client
+     * @param serverMsg the message that need be sent
+     */
     public void update(ServerMsg serverMsg) {
         try {
             sendServerMessage(serverMsg);
@@ -43,7 +45,8 @@ public class SocketClientHandler implements Runnable, ServerMsgObserver {
     }
 
     /**
-     * Connects to the client and runs the event loop.
+     * Connects to the client and runs the event loop
+     * creating input and output connection to the client.
      */
     @Override
     public void run()
@@ -112,15 +115,24 @@ public class SocketClientHandler implements Runnable, ServerMsgObserver {
         this.game = game;
     }
 
+    /**
+     * @return the Multigame obj on this server
+     */
     public MultiGame getGames(){
         return games;
     }
 
+    /**
+     * @return the user that is bound to this ClientHandler
+     */
     public User getUser()
     {
         return user;
     }
 
+    /**
+     * @param user the user that is being bounded to this ClientHandler
+     */
     public void setUser(User user)
     {
         this.user = user;

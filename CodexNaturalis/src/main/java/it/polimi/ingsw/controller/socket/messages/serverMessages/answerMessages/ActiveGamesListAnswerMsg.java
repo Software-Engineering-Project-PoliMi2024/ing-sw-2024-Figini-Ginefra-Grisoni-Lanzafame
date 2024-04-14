@@ -12,23 +12,33 @@ import java.util.Scanner;
 public class ActiveGamesListAnswerMsg extends AnswerMsg{
     private final String[] games;
 
+    /**
+     * The constructor of the class
+     * @param parent The CommandMsg being answered.
+     * @param games the array of games names
+     */
     public ActiveGamesListAnswerMsg(ActionMsg parent, String[] games)
     {
         super(parent);
         this.games = games;
     }
 
+    /**
+     * update the view with the games list, and ask the player if want to create or join a new game
+     * @param socketServerHandler who received an answer/notification from the server
+     * @throws IOException if an error occur during the sending of CreateGameMsg
+     */
     @Override
     public void processMessage(SocketServerHandler socketServerHandler) throws IOException {
+        //view.update()
         System.out.println("Active games: " + Arrays.toString(games));
-
-        //View Update
-
         System.out.println("Do you want to create a game? (y/n)");
         Scanner scanner = new Scanner(System.in);
         String answer = scanner.nextLine();
 
         if(answer.equals("y")) {
+            //view.transitionTo(createGAMEFORM)
+            System.out.println("All of these should be handle by the view");
             System.out.println("Choose a name for the game:");
             String gameName = scanner.nextLine();
 
@@ -36,13 +46,11 @@ public class ActiveGamesListAnswerMsg extends AnswerMsg{
             int players = scanner.nextInt();
 
             socketServerHandler.sendActionMessage(new CreateGameMsg(gameName, players));
-            return;
+        }else{
+            System.out.println("Choose a game to join:");
+            String gameName = scanner.nextLine();
+
+            socketServerHandler.sendActionMessage(new JoinGameMsg(gameName, socketServerHandler.getNickname()));
         }
-
-        System.out.println("Choose a game to join:");
-        String gameName = scanner.nextLine();
-
-        socketServerHandler.sendActionMessage(new JoinGameMsg(gameName, socketServerHandler.getNickname()));
-
     }
 }

@@ -3,14 +3,9 @@ package it.polimi.ingsw.controller.socket;
 import it.polimi.ingsw.controller.Controller;
 import it.polimi.ingsw.controller.socket.client.SocketClient;
 import it.polimi.ingsw.controller.socket.messages.actionMessages.LoginMsg;
-import it.polimi.ingsw.model.cardReleted.Card;
 import it.polimi.ingsw.model.cardReleted.CardFace;
 import it.polimi.ingsw.model.cardReleted.ObjectiveCard;
-import it.polimi.ingsw.model.playerReleted.Frontier;
 import it.polimi.ingsw.model.playerReleted.Placement;
-import it.polimi.ingsw.model.tableReleted.Game;
-
-import java.util.List;
 
 
 public class SocketController extends Controller {
@@ -42,8 +37,8 @@ public class SocketController extends Controller {
     }
 
     @Override
-    public List<Game> getActiveGameList() {
-        return null;
+    public void getActiveGameList() {
+
     }
 
     @Override
@@ -77,18 +72,18 @@ public class SocketController extends Controller {
     }
 
     @Override
-    public void choseSecrectObjective(ObjectiveCard objectiveCard) {
+    public void choseSecretObjective(ObjectiveCard objectiveCard) {
 
     }
 
     @Override
-    public Frontier place(Placement placement) {
-        return null;
+    public void place(Placement placement) {
+
     }
 
     @Override
-    public Card draw(int deckID, int cardID) {
-        return null;
+    public void draw(int deckID, int cardID) {
+
     }
 
     @Override

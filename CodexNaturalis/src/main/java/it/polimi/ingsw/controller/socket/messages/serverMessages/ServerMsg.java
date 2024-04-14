@@ -9,7 +9,7 @@ public abstract class ServerMsg extends NetworkMessage {
 
     /**
      * Method invoked in the client to process the message.
-     *
+     * @param socketServerHandler who received an answer/notification from the server
      */
     public abstract void processMessage(SocketServerHandler socketServerHandler) throws IOException;
 

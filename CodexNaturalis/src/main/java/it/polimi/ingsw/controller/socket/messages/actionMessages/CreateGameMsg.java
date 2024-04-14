@@ -11,6 +11,12 @@ import java.util.stream.Collectors;
 public class CreateGameMsg extends ActionMsg{
     private final String name;
     private final int numberOfPlayers;
+
+    /**
+     * The constructor of the class
+     * @param name of the game that is being created
+     * @param numberOfPlayers needed to start the game
+     */
     public CreateGameMsg(String name, int numberOfPlayers)
     {
         super();
@@ -19,6 +25,13 @@ public class CreateGameMsg extends ActionMsg{
         this.numberOfPlayers = numberOfPlayers;
     }
 
+
+    /**
+     * Create a game and try to add it to MultiGame.
+     * Always answer to the client with a CreateGameAnswerMsg with a status (OK, ERROR)
+     * @param socketClientHandler the ClientHandler who received the ActionMsg from the client
+     * @throws IOException If an error occurs during the sending of the message, such as a network failure.
+     */
     @Override
     public void processMessage(SocketClientHandler socketClientHandler) throws IOException {
         Game game = new Game(name, numberOfPlayers);
@@ -26,12 +39,10 @@ public class CreateGameMsg extends ActionMsg{
         if(!socketClientHandler.getGames().addGame(game)){
             socketClientHandler.sendServerMessage(new CreateGameAnswerMsg(this, name, CreateGameAnswerMsg.Status.ERROR));
             return;
-        };
+        }
 
         System.out.println("Game created: " + name + " with " + numberOfPlayers + " players.");
-        System.out.println("Game list: " + Arrays.stream(socketClientHandler.getGames().getGameNames()).collect(Collectors.joining(", ")));
-
+        System.out.println("Game list: " + String.join(", ", socketClientHandler.getGames().getGameNames()));
         socketClientHandler.sendServerMessage(new CreateGameAnswerMsg(this, name, CreateGameAnswerMsg.Status.OK));
-
     }
 }

@@ -2,9 +2,7 @@ package it.polimi.ingsw.model;
 
 import it.polimi.ingsw.model.tableReleted.Game;
 
-import java.util.ArrayList;
 import java.util.HashSet;
-import java.util.List;
 import java.util.Set;
 
 public class MultiGame {
@@ -44,6 +42,9 @@ public class MultiGame {
         usernames.remove(username);
     }
 
+    /**
+     * @return an array of String of each game's name
+     */
     public String[] getGameNames() {
         return games.stream().map(Game::getName).toArray(String[]::new);
     }

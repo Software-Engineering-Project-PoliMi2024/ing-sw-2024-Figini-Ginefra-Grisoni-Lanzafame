@@ -3,7 +3,6 @@ package it.polimi.ingsw.controller.socket.messages.serverMessages.answerMessages
 import it.polimi.ingsw.controller.socket.client.SocketServerHandler;
 import it.polimi.ingsw.controller.socket.messages.actionMessages.ActionMsg;
 import it.polimi.ingsw.controller.socket.messages.actionMessages.GetActiveGameListActionMsg;
-import it.polimi.ingsw.controller.socket.messages.serverMessages.ServerMsg;
 
 public class LoginAnswerMsg extends AnswerMsg {
     public enum Status
@@ -25,19 +24,20 @@ public class LoginAnswerMsg extends AnswerMsg {
         return status;
     }
 
+    /**
+     * If the loginStatus is ok, transition the View to GameList and send a GetActiveGameListActionMsg
+     * else, re-transition the view to Connect_Form
+     * @param socketServerHandler who received an answer/notification from the server
+     */
     @Override
     public void processMessage(SocketServerHandler socketServerHandler){
-        //View Update
-
         if(status == Status.OK) {
             System.out.println("Login successful");
-            //view setup for game list
             socketServerHandler.sendActionMessage(new GetActiveGameListActionMsg());
         }
         else
             System.out.println("Login failed");
-            //view setup for login
-
+            //View_TransitionTo(Connect_Form)
     }
 
 }

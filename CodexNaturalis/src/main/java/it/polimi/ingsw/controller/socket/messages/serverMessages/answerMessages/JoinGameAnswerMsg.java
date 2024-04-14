@@ -17,6 +17,12 @@ public class JoinGameAnswerMsg extends AnswerMsg{
     private final String gameName;
     private final Status status;
 
+    /**
+     * The constructor of the class
+     * @param parent The CommandMsg being answered.
+     * @param gameName of the game that the player want to join
+     * @param status is equal to OK if the player was being successfully added to the game else is equal to ERROR
+     */
     public JoinGameAnswerMsg(ActionMsg parent, String gameName, Status status)
 
     {
@@ -25,18 +31,30 @@ public class JoinGameAnswerMsg extends AnswerMsg{
         this.status = status;
     }
 
+    /**
+     * @return the game that the player want to join
+     */
     public String getGameName()
     {
         return this.gameName;
     }
 
+    /**
+     * @return the status of the answerMsg
+     */
     public Status getStatus()
     {
         return this.status;
     }
 
+    /**
+     * Update the view. If the player want to leave the lobby send a LeaveLobbyMsg
+     * @param socketServerHandler who received an answer/notification from the server
+     * @throws IOException If an error occurs during the sending of the message, such as a network failure.
+     */
     @Override
     public void processMessage(SocketServerHandler socketServerHandler) throws IOException {
+        //View.update
         if(status == Status.ERROR) {
             System.out.println("Game " + gameName + " not found.");
             return;
