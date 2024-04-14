@@ -2,8 +2,6 @@ package it.polimi.ingsw.view.TUI.Renderables;
 
 import it.polimi.ingsw.model.cardReleted.*;
 
-import java.util.Map;
-
 public class CardRenderable extends Renderable{
 
     private final CardWithCorners targetCard;
@@ -31,7 +29,7 @@ public class CardRenderable extends Renderable{
         //Print first Line meant to be a border
         String firstLine = CardTextStyle.getCollectableEmoji(targetCard.getCollectableAt(CardCorner.TL, face)) +
                 String.valueOf(CardTextStyle.getBorder()).repeat((CardTextStyle.getCardWidth() - 2) / 2) +
-                ((targetCard.getPoints() != 0) ? CardTextStyle.getNumberEmojii(targetCard.getPoints()) : CardTextStyle.getBorder()) +
+                ((targetCard.getPoints() != 0) ? CardTextStyle.getNumberEmoji(targetCard.getPoints()) : CardTextStyle.getBorder()) +
                 String.valueOf(CardTextStyle.getBorder()).repeat((CardTextStyle.getCardWidth() - 2) / 2) +
                 CardTextStyle.getCollectableEmoji(targetCard.getCollectableAt(CardCorner.TR, face));
         this.addContent(firstLine);

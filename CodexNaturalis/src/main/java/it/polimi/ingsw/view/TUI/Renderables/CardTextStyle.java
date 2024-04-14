@@ -18,9 +18,9 @@ public class CardTextStyle {
             SpecialCollectable.EMPTY, "⬜" // "⬜"
     );
 
-    private static String backgroundEmojii = "◾";
+    private static String backgroundEmoji = "◾";
 
-    private static final Map<Integer, String> numberEmojii = Map.of(
+    private static final Map<Integer, String> numberEmoji = Map.of(
             1, "1️⃣",
             2, "2️⃣",
             3, "3️⃣",
@@ -64,12 +64,12 @@ public class CardTextStyle {
         return resourceFillings.get(resource);
     }
 
-    public static String getNumberEmojii(int number){
-        return numberEmojii.get(number);
+    public static String getNumberEmoji(int number){
+        return numberEmoji.get(number);
     }
 
-    public static String getBackgroundEmojii(){
-        return backgroundEmojii;
+    public static String getBackgroundEmoji(){
+        return backgroundEmoji;
     }
 
 }
