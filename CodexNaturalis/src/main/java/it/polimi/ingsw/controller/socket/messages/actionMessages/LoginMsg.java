@@ -28,7 +28,7 @@ public class LoginMsg extends ActionMsg{
     }
 
     /**
-     * try the user to the Multigame by checking if is nick is unique.
+     * try to add the user to the Multigame by checking if is nick is unique.
      * Always respond to the user's client with an LoginAnswerMsg with a Status (OK/ERROR)
      * @param socketClientHandler the ClientHandler who received the ActionMsg from the client
      * @throws IOException If an error occurs during the sending of the message, such as a network failure.

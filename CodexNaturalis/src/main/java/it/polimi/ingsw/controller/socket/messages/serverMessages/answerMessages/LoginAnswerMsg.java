@@ -2,7 +2,6 @@ package it.polimi.ingsw.controller.socket.messages.serverMessages.answerMessages
 
 import it.polimi.ingsw.controller.socket.client.SocketServerHandler;
 import it.polimi.ingsw.controller.socket.messages.actionMessages.ActionMsg;
-import it.polimi.ingsw.controller.socket.messages.actionMessages.GetActiveGameListActionMsg;
 
 public class LoginAnswerMsg extends AnswerMsg {
     public enum Status
@@ -33,7 +32,7 @@ public class LoginAnswerMsg extends AnswerMsg {
     public void processMessage(SocketServerHandler socketServerHandler){
         if(status == Status.OK) {
             System.out.println("Login successful");
-            socketServerHandler.sendActionMessage(new GetActiveGameListActionMsg());
+            socketServerHandler.getClient().getController().getActiveGameList();
         }
         else
             System.out.println("Login failed");
