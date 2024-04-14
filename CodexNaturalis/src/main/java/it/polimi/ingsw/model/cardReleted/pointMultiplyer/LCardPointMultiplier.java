@@ -1,9 +1,12 @@
-package it.polimi.ingsw.model.cardReleted;
+package it.polimi.ingsw.model.cardReleted.pointMultiplyer;
 
+import it.polimi.ingsw.model.cardReleted.utilityEnums.CardCorner;
+import it.polimi.ingsw.model.cardReleted.utilityEnums.CardFace;
+import it.polimi.ingsw.model.cardReleted.utilityEnums.Resource;
 import it.polimi.ingsw.model.playerReleted.Codex;
 import it.polimi.ingsw.model.playerReleted.Placement;
 
-public class LCardPointMultiplier implements ObjectiveCardPointMultiplier{
+public class LCardPointMultiplier implements ObjectiveCardPointMultiplier {
     final private CardCorner corner;
     final private Resource singleResource;
     final private Resource doubleResource;

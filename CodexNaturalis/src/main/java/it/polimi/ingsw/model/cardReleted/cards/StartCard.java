@@ -1,12 +1,16 @@
-package it.polimi.ingsw.model.cardReleted;
+package it.polimi.ingsw.model.cardReleted.cards;
 
+
+import it.polimi.ingsw.model.cardReleted.utilityEnums.CardCorner;
+import it.polimi.ingsw.model.cardReleted.utilityEnums.CardFace;
+import it.polimi.ingsw.model.cardReleted.utilityEnums.Collectable;
+import it.polimi.ingsw.model.cardReleted.utilityEnums.Resource;
 
 import java.util.HashSet;
 import java.util.Map;
-import java.util.Set;
 
-public class StartCard extends CardWithCorners{
-    final private Map<CardCorner,Collectable> backCorners;
+public class StartCard extends CardWithCorners {
+    final private Map<CardCorner, Collectable> backCorners;
     final private HashSet<Resource> permanentResources;
 
     /** @param backCorners the map containing which collectable is in which corner

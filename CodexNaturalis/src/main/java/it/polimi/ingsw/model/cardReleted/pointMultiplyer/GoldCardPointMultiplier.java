@@ -1,4 +1,4 @@
-package it.polimi.ingsw.model.cardReleted;
+package it.polimi.ingsw.model.cardReleted.pointMultiplyer;
 
 import it.polimi.ingsw.model.playerReleted.Codex;
 

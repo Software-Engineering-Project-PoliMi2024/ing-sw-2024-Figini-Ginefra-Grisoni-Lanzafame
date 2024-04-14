@@ -2,10 +2,11 @@ package it.polimi.ingsw.model;
 
 import it.polimi.ingsw.model.tableReleted.Game;
 
+import java.io.Serializable;
 import java.util.HashSet;
 import java.util.Set;
 
-public class MultiGame {
+public class MultiGame implements Serializable {
     private final Set<Game> games;
     private final Set<String> usernames;
 

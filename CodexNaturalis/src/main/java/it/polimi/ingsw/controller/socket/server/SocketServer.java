@@ -5,22 +5,16 @@ import it.polimi.ingsw.model.MultiGame;
 import java.io.IOException;
 import java.net.ServerSocket;
 import java.net.Socket;
+import it.polimi.ingsw.controller.serverImplementation;
 
-public class SocketServer implements Runnable{
+
+public class SocketServer extends serverImplementation {
     /**
      * The socket port where the server listens to client connections.
      * @implNote In a real project, this must not be a constant!
      */
-    private final MultiGame games;
-
-    /**
-     * The constructor of the class
-     * @param games the class that handle all the games
-     *              which are running on these Server
-     */
-    public SocketServer(MultiGame games)
-    {
-        this.games = games;
+    public SocketServer (MultiGame games) {
+        super(games);
     }
 
     /**

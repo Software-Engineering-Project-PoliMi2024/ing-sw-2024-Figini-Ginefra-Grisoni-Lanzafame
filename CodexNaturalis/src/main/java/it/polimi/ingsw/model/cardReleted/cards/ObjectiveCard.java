@@ -1,8 +1,9 @@
-package it.polimi.ingsw.model.cardReleted;
+package it.polimi.ingsw.model.cardReleted.cards;
 
+import it.polimi.ingsw.model.cardReleted.pointMultiplyer.ObjectiveCardPointMultiplier;
 import it.polimi.ingsw.model.playerReleted.Codex;
 
-public class ObjectiveCard extends Card{
+public class ObjectiveCard extends Card {
     private final ObjectiveCardPointMultiplier multiplier;
 
     /** @param points given by the card

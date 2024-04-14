@@ -1,12 +1,15 @@
-package it.polimi.ingsw.model.cardReleted;
+package it.polimi.ingsw.model.cardReleted.pointMultiplyer;
 
+import it.polimi.ingsw.model.cardReleted.utilityEnums.CardCorner;
+import it.polimi.ingsw.model.cardReleted.utilityEnums.CardFace;
+import it.polimi.ingsw.model.cardReleted.utilityEnums.Resource;
 import it.polimi.ingsw.model.playerReleted.Codex;
 import it.polimi.ingsw.model.playerReleted.Placement;
 import it.polimi.ingsw.model.playerReleted.Position;
 
 import java.util.ArrayList;
 
-public class DiagonalCardPointMultiplier implements ObjectiveCardPointMultiplier{
+public class DiagonalCardPointMultiplier implements ObjectiveCardPointMultiplier {
     final private boolean upwards;
     final private Resource color;
 

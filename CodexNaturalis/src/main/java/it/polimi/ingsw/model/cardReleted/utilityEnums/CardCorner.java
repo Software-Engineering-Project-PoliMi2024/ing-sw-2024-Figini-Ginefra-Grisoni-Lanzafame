@@ -1,8 +1,10 @@
-package it.polimi.ingsw.model.cardReleted;
+package it.polimi.ingsw.model.cardReleted.utilityEnums;
 
 import it.polimi.ingsw.model.playerReleted.Position;
 
-public enum CardCorner {
+import java.io.Serializable;
+
+public enum CardCorner implements Serializable {
 
     TL(1, -1),
     TR(1, 1),

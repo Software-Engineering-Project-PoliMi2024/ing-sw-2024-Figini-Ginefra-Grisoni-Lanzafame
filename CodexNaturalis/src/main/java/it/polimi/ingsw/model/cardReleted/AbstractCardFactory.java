@@ -4,6 +4,7 @@ import com.google.gson.Gson;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
+import it.polimi.ingsw.model.cardReleted.utilityEnums.*;
 
 import java.io.*;
 import java.util.HashMap;

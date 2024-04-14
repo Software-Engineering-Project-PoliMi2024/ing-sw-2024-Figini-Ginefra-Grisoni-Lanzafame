@@ -1,6 +1,8 @@
 package it.polimi.ingsw.model.playerReleted;
 
-public class User {
+import java.io.Serializable;
+
+public class User implements Serializable {
     private final String nickname;
     private final Codex userCodex;
     private final Hand userHand;

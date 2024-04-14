@@ -1,10 +1,11 @@
-package it.polimi.ingsw.model.cardReleted;
+package it.polimi.ingsw.model.cardReleted.pointMultiplyer;
 
+import it.polimi.ingsw.model.cardReleted.utilityEnums.CardCorner;
 import it.polimi.ingsw.model.playerReleted.Codex;
 import it.polimi.ingsw.model.playerReleted.Placement;
 import it.polimi.ingsw.model.playerReleted.Position;
 
-public class CoveredCornersCardPointMultiplier implements GoldCardPointMultiplier{
+public class CoveredCornersCardPointMultiplier implements GoldCardPointMultiplier {
 
     //poco pulito: prendo l'ultima carta nel codex ma non so se è la carta giusta
     /** @param codex the codex where the card is inserted

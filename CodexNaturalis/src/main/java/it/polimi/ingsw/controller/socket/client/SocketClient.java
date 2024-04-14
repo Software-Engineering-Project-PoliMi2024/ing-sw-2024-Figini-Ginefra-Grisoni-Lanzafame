@@ -5,41 +5,31 @@ import it.polimi.ingsw.view.View;
 
 import java.io.IOException;
 import java.net.Socket;
+import it.polimi.ingsw.controller.clientImplementation;
 
-public class SocketClient implements Runnable{
+public class SocketClient extends clientImplementation{
+    protected final Controller controller;
+    protected final String ip;
+    protected final int port;
     private SocketServerHandler socketServerHandler;
 
-    private final View view;
-
-    private final Controller controller;
-    private boolean shallTerminate;
-
-    private final String ip;
-    private final int port;
-    private final String nickname;
-
-    /**
-     * @return the reference to the View of this Client
-     */
-    public View getView() {
-        return view;
+    /**@param ip the ip of the server to connect to
+     * @param port the port of the server to connect to
+     * @param nickname the nickname used by the user
+     * @param view the view of user choice (TUI / GUI)
+     * @param controller the communication of user choice (socket/RMI)*/
+    public SocketClient(String ip, int port, String nickname, View view, Controller controller)
+    {
+        super(nickname, view);
+        this.ip = ip;
+        this.port = port;
+        this.controller = controller;
     }
-
     /**
      * @return the reference to the Controller of this Client
      */
     public Controller getController() {
         return controller;
-    }
-
-    public SocketClient(String ip, int port, String nickname, View view, Controller controller)
-    {
-        super();
-        this.ip = ip;
-        this.port = port;
-        this.nickname = nickname;
-        this.view = view;
-        this.controller = controller;
     }
 
     @Override

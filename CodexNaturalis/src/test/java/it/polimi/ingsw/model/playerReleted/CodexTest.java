@@ -1,6 +1,6 @@
 package it.polimi.ingsw.model.playerReleted;
 
-import it.polimi.ingsw.model.cardReleted.SpecialCollectable;
+import it.polimi.ingsw.model.cardReleted.utilityEnums.SpecialCollectable;
 import org.junit.jupiter.api.Test;
 
 import static org.junit.jupiter.api.Assertions.*;

@@ -3,6 +3,8 @@ package it.polimi.ingsw.model.cardReleted;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
+import it.polimi.ingsw.model.cardReleted.cards.StartCard;
+import it.polimi.ingsw.model.cardReleted.utilityEnums.*;
 
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;

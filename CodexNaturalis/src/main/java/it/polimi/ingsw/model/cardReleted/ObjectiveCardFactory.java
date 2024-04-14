@@ -3,6 +3,15 @@ package it.polimi.ingsw.model.cardReleted;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
+import it.polimi.ingsw.model.cardReleted.cards.ObjectiveCard;
+import it.polimi.ingsw.model.cardReleted.pointMultiplyer.CollectableCardPointMultiplier;
+import it.polimi.ingsw.model.cardReleted.pointMultiplyer.DiagonalCardPointMultiplier;
+import it.polimi.ingsw.model.cardReleted.pointMultiplyer.LCardPointMultiplier;
+import it.polimi.ingsw.model.cardReleted.pointMultiplyer.ObjectiveCardPointMultiplier;
+import it.polimi.ingsw.model.cardReleted.utilityEnums.CardCorner;
+import it.polimi.ingsw.model.cardReleted.utilityEnums.Collectable;
+import it.polimi.ingsw.model.cardReleted.utilityEnums.Resource;
+import it.polimi.ingsw.model.cardReleted.utilityEnums.WritingMaterial;
 
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;

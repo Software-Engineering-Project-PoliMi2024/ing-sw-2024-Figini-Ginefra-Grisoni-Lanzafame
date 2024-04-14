@@ -1,12 +1,10 @@
-package it.polimi.ingsw.model.cardReleted;
+package it.polimi.ingsw.model.cardReleted.pointMultiplyer;
 
+import it.polimi.ingsw.model.cardReleted.pointMultiplyer.GoldCardPointMultiplier;
+import it.polimi.ingsw.model.cardReleted.utilityEnums.WritingMaterial;
 import it.polimi.ingsw.model.playerReleted.Codex;
-import it.polimi.ingsw.model.playerReleted.Placement;
 
-import java.util.HashMap;
-import java.util.Map;
-
-public class WritingMaterialsCardPointMultiplier implements GoldCardPointMultiplier{
+public class WritingMaterialsCardPointMultiplier implements GoldCardPointMultiplier {
     private final WritingMaterial target;
 
     /** constructor of the writingMaterialsCardPointMultiplier

@@ -1,6 +1,8 @@
 package it.polimi.ingsw.model.playerReleted;
 
-public class cardNotFoundException extends Exception{
+import java.io.Serializable;
+
+public class cardNotFoundException extends Exception implements Serializable {
     public cardNotFoundException(String errorMessage){
         super(errorMessage);
     }
