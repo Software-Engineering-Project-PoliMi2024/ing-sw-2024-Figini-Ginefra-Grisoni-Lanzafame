@@ -1,16 +1,9 @@
 package it.polimi.ingsw.view.TUI.Renderables;
 
 import it.polimi.ingsw.model.cardReleted.CardFace;
-import it.polimi.ingsw.model.cardReleted.CardWithCorners;
-import it.polimi.ingsw.model.cardReleted.ResourceCard;
 import it.polimi.ingsw.model.tableReleted.Game;
-import org.junit.Before;
+import it.polimi.ingsw.view.TUI.Renderables.drawables.CardRenderable;
 import org.junit.jupiter.api.Test;
-
-import java.nio.file.Path;
-import java.nio.file.Paths;
-
-import static org.junit.jupiter.api.Assertions.*;
 
 class CardRenderableTest {
 

@@ -4,6 +4,7 @@ import it.polimi.ingsw.model.playerReleted.Position;
 import it.polimi.ingsw.view.TUI.Renderables.Renderable;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 public abstract class Drawable extends Renderable {
@@ -11,24 +12,36 @@ public abstract class Drawable extends Renderable {
     private int width;
     private int height;
 
-    private final List<String> content = new ArrayList<>();
+    private final String[][] content;
 
 
     public Drawable(int width, int height){
-
         this.width = width;
         this.height = height;
+        this.content = new String[height][width];
     }
 
     public void clearContent(){
-        this.content.clear();
+        for(int i = 0; i < this.height; i++){
+            for(int j = 0; j < this.width; j++){
+                this.content[i][j] = " ";
+            }
+        }
     }
 
-    public void addContent(String content){
-        this.content.add(content);
+    public void fillContent(String filler){
+        for(int i = 0; i < this.height; i++){
+            for(int j = 0; j < this.width; j++){
+                this.content[i][j] = filler;
+            }
+        }
     }
 
-    public List<String> getContent(){
+    public void addContent(String content, int x, int y){
+        this.content[y][x] = content;
+    }
+
+    public String[][] getContent(){
         return this.content;
     }
 
@@ -40,7 +53,16 @@ public abstract class Drawable extends Renderable {
         return this.height;
     }
 
-    public char getCharAt(int x, int y){
-        return this.content.get(y).charAt(x);
+    public String getCharAt(int x, int y){
+        return this.content[y][x];
+    }
+
+    public void render(){
+        for(int i = 0; i < this.height; i++){
+            for(int j = 0; j < this.width; j++){
+                System.out.print(this.content[i][j]);
+            }
+            System.out.println();
+        }
     }
 }

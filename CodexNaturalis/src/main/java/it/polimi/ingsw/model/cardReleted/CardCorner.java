@@ -4,9 +4,9 @@ import it.polimi.ingsw.model.playerReleted.Position;
 
 public enum CardCorner {
 
-    TL(1, -1),
+    BR(1, -1),
     TR(1, 1),
-    BR(-1, 1),
+    TL(-1, 1),
     BL(-1, -1);
     final private Position offset;
 

@@ -15,10 +15,10 @@ public class CardTextStyle {
             WritingMaterial.INKWELL, "\uD83E\uDED9", //🫙
             WritingMaterial.QUILL, "\uD83E\uDEB6", //🪶
             WritingMaterial.MANUSCRIPT, "\uD83D\uDCDC", //📜
-            SpecialCollectable.EMPTY, "⬜" // "⬜"
+            SpecialCollectable.EMPTY, "◻\uFE0F" // "◻️"
     );
 
-    private static String backgroundEmoji = "◾";
+    private static final String backgroundEmoji = "◾";
 
     private static final Map<Integer, String> numberEmoji = Map.of(
             1, "1️⃣",
@@ -50,6 +50,11 @@ public class CardTextStyle {
         return CardHeight;
     }
 
+    /**
+     * Get the emoji associated with the collectable, if the collectable is null return the border emoji
+     * @param collectable the collectable to get the emoji of
+     * @return the emoji of the collectable
+     */
     public static String getCollectableEmoji(Collectable collectable){
         if(collectable == null)
             return getBorder();
@@ -87,8 +92,8 @@ public class CardTextStyle {
 ◾◾◾◾◾◾◾◾◾
 ◾◾◾◾◾◾◾◾◾
 
-🐺⬜⬜⬜5️⃣⬜⬜⬜⬛
-⬜⬜🟦🟦🪶🟦🟦⬜⬜
+⬜⬜⬜⬜5️⃣⬜⬜⬜⬛
+⬜🐺🟦🟦🪶🟦🟦⬜⬜
 ⬜🟦🟦🟦🟦🟦🟦🟦⬜
 ⬜🟦🟦3️⃣🟦1️⃣🟦🟦⬜
 ⬜⬜🟦🟡🟦🔴🟦⬜⬜

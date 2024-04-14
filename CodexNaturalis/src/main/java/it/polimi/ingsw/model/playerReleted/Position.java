@@ -49,4 +49,14 @@ public record Position(int x, int y) {
     public Position add(int x, int y) {
         return new Position(this.x + x, this.y + y);
     }
+
+    /**
+     * Returns a scaled version of the position
+     *
+     * @param scalar scalar to multiply the coordinates by
+     * @return a scaled version of the position
+     */
+    public Position multiply(int scalar){
+        return new Position(this.x * scalar, this.y * scalar);
+    }
 }
