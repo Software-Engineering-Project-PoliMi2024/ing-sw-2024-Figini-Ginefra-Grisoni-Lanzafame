@@ -1,14 +1,12 @@
 package it.polimi.ingsw.controller.socket.client;
 
 import it.polimi.ingsw.controller.socket.messages.actionMessages.ActionMsg;
-import it.polimi.ingsw.controller.socket.messages.actionMessages.GetActiveGameListActionMsg;
 import it.polimi.ingsw.controller.socket.messages.serverMessages.ServerMsg;
 
 import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.net.Socket;
-import java.util.Scanner;
 import java.util.concurrent.atomic.AtomicBoolean;
 
 public class SocketServerHandler implements Runnable{
@@ -75,7 +73,8 @@ public class SocketServerHandler implements Runnable{
             boolean stop = false;
 
             while (!stop) {
-
+                //These sleep is needed so we can update the value of stop with the stop() method
+                Thread.sleep(10);
                 try {
                     Object next = input.readObject();
                     ServerMsg command = (ServerMsg)next;
@@ -88,7 +87,6 @@ public class SocketServerHandler implements Runnable{
                             owner.terminate();
                         }
                     }).start();
-
                 } catch (IOException e) {
                     /* Check if we were interrupted because another thread has asked us to stop */
                     if (shouldStop.get()) {
@@ -102,6 +100,8 @@ public class SocketServerHandler implements Runnable{
             }
         } catch (ClassNotFoundException | ClassCastException e) {
             System.out.println("invalid stream from server");
+        } catch (InterruptedException e) {
+            throw new RuntimeException(e);
         }
     }
 

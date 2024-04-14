@@ -30,9 +30,14 @@ public class ActiveGamesListAnswerMsg extends AnswerMsg{
     public void processMessage(SocketServerHandler socketServerHandler) throws IOException {
         //view.update()
         System.out.println("Active games: " + Arrays.toString(games));
-        System.out.println("Do you want to create a game? (y/n)");
         Scanner scanner = new Scanner(System.in);
         String answer = scanner.nextLine();
+        /* BAD TESTING OF THE DISCONNECT FEATURE
+        System.out.println("Do you want to exit the game? (y/n)");
+        if(answer.equals("y")){
+            socketServerHandler.getClient().getController().disconnect();
+        }*/
+        System.out.println("Do you want to create a game? (y/n)");
 
         if(answer.equals("y")) {
             //view.transitionTo(createGAMEFORM)
@@ -43,10 +48,11 @@ public class ActiveGamesListAnswerMsg extends AnswerMsg{
             System.out.println("How many players?");
             int players = scanner.nextInt();
 
-            socketServerHandler.sendActionMessage(new CreateGameMsg(gameName, players));
+            socketServerHandler.getClient().getServerHandler().sendActionMessage(new CreateGameMsg(gameName, players));
         }else{
             System.out.println("Choose a game to join:");
             String gameName = scanner.nextLine();
-            socketServerHandler.getClient().getController().joinGame(gameName, socketServerHandler.getClient().getNickname());}
+            socketServerHandler.getClient().getController().joinGame(gameName, socketServerHandler.getClient().getNickname());
+        }
     }
 }

@@ -28,6 +28,6 @@ public class JoinGameNotificationMsg extends ServerMsg {
     @Override
     public void processMessage(SocketServerHandler socketServerHandler) {
         //view.update
-        System.out.println(this.nickname + " joined the game. HERE");
+        System.out.println(this.nickname + " joined the game");
     }
 }
