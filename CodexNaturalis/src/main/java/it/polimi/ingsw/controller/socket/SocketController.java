@@ -8,6 +8,7 @@ import it.polimi.ingsw.controller.socket.messages.actionMessages.LoginMsg;
 import it.polimi.ingsw.model.cardReleted.CardFace;
 import it.polimi.ingsw.model.cardReleted.ObjectiveCard;
 import it.polimi.ingsw.model.playerReleted.Placement;
+import it.polimi.ingsw.view.View;
 
 
 public class SocketController extends Controller {
@@ -22,13 +23,17 @@ public class SocketController extends Controller {
     /**
      * Create a new Thread with a socketClient.
      * Send a LoginMsg to the server
-     * @param ip the IP address of the server
-     * @param port the socketPort of the server
-     * @param nickname of the User
+     *
+     * @param ip         the IP address of the server
+     * @param port       the socketPort of the server
+     * @param nickname   of the User
+     * @param view
+     * @param controller
      */
     @Override
-    public void connect(String ip, int port, String nickname) {
-        socketClient = new SocketClient(ip, port, nickname);
+    public void connect(String ip, int port, String nickname, View view, Controller controller) {
+        //client Creation
+        socketClient = new SocketClient(ip, port, nickname, view, controller);
         Thread clientThread = new Thread(socketClient, "client");
         clientThread.start();
 

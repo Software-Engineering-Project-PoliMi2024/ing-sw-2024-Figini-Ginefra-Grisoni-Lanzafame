@@ -3,8 +3,6 @@ package it.polimi.ingsw.controller.socket.messages.serverMessages.answerMessages
 import it.polimi.ingsw.controller.socket.client.SocketServerHandler;
 import it.polimi.ingsw.controller.socket.messages.actionMessages.ActionMsg;
 import it.polimi.ingsw.controller.socket.messages.actionMessages.CreateGameMsg;
-import it.polimi.ingsw.controller.socket.messages.actionMessages.JoinGameMsg;
-
 import java.io.IOException;
 import java.util.Arrays;
 import java.util.Scanner;
@@ -49,8 +47,6 @@ public class ActiveGamesListAnswerMsg extends AnswerMsg{
         }else{
             System.out.println("Choose a game to join:");
             String gameName = scanner.nextLine();
-
-            socketServerHandler.sendActionMessage(new JoinGameMsg(gameName, socketServerHandler.getNickname()));
-        }
+            socketServerHandler.getClient().getController().joinGame(gameName, socketServerHandler.getClient().getNickname());}
     }
 }

@@ -8,18 +8,38 @@ import java.net.Socket;
 
 public class SocketClient implements Runnable{
     private SocketServerHandler socketServerHandler;
+
+    private final View view;
+
+    private final Controller controller;
     private boolean shallTerminate;
 
-    private String ip;
-    private int port;
-    private String nickname;
+    private final String ip;
+    private final int port;
+    private final String nickname;
 
-    public SocketClient(String ip, int port, String nickname)
+    /**
+     * @return the reference to the View of this Client
+     */
+    public View getView() {
+        return view;
+    }
+
+    /**
+     * @return the reference to the Controller of this Client
+     */
+    public Controller getController() {
+        return controller;
+    }
+
+    public SocketClient(String ip, int port, String nickname, View view, Controller controller)
     {
         super();
         this.ip = ip;
         this.port = port;
         this.nickname = nickname;
+        this.view = view;
+        this.controller = controller;
     }
 
     @Override
@@ -76,5 +96,12 @@ public class SocketClient implements Runnable{
             /* Signal to the view handler loop that it should exit. */
             shallTerminate = true;
         }
+    }
+
+    /**
+     * @return the nickname of the player
+     */
+    public String getNickname() {
+        return nickname;
     }
 }

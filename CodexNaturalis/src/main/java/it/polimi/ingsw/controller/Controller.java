@@ -3,10 +3,11 @@ package it.polimi.ingsw.controller;
 import it.polimi.ingsw.model.cardReleted.CardFace;
 import it.polimi.ingsw.model.cardReleted.ObjectiveCard;
 import it.polimi.ingsw.model.playerReleted.Placement;
+import it.polimi.ingsw.view.View;
 
 
 public abstract class Controller {
-    public abstract void connect(String ip, int port, String nickname);
+    public abstract void connect(String ip, int port, String nickname, View view, Controller controller);
     public abstract void getActiveGameList();
     public abstract void joinGame(String gameName, String nickname);
     public abstract void disconnect();

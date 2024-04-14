@@ -64,10 +64,6 @@ public class SocketServerHandler implements Runnable{
         owner.terminate();
     }
 
-    public String getNickname() {
-        return nickname;
-    }
-
     /**
      * An event loop that receives messages from the server and processes
      * them in the order they are received.

@@ -40,6 +40,6 @@ public class CreateGameAnswerMsg extends AnswerMsg{
         //View update
         System.out.println(this.gameName + " creation: " + (status == Status.OK ? "success" : "failure") + ".");
         if(status == Status.OK)
-            socketServerHandler.sendActionMessage(new JoinGameMsg(this.gameName, socketServerHandler.getNickname()));
+            socketServerHandler.sendActionMessage(new JoinGameMsg(this.gameName, socketServerHandler.getClient().getNickname()));
     }
 }

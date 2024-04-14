@@ -55,6 +55,6 @@ public class Client {
         System.out.println("Please enter your nickname(This will be done by the view_Connect_From):");
         String nickname = scanner.next();
         System.out.println("Great choice! Let's PLAY! 🎉🎉🎉");
-        controller.connect("0.0.0.0", 4444, nickname);
+        controller.connect("0.0.0.0", 4444, nickname, view, controller);
     }
 }
