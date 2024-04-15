@@ -38,7 +38,10 @@ public abstract class Drawable extends Renderable {
     }
 
     public void addContent(String content, int x, int y){
-        this.content[y][x] = content;
+        if(x >= 0 && x < this.width && y >= 0 && y < this.height)
+            this.content[y][x] = content;
+        else
+            throw new IndexOutOfBoundsException("The coordinates are out of the drawable. Got: " + x + ", " + y);
     }
 
     public String[][] getContent(){
@@ -63,6 +66,17 @@ public abstract class Drawable extends Renderable {
                 System.out.print(this.content[i][j]);
             }
             System.out.println();
+        }
+    }
+
+    public void setContent(String[][] content){
+        if(content.length != this.height || content[0].length != this.width)
+            throw new IllegalArgumentException("The content must have the same dimensions as the drawable");
+
+        for(int i = 0; i < this.height; i++){
+            for(int j = 0; j < this.width; j++){
+                this.content[i][j] = content[i][j];
+            }
         }
     }
 }

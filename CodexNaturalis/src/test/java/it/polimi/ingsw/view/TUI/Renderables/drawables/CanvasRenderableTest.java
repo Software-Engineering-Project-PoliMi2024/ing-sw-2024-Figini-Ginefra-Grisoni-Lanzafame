@@ -22,13 +22,21 @@ class CanvasRenderableTest {
     void draw() {
         Game game = new Game("test", 2);
 
-        CanvasRenderable canvasRenderable = new CanvasRenderable(40, 20);
+        CanvasRenderable canvasRenderable = new CanvasRenderable(41, 10);
 
         CardRenderable cardRenderable = new CardRenderable(game.getResourceCardDeck().getBuffer().stream().findFirst().orElse(null), CardFace.FRONT);
 
         canvasRenderable.draw(cardRenderable, new Position(0, 0));
 
         canvasRenderable.draw(cardRenderable, new Position(1, 1));
+
+        canvasRenderable.render();
+
+        canvasRenderable.setCenter(new Position(1, 1));
+
+        canvasRenderable.render();
+
+        canvasRenderable.draw(cardRenderable, new Position(2, 2));
 
         canvasRenderable.render();
 
