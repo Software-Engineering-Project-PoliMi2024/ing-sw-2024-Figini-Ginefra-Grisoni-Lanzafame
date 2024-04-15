@@ -1,4 +1,4 @@
-package it.polimi.ingsw.model.cardReleted;
+package it.polimi.ingsw.model.cardReleted.cardFactories;
 
 import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;
@@ -24,10 +24,11 @@ public class GoldCardFactory extends AbstractCardFactory<GoldCard>{
 
     /**
      * The constructor of the class
-     * @param filePath the path of the card.json file
+     * @param inFile the path of the card.json file
+     * @param outDirPath the path of the directory where the .bin file will be saved
      */
-    public GoldCardFactory(String filePath) {
-        super(filePath);
+    public GoldCardFactory(String inFile, String outDirPath) {
+        super(inFile, outDirPath);
     }
 
     /**
@@ -40,7 +41,7 @@ public class GoldCardFactory extends AbstractCardFactory<GoldCard>{
      */
     @Override
     public Queue<GoldCard> getCards() {
-        String fileSerializedName = "./cards/goldCards.bin";
+        String fileSerializedName = outDirPath + "goldCards.bin";
         FileInputStream file;
         try { //check if the .bin file exist
             file = new FileInputStream(fileSerializedName);

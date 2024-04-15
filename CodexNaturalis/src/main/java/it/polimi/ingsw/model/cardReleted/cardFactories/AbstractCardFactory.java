@@ -1,4 +1,4 @@
-package it.polimi.ingsw.model.cardReleted;
+package it.polimi.ingsw.model.cardReleted.cardFactories;
 
 import com.google.gson.Gson;
 import com.google.gson.JsonArray;
@@ -19,14 +19,17 @@ public abstract class AbstractCardFactory<Element> {
     public abstract Queue<Element> getCards();
 
     public abstract Queue<Element> getCardsFromJson();
-    String filePath;
+    private final String inFile;
+    protected final String outDirPath;
 
     /**
-     * The constructor of all concrete factories
-     * @param filePath the path of the card.json file
+     * The constructor of the class
+     * @param inFile the path of the card.json file
+     * @param outDirPath the path of the directory where the .bin file will be saved
      */
-    public AbstractCardFactory(String filePath) {
-        this.filePath = filePath;
+    public AbstractCardFactory(String inFile, String outDirPath) {
+        this.inFile = inFile;
+        this.outDirPath = outDirPath;
     }
 
     /**
@@ -39,7 +42,7 @@ public abstract class AbstractCardFactory<Element> {
         final Gson gson = new Gson();
         FileReader fileReader;
         try {
-            fileReader = new FileReader(filePath);
+            fileReader = new FileReader(inFile);
             JsonObject jsonObject = gson.fromJson(fileReader, JsonObject.class);
             return  jsonObject.getAsJsonArray(cardType);
         } catch (FileNotFoundException e) {

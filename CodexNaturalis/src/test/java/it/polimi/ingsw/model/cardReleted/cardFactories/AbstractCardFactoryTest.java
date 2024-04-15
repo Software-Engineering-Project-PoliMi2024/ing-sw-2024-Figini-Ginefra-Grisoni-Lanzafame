@@ -1,4 +1,4 @@
-package it.polimi.ingsw.model.cardReleted;
+package it.polimi.ingsw.model.cardReleted.cardFactories;
 
 import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
@@ -7,14 +7,11 @@ import org.junit.Test;
 import static org.junit.Assert.*;
 
 public class AbstractCardFactoryTest {
-    String filePath = "C:\\Users\\samue\\IdeaProjects\\ing-sw-2024-Figini-Ginefra-Grisoni-Lanzafame\\cards.json";
-
-
     @Test
     public void getCardArrayShouldNotBeNullOrEmptyForAllCardTypes() {
         //getCardArray is a common method between all concrete factory,
         //the concrete factory that is chosen does not matter
-        AbstractCardFactory<GoldCard> abstractCardFactory = new GoldCardFactory(filePath);
+        AbstractCardFactory<GoldCard> abstractCardFactory = new GoldCardFactory("./cards/cards.json", "./cards/");
         String[] CardTypes = {"GoldCards", "StartingCard", "ObjectiveCard", "ResourcesCards"};
         for(String s : CardTypes){
             JsonArray jsonArrayTest = abstractCardFactory.getCardArray(s);
@@ -27,7 +24,7 @@ public class AbstractCardFactoryTest {
     public void getFrontCornerMapNotNullAndCorrect(){
         //getCardArray is a common method between all concrete factory,
         //the concrete factory that is chosen does not matter
-        AbstractCardFactory<GoldCard> abstractCardFactory = new GoldCardFactory(filePath);
+        AbstractCardFactory<GoldCard> abstractCardFactory = new GoldCardFactory("./cards/cards.json", "./cards/");
         //ObjectiveCard have no FrontCorner
         String[] CardTypes = {"GoldCards", "StartingCard", "ResourcesCards"};
         for(String s : CardTypes){

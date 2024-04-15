@@ -1,4 +1,4 @@
-package it.polimi.ingsw.model.cardReleted;
+package it.polimi.ingsw.model.cardReleted.cardFactories;
 
 import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
@@ -12,9 +12,13 @@ import java.util.*;
  * The concreteFactory for the Resource type of Card
  */
 public class ResourceCardFactory extends AbstractCardFactory<ResourceCard>{
-
-    public ResourceCardFactory(String filePath) {
-        super(filePath);
+    /**
+     * The constructor of the class
+     * @param inFile the path of the card.json file
+     * @param outDirPath the path of the directory where the .bin file will be saved
+     */
+    public ResourceCardFactory(String inFile, String outDirPath) {
+        super(inFile, outDirPath);
     }
 
 
@@ -44,7 +48,7 @@ public class ResourceCardFactory extends AbstractCardFactory<ResourceCard>{
      */
     @Override
     public Queue<ResourceCard> getCards() {
-        String fileSerializedName = "./cards/resourceCards.bin";
+        String fileSerializedName = outDirPath + "resourceCards.bin";
         FileInputStream file;
         try { //check if the .bin file exist
             file = new FileInputStream(fileSerializedName);

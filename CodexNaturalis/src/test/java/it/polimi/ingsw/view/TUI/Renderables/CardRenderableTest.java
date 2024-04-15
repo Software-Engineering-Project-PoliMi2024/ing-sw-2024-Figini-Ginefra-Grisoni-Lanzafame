@@ -5,10 +5,13 @@ import it.polimi.ingsw.model.tableReleted.Game;
 import it.polimi.ingsw.view.TUI.Renderables.drawables.CardRenderable;
 import org.junit.jupiter.api.Test;
 
+import java.nio.file.Paths;
+
 class CardRenderableTest {
 
     @Test
     void render() {
+        System.out.println(Paths.get("").toAbsolutePath());
         Game game = new Game("test", 2);
 
         game.getResourceCardDeck().getBuffer().forEach(card -> {

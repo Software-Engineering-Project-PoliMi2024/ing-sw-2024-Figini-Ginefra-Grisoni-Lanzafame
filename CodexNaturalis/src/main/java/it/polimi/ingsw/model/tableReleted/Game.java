@@ -1,7 +1,10 @@
 package it.polimi.ingsw.model.tableReleted;
 
 
-import it.polimi.ingsw.model.cardReleted.*;
+import it.polimi.ingsw.model.cardReleted.cardFactories.GoldCardFactory;
+import it.polimi.ingsw.model.cardReleted.cardFactories.ObjectiveCardFactory;
+import it.polimi.ingsw.model.cardReleted.cardFactories.ResourceCardFactory;
+import it.polimi.ingsw.model.cardReleted.cardFactories.StartCardFactory;
 import it.polimi.ingsw.model.cardReleted.cards.GoldCard;
 import it.polimi.ingsw.model.cardReleted.cards.ObjectiveCard;
 import it.polimi.ingsw.model.cardReleted.cards.ResourceCard;
@@ -34,16 +37,16 @@ public class Game implements Serializable {
     public Game(String name, int numberOfMaxPlayer) {
         this.name = name;
         this.gameParty = new GameParty(numberOfMaxPlayer);
-
-        CardFactory cardFactory = new CardFactory( "./cards/cards.json");
+        String filePath = "./cards/";
+        String sourceFileName = "cards.json";
         objectiveCardDeck =
-                new Deck<>(0, cardFactory.getFactoryOf(ObjectiveCard.class).getCards());
+                new Deck<>(0, new ObjectiveCardFactory(filePath+sourceFileName, filePath).getCards());
         resourceCardDeck =
-                new Deck<>(2, cardFactory.getFactoryOf(ResourceCard.class).getCards());
+                new Deck<>(2, new ResourceCardFactory(filePath+sourceFileName, filePath).getCards());
         goldCardDeck =
-                new Deck<>(2, cardFactory.getFactoryOf(GoldCard.class).getCards());
+                new Deck<>(2, new GoldCardFactory(filePath+sourceFileName, filePath).getCards());
         startingCardDeck =
-                new Deck<>(0, cardFactory.getFactoryOf(StartCard.class).getCards());
+                new Deck<>(0, new StartCardFactory(filePath+sourceFileName, filePath).getCards());
     }
 
     /** @return the Objective Card Deck*/
