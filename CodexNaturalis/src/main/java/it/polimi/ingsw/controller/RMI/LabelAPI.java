@@ -1,12 +1,12 @@
 package it.polimi.ingsw.controller.RMI;
 
-public enum labelAPI {
+public enum LabelAPI {
     Login("login"),
     GetMultiGames("getMultiGames");
 
     private final String label;
 
-    labelAPI(String label) {
+    LabelAPI(String label) {
         this.label = label;
     }
 

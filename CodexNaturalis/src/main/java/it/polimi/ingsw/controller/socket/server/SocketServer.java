@@ -5,10 +5,10 @@ import it.polimi.ingsw.model.MultiGame;
 import java.io.IOException;
 import java.net.ServerSocket;
 import java.net.Socket;
-import it.polimi.ingsw.controller.serverImplementation;
+import it.polimi.ingsw.controller.ServerImplementation;
 
 
-public class SocketServer extends serverImplementation {
+public class SocketServer extends ServerImplementation {
     /**
      * The socket port where the server listens to client connections.
      * @implNote In a real project, this must not be a constant!

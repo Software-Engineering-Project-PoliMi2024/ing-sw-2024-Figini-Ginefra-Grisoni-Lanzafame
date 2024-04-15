@@ -2,7 +2,7 @@ package it.polimi.ingsw.controller;
 
 import it.polimi.ingsw.model.MultiGame;
 
-public abstract class serverImplementation implements Runnable{
+public abstract class ServerImplementation implements Runnable{
     protected final MultiGame games;
 
 
@@ -11,7 +11,7 @@ public abstract class serverImplementation implements Runnable{
      * @param games the class that handle all the games
      *              which are running on these Server
      */
-    public serverImplementation(MultiGame games) {
+    public ServerImplementation(MultiGame games) {
         this.games = games;
     }
     public void run() {

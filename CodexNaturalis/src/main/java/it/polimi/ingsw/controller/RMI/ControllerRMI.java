@@ -1,8 +1,8 @@
 package it.polimi.ingsw.controller.RMI;
 
 import it.polimi.ingsw.controller.Controller;
-import it.polimi.ingsw.controller.RMI.remoteInterfaces.loginRMI;
-import it.polimi.ingsw.controller.RMI.remoteInterfaces.multiGames;
+import it.polimi.ingsw.controller.RMI.remoteInterfaces.LoginRMI;
+import it.polimi.ingsw.controller.RMI.remoteInterfaces.MultiGames;
 import it.polimi.ingsw.model.MultiGame;
 import it.polimi.ingsw.model.cardReleted.cards.DrawableCard;
 import it.polimi.ingsw.model.cardReleted.cards.StartCard;
@@ -15,7 +15,7 @@ import java.rmi.registry.LocateRegistry;
 import java.rmi.registry.Registry;
 import java.util.Scanner;
 
-public class controllerRMI extends Controller {
+public class ControllerRMI extends Controller {
     public String askName(){
         Scanner scanner = new Scanner(System.in);
         System.out.println("Enter your nickname: ");
@@ -26,8 +26,8 @@ public class controllerRMI extends Controller {
         try {
             registry = LocateRegistry.getRegistry(ip, port);
             try {
-                MultiGame games = ((multiGames) registry.lookup(labelAPI.GetMultiGames.getLabel())).getMultiGame();
-                loginRMI loginRMI = (loginRMI) registry.lookup(labelAPI.Login.getLabel());
+                MultiGame games = ((MultiGames) registry.lookup(LabelAPI.GetMultiGames.getLabel())).getMultiGame();
+                LoginRMI loginRMI = (LoginRMI) registry.lookup(LabelAPI.Login.getLabel());
                 while(!loginRMI.login(nickname, games)){
                     System.out.println("Login failed : Nickname already taken");
                     //nickname = view.askNickname();
@@ -38,7 +38,7 @@ public class controllerRMI extends Controller {
                 System.err.println("Client exception during the Log In: " + e.toString());
                 e.printStackTrace();
             }
-            clientRMI clientRMI = new clientRMI(nickname, view, registry);
+            ClientRMI clientRMI = new ClientRMI(nickname, view, registry);
             Thread clientThread = new Thread(clientRMI, "client");
             clientThread.start();
         } catch (Exception e) {

@@ -6,9 +6,9 @@ import java.io.Serializable;
 import java.rmi.Remote;
 import java.rmi.RemoteException;
 
-public class multiGames implements Remote, Serializable {
+public class MultiGames implements Remote, Serializable {
     private final MultiGame games;
-    public multiGames(MultiGame games){
+    public MultiGames(MultiGame games){
         this.games = games;
     }
 

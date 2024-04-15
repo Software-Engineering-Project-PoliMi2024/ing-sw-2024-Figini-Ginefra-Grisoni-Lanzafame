@@ -1,7 +1,7 @@
 package it.polimi.ingsw;
 
 import it.polimi.ingsw.controller.Controller;
-import it.polimi.ingsw.controller.RMI.controllerRMI;
+import it.polimi.ingsw.controller.RMI.ControllerRMI;
 import it.polimi.ingsw.controller.socket.SocketController;
 import it.polimi.ingsw.view.TUI.TUI;
 import it.polimi.ingsw.view.View;
@@ -32,7 +32,7 @@ public class Client {
             port = 4444;
         } else{
             System.out.println("You chose the RMI protocol!");
-            controller = new controllerRMI();
+            controller = new ControllerRMI();
             port = 4445;
         }
 

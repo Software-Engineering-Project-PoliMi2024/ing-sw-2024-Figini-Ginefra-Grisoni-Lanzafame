@@ -6,7 +6,7 @@ import java.io.Serializable;
 import java.rmi.Remote;
 import java.rmi.RemoteException;
 
-public class loginRMI implements Remote, Serializable {
+public class LoginRMI implements Remote, Serializable {
     /**@param nickname the nickname prompted by the user
      * @param games all the games and users active
      * @return true if the nickname isn't already taken, false otherwise*/

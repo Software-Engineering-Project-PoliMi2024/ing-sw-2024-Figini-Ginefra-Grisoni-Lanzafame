@@ -5,9 +5,9 @@ import it.polimi.ingsw.view.View;
 
 import java.io.IOException;
 import java.net.Socket;
-import it.polimi.ingsw.controller.clientImplementation;
+import it.polimi.ingsw.controller.ClientImplementation;
 
-public class SocketClient extends clientImplementation{
+public class SocketClient extends ClientImplementation {
     protected final Controller controller;
     protected final String ip;
     protected final int port;
