@@ -15,7 +15,7 @@ public class CardTextStyle {
             Resource.ANIMAL, "\uD83D\uDC3A", // 🐺
             Resource.INSECT, "\uD83E\uDD8B", //🦋
             Resource.FUNGI, "\uD83C\uDF44", //🍄
-            Resource.PLANT, "\uD83C\uDF40", //🍀
+            Resource.PLANT, "🌿", //🌿
             WritingMaterial.INKWELL, "\uD83E\uDED9", //🫙
             WritingMaterial.QUILL, "\uD83E\uDEB6", //🪶
             WritingMaterial.MANUSCRIPT, "\uD83D\uDCDC", //📜

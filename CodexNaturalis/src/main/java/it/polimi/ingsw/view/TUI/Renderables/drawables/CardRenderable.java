@@ -39,7 +39,10 @@ public class CardRenderable extends Drawable {
 
         //Draw the corners
         for(CardCorner corner : CardCorner.values()){
-            String collectableEmoji = CardTextStyle.getCollectableEmoji(targetCard.getCollectableAt(corner, face));
+            String collectableEmoji =
+                    targetCard.getCollectableAt(corner, face) == null ?
+                            filler :
+                            CardTextStyle.getCollectableEmoji(targetCard.getCollectableAt(corner, face));
 
             Position offset = corner.getOffset();
 
