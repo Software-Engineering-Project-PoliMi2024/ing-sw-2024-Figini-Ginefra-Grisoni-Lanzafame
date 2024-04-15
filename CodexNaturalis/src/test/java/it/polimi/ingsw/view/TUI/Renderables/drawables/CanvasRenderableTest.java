@@ -28,7 +28,7 @@ class CanvasRenderableTest {
 
         canvasRenderable.draw(cardRenderable, new Position(0, 0));
 
-        canvasRenderable.draw(cardRenderable, new Position(1, 0));
+        canvasRenderable.draw(cardRenderable, new Position(1, 1));
 
         canvasRenderable.render();
 
