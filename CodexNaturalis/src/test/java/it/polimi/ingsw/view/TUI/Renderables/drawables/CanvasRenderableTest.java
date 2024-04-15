@@ -22,7 +22,7 @@ class CanvasRenderableTest {
     void draw() {
         Game game = new Game("test", 2);
 
-        CanvasRenderable canvasRenderable = new CanvasRenderable(60, 50);
+        CanvasRenderable canvasRenderable = new CanvasRenderable(40, 20);
 
         CardRenderable cardRenderable = new CardRenderable(game.getResourceCardDeck().getBuffer().stream().findFirst().orElse(null), CardFace.FRONT);
 

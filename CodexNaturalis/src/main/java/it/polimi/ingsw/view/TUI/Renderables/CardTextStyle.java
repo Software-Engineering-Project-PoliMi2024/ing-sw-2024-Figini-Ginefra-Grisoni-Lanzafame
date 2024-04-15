@@ -10,7 +10,7 @@ import java.util.Map;
 
 public class CardTextStyle {
     private static final int CardWidth = 9;
-    private static final int CardHeight = 6;
+    private static final int CardHeight = 5;
     private static final Map<Collectable, String> collectableEmoji = Map.of(
             Resource.ANIMAL, "\uD83D\uDC3A", // 🐺
             Resource.INSECT, "\uD83E\uDD8B", //🦋
@@ -37,13 +37,13 @@ public class CardTextStyle {
             0, "0️⃣"
     );
 
-    private static final String Border = "⬜";
+    private static final String Border = "➕";
 
     private static final Map<Resource, String> resourceFillings = Map.of(
-            Resource.ANIMAL, "\uD83D\uDFE6", //🟦
-            Resource.INSECT, "\uD83D\uDFEA", //🟪
-            Resource.FUNGI, "\uD83D\uDFE5",  //🟥
-            Resource.PLANT, "\uD83D\uDFE9" //🟩
+            Resource.ANIMAL, "\uD83D\uDD35", //🔵
+            Resource.INSECT, "\uD83D\uDFE3", //🟣
+            Resource.FUNGI, "\uD83D\uDD34", //🔴
+            Resource.PLANT, "\uD83D\uDFE2" //🟢
     );
 
     public static int getCardWidth() {
@@ -86,19 +86,19 @@ public class CardTextStyle {
 
 
 /*
-🐺⬜⬜⬜5️⃣⬜⬜⬜🐺
+⬜⬜⬜⬜5️⃣⬜⬜⬜🐺
 ⬜⬜🟦🟦🪶🟦🟦⬜⬜
 ⬜🟦🟦🟦🟦🟦🟦🟦⬜
-⬜🟦🟦3️⃣🟦1️⃣🟦🟦⬜
-⬜⬜🟦🟡🟦🔴🟦⬜⬜
-🐺⬜⬜⬜⬜⬜⬜⬜🐺
+⬜🟦🟦🟦🟦🟦🟦🟦⬜
+⬜⬜🟦3️⃣🟦1️⃣🟦⬜⬜
+⬜🐺⬜🟡🟦🔴⬜⬜⬜
+⬜⬜⬜⬜⬜⬜⬜⬜⬜
 ◾◾◾◾◾◾◾◾◾
 ◾◾◾◾◾◾◾◾◾
 ◾◾◾◾◾◾◾◾◾
 
 ⬜⬜⬜⬜5️⃣⬜⬜⬜⬛
 ⬜🐺🟦🟦🪶🟦🟦⬜⬜
-⬜🟦🟦🟦🟦🟦🟦🟦⬜
 ⬜🟦🟦3️⃣🟦1️⃣🟦🟦⬜
 ⬜⬜🟦🟡🟦🔴🟦⬜⬜
 🐺⬜⬜⬜⬜⬜⬜⬜🐺
