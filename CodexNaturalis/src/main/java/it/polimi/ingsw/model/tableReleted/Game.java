@@ -35,7 +35,7 @@ public class Game implements Serializable {
         this.name = name;
         this.gameParty = new GameParty(numberOfMaxPlayer);
 
-        CardFactory cardFactory = new CardFactory( "./Cards/cards.json");
+        CardFactory cardFactory = new CardFactory( "./cards/cards.json");
         objectiveCardDeck =
                 new Deck<>(0, cardFactory.getFactoryOf(ObjectiveCard.class).getCards());
         resourceCardDeck =
