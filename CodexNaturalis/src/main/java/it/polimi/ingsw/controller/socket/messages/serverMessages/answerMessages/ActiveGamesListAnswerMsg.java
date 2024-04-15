@@ -2,7 +2,6 @@ package it.polimi.ingsw.controller.socket.messages.serverMessages.answerMessages
 
 import it.polimi.ingsw.controller.socket.client.SocketServerHandler;
 import it.polimi.ingsw.controller.socket.messages.actionMessages.ActionMsg;
-import it.polimi.ingsw.controller.socket.messages.actionMessages.CreateGameMsg;
 import java.io.IOException;
 import java.util.Arrays;
 import java.util.Scanner;
@@ -30,6 +29,7 @@ public class ActiveGamesListAnswerMsg extends AnswerMsg{
     public void processMessage(SocketServerHandler socketServerHandler) throws IOException {
         //view.update()
         System.out.println("Active games: " + Arrays.toString(games));
+        System.out.println("Do you want to create a game? (y/n)");
         Scanner scanner = new Scanner(System.in);
         String answer = scanner.nextLine();
         /* BAD TESTING OF THE DISCONNECT FEATURE
@@ -37,8 +37,6 @@ public class ActiveGamesListAnswerMsg extends AnswerMsg{
         if(answer.equals("y")){
             socketServerHandler.getClient().getController().disconnect();
         }*/
-        System.out.println("Do you want to create a game? (y/n)");
-
         if(answer.equals("y")) {
             //view.transitionTo(createGAMEFORM)
             System.out.println("All of these should be handle by the view");
@@ -48,7 +46,7 @@ public class ActiveGamesListAnswerMsg extends AnswerMsg{
             System.out.println("How many players?");
             int players = scanner.nextInt();
 
-            socketServerHandler.getClient().getServerHandler().sendActionMessage(new CreateGameMsg(gameName, players));
+            socketServerHandler.getClient().getController().createGame(gameName, players);
         }else{
             System.out.println("Choose a game to join:");
             String gameName = scanner.nextLine();

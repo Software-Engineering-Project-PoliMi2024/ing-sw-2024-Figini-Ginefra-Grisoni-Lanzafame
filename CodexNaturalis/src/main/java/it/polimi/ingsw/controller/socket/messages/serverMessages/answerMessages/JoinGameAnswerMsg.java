@@ -68,6 +68,17 @@ public class JoinGameAnswerMsg extends AnswerMsg{
         String answer = scanner.nextLine();
         if(answer.equals("y")) {
             socketServerHandler.sendActionMessage(new LeaveLobbyMsg());
+        }else{
+            /*System.out.println("Do you want to select the StartingCard? (y/n)");
+            answer= scanner.nextLine();
+            if(answer.equals("y")){
+                socketServerHandler.getClient().getController().selectStartCardFace(new StartCard(null, null, null), null);
+            }*/
+            /*System.out.println("Do you want to select the SecretObj? (y/n)");
+            answer= scanner.nextLine();
+            if(answer.equals("y")){
+                socketServerHandler.getClient().getController().choseSecretObjective(new ObjectiveCard(0, null));
+            }*/
         }
     }
 }

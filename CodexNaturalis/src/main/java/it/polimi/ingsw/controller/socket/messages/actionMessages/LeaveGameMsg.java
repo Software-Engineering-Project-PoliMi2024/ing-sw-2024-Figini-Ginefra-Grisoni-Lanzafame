@@ -21,7 +21,7 @@ public class LeaveGameMsg extends ActionMsg{
      * Remove the player from the current match, the observerList
      * Send a LeaveGameMsgAnswer and a LeaveGameNotificationMsg
      * @param socketClientHandler the ClientHandler who received the ActionMsg from the client
-     * @throws IOException
+     * @throws IOException If an error occurs during the sending of the message, such as a network failure.
      */
     @Override
     public void processMessage(SocketClientHandler socketClientHandler) throws IOException {
@@ -34,7 +34,7 @@ public class LeaveGameMsg extends ActionMsg{
 
             socketClientHandler.sendServerMessage(new LeaveGameMsgAnswer(this));
 
-            System.out.println("User " + socketClientHandler.getUser().getNickname() + " joined game " + socketClientHandler.getGame().getName());
+            System.out.println("User " + socketClientHandler.getUser().getNickname() + " left the game " + socketClientHandler.getGame().getName());
             System.out.println("Active Players:" + socketClientHandler.getGame().getGameParty().getUsersList().stream().map(User::getNickname).reduce("", (a, b) -> a + " " + b));
 
         } catch (EmptyMatchException | UserNotFoundException e) {

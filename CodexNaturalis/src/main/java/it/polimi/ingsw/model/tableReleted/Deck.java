@@ -16,11 +16,10 @@ public class Deck<Element> implements Serializable {
     public Deck(int bufferSize, Queue<Element> elements) {
         this.bufferSize = bufferSize;
         this.actualDeck = elements;
-        this.buffer = new HashSet<>();
+        this.buffer = new LinkedHashSet<>();
         this.shuffle();
         this.populateBuffer();
     }
-
     /**
      * Shuffle the deck
      */
@@ -57,12 +56,14 @@ public class Deck<Element> implements Serializable {
     }
 
     /**
-     * Draw an element from the buffer
-     * @param element the element to draw
+     * Draw an element from the buffer given is index then it repopulate the Deck with another card
+     * @param indexElement the index of the element to draw
      * @return the element drawn
      */
-    public Element drawFromBuffer(Element element){
-        if(buffer.contains(element)){
+    public Element drawFromBuffer(int indexElement){
+        List<Element> tmpList = new LinkedList<>(buffer);
+        Element element = tmpList.get(indexElement);
+        if(element!=null){
             buffer.remove(element);
             buffer.add(this.drawFromDeck());
             return element;

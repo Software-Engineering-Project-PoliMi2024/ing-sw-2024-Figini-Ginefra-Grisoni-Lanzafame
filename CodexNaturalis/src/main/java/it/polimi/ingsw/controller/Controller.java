@@ -1,5 +1,7 @@
 package it.polimi.ingsw.controller;
 
+import it.polimi.ingsw.model.cardReleted.cards.DrawableCard;
+import it.polimi.ingsw.model.cardReleted.cards.StartCard;
 import it.polimi.ingsw.model.cardReleted.utilityEnums.CardFace;
 import it.polimi.ingsw.model.cardReleted.cards.ObjectiveCard;
 import it.polimi.ingsw.model.playerReleted.Placement;
@@ -13,10 +15,10 @@ public abstract class Controller {
     public abstract void disconnect();
     public abstract void leaveLobby();
     public abstract void createGame(String gameName, int maxPlayerCount);
-    public abstract void selectStartCardFace(CardFace cardFace);
+    public abstract void selectStartCardFace(StartCard card, CardFace cardFace);
     public abstract void peek(String nickName);
     public abstract void choseSecretObjective(ObjectiveCard objectiveCard);
     public abstract void place(Placement placement);
-    public abstract void draw(int deckID, int cardID);
+    public abstract void draw(DrawableCard deckID, int cardID);
     public abstract void leaveGame();
 }

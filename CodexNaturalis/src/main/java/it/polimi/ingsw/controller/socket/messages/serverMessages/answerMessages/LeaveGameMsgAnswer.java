@@ -19,7 +19,7 @@ public class LeaveGameMsgAnswer extends AnswerMsg{
     @Override
     public void processMessage(SocketServerHandler socketServerHandler) throws IOException {
         System.out.println("Leaving the game");
-        //view.transitionTo(GameList)? If we dont want to give the player the ability
+        //view.transitionTo(GameList)? If we don't want to give the player the ability
         //to play multiple game at once, we should kill the connection I guess
         socketServerHandler.getClient().getController().getActiveGameList();
     }

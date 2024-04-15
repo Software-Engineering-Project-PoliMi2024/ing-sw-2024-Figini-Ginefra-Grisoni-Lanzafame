@@ -6,6 +6,8 @@ import it.polimi.ingsw.controller.socket.messages.actionMessages.*;
 import it.polimi.ingsw.controller.socket.messages.actionMessages.GetActiveGameListActionMsg;
 import it.polimi.ingsw.controller.socket.messages.actionMessages.JoinGameMsg;
 import it.polimi.ingsw.controller.socket.messages.actionMessages.LoginMsg;
+import it.polimi.ingsw.model.cardReleted.cards.DrawableCard;
+import it.polimi.ingsw.model.cardReleted.cards.StartCard;
 import it.polimi.ingsw.model.cardReleted.utilityEnums.CardFace;
 import it.polimi.ingsw.model.cardReleted.cards.ObjectiveCard;
 import it.polimi.ingsw.model.playerReleted.Placement;
@@ -80,33 +82,33 @@ public class SocketController extends Controller {
     }
 
     @Override
-    public void selectStartCardFace(CardFace cardFace) {
-
+    public void selectStartCardFace(StartCard card, CardFace cardFace) {
+        socketClient.getServerHandler().sendActionMessage(new SelectStartCardFaceMsg(card, cardFace));
     }
 
     @Override
     public void peek(String nickName) {
-
+        socketClient.getServerHandler().sendActionMessage(new PeekMsg(nickName));
     }
 
     @Override
     public void choseSecretObjective(ObjectiveCard objectiveCard) {
-
+        socketClient.getServerHandler().sendActionMessage(new ChoseSecretObjectiveMsg(objectiveCard));
     }
 
     @Override
     public void place(Placement placement) {
-
+        socketClient.getServerHandler().sendActionMessage(new PlaceMsg(placement));
     }
 
     @Override
-    public void draw(int deckID, int cardID) {
-
+    public void draw(DrawableCard deckID, int cardID) {
+        socketClient.getServerHandler().sendActionMessage(new DrawMsg(deckID, cardID));
     }
 
     @Override
     public void leaveGame() {
-
+        socketClient.getServerHandler().sendActionMessage(new LeaveGameMsg());
     }
 
     public SocketClient getSocketClient()

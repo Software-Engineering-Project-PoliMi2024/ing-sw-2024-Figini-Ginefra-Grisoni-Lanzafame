@@ -4,6 +4,8 @@ import it.polimi.ingsw.controller.Controller;
 import it.polimi.ingsw.controller.RMI.remoteInterfaces.loginRMI;
 import it.polimi.ingsw.controller.RMI.remoteInterfaces.multiGames;
 import it.polimi.ingsw.model.MultiGame;
+import it.polimi.ingsw.model.cardReleted.cards.DrawableCard;
+import it.polimi.ingsw.model.cardReleted.cards.StartCard;
 import it.polimi.ingsw.model.cardReleted.utilityEnums.CardFace;
 import it.polimi.ingsw.model.cardReleted.cards.ObjectiveCard;
 import it.polimi.ingsw.model.playerReleted.Placement;
@@ -24,7 +26,7 @@ public class controllerRMI extends Controller {
         try {
             registry = LocateRegistry.getRegistry(ip, port);
             try {
-                MultiGame games = ((multiGames) registry.lookup(labelAPI.GetMultiGames.getLabel())).getMultiGame();;
+                MultiGame games = ((multiGames) registry.lookup(labelAPI.GetMultiGames.getLabel())).getMultiGame();
                 loginRMI loginRMI = (loginRMI) registry.lookup(labelAPI.Login.getLabel());
                 while(!loginRMI.login(nickname, games)){
                     System.out.println("Login failed : Nickname already taken");
@@ -51,10 +53,15 @@ public class controllerRMI extends Controller {
     public void disconnect(){}
     public void leaveLobby(){}
     public void createGame(String gameName, int maxPlayerCount){}
-    public void selectStartCardFace(CardFace cardFace){}
+
+    @Override
+    public void selectStartCardFace(StartCard card, CardFace cardFace) {
+
+    }
+
     public void peek(String nickName){}
     public void choseSecretObjective(ObjectiveCard objectiveCard){}
     public void place(Placement placement){}
-    public void draw(int deckID, int cardID){}
+    public void draw(DrawableCard deckID, int cardID){}
     public void leaveGame(){}
 }
