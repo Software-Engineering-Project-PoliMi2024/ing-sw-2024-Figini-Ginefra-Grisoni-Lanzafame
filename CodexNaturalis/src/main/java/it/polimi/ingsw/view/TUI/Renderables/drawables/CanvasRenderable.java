@@ -1,8 +1,7 @@
 package it.polimi.ingsw.view.TUI.Renderables.drawables;
 
 import it.polimi.ingsw.model.playerReleted.Position;
-import it.polimi.ingsw.view.TUI.Renderables.CardTextStyle;
-import it.polimi.ingsw.view.TUI.Renderables.Renderable;
+import it.polimi.ingsw.view.TUI.Renderables.Styles.CardTextStyle;
 import it.polimi.ingsw.view.TUI.inputs.CommandPrompt;
 
 public class CanvasRenderable extends Drawable {
