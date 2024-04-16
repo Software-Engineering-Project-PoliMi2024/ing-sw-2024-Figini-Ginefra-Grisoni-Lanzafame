@@ -1,6 +1,5 @@
 package it.polimi.ingsw.view.TUI.Renderables;
 
-import it.polimi.ingsw.model.cardReleted.*;
 import it.polimi.ingsw.model.cardReleted.utilityEnums.Collectable;
 import it.polimi.ingsw.model.cardReleted.utilityEnums.Resource;
 import it.polimi.ingsw.model.cardReleted.utilityEnums.SpecialCollectable;

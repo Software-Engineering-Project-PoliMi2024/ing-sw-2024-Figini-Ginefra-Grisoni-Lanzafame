@@ -1,6 +1,5 @@
 package it.polimi.ingsw.view.TUI.Renderables.drawables;
 
-import it.polimi.ingsw.model.cardReleted.*;
 import it.polimi.ingsw.model.cardReleted.cards.CardWithCorners;
 import it.polimi.ingsw.model.cardReleted.utilityEnums.CardCorner;
 import it.polimi.ingsw.model.cardReleted.utilityEnums.CardFace;
