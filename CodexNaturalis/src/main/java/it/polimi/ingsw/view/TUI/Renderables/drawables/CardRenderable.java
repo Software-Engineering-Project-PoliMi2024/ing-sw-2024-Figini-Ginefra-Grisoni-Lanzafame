@@ -1,12 +1,11 @@
 package it.polimi.ingsw.view.TUI.Renderables.drawables;
 
-import it.polimi.ingsw.model.cardReleted.*;
 import it.polimi.ingsw.model.cardReleted.cards.CardWithCorners;
 import it.polimi.ingsw.model.cardReleted.utilityEnums.CardCorner;
 import it.polimi.ingsw.model.cardReleted.utilityEnums.CardFace;
 import it.polimi.ingsw.model.playerReleted.Position;
 import it.polimi.ingsw.view.TUI.Renderables.CardTextStyle;
-import it.polimi.ingsw.view.TUI.Renderables.drawables.Drawable;
+import it.polimi.ingsw.view.TUI.inputs.CommandPrompt;
 
 public class CardRenderable extends Drawable {
 
@@ -14,8 +13,8 @@ public class CardRenderable extends Drawable {
     private final CardFace face;
     private final String filler;
 
-    public CardRenderable(CardWithCorners targetCard, CardFace face){
-        super(CardTextStyle.getCardWidth(), CardTextStyle.getCardHeight());
+    public CardRenderable(CardWithCorners targetCard, CardFace face, CommandPrompt[] relatedCommands) {
+        super(CardTextStyle.getCardWidth(), CardTextStyle.getCardHeight(), relatedCommands);
         this.targetCard = targetCard;
         this.face = face;
         this.filler = CardTextStyle.getResourceFilling(targetCard.getPermanentResources(face).stream().findFirst().orElse(null));

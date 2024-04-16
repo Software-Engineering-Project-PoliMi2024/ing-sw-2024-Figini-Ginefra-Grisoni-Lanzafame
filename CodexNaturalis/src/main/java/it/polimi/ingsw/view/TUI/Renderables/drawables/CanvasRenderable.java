@@ -3,14 +3,15 @@ package it.polimi.ingsw.view.TUI.Renderables.drawables;
 import it.polimi.ingsw.model.playerReleted.Position;
 import it.polimi.ingsw.view.TUI.Renderables.CardTextStyle;
 import it.polimi.ingsw.view.TUI.Renderables.Renderable;
+import it.polimi.ingsw.view.TUI.inputs.CommandPrompt;
 
 public class CanvasRenderable extends Drawable {
 
     // The center of the canvas in grid coordinates
     private Position center = new Position(0, 0);
 
-    public CanvasRenderable(int width, int height){
-        super(width, height);
+    public CanvasRenderable(int width, int height, CommandPrompt[] relatedCommands){
+        super(width, height, relatedCommands);
         fillContent(CardTextStyle.getBackgroundEmoji());
     }
 

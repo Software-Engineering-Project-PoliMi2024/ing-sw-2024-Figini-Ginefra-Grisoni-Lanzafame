@@ -2,6 +2,7 @@ package it.polimi.ingsw.view.TUI.Renderables.drawables;
 
 import it.polimi.ingsw.model.playerReleted.Position;
 import it.polimi.ingsw.view.TUI.Renderables.Renderable;
+import it.polimi.ingsw.view.TUI.inputs.CommandPrompt;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -15,7 +16,8 @@ public abstract class Drawable extends Renderable {
     private final String[][] content;
 
 
-    public Drawable(int width, int height){
+    public Drawable(int width, int height, CommandPrompt[] relatedCommands){
+        super(relatedCommands);
         this.width = width;
         this.height = height;
         this.content = new String[height][width];
