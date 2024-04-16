@@ -2,15 +2,13 @@ package it.polimi.ingsw.view.TUI;
 
 import it.polimi.ingsw.controller.Controller;
 import it.polimi.ingsw.controller.socket.SocketController;
-import it.polimi.ingsw.model.playerReleted.User;
 import it.polimi.ingsw.view.TUI.Renderables.CommandDisplayRenderable;
 import it.polimi.ingsw.view.TUI.Renderables.EchoRenderable;
 import it.polimi.ingsw.view.TUI.Renderables.Renderable;
 import it.polimi.ingsw.view.TUI.inputs.CommandPrompt;
+import it.polimi.ingsw.view.TUI.inputs.InputHandler;
 import it.polimi.ingsw.view.View;
 
-import java.util.List;
-import java.util.Scanner;
 import java.util.function.Predicate;
 
 public class TUI extends View{
@@ -21,9 +19,6 @@ public class TUI extends View{
     public TUI(Controller controller){
         super(controller);
         inputHandler.attach(commandDisplay);
-
-;
-
 
         CommandPrompt echoPrompt = new CommandPrompt("echo",
                 new String[]{"What do you want to echo?"},
