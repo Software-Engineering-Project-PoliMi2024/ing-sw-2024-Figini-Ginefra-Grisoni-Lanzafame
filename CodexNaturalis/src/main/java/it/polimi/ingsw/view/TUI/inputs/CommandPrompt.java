@@ -9,7 +9,9 @@ import java.util.List;
 import java.util.function.Consumer;
 import java.util.function.Predicate;
 
-public class CommandPrompt implements Iterator<String>, CommandObserved {
+public enum CommandPrompt implements Iterator<String>, CommandObserved {
+    ECHO("echo", new String[]{"What do you want to echo?"}, new Predicate[]{s -> true});
+
     private final String[] questions;
     private final Predicate<String>[] validators;
 
@@ -21,7 +23,7 @@ public class CommandPrompt implements Iterator<String>, CommandObserved {
 
     private int currentQuestion = 0;
 
-    public CommandPrompt(String name, String[] prompts, Predicate<String>[] validators) {
+    CommandPrompt(String name, String[] prompts, Predicate<String>[] validators) {
         this.commandName = name;
         this.questions = prompts;
         this.validators = validators;

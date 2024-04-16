@@ -20,15 +20,11 @@ public class TUI extends View{
         super(controller);
         inputHandler.attach(commandDisplay);
 
-        CommandPrompt echoPrompt = new CommandPrompt("echo",
-                new String[]{"What do you want to echo?"},
-                new Predicate[]{s -> true});
+        Renderable echoRenderable = new EchoRenderable(new CommandPrompt[]{CommandPrompt.ECHO});
 
-        Renderable echoRenderable = new EchoRenderable(new CommandPrompt[]{echoPrompt});
+        CommandPrompt.ECHO.attach(echoRenderable);
 
-        echoPrompt.attach(echoRenderable);
-
-        commandDisplay.addCommandPrompt(echoPrompt);
+        commandDisplay.addCommandPrompt(CommandPrompt.ECHO);
     }
 
     public void run() {
