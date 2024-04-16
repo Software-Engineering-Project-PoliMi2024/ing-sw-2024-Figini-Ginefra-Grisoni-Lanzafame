@@ -15,7 +15,7 @@ class CardRenderableTest {
         Game game = new Game("test", 2);
 
         game.getResourceCardDeck().getBuffer().forEach(card -> {
-            CardRenderable cardRenderable = new CardRenderable(card, CardFace.FRONT);
+            CardRenderable cardRenderable = new CardRenderable(card, CardFace.FRONT, null);
             cardRenderable.render();
         });
 

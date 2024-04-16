@@ -5,6 +5,10 @@ public class ConnectFormRenderable extends Renderable {
     private String port = "";
     private String nickname = "";
 
+    public ConnectFormRenderable() {
+        super(null);
+    }
+
     @Override
     public void render() {
         if (ip.isEmpty()) {

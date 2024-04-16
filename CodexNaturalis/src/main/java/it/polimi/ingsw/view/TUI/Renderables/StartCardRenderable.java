@@ -7,6 +7,7 @@ public class StartCardRenderable extends Renderable {
     private String selectStartCardFace = "";
 
     public StartCardRenderable(StartCard startCard) {
+        super(null);
         this.startCard = startCard;
     }
 

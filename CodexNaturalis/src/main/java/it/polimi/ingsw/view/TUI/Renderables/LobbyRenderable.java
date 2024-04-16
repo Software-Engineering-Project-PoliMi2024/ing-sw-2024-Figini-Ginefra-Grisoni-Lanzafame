@@ -10,6 +10,7 @@ public class LobbyRenderable extends Renderable {
     private String userInput = "";
 
     public LobbyRenderable(GameParty gameParty) {
+        super(null);
         this.gameParty = gameParty;
     }
 
@@ -18,7 +19,7 @@ public class LobbyRenderable extends Renderable {
         if (gameParty == null || gameParty.getUsersList().isEmpty()) {
             System.out.println("Waiting for players...");
         } else {
-            System.out.println("Current lobby for game: " + gameParty.getGameName()); //where to retrieve name, missing method in game party ??
+            //System.out.println("Current lobby for game: " + gameParty.getGameName()); //where to retrieve name, missing method in game party ??
             System.out.println("Players in lobby:");
             List<User> users = gameParty.getUsersList();
             for (User user : users) {

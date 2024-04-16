@@ -5,6 +5,7 @@ import it.polimi.ingsw.controller.socket.SocketController;
 public class CreateGameFormRenderable extends Renderable {
 
     public CreateGameFormRenderable(SocketController controller) {
+        super(null);
     }
 
     @Override

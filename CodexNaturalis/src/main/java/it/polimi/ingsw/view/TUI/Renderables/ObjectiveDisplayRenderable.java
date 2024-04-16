@@ -8,6 +8,7 @@ public class ObjectiveDisplayRenderable extends Renderable {
     private String choseSecretObjective = "";
 
     public ObjectiveDisplayRenderable(List<ObjectiveCard> objectiveCards) {
+        super(null);
         this.objectiveCards = objectiveCards;
     }
 

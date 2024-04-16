@@ -22,9 +22,9 @@ class CanvasRenderableTest {
     void draw() {
         Game game = new Game("test", 2);
 
-        CanvasRenderable canvasRenderable = new CanvasRenderable(41, 10);
+        CanvasRenderable canvasRenderable = new CanvasRenderable(41, 10, null);
 
-        CardRenderable cardRenderable = new CardRenderable(game.getResourceCardDeck().getBuffer().stream().findFirst().orElse(null), CardFace.FRONT);
+        CardRenderable cardRenderable = new CardRenderable(game.getResourceCardDeck().getBuffer().stream().findFirst().orElse(null), CardFace.FRONT, null);
 
         canvasRenderable.draw(cardRenderable, new Position(0, 0));
 

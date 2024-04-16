@@ -8,6 +8,7 @@ public class GameListRenderable extends Renderable {
     private String selectedGameIndex = "";
 
     public GameListRenderable(List<Game> games) {
+        super(null);
         this.games = games;
     }
 
