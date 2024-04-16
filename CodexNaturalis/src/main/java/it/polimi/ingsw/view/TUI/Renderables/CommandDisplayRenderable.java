@@ -90,4 +90,8 @@ public class CommandDisplayRenderable extends Renderable{
         else
             activePrompts.put(prompt, activePrompts.get(prompt) - 1);
     }
+
+    public void clearCommandPrompts(){
+        activePrompts.clear();
+    }
 }

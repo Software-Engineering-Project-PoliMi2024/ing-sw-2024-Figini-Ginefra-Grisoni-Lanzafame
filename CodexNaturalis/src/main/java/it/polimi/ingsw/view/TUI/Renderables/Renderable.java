@@ -14,7 +14,14 @@ public abstract class Renderable implements InputObserver, CommandObserver {
     private final CommandPrompt[] relatedCommands;
 
     public Renderable(CommandPrompt[] relatedCommands){
+
         this.relatedCommands = relatedCommands;
+
+        if(relatedCommands != null) {
+            for (CommandPrompt command : relatedCommands) {
+                command.attach(this);
+            }
+        }
     }
 
     public abstract void render();
@@ -32,5 +39,9 @@ public abstract class Renderable implements InputObserver, CommandObserver {
 
     public boolean isActive(){
         return this.active;
+    }
+
+    public CommandPrompt[] getRelatedCommands(){
+        return relatedCommands;
     }
 }
