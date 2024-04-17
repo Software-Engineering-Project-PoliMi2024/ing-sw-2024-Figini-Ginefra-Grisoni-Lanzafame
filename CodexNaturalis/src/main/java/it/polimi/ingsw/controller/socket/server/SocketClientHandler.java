@@ -137,6 +137,9 @@ public class SocketClientHandler implements Runnable, ServerMsgObserver {
         this.user = user;
     }
 
+    public void setGames(MultiGame games) {
+        this.games = games;
+    }
 
     /**
      * Sends a message to the client.

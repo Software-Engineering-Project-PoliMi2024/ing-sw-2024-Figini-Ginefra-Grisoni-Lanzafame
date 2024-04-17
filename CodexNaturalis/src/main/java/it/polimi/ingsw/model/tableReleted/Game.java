@@ -29,7 +29,7 @@ public class Game implements Serializable {
 
     private final String name;
 
-    private final GameParty gameParty;
+    private GameParty gameParty;
 
     /**
      * Constructs a new Game instance with a specified maximum number of players.
@@ -37,7 +37,7 @@ public class Game implements Serializable {
     public Game(String name, int numberOfMaxPlayer) {
         this.name = name;
         this.gameParty = new GameParty(numberOfMaxPlayer);
-        String filePath = "./cards/";
+        String filePath = "C:\\Users\\samue\\IdeaProjects\\ing-sw-2024-Figini-Ginefra-Grisoni-Lanzafame\\CodexNaturalis\\cards\\";
         String sourceFileName = "cards.json";
         objectiveCardDeck =
                 new Deck<>(0, new ObjectiveCardFactory(filePath+sourceFileName, filePath).getCards());
@@ -77,6 +77,9 @@ public class Game implements Serializable {
         return gameParty;
     }
 
+    public void setGameParty(GameParty gameParty){
+        this.gameParty = gameParty;
+    }
     @Override
     public String toString() {
 

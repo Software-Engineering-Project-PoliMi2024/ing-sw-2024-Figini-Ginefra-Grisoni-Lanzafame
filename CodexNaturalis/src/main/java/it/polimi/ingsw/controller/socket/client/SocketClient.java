@@ -8,7 +8,7 @@ import java.net.Socket;
 import it.polimi.ingsw.controller.ClientImplementation;
 
 public class SocketClient extends ClientImplementation {
-    protected final Controller controller;
+    protected Controller controller;
     protected final String ip;
     protected final int port;
     private SocketServerHandler socketServerHandler;
@@ -30,6 +30,10 @@ public class SocketClient extends ClientImplementation {
      */
     public Controller getController() {
         return controller;
+    }
+
+    public void setController(Controller controller){
+        this.controller = controller;
     }
 
     @Override

@@ -25,7 +25,7 @@ public class LeaveLobbyAnswerMessage extends AnswerMsg{
     @Override
     public void processMessage(SocketServerHandler socketServerHandler) throws IOException {
         System.out.println("Leaving lobby");
-        //view.tranistioTo(GameList)
+        //view.transitionTo(GameList)
         socketServerHandler.sendActionMessage(new GetActiveGameListActionMsg());
     }
 }

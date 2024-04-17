@@ -114,6 +114,10 @@ public class SocketServerHandler implements Runnable{
         return owner;
     }
 
+    public void setClient(SocketClient client){
+        this.owner = client;
+    }
+
     public boolean isReady() {
         return ready;
     }

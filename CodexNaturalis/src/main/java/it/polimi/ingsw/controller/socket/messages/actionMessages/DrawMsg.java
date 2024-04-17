@@ -27,21 +27,29 @@ public class DrawMsg extends ActionMsg{
     /**
      * Call drawCardInHand() with the correct deck corresponding to the deckID
      * @param socketClientHandler the ClientHandler who received the ActionMsg from the client
-     * @throws IOException If an error occurs during the sending of the message, such as a network failure.
+     * @throws RuntimeException If an error occurs during the sending of the message, such as a network failure.
      */
     @Override
-    public void processMessage(SocketClientHandler socketClientHandler) throws IOException {
-        Game targetGame = socketClientHandler.getGame();
-        switch (deckID){
-            case GOLDCARD -> {
-                Deck<GoldCard> deck = targetGame.getGoldCardDeck();
-                drawCardInHand(deck, socketClientHandler);
-            }
-            case RESOURCECARD -> {
-                Deck<ResourceCard> deck = targetGame.getResourceCardDeck();
-                drawCardInHand(deck, socketClientHandler);
-            }
+    public void processMessage(SocketClientHandler socketClientHandler){
+        if(cardID<0 || cardID>2){
+            throw new IllegalArgumentException();
         }
+        ActionMsg.updateGame(socketClientHandler, game -> {
+            try{
+                switch (deckID){
+                    case GOLDCARD -> {
+                        Deck<GoldCard> deck = game.getGoldCardDeck();
+                        drawCardInHand(deck, socketClientHandler);
+                    }
+                    case RESOURCECARD -> {
+                        Deck<ResourceCard> deck = game.getResourceCardDeck();
+                        drawCardInHand(deck, socketClientHandler);
+                    }
+                }
+            }catch(IOException e){
+                throw new RuntimeException();
+            }
+        });
     }
 
     /**

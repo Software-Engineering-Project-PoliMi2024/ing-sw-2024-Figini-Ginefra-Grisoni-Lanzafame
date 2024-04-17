@@ -54,7 +54,7 @@ public class SelectStartCardFaceMsg extends ActionMsg{
      */
     @Override
     public void processMessage(SocketClientHandler socketClientHandler) throws IOException {
-        socketClientHandler.getUser().getUserCodex().playCard(new Placement(startiCardPosition, startCard, cardFace));
+        ActionMsg.updateCodex(socketClientHandler, codex -> codex.playCard(new Placement(startiCardPosition, startCard, cardFace)));
         System.out.println(socketClientHandler.getUser().getNickname() + " chose " + cardFace + "as the face for the startCard");
         socketClientHandler.sendServerMessage(new SelectStartCardFaceAnswerMsg(this, startCard, cardFace));
     }

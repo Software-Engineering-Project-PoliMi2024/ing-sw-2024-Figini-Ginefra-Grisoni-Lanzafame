@@ -22,7 +22,7 @@ public class ChoseSecretObjectiveMsg extends ActionMsg{
 
     @Override
     public void processMessage(SocketClientHandler socketClientHandler) throws IOException {
-        socketClientHandler.getUser().getUserHand().setSecretObjective(secrecretObjectiveCard);
+        ActionMsg.updateHand(socketClientHandler, hand -> hand.setSecretObjective(secrecretObjectiveCard));
         socketClientHandler.sendServerMessage(new ChoseSecretObjectiveAnswerMsg(this, secrecretObjectiveCard));
         //testing
         System.out.println("Set " + socketClientHandler.getUser().getUserHand() + " as secretOBJ");

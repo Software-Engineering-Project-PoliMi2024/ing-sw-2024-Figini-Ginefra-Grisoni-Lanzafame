@@ -31,20 +31,25 @@ public class LoginMsg extends ActionMsg{
      * try to add the user to the Multigame by checking if is nick is unique.
      * Always respond to the user's client with an LoginAnswerMsg with a Status (OK/ERROR)
      * @param socketClientHandler the ClientHandler who received the ActionMsg from the client
-     * @throws IOException If an error occurs during the sending of the message, such as a network failure.
+     * @throws RuntimeException If an error occurs during the sending of the message, such as a network failure.
      */
     @Override
-    public void processMessage(SocketClientHandler socketClientHandler) throws IOException {
+    public void processMessage(SocketClientHandler socketClientHandler){
         System.out.println("User " + nickname + " is trying to login");
 
-        if(!socketClientHandler.getGames().addUser(nickname)) {
-            socketClientHandler.sendServerMessage(new LoginAnswerMsg(this, LoginAnswerMsg.Status.ERROR));
-            System.out.println("! User " + nickname + " already exists !");
-        }
-        else {
-            socketClientHandler.sendServerMessage(new LoginAnswerMsg(this, LoginAnswerMsg.Status.OK));
-            socketClientHandler.setUser(new User(nickname));
-            System.out.println("User " + nickname + " logged in");
-        }
+        ActionMsg.updateMultiGame(socketClientHandler, games -> {
+            try {
+                if (!games.addUser(nickname)) {
+                    socketClientHandler.sendServerMessage(new LoginAnswerMsg(this, LoginAnswerMsg.Status.ERROR));
+                    System.out.println("! User " + nickname + " already exists !");
+                } else {
+                    socketClientHandler.sendServerMessage(new LoginAnswerMsg(this, LoginAnswerMsg.Status.OK));
+                    socketClientHandler.setUser(new User(nickname));
+                    System.out.println("User " + nickname + " logged in");
+                }
+            } catch (IOException e) {
+                throw new RuntimeException();
+            }
+        });
     }
 }

@@ -29,7 +29,7 @@ public class SelectStartCardFaceAnswerMsg extends AnswerMsg{
      */
     @Override
     public void processMessage(SocketServerHandler socketServerHandler) throws IOException {
-        //view.TransitioTo(UserDisplay)
+        //view.TransitionTo(UserDisplay)
         System.out.println(startCard + " placed with the " + cardFace +" being displayed");
     }
 }

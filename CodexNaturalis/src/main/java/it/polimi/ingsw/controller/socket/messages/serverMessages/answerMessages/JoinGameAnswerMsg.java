@@ -3,6 +3,7 @@ package it.polimi.ingsw.controller.socket.messages.serverMessages.answerMessages
 import it.polimi.ingsw.controller.socket.client.SocketServerHandler;
 import it.polimi.ingsw.controller.socket.messages.actionMessages.ActionMsg;
 import it.polimi.ingsw.controller.socket.messages.actionMessages.LeaveLobbyMsg;
+import it.polimi.ingsw.model.cardReleted.cards.ObjectiveCard;
 
 import java.io.IOException;
 import java.util.Scanner;
@@ -74,11 +75,11 @@ public class JoinGameAnswerMsg extends AnswerMsg{
             if(answer.equals("y")){
                 socketServerHandler.getClient().getController().selectStartCardFace(new StartCard(null, null, null), null);
             }*/
-            /*System.out.println("Do you want to select the SecretObj? (y/n)");
+            System.out.println("Do you want to select the SecretObj? (y/n)");
             answer= scanner.nextLine();
             if(answer.equals("y")){
                 socketServerHandler.getClient().getController().choseSecretObjective(new ObjectiveCard(0, null));
-            }*/
+            }
         }
     }
 }

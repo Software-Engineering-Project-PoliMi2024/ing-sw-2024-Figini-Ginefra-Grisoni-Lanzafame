@@ -37,33 +37,34 @@ public class JoinGameMsg extends ActionMsg{
      * Try to add the user to the gameName game. Send a JoinGameAnswerMsg with the status OK-ERROR
      * If the player is successfully added to the game, add his ClientHandler to the list of client to be notified
      * @param socketClientHandler the ClientHandler who received the ActionMsg from the client
-     * @throws IOException If an error occurs during the sending of the message, such as a network failure.
+     * @throws RuntimeException If an error occurs during the sending of the NOTIFICATION, such as a network failure.
+     * @throws IllegalCallerException if the user is trying to enter a full game lobby
+     * @throws IOException If an error occurs during the sending of the ANSWER, such as a network failure.
      */
     @Override
     public void processMessage(SocketClientHandler socketClientHandler) throws IOException {
-        try{
-            Game targetGame = socketClientHandler.getGames().getGame(gameName);
-
-            if(targetGame == null){
-                System.out.println("Game " + gameName + " not found.");
-                socketClientHandler.sendServerMessage(new JoinGameAnswerMsg(this, gameName, JoinGameAnswerMsg.Status.ERROR));
-                return;
-            }
-
+        Game targetGame = socketClientHandler.getGames().getGame(gameName);
+        if(targetGame==null){
+            System.out.println("Game " + gameName + " not found.");
+            socketClientHandler.sendServerMessage(new JoinGameAnswerMsg(this, gameName, JoinGameAnswerMsg.Status.ERROR));
+        }else{
+            //Using this setter is allowed because setGame is defined inside socketClientHandler witch is directly reachable from JoinGameMsg
+            //Setting the game inside the lambdaFunction will cause an error, because socket.getGame() will return null
             socketClientHandler.setGame(targetGame);
-            socketClientHandler.getGame().getGameParty().addUser(socketClientHandler.getUser());
-
-            socketClientHandler.getGame().getGameParty().notifyObservers(new JoinGameNotificationMsg(nickname));
-
-            socketClientHandler.getGame().getGameParty().attach(socketClientHandler);
-
-            System.out.println("User " + nickname + " joined game " + gameName);
-            System.out.println("Active Players:" + socketClientHandler.getGame().getGameParty().getUsersList().stream().map(User::getNickname).reduce("", (a, b) -> a + " " + b));
-
-            socketClientHandler.sendServerMessage(new JoinGameAnswerMsg(this, gameName, JoinGameAnswerMsg.Status.OK));
-
-        } catch (FullMatchException e) {
-            e.printStackTrace();
         }
+
+        ActionMsg.updateGameParty(socketClientHandler, gameParty -> {
+            try {
+                gameParty.addUser(socketClientHandler.getUser());
+            } catch (FullMatchException e) {
+                throw new IllegalCallerException(e);
+            }
+            gameParty.notifyObservers(new JoinGameNotificationMsg(nickname));
+            gameParty.attach(socketClientHandler);
+        });
+
+        System.out.println("User " + nickname + " joined game " + gameName);
+        System.out.println("Active Players:" + socketClientHandler.getGame().getGameParty().getUsersList().stream().map(User::getNickname).reduce("", (a, b) -> a + " " + b));
+        socketClientHandler.sendServerMessage(new JoinGameAnswerMsg(this, gameName, JoinGameAnswerMsg.Status.OK));
     }
 }

@@ -5,8 +5,6 @@ import it.polimi.ingsw.controller.socket.server.SocketClientHandler;
 import it.polimi.ingsw.model.tableReleted.Game;
 
 import java.io.IOException;
-import java.util.Arrays;
-import java.util.stream.Collectors;
 
 public class CreateGameMsg extends ActionMsg{
     private final String name;
@@ -30,19 +28,23 @@ public class CreateGameMsg extends ActionMsg{
      * Create a game and try to add it to MultiGame.
      * Always answer to the client with a CreateGameAnswerMsg with a status (OK, ERROR)
      * @param socketClientHandler the ClientHandler who received the ActionMsg from the client
-     * @throws IOException If an error occurs during the sending of the message, such as a network failure.
+     * @throws RuntimeException If an error occurs during the sending of the message, such as a network failure.
      */
     @Override
-    public void processMessage(SocketClientHandler socketClientHandler) throws IOException {
+    public void processMessage(SocketClientHandler socketClientHandler){
         Game game = new Game(name, numberOfPlayers);
-
-        if(!socketClientHandler.getGames().addGame(game)){
-            socketClientHandler.sendServerMessage(new CreateGameAnswerMsg(this, name, CreateGameAnswerMsg.Status.ERROR));
-            return;
-        }
-
-        System.out.println("Game created: " + name + " with " + numberOfPlayers + " players.");
-        System.out.println("Game list: " + String.join(", ", socketClientHandler.getGames().getGameNames()));
-        socketClientHandler.sendServerMessage(new CreateGameAnswerMsg(this, name, CreateGameAnswerMsg.Status.OK));
+        ActionMsg.updateMultiGame(socketClientHandler, games -> {
+            try{
+                if(!games.addGame(game)){
+                    socketClientHandler.sendServerMessage(new CreateGameAnswerMsg(this, name, CreateGameAnswerMsg.Status.ERROR));
+                }else{
+                    socketClientHandler.sendServerMessage(new CreateGameAnswerMsg(this, name, CreateGameAnswerMsg.Status.OK));
+                    System.out.println("Game created: " + name + " with " + numberOfPlayers + " players.");
+                    System.out.println("Game list: " + String.join(", ", socketClientHandler.getGames().getGameNames()));
+                }
+            }catch (IOException e){
+                throw new RuntimeException();
+            }
+        });
     }
 }

@@ -33,27 +33,17 @@ public class PlaceMsg extends ActionMsg{
      */
     @Override
     public void processMessage(SocketClientHandler socketClientHandler) throws IOException {
-        //socketClientHandler.getUser() return a "copy" of User. IDC if that it isn't the real obj/address
-        User user = socketClientHandler.getUser();
-        //From that user I get a Codex. Again IDC if that is the real deal
-        Codex codex = user.getUserCodex();
-        //Modify the "fake codex" obtain from user.getUserCodex()
-        codex.playCard(placement);
-        //set the "fake codex" as the new codex in User. Do the same in User
-        user.setUserCodex(codex);
-        socketClientHandler.setUser(user);
-        try {
-            //placement.card in these case will always return a CardWithCorner witch
-            // actually will be a CardInHand, because we are NOT working with a StartCard.
-            //removeCard is a method from the UserHand so accept only CardInHand.
-            user = socketClientHandler.getUser();
-            Hand hand = user.getUserHand();
-            hand.removeCard((CardInHand) placement.card());
-            user.setUserHand(hand);
-            socketClientHandler.setUser(user);
-        } catch (cardNotFoundException e) {
-            throw new RuntimeException(e);
-        }
+        ActionMsg.updateCodex(socketClientHandler, codex -> codex.playCard(placement));
+        //placement.card in these case will always return a CardWithCorner witch
+        // actually will be a CardInHand, because we are NOT working with a StartCard.
+        //removeCard is a method from the UserHand so accept only CardInHand.
+        ActionMsg.updateHand(socketClientHandler, hand -> {
+            try {
+                hand.removeCard((CardInHand) placement.card());
+            } catch (cardNotFoundException e) {
+                throw new RuntimeException(e);
+            }
+        });
         socketClientHandler.sendServerMessage(new PlaceAnswerMsg(this, placement));
     }
 }

@@ -19,9 +19,10 @@ public class DisconnectMsg extends ActionMsg{
      */
     @Override
     public void processMessage(SocketClientHandler socketClientHandler) throws IOException {
-        System.out.println(socketClientHandler.getUser().getNickname() + " is trying to disconnect");
-        socketClientHandler.getGames().removeUser(socketClientHandler.getUser().getNickname());
+        String nickname = socketClientHandler.getUser().getNickname();
+        System.out.println(nickname + " is trying to disconnect");
+        ActionMsg.updateMultiGame(socketClientHandler, games -> games.removeUser(nickname));
         socketClientHandler.sendServerMessage(new DisconnectAnswerMsg(this));
-        System.out.println(socketClientHandler.getUser().getNickname() + " disconnected");
+        System.out.println(nickname + " disconnected");
     }
 }

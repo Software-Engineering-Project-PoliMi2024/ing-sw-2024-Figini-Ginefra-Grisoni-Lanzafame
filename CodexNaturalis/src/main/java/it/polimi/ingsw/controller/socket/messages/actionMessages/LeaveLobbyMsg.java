@@ -18,23 +18,22 @@ public class LeaveLobbyMsg extends ActionMsg{
      * Send a LeaveLobbyNotificationMsg every other client in the Lobby
      * @param socketClientHandler the ClientHandler who received the ActionMsg from the client
      * @throws IOException If an error occurs during the sending of the message, such as a network failure.
+     * @throws RuntimeException if the match is left empty or the user is not found
      */
     @Override
     public void processMessage(SocketClientHandler socketClientHandler) throws IOException {
-        socketClientHandler.getGame().getGameParty().detach(socketClientHandler);
-        try {
-            socketClientHandler.getGame().getGameParty().removeUser(socketClientHandler.getUser());
-        } catch (EmptyMatchException | UserNotFoundException e) {
-            throw new RuntimeException(e);
-        }
-
-        final String nickname = socketClientHandler.getUser().getNickname();
-
-        socketClientHandler.getGame().getGameParty().notifyObservers(new LeaveLobbyNotificationMsg(nickname));
-
-        System.out.println(socketClientHandler.getUser().getNickname() + " left the lobby.");
+        String nickname = socketClientHandler.getUser().getNickname();
+        ActionMsg.updateGameParty(socketClientHandler, gameParty -> {
+            try {
+                gameParty.removeUser(socketClientHandler.getUser());
+            } catch (EmptyMatchException | UserNotFoundException e) {
+                throw new RuntimeException(e);
+            }
+            gameParty.detach(socketClientHandler);
+            gameParty.notifyObservers(new LeaveLobbyNotificationMsg(nickname));
+        });
+        System.out.println(nickname + " left the lobby.");
         System.out.println("Active Players:" + socketClientHandler.getGame().getGameParty().getUsersList().stream().map(User::getNickname).reduce("", (a, b) -> a + " " + b));
-
         socketClientHandler.sendServerMessage(new LeaveLobbyAnswerMessage(this));
     }
 }
