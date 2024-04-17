@@ -129,7 +129,6 @@ public class SocketClientHandler implements Runnable, ServerMsgObserver {
     {
         return user;
     }
-
     /**
      * @param user the user that is being bounded to this ClientHandler
      */

@@ -4,13 +4,12 @@ import java.io.Serializable;
 
 public class User implements Serializable {
     private final String nickname;
-    private final Codex userCodex;
-    private final Hand userHand;
+    private Codex userCodex;
+    private Hand userHand;
 
     public User(String nickname){
         this.nickname = nickname;
         this.userCodex = new Codex();
-        //this.userFrontier = new Frontier();
         this.userHand = new Hand();
     }
 
@@ -22,8 +21,16 @@ public class User implements Serializable {
     public Codex getUserCodex(){
         return this.userCodex;
     }
+
+    public void setUserCodex(Codex codex){
+        this.userCodex = codex;
+    }
     /** @return the user hand address*/
     public Hand getUserHand(){
         return this.userHand;
+    }
+
+    public void setUserHand(Hand hand){
+        this.userHand=hand;
     }
 }

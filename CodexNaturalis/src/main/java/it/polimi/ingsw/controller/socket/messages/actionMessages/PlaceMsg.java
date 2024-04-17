@@ -3,8 +3,7 @@ package it.polimi.ingsw.controller.socket.messages.actionMessages;
 import it.polimi.ingsw.controller.socket.messages.serverMessages.answerMessages.PlaceAnswerMsg;
 import it.polimi.ingsw.controller.socket.server.SocketClientHandler;
 import it.polimi.ingsw.model.cardReleted.cards.CardInHand;
-import it.polimi.ingsw.model.playerReleted.Placement;
-import it.polimi.ingsw.model.playerReleted.cardNotFoundException;
+import it.polimi.ingsw.model.playerReleted.*;
 
 import java.io.IOException;
 
@@ -34,11 +33,24 @@ public class PlaceMsg extends ActionMsg{
      */
     @Override
     public void processMessage(SocketClientHandler socketClientHandler) throws IOException {
-        socketClientHandler.getUser().getUserCodex().playCard(placement);
+        //socketClientHandler.getUser() return a "copy" of User. IDC if that it isn't the real obj/address
+        User user = socketClientHandler.getUser();
+        //From that user I get a Codex. Again IDC if that is the real deal
+        Codex codex = user.getUserCodex();
+        //Modify the "fake codex" obtain from user.getUserCodex()
+        codex.playCard(placement);
+        //set the "fake codex" as the new codex in User. Do the same in User
+        user.setUserCodex(codex);
+        socketClientHandler.setUser(user);
         try {
-            //placement.card in these case will always return a CardInHand, because we are NOT working with a StartCard
+            //placement.card in these case will always return a CardWithCorner witch
+            // actually will be a CardInHand, because we are NOT working with a StartCard.
             //removeCard is a method from the UserHand so accept only CardInHand.
-            socketClientHandler.getUser().getUserHand().removeCard((CardInHand) placement.card());
+            user = socketClientHandler.getUser();
+            Hand hand = user.getUserHand();
+            hand.removeCard((CardInHand) placement.card());
+            user.setUserHand(hand);
+            socketClientHandler.setUser(user);
         } catch (cardNotFoundException e) {
             throw new RuntimeException(e);
         }
