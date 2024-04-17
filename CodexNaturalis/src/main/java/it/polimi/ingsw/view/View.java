@@ -23,8 +23,8 @@ public abstract class View {
         return this.currentState;
     }
 
-    public ViewState setState(ViewState state){
-        return this.currentState = state;
+    public void setState(ViewState state){
+        this.currentState = state;
     }
 
     public void transitionTo(ViewState state){
