@@ -9,7 +9,9 @@ import it.polimi.ingsw.view.TUI.States.StateTUI;
 import it.polimi.ingsw.view.TUI.inputs.CommandPrompt;
 import it.polimi.ingsw.view.TUI.inputs.InputHandler;
 import it.polimi.ingsw.view.View;
+import it.polimi.ingsw.view.ViewState;
 
+import java.util.Arrays;
 import java.util.List;
 import java.util.function.Predicate;
 
@@ -19,7 +21,6 @@ public class TUI extends View{
 
     private final Renderable[] renderables;
 
-    private StateTUI state = null;
 
     public TUI(Controller controller){
         super(controller);
@@ -33,7 +34,7 @@ public class TUI extends View{
 
         renderables = new Renderable[]{echoRenderable};
 
-        this.setState(StateTUI.STATE0);
+        this.setState(ViewState.SERVER_CONNECTION);
 
     }
 
@@ -43,16 +44,24 @@ public class TUI extends View{
         commandDisplay.render();
     }
 
-    public void setState(StateTUI state){
+    @Override
+    public void transitionTo(ViewState state){
+        this.setState(state);
+
+        StateTUI stateTUI = Arrays.stream(StateTUI.values()).reduce((a, b) -> a.references(state) ? a : b).orElse(null);
+
+        if(stateTUI == null){
+            throw new IllegalArgumentException("Current View State(" + stateTUI.name() + ") not supported by TUI");
+        }
+
         for(Renderable renderable : renderables){
             renderable.setActive(false);
         }
 
-        for(Renderable renderable : state.getRenderables()){
+        for(Renderable renderable : stateTUI.getRenderables()){
             renderable.setActive(true);
         }
 
-        this.state = state;
 
         updateCommands();
     }
@@ -61,8 +70,10 @@ public class TUI extends View{
         commandDisplay.clearCommandPrompts();
 
         for(Renderable renderable : renderables){
-            for(CommandPrompt commandPrompt : renderable.getRelatedCommands()){
-                commandDisplay.addCommandPrompt(commandPrompt);
+            if(renderable.isActive()) {
+                for (CommandPrompt commandPrompt : renderable.getRelatedCommands()) {
+                    commandDisplay.addCommandPrompt(commandPrompt);
+                }
             }
         }
     }

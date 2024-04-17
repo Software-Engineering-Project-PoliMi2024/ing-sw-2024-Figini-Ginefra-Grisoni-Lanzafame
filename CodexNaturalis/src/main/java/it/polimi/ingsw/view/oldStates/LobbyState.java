@@ -1,4 +1,5 @@
-package it.polimi.ingsw.view;
+package it.polimi.ingsw.view.oldStates;
+
 import java.util.List;
 public class LobbyState extends ViewState {
     private final String lobbyName;

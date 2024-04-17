@@ -1,11 +1,15 @@
 package it.polimi.ingsw.view;
 
 import it.polimi.ingsw.controller.Controller;
+import it.polimi.ingsw.view.ViewState;
 
 public abstract class View {
     private final Controller controller;
 
+    private ViewState currentState = null;
+
     public View(Controller controller){
+
         this.controller = controller;
     }
 
@@ -13,6 +17,18 @@ public abstract class View {
 
     public Controller getController(){
         return this.controller;
+    }
+
+    public ViewState getCurrentState(){
+        return this.currentState;
+    }
+
+    public ViewState setState(ViewState state){
+        return this.currentState = state;
+    }
+
+    public void transitionTo(ViewState state){
+        this.currentState = state;
     }
 
 }

@@ -1,4 +1,4 @@
-package it.polimi.ingsw.view;
+package it.polimi.ingsw.view.oldStates;
 
 public class ServerConnectState extends ViewState {
 
