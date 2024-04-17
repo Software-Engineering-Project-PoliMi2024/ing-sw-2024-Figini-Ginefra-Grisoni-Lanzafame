@@ -3,9 +3,13 @@ package it.polimi.ingsw.view.TUI.Renderables.drawables;
 import it.polimi.ingsw.model.cardReleted.cards.CardWithCorners;
 import it.polimi.ingsw.model.cardReleted.utilityEnums.CardCorner;
 import it.polimi.ingsw.model.cardReleted.utilityEnums.CardFace;
+import it.polimi.ingsw.model.cardReleted.utilityEnums.Resource;
 import it.polimi.ingsw.model.playerReleted.Position;
 import it.polimi.ingsw.view.TUI.Renderables.Styles.CardTextStyle;
 import it.polimi.ingsw.view.TUI.inputs.CommandPrompt;
+
+import java.util.List;
+import java.util.Set;
 
 public class CardRenderable extends Drawable {
 
@@ -13,11 +17,27 @@ public class CardRenderable extends Drawable {
     private final CardFace face;
     private final String filler;
 
+    private final boolean isStartingCard;
+
     public CardRenderable(CardWithCorners targetCard, CardFace face, CommandPrompt[] relatedCommands) {
         super(CardTextStyle.getCardWidth(), CardTextStyle.getCardHeight(), relatedCommands);
         this.targetCard = targetCard;
         this.face = face;
-        this.filler = CardTextStyle.getResourceFilling(targetCard.getPermanentResources(face).stream().findFirst().orElse(null));
+
+        int collectableCount = 0;
+        for(CardCorner corner : CardCorner.values()){
+            if(targetCard.isCorner(corner, CardFace.FRONT) && targetCard.getCollectableAt(corner, CardFace.FRONT) != null)
+                collectableCount++;
+        }
+
+        this.isStartingCard = collectableCount == 4;
+
+
+        Set<Resource> resources = targetCard.getPermanentResources(face);
+
+        this.filler = isStartingCard ? CardTextStyle.getStartFilling() :
+                CardTextStyle.getResourceFilling(resources.stream().findFirst().orElse(null));
+
         update();
     }
 
@@ -47,17 +67,34 @@ public class CardRenderable extends Drawable {
 
             Position innerCornerOffset = new Position(
                     1 + (offset.getX() + 1) / 2 * (CardTextStyle.getCardWidth() - 3),
-                    1 + (offset.getY() + 1) / 2 * (CardTextStyle.getCardHeight() - 3)
+                    1 + (-offset.getY() + 1) / 2 * (CardTextStyle.getCardHeight() - 3)
             );
 
             this.addContent(collectableEmoji, innerCornerOffset.getX(), innerCornerOffset.getY());
         }
 
+        //Draw the permanent resources
+        drawPermanentResources(targetCard.getPermanentResources(face));
+
         //Draw the points
-        if(targetCard.getPoints() != 0)
+        if(targetCard.getPoints() != 0 && face == CardFace.FRONT)
             this.addContent(CardTextStyle.getNumberEmoji(targetCard.getPoints()), getWidth()/2, 0);
         else
             this.addContent(CardTextStyle.getBorder(), getWidth()/2, 0);
+    }
+
+    private void drawPermanentResources(Set<Resource> resources){
+        if(resources.isEmpty() || face == CardFace.FRONT)
+            return;
+
+        int n = resources.size();
+        int y = this.getHeight() / 2;
+        int x = (this.getWidth() - n) / 2;
+
+        for(Resource resource : resources){
+            this.addContent(CardTextStyle.getCollectableEmoji(resource), x++, y);
+            x += 1 - n%2;
+        }
     }
 
     @Override

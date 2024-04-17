@@ -14,8 +14,39 @@ class CardRenderableTest {
         System.out.println(Paths.get("").toAbsolutePath());
         Game game = new Game("test", 2);
 
+        System.out.println("Resource Cards FRONT:");
         game.getResourceCardDeck().getBuffer().forEach(card -> {
             CardRenderable cardRenderable = new CardRenderable(card, CardFace.FRONT, null);
+            cardRenderable.render();
+        });
+
+        System.out.println("Resource Cards BACK:");
+        game.getResourceCardDeck().getBuffer().forEach(card -> {
+            CardRenderable cardRenderable = new CardRenderable(card, CardFace.BACK, null);
+            cardRenderable.render();
+        });
+
+        System.out.println("Gold Cards FRONT:");
+        game.getGoldCardDeck().getBuffer().forEach(card -> {
+            CardRenderable cardRenderable = new CardRenderable(card, CardFace.FRONT, null);
+            cardRenderable.render();
+        });
+
+        System.out.println("Gold Cards BACK:");
+        game.getGoldCardDeck().getBuffer().forEach(card -> {
+            CardRenderable cardRenderable = new CardRenderable(card, CardFace.BACK, null);
+            cardRenderable.render();
+        });
+
+        System.out.println("StartingCard Cards FRONT:");
+        game.getStartingCardDeck().getActualDeck().forEach(card -> {
+            CardRenderable cardRenderable = new CardRenderable(card, CardFace.FRONT, null);
+            cardRenderable.render();
+        });
+
+        System.out.println("StartingCard Cards BACK:");
+        game.getStartingCardDeck().getActualDeck().forEach(card -> {
+            CardRenderable cardRenderable = new CardRenderable(card, CardFace.BACK, null);
             cardRenderable.render();
         });
 

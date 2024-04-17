@@ -37,7 +37,7 @@ public class Game implements Serializable {
     public Game(String name, int numberOfMaxPlayer) {
         this.name = name;
         this.gameParty = new GameParty(numberOfMaxPlayer);
-        String filePath = "C:\\Users\\samue\\IdeaProjects\\ing-sw-2024-Figini-Ginefra-Grisoni-Lanzafame\\CodexNaturalis\\cards\\";
+        String filePath = ".\\cards\\";
         String sourceFileName = "cards.json";
         objectiveCardDeck =
                 new Deck<>(0, new ObjectiveCardFactory(filePath+sourceFileName, filePath).getCards());

@@ -29,15 +29,9 @@ public class StartCard extends CardWithCorners {
     @Override
     public Collectable getCollectableAt(CardCorner corner, CardFace face){
         if (face == CardFace.BACK){
-            if(backCorners.containsKey(corner))
-                return backCorners.get(corner);
-            else
-                throw new IllegalArgumentException("No corner");
+            return backCorners.getOrDefault(corner, null);
         } else
-            if(frontCorners.containsKey(corner))
-                return frontCorners.get(corner);
-            else
-                throw new IllegalArgumentException("No corner");
+            return frontCorners.getOrDefault(corner, null);
     }
 
     /**@param corner the corner to check
@@ -55,7 +49,7 @@ public class StartCard extends CardWithCorners {
      * @return the HashSet containing the permanent Resources */
     @Override
     public HashSet <Resource> getPermanentResources(CardFace face){
-        if (face == CardFace.FRONT)
+        if (face == CardFace.BACK)
             return permanentResources;
         else
             return new HashSet<Resource>();

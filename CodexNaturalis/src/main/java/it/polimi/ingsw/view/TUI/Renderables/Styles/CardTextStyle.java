@@ -45,6 +45,8 @@ public class CardTextStyle {
             Resource.PLANT, "\uD83D\uDFE2" //🟢
     );
 
+    private static String startFilling = "\uD83D\uDFE1"; //🟡
+
     public static int getCardWidth() {
         return CardWidth;
     }
@@ -78,6 +80,10 @@ public class CardTextStyle {
 
     public static String getBackgroundEmoji(){
         return backgroundEmoji;
+    }
+
+    public static String getStartFilling() {
+        return startFilling;
     }
 
 }
