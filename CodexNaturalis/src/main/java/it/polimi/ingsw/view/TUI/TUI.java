@@ -2,6 +2,14 @@ package it.polimi.ingsw.view.TUI;
 
 import it.polimi.ingsw.controller.Controller;
 import it.polimi.ingsw.controller.socket.SocketController;
+import it.polimi.ingsw.model.cardReleted.cards.GoldCard;
+import it.polimi.ingsw.model.cardReleted.cards.ObjectiveCard;
+import it.polimi.ingsw.model.cardReleted.cards.ResourceCard;
+import it.polimi.ingsw.model.cardReleted.cards.StartCard;
+import it.polimi.ingsw.model.playerReleted.Codex;
+import it.polimi.ingsw.model.playerReleted.Hand;
+import it.polimi.ingsw.model.tableReleted.Deck;
+import it.polimi.ingsw.model.tableReleted.Game;
 import it.polimi.ingsw.view.TUI.Renderables.CommandDisplayRenderable;
 import it.polimi.ingsw.view.TUI.Renderables.EchoRenderable;
 import it.polimi.ingsw.view.TUI.Renderables.Renderable;
@@ -63,6 +71,81 @@ public class TUI extends View{
         }
 
         updateCommands();
+    }
+
+    @Override
+    public void log(String logMsg) {
+
+    }
+
+    @Override
+    public void updateGameList(Game[] games) {
+
+    }
+
+    @Override
+    public void setLobbyGame(Game game) {
+
+    }
+
+    @Override
+    public void setStartCard(StartCard card) {
+
+    }
+
+    @Override
+    public void updateResourceDeck(Deck<ResourceCard> deck) {
+
+    }
+
+    @Override
+    public void updateGoldDeck(Deck<GoldCard> deck) {
+
+    }
+
+    @Override
+    public void setSecretObjectiveOptions(List<ObjectiveCard> objectiveCards) {
+
+    }
+
+    @Override
+    public void leaderBoardSetNicks(String[] nicks) {
+
+    }
+
+    @Override
+    public void leaderBoardUpdatePoints(int[] points) {
+
+    }
+
+    @Override
+    public void playerOrderUpdateActivesNicks(String[] nicks) {
+
+    }
+
+    @Override
+    public void playerOrderSetPlayerOrder(String[] nicks) {
+
+    }
+
+    @Override
+    public void playerOrderUpdateCurrentPlayer(String nick) {
+
+    }
+
+    @Override
+    public void updateCodex(Codex codex) {
+
+    }
+
+    @Override
+    public void updateHand(Hand hand) {
+
+    }
+
+    @Override
+    public void setFinalRanking(String[] nicks, int[] points) {
+
     }
 
     private void updateCommands(){
