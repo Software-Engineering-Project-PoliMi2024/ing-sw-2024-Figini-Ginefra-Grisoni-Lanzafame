@@ -40,4 +40,11 @@ public class GoldCard extends CardInHand {
     public int getPoints(Codex codex) {
         return this.getPoints()*multiplier.getMultiplier(codex, this);
     }
+
+    /**
+     * @return the GoldCardPointMultiplier of the card
+     */
+    public GoldCardPointMultiplier getGoldCardPointMultiplier(){
+        return multiplier;
+    }
 }

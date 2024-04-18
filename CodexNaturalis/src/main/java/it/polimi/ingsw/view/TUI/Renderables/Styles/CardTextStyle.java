@@ -18,7 +18,7 @@ public class CardTextStyle {
             WritingMaterial.INKWELL, "\uD83E\uDED9", //🫙
             WritingMaterial.QUILL, "\uD83E\uDEB6", //🪶
             WritingMaterial.MANUSCRIPT, "\uD83D\uDCDC", //📜
-            SpecialCollectable.EMPTY, "◻\uFE0F" // "◻️"
+            SpecialCollectable.EMPTY, "➕" // "➕"
     );
 
     private static final String backgroundEmoji = "◾";

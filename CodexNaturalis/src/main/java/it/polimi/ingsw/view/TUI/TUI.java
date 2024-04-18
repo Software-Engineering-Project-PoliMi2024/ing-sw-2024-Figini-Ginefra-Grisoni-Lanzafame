@@ -62,7 +62,6 @@ public class TUI extends View{
             renderable.setActive(true);
         }
 
-
         updateCommands();
     }
 

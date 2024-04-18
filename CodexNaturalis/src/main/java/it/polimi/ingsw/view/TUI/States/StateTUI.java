@@ -7,7 +7,8 @@ import java.util.ArrayList;
 import java.util.List;
 
 public enum StateTUI {
-    STATE0(ViewState.SERVER_CONNECTION), STATE1(null);
+    STATE0(ViewState.SERVER_CONNECTION),
+    STATE1(null);
 
     private final ViewState referenceState;
     private final List<Renderable> targetRenderables;

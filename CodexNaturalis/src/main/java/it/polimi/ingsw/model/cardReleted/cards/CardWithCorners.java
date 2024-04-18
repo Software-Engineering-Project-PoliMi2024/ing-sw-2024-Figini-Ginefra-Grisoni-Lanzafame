@@ -1,4 +1,5 @@
 package it.polimi.ingsw.model.cardReleted.cards;
+import it.polimi.ingsw.model.cardReleted.pointMultiplyer.GoldCardPointMultiplier;
 import it.polimi.ingsw.model.cardReleted.utilityEnums.CardCorner;
 import it.polimi.ingsw.model.cardReleted.utilityEnums.CardFace;
 import it.polimi.ingsw.model.cardReleted.utilityEnums.Collectable;
@@ -32,6 +33,13 @@ public abstract class CardWithCorners extends Card {
     /** @param face the face from which retrive the resources
      * @return the Set containing the permanent Resources */
     public Set <Resource> getPermanentResources(CardFace face){
+        return null;
+    }
+
+    /**
+     * @return the GoldCardPointMultiplier of the card, if it has one, null otherwise
+     * */
+    public GoldCardPointMultiplier getGoldCardPointMultiplier(){
         return null;
     }
 }
