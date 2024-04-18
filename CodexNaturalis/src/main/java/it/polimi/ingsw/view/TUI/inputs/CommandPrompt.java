@@ -10,7 +10,23 @@ import java.util.function.Consumer;
 import java.util.function.Predicate;
 
 public enum CommandPrompt implements Iterator<String>, CommandObserved {
-    ECHO("echo", new String[]{"What do you want to echo?"}, new Predicate[]{s -> true});
+    ECHO("echo", new String[]{"What do you want to echo?"}, new Predicate[]{s -> true}),
+    CREATE_GAME("create game",
+            new String[]{
+                    "What's the name of the game?",
+                    "How many players will be playing?",
+            },
+            new Predicate[]{
+                    s -> true,
+                    s -> {
+                        try {
+                            int i = Integer.parseInt(s.toString());
+                            return i > 1 && i < 5;
+                        } catch (NumberFormatException e) {
+                            return false;
+                        }
+                    }
+            });
 
     private final String[] questions;
     private final Predicate<String>[] validators;
