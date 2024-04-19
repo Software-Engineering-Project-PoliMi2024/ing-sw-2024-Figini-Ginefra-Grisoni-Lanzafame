@@ -23,6 +23,8 @@ public class CardTextStyle {
 
     private static final String backgroundEmoji = "◾";
 
+    private static final String coveredCornerMultiplierEmoji = "\uD83D\uDD32"; //🔲
+
     private static final Map<Integer, String> numberEmoji = Map.of(
             1, "1️⃣",
             2, "2️⃣",
@@ -86,6 +88,9 @@ public class CardTextStyle {
         return startFilling;
     }
 
+    public static String getCoveredCornerMultiplierEmoji() {
+        return coveredCornerMultiplierEmoji;
+    }
 }
 
 

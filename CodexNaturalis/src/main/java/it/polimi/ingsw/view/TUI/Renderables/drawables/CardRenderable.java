@@ -82,8 +82,15 @@ public class CardRenderable extends Drawable {
         else
             this.addContent(CardTextStyle.getBorder(), getWidth()/2, 0);
 
-        if(targetCard.getGoldCardPointMultiplier() != null )
-            System.out.println("Gold card point multiplier:" );
+        if(face == CardFace.FRONT && targetCard.getGoldCardPointMultiplier() != null ) {
+            String multiplierEmojii =
+                    targetCard.getGoldCardPointMultiplier().getTarget() == null ?
+                            CardTextStyle.getCoveredCornerMultiplierEmoji() :
+                            CardTextStyle.getCollectableEmoji(targetCard.getGoldCardPointMultiplier().getTarget());
+
+            this.addContent(multiplierEmojii, getWidth()/2, 1);
+        }
+
     }
 
     private void drawPermanentResources(Set<Resource> resources){

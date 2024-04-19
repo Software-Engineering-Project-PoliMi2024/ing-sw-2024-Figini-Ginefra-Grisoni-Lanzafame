@@ -2,6 +2,7 @@ package it.polimi.ingsw.model.cardReleted.pointMultiplyer;
 
 import it.polimi.ingsw.model.cardReleted.cards.GoldCard;
 import it.polimi.ingsw.model.cardReleted.utilityEnums.CardCorner;
+import it.polimi.ingsw.model.cardReleted.utilityEnums.WritingMaterial;
 import it.polimi.ingsw.model.playerReleted.Codex;
 import it.polimi.ingsw.model.playerReleted.Placement;
 import it.polimi.ingsw.model.playerReleted.Position;
@@ -25,5 +26,9 @@ public class CoveredCornersCardPointMultiplier implements GoldCardPointMultiplie
                 multiplier++;
         }
         return multiplier;
+    }
+
+    public WritingMaterial getTarget(){
+        return null;
     }
 }

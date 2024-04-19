@@ -20,4 +20,9 @@ public class WritingMaterialsCardPointMultiplier implements GoldCardPointMultipl
     public int getMultiplier(Codex codex, GoldCard goldCard) {
         return codex.getEarnedCollectables().get(target);
     }
+
+    /** @return the target of the multiplier*/
+    public WritingMaterial getTarget(){
+        return target;
+    }
 }
