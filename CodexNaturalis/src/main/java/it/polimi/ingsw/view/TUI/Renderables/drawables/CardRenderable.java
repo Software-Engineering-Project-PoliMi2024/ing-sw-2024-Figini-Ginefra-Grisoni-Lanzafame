@@ -16,6 +16,8 @@ public class CardRenderable extends Drawable {
     private final CardFace face;
     private final String filler;
 
+    private final String border;
+
     private final boolean isStartingCard;
 
     public CardRenderable(CardWithCorners targetCard, CardFace face, CommandPrompt[] relatedCommands) {
@@ -37,6 +39,9 @@ public class CardRenderable extends Drawable {
         this.filler = isStartingCard ? CardTextStyle.getStartFilling() :
                 CardTextStyle.getResourceFilling(resources.stream().findFirst().orElse(null));
 
+        this.border = isStartingCard ? CardTextStyle.getStartFilling() :
+                CardTextStyle.getResourceBorder(resources.stream().findFirst().orElse(null));
+
         update();
     }
 
@@ -45,22 +50,26 @@ public class CardRenderable extends Drawable {
         this.fillContent(filler);
 
         //Draw the border of the card
+        /*
         for(int i = 0; i < CardTextStyle.getCardWidth(); i++){
-            this.addContent(CardTextStyle.getBorder(), i, 0);
-            this.addContent(CardTextStyle.getBorder(), i, CardTextStyle.getCardHeight() - 1);
+            this.addContent(border, i, 0);
+            this.addContent(border, i, CardTextStyle.getCardHeight() - 1);
         }
 
         for(int i = 1; i < CardTextStyle.getCardHeight() - 1; i++){
-            this.addContent(CardTextStyle.getBorder(), 0, i);
-            this.addContent(CardTextStyle.getBorder(), CardTextStyle.getCardWidth() - 1, i);
+            this.addContent(border, 0, i);
+            this.addContent(border, CardTextStyle.getCardWidth() - 1, i);
         }
+        */
 
         //Draw the corners
         for(CardCorner corner : CardCorner.values()){
-            String collectableEmoji =
-                    targetCard.getCollectableAt(corner, face) == null ?
-                            filler :
-                            CardTextStyle.getCollectableEmoji(targetCard.getCollectableAt(corner, face));
+            if(targetCard.getCollectableAt(corner, face) == null)
+                continue;
+
+            String collectableEmoji = CardTextStyle.getCollectableEmoji(targetCard.getCollectableAt(corner, face));
+
+            String cornerFiller = CardTextStyle.getCornerFiller();
 
             Position offset = corner.getOffset();
 
@@ -70,6 +79,9 @@ public class CardRenderable extends Drawable {
             );
 
             this.addContent(collectableEmoji, innerCornerOffset.getX(), innerCornerOffset.getY());
+            this.addContent(cornerFiller, innerCornerOffset.getX() + offset.getX(), innerCornerOffset.getY());
+            this.addContent(cornerFiller, innerCornerOffset.getX(), innerCornerOffset.getY() - offset.getY());
+            this.addContent(cornerFiller, innerCornerOffset.getX() + offset.getX(), innerCornerOffset.getY() -offset.getY());
         }
 
         //Draw the permanent resources
@@ -79,7 +91,7 @@ public class CardRenderable extends Drawable {
         if(targetCard.getPoints() != 0 && face == CardFace.FRONT)
             this.addContent(CardTextStyle.getNumberEmoji(targetCard.getPoints()), getWidth()/2, 0);
         else
-            this.addContent(CardTextStyle.getBorder(), getWidth()/2, 0);
+            this.addContent(filler, getWidth()/2, 0);
 
         if(face == CardFace.FRONT && targetCard.getGoldCardPointMultiplier() != null ) {
             String multiplierEmojii =

@@ -28,6 +28,8 @@ public class CardTextStyle {
 
     private static final String coveredCornerMultiplierEmoji = "\uD83D\uDDD7"; //🗗
 
+    private static final String cornerFiller = new DecoratedString("\uD83D\uDD38", StringStyle.DARK_BG).toString(); //🔸
+
     private static final Map<Integer, String> numberEmoji = Map.of(
             1, "1️⃣",
             2, "2️⃣",
@@ -41,13 +43,20 @@ public class CardTextStyle {
             0, "0️⃣"
     );
 
-    private static final String Border = "\uD83D\uDFEB";
+    private static final String Border = "➕"; //➕
 
     private static final Map<Resource, String> resourceFillings = Map.of(
             Resource.ANIMAL,  new DecoratedString("\uD83D\uDD35", StringStyle.BLUE_BG).toString(), //🔵
             Resource.INSECT, new DecoratedString("\uD83D\uDFE3", StringStyle.PURPLE_BG).toString(), //🟣
             Resource.FUNGI, new DecoratedString("\uD83D\uDD34", StringStyle.RED_BG).toString(), //🔴
             Resource.PLANT, new DecoratedString("\uD83D\uDFE2", StringStyle.GREEN_BG).toString() //🟢
+    );
+
+    private static final Map<Resource, String> resourceBorder = Map.of(
+            Resource.ANIMAL,  new DecoratedString(CardTextStyle.getBorder(), StringStyle.BLUE_BG).toString(),
+            Resource.INSECT, new DecoratedString(CardTextStyle.getBorder(), StringStyle.PURPLE_BG).toString(),
+            Resource.FUNGI, new DecoratedString(CardTextStyle.getBorder(), StringStyle.RED_BG).toString(),
+            Resource.PLANT, new DecoratedString(CardTextStyle.getBorder(), StringStyle.GREEN_BG).toString()
     );
 
     private static String startFilling = new DecoratedString("\uD83D\uDFE8", StringStyle.GOLD_BG).toString(); //🟨
@@ -93,6 +102,14 @@ public class CardTextStyle {
 
     public static String getCoveredCornerMultiplierEmoji() {
         return coveredCornerMultiplierEmoji;
+    }
+
+    public static String getCornerFiller() {
+        return cornerFiller;
+    }
+
+    public static String getResourceBorder(Resource resource){
+        return resourceBorder.get(resource);
     }
 }
 
