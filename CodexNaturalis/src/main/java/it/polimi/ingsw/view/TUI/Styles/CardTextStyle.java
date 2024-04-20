@@ -1,4 +1,4 @@
-package it.polimi.ingsw.view.TUI.Renderables.Styles;
+package it.polimi.ingsw.view.TUI.Styles;
 
 import it.polimi.ingsw.model.cardReleted.utilityEnums.Collectable;
 import it.polimi.ingsw.model.cardReleted.utilityEnums.Resource;
@@ -10,18 +10,21 @@ import java.util.Map;
 public class CardTextStyle {
     private static final int CardWidth = 9;
     private static final int CardHeight = 5;
+
+    public static final String ESCReset = "\u001B[0m";
+
     private static final Map<Collectable, String> collectableEmoji = Map.of(
-            Resource.ANIMAL, "\uD83D\uDC3A", // 🐺
-            Resource.INSECT, "\uD83E\uDD8B", //🦋
-            Resource.FUNGI, "\uD83C\uDF44", //🍄
-            Resource.PLANT, "🌿", //🌿
-            WritingMaterial.INKWELL, "\uD83E\uDED9", //🫙
-            WritingMaterial.QUILL, "\uD83E\uDEB6", //🪶
-            WritingMaterial.MANUSCRIPT, "\uD83D\uDCDC", //📜
-            SpecialCollectable.EMPTY, "➕" // "➕"
+            Resource.ANIMAL, new DecoratedString("🐺", StringStyle.DARK_BG).toString(), // 🐺
+            Resource.INSECT, new DecoratedString("\uD83E\uDD8B", StringStyle.DARK_BG).toString(), //🦋
+            Resource.FUNGI, new DecoratedString("\uD83C\uDF44", StringStyle.DARK_BG).toString(), //🍄
+            Resource.PLANT, new DecoratedString("🌿", StringStyle.DARK_BG).toString(), //🌿
+            WritingMaterial.INKWELL, new DecoratedString("\uD83E\uDED9", StringStyle.DARK_BG).toString(), //🫙
+            WritingMaterial.QUILL, new DecoratedString("\uD83E\uDEB6", StringStyle.DARK_BG).toString(), //🪶
+            WritingMaterial.MANUSCRIPT, new DecoratedString("\uD83D\uDCDC", StringStyle.DARK_BG).toString(), //📜
+            SpecialCollectable.EMPTY, new DecoratedString("\uD83C\uDFB5", StringStyle.DARK_BG).toString()  // "🎵"
     );
 
-    private static final String backgroundEmoji = "◾";
+    private static final String backgroundEmoji = "▪\uFE0F";
 
     private static final String coveredCornerMultiplierEmoji = "\uD83D\uDDD7"; //🗗
 
@@ -38,16 +41,16 @@ public class CardTextStyle {
             0, "0️⃣"
     );
 
-    private static final String Border = "➕";
+    private static final String Border = "\uD83D\uDFEB";
 
     private static final Map<Resource, String> resourceFillings = Map.of(
-            Resource.ANIMAL, "\uD83D\uDD35", //🔵
-            Resource.INSECT, "\uD83D\uDFE3", //🟣
-            Resource.FUNGI, "\uD83D\uDD34", //🔴
-            Resource.PLANT, "\uD83D\uDFE2" //🟢
+            Resource.ANIMAL,  new DecoratedString("\uD83D\uDD35", StringStyle.BLUE_BG).toString(), //🔵
+            Resource.INSECT, new DecoratedString("\uD83D\uDFE3", StringStyle.PURPLE_BG).toString(), //🟣
+            Resource.FUNGI, new DecoratedString("\uD83D\uDD34", StringStyle.RED_BG).toString(), //🔴
+            Resource.PLANT, new DecoratedString("\uD83D\uDFE2", StringStyle.GREEN_BG).toString() //🟢
     );
 
-    private static String startFilling = "\uD83D\uDFE1"; //🟡
+    private static String startFilling = new DecoratedString("\uD83D\uDFE8", StringStyle.GOLD_BG).toString(); //🟨
 
     public static int getCardWidth() {
         return CardWidth;
