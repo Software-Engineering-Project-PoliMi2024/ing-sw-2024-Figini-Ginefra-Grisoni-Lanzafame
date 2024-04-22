@@ -34,6 +34,7 @@ public class GameParty implements Serializable {
             throw new IllegalCallerException("The game is empty, there is no next player");
         }
         if (currentPlayer == null) {
+            throw new IllegalCallerException("The current player is null");
         } else {
             currentPlayerIndex = (currentPlayerIndex + 1) % playerList.size();
             currentPlayer = playerList.get(currentPlayerIndex);
