@@ -30,7 +30,7 @@ sequenceDiagram
     SocketClientController ->> +ServerHandler : construct(View)
     SocketClientController ->> ServerHandler : run()
     deactivate SocketClientController
-    ServerHandler ->> -View : transitionTo(Login)
+    SocketClientController ->> -View : transitionTo(Login)
 
     View ->> Pippo : Enter nickname
     Pippo -->> View : Submit nickname
@@ -54,14 +54,15 @@ sequenceDiagram
     SocketServerController ->> ClientHandler : sendServerMsg(loginAnswerMsg(OK))
 
     ClientHandler ->> ServerHandler : loginAnswerMsg(OK)
-
-    ServerHandler ->> View : transitionTo(GameList)
+    ServerHandler ->> SocketClientController : loginAnswerMsg(OK)
+    
+    SocketClientController ->> View : transitionTo(GameList)
 
     SocketServerController ->> ClientHandler : sendServerMsg(gameListNotification(String[] gameList))
 
     ClientHandler ->> ServerHandler : gameListNotification(String[] gameList)
-
-    ServerHandler ->> View : updateGameList(gameList)
+    ServerHandler ->> SocketClientController : gameListNotification(String[] gameList)
+    SocketClientController ->> View : updateGameList(gameList)
 
     View ->> Pippo : Display Game List
 
@@ -86,13 +87,15 @@ sequenceDiagram
 
     ClientHandler ->> ServerHandler : joinLobbyAnswerMsg(OK)
 
-    ServerHandler ->> View : transitionTo(Lobby)
+    ServerHandler ->> SocketClientController : joinLobbyAnswerMsg(OK)
+
+    SocketClientController ->> View : transitionTo(Lobby)
 
     SocketServerController ->> ClientHandler : sendServerMsg(lobbyNotification(String[] nicks))
 
     ClientHandler ->> ServerHandler : lobbyNotification(nicks)
-
-    ServerHandler ->> View : updateLobby(nicks)
+    ServerHandler ->> SocketClientController : lobbyNotification(nicks)
+    SocketClientController ->> View : updateLobby(nicks)
 
     View ->> Pippo : Display Lobby
 
@@ -105,8 +108,8 @@ sequenceDiagram
     SocketServerController ->> ClientHandler : sendServerMsg(gameStartedNotification)
 
     ClientHandler ->> ServerHandler : gameStartedNotification
-
-    ServerHandler ->> View : transitionTo(ChooseStartCard))
+    ServerHandler ->> SocketClientController : gameStartedNotification
+    SocketClientController ->> View : transitionTo(ChooseStartCard))
 
     View ->> Pippo : Display Game stuff
 
