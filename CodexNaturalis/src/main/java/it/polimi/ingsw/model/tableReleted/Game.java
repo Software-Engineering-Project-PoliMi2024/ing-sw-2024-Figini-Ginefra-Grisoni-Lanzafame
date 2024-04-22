@@ -34,9 +34,9 @@ public class Game implements Serializable {
     /**
      * Constructs a new Game instance with a specified maximum number of players.
      */
-    public Game(String name, int numberOfMaxPlayer) {
-        this.name = name;
-        this.gameParty = new GameParty(numberOfMaxPlayer);
+    public Game(Lobby lobby) {
+        this.name = lobby.getLobbyName();
+        this.gameParty = new GameParty(lobby.getLobbyList());
         String filePath = ".\\cards\\";
         String sourceFileName = "cards.json";
         objectiveCardDeck =
