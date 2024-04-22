@@ -1,17 +1,10 @@
 package it.polimi.ingsw.model.tableReleted;
 
-import it.polimi.ingsw.controller.socket.messages.observers.ServerMsgObserved;
-import it.polimi.ingsw.controller.socket.messages.observers.ServerMsgObserver;
-import it.polimi.ingsw.controller.socket.messages.serverMessages.ServerMsg;
-import it.polimi.ingsw.designPatterns.Observer.Observed;
-import it.polimi.ingsw.designPatterns.Observer.Observer;
 import it.polimi.ingsw.model.playerReleted.User;
 
 import java.io.Serializable;
-import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
-import java.util.function.Function;
 
 public class GameParty implements Serializable {
     final private List<User> playerList; //player that have joined the game
