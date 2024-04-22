@@ -69,5 +69,8 @@ public class Lobby implements ServerMsgObserved {
             observer.update(serverMsg);
         }
     }
-
+    @Override
+    public boolean equals(Object obj){
+            return obj instanceof Lobby && ((Lobby) obj).lobbyName.equals(lobbyName);
+    }
 }
