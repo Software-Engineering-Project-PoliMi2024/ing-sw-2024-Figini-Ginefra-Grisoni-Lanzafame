@@ -48,23 +48,22 @@ sequenceDiagram
 
     ServerHandler ->> SocketClientController : drawCardAswer(OK)
 
-    SocketClientController ->> View : transitionTo(USER DISPLAY)
+    SocketClientController ->> View : transitionTo(IDLE)
 ```
-Report on Drawing a Card in Client-Server Architecture
+# Sequence Diagram Report: Draw Card Flow
 
-# Introduction:
+## Introduction:
 The sequence diagram illustrates the process of a user drawing a card from a deck. The system involves users interacting through a client interface and processing of actions within a server environment.
 
-# Actors:
+## Actors:
 
 Topolino: the user initiates the card drawing process through interactions with the client interface.
 
-# Components:
+## Components:
 - Client:
 
   - View: The visual interface where the user interacts.
   - SocketClientController: It's the bridge between the view and the web communation. It has the methods to send data to the server and to react to the server's messages. The latter are inherited from the parent and are the same for both the Socket and RMI implementations.
-
   - ServerHandler: Manages communication with the server.
 
 - Server:
@@ -78,7 +77,7 @@ Topolino: the user initiates the card drawing process through interactions with 
 
 The diagram has been written with an optimistic approach, assuming that all the actions are successful. The diagram does not include error handling or failure cases.
 
-# Flow
+## Flow
 
     - Display Commands: The client's view displays available commands
     - Draw Card Request: The user use the command "drawCard" a card
@@ -89,4 +88,4 @@ The diagram has been written with an optimistic approach, assuming that all the 
         - The SocketClientController forwards the request to the server through the ServerHandler, the ClientHandler, the SocketServerController
         - The SocketServerController sends the action to the Model represented by the Multigame, adding the card to the hand of the user and updating the buffers
     - CardAnswerMessage: the anser propagate through the network as the sendMessage to the SocketClientController
-    - transitionTo(USER DISPLAY) : once the action is recived by the SocketClientController it updates the view transitioning it to the correct StateView 
+    - transitionTo(IDLE) : once the action is recived by the SocketClientController it updates the view transitioning it to the correct StateView 
