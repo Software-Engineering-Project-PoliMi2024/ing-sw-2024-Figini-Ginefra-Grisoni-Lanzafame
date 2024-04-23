@@ -46,51 +46,43 @@ sequenceDiagram
     ServerHandler ->> SocketClientController : placeCardAswer(OK)
 
     SocketClientController ->> View : transitionTo(IDLE)
+```
+# Sequence Diagram Report: Draw Card Flow
 
-# Introduction:
-The sequence diagram illustrates the process of a user drawing a card from a deck. The system involves users interacting through a client interface and processing of actions within a server environment.
+## Introduction:
 
-# Actors:
+The sequence diagram illustrates the process of a user placing a card from his hand on to his project. The system involves users interacting through a client interface and the processing of actions within a server environment.
 
-Topolino: the user initiates the card drawing process through interactions with the client interface.
+## Actors:
+Pluto: the user initiates the card placing process through interactions with the client interface.
 
-# Components:
+## Components:
 - Client:
-
-  - View: The visual interface where the user interacts.
-  - SocketClientController: It's the bridge between the view and the web communation. It has the methods to send data to the server and to react to the server's messages. The latter are inherited from the parent and are the same for both the Socket and RMI implementations.
-
-  - ServerHandler: Manages communication with the server.
+    - View: The visual interface where the user interacts.
+    - SocketClientController: It's the bridge between the view and the web communation. It has the methods to send data to the server and to react to the server's messages. The latter are inherited from the parent and are the same for both the Socket and RMI implementations.
+    - ServerHandler: Manages communication with the server.
 
 - Server:
-
   - ClientHandler: Handles client connections and requests.
   - SocketServerController: It's the bridge between the web communation and the model. It has the methods to send data to the client and to react to the client's messages. The latter are inherited from the parent and are the same for both the Socket and RMI implementations.
-
   - MultiGame: Manages multiple game instances and lobbies. There is only one MultiGame instance for the whole server.
 
-# Flow
 
-    Client Setup:
-        The client (represented by the actor "Pippo") enters the IP and port to connect to the server.
-        The client submits the IP and port to the view.
-        The view sends a connection request to the SocketClientController, which then pings the server to establish the connection.
+## Disclaimer:
 
-    Login Process:
-        The client enters a nickname and submits it.
-        The view sends the nickname to the SocketClientController, which initiates a login request to the server.
-        The server checks if the nickname is unique and not already in the game.
-        If the nickname is valid, the client transitions to the game list view.
+The diagram has been written with an optimistic approach, assuming that all the actions are successful. The diagram does not include error handling or 
+failure cases.
 
-    Joining a Lobby:
-        The client selects a game from the list and submits it.
-        The view sends a request to join the lobby for the selected game.
-        The server processes the request, checks if the lobby is full, and if not, adds the client to the lobby.
-        Once the lobby is full, the server starts the game.
+## Flow:
 
-    Game Start:
-        Upon starting the game, relevant notifications are sent to all clients.
-        Clients transition to the game interface to start playing.
-
-The diagram effectively depicts the communication flow between the client-side components (View, SocketClientController) and server-side components (ServerHandler, ClientHandler, MultiGame) during the access and setup of the game.
-```
+    Display Commands: The client's view displays available commands
+    Plce Card Request: Pluto initiates the place card action
+    Card Selection: Pluto selects which card in its hand he wishes to place
+    Card Orientation: Pluto selects which face to display upwards: front or back
+    Codex Position: The user prompt where he wishes to place the card, selecting a position from the Frontier
+    Client to Server Interaction:
+        The View calls the SocketClientController's placeCard() method, passing the positionin in hand of the card, front or back display and the Frontier position where the user whishes to place the card.
+        The SocketClientController forwards the request to the server through the ServerHandler, ClientHandler, and SocketServerController.
+        The SocketServerController sends the action to the MultiGame model, where the user Hand, Codex and Frontier is updated.
+    Card Answer Message: The server responds with a message confirming the successful place action, which propagates back to the client.
+    Transition to User Display: Upon receiving the confirmation message, the SocketClientController updates the view, transitioning it to the appropriate state.
