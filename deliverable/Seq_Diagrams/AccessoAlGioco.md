@@ -141,6 +141,10 @@ The sequence diagram illustrates the flow of actions involved in accessing a gam
 
   - MultiGame: Manages multiple game instances and lobbies. There is only one MultiGame instance for the whole server.
 
+## Disclaimer
+
+The diagram has been written with an optimistic approach, assuming that all the actions are successful. The diagram does not include error handling or failure cases.
+
 ## Flow:
 
 - Initial Connection:
