@@ -1,6 +1,7 @@
 package it.polimi.ingsw.model.lightModel.diffs;
 
 import it.polimi.ingsw.model.cardReleted.utilityEnums.Collectable;
+import it.polimi.ingsw.model.lightModel.LightCodex;
 import it.polimi.ingsw.model.lightModel.LightPlacement;
 import it.polimi.ingsw.model.playerReleted.Position;
 
@@ -17,5 +18,9 @@ import java.util.List;
  */
 public record CodexDiff(int addPoints, List<Collectable> addCollectables, List<Collectable> removeCollectables,
                         List<LightPlacement> addPlacements, List<Position> addFrontier,
-                        List<Position> removeFrontier) {
+                        List<Position> removeFrontier) implements ModelDiffs<LightCodex>{
+    @Override
+    public void apply(LightCodex lightCodex) {
+
+    }
 }

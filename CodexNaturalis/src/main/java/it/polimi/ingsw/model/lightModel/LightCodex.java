@@ -11,7 +11,7 @@ import it.polimi.ingsw.model.playerReleted.Position;
 import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.Map;
-
+//a
 public class LightCodex implements ModelDifferentiable<CodexDiff>{
     private int points;
     private final Map<Collectable, Integer> collectables;
