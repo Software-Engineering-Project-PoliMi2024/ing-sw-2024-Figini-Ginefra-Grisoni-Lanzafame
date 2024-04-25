@@ -1,6 +1,6 @@
 package it.polimi.ingsw.model.lightModel;
 
-import it.polimi.ingsw.model.lightModel.diffs.ModelDiff;
+import it.polimi.ingsw.model.lightModel.diffs.LobbyDiff;
 import it.polimi.ingsw.model.lightModel.diffs.ModelDifferentiable;
 
 import java.util.List;
@@ -8,7 +8,7 @@ import java.util.List;
 /**
  * This class is a container for the list of lobbies.
  */
-public record LightLobby(List<String> nicknames, String name) implements ModelDifferentiable<String> {
+public record LightLobby(List<String> nicknames, String name) implements ModelDifferentiable<LobbyDiff> {
     /**
      * Creates a LightLobby object.
      *
@@ -44,8 +44,8 @@ public record LightLobby(List<String> nicknames, String name) implements ModelDi
      * @param diff the differences to apply
      */
     @Override
-    public void applyDiff(ModelDiff<String> diff) {
-        nicknames.removeAll(diff.removeList());
-        nicknames.addAll(diff.addList());
+    public void applyDiff(LobbyDiff diff) {
+        nicknames.removeAll(diff.remove());
+        nicknames.addAll(diff.add());
     }
 }

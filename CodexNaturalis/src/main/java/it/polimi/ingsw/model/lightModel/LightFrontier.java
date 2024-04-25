@@ -1,20 +1,20 @@
 package it.polimi.ingsw.model.lightModel;
 
-import it.polimi.ingsw.model.lightModel.diffs.ModelDiff;
+import it.polimi.ingsw.model.lightModel.diffs.FrontierDiff;
 import it.polimi.ingsw.model.lightModel.diffs.ModelDifferentiable;
 import it.polimi.ingsw.model.playerReleted.Position;
 
 import java.util.List;
 
-public class LightFrontier implements ModelDifferentiable<Position> {
+public class LightFrontier implements ModelDifferentiable<FrontierDiff> {
     List<Position> frontier;
     /**returns the map describing for each
      * Updates the frontier after a placement
      * @throws IllegalArgumentException if codex or position are null
      */
-    public void applyDiff(ModelDiff<Position> diff){
-        frontier.removeAll(diff.getRemoveList());
-        frontier.addAll(diff.getAddList());
+    public void applyDiff(FrontierDiff diff){
+        frontier.removeAll(diff.Remove());
+        frontier.addAll(diff.add());
     }
     /**
      * Returns the frontier

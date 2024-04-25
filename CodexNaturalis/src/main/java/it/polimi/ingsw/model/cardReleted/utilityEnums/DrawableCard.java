@@ -1,4 +1,4 @@
-package it.polimi.ingsw.model.cardReleted.cards;
+package it.polimi.ingsw.model.cardReleted.utilityEnums;
 
 public enum DrawableCard {
     GOLDCARD,
