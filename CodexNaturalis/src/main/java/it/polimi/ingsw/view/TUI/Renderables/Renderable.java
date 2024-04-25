@@ -26,9 +26,13 @@ public abstract class Renderable implements InputObserver, CommandObserver {
 
     public abstract void render();
 
-    public abstract void update();
+    public void update(){
+        throw new UnsupportedOperationException("Update without input not supported");
+    };
 
-    public abstract void updateInput(String input);
+    public void updateInput(String input){
+        throw new UnsupportedOperationException("Update without input not supported");
+    };
 
     public void setActive(boolean active){
         this.active = active;

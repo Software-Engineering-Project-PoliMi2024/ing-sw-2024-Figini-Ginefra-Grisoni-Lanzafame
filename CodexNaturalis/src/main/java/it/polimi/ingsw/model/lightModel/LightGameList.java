@@ -3,6 +3,7 @@ package it.polimi.ingsw.model.lightModel;
 import it.polimi.ingsw.model.lightModel.diffs.ModelDiff;
 import it.polimi.ingsw.model.lightModel.diffs.ModelDifferentiable;
 
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -13,10 +14,10 @@ public class LightGameList implements ModelDifferentiable<LightLobby> {
 
     /**
      * Creates a LightGameList object.
-     * @param lobbies the list of lobbies
      */
-    public LightGameList(List<LightLobby> lobbies) {
-        this.lobbies = lobbies;
+    public LightGameList() {
+
+        this.lobbies = new ArrayList<>();
     }
 
     /**

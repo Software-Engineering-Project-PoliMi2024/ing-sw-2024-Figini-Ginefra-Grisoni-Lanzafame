@@ -26,6 +26,14 @@ public enum CommandPrompt implements Iterator<String>, CommandObserved {
                             return false;
                         }
                     }
+            }),
+
+    JOIN_GAME("join game",
+            new String[]{
+                    "What's the name of the game?",
+            },
+            new Predicate[]{
+                    s -> true,
             });
 
     private final String[] questions;

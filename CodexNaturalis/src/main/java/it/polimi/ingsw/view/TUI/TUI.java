@@ -6,12 +6,14 @@ import it.polimi.ingsw.model.cardReleted.cards.GoldCard;
 import it.polimi.ingsw.model.cardReleted.cards.ObjectiveCard;
 import it.polimi.ingsw.model.cardReleted.cards.ResourceCard;
 import it.polimi.ingsw.model.cardReleted.cards.StartCard;
+import it.polimi.ingsw.model.lightModel.LightGameList;
 import it.polimi.ingsw.model.playerReleted.Codex;
 import it.polimi.ingsw.model.playerReleted.Hand;
 import it.polimi.ingsw.model.tableReleted.Deck;
 import it.polimi.ingsw.model.tableReleted.Game;
 import it.polimi.ingsw.view.TUI.Renderables.CommandDisplayRenderable;
 import it.polimi.ingsw.view.TUI.Renderables.EchoRenderable;
+import it.polimi.ingsw.view.TUI.Renderables.GameListRenderable;
 import it.polimi.ingsw.view.TUI.Renderables.Renderable;
 import it.polimi.ingsw.view.TUI.States.StateTUI;
 import it.polimi.ingsw.view.TUI.inputs.CommandPrompt;
@@ -29,6 +31,8 @@ public class TUI extends View{
 
     private final Renderable[] renderables;
 
+    private final GameListRenderable gameListRenderable;
+
 
     public TUI(Controller controller){
         super(controller);
@@ -41,6 +45,10 @@ public class TUI extends View{
         StateTUI.STATE0.attach(echoRenderable);
 
         renderables = new Renderable[]{echoRenderable};
+
+        gameListRenderable = new GameListRenderable(new CommandPrompt[]{CommandPrompt.JOIN_GAME});
+
+        StateTUI.STATE0.attach(gameListRenderable);
 
         this.setState(ViewState.SERVER_CONNECTION);
 
