@@ -32,19 +32,6 @@ public class CreateGameMsg extends ActionMsg{
      */
     @Override
     public void processMessage(SocketClientHandler socketClientHandler){
-        Game game = new Game(name, numberOfPlayers);
-        ActionMsg.updateMultiGame(socketClientHandler, games -> {
-            try{
-                if(!games.addGame(game)){
-                    socketClientHandler.sendServerMessage(new CreateGameAnswerMsg(this, name, CreateGameAnswerMsg.Status.ERROR));
-                }else{
-                    socketClientHandler.sendServerMessage(new CreateGameAnswerMsg(this, name, CreateGameAnswerMsg.Status.OK));
-                    System.out.println("Game created: " + name + " with " + numberOfPlayers + " players.");
-                    System.out.println("Game list: " + String.join(", ", socketClientHandler.getGames().getGameNames()));
-                }
-            }catch (IOException e){
-                throw new RuntimeException();
-            }
-        });
+
     }
 }

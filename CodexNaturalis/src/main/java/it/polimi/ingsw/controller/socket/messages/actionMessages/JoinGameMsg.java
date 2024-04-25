@@ -43,28 +43,5 @@ public class JoinGameMsg extends ActionMsg{
      */
     @Override
     public void processMessage(SocketClientHandler socketClientHandler) throws IOException {
-        Game targetGame = socketClientHandler.getGames().getGame(gameName);
-        if(targetGame==null){
-            System.out.println("Game " + gameName + " not found.");
-            socketClientHandler.sendServerMessage(new JoinGameAnswerMsg(this, gameName, JoinGameAnswerMsg.Status.ERROR));
-        }else{
-            //Using this setter is allowed because setGame is defined inside socketClientHandler witch is directly reachable from JoinGameMsg
-            //Setting the game inside the lambdaFunction will cause an error, because socket.getGame() will return null
-            socketClientHandler.setGame(targetGame);
-        }
-
-        ActionMsg.updateGameParty(socketClientHandler, gameParty -> {
-            try {
-                gameParty.addUser(socketClientHandler.getUser());
-            } catch (FullMatchException e) {
-                throw new IllegalCallerException(e);
-            }
-            gameParty.notifyObservers(new JoinGameNotificationMsg(nickname));
-            gameParty.attach(socketClientHandler);
-        });
-
-        System.out.println("User " + nickname + " joined game " + gameName);
-        System.out.println("Active Players:" + socketClientHandler.getGame().getGameParty().getUsersList().stream().map(User::getNickname).reduce("", (a, b) -> a + " " + b));
-        socketClientHandler.sendServerMessage(new JoinGameAnswerMsg(this, gameName, JoinGameAnswerMsg.Status.OK));
     }
 }

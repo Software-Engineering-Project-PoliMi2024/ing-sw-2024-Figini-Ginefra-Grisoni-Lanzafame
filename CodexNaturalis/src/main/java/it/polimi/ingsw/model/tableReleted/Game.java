@@ -37,7 +37,7 @@ public class Game implements Serializable {
     public Game(Lobby lobby) {
         this.name = lobby.getLobbyName();
         this.gameParty = new GameParty(lobby.getLobbyList());
-        String filePath = ".\\cards\\";
+        String filePath = "./cards/";
         String sourceFileName = "cards.json";
         objectiveCardDeck =
                 new Deck<>(0, new ObjectiveCardFactory(filePath+sourceFileName, filePath).getCards());

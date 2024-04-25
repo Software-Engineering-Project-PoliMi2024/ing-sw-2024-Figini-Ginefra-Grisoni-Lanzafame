@@ -38,11 +38,9 @@ public class PlaceMsg extends ActionMsg{
         // actually will be a CardInHand, because we are NOT working with a StartCard.
         //removeCard is a method from the UserHand so accept only CardInHand.
         ActionMsg.updateHand(socketClientHandler, hand -> {
-            try {
-                hand.removeCard((CardInHand) placement.card());
-            } catch (cardNotFoundException e) {
-                throw new RuntimeException(e);
-            }
+
+            hand.removeCard((CardInHand) placement.card());
+
         });
         socketClientHandler.sendServerMessage(new PlaceAnswerMsg(this, placement));
     }

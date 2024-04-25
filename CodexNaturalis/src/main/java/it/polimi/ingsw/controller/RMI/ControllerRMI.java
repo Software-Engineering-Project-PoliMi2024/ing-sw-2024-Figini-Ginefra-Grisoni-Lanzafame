@@ -2,12 +2,11 @@ package it.polimi.ingsw.controller.RMI;
 
 import it.polimi.ingsw.controller.Controller;
 import it.polimi.ingsw.controller.RMI.remoteInterfaces.LoginRMI;
-import it.polimi.ingsw.controller.RMI.remoteInterfaces.MultiGames;
 import it.polimi.ingsw.model.MultiGame;
-import it.polimi.ingsw.model.cardReleted.cards.DrawableCard;
 import it.polimi.ingsw.model.cardReleted.cards.StartCard;
 import it.polimi.ingsw.model.cardReleted.utilityEnums.CardFace;
 import it.polimi.ingsw.model.cardReleted.cards.ObjectiveCard;
+import it.polimi.ingsw.model.cardReleted.utilityEnums.DrawableCard;
 import it.polimi.ingsw.model.playerReleted.Placement;
 import it.polimi.ingsw.view.View;
 
@@ -26,13 +25,7 @@ public class ControllerRMI extends Controller {
         try {
             registry = LocateRegistry.getRegistry(ip, port);
             try {
-                MultiGame games = ((MultiGames) registry.lookup(LabelAPI.GetMultiGames.getLabel())).getMultiGame();
                 LoginRMI loginRMI = (LoginRMI) registry.lookup(LabelAPI.Login.getLabel());
-                while(!loginRMI.login(nickname, games)){
-                    System.out.println("Login failed : Nickname already taken");
-                    //nickname = view.askNickname();
-                    nickname = askName();
-                }
                 System.out.println("Login successful");
             } catch (Exception e) {
                 System.err.println("Client exception during the Log In: " + e.toString());

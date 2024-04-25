@@ -27,21 +27,5 @@ public class LeaveGameMsg extends ActionMsg{
      */
     @Override
     public void processMessage(SocketClientHandler socketClientHandler) throws IOException {
-            String nickname = socketClientHandler.getUser().getNickname();
-            String gameName = socketClientHandler.getGame().getName();
-
-            ActionMsg.updateGameParty(socketClientHandler, gameParty -> {
-                try {
-                    gameParty.removeUser(socketClientHandler.getUser());
-                } catch (EmptyMatchException | UserNotFoundException e) {
-                    throw new RuntimeException(e);
-                }
-                gameParty.detach(socketClientHandler);
-                gameParty.notifyObservers(new LeaveLobbyNotificationMsg(nickname));
-            });
-            //For the same reason in JoinGameMsg, the set of the game to be null must be outside the lambda function
-            socketClientHandler.setGame(null);
-            System.out.println("User " + nickname + " left the game " + gameName);
-            System.out.println("Active Players:" + socketClientHandler.getGame().getGameParty().getUsersList().stream().map(User::getNickname).reduce("", (a, b) -> a + " " + b));
     }
 }

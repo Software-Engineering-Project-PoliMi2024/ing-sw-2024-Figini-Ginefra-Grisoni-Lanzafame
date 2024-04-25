@@ -1,6 +1,5 @@
 package it.polimi.ingsw.controller.RMI;
 
-import it.polimi.ingsw.controller.RMI.remoteInterfaces.MultiGames;
 import it.polimi.ingsw.controller.ServerImplementation;
 import it.polimi.ingsw.model.MultiGame;
 
@@ -13,7 +12,6 @@ public class ServerRMI extends ServerImplementation {
     /**@implNote the port must not be a constant*/
     private final int port = 4445;
     LoginRMI loginRMI = new LoginRMI();
-    MultiGames multiGames = new MultiGames(games);
     public ServerRMI(MultiGame games) {
         super(games);
     }
@@ -21,7 +19,6 @@ public class ServerRMI extends ServerImplementation {
         try {
             Registry registry = LocateRegistry.createRegistry(port);
             registry.bind(LabelAPI.Login.getLabel(), loginRMI);
-            registry.bind(LabelAPI.GetMultiGames.getLabel(), multiGames);
 
             System.out.println("RMI Server started on port " + port + "🚔!");
         } catch (Exception e) {

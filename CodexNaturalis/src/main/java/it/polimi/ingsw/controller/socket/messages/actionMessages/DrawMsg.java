@@ -3,9 +3,11 @@ package it.polimi.ingsw.controller.socket.messages.actionMessages;
 import it.polimi.ingsw.controller.socket.messages.serverMessages.answerMessages.DrawAnswerMsg;
 import it.polimi.ingsw.controller.socket.server.SocketClientHandler;
 import it.polimi.ingsw.model.cardReleted.cards.*;
+import it.polimi.ingsw.model.cardReleted.utilityEnums.DrawableCard;
 import it.polimi.ingsw.model.playerReleted.toManyCardException;
 import it.polimi.ingsw.model.tableReleted.Deck;
 import it.polimi.ingsw.model.tableReleted.Game;
+import it.polimi.ingsw.model.cardReleted.utilityEnums.DrawableCard;
 
 import java.io.IOException;
 
@@ -62,17 +64,15 @@ public class DrawMsg extends ActionMsg{
      */
     private  <T extends CardInHand> void drawCardInHand(Deck<T> deck, SocketClientHandler socketClientHandler) throws IOException {
         CardInHand card;
-        try{
-            if(cardID == 0 | cardID == 1){
-                card = deck.drawFromBuffer(cardID);
-                socketClientHandler.getUser().getUserHand().addCard(card);
-            }else{
-                card = deck.drawFromDeck();
-                socketClientHandler.getUser().getUserHand().addCard(card);
-            }
-        }catch (toManyCardException e){
-            throw new RuntimeException("Player has already the max amount of card in Hand");
+
+        if(cardID == 0 | cardID == 1){
+            card = deck.drawFromBuffer(cardID);
+            socketClientHandler.getUser().getUserHand().addCard(card);
+        }else{
+            card = deck.drawFromDeck();
+            socketClientHandler.getUser().getUserHand().addCard(card);
         }
+
         socketClientHandler.sendServerMessage(new DrawAnswerMsg(this, card));
     }
 }
