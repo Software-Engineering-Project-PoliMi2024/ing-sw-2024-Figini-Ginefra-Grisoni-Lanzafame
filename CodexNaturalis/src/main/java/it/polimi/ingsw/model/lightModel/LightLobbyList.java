@@ -10,19 +10,13 @@ import java.util.List;
  * This class is a container for the list of lobbies.
  */
 public class LightLobbyList implements ModelDifferentiable<LobbyListDiff> {
-    public void setLobbies(List<LightLobby> lobbies) {
-        this.lobbies = lobbies;
-    }
-
     private List<LightLobby> lobbies;
-
     /**
      * Creates a LightLobbyList object.
      */
     public LightLobbyList() {
         this.lobbies = new ArrayList<>();
     }
-
     /**
      * Returns the list of lobbies.
      * @return the list of lobbies
@@ -37,7 +31,14 @@ public class LightLobbyList implements ModelDifferentiable<LobbyListDiff> {
      */
     @Override
     public void applyDiff(LobbyListDiff diff) {
-        diff.removedGame().forEach(lobbies::remove);
-        lobbies.addAll(diff.addedGame());
+        diff.apply(this);
+    }
+    /**
+     * @param add the lobbies to add
+     * @param rmv the lobbies to remove
+     */
+    public void lobbiesDiff(List<LightLobby> add, List<LightLobby> rmv){
+        rmv.forEach(lobbies::remove);
+        lobbies.addAll(add);
     }
 }

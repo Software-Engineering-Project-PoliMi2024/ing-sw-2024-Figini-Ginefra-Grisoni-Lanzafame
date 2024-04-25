@@ -32,6 +32,10 @@ public class CodexDiff implements ModelDiffs<LightCodex>{
         this.removeFrontier = removeFrontier;
 
     }
+
+    /**
+     * @param lightCodex the codex to which apply the differences
+     */
     @Override
     public void apply(LightCodex lightCodex) {
         lightCodex.addPoints(this.addPoints);

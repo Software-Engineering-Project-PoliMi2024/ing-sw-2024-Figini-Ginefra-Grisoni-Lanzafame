@@ -9,6 +9,10 @@ public class LightDeck implements ModelDifferentiable<DeckDiff>{
     private final LightCard[] GoldCardBuffer;
     private Resource resourceCardDeck;
     private Resource goldCardDeck;
+
+    /**
+     * Constructor of the class
+     */
     public LightDeck() {
         this.ResourceCardBuffer = new LightCard[1];
         this.GoldCardBuffer = new LightCard[1];
@@ -25,25 +29,39 @@ public class LightDeck implements ModelDifferentiable<DeckDiff>{
     public Resource getGoldCardDeck() {
         return goldCardDeck;
     }
+    /**
+     * @param goldCardDeck the resource of the first gold card on top of the deck
+     */
     public void setGoldCardDeck(Resource goldCardDeck) {
         this.goldCardDeck = goldCardDeck;
     }
+
+    /**
+     * @param resourceCardDeck the resource of the first resource card on top of the deck
+     */
     public void setResourceCardDeck(Resource resourceCardDeck) {
         this.resourceCardDeck = resourceCardDeck;
     }
     /**
      * Apply the diff to the deck
      * @param diff the diff to apply
-     * LightCard is the card to add or remove
-     * the first Integer identifies the deck to modify
-     * the second Integer identifies which card to modify, from buffer or from the actual deck
      */
     public void applyDiff(DeckDiff diff) {
         diff.apply(this);
     }
+
+    /**
+     * @param card the card to add
+     * @param position the position where to add the new card and remove the old one
+     */
     public void substituteGoldBufferCard(LightCard card, Integer position) {
         this.ResourceCardBuffer[position] = card;
     }
+
+    /**
+     * @param card the card to add
+     * @param position the position where to add the new card and remove the old one
+     */
     public void substituteResourceBufferCard(LightCard card, Integer position) {
         this.GoldCardBuffer[position] = card;
     }

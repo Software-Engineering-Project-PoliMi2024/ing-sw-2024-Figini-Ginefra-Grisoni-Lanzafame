@@ -6,44 +6,42 @@ import it.polimi.ingsw.model.playerReleted.Position;
 
 import java.util.List;
 
-public class LightFrontier implements ModelDifferentiable<FrontierDiff> {
-    List<Position> frontier;
-    /**returns the map describing for each
-     * Updates the frontier after a placement
-     * @throws IllegalArgumentException if codex or position are null
+public record LightFrontier(List<Position> frontier) implements ModelDifferentiable<FrontierDiff> {
+    /**
+     * * @param diff the diff to apply
      */
-    public void applyDiff(FrontierDiff diff){
+    public void applyDiff(FrontierDiff diff) {
 
     }
-    public void difFrontier(List<Position> add, List<Position> rmv){
-        frontier.removeAll(rmv);
-        frontier.addAll(add);
+    /**
+     * @param add the positions to add
+     * @param rmv the positions to remove
+     */
+    public void difFrontier(List<Position> add, List<Position> rmv) {
+        this.frontier.removeAll(rmv);
+        this.frontier.addAll(add);
     }
     /**
-     * Returns the frontier
      * @return the frontier
      */
-    public List<Position> getFrontier(){
+    @Override
+    public List<Position> frontier() {
         return this.frontier;
     }
+
     /**
      * Checks if a position is in the frontier
      * @param position position to check
      * @return true if the position is in the frontier, false otherwise
      */
-    public boolean isInFrontier(Position position){
+    public boolean isInFrontier(Position position) {
         return frontier.contains(position);
     }
+
     /**
-     * Returns the size of the frontier
      * @return the size of the frontier
      */
-    public int size(){
+    public int size() {
         return frontier.size();
-    }
-
-    @Override
-    public String toString(){
-        return "Frontier[" + this.frontier + "]";
     }
 }

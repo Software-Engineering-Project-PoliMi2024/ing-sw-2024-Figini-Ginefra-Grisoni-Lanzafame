@@ -17,36 +17,32 @@ public record LightLobby(List<String> nicknames, String name) implements ModelDi
      */
     public LightLobby {
     }
-
     /**
-     * Returns the list of nicknames.
-     *
      * @return the list of nicknames
      */
     @Override
     public List<String> nicknames() {
         return nicknames;
     }
-
     /**
-     * Returns the name of the lobby.
-     *
      * @return the name of the lobby
      */
     @Override
     public String name() {
         return name;
     }
-
     /**
      * Applies the differences to the list of nicknames.
-     *
      * @param diff the differences to apply
      */
     @Override
     public void applyDiff(LobbyDiff diff) {
         diff.apply(this);
     }
+    /**
+     * @param rmv the nicknames to remove
+     * @param add the nicknames to add
+     */
     public void nickDiff(List<String> rmv, List<String> add){
         nicknames.removeAll(rmv);
         nicknames.addAll(add);

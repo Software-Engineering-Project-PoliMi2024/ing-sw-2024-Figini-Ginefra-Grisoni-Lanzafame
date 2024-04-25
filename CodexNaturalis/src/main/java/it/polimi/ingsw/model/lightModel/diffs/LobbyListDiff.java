@@ -7,11 +7,11 @@ import java.util.List;
 
 public record LobbyListDiff(List<LightLobby> removedGame,
                             List<LightLobby> addedGame) implements ModelDiffs<LightLobbyList> {
+    /**
+     * @param lightLobbyList the LightLobbyList to which the diff applies
+     */
     @Override
     public void apply(LightLobbyList lightLobbyList) {
-        List<LightLobby> tmp = lightLobbyList.getLobbies();
-        tmp.forEach(removedGame::remove);
-        tmp.addAll(this.addedGame);
-        lightLobbyList.setLobbies(tmp);
+        lightLobbyList.lobbiesDiff(addedGame, removedGame);
     }
 }

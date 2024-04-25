@@ -20,23 +20,31 @@ public class LightHand implements ModelDifferentiable<HandDiff> {
         this.cards = new LightCard[3];
         this.secretObjective = secretObjective;
     }
+    /**
+     * @return the secret objective of the player
+     */
     public LightCard getSecretObjective() {
         return secretObjective;
     }
-
+    /**
+     * @return the cards of the player
+     */
     public Map<LightCard, Boolean> getCardPlayability() {
         return cardPlayability;
     }
-
+    /**
+     * @return the cards of the player
+     */
     public LightCard[] getCards() {
         return cards;
     }
-
-
+    /**
+     * @param card to check
+     * @return if the card is playable
+     */
     public Boolean isPlayble(LightCard card){
         return cardPlayability.get(card);
     }
-
     /**
      * Add a card to the cards array and the cardPlayability Map
      * @param card that need to be added
@@ -56,9 +64,6 @@ public class LightHand implements ModelDifferentiable<HandDiff> {
             }
         }
     }
-
-
-
     /**
      * Remove a lightCard from the cards array and the cardPlayability map
      * @param card that need to be removed
