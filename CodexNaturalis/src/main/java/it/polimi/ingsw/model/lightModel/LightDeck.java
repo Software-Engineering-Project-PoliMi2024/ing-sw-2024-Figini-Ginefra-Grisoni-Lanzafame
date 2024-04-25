@@ -1,11 +1,12 @@
 package it.polimi.ingsw.model.lightModel;
 
+import it.polimi.ingsw.model.cardReleted.utilityEnums.DrawableCard;
 import it.polimi.ingsw.model.cardReleted.utilityEnums.Resource;
 import it.polimi.ingsw.model.lightModel.diffs.*;
 
 public class LightDeck implements ModelDifferentiable<DeckDiff>{
-    private LightCard[] ResourceCardBuffer;
-    private LightCard[] GoldCardBuffer;
+    private final LightCard[] ResourceCardBuffer;
+    private final LightCard[] GoldCardBuffer;
     private Resource resourceCardDeck;
     private Resource goldCardDeck;
     public LightDeck() {
@@ -24,19 +25,12 @@ public class LightDeck implements ModelDifferentiable<DeckDiff>{
     public Resource getGoldCardDeck() {
         return goldCardDeck;
     }
-    public void setGoldCardBuffer(LightCard[] goldCardBuffer) {
-        GoldCardBuffer = goldCardBuffer;
-    }
-    public void setResourceCardBuffer(LightCard[] resourceCardBuffer) {
-        ResourceCardBuffer = resourceCardBuffer;
-    }
     public void setGoldCardDeck(Resource goldCardDeck) {
         this.goldCardDeck = goldCardDeck;
     }
     public void setResourceCardDeck(Resource resourceCardDeck) {
         this.resourceCardDeck = resourceCardDeck;
     }
-
     /**
      * Apply the diff to the deck
      * @param diff the diff to apply
@@ -45,5 +39,12 @@ public class LightDeck implements ModelDifferentiable<DeckDiff>{
      * the second Integer identifies which card to modify, from buffer or from the actual deck
      */
     public void applyDiff(DeckDiff diff) {
+        diff.apply(this);
+    }
+    public void substituteGoldBufferCard(LightCard card, Integer position) {
+        this.ResourceCardBuffer[position] = card;
+    }
+    public void substituteResourceBufferCard(LightCard card, Integer position) {
+        this.GoldCardBuffer[position] = card;
     }
 }

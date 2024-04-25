@@ -7,25 +7,19 @@ import java.util.HashMap;
 import java.util.Map;
 
 public class LightHand implements ModelDifferentiable<HandDiff> {
-    private LightCard secretObjective;
+    private final LightCard secretObjective;
     private final Map<LightCard, Boolean> cardPlayability;
     private final LightCard[] cards;
 
     /**
      * The constructor of the class
+     * @param secretObjective the secret objective of the player
      */
-    public LightHand(){
+    public LightHand(LightCard secretObjective){
         this.cardPlayability = new HashMap<>();
         this.cards = new LightCard[3];
-    }
-
-    /**
-     * @param secretObjective that need to be set
-     */
-    public void setSecretObjective(LightCard secretObjective) {
         this.secretObjective = secretObjective;
     }
-
     public LightCard getSecretObjective() {
         return secretObjective;
     }

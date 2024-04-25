@@ -13,8 +13,11 @@ public class LightFrontier implements ModelDifferentiable<FrontierDiff> {
      * @throws IllegalArgumentException if codex or position are null
      */
     public void applyDiff(FrontierDiff diff){
-        frontier.removeAll(diff.Remove());
-        frontier.addAll(diff.add());
+
+    }
+    public void difFrontier(List<Position> add, List<Position> rmv){
+        frontier.removeAll(rmv);
+        frontier.addAll(add);
     }
     /**
      * Returns the frontier

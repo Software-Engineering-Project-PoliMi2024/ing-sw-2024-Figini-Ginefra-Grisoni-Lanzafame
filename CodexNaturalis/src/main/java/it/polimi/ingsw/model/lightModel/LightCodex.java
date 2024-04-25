@@ -10,6 +10,7 @@ import it.polimi.ingsw.model.playerReleted.Position;
 
 import java.util.HashMap;
 import java.util.LinkedHashMap;
+import java.util.List;
 import java.util.Map;
 //a
 public class LightCodex implements ModelDifferentiable<CodexDiff>{
@@ -25,7 +26,6 @@ public class LightCodex implements ModelDifferentiable<CodexDiff>{
      * */
     public LightCodex(){
         this.points = 0;
-
         this.collectables = new HashMap<>();
         for (Collectable c : Resource.values())
             this.collectables.put(c, 0);
@@ -42,24 +42,31 @@ public class LightCodex implements ModelDifferentiable<CodexDiff>{
      * @param diff the points value to set
      * */
     public void applyDiff(CodexDiff diff) {
-        this.points += diff.addPoints();
-        this.frontier.applyDiff(new FrontierDiff(diff.addFrontier(), diff.removeFrontier()));
-        for (Collectable c : diff.addCollectables())
-            this.collectables.put(c, this.collectables.get(c) + 1);
-        for (Collectable c : diff.removeCollectables())
-            this.collectables.put(c, this.collectables.get(c) - 1);
-        for (LightPlacement p : diff.addPlacements())
-            this.placementHistory.put(p.position(), p);
+        diff.apply(this);
+    }
+    public void addPoints(int points) {
+        this.points += points;
     }
     public Map<Collectable, Integer> getEarnedCollectables(){
         return this.collectables;
     }
-
     public LightFrontier getFrontier() {
         return frontier;
     }
-
     public Map<Position, LightPlacement> getPlacementHistory() {
         return placementHistory;
+    }
+    public void addPlacement(List<LightPlacement> placementDiff){
+        for (LightPlacement p : placementDiff)
+            this.placementHistory.put(p.position(), p);
+    }
+    public void difFrontier(List<Position> addFrontier, List<Position> rmvFrontier){
+        this.frontier.applyDiff(new FrontierDiff(addFrontier, rmvFrontier));
+    }
+    public void difCollectables(List<Collectable> addCollectables, List<Collectable> removeCollectables) {
+        for (Collectable c : addCollectables)
+            this.collectables.put(c, this.collectables.get(c) + 1);
+        for (Collectable c : removeCollectables)
+            this.collectables.put(c, this.collectables.get(c) - 1);
     }
 }

@@ -14,15 +14,9 @@ public class DeckDiffBufferDraw extends DeckDiff{
     }
     public void apply(LightDeck lightDeck) {
         if(super.deck == DrawableCard.GOLDCARD) {
-            LightCard[] tmp = lightDeck.getGoldCardBuffer();
-            tmp[position] = card;
-            lightDeck.setGoldCardBuffer(tmp);
-            lightDeck.getGoldCardBuffer()[position] = card;
+            lightDeck.substituteGoldBufferCard(card, position);
         }else if(super.deck == DrawableCard.RESOURCECARD){
-            LightCard[] tmp = lightDeck.getResourceCardBuffer();
-            tmp[position] = card;
-            lightDeck.setResourceCardBuffer(tmp);
-            lightDeck.getResourceCardBuffer()[position] = card;
+            lightDeck.substituteResourceBufferCard(card, position);
         }
     }
 }

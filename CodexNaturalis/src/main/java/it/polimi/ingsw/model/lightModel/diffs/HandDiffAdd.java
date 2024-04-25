@@ -4,16 +4,16 @@ import it.polimi.ingsw.model.lightModel.LightCard;
 import it.polimi.ingsw.model.lightModel.LightHand;
 
 public class HandDiffAdd extends HandDiff {
-    private final boolean playbility;
+    private final boolean playability;
     public HandDiffAdd(LightCard card, boolean playbility) {
         super(card);
-        this.playbility = playbility;
+        this.playability = playbility;
     }
 
-    public boolean isPlaybility() {
-        return playbility;
+    public boolean isPlayable() {
+        return playability;
     }
     public void apply(LightHand hand) {
-        hand.addCard(super.card, this.playbility);
+        hand.addCard(super.card, this.playability);
     }
 }

@@ -45,7 +45,10 @@ public record LightLobby(List<String> nicknames, String name) implements ModelDi
      */
     @Override
     public void applyDiff(LobbyDiff diff) {
-        nicknames.removeAll(diff.remove());
-        nicknames.addAll(diff.add());
+        diff.apply(this);
+    }
+    public void nickDiff(List<String> rmv, List<String> add){
+        nicknames.removeAll(rmv);
+        nicknames.addAll(add);
     }
 }
