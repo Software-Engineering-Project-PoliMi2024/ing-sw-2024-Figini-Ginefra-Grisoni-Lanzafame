@@ -5,5 +5,5 @@ package it.polimi.ingsw.model.lightModel.diffs;
  * @param A the first ModelDiff
  * @param B the second ModelDiff
  * */
-public record DoubleModelDiff<DiffType>(ModelDiff<DiffType> A, ModelDiff<DiffType> B){
+public record DoubleModelDiff<DiffTypeA, DiffTypeB>(ModelDiff<DiffTypeA> A, ModelDiff<DiffTypeB> B){
 }
