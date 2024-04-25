@@ -6,12 +6,11 @@ import it.polimi.ingsw.model.cardReleted.cards.ObjectiveCard;
 import it.polimi.ingsw.model.cardReleted.cards.ResourceCard;
 import it.polimi.ingsw.model.cardReleted.cards.StartCard;
 import it.polimi.ingsw.model.lightModel.LightLobby;
-import it.polimi.ingsw.model.lightModel.diffs.ModelDiff;
+import it.polimi.ingsw.model.lightModel.diffs.LobbyListDiff;
 import it.polimi.ingsw.model.playerReleted.Codex;
 import it.polimi.ingsw.model.playerReleted.Hand;
 import it.polimi.ingsw.model.tableReleted.Deck;
 import it.polimi.ingsw.model.tableReleted.Game;
-import it.polimi.ingsw.view.ViewState;
 
 import java.util.List;
 
@@ -45,7 +44,7 @@ public abstract class View {
 
     public abstract void log(String logMsg);
 
-    public abstract void updateGameList(ModelDiff<LightLobby> diff);
+    public abstract void updateLobbyList(LobbyListDiff diff);
 
     public abstract void setLobbyGame(Game game);
 

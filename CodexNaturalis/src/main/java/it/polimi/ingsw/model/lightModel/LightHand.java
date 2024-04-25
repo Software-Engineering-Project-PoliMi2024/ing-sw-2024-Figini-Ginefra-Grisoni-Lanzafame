@@ -1,12 +1,12 @@
 package it.polimi.ingsw.model.lightModel;
 
-import it.polimi.ingsw.model.lightModel.diffs.DoubleModelDiff;
-import it.polimi.ingsw.model.lightModel.diffs.DoubleModelDifferentiable;
+import it.polimi.ingsw.model.lightModel.diffs.HandDiff;
+import it.polimi.ingsw.model.lightModel.diffs.ModelDifferentiable;
 
 import java.util.HashMap;
 import java.util.Map;
 
-public class LightHand implements DoubleModelDifferentiable<LightCard, Boolean> {
+public class LightHand implements ModelDifferentiable<HandDiff> {
     private LightCard secretObjective;
     private final Map<LightCard, Boolean> cardPlayability;
     private final LightCard[] cards;
@@ -49,7 +49,7 @@ public class LightHand implements DoubleModelDifferentiable<LightCard, Boolean> 
      * @param playability is a boolean that specified if the card is playable
      * @throws IllegalCallerException if the player has already enough card
      */
-    private void addCard(LightCard card, Boolean playability){
+    public void addCard(LightCard card, Boolean playability){
         if(cards.length == 3){
             throw new IllegalCallerException();
         }else{
@@ -63,11 +63,13 @@ public class LightHand implements DoubleModelDifferentiable<LightCard, Boolean> 
         }
     }
 
+
+
     /**
      * Remove a lightCard from the cards array and the cardPlayability map
      * @param card that need to be removed
      */
-    private void removeCard(LightCard card){
+    public void removeCard(LightCard card){
         boolean found = false;
         for(int i=0; i<cards.length && !found; i++){
             if(cards[i].equals(card)){
@@ -80,7 +82,6 @@ public class LightHand implements DoubleModelDifferentiable<LightCard, Boolean> 
             throw new IllegalArgumentException();
         }
     }
-
     /**
      * Process a HandDiff adding all card in the addList of parameter A
      * with they playability in the addList in the parameter B
@@ -88,12 +89,7 @@ public class LightHand implements DoubleModelDifferentiable<LightCard, Boolean> 
      * @param diff to process
      */
     @Override
-    public void applyDiff(DoubleModelDiff<LightCard, Boolean> diff) {
-        for(LightCard card : diff.A().getRemoveList()){
-            removeCard(card);
-        }
-        for(int i=0; i<diff.A().getAddList().size(); i++){
-            addCard(diff.A().getAddList().get(i), diff.B().getAddList().get(i));
-        }
+    public void applyDiff(HandDiff diff) {
+        diff.apply(this);
     }
 }

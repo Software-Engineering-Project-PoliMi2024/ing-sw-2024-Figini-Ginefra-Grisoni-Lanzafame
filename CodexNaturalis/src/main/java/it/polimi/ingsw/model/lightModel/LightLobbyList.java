@@ -1,6 +1,6 @@
 package it.polimi.ingsw.model.lightModel;
 
-import it.polimi.ingsw.model.lightModel.diffs.ModelDiff;
+import it.polimi.ingsw.model.lightModel.diffs.LobbyListDiff;
 import it.polimi.ingsw.model.lightModel.diffs.ModelDifferentiable;
 
 import java.util.ArrayList;
@@ -9,14 +9,17 @@ import java.util.List;
 /**
  * This class is a container for the list of lobbies.
  */
-public class LightGameList implements ModelDifferentiable<LightLobby> {
-    private final List<LightLobby> lobbies;
+public class LightLobbyList implements ModelDifferentiable<LobbyListDiff> {
+    public void setLobbies(List<LightLobby> lobbies) {
+        this.lobbies = lobbies;
+    }
+
+    private List<LightLobby> lobbies;
 
     /**
-     * Creates a LightGameList object.
+     * Creates a LightLobbyList object.
      */
-    public LightGameList() {
-
+    public LightLobbyList() {
         this.lobbies = new ArrayList<>();
     }
 
@@ -33,8 +36,8 @@ public class LightGameList implements ModelDifferentiable<LightLobby> {
      * @param diff the differences to apply
      */
     @Override
-    public void applyDiff(ModelDiff<LightLobby> diff) {
-        diff.removeList().forEach(lobbies::remove);
-        lobbies.addAll(diff.addList());
+    public void applyDiff(LobbyListDiff diff) {
+        diff.removedGame().forEach(lobbies::remove);
+        lobbies.addAll(diff.addedGame());
     }
 }

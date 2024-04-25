@@ -1,28 +1,24 @@
 package it.polimi.ingsw.view.TUI.Renderables;
 
-import it.polimi.ingsw.model.lightModel.LightGameList;
-import it.polimi.ingsw.model.lightModel.LightLobby;
-import it.polimi.ingsw.model.lightModel.diffs.ModelDiff;
-import it.polimi.ingsw.model.tableReleted.Game;
+import it.polimi.ingsw.model.lightModel.LightLobbyList;
+import it.polimi.ingsw.model.lightModel.diffs.LobbyListDiff;
 import it.polimi.ingsw.view.TUI.inputs.CommandPrompt;
 
-import java.util.List;
-
 public class GameListRenderable extends Renderable {
-    private final LightGameList lightGameList;
+    private final LightLobbyList lightLobbyList;
 
     public GameListRenderable(CommandPrompt[] relatedCommands) {
         super(relatedCommands);
-        this.lightGameList = new LightGameList();
+        this.lightLobbyList = new LightLobbyList();
     }
 
     @Override
     public void render() {
-        if (lightGameList.getLobbies().isEmpty()) {
+        if (lightLobbyList.getLobbies().isEmpty()) {
             System.out.println("No games available to join.");
         } else {
             System.out.println("Available games:");
-            lightGameList.getLobbies().forEach(lobby -> {
+            lightLobbyList.getLobbies().forEach(lobby -> {
                 System.out.println("Game: " + lobby.nicknames());
                 for(int i = 0; i < lobby.nicknames().size(); i++)
                     System.out.println("\t[" + i + "] " + lobby.nicknames().get(i));
@@ -30,8 +26,8 @@ public class GameListRenderable extends Renderable {
         }
     }
 
-    public void update(ModelDiff<LightLobby> diff) {
-        lightGameList.applyDiff(diff);
+    public void update(LobbyListDiff diff) {
+        lightLobbyList.applyDiff(diff);
         render();
     }
 

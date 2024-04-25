@@ -6,9 +6,8 @@ import it.polimi.ingsw.model.cardReleted.cards.GoldCard;
 import it.polimi.ingsw.model.cardReleted.cards.ObjectiveCard;
 import it.polimi.ingsw.model.cardReleted.cards.ResourceCard;
 import it.polimi.ingsw.model.cardReleted.cards.StartCard;
-import it.polimi.ingsw.model.lightModel.LightGameList;
 import it.polimi.ingsw.model.lightModel.LightLobby;
-import it.polimi.ingsw.model.lightModel.diffs.ModelDiff;
+import it.polimi.ingsw.model.lightModel.diffs.LobbyListDiff;
 import it.polimi.ingsw.model.playerReleted.Codex;
 import it.polimi.ingsw.model.playerReleted.Hand;
 import it.polimi.ingsw.model.tableReleted.Deck;
@@ -25,7 +24,6 @@ import it.polimi.ingsw.view.ViewState;
 
 import java.util.Arrays;
 import java.util.List;
-import java.util.function.Predicate;
 
 public class TUI extends View{
     private final InputHandler inputHandler = new InputHandler();
@@ -89,7 +87,7 @@ public class TUI extends View{
     }
 
     @Override
-    public void updateGameList(ModelDiff<LightLobby> diff) {
+    public void updateLobbyList(LobbyListDiff diff) {
         gameListRenderable.update(diff);
     }
 
