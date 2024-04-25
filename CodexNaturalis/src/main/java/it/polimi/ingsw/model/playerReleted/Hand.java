@@ -18,24 +18,23 @@ public class Hand implements Serializable {
     /**
      * Add a card to the player hand
      * @param card the card that need to be added
-     * @throws toManyCardException is throw if the player already have 3 card in hand
+     * @throws IllegalCallerException is throw if the player already have 3 card in hand
      */
-    public void addCard(CardInHand card) throws toManyCardException{
+    public void addCard(CardInHand card) throws IllegalCallerException{
         if(playableHand.size()==3){
-            throw new toManyCardException("Each player can have a max of 3 card in hand");
+            throw new IllegalCallerException("Each player can have a max of 3 card in hand");
         }else{
             playableHand.add(card);
         }
     }
 
     /** Remove a card from the player hand
-     *
       * @param card the card that need to be removed
-     * @throws cardNotFoundException is throw if the card is not found
+     * @throws IllegalArgumentException is throw if the card is not found
      */
-    public void removeCard(CardInHand card) throws cardNotFoundException{
+    public void removeCard(CardInHand card) throws IllegalArgumentException{
         if(!playableHand.remove(card)){
-            throw new cardNotFoundException("The card is not in this hand");
+            throw new IllegalArgumentException("The card is not in this hand");
         }
     }
     /** @param objective is set to being the player secret objective*/
