@@ -1,12 +1,11 @@
 package it.polimi.ingsw.model.lightModel;
 
-public class LightCard {
-    final private int id;
-
-    public LightCard(int id){
-        this.id = id;
-    }
-    public int getId() {
-        return id;
+public record LightCard(int id) {
+    /**
+     * The constructor of the class
+     *
+     * @param id the id of the card
+     */
+    public LightCard {
     }
 }
