@@ -23,35 +23,60 @@ public class MultiGame implements Serializable {
         return games;
     }
 
-    public synchronized Set<String> getUsernames() {
-        return usernames;
+    public Set<String> getUsernames() {
+        synchronized (usernames) {
+            return usernames;
+        }
     }
 
     public synchronized boolean addGame(Game game) {
         return games.add(game);
     }
 
-    public synchronized boolean addUser(String username) {
-        return usernames.add(username);
+    public boolean addUser(String username) {
+        synchronized (usernames){
+            return usernames.add(username);
+        }
     }
 
     public synchronized Game getGame(String name) {
         return games.stream().filter(game -> game.getName().equals(name)).findFirst().orElse(null);
     }
-
     public synchronized void removeGame(Game game) {
         games.remove(game);
     }
 
+    public synchronized Boolean addLobby(Lobby lobby) {
+        if (getGame(lobby.getLobbyName()) != null) {
+            return false;
+        } else
+            return lobbies.add(lobby);
+    }
+    public synchronized void removeLobby(Lobby lobby) {
+        lobbies.remove(lobby);
+    }
+    public synchronized Lobby getLobby(String name) {
+        return lobbies.stream().filter(lobby -> lobby.getLobbyName().equals(name)).findFirst().orElse(null);
+    }
+
+    public synchronized Set<Lobby> getLobbies() {
+        return lobbies;
+    }
+
     public void removeUser(String username) {
-        usernames.remove(username);
+        synchronized (usernames){
+            usernames.remove(username);
+        }
     }
 
     /**
      * @return an array of String of each game's name
      */
-    public String[] getGameNames() {
+    public synchronized String[] getGameNames() {
         return games.stream().map(Game::getName).toArray(String[]::new);
+    }
+    public synchronized String[] getLobbyNames() {
+        return lobbies.stream().map(Lobby::getLobbyName).toArray(String[]::new);
     }
 
     @Override
