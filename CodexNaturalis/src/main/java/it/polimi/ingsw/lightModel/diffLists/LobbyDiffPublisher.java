@@ -1,18 +1,15 @@
 package it.polimi.ingsw.lightModel.diffLists;
 
-import it.polimi.ingsw.lightModel.Differentiable;
-import it.polimi.ingsw.lightModel.LightLobby;
 import it.polimi.ingsw.lightModel.diffs.LobbyDiff;
-import it.polimi.ingsw.lightModel.diffs.ModelDiffs;
+
 
 import java.util.ArrayList;
-import java.util.List;
 import java.util.Map;
 
-public class LobbyDiffList implements DiffPublisher{
+public class LobbyDiffPublisher implements DiffPublisher{
     private final Map<DiffSubscriber, LobbyDiff> lobbyDiffMap;
 
-    public LobbyDiffList(Map<DiffSubscriber, LobbyDiff> lobbyDiffMap) {
+    public LobbyDiffPublisher(Map<DiffSubscriber, LobbyDiff> lobbyDiffMap) {
         this.lobbyDiffMap = lobbyDiffMap;
     }
 /**
