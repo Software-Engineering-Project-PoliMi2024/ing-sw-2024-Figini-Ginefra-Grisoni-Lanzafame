@@ -1,19 +1,13 @@
 package it.polimi.ingsw.controller;
 
-import it.polimi.ingsw.model.cardReleted.cards.GoldCard;
-import it.polimi.ingsw.model.cardReleted.cards.ObjectiveCard;
-import it.polimi.ingsw.model.cardReleted.cards.ResourceCard;
+
 import it.polimi.ingsw.model.lightModel.*;
 import it.polimi.ingsw.model.lightModel.diffs.ModelDiffs;
-import it.polimi.ingsw.model.playerReleted.Codex;
-import it.polimi.ingsw.model.playerReleted.Hand;
-import it.polimi.ingsw.model.tableReleted.Deck;
 import it.polimi.ingsw.view.ViewState;
 
 import java.util.List;
 
 public interface View {
-
 
     void setState(ViewState state);
     void transitionTo(ViewState state);
