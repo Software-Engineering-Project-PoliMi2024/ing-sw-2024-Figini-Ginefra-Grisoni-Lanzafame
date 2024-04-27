@@ -5,12 +5,14 @@ import it.polimi.ingsw.controller.socket.messages.observers.ServerMsgObserver;
 import it.polimi.ingsw.controller.socket.messages.serverMessages.ServerMsg;
 
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 public class Lobby implements ServerMsgObserved {
     final List<ServerMsgObserver> observers = new ArrayList<>();
     private final String lobbyName;
-    final private List<String> lobbyList;
+    final private List<String> lobbyPlayerList;
     private final int numberOfMaxPlayer;
 
     /**
@@ -23,8 +25,8 @@ public class Lobby implements ServerMsgObserved {
             throw new IllegalArgumentException("The number of player must be at least 1 and at most 4");
         }
         this.numberOfMaxPlayer = numberOfMaxPlayer;
-        lobbyList = new ArrayList<>();
-        lobbyList.add(userNameCreator);
+        lobbyPlayerList = new ArrayList<>();
+        lobbyPlayerList.add(userNameCreator);
         this.lobbyName = lobbyName;
     }
     /**
@@ -33,10 +35,10 @@ public class Lobby implements ServerMsgObserved {
      * @throws IllegalCallerException if the number of player currently in the lobby is equal to the number of max player allowed.
      */
     public void addUserName(String userName) throws IllegalCallerException {
-        if (lobbyList.size() == numberOfMaxPlayer) {
+        if (lobbyPlayerList.size() == numberOfMaxPlayer) {
             throw new IllegalCallerException("The match is already full");
         } else {
-            lobbyList.add(userName);
+            lobbyPlayerList.add(userName);
         }
     }
     /**
@@ -46,7 +48,7 @@ public class Lobby implements ServerMsgObserved {
      * @throws IllegalArgumentException if the specified user is not found in the userList of this lobby.
      */
     public void removeUserName(String userName) throws IllegalArgumentException{
-        if(!lobbyList.remove(userName)){
+        if(!lobbyPlayerList.remove(userName)){
             throw new IllegalArgumentException("The user is not in this game");
         }
     }
@@ -56,7 +58,7 @@ public class Lobby implements ServerMsgObserved {
     }
 
     public List<String> getLobbyList() {
-        return lobbyList;
+        return lobbyPlayerList;
     }
     public void attach(ServerMsgObserver observer){
         observers.add(observer);
