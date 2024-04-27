@@ -1,7 +1,7 @@
 package it.polimi.ingsw.view.TUI.Renderables;
 
-import it.polimi.ingsw.model.lightModel.LightLobbyList;
-import it.polimi.ingsw.model.lightModel.diffs.LobbyListDiff;
+import it.polimi.ingsw.lightModel.LightLobbyList;
+import it.polimi.ingsw.lightModel.diffs.LobbyListDiff;
 import it.polimi.ingsw.view.TUI.inputs.CommandPrompt;
 
 public class GameListRenderable extends Renderable {

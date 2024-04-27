@@ -1,11 +1,9 @@
-package it.polimi.ingsw.model.lightModel;
-
-import it.polimi.ingsw.model.lightModel.diffs.HandDiff;
+package it.polimi.ingsw.lightModel;
 
 import java.util.HashMap;
 import java.util.Map;
 
-public class LightHand {
+public class LightHand implements Differentiable {
     private final LightCard secretObjective;
     private final Map<LightCard, Boolean> cardPlayability;
     private final LightCard[] cards;

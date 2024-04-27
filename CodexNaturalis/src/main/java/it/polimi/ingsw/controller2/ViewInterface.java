@@ -1,18 +1,12 @@
-package it.polimi.ingsw.controller;
+package it.polimi.ingsw.controller2;
 
-import it.polimi.ingsw.model.cardReleted.cards.GoldCard;
-import it.polimi.ingsw.model.cardReleted.cards.ObjectiveCard;
-import it.polimi.ingsw.model.cardReleted.cards.ResourceCard;
-import it.polimi.ingsw.model.lightModel.*;
-import it.polimi.ingsw.model.lightModel.diffs.ModelDiffs;
-import it.polimi.ingsw.model.playerReleted.Codex;
-import it.polimi.ingsw.model.playerReleted.Hand;
-import it.polimi.ingsw.model.tableReleted.Deck;
+import it.polimi.ingsw.lightModel.*;
+import it.polimi.ingsw.lightModel.diffs.ModelDiffs;
 import it.polimi.ingsw.view.ViewState;
 
 import java.util.List;
 
-public interface View {
+public interface ViewInterface {
 
 
     void setState(ViewState state);
@@ -29,7 +23,6 @@ public interface View {
     void playerOrderSetPlayerOrder(String[] nicks);
     void playerOrderUpdateCurrentPlayer(String nick);
     void updateCodex(ModelDiffs<LightCodex> codex);
-
     void updateHand(ModelDiffs<LightHand> hand);
     void setFinalRanking(String[] nicks, int[] points);
 }

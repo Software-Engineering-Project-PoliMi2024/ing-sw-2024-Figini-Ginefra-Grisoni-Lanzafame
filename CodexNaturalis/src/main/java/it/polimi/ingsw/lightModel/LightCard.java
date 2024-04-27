@@ -1,4 +1,4 @@
-package it.polimi.ingsw.model.lightModel;
+package it.polimi.ingsw.lightModel;
 
 public record LightCard(int id) {
     /**

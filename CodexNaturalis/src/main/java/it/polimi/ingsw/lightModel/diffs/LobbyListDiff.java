@@ -1,7 +1,7 @@
-package it.polimi.ingsw.model.lightModel.diffs;
+package it.polimi.ingsw.lightModel.diffs;
 
-import it.polimi.ingsw.model.lightModel.LightLobby;
-import it.polimi.ingsw.model.lightModel.LightLobbyList;
+import it.polimi.ingsw.lightModel.LightLobby;
+import it.polimi.ingsw.lightModel.LightLobbyList;
 
 import java.util.List;
 

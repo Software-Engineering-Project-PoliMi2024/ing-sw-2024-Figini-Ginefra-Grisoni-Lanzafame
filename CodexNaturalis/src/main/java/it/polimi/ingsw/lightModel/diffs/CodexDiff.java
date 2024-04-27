@@ -1,8 +1,8 @@
-package it.polimi.ingsw.model.lightModel.diffs;
+package it.polimi.ingsw.lightModel.diffs;
 
+import it.polimi.ingsw.lightModel.LightPlacement;
 import it.polimi.ingsw.model.cardReleted.utilityEnums.Collectable;
-import it.polimi.ingsw.model.lightModel.LightCodex;
-import it.polimi.ingsw.model.lightModel.LightPlacement;
+import it.polimi.ingsw.lightModel.LightCodex;
 import it.polimi.ingsw.model.playerReleted.Position;
 
 import java.util.List;

@@ -1,6 +1,6 @@
-package it.polimi.ingsw.model.lightModel.diffs;
-import it.polimi.ingsw.model.lightModel.LightCard;
-import it.polimi.ingsw.model.lightModel.LightHand;
+package it.polimi.ingsw.lightModel.diffs;
+import it.polimi.ingsw.lightModel.LightCard;
+import it.polimi.ingsw.lightModel.LightHand;
 
 public abstract class HandDiff implements ModelDiffs<LightHand>{
     protected final LightCard card;

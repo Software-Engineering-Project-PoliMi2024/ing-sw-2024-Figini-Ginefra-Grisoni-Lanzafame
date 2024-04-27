@@ -1,13 +1,9 @@
-package it.polimi.ingsw.controller;
+package it.polimi.ingsw.controller2;
 
-import it.polimi.ingsw.model.cardReleted.cards.ObjectiveCard;
-import it.polimi.ingsw.model.cardReleted.cards.StartCard;
 import it.polimi.ingsw.model.cardReleted.utilityEnums.CardFace;
 import it.polimi.ingsw.model.cardReleted.utilityEnums.DrawableCard;
-import it.polimi.ingsw.model.lightModel.LightCard;
-import it.polimi.ingsw.model.lightModel.LightPlacement;
-import it.polimi.ingsw.model.playerReleted.Placement;
-import it.polimi.ingsw.view.ViewState;
+import it.polimi.ingsw.lightModel.LightCard;
+import it.polimi.ingsw.lightModel.LightPlacement;
 
 public interface ControllerInterface {
     void login(String nickname);

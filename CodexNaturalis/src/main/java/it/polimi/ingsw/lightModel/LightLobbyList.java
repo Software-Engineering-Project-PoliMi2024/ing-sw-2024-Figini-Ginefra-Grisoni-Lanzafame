@@ -1,6 +1,4 @@
-package it.polimi.ingsw.model.lightModel;
-
-import it.polimi.ingsw.model.lightModel.diffs.LobbyListDiff;
+package it.polimi.ingsw.lightModel;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -8,7 +6,7 @@ import java.util.List;
 /**
  * This class is a container for the list of lobbies.
  */
-public class LightLobbyList {
+public class LightLobbyList implements Differentiable{
     private List<LightLobby> lobbies;
     /**
      * Creates a LightLobbyList object.

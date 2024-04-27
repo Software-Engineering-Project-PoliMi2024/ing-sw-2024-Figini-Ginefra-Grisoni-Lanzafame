@@ -1,7 +1,7 @@
-package it.polimi.ingsw.model.lightModel.diffs;
+package it.polimi.ingsw.lightModel.diffs;
 
-import it.polimi.ingsw.model.lightModel.LightCard;
-import it.polimi.ingsw.model.lightModel.LightHand;
+import it.polimi.ingsw.lightModel.LightCard;
+import it.polimi.ingsw.lightModel.LightHand;
 
 public class HandDiffAdd extends HandDiff {
     private final boolean playability;

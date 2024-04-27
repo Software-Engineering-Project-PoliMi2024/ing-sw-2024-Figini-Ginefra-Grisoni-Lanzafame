@@ -1,8 +1,8 @@
-package it.polimi.ingsw.model.lightModel.diffs;
+package it.polimi.ingsw.lightModel.diffs;
 
 import it.polimi.ingsw.model.cardReleted.utilityEnums.DrawableCard;
 import it.polimi.ingsw.model.cardReleted.utilityEnums.Resource;
-import it.polimi.ingsw.model.lightModel.LightDeck;
+import it.polimi.ingsw.lightModel.LightDeck;
 
 public class DeckDiffDeckDraw extends DeckDiff {
     private final Resource resource;

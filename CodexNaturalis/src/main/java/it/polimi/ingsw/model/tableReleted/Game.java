@@ -21,14 +21,11 @@ import java.io.Serializable;
  * and the decks that are being used.
  */
 public class Game implements Serializable {
-
     final private Deck<ObjectiveCard> objectiveCardDeck;
     final private Deck<ResourceCard> resourceCardDeck;
     final private Deck<GoldCard> goldCardDeck;
     final private Deck<StartCard> startingCardDeck;
-
     private final String name;
-
     private GameParty gameParty;
 
     /**

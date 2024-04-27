@@ -1,11 +1,10 @@
-package it.polimi.ingsw.model.lightModel;
+package it.polimi.ingsw.lightModel;
 
-import it.polimi.ingsw.model.lightModel.diffs.FrontierDiff;
 import it.polimi.ingsw.model.playerReleted.Position;
 
 import java.util.List;
 
-public record LightFrontier(List<Position> frontier) {
+public record LightFrontier(List<Position> frontier) implements Differentiable{
     /**
      * @param add the positions to add
      * @param rmv the positions to remove

@@ -1,10 +1,8 @@
-package it.polimi.ingsw.model.lightModel;
+package it.polimi.ingsw.lightModel;
 
-import it.polimi.ingsw.model.cardReleted.utilityEnums.DrawableCard;
 import it.polimi.ingsw.model.cardReleted.utilityEnums.Resource;
-import it.polimi.ingsw.model.lightModel.diffs.*;
 
-public class LightDeck {
+public class LightDeck implements Differentiable {
     private final LightCard[] ResourceCardBuffer;
     private final LightCard[] GoldCardBuffer;
     private Resource resourceCardDeck;

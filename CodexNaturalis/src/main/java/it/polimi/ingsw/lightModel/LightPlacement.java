@@ -1,4 +1,4 @@
-package it.polimi.ingsw.model.lightModel;
+package it.polimi.ingsw.lightModel;
 
 import it.polimi.ingsw.model.cardReleted.utilityEnums.CardFace;
 import it.polimi.ingsw.model.playerReleted.Position;

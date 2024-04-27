@@ -1,16 +1,15 @@
-package it.polimi.ingsw.model.lightModel;
+package it.polimi.ingsw.lightModel;
 
+import it.polimi.ingsw.lightModel.diffs.FrontierDiff;
 import it.polimi.ingsw.model.cardReleted.utilityEnums.Collectable;
 import it.polimi.ingsw.model.cardReleted.utilityEnums.Resource;
 import it.polimi.ingsw.model.cardReleted.utilityEnums.WritingMaterial;
-import it.polimi.ingsw.model.lightModel.diffs.CodexDiff;
-import it.polimi.ingsw.model.lightModel.diffs.FrontierDiff;
 import it.polimi.ingsw.model.playerReleted.Position;
 
 import java.util.*;
 
 //a
-public class LightCodex {
+public class LightCodex implements Differentiable {
     private int points;
     private final Map<Collectable, Integer> collectables;
     private final Map<Position, LightPlacement> placementHistory;
