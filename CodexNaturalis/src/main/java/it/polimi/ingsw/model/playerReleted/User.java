@@ -1,5 +1,7 @@
 package it.polimi.ingsw.model.playerReleted;
 
+import it.polimi.ingsw.model.tableReleted.Game;
+
 import java.io.Serializable;
 
 public class User implements Serializable {
@@ -32,5 +34,10 @@ public class User implements Serializable {
 
     public void setUserHand(Hand hand){
         this.userHand=hand;
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+        return obj instanceof User && ((User) obj).nickname.equals(nickname);
     }
 }
