@@ -27,7 +27,7 @@ public class GameListRenderable extends Renderable {
     }
 
     public void update(LobbyListDiff diff) {
-        lightLobbyList.applyDiff(diff);
+        diff.apply(lightLobbyList);
         render();
     }
 

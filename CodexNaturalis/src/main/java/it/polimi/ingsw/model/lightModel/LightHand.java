@@ -1,12 +1,11 @@
 package it.polimi.ingsw.model.lightModel;
 
 import it.polimi.ingsw.model.lightModel.diffs.HandDiff;
-import it.polimi.ingsw.model.lightModel.diffs.ModelDifferentiable;
 
 import java.util.HashMap;
 import java.util.Map;
 
-public class LightHand implements ModelDifferentiable<HandDiff> {
+public class LightHand {
     private final LightCard secretObjective;
     private final Map<LightCard, Boolean> cardPlayability;
     private final LightCard[] cards;
@@ -80,15 +79,5 @@ public class LightHand implements ModelDifferentiable<HandDiff> {
         if(!found){
             throw new IllegalArgumentException();
         }
-    }
-    /**
-     * Process a HandDiff adding all card in the addList of parameter A
-     * with they playability in the addList in the parameter B
-     * Remove all card from the removeList of parameter A
-     * @param diff to process
-     */
-    @Override
-    public void applyDiff(HandDiff diff) {
-        diff.apply(this);
     }
 }

@@ -5,13 +5,12 @@ import it.polimi.ingsw.model.cardReleted.utilityEnums.Resource;
 import it.polimi.ingsw.model.cardReleted.utilityEnums.WritingMaterial;
 import it.polimi.ingsw.model.lightModel.diffs.CodexDiff;
 import it.polimi.ingsw.model.lightModel.diffs.FrontierDiff;
-import it.polimi.ingsw.model.lightModel.diffs.ModelDifferentiable;
 import it.polimi.ingsw.model.playerReleted.Position;
 
 import java.util.*;
 
 //a
-public class LightCodex implements ModelDifferentiable<CodexDiff>{
+public class LightCodex {
     private int points;
     private final Map<Collectable, Integer> collectables;
     private final Map<Position, LightPlacement> placementHistory;
@@ -36,12 +35,6 @@ public class LightCodex implements ModelDifferentiable<CodexDiff>{
     }
     /** @return points of the related codex*/
     public int getPoints() { return this.points;}
-    /** set the points related to the codex
-     * @param diff the difference between the new codex and the old one
-     * */
-    public void applyDiff(CodexDiff diff) {
-        diff.apply(this);
-    }
     /**
      * @param points the points to be added to the codex
      */
@@ -80,7 +73,7 @@ public class LightCodex implements ModelDifferentiable<CodexDiff>{
      * @param rmvFrontier the frontier changes to be removed from the related codex
      */
     public void difFrontier(List<Position> addFrontier, List<Position> rmvFrontier){
-        this.frontier.applyDiff(new FrontierDiff(addFrontier, rmvFrontier));
+        new FrontierDiff(addFrontier, rmvFrontier).apply(this.frontier);
     }
 
     /**

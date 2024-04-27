@@ -1,18 +1,11 @@
 package it.polimi.ingsw.model.lightModel;
 
 import it.polimi.ingsw.model.lightModel.diffs.FrontierDiff;
-import it.polimi.ingsw.model.lightModel.diffs.ModelDifferentiable;
 import it.polimi.ingsw.model.playerReleted.Position;
 
 import java.util.List;
 
-public record LightFrontier(List<Position> frontier) implements ModelDifferentiable<FrontierDiff> {
-    /**
-     * * @param diff the diff to apply
-     */
-    public void applyDiff(FrontierDiff diff) {
-
-    }
+public record LightFrontier(List<Position> frontier) {
     /**
      * @param add the positions to add
      * @param rmv the positions to remove
