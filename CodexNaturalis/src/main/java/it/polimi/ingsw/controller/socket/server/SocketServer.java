@@ -36,11 +36,12 @@ public class SocketServer extends ServerImplementation {
 
         System.out.println("Socket Server started on port " + socket.getLocalPort() + "🚔!");
 
+        //For every new user that connects to the server, it launches a new SocketClient Handler
         while (true) {
             try {
                 Socket client = socket.accept();
                 SocketClientHandler socketClientHandler = new SocketClientHandler(client, games);
-                Thread thread = new Thread(socketClientHandler, "sokcetServer_" + client.getInetAddress());
+                Thread thread = new Thread(socketClientHandler, "socketServer_" + client.getInetAddress());
                 thread.start();
             } catch (IOException e) {
                 System.out.println("connection dropped");
