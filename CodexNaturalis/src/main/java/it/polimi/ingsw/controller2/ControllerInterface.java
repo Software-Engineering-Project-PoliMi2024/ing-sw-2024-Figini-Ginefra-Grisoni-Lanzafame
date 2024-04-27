@@ -9,7 +9,7 @@ public interface ControllerInterface {
     void login(String nickname);
     void getActiveGameList();
     void createGame(String gameName, int maxPlayerCount);
-    void joinLobby(String gameName, String nickname);
+    void joinLobby(String lobbyName, String nickname);
     void disconnect();
     void leaveLobby();
     void joinGame(String gameName, String nickname);
