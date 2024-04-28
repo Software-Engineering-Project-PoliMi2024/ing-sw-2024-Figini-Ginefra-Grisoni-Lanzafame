@@ -18,7 +18,12 @@ public class CardMuseumFactory {
 
     public CardMuseumFactory(String folderPath) {
         this.folderPath = folderPath;
-        cardMuseum = buildMuseum();
+        cardMuseum = buildMuseum(false);
+    }
+
+    public CardMuseumFactory(String folderPath, boolean forceReload) {
+        this.folderPath = folderPath;
+        cardMuseum = buildMuseum(forceReload);
     }
 
     private void saveMuseum(CardMuseum cardMuseum) throws IOException {
@@ -44,13 +49,16 @@ public class CardMuseumFactory {
         return museum;
     }
 
-    private CardMuseum buildMuseum() {
+    private CardMuseum buildMuseum(boolean forceReload) {
         try {
+            if(forceReload)
+                throw new IOException("Forced reload");
+
             return loadMuseum();
         } catch (IOException | ClassNotFoundException e) {
             String sourceFileName = "cards.json";
 
-             CardMuseum cardMuseum = new CardMuseum();
+            CardMuseum cardMuseum = new CardMuseum();
 
             Queue<ResourceCard> resourceCards = new ResourceCardFactory(folderPath+sourceFileName, folderPath).getCards();
             resourceCards.forEach(card -> cardMuseum.set(card.getId(), CardPainter.drawResourceCard(card)));
@@ -83,7 +91,7 @@ public class CardMuseumFactory {
     }
 
     public static void main(String[] args){
-        CardMuseum museum = new CardMuseumFactory("./cards/").getCardMuseum();
+        CardMuseum museum = new CardMuseumFactory("./cards/", true).getCardMuseum();
 
         for(int i = 1; i < museum.getSize(); i++){
             System.out.println("Card ID: " + i);

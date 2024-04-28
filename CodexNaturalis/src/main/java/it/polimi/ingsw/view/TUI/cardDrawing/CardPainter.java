@@ -12,9 +12,29 @@ import it.polimi.ingsw.view.TUI.Renderables.drawables.CardRenderable;
 import it.polimi.ingsw.view.TUI.Renderables.drawables.Drawable;
 import it.polimi.ingsw.view.TUI.Styles.CardTextStyle;
 
+import java.util.Map;
 import java.util.Set;
 
 public class CardPainter {
+    private static void drawRequirements(GoldCard card, Drawable drawable){
+        Map<Resource, Integer> requirements = card.getRequirements();
+
+        if(requirements.isEmpty())
+            return;
+
+        int n = requirements.keySet().stream().mapToInt(r -> requirements.get(r) != 0 ? 1 : 0).sum();
+        int y = drawable.getHeight() - 2;
+        int x = (drawable.getWidth() - n) / 2;
+
+        for(Resource resource : requirements.keySet()){
+            if(requirements.get(resource) == 0)
+                continue;
+
+            drawable.addContent(CardTextStyle.getCollectableEmoji(resource), x, y);
+            drawable.addContent(CardTextStyle.getNumberEmoji(requirements.get(resource)), x++, y + 1);
+            x += 1 - n%2;
+        }
+    }
     private static void drawMultiplier(GoldCard card, Drawable drawable){
         if(card.getGoldCardPointMultiplier() != null){
             String multiplierEmojii = card.getGoldCardPointMultiplier().getTarget() == null ?
@@ -114,6 +134,8 @@ public class CardPainter {
         drawBasicFront(card, bg_filler, front);
 
         drawMultiplier(card, front);
+
+        drawRequirements(card, front);
 
         //Draw the back
         Drawable back = new Drawable(CardTextStyle.getCardWidth(), CardTextStyle.getCardHeight());
