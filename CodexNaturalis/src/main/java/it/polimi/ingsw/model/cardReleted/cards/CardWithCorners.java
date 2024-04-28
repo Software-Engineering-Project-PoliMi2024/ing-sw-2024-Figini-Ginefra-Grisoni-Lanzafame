@@ -11,8 +11,8 @@ import java.util.Set;
 public abstract class CardWithCorners extends Card {
     protected final Map<CardCorner, Collectable> frontCorners;
 
-    public CardWithCorners(int points, Map<CardCorner, Collectable> frontCorners){
-        super(points);
+    public CardWithCorners(int id, int points, Map<CardCorner, Collectable> frontCorners){
+        super(id, points);
         this.frontCorners = frontCorners;
     }
 

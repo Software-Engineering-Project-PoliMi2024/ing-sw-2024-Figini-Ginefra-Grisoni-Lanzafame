@@ -20,8 +20,8 @@ public class GoldCard extends CardInHand {
      * @param frontCorner the front corners map
      * @param permanentResource the resource in the middle of the card's back
      */
-    public GoldCard(int points, Map<Resource, Integer> requirements, GoldCardPointMultiplier multiplier, Map<CardCorner, Collectable> frontCorner, Resource permanentResource){
-        super(permanentResource, points, frontCorner);
+    public GoldCard(int id, int points, Map<Resource, Integer> requirements, GoldCardPointMultiplier multiplier, Map<CardCorner, Collectable> frontCorner, Resource permanentResource){
+        super(id, permanentResource, points, frontCorner);
         this.requirements = requirements;
         this.multiplier = multiplier;
     }

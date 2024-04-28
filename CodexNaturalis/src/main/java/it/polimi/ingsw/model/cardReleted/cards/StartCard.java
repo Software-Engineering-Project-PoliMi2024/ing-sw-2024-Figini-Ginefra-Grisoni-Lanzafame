@@ -16,8 +16,8 @@ public class StartCard extends CardWithCorners {
     /** @param backCorners the map containing which collectable is in which corner
      * @param permanentResources the permanent resources given by the start card
      * @param frontCorners the front corners map*/
-    public StartCard(Map<CardCorner, Collectable> frontCorners, Map<CardCorner,Collectable> backCorners, HashSet<Resource> permanentResources){
-        super(0, frontCorners);
+    public StartCard(int id, Map<CardCorner, Collectable> frontCorners, Map<CardCorner,Collectable> backCorners, HashSet<Resource> permanentResources){
+        super(id, 0, frontCorners);
         this.backCorners = backCorners;
         this.permanentResources = permanentResources;
     }

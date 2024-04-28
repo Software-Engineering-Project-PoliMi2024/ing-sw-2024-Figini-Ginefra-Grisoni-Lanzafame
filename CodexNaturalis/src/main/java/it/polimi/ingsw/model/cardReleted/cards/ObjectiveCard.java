@@ -8,8 +8,8 @@ public class ObjectiveCard extends Card {
 
     /** @param points given by the card
      * @param multiplier the multiplier of the points */
-    public ObjectiveCard(int points, ObjectiveCardPointMultiplier multiplier){
-        super(points);
+    public ObjectiveCard(int id, int points, ObjectiveCardPointMultiplier multiplier){
+        super(id, points);
         this.multiplier = multiplier;
     }
 

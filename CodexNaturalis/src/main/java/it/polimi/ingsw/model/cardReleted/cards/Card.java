@@ -7,10 +7,17 @@ import java.io.Serializable;
 
 public abstract class Card implements Serializable {
     final private int points;
+    private final int id;
 
     /** @param  points given by the card*/
-    public Card(int points){
+    public Card(int id, int points){
+        this.id = id;
         this.points = points;
+    }
+
+    /** @return the id of the card */
+    public int getId(){
+        return id;
     }
 
     /** @return the points of the card */
