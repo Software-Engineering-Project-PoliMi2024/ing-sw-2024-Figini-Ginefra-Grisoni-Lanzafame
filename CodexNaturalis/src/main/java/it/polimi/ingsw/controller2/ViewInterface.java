@@ -7,8 +7,6 @@ import it.polimi.ingsw.view.ViewState;
 import java.util.List;
 
 public interface ViewInterface {
-
-
     void setState(ViewState state);
     void transitionTo(ViewState state);
     void log(String logMsg);
