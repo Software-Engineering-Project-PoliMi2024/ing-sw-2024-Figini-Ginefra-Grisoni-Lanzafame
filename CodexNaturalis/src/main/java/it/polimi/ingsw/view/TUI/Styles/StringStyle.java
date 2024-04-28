@@ -11,7 +11,7 @@ public enum StringStyle {
     CYAN_BG("46"),
     WHITE_BG("47"),
     GOLD_BG(255, 176, 46),
-    LIGHT_BG(220, 213, 173),
+    LIGHT_BG(12, 8, 10),
     DARK_BG(64, 42, 50),
     BOLD("1"),
     ITALIC("3"),

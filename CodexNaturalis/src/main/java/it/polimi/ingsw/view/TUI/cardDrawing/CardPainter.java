@@ -8,12 +8,10 @@ import it.polimi.ingsw.model.cardReleted.utilityEnums.CardCorner;
 import it.polimi.ingsw.model.cardReleted.utilityEnums.CardFace;
 import it.polimi.ingsw.model.cardReleted.utilityEnums.Resource;
 import it.polimi.ingsw.model.playerReleted.Position;
-import it.polimi.ingsw.view.TUI.Renderables.drawables.CardRenderable;
 import it.polimi.ingsw.view.TUI.Renderables.drawables.Drawable;
 import it.polimi.ingsw.view.TUI.Styles.CardTextStyle;
 
 import java.util.Map;
-import java.util.Set;
 
 public class CardPainter {
     private static void drawRequirements(GoldCard card, Drawable drawable){

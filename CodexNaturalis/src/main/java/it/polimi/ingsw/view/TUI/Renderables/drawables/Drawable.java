@@ -12,7 +12,7 @@ import java.util.List;
 public class Drawable implements Serializable {
     private int width;
     private int height;
-    private final String[][] content;
+    private String[][] content;
 
 
     public Drawable(int width, int height){
@@ -54,6 +54,30 @@ public class Drawable implements Serializable {
 
     public int getHeight(){
         return this.height;
+    }
+
+    public void setWidth(int width){
+        String[][] newContent = new String[this.height][width];
+        for (int i = 0; i < this.height; i++) {
+            for (int j = 0; j < width; j++) {
+                if(j < this.width)
+                    newContent[i][j] = this.content[i][j];
+            }
+        }
+        this.content = newContent;
+        this.width = width;
+    }
+
+    public void setHeight(int height){
+        String[][] newContent = new String[height][this.width];
+        for (int i = 0; i < height; i++) {
+            for (int j = 0; j < this.width; j++) {
+                if(i < this.height)
+                    newContent[i][j] = this.content[i][j];
+            }
+        }
+        this.content = newContent;
+        this.height = height;
     }
 
     public String getCharAt(int x, int y){
