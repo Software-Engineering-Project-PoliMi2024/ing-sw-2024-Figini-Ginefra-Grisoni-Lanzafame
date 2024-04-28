@@ -30,6 +30,18 @@ class CodexRenderableTest {
                 new LightPlacement(new Position(2, 0), new LightCard(new Random().nextInt(cardMuseum.getSize())), new Random().nextBoolean() ? CardFace.FRONT : CardFace.BACK),
         }));
 
+        codex.difFrontier(List.of(new Position[]{
+                new Position(0, -2),
+                new Position(1, -1),
+                new Position(3, -1),
+                new Position(3, 1),
+                new Position(2, 2),
+                new Position(0, 2),
+                new Position(-1, 1),
+                new Position(-2, 0),
+                new Position(-2, -2),
+        }), new ArrayList<>());
+
 
         CodexRenderable codexRenderable = new CodexRenderable(codex, cardMuseum, new CommandPrompt[]{});
 

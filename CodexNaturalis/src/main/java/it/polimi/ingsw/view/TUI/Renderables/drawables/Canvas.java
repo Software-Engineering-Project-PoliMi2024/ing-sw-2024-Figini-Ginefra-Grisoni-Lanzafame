@@ -12,7 +12,8 @@ public class Canvas extends Drawable{
         for(int i = 0; i < drawable.getHeight(); i++){
             for(int j = 0; j < drawable.getWidth(); j++){
                 if(x+j >= 0 && x+j < this.getWidth() && y+i >= 0 && y+i < this.getHeight())
-                    this.addContent(content[i][j], x + j, y + i);
+                    if(content[i][j] != null)
+                        this.addContent(content[i][j], x + j, y + i);
             }
         }
     }

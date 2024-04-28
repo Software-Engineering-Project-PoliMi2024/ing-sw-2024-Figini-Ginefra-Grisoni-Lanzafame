@@ -158,4 +158,32 @@ public class CardPainter {
 
         return new TextCard(front, back);
     }
+
+    public static Drawable drawFrontierCard(int number){
+        Drawable drawable = new Drawable(CardTextStyle.getCardWidth(), CardTextStyle.getCardHeight());
+        //Draw the borders
+        for(int i = 0; i < drawable.getWidth(); i++){
+            drawable.addContent(CardTextStyle.getFrontierFilling(), i, 0);
+            drawable.addContent(CardTextStyle.getFrontierFilling(), i, drawable.getHeight() - 1);
+        }
+
+        for(int i = 0; i < drawable.getHeight(); i++){
+            drawable.addContent(CardTextStyle.getFrontierFilling(), 0, i);
+            drawable.addContent(CardTextStyle.getFrontierFilling(), drawable.getWidth() - 1, i);
+        }
+
+        //Brake down the number in digits
+        int[] digits = new int[3];
+        for(int i = 0; i < 3; i++){
+            digits[i] = number % 10;
+            number /= 10;
+        }
+
+        //Draw the digits
+        for(int i = 0; i < 3; i++){
+            drawable.addContent(CardTextStyle.getNumberEmoji(digits[i]), drawable.getWidth() / 2 + 1 - i, drawable.getHeight() / 2);
+        }
+
+        return drawable;
+    }
 }

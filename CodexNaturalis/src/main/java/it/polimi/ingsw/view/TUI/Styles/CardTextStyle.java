@@ -61,6 +61,8 @@ public class CardTextStyle {
 
     private static String startFilling = new DecoratedString("\uD83D\uDFE8", StringStyle.GOLD_BG).toString(); //🟨
 
+    private static String frontierFilling = "❔";
+
     public static int getCardWidth() {
         return CardWidth;
     }
@@ -110,6 +112,10 @@ public class CardTextStyle {
 
     public static String getResourceBorder(Resource resource){
         return resourceBorder.get(resource);
+    }
+
+    public static String getFrontierFilling() {
+        return frontierFilling;
     }
 }
 

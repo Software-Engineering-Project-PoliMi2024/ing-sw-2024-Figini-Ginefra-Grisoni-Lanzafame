@@ -10,6 +10,7 @@ public enum StringStyle {
     PURPLE_BG(141, 101, 197),
     CYAN_BG("46"),
     WHITE_BG("47"),
+    GREY_BG(168, 168, 168),
     GOLD_BG(255, 176, 46),
     LIGHT_BG(12, 8, 10),
     DARK_BG(64, 42, 50),

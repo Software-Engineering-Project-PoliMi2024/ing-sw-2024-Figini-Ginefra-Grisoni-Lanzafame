@@ -6,6 +6,7 @@ import it.polimi.ingsw.model.playerReleted.Position;
 import it.polimi.ingsw.view.TUI.Renderables.drawables.Drawable;
 import it.polimi.ingsw.view.TUI.Styles.CardTextStyle;
 import it.polimi.ingsw.view.TUI.cardDrawing.CardMuseum;
+import it.polimi.ingsw.view.TUI.cardDrawing.CardPainter;
 import it.polimi.ingsw.view.TUI.cardDrawing.TextCard;
 import it.polimi.ingsw.view.TUI.inputs.CommandPrompt;
 
@@ -58,6 +59,13 @@ public class CodexRenderable extends CanvasRenderable{
 
         //clear the canvas
         this.canvas.fillContent(CardTextStyle.getBackgroundEmoji());
+
+        //draw the frontier
+        for(int i = 0; i < codex.getFrontier().frontier().size(); i++){
+            Position canvasPosition = gridToCanvas(codex.getFrontier().frontier().get(i));
+            Drawable frontierDrawable = CardPainter.drawFrontierCard(i);
+            this.canvas.draw(frontierDrawable, canvasPosition.getX(), canvasPosition.getY());
+        }
 
         //draw the cards
         for(Position p : placementHistory.keySet()){
