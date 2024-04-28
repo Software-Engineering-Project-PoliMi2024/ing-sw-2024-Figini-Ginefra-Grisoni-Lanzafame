@@ -51,7 +51,7 @@ public enum CommandPrompt implements Iterator<String>, CommandObserved {
         this.commandName = name;
         this.questions = prompts;
         this.validators = validators;
-        this.currentResult = new CommandPromptResult(new String[prompts.length]);
+        this.currentResult = new CommandPromptResult(this, new String[prompts.length]);
     }
 
     public String[] getQuestions() {
@@ -83,7 +83,7 @@ public enum CommandPrompt implements Iterator<String>, CommandObserved {
 
     public void reset() {
         currentQuestion = 0;
-        currentResult = new CommandPromptResult(new String[questions.length]);
+        currentResult = new CommandPromptResult(this, new String[questions.length]);
     }
 
     public boolean validate(String answer) {

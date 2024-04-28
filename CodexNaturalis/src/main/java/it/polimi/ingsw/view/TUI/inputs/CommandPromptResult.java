@@ -3,7 +3,10 @@ package it.polimi.ingsw.view.TUI.inputs;
 public class CommandPromptResult {
     String [] answers;
 
-    public CommandPromptResult(String [] answers){
+    CommandPrompt command;
+
+    public CommandPromptResult(CommandPrompt command, String [] answers){
+        this.command = command;
         this.answers = answers;
     }
 
