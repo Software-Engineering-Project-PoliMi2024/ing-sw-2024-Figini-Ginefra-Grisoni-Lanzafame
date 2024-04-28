@@ -9,17 +9,17 @@ import java.util.Map;
 
 public class NewGameDiff extends GameDiff{
     private final String gameName;
-    private final List<String> playerNicknames;
+    private final Map<String, Boolean> playerNicknames;
     private final String firstToStart;
     private final Map<DrawableCard, LightDeck> decks;
 
     /**
      * @param gameName the name of the game
-     * @param playerNicknames the nicknames of the players that will play the game
+     * @param playerNicknames the Map containing nicknames of the players that will play the game and related activity
      * @param firstToStart the nickname of the player that will start to play
      * @param decks the decks that will be used in the game
      */
-    public NewGameDiff(String gameName, List<String> playerNicknames, String firstToStart, Map<DrawableCard, LightDeck> decks) {
+    public NewGameDiff(String gameName, Map<String, Boolean> playerNicknames, String firstToStart, Map<DrawableCard, LightDeck> decks) {
         this.gameName = gameName;
         this.playerNicknames = playerNicknames;
         this.firstToStart = firstToStart;
@@ -32,8 +32,11 @@ public class NewGameDiff extends GameDiff{
         newGame.setGameName(gameName);
         Map<String, LightCodex> codexMap = new HashMap<>();
         Map<String, LightHandOthers> handOthers = new HashMap<>();
-        for(String player : playerNicknames){
-            newGame.setInactivePlayer(player);
+        for(String player : playerNicknames.keySet()){
+            if(playerNicknames.get(player))
+                newGame.getLightGameParty().setActivePlayer(player);
+            else
+                newGame.getLightGameParty().setInactivePlayer(player);
             codexMap.put(player, new LightCodex());
             handOthers.put(player, new LightHandOthers());
         }

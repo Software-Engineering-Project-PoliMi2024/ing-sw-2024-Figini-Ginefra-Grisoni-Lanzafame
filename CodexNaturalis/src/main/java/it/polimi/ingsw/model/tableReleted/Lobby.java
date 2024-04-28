@@ -10,7 +10,7 @@ import it.polimi.ingsw.lightModel.diffs.LobbyDiff;
 import java.util.*;
 
 public class Lobby {
-    private LobbyDiffPublisher lobbyDiffPublisher;
+    private final LobbyDiffPublisher lobbyDiffPublisher;
     private final String lobbyName;
     final private List<String> lobbyPlayerList;
     private final int numberOfMaxPlayer;
@@ -74,5 +74,8 @@ public class Lobby {
     }
     public void unsubscribe(DiffSubscriber unsubscriber){
         lobbyDiffPublisher.unsubscribe(unsubscriber);
+    }
+    public List<DiffSubscriber> getSubscribers(){
+        return lobbyDiffPublisher.getSubscribers();
     }
 }

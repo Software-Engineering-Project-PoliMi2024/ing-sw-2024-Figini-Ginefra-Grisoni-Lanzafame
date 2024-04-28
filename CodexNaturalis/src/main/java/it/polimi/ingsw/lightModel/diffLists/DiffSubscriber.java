@@ -16,10 +16,12 @@ public interface DiffSubscriber extends ViewInterface {
     String getTableName();
     //overload to have the equality checked on nicknames
     boolean equals(Object obj);
-    List<String> getGamePlayerList();
+    Map<String, Boolean> getGamePlayerList();
     Map<DrawableCard, LightDeck> getDeckMap();
     String getCurrentPlayer();
     LightCodex getCodex(String owner);
     LightHand getYourHand();
     LightHandOthers getHandOthers(String owner);
+    LightCard getSecretObjective();
+    LightCard[] getPublicObjective();
 }

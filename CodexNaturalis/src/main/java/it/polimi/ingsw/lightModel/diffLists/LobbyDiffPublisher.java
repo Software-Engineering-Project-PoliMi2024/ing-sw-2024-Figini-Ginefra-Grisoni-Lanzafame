@@ -5,6 +5,7 @@ import it.polimi.ingsw.lightModel.diffs.LobbyDiff;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 public class LobbyDiffPublisher implements DiffPublisher{
@@ -74,6 +75,9 @@ public class LobbyDiffPublisher implements DiffPublisher{
             synchronized (lobbyDiffMap) {
                 lobbyDiffMap.put(subscriber, new LobbyDiff(new ArrayList<>(), new ArrayList<>()));
             }
-        }
     }
+    public List<DiffSubscriber> getSubscribers(){
+        return new ArrayList<>(lobbyDiffMap.keySet());
+    }
+}
 

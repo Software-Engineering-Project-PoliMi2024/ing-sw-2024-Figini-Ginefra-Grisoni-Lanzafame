@@ -5,6 +5,7 @@ import it.polimi.ingsw.lightModel.LightPlacement;
 import it.polimi.ingsw.lightModel.diffLists.DiffSubscriber;
 import it.polimi.ingsw.model.cardReleted.utilityEnums.CardFace;
 import it.polimi.ingsw.model.cardReleted.utilityEnums.DrawableCard;
+import it.polimi.ingsw.model.tableReleted.Lobby;
 
 public interface ControllerInterfaceServer {
     void login(String nickname);
@@ -13,7 +14,7 @@ public interface ControllerInterfaceServer {
     void joinLobby(String lobbyName, DiffSubscriber diffSubscriber);
     void disconnect();
     void leaveLobby(DiffSubscriber diffSubscriber);
-    void joinGame(DiffSubscriber diffSubscriber);
+    void joinGame(Lobby lobby);
     void leaveGame();
     void selectStartCardFace(LightCard card, CardFace cardFace);
     void choseSecretObjective(LightCard objectiveCard);

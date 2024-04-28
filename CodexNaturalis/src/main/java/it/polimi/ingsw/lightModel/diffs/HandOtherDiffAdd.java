@@ -5,7 +5,7 @@ import it.polimi.ingsw.model.cardReleted.utilityEnums.Resource;
 
 public class HandOtherDiffAdd extends HandOtherDiff{
 
-    protected HandOtherDiffAdd(Resource card, String owner) {
+    public HandOtherDiffAdd(Resource card, String owner) {
         super(card, owner);
     }
 

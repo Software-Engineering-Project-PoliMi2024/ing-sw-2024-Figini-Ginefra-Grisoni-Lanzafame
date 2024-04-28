@@ -12,7 +12,6 @@ public interface ControllerInterfaceClient {
     void joinLobby(String lobbyName, String nickname);
     void disconnect();
     void leaveLobby();
-    void joinGame(String gameName, String nickname);
     void selectStartCardFace(LightCard card, CardFace cardFace);
     void peek(String nickName);
     void choseSecretObjective(LightCard objectiveCard);

@@ -46,7 +46,7 @@ public abstract class ServerImplementation implements ControllerInterfaceServer,
             diffSubscriber.log(LogsFromServer.LOBBY_JOINED.getMessage());
             diffSubscriber.transitionTo(ViewState.LOBBY);
             if(lobbyToJoin.getLobbyPlayerList().size() == lobbyToJoin.getNumberOfMaxPlayer()){
-                //TODO: start game
+                this.joinGame(lobbyToJoin);
             }
         }else{
             diffSubscriber.log(LogsFromServer.LOBBY_IS_FULL.getMessage());
@@ -73,8 +73,8 @@ public abstract class ServerImplementation implements ControllerInterfaceServer,
     }
 
     @Override
-    public void joinGame(DiffSubscriber diffSubscriber) {
-
+    public void joinGame(Lobby lobby) {
+        //lobby.getSubscribers();
     }
 
     @Override

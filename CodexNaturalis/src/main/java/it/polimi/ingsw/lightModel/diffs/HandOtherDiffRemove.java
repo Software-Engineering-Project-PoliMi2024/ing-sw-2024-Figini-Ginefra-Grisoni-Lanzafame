@@ -4,7 +4,7 @@ import it.polimi.ingsw.lightModel.LightGame;
 import it.polimi.ingsw.model.cardReleted.utilityEnums.Resource;
 
 public class HandOtherDiffRemove extends HandOtherDiff{
-    protected HandOtherDiffRemove(Resource card, String owner) {
+    public HandOtherDiffRemove(Resource card, String owner) {
         super(card, owner);
     }
 
