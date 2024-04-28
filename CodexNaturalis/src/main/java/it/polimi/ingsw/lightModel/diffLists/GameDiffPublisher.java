@@ -4,7 +4,6 @@ import it.polimi.ingsw.lightModel.LightCard;
 import it.polimi.ingsw.lightModel.LightCodex;
 import it.polimi.ingsw.lightModel.LightHandOthers;
 import it.polimi.ingsw.lightModel.diffs.*;
-import it.polimi.ingsw.model.cardReleted.utilityEnums.Collectable;
 import it.polimi.ingsw.model.cardReleted.utilityEnums.Resource;
 
 import java.util.*;
@@ -79,7 +78,7 @@ public class GameDiffPublisher implements DiffPublisherDouble<GameDiff>{
                     nickname,
                     codex.getPoints(),
                     codex.getEarnedCollectables(),
-                    new HashMap<Collectable, Integer>(),
+                    new HashMap<>(),
                     codex.getPlacementHistory().values().stream().toList(),
                     codex.getFrontier().frontier(),
                     new ArrayList<>()

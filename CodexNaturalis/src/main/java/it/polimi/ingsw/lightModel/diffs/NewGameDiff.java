@@ -4,7 +4,6 @@ import it.polimi.ingsw.lightModel.*;
 import it.polimi.ingsw.model.cardReleted.utilityEnums.DrawableCard;
 
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 
 public class NewGameDiff extends GameDiff{

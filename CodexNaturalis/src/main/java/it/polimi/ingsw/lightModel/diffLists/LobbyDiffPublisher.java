@@ -56,7 +56,7 @@ public class LobbyDiffPublisher implements DiffPublisher{
             lobbyDiffMap.remove(diffSubscriber);
             for (DiffSubscriber subscriber : lobbyDiffMap.keySet()) {
                 // notify to the people already in the lobby the new subscriber
-                lobbyDiffMap.replaceAll((s,v)->createDiffUnsubscriber(v, diffSubscriber));;
+                lobbyDiffMap.replaceAll((s,v)->createDiffUnsubscriber(v, subscriber));
             }
             this.notifySubscriber();
         }

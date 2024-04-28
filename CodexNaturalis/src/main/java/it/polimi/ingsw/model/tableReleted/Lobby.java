@@ -1,11 +1,7 @@
 package it.polimi.ingsw.model.tableReleted;
 
-import it.polimi.ingsw.controller.socket.messages.observers.ServerMsgObserved;
-import it.polimi.ingsw.controller.socket.messages.observers.ServerMsgObserver;
-import it.polimi.ingsw.controller.socket.messages.serverMessages.ServerMsg;
 import it.polimi.ingsw.lightModel.diffLists.DiffSubscriber;
 import it.polimi.ingsw.lightModel.diffLists.LobbyDiffPublisher;
-import it.polimi.ingsw.lightModel.diffs.LobbyDiff;
 
 import java.util.*;
 

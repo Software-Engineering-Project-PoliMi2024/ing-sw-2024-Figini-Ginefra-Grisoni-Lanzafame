@@ -2,11 +2,8 @@ package it.polimi.ingsw.lightModel.diffLists;
 
 import it.polimi.ingsw.controller2.ViewInterface;
 import it.polimi.ingsw.lightModel.*;
-import it.polimi.ingsw.lightModel.diffs.LobbyDiff;
-import it.polimi.ingsw.lightModel.diffs.ModelDiffs;
 import it.polimi.ingsw.model.cardReleted.utilityEnums.DrawableCard;
 
-import java.util.List;
 import java.util.Map;
 
 public interface DiffSubscriber extends ViewInterface {
