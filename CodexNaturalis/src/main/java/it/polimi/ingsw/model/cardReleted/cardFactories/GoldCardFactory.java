@@ -69,7 +69,7 @@ public class GoldCardFactory extends AbstractCardFactory<GoldCard>{
         for(int i =0; i<GoldCards.size(); i++){
             JsonObject card = GoldCards.get(i).getAsJsonObject();
             getPointMultiplier(card);
-            deckBuilder.add(new GoldCard(card.get("points").getAsInt(), getRequirmentMap(card),
+            deckBuilder.add(new GoldCard(getId(card), card.get("points").getAsInt(), getRequirmentMap(card),
                     getPointMultiplier(card),getFrontCornerMap(card),getPermanentResource(card)));
         }
         return deckBuilder;

@@ -78,7 +78,7 @@ public class JoinGameAnswerMsg extends AnswerMsg{
             System.out.println("Do you want to select the SecretObj? (y/n)");
             answer= scanner.nextLine();
             if(answer.equals("y")){
-                socketServerHandler.getClient().getController().choseSecretObjective(new ObjectiveCard(0, null));
+                socketServerHandler.getClient().getController().choseSecretObjective(new ObjectiveCard(0, 0, null));
             }
         }
     }

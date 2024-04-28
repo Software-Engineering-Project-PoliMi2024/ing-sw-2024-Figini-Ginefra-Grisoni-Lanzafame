@@ -72,7 +72,7 @@ public class ObjectiveCardFactory extends AbstractCardFactory<ObjectiveCard>{
         JsonArray ResourceCards = getCardArray("ObjectiveCard");
         for(int i=0; i<ResourceCards.size(); i++) {
             JsonObject card = ResourceCards.get(i).getAsJsonObject();
-            deckBuilder.add(new ObjectiveCard(card.get("points").getAsInt(), getPointMultiplier(card)));
+            deckBuilder.add(new ObjectiveCard(getId(card), card.get("points").getAsInt(), getPointMultiplier(card)));
         }
         return deckBuilder;
     }

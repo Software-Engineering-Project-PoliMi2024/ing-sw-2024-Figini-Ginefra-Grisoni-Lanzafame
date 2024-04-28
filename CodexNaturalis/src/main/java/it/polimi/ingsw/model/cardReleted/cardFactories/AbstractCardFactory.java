@@ -75,6 +75,10 @@ public abstract class AbstractCardFactory<Element> {
         return frontCornerMap;
     }
 
+    protected int getId(JsonObject card){
+        return card.get("imgID").getAsInt();
+    }
+
     /**
      * @param card that is being build
      * @return Resource as the PermanentResource stored in the json file

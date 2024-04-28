@@ -33,7 +33,7 @@ public class ResourceCardFactory extends AbstractCardFactory<ResourceCard>{
         JsonArray ResourceCards = getCardArray("ResourcesCards");
         for(int i=0; i<ResourceCards.size(); i++){
             JsonObject card = ResourceCards.get(i).getAsJsonObject();
-            deckBuilder.add(new ResourceCard(getPermanentResource(card),
+            deckBuilder.add(new ResourceCard(getId(card), getPermanentResource(card),
                     card.get("points").getAsInt(), getFrontCornerMap(card)));
         }
         return deckBuilder;

@@ -4,20 +4,18 @@ import it.polimi.ingsw.model.playerReleted.Position;
 import it.polimi.ingsw.view.TUI.Renderables.Renderable;
 import it.polimi.ingsw.view.TUI.inputs.CommandPrompt;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
-public abstract class Drawable extends Renderable {
-    private Position position;
+public class Drawable implements Serializable {
     private int width;
     private int height;
-
     private final String[][] content;
 
 
-    public Drawable(int width, int height, CommandPrompt[] relatedCommands){
-        super(relatedCommands);
+    public Drawable(int width, int height){
         this.width = width;
         this.height = height;
         this.content = new String[height][width];
@@ -62,15 +60,6 @@ public abstract class Drawable extends Renderable {
         return this.content[y][x];
     }
 
-    public void render(){
-        for(int i = 0; i < this.height; i++){
-            for(int j = 0; j < this.width; j++){
-                System.out.print(this.content[i][j]);
-            }
-            System.out.println();
-        }
-    }
-
     public void setContent(String[][] content){
         if(content.length != this.height || content[0].length != this.width)
             throw new IllegalArgumentException("The content must have the same dimensions as the drawable");
@@ -80,5 +69,18 @@ public abstract class Drawable extends Renderable {
                 this.content[i][j] = content[i][j];
             }
         }
+    }
+
+    public String toString(){
+        StringBuilder str = new StringBuilder();
+
+        for(int i = 0; i < this.height; i++){
+            for(int j = 0; j < this.width; j++){
+                str.append(this.content[i][j]);
+            }
+            str.append('\n');
+        }
+
+        return str.toString();
     }
 }

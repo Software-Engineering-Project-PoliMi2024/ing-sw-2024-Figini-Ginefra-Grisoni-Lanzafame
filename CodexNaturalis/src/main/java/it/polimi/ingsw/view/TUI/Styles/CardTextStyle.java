@@ -26,7 +26,7 @@ public class CardTextStyle {
 
     private static final String backgroundEmoji = "▪\uFE0F";
 
-    private static final String coveredCornerMultiplierEmoji = "\uD83D\uDDD7"; //🗗
+    private static final String coveredCornerMultiplierEmoji = "\uD83D\uDD17"; //🔗
 
     private static final String cornerFiller = new DecoratedString("\uD83D\uDD38", StringStyle.DARK_BG).toString(); //🔸
 
