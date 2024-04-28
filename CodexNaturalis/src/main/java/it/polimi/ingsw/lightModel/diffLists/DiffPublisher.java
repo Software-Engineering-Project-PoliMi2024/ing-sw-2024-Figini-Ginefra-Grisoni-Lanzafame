@@ -1,6 +1,7 @@
 package it.polimi.ingsw.lightModel.diffLists;
 
 import it.polimi.ingsw.lightModel.Differentiable;
+import it.polimi.ingsw.lightModel.LightLobby;
 import it.polimi.ingsw.lightModel.diffs.ModelDiffs;
 
 import java.util.List;

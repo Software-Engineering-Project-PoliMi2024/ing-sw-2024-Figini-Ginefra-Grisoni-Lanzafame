@@ -67,8 +67,8 @@ public class LobbyDiffPublisher implements DiffPublisher{
     }
     @Override
     public void notifySubscriber() {
-        /*for(DiffSubscriber subscriber : lobbyDiffMap.keySet()){
-            subscriber.update(this.lobbyDiffMap.get(subscriber));
-        }*/
+        for(DiffSubscriber subscriber : lobbyDiffMap.keySet()){
+            //subscriber.updateLobby(this.lobbyDiffMap.get(subscriber));
+        }
     }
 }

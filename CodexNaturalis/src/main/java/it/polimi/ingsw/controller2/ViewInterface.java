@@ -23,7 +23,6 @@ public interface ViewInterface {
     void playerOrderSetPlayerOrder(String[] nicks);
     void playerOrderUpdateCurrentPlayer(String nick);
     void updateCodex(ModelDiffs<LightCodex> codex);
-
     void updateHand(ModelDiffs<LightHand> hand);
     void setFinalRanking(String[] nicks, int[] points);
 }

@@ -1,16 +1,14 @@
 package it.polimi.ingsw.controller2;
 
-import it.polimi.ingsw.lightModel.Differentiable;
+import it.polimi.ingsw.lightModel.*;
 import it.polimi.ingsw.lightModel.diffLists.DiffSubscriber;
 import it.polimi.ingsw.lightModel.diffs.ModelDiffs;
+import it.polimi.ingsw.view.ViewState;
 
 import java.util.List;
 
-public class SocketServerHandler2 implements DiffSubscriber {
-    @Override
-    public void update(ModelDiffs<Differentiable> diffs) {
+public class ServerSocket implements DiffSubscriber {
 
-    }
     @Override
     public String getNickname() {
         return null;

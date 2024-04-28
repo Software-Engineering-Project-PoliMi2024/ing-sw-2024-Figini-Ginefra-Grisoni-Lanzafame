@@ -9,7 +9,7 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
-public class Lobby implements ServerMsgObserved {
+public class Lobby {
     final List<ServerMsgObserver> observers = new ArrayList<>();
     private final String lobbyName;
     final private List<String> lobbyPlayerList;
