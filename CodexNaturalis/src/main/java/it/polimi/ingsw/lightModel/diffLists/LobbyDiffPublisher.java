@@ -4,13 +4,14 @@ import it.polimi.ingsw.lightModel.diffs.LobbyDiff;
 
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.Map;
 
 public class LobbyDiffPublisher implements DiffPublisher{
     private final Map<DiffSubscriber, LobbyDiff> lobbyDiffMap;
 
-    public LobbyDiffPublisher(Map<DiffSubscriber, LobbyDiff> lobbyDiffMap) {
-        this.lobbyDiffMap = lobbyDiffMap;
+    public LobbyDiffPublisher() {
+        this.lobbyDiffMap = new HashMap<>();
     }
 /**
      * @param diffSubscriber the subscriber of the user that joins the lobby
@@ -54,9 +55,9 @@ public class LobbyDiffPublisher implements DiffPublisher{
             lobbyDiffMap.remove(diffSubscriber);
             for (DiffSubscriber subscriber : lobbyDiffMap.keySet()) {
                 // notify to the people already in the lobby the new subscriber
-                lobbyDiffMap.replaceAll((s,v)->createDiffUnsubscriber(v, diffSubscriber));
-                ;
+                lobbyDiffMap.replaceAll((s,v)->createDiffUnsubscriber(v, diffSubscriber));;
             }
+            this.notifySubscriber();
         }
     }
     private LobbyDiff createDiffUnsubscriber(LobbyDiff diffToModify, DiffSubscriber diffSubscriber){
@@ -67,8 +68,12 @@ public class LobbyDiffPublisher implements DiffPublisher{
     }
     @Override
     public void notifySubscriber() {
-        for(DiffSubscriber subscriber : lobbyDiffMap.keySet()){
-            //subscriber.updateLobby(this.lobbyDiffMap.get(subscriber));
+        for(DiffSubscriber subscriber : lobbyDiffMap.keySet())
+            subscriber.updateLobby(this.lobbyDiffMap.get(subscriber));
+        for(DiffSubscriber subscriber : lobbyDiffMap.keySet())
+            synchronized (lobbyDiffMap) {
+                lobbyDiffMap.put(subscriber, new LobbyDiff(new ArrayList<>(), new ArrayList<>()));
+            }
         }
     }
-}
+

@@ -1,13 +1,14 @@
 package it.polimi.ingsw.lightModel.diffs;
 
 import it.polimi.ingsw.lightModel.LightGame;
+import it.polimi.ingsw.lightModel.LightGameParty;
 
 import java.util.List;
 
-public class GameDiffSetPlayerActivity extends GameDiff{
+public class GameDiffPlayerActivity extends GamePartyDiff {
     private final List<String> playersToSetActive;
     private final List<String> playersToSetInactive;
-    public GameDiffSetPlayerActivity(List<String> playersToSetActive, List<String> playersToSetInactive) {
+    public GameDiffPlayerActivity(List<String> playersToSetActive, List<String> playersToSetInactive) {
         this.playersToSetActive = playersToSetActive;
         this.playersToSetInactive = playersToSetInactive;
     }

@@ -1,6 +1,7 @@
 package it.polimi.ingsw.lightModel.diffs;
 
 import it.polimi.ingsw.lightModel.LightCard;
+import it.polimi.ingsw.lightModel.LightGame;
 import it.polimi.ingsw.lightModel.LightHand;
 
 public class HandDiffRemove extends HandDiff{
@@ -11,10 +12,10 @@ public class HandDiffRemove extends HandDiff{
         super(card);
     }
     /**
-     * @param hand the LightHand to which the diff applies
+     * @param game the LightHand to which the diff applies
      */
     @Override
-    public void apply(LightHand hand) {
-        hand.removeCard(card);
+    public void apply(LightGame game) {
+        game.removeCard(card);
     }
 }

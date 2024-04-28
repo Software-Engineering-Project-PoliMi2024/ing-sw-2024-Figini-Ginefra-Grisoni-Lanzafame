@@ -1,20 +1,27 @@
 package it.polimi.ingsw.lightModel;
 
+import it.polimi.ingsw.model.cardReleted.utilityEnums.Resource;
+
 import java.util.HashMap;
 import java.util.Map;
 
 public class LightHand implements Differentiable {
-    private final LightCard secretObjective;
+    private LightCard secretObjective;
     private final Map<LightCard, Boolean> cardPlayability;
     private final LightCard[] cards;
 
     /**
      * The constructor of the class
-     * @param secretObjective the secret objective of the player
-     */
-    public LightHand(LightCard secretObjective){
+     * */
+    public LightHand(){
         this.cardPlayability = new HashMap<>();
         this.cards = new LightCard[3];
+    }
+    /**
+     * Set the secret objective of the player
+     * @param secretObjective the secret objective of the player
+     */
+    public void setSecretObjective(LightCard secretObjective) {
         this.secretObjective = secretObjective;
     }
     /**
@@ -49,7 +56,7 @@ public class LightHand implements Differentiable {
      * @throws IllegalCallerException if the player has already enough card
      */
     public void addCard(LightCard card, Boolean playability){
-        if(cards.length == 3){
+        if(length(cards) == 3){
             throw new IllegalCallerException();
         }else{
             for(int i=0; i<cards.length; i++){
@@ -60,6 +67,15 @@ public class LightHand implements Differentiable {
                 }
             }
         }
+    }
+    private int length(LightCard[] arr){
+        int i=0;
+        for(LightCard r: arr){
+            if(r!=null){
+                i++;
+            }
+        }
+        return i;
     }
     /**
      * Remove a lightCard from the cards array and the cardPlayability map

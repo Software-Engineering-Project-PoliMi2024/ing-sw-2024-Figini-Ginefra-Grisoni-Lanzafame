@@ -1,10 +1,25 @@
 package it.polimi.ingsw.lightModel.diffLists;
 
 import it.polimi.ingsw.controller2.ViewInterface;
-import it.polimi.ingsw.lightModel.LightLobby;
+import it.polimi.ingsw.lightModel.*;
 import it.polimi.ingsw.lightModel.diffs.LobbyDiff;
 import it.polimi.ingsw.lightModel.diffs.ModelDiffs;
+import it.polimi.ingsw.model.cardReleted.utilityEnums.DrawableCard;
 
-public interface DiffSubscriber{
+import java.util.List;
+import java.util.Map;
+
+public interface DiffSubscriber extends ViewInterface {
     String getNickname();
+    LightLobbyList getLobbyList();
+    //table name identifies both the lobby and the game
+    String getTableName();
+    //overload to have the equality checked on nicknames
+    boolean equals(Object obj);
+    List<String> getGamePlayerList();
+    Map<DrawableCard, LightDeck> getDeckMap();
+    String getCurrentPlayer();
+    LightCodex getCodex(String owner);
+    LightHand getYourHand();
+    LightHandOthers getHandOthers(String owner);
 }

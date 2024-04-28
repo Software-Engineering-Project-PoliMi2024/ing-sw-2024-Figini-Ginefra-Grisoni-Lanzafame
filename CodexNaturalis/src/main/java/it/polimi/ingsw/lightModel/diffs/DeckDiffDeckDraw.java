@@ -11,17 +11,12 @@ public class DeckDiffDeckDraw extends DeckDiff {
      * @param resource the resource of the card under the card drawn
      */
     DeckDiffDeckDraw(DrawableCard deck, Resource resource) {
-        super(deck);
         this.resource = resource;
     }
     /**
      * @param lightDeck the deck to which the diff is applied
      */
     public void apply(LightDeck lightDeck) {
-        if(super.deck == DrawableCard.GOLDCARD) {
-            lightDeck.setGoldCardDeck(resource);
-        }else if(super.deck == DrawableCard.RESOURCECARD){
-            lightDeck.setResourceCardDeck(resource);
-        }
+        lightDeck.setTopDeckCard(resource);
     }
 }

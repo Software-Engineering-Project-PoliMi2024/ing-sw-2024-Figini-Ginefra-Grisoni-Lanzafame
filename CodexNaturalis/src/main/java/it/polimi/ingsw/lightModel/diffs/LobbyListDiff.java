@@ -5,13 +5,39 @@ import it.polimi.ingsw.lightModel.LightLobbyList;
 
 import java.util.List;
 
-public record LobbyListDiff(List<LightLobby> removedGame,
-                            List<LightLobby> addedGame) implements ModelDiffs<LightLobbyList> {
+public class LobbyListDiff implements ModelDiffs<LightLobbyList> {
+    private final List<LightLobby> addedLobby;
+    private final List<LightLobby> removedLobby;
+    public LobbyListDiff(List<LightLobby> addedLobby, List<LightLobby> removedLobby) {
+        this.addedLobby = addedLobby;
+        this.removedLobby = removedLobby;
+    }
     /**
      * @param lightLobbyList the LightLobbyList to which the diff applies
      */
     @Override
     public void apply(LightLobbyList lightLobbyList) {
-        lightLobbyList.lobbiesDiff(addedGame, removedGame);
+        lightLobbyList.lobbiesDiff(addedLobby, removedLobby);
+    }
+
+    public List<LightLobby> getAddedLobby() {
+        return addedLobby;
+    }
+
+    public List<LightLobby> getRemovedLobby() {
+        return removedLobby;
+    }
+
+    /**
+     * @param addedLobby the list of added lobbies
+     * @param removedLobby the list of removed lobbies
+     */
+    public void updateLobbyListDiff(List<LightLobby> addedLobby, List<LightLobby> removedLobby) {
+        this.addedLobby.addAll(addedLobby);
+        this.removedLobby.addAll(removedLobby);
+    }
+    public void updateLobbyListDiff(LobbyListDiff oldDiff) {
+        this.addedLobby.addAll(oldDiff.getAddedLobby());
+        this.removedLobby.addAll(oldDiff.getRemovedLobby());
     }
 }

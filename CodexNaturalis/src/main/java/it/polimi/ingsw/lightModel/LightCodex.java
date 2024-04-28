@@ -79,10 +79,10 @@ public class LightCodex implements Differentiable {
      * @param addCollectables the change in collectables to be added to the related codex
      * @param removeCollectables the change in collectables to be removed from the related codex
      */
-    public void difCollectables(List<Collectable> addCollectables, List<Collectable> removeCollectables) {
-        for (Collectable c : addCollectables)
-            this.collectables.put(c, this.collectables.get(c) + 1);
-        for (Collectable c : removeCollectables)
-            this.collectables.put(c, this.collectables.get(c) - 1);
+    public void difCollectables(Map<Collectable,Integer> addCollectables, Map<Collectable,Integer> removeCollectables) {
+        for (Collectable c : addCollectables.keySet())
+            this.collectables.put(c, this.collectables.get(c) + addCollectables.get(c));
+        for (Collectable c : removeCollectables.keySet())
+            this.collectables.put(c, this.collectables.get(c) - removeCollectables.get(c));
     }
 }

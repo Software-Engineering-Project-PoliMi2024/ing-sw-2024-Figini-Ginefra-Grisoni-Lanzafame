@@ -37,19 +37,5 @@ public class LoginMsg extends ActionMsg{
     public void processMessage(SocketClientHandler socketClientHandler){
         System.out.println("User " + nickname + " is trying to login");
 
-        ActionMsg.updateMultiGame(socketClientHandler, games -> {
-            try {
-                if (!games.addUser(nickname)) {
-                    socketClientHandler.sendServerMessage(new LoginAnswerMsg(this, LoginAnswerMsg.Status.ERROR));
-                    System.out.println("! User " + nickname + " already exists !");
-                } else {
-                    socketClientHandler.sendServerMessage(new LoginAnswerMsg(this, LoginAnswerMsg.Status.OK));
-                    socketClientHandler.setUser(new User(nickname));
-                    System.out.println("User " + nickname + " logged in");
-                }
-            } catch (IOException e) {
-                throw new RuntimeException();
-            }
-        });
     }
 }

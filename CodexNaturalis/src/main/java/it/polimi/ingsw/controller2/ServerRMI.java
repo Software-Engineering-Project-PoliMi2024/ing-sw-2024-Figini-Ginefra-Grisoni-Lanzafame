@@ -7,11 +7,6 @@ import it.polimi.ingsw.view.ViewState;
 
 import java.util.List;
 
-public class ServerRMI implements DiffSubscriber {
-
-    @Override
-    public String getNickname() {
-        return null;
-    }
+public class ServerRMI {
 
 }

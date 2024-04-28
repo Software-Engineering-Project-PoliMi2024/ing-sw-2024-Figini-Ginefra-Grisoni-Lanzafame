@@ -7,10 +7,5 @@ import it.polimi.ingsw.view.ViewState;
 
 import java.util.List;
 
-public class ServerSocket implements DiffSubscriber {
-
-    @Override
-    public String getNickname() {
-        return null;
-    }
+public class ServerSocket {
 }

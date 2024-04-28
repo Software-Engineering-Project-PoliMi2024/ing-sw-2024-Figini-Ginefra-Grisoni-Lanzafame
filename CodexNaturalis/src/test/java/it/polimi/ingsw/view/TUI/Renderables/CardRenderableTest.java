@@ -1,6 +1,7 @@
 package it.polimi.ingsw.view.TUI.Renderables;
 
 import it.polimi.ingsw.model.cardReleted.utilityEnums.CardFace;
+import it.polimi.ingsw.model.cardReleted.utilityEnums.Resource;
 import it.polimi.ingsw.model.tableReleted.Game;
 import it.polimi.ingsw.model.tableReleted.Lobby;
 import it.polimi.ingsw.view.TUI.Renderables.drawables.CardRenderable;
@@ -50,7 +51,6 @@ class CardRenderableTest {
             CardRenderable cardRenderable = new CardRenderable(card, CardFace.BACK, null);
             cardRenderable.render();
         });
-
         assert true;
     }
 

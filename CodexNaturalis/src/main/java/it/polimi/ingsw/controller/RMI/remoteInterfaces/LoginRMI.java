@@ -22,7 +22,7 @@ public class LoginRMI implements Remote, Serializable {
     public static Boolean login(String nickname, MultiGame games) throws RemoteException{
         //System.out.println("User " + nickname + " is trying to log in");
         if (isFree(nickname, games)) {
-            games.addUser(nickname);
+
             //System.out.println("User " + nickname + " logged in");
             return true;
         }else{
