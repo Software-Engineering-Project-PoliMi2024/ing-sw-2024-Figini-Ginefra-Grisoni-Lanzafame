@@ -14,13 +14,13 @@ public class CardTextStyle {
     public static final String ESCReset = "\u001B[0m";
 
     private static final Map<Collectable, String> collectableEmoji = Map.of(
-            Resource.ANIMAL, new DecoratedString("🐺", StringStyle.DARK_BG).toString(), // 🐺
-            Resource.INSECT, new DecoratedString("\uD83E\uDD8B", StringStyle.DARK_BG).toString(), //🦋
-            Resource.FUNGI, new DecoratedString("\uD83C\uDF44", StringStyle.DARK_BG).toString(), //🍄
-            Resource.PLANT, new DecoratedString("🌿", StringStyle.DARK_BG).toString(), //🌿
-            WritingMaterial.INKWELL, new DecoratedString("\uD83E\uDED9", StringStyle.DARK_BG).toString(), //🫙
-            WritingMaterial.QUILL, new DecoratedString("\uD83E\uDEB6", StringStyle.DARK_BG).toString(), //🪶
-            WritingMaterial.MANUSCRIPT, new DecoratedString("\uD83D\uDCDC", StringStyle.DARK_BG).toString(), //📜
+            Resource.ANIMAL, new DecoratedString("🐺", StringStyle.LIGHT_BG).toString(), // 🐺
+            Resource.INSECT, new DecoratedString("\uD83E\uDD8B", StringStyle.LIGHT_BG).toString(), //🦋
+            Resource.FUNGI, new DecoratedString("\uD83C\uDF44", StringStyle.LIGHT_BG).toString(), //🍄
+            Resource.PLANT, new DecoratedString("🌿", StringStyle.LIGHT_BG).toString(), //🌿
+            WritingMaterial.INKWELL, new DecoratedString("\uD83E\uDED9", StringStyle.LIGHT_BG).toString(), //🫙
+            WritingMaterial.QUILL, new DecoratedString("\uD83E\uDEB6", StringStyle.LIGHT_BG).toString(), //🪶
+            WritingMaterial.MANUSCRIPT, new DecoratedString("\uD83D\uDCDC", StringStyle.LIGHT_BG).toString(), //📜
             SpecialCollectable.EMPTY, new DecoratedString("\uD83C\uDFB5", StringStyle.DARK_BG).toString()  // "🎵"
     );
 
@@ -60,6 +60,8 @@ public class CardTextStyle {
     );
 
     private static String startFilling = new DecoratedString("\uD83D\uDFE8", StringStyle.GOLD_BG).toString(); //🟨
+
+    private static String frontierFilling = "❔";
 
     public static int getCardWidth() {
         return CardWidth;
@@ -110,6 +112,10 @@ public class CardTextStyle {
 
     public static String getResourceBorder(Resource resource){
         return resourceBorder.get(resource);
+    }
+
+    public static String getFrontierFilling() {
+        return frontierFilling;
     }
 }
 

@@ -8,12 +8,10 @@ import it.polimi.ingsw.model.cardReleted.utilityEnums.CardCorner;
 import it.polimi.ingsw.model.cardReleted.utilityEnums.CardFace;
 import it.polimi.ingsw.model.cardReleted.utilityEnums.Resource;
 import it.polimi.ingsw.model.playerReleted.Position;
-import it.polimi.ingsw.view.TUI.Renderables.drawables.CardRenderable;
 import it.polimi.ingsw.view.TUI.Renderables.drawables.Drawable;
 import it.polimi.ingsw.view.TUI.Styles.CardTextStyle;
 
 import java.util.Map;
-import java.util.Set;
 
 public class CardPainter {
     private static void drawRequirements(GoldCard card, Drawable drawable){
@@ -159,5 +157,33 @@ public class CardPainter {
         drawBasicBack(card, bg_filler, back);
 
         return new TextCard(front, back);
+    }
+
+    public static Drawable drawFrontierCard(int number){
+        Drawable drawable = new Drawable(CardTextStyle.getCardWidth(), CardTextStyle.getCardHeight());
+        //Draw the borders
+        for(int i = 0; i < drawable.getWidth(); i++){
+            drawable.addContent(CardTextStyle.getFrontierFilling(), i, 0);
+            drawable.addContent(CardTextStyle.getFrontierFilling(), i, drawable.getHeight() - 1);
+        }
+
+        for(int i = 0; i < drawable.getHeight(); i++){
+            drawable.addContent(CardTextStyle.getFrontierFilling(), 0, i);
+            drawable.addContent(CardTextStyle.getFrontierFilling(), drawable.getWidth() - 1, i);
+        }
+
+        //Brake down the number in digits
+        int[] digits = new int[3];
+        for(int i = 0; i < 3; i++){
+            digits[i] = number % 10;
+            number /= 10;
+        }
+
+        //Draw the digits
+        for(int i = 0; i < 3; i++){
+            drawable.addContent(CardTextStyle.getNumberEmoji(digits[i]), drawable.getWidth() / 2 + 1 - i, drawable.getHeight() / 2);
+        }
+
+        return drawable;
     }
 }

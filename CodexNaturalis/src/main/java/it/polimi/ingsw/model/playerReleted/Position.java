@@ -61,4 +61,12 @@ public record Position(int x, int y) implements Serializable {
     public Position multiply(int scalar){
         return new Position(this.x * scalar, this.y * scalar);
     }
+
+    public Position setX(int x) {
+        return new Position(x, this.y);
+    }
+
+    public Position setY(int y) {
+        return new Position(this.x, y);
+    }
 }

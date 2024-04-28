@@ -1,4 +1,4 @@
-package it.polimi.ingsw.view.TUI.Renderables.drawables;
+package it.polimi.ingsw.view.TUI.Renderables;
 
 import it.polimi.ingsw.lightModel.LightCard;
 import it.polimi.ingsw.model.cardReleted.cards.CardWithCorners;
@@ -7,6 +7,7 @@ import it.polimi.ingsw.model.cardReleted.utilityEnums.CardFace;
 import it.polimi.ingsw.model.cardReleted.utilityEnums.Resource;
 import it.polimi.ingsw.model.playerReleted.Position;
 import it.polimi.ingsw.view.TUI.Renderables.Renderable;
+import it.polimi.ingsw.view.TUI.Renderables.drawables.Drawable;
 import it.polimi.ingsw.view.TUI.Styles.CardTextStyle;
 import it.polimi.ingsw.view.TUI.cardDrawing.TextCard;
 import it.polimi.ingsw.view.TUI.inputs.CommandPrompt;
