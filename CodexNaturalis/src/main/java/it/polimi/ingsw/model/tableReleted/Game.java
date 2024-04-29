@@ -100,7 +100,9 @@ public class Game implements Serializable {
     public void subcribe(DiffSubscriber diffSubscriber, String nickname){
         gameDiffPublisher.subscribe(diffSubscriber, nickname);
     }
-
+    public void unsubscrive(DiffSubscriber diffSubscriber){
+        gameDiffPublisher.unsubscribe(diffSubscriber);
+    }
     @Override
     public boolean equals(Object obj) {
         return obj instanceof Game && ((Game) obj).name.equals(name);

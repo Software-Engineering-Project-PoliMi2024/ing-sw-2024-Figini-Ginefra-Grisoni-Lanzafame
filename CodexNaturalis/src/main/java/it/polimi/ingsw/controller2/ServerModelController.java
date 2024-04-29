@@ -94,13 +94,7 @@ public class ServerModelController implements ControllerInterface {
 
     @Override
     public void leaveLobby() {
-        Lobby lobbyToLeave = null;
-        for(Lobby lobby : games.getLobbies()){
-            if(lobby.getLobbyName().contains(this.nickname)){
-                lobbyToLeave = lobby;
-                break;
-            }
-        }
+        Lobby lobbyToLeave = games.getLobby(this.nickname);
         if(lobbyToLeave==null){
             throw new IllegalCallerException();
         }else{
@@ -128,7 +122,8 @@ public class ServerModelController implements ControllerInterface {
 
     @Override
     public void leaveGame() {
-
+        Game gameToLeave = games.getGame(this.nickname);
+        gameToLeave.unsubscrive(view);
     }
 
     @Override
