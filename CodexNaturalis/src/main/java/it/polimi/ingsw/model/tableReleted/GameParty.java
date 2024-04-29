@@ -10,12 +10,15 @@ import java.util.Collections;
 import java.util.List;
 
 public class GameParty implements Serializable {
+
+    private GameDiffPublisher gameDiffPublisher;
     final private List<User> playerList; //player that have joined the game
     private User currentPlayer; //the player that is playing currently
     private int currentPlayerIndex;
 
     public GameParty(List<String> playerNames) {
         Collections.shuffle(playerNames);
+        gameDiffPublisher = new GameDiffPublisher();
         playerList = Collections.unmodifiableList(playerNames.stream().map(User::new).toList());
         currentPlayerIndex = 0;
         currentPlayer = playerList.getFirst();
@@ -48,4 +51,11 @@ public class GameParty implements Serializable {
         return playerList.size();
     }
 
+    public GameDiffPublisher getGameDiffPublisher() {
+        return gameDiffPublisher;
+    }
+
+    public void setGameDiffPublisher(GameDiffPublisher gameDiffPublisher) {
+        this.gameDiffPublisher = gameDiffPublisher;
+    }
 }
