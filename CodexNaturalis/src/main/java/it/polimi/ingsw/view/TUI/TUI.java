@@ -1,5 +1,6 @@
 package it.polimi.ingsw.view.TUI;
 
+import it.polimi.ingsw.controller2.ConnectionLayerClient;
 import it.polimi.ingsw.controller2.ControllerInterface;
 import it.polimi.ingsw.lightModel.*;
 import it.polimi.ingsw.lightModel.diffs.ModelDiffs;
@@ -11,18 +12,19 @@ import it.polimi.ingsw.view.View;
 import it.polimi.ingsw.view.ViewState;
 
 import java.util.Arrays;
+import java.util.List;
 
 public class TUI extends View{
     private final InputHandler inputHandler = new InputHandler();
     private final CommandDisplayRenderable commandDisplay;
 
-    private final Renderable[] renderables;
+    private List<Renderable> renderables;
 
     private final ConnectFormRenderable connectForm;
 
-    private final LoginFormRenderable loginForm;
+    private LoginFormRenderable loginForm;
 
-    private final GameListRenderable gameList;
+    private GameListRenderable gameList;
 
     private final LightGame lightGame = new LightGame();
 
@@ -31,9 +33,9 @@ public class TUI extends View{
     private final LightLobbyList lightLobbyList = new LightLobbyList();
 
 
-    public TUI(ControllerInterface controller){
+    public TUI(ConnectionLayerClient controller){
         super(controller);
-        commandDisplay = new CommandDisplayRenderable("Commands", null, controller);
+        commandDisplay = new CommandDisplayRenderable("Commands", null, null);
 
         inputHandler.attach(commandDisplay);
 
@@ -42,16 +44,21 @@ public class TUI extends View{
         connectForm = new ConnectFormRenderable("Connect form", this, new CommandPrompt[]{CommandPrompt.CONNECT}, controller);
         StateTUI.SERVER_CONNECTION.attach(connectForm);
 
-        loginForm = new LoginFormRenderable("Login Form", new CommandPrompt[]{CommandPrompt.LOGIN}, controller);
-        StateTUI.LOGIN_FORM.attach(loginForm);
-
-        gameList = new GameListRenderable("Game List", new CommandPrompt[]{CommandPrompt.DISPLAY_GAME_LIST, CommandPrompt.JOIN_GAME, CommandPrompt.CREATE_GAME}, controller);
-        StateTUI.JOIN_LOBBY.attach(gameList);
-
-        renderables = new Renderable[]{commandDisplay, connectForm, loginForm};
+        renderables = List.of(new Renderable[]{commandDisplay});
 
         this.setState(ViewState.SERVER_CONNECTION);
 
+    }
+
+    @Override
+    public void postConnectionInitialization(ControllerInterface controller){
+        loginForm = new LoginFormRenderable("Login Form", new CommandPrompt[]{CommandPrompt.LOGIN}, controller);
+        StateTUI.LOGIN_FORM.attach(loginForm);
+        renderables.add(loginForm);
+
+        gameList = new GameListRenderable("Game List", new CommandPrompt[]{CommandPrompt.DISPLAY_GAME_LIST, CommandPrompt.JOIN_GAME, CommandPrompt.CREATE_GAME}, controller);
+        StateTUI.JOIN_LOBBY.attach(gameList);
+        renderables.add(gameList);
     }
 
     public void run() {

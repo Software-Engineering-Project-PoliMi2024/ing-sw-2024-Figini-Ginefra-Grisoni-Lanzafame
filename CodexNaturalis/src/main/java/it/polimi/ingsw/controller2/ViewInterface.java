@@ -12,6 +12,7 @@ import java.util.List;
 public interface ViewInterface extends DiffSubscriber, Remote, Serializable {
     void setState(ViewState state);
     void transitionTo(ViewState state);
+    void postConnectionInitialization(ControllerInterface controller);
     void log(String logMsg);
     void updateLobbyList(ModelDiffs<LightLobbyList> diff);
     void updateLobby(ModelDiffs<LightLobby> diff);
