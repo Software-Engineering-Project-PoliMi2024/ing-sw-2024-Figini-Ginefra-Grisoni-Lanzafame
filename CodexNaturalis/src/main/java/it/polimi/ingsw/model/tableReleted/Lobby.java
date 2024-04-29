@@ -3,9 +3,10 @@ package it.polimi.ingsw.model.tableReleted;
 import it.polimi.ingsw.lightModel.diffLists.DiffSubscriber;
 import it.polimi.ingsw.lightModel.diffLists.LobbyDiffPublisher;
 
+import java.io.Serializable;
 import java.util.*;
 
-public class Lobby {
+public class Lobby implements Serializable {
     private final LobbyDiffPublisher lobbyDiffPublisher;
     private final String lobbyName;
     final private List<String> lobbyPlayerList;
@@ -62,8 +63,8 @@ public class Lobby {
     public boolean equals(Object obj){
             return obj instanceof Lobby && ((Lobby) obj).lobbyName.equals(lobbyName);
     }
-    public void subscribe(DiffSubscriber subscriber){
-        lobbyDiffPublisher.subscribe(subscriber);
+    public void subscribe(DiffSubscriber subscriber, String nickname){
+        lobbyDiffPublisher.subscribe(subscriber, nickname);
     }
     public void unsubscribe(DiffSubscriber unsubscriber){
         lobbyDiffPublisher.unsubscribe(unsubscriber);

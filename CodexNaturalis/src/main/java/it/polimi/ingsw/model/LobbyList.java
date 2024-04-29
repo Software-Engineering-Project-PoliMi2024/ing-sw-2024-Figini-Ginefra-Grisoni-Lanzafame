@@ -3,13 +3,13 @@ package it.polimi.ingsw.model;
 import it.polimi.ingsw.lightModel.diffLists.DiffSubscriber;
 import it.polimi.ingsw.model.tableReleted.Lobby;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
-public class LobbyList {
-
+public class LobbyList implements Serializable{
     private final List<DiffSubscriber> diffSubscribers;
     private final Set<Lobby> lobbies;
     public LobbyList(){

@@ -6,63 +6,59 @@ import it.polimi.ingsw.lightModel.LightGame;
 import it.polimi.ingsw.lightModel.LightHandOthers;
 import it.polimi.ingsw.lightModel.diffs.*;
 import it.polimi.ingsw.model.cardReleted.utilityEnums.Resource;
-import it.polimi.ingsw.model.tableReleted.Game;
 
 import java.util.*;
 
-public class GameDiffPublisher implements DiffPublisher{
+public class GameDiffPublisher implements DiffPublisherNick {
     private final Map<String, List<GameDiff>> gameDiffMap;
-    private final List<DiffSubscriber> activeSubscribers;
+    private final Map<DiffSubscriber, String> activeSubscribers;
     private final LightGame lightGame;
     public GameDiffPublisher(LightGame lightGame) {
         this.gameDiffMap = new HashMap<>();
-        this.activeSubscribers = new ArrayList<>();
+        this.activeSubscribers = new HashMap<>();
         this.lightGame = lightGame;
     }
 
     @Override
-    public synchronized void subscribe(DiffSubscriber diffSubscriber) {
-        boolean firstTime = !gameDiffMap.containsKey(diffSubscriber.getNickname());
+    public synchronized void subscribe(DiffSubscriber diffSubscriber, String nickname) {
+        boolean firstTime = !gameDiffMap.containsKey(nickname);
         if(firstTime) {
-            gameDiffMap.put(diffSubscriber.getNickname(), new ArrayList<>());
+            gameDiffMap.put(nickname, new ArrayList<>());
         }
-        GameDiffPlayerActivity communicateJoin = new GameDiffPlayerActivity(List.of(diffSubscriber.getNickname()), new ArrayList<>());
-        gameDiffMap.get(diffSubscriber.getNickname()).addAll(getTotalCurrentState(diffSubscriber));
-        activeSubscribers.add(diffSubscriber);
-        for(DiffSubscriber subscriber : activeSubscribers){
-            gameDiffMap.get(subscriber.getNickname()).add(communicateJoin);
+        GameDiffPlayerActivity communicateJoin = new GameDiffPlayerActivity(List.of(nickname), new ArrayList<>());
+        gameDiffMap.get(nickname).addAll(getTotalCurrentState(diffSubscriber));
+        activeSubscribers.put(diffSubscriber, nickname);
+        for(String nick : activeSubscribers.values()){
+            gameDiffMap.get(nick).add(communicateJoin);
         }
         notifySubscriber();
     }
     @Override
     public synchronized void unsubscribe(DiffSubscriber diffSubscriber) {
-        GameDiffPlayerActivity communicateLeave = new GameDiffPlayerActivity(new ArrayList<>(), List.of(diffSubscriber.getNickname()));
+        GameDiffPlayerActivity communicateLeave = new GameDiffPlayerActivity(new ArrayList<>(), List.of(activeSubscribers.get(diffSubscriber)));
         activeSubscribers.remove(diffSubscriber);
-        for(DiffSubscriber subscriber : activeSubscribers)
-            gameDiffMap.get(subscriber.getNickname()).add(communicateLeave);
+        for(DiffSubscriber subscriber : activeSubscribers.keySet())
+            gameDiffMap.get(activeSubscribers.get(subscriber)).add(communicateLeave);
         notifySubscriber();
     }
     @Override
     public synchronized void notifySubscriber() {
-        for (DiffSubscriber subscriber : activeSubscribers) {
-            for(GameDiff diff : gameDiffMap.get(subscriber.getNickname())){
+        for (DiffSubscriber subscriber : activeSubscribers.keySet()) {
+            for(GameDiff diff : gameDiffMap.get(activeSubscribers.get(subscriber))){
                 subscriber.updateGame(diff);
-                gameDiffMap.get(subscriber.getNickname()).remove(diff);
+                gameDiffMap.get(activeSubscribers.get(subscriber)).remove(diff);
             }
         }
     }
 
-    @Override
     public void notifySubscriber(DiffSubscriber diffSubscriber, GameDiff gameDiff) {
 
     }
 
-    @Override
     public void subscribe(GameDiff diffSubscriber) {
 
     }
 
-    @Override
     public void unsubscribe(GameDiff diffSubscriber) {
 
     }

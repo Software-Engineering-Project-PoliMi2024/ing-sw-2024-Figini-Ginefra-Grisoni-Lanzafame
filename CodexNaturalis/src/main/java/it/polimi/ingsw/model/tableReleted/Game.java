@@ -1,6 +1,7 @@
 package it.polimi.ingsw.model.tableReleted;
 
 
+import it.polimi.ingsw.lightModel.LightGame;
 import it.polimi.ingsw.lightModel.diffLists.DiffSubscriber;
 import it.polimi.ingsw.lightModel.diffLists.GameDiffPublisher;
 import it.polimi.ingsw.lightModel.diffLists.GameDiffPublisher;
@@ -37,7 +38,7 @@ public class Game implements Serializable {
      * Constructs a new Game instance with a specified maximum number of players.
      */
     public Game(Lobby lobby) {
-        gameDiffPublisher = new GameDiffPublisher();
+        gameDiffPublisher = new GameDiffPublisher(new LightGame());
         this.name = lobby.getLobbyName();
         this.gameParty = new GameParty(lobby.getLobbyPlayerList().stream().toList());
         String filePath = "./cards/";
@@ -99,8 +100,8 @@ public class Game implements Serializable {
     }
 
 
-    public void subcribe(DiffSubscriber diffSubscriber){
-        gameDiffPublisher.subscribe(diffSubscriber);
+    public void subcribe(DiffSubscriber diffSubscriber, String nickname){
+        gameDiffPublisher.subscribe(diffSubscriber, nickname);
     }
 
     @Override

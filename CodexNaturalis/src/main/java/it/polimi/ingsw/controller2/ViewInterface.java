@@ -5,9 +5,11 @@ import it.polimi.ingsw.lightModel.diffLists.DiffSubscriber;
 import it.polimi.ingsw.lightModel.diffs.ModelDiffs;
 import it.polimi.ingsw.view.ViewState;
 
+import java.io.Serializable;
+import java.rmi.Remote;
 import java.util.List;
 
-public interface ViewInterface extends DiffSubscriber {
+public interface ViewInterface extends DiffSubscriber, Remote, Serializable {
     void setState(ViewState state);
     void transitionTo(ViewState state);
     void log(String logMsg);

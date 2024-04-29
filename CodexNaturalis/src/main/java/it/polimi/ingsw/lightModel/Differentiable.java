@@ -1,4 +1,6 @@
 package it.polimi.ingsw.lightModel;
 
-public interface Differentiable {
+import java.io.Serializable;
+
+public interface Differentiable extends Serializable {
 }

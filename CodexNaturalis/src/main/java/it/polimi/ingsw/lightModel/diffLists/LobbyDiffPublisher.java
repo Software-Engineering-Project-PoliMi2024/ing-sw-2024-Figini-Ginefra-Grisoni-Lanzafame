@@ -8,7 +8,8 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-public class LobbyDiffPublisher implements DiffPublisher{
+public class LobbyDiffPublisher implements DiffPublisherNick {
+    Map<DiffSubscriber, String> subscribers;
     private final Map<DiffSubscriber, LobbyDiff> lobbyDiffMap;
 
     public LobbyDiffPublisher() {
@@ -17,11 +18,11 @@ public class LobbyDiffPublisher implements DiffPublisher{
     /**
      * @param diffSubscriber the subscriber of the user that joins the lobby
      */
-    @Override
-    public void subscribe(DiffSubscriber diffSubscriber) {
+    public void subscribe(DiffSubscriber diffSubscriber, String nickname) {
         synchronized (lobbyDiffMap) {
+            subscribers.put(diffSubscriber, nickname);
             // notify to the people already in the lobby the new subscriber
-            lobbyDiffMap.replaceAll((s, v) -> createDiffSubscribed(v, diffSubscriber.getNickname()));
+            lobbyDiffMap.replaceAll((s, v) -> createDiffSubscribed(v, subscribers.get(diffSubscriber)));
             lobbyDiffMap.put(diffSubscriber, createDiffSubscriber());
             // notify all the subscribers of the new subscriber
             this.notifySubscriber();
@@ -45,14 +46,14 @@ public class LobbyDiffPublisher implements DiffPublisher{
         ArrayList<String> rmvNicknames = new ArrayList<>();
         // create a list of the nickname already in the lobby
         ArrayList<String> addNicknames =
-                new ArrayList<>(this.lobbyDiffMap.keySet().stream()
-                        .map(DiffSubscriber::getNickname).toList());
+                new ArrayList<>(subscribers.values());
         return new LobbyDiff(addNicknames, rmvNicknames);
     }
 
     @Override
     public void unsubscribe(DiffSubscriber diffSubscriber) {
         synchronized (lobbyDiffMap) {
+            subscribers.remove(diffSubscriber);
             lobbyDiffMap.remove(diffSubscriber);
             for (DiffSubscriber subscriber : lobbyDiffMap.keySet()) {
                 // notify to the people already in the lobby the new subscriber
@@ -63,7 +64,7 @@ public class LobbyDiffPublisher implements DiffPublisher{
     }
     private LobbyDiff createDiffUnsubscriber(LobbyDiff diffToModify, DiffSubscriber diffSubscriber){
         ArrayList<String> rmvNicknames = new ArrayList<>();
-        rmvNicknames.add(diffSubscriber.getNickname());
+        rmvNicknames.add(subscribers.get(diffSubscriber));
         ArrayList<String> addNicknames = new ArrayList<>();
         return new LobbyDiff(diffToModify, addNicknames, rmvNicknames);
     }
