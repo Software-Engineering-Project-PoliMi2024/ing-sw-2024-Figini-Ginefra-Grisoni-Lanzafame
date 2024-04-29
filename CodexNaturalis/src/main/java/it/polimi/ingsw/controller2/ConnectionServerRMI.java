@@ -13,7 +13,7 @@ public class ConnectionServerRMI implements ConnectionLayerServer, Remote, Seria
     }
     public void connect(ViewInterface view){
         ServerModelController controller = new ServerModelController(multiGame, view);
-
+        view.postConnectionInitialization(controller);
         view.log(LogsFromServer.CONNECTION_SUCCESS.getMessage());
         view.transitionTo(ViewState.LOGIN_FORM);
     }

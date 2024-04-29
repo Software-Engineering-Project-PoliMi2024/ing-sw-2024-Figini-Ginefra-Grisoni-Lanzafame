@@ -8,7 +8,7 @@ import it.polimi.ingsw.model.cardReleted.utilityEnums.DrawableCard;
 import java.rmi.registry.LocateRegistry;
 import java.rmi.registry.Registry;
 
-public class ConnectionClientRMI {
+public class ConnectionClientRMI implements ConnectionLayerClient{
 
     public void connect(String ip, int port,ViewInterface view) {
         try {
