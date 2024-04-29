@@ -1,7 +1,6 @@
 package it.polimi.ingsw.view.TUI;
 
-import it.polimi.ingsw.controller2.ControllerInterface;
-import it.polimi.ingsw.controller2.ControllerInterfaceClient;
+import it.polimi.ingsw.controller2.ConnectionLayerClient;
 import it.polimi.ingsw.lightModel.*;
 import it.polimi.ingsw.lightModel.diffs.ModelDiffs;
 import it.polimi.ingsw.view.TUI.Renderables.*;
@@ -32,7 +31,7 @@ public class TUI extends View{
     private final LightLobbyList lightLobbyList = new LightLobbyList();
 
 
-    public TUI(ControllerInterfaceClient controller){
+    public TUI(ConnectionLayerClient controller){
         super(controller);
         commandDisplay = new CommandDisplayRenderable("Commands", null, controller);
 

@@ -1,7 +1,6 @@
 package it.polimi.ingsw.view.TUI.Renderables;
 
-import it.polimi.ingsw.controller2.ControllerInterface;
-import it.polimi.ingsw.controller2.ControllerInterfaceClient;
+import it.polimi.ingsw.controller2.ConnectionLayerClient;
 import it.polimi.ingsw.view.TUI.inputs.CommandPrompt;
 
 import java.util.*;
@@ -11,7 +10,7 @@ public class CommandDisplayRenderable extends Renderable{
 
     CommandPrompt currentPrompt;
 
-    public CommandDisplayRenderable(String name, CommandPrompt[] relatedCommands, ControllerInterfaceClient controller) {
+    public CommandDisplayRenderable(String name, CommandPrompt[] relatedCommands, ConnectionLayerClient controller) {
         super(name, relatedCommands, controller);
         this.activePrompts = new LinkedHashMap<>();
     }

@@ -1,13 +1,12 @@
 package it.polimi.ingsw.view.TUI.Renderables;
 
-import it.polimi.ingsw.controller2.ControllerInterface;
-import it.polimi.ingsw.controller2.ControllerInterfaceClient;
+import it.polimi.ingsw.controller2.ConnectionLayerClient;
 import it.polimi.ingsw.view.TUI.inputs.CommandPrompt;
 import it.polimi.ingsw.view.TUI.inputs.CommandPromptResult;
 
 public class CreateGameFormRenderable extends Renderable {
 
-    public CreateGameFormRenderable(String name, CommandPrompt[] relatedCommands, ControllerInterfaceClient controller){
+    public CreateGameFormRenderable(String name, CommandPrompt[] relatedCommands, ConnectionLayerClient controller){
         super(name, relatedCommands, controller);
     }
 

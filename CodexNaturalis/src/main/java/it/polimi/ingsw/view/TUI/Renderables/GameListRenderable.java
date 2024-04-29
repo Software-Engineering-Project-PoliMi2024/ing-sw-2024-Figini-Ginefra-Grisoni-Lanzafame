@@ -1,7 +1,6 @@
 package it.polimi.ingsw.view.TUI.Renderables;
 
-import it.polimi.ingsw.controller2.ControllerInterface;
-import it.polimi.ingsw.controller2.ControllerInterfaceClient;
+import it.polimi.ingsw.controller2.ConnectionLayerClient;
 import it.polimi.ingsw.lightModel.LightLobbyList;
 import it.polimi.ingsw.view.TUI.inputs.CommandPrompt;
 import it.polimi.ingsw.view.TUI.inputs.CommandPromptResult;
@@ -9,7 +8,7 @@ import it.polimi.ingsw.view.TUI.inputs.CommandPromptResult;
 public class GameListRenderable extends Renderable {
     private final LightLobbyList lightLobbyList;
 
-    public GameListRenderable(String name, CommandPrompt[] relatedCommands, ControllerInterfaceClient controller) {
+    public GameListRenderable(String name, CommandPrompt[] relatedCommands, ConnectionLayerClient controller) {
         super(name, relatedCommands, controller);
         this.lightLobbyList = new LightLobbyList();
     }

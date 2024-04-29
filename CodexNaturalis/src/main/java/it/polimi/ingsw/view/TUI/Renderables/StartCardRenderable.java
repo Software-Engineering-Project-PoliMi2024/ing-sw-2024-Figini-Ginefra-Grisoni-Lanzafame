@@ -1,7 +1,6 @@
 package it.polimi.ingsw.view.TUI.Renderables;
 
-import it.polimi.ingsw.controller2.ControllerInterface;
-import it.polimi.ingsw.controller2.ControllerInterfaceClient;
+import it.polimi.ingsw.controller2.ConnectionLayerClient;
 import it.polimi.ingsw.model.cardReleted.cards.StartCard;
 import it.polimi.ingsw.view.TUI.inputs.CommandPrompt;
 
@@ -9,7 +8,7 @@ public class StartCardRenderable extends Renderable {
     private final StartCard startCard;
     private String selectStartCardFace = "";
 
-    public StartCardRenderable(StartCard startCard, String name, CommandPrompt[] relatedCommands, ControllerInterfaceClient controller) {
+    public StartCardRenderable(StartCard startCard, String name, CommandPrompt[] relatedCommands, ConnectionLayerClient controller) {
         super(name, relatedCommands, controller);
         this.startCard = startCard;
     }
