@@ -19,8 +19,6 @@ public class LobbyListDiffPublisher implements DiffPubliher {
     public void subscribe(DiffSubscriber diffSubscriber) {
         synchronized (diffSubscribers) {
             diffSubscribers.add(diffSubscriber);
-        }
-        synchronized (lobbyListDiff){
             this.notifySubscriber(diffSubscriber, new LobbyListDiff(new ArrayList<>(lobbyList.getLobbies()),new ArrayList<>()));
         }
     }
@@ -35,20 +33,14 @@ public class LobbyListDiffPublisher implements DiffPubliher {
         diffSubscriber.updateLobbyList(lobbyListDiff);
     }
     public void subscribe(LobbyListDiff lightLobbyDiff) {
-        synchronized (lobbyListDiff){
-            lobbyListDiff.updateLobbyListDiff(lightLobbyDiff);
-        }
-        this.notifySubscriber();
-    }
-    public void unsubscribe(LobbyListDiff lightLobbyDiff) {
-        synchronized (lobbyListDiff){
+        synchronized (diffSubscribers){
             lobbyListDiff.updateLobbyListDiff(lightLobbyDiff);
         }
         this.notifySubscriber();
     }
     @Override
     public void notifySubscriber() {
-        synchronized (lobbyListDiff){
+        synchronized (diffSubscribers){
             for (DiffSubscriber diffSubscriber : diffSubscribers) {
                 this.notifySubscriber(diffSubscriber, lobbyListDiff);
             }

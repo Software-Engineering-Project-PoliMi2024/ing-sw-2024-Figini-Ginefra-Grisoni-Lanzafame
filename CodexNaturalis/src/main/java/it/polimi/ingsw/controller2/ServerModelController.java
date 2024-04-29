@@ -1,8 +1,11 @@
 package it.polimi.ingsw.controller2;
 
 import it.polimi.ingsw.lightModel.LightCard;
+import it.polimi.ingsw.lightModel.Lightifier;
+import it.polimi.ingsw.lightModel.diffs.LobbyListDiff;
 import it.polimi.ingsw.lightModel.lightPlayerRelated.LightPlacement;
 import it.polimi.ingsw.lightModel.diffLists.DiffSubscriber;
+import it.polimi.ingsw.lightModel.lightTableRelated.LightLobby;
 import it.polimi.ingsw.model.MultiGame;
 import it.polimi.ingsw.model.cardReleted.utilityEnums.CardFace;
 import it.polimi.ingsw.model.cardReleted.utilityEnums.DrawableCard;
@@ -10,6 +13,8 @@ import it.polimi.ingsw.model.tableReleted.Game;
 import it.polimi.ingsw.model.tableReleted.Lobby;
 import it.polimi.ingsw.view.ViewInterface;
 import it.polimi.ingsw.view.ViewState;
+
+import java.util.ArrayList;
 
 public class ServerModelController implements ControllerInterface {
     private final MultiGame games;
@@ -50,8 +55,15 @@ public class ServerModelController implements ControllerInterface {
         this.games.addLobby(newLobby);
         games.unsubscribe(this.view);
         newLobby.subscribe(this.view, this.nickname);
+        games.subscribe(getAddLobbyDiff(newLobby));
         view.log(LogsFromServer.LOBBY_CREATED.getMessage());
         view.transitionTo(ViewState.LOBBY);
+    }
+
+    private LobbyListDiff getAddLobbyDiff(Lobby lobby){
+        ArrayList<LightLobby> listDiffAdd = new ArrayList<>();
+        listDiffAdd.add(Lightifier.lightify(lobby));
+        return new LobbyListDiff(listDiffAdd, new ArrayList<>());
     }
 
     @Override
@@ -85,7 +97,7 @@ public class ServerModelController implements ControllerInterface {
         Lobby lobbyToLeave = null;
         for(Lobby lobby : games.getLobbies()){
             if(lobby.getLobbyName().contains(this.nickname)){
-                 lobbyToLeave = lobby;
+                lobbyToLeave = lobby;
                 break;
             }
         }
@@ -99,8 +111,14 @@ public class ServerModelController implements ControllerInterface {
             view.transitionTo(ViewState.JOIN_LOBBY);
             if(lobbyToLeave.getLobbyPlayerList().isEmpty()){
                 this.games.removeLobby(lobbyToLeave);
+                games.subscribe(getRemoveLobbyDiff(lobbyToLeave));
             }
         }
+    }
+    private LobbyListDiff getRemoveLobbyDiff(Lobby lobby){
+        ArrayList<LightLobby> listDiffRmv = new ArrayList<>();
+        listDiffRmv.add(Lightifier.lightify(lobby));
+        return new LobbyListDiff(new ArrayList<>(), listDiffRmv);
     }
     public void joinGame(Game game, LogsFromServer log) {
         game.subcribe(view, this.nickname);
