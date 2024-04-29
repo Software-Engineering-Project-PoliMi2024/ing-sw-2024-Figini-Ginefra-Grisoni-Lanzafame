@@ -20,12 +20,7 @@ public class CommandDisplayRenderable extends Renderable{
 
     @Override
     public void render() {
-        System.out.println(PromptStyle.HorizontalDoubleSeparator.repeat(52));
-
-        PromptStyle.printBetweenSeparators("Active commands", 50);
-
-        System.out.println(PromptStyle.HorizontalDoubleSeparator.repeat(52));
-
+        List<String> commands = new ArrayList<>();
 
         for(int i = 0; i < activePrompts.size(); i++){
             CommandPrompt prompt = getPromptAtIndex(i);
@@ -33,11 +28,10 @@ public class CommandDisplayRenderable extends Renderable{
 
             String CommandNumber = new DecoratedString("[" + i + "]", StringStyle.BOLD).toString();
 
-            PromptStyle.printBetweenSeparators(CommandNumber, 50);
-            PromptStyle.printBetweenSeparators(CommandLabel, 50);
-
-            PromptStyle.printSeparator(52);
+            commands.add(CommandNumber);
+            commands.add(CommandLabel);
         }
+        PromptStyle.printListInABox("Active Commands", commands, 50, 2);
 
         System.out.println("What do you want to do ❔");
         System.out.print("\t");
