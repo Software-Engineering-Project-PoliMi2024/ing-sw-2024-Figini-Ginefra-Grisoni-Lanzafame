@@ -28,8 +28,8 @@ public class GameDiffPublisher implements DiffPublisherNick {
         GameDiffPlayerActivity communicateJoin = new GameDiffPlayerActivity(List.of(nickname), new ArrayList<>());
         gameDiffMap.get(nickname).addAll(getTotalCurrentState(diffSubscriber));
         activeSubscribers.put(diffSubscriber, nickname);
-        for(String nick : activeSubscribers.values()){
-            gameDiffMap.get(nick).add(communicateJoin);
+        for(DiffSubscriber activeSubs : activeSubscribers.keySet()){
+            gameDiffMap.get(activeSubscribers.get(activeSubs)).add(communicateJoin);
         }
         notifySubscriber();
     }
@@ -51,16 +51,19 @@ public class GameDiffPublisher implements DiffPublisherNick {
         }
     }
 
-    public void notifySubscriber(DiffSubscriber diffSubscriber, GameDiff gameDiff) {
-
+    public synchronized void subscribe(GameDiff diff) {
+        for(DiffSubscriber subscriber : activeSubscribers.keySet()){
+            gameDiffMap.get(activeSubscribers.get(subscriber)).add(diff);
+        }
+        notifySubscriber();
     }
-
-    public void subscribe(GameDiff diffSubscriber) {
-
+    public synchronized void subscribe(GameDiff diff, DiffSubscriber diffSubscriber){
+        gameDiffMap.get(activeSubscribers.get(diffSubscriber)).add(diff);
+        notifySubscriber();
     }
-
-    public void unsubscribe(GameDiff diffSubscriber) {
-
+    public synchronized void subscribe(List<GameDiff> diffs, DiffSubscriber diffSubscriber){
+        gameDiffMap.get(activeSubscribers.get(diffSubscriber)).addAll(diffs);
+        notifySubscriber();
     }
     private NewGameDiff newGameDiffAdder(DiffSubscriber diffSubscriber){
         return new NewGameDiff(
