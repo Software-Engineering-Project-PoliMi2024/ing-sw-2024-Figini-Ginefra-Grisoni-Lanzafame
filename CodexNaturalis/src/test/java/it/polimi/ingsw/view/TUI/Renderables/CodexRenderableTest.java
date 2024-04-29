@@ -43,7 +43,7 @@ class CodexRenderableTest {
         }), new ArrayList<>());
 
 
-        CodexRenderable codexRenderable = new CodexRenderable(codex, cardMuseum, new CommandPrompt[]{}, null);
+        CodexRenderable codexRenderable = new CodexRenderable("CODEX", codex, cardMuseum, new CommandPrompt[]{}, null);
 
         codexRenderable.render();
 
