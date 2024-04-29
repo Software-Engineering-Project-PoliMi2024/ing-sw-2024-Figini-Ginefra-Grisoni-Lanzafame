@@ -1,15 +1,15 @@
 package it.polimi.ingsw.view.TUI.cardDrawing;
 
-import it.polimi.ingsw.model.cardReleted.cards.CardWithCorners;
-import it.polimi.ingsw.model.cardReleted.cards.GoldCard;
-import it.polimi.ingsw.model.cardReleted.cards.ResourceCard;
-import it.polimi.ingsw.model.cardReleted.cards.StartCard;
+import it.polimi.ingsw.model.cardReleted.cards.*;
+import it.polimi.ingsw.model.cardReleted.pointMultiplyer.CollectableCardPointMultiplier;
 import it.polimi.ingsw.model.cardReleted.utilityEnums.CardCorner;
 import it.polimi.ingsw.model.cardReleted.utilityEnums.CardFace;
+import it.polimi.ingsw.model.cardReleted.utilityEnums.Collectable;
 import it.polimi.ingsw.model.cardReleted.utilityEnums.Resource;
 import it.polimi.ingsw.model.playerReleted.Position;
 import it.polimi.ingsw.view.TUI.Renderables.drawables.Drawable;
 import it.polimi.ingsw.view.TUI.Styles.CardTextStyle;
+import org.w3c.dom.Text;
 
 import java.util.Map;
 
@@ -59,6 +59,23 @@ public class CardPainter {
         for(Resource resource : card.getPermanentResources(CardFace.BACK)){
             drawable.addContent(CardTextStyle.getCollectableEmoji(resource), x++, y);
             x += 1 - n%2;
+        }
+    }
+
+    private static void drawCollectableMultiplier(CollectableCardPointMultiplier multiplier, Drawable drawable){
+        if(multiplier != null){
+            int n = multiplier.getTargets().values().stream().mapToInt(i -> i).sum();
+            int y = drawable.getHeight() / 2;
+            int x = (drawable.getWidth() - n) / 2;
+
+            for(Collectable collectable : multiplier.getTargets().keySet()){
+                if(multiplier.getTargets().get(collectable) == 0)
+                    continue;
+                for(int i = 0; i < multiplier.getTargets().get(collectable); i++) {
+                    drawable.addContent(CardTextStyle.getCollectableEmoji(collectable), x++, y);
+                    x += 1 - n % 2;
+                }
+            }
         }
     }
 
@@ -185,5 +202,22 @@ public class CardPainter {
         }
 
         return drawable;
+    }
+
+    public static TextCard drawObjectiveCardCollectableMultiplier(ObjectiveCard card, CollectableCardPointMultiplier multiplier){
+        Drawable drawable = new Drawable(CardTextStyle.getCardWidth(), CardTextStyle.getCardHeight());
+
+        String bg_filler = CardTextStyle.getStartFilling();
+
+        //Fill the background
+        drawable.fillContent(bg_filler);
+
+        //Draw the points
+        drawable.addContent(CardTextStyle.getNumberEmoji(card.getPoints()), drawable.getWidth() / 2, 0);
+
+        //Draw the multiplier
+        drawCollectableMultiplier(multiplier, drawable);
+
+        return new TextCard(drawable, drawable);
     }
 }

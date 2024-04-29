@@ -57,7 +57,7 @@ public class TUI extends View{
         loginForm = new LoginFormRenderable("Login Form", new CommandPrompt[]{CommandPrompt.DISPLAY_LOBBY, CommandPrompt.LOGIN}, controller);
         StateTUI.LOGIN_FORM.attach(loginForm);
 
-        gameList = new GameListRenderable("Game List", new CommandPrompt[]{CommandPrompt.DISPLAY_GAME_LIST, CommandPrompt.JOIN_GAME}, controller);
+        gameList = new GameListRenderable("Game List", new CommandPrompt[]{CommandPrompt.DISPLAY_GAME_LIST, CommandPrompt.JOIN_GAME, CommandPrompt.CREATE_GAME}, controller);
         StateTUI.JOIN_LOBBY.attach(gameList);
 
         renderables = new Renderable[]{commandDisplay, connectForm, loginForm};
