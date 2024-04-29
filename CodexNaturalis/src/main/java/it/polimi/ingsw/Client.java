@@ -1,11 +1,7 @@
 package it.polimi.ingsw;
 
-import it.polimi.ingsw.controller.Controller;
-import it.polimi.ingsw.controller.RMI.ControllerRMI;
-import it.polimi.ingsw.controller.socket.SocketController;
-import it.polimi.ingsw.controller2.ControllerInterface;
 import it.polimi.ingsw.controller2.ControllerInterfaceClient;
-import it.polimi.ingsw.controller2.VirtualControllerRMI;
+import it.polimi.ingsw.controller2.ConnectionClientRMI;
 import it.polimi.ingsw.view.TUI.TUI;
 import it.polimi.ingsw.view.View;
 import it.polimi.ingsw.view.ViewState;
@@ -34,7 +30,7 @@ public class Client {
             controller = null;
         } else{
             System.out.println("You chose the RMI protocol!");
-            controller = new VirtualControllerRMI();
+            controller = new ConnectionClientRMI();
         }
 
         System.out.println("Great choice! Let's move on! 🎉");
