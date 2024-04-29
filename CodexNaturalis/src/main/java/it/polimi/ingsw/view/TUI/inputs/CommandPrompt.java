@@ -126,6 +126,7 @@ public enum CommandPrompt implements Iterator<String>, CommandObserved {
     public boolean parseInput(String input){
         if(!validate(input)){
             System.out.println("Invalid input, please try again");
+            System.out.print("\t");
             return false;
         }
         currentResult.setAnswer(currentQuestion-1, input);

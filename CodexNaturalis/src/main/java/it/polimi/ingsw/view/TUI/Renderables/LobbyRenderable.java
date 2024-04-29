@@ -19,12 +19,8 @@ public class LobbyRenderable extends Renderable {
 
     @Override
     public void render() {
-        PromptStyle.printInABox("Lobby", 70);
         List<String> nicknames = lightLobby.nicknames();
-        for (String nickname : nicknames) {
-            PromptStyle.printBetweenSeparators(nickname, 70);
-        }
-        PromptStyle.printSeparator(72);
+        PromptStyle.printListInABox("Lobby", nicknames, 70, 1);
     }
 
     @Override
