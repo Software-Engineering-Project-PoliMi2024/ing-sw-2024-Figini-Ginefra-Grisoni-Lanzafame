@@ -54,6 +54,13 @@ public class CommandDisplayRenderable extends Renderable{
 
             if(currentPrompt.hasNext())
                 System.out.println(currentPrompt.next());
+            else{
+                System.out.println("Command completed");
+                currentPrompt.notifyObservers();
+                currentPrompt.reset();
+                currentPrompt = null;
+                this.render();
+            }
         }
         else{
             if(currentPrompt.parseInput(input)){
