@@ -6,10 +6,11 @@ import it.polimi.ingsw.lightModel.diffLists.DiffSubscriber;
 import it.polimi.ingsw.model.MultiGame;
 import it.polimi.ingsw.model.cardReleted.utilityEnums.CardFace;
 import it.polimi.ingsw.model.cardReleted.utilityEnums.DrawableCard;
+import it.polimi.ingsw.model.tableReleted.Game;
 import it.polimi.ingsw.model.tableReleted.Lobby;
 import it.polimi.ingsw.view.ViewState;
 
-public abstract class ServerImplementation implements ControllerInterfaceServer, Runnable{
+public class ServerImplementation implements ControllerInterfaceServer, Runnable{
     protected final MultiGame games;
 
     public ServerImplementation(MultiGame games) {
@@ -19,8 +20,18 @@ public abstract class ServerImplementation implements ControllerInterfaceServer,
     }
 
     @Override
-    public void login(String nickname) {
-
+    public void login(String nickname, DiffSubscriber diffSubscriber) {
+        if(!this.games.isUnique(nickname)){
+            diffSubscriber.log(LogsFromServer.NAME_TAKEN.getMessage());
+        }else{
+            if(this.games.inGame(nickname)!=null){
+                this.joinGame(this.games.inGame(nickname));
+            }else{
+                this.games.addUser(nickname);
+                diffSubscriber.log(LogsFromServer.SERVER_JOINED.getMessage());
+                diffSubscriber.transitionTo(ViewState.JOIN_LOBBY);
+            }
+        }
     }
 
     @Override
@@ -46,7 +57,8 @@ public abstract class ServerImplementation implements ControllerInterfaceServer,
             diffSubscriber.log(LogsFromServer.LOBBY_JOINED.getMessage());
             diffSubscriber.transitionTo(ViewState.LOBBY);
             if(lobbyToJoin.getLobbyPlayerList().size() == lobbyToJoin.getNumberOfMaxPlayer()){
-                this.joinGame(lobbyToJoin);
+                Game newGame = new Game(lobbyToJoin);
+                this.joinGame(newGame);
             }
         }else{
             diffSubscriber.log(LogsFromServer.LOBBY_IS_FULL.getMessage());
@@ -64,7 +76,7 @@ public abstract class ServerImplementation implements ControllerInterfaceServer,
         lobbyToLeave.unsubscribe(diffSubscriber);
         lobbyToLeave.removeUserName(diffSubscriber.getNickname());
         diffSubscriber.log(LogsFromServer.LOBBY_LEFT.getMessage());
-        diffSubscriber.transitionTo(ViewState.JOIN_GAME);
+        diffSubscriber.transitionTo(ViewState.JOIN_LOBBY);
         synchronized (lobbyToLeave){
             if(lobbyToLeave.getLobbyPlayerList().isEmpty()){
                 this.games.removeLobby(lobbyToLeave);
@@ -73,7 +85,7 @@ public abstract class ServerImplementation implements ControllerInterfaceServer,
     }
 
     @Override
-    public void joinGame(Lobby lobby) {
+    public void joinGame(Game game) {
         //lobby.getSubscribers();
     }
 
