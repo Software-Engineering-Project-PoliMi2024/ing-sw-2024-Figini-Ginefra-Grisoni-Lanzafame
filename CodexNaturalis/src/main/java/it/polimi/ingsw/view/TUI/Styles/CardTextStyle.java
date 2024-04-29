@@ -139,7 +139,7 @@ public class CardTextStyle {
 ⬜⬜🟦🟡🟦🔴🟦⬜⬜
 🐺⬜⬜⬜⬜⬜⬜⬜🐺
 
-
+aaaaaaaaaaaaaaaaaaaaaa
 🐺⬜⬜⬜5️⃣⬜⬜⬜⬜
 ⬜⬜🟦🟦🪶🟦🟦🟦⬜
 ⬜🟦🟦🟦🟦🟦🟦🟦⬜
