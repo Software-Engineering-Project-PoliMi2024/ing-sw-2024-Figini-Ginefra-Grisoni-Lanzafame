@@ -1,6 +1,7 @@
 package it.polimi.ingsw.view.TUI.Renderables;
 
 import it.polimi.ingsw.controller2.ControllerInterface;
+import it.polimi.ingsw.view.TUI.Styles.*;
 import it.polimi.ingsw.view.TUI.inputs.CommandPrompt;
 
 import java.util.*;
@@ -15,15 +16,31 @@ public class CommandDisplayRenderable extends Renderable{
         this.activePrompts = new LinkedHashMap<>();
     }
 
+
+
     @Override
     public void render() {
-        System.out.println("Active Commands:");
+        System.out.println(PromptStyle.HorizontalDoubleSeparator.repeat(52));
+
+        PromptStyle.printBetweenSeparators("Active commands", 50);
+
+        System.out.println(PromptStyle.HorizontalDoubleSeparator.repeat(52));
+
+
         for(int i = 0; i < activePrompts.size(); i++){
             CommandPrompt prompt = getPromptAtIndex(i);
-            System.out.println("\t[" + i + "]" + prompt.getCommandName());
+            String CommandLabel = new DecoratedString(prompt.getCommandName(), StringStyle.UNDERLINE).toString();
+
+            String CommandNumber = new DecoratedString("[" + i + "]", StringStyle.BOLD).toString();
+
+            PromptStyle.printBetweenSeparators(CommandNumber, 50);
+            PromptStyle.printBetweenSeparators(CommandLabel, 50);
+
+            PromptStyle.printSeparator(52);
         }
 
         System.out.println("What do you want to do ❔");
+        System.out.print("\t");
     }
 
 
@@ -37,6 +54,7 @@ public class CommandDisplayRenderable extends Renderable{
             //Checks if the input is a number
             if(!input.matches("\\d+")){
                 System.out.println("Invalid input, please insert a number");
+                System.out.print("\t");
                 return;
             }
 
@@ -44,18 +62,21 @@ public class CommandDisplayRenderable extends Renderable{
 
             if(index < 0 || index >= activePrompts.size()){
                 System.out.println("Invalid input, please insert a number between 0 and " + (activePrompts.size() - 1));
+                System.out.print("\t");
                 return;
             }
 
             this.currentPrompt = getPromptAtIndex(index);
 
 
-            System.out.println("You selected " + currentPrompt.getCommandName());
+            PromptStyle.printInABox("You selected " + new DecoratedString(currentPrompt.getCommandName(), StringStyle.UNDERLINE).toString(), 50);
 
-            if(currentPrompt.hasNext())
+            if(currentPrompt.hasNext()) {
                 System.out.println(currentPrompt.next());
+                System.out.print("\t");
+            }
             else{
-                System.out.println("Command completed");
+                PromptStyle.printInABox(new DecoratedString(currentPrompt.getCommandName(), StringStyle.UNDERLINE).toString() + " completed", 50);
                 currentPrompt.notifyObservers();
                 currentPrompt.reset();
                 currentPrompt = null;
@@ -66,9 +87,10 @@ public class CommandDisplayRenderable extends Renderable{
             if(currentPrompt.parseInput(input)){
                 if(currentPrompt.hasNext()){
                     System.out.println(currentPrompt.next());
+                    System.out.print("\t");
                 }
                 else{
-                    System.out.println("Command completed");
+                    PromptStyle.printInABox(new DecoratedString(currentPrompt.getCommandName(), StringStyle.UNDERLINE).toString() + " completed", 50);
                     currentPrompt.notifyObservers();
                     currentPrompt.reset();
                     currentPrompt = null;

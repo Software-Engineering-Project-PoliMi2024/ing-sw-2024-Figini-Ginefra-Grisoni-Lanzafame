@@ -2,6 +2,7 @@ package it.polimi.ingsw.view.TUI.Renderables;
 
 import it.polimi.ingsw.controller2.ControllerInterface;
 import it.polimi.ingsw.lightModel.lightTableRelated.LightLobby;
+import it.polimi.ingsw.view.TUI.Styles.PromptStyle;
 import it.polimi.ingsw.view.TUI.inputs.CommandPrompt;
 import it.polimi.ingsw.view.TUI.inputs.CommandPromptResult;
 
@@ -18,15 +19,12 @@ public class LobbyRenderable extends Renderable {
 
     @Override
     public void render() {
-        System.out.println("=====================================================================");
-        System.out.println("Lobby of the game: " + lightLobby.name());
-        System.out.println("=====================================================================");
-        System.out.println("Players:");
+        PromptStyle.printInABox("Lobby", 70);
         List<String> nicknames = lightLobby.nicknames();
-        for (int i = 0; i < nicknames.size(); i++) {
-            System.out.println("\t[" + (i) + "] - " + nicknames.get(i));
+        for (String nickname : nicknames) {
+            PromptStyle.printBetweenSeparators(nickname, 70);
         }
-        System.out.println("=====================================================================");
+        PromptStyle.printSeparator(72);
     }
 
     @Override

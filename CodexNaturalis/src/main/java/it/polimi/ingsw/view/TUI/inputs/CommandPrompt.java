@@ -1,5 +1,7 @@
 package it.polimi.ingsw.view.TUI.inputs;
 
+import it.polimi.ingsw.view.TUI.Styles.DecoratedString;
+import it.polimi.ingsw.view.TUI.Styles.StringStyle;
 import it.polimi.ingsw.view.TUI.observers.CommandObserved;
 import it.polimi.ingsw.view.TUI.observers.CommandObserver;
 
@@ -11,7 +13,7 @@ import java.util.function.Predicate;
 
 public enum CommandPrompt implements Iterator<String>, CommandObserved {
     ECHO("echo", new String[]{"What do you want to echo?"}, new Predicate[]{s -> true}),
-    CONNECT("connect",
+    CONNECT(new DecoratedString("Connect", StringStyle.YELLOW_FOREGROUND).toString(),
             new String[]{
                     "What's the server IP?",
                     "What's the server port?",
@@ -27,14 +29,14 @@ public enum CommandPrompt implements Iterator<String>, CommandObserved {
                         }
                     }
             }),
-    LOGIN("login",
+    LOGIN("Login",
             new String[]{
                     "What's your username?",
             },
             new Predicate[]{
                     s -> true,
             }),
-    CREATE_GAME("create game",
+    CREATE_GAME("Create game",
             new String[]{
                     "What's the name of the game?",
                     "How many players will be playing?",
@@ -51,7 +53,7 @@ public enum CommandPrompt implements Iterator<String>, CommandObserved {
                     }
             }),
 
-    JOIN_GAME("join game",
+    JOIN_GAME("Join game",
             new String[]{
                     "What's the name of the game?",
             },
@@ -59,11 +61,11 @@ public enum CommandPrompt implements Iterator<String>, CommandObserved {
                     s -> true,
             }),
 
-    DISPLAY_GAME_LIST("display game list",
+    DISPLAY_GAME_LIST("Display game list",
             new String[]{},
             new Predicate[]{}),
 
-    DISPLAY_LOBBY("display lobby",
+    DISPLAY_LOBBY("Display lobby",
             new String[]{},
             new Predicate[]{});
 
