@@ -1,6 +1,8 @@
 package it.polimi.ingsw.controller2;
 
 public enum LogsFromServer {
+    CONNECTION_ERROR("Connection error"),
+    CONNECTION_SUCCESS("Connection success"),
     NAME_TAKEN("The nickname is already present in the server"),
     SERVER_JOINED("Server Joined"),
     LOBBY_IS_FULL("The lobby is full"),

@@ -1,6 +1,7 @@
 package it.polimi.ingsw;
 
 import it.polimi.ingsw.controller.socket.server.SocketServer;
+import it.polimi.ingsw.controller2.ConnectionServerRMI;
 import it.polimi.ingsw.model.MultiGame;
 import it.polimi.ingsw.controller.RMI.ServerRMI;
 
@@ -20,6 +21,7 @@ public class Server {
         int port = 1234;
         try {
             registry = (LocateRegistry.createRegistry(port));
+            registry.rebind("connect", new ConnectionServerRMI(multiGame));
             System.out.println("RMI Server started on port " + port + "🚔!");
         } catch (Exception e) {
             System.err.println("Server exception: can't open registry " +
