@@ -3,10 +3,12 @@ package it.polimi.ingsw.controller2;
 import it.polimi.ingsw.lightModel.LightCard;
 import it.polimi.ingsw.lightModel.LightPlacement;
 import it.polimi.ingsw.lightModel.diffLists.DiffSubscriber;
+import it.polimi.ingsw.lightModel.diffLists.GameDiffPublisher;
 import it.polimi.ingsw.model.MultiGame;
 import it.polimi.ingsw.model.cardReleted.utilityEnums.CardFace;
 import it.polimi.ingsw.model.cardReleted.utilityEnums.DrawableCard;
 import it.polimi.ingsw.model.tableReleted.Game;
+import it.polimi.ingsw.model.tableReleted.GameParty;
 import it.polimi.ingsw.model.tableReleted.Lobby;
 import it.polimi.ingsw.view.ViewState;
 
@@ -25,9 +27,10 @@ public class ServerImplementation implements ControllerInterfaceServer, Runnable
             diffSubscriber.log(LogsFromServer.NAME_TAKEN.getMessage());
         }else{
             if(this.games.inGame(nickname)!=null){
-                this.joinGame(this.games.inGame(nickname));
+                this.joinGame(this.games.inGame(nickname), diffSubscriber, LogsFromServer.MID_GAME_JOINED);
             }else{
                 this.games.addUser(nickname);
+                games.subscribe(diffSubscriber);
                 diffSubscriber.log(LogsFromServer.SERVER_JOINED.getMessage());
                 diffSubscriber.transitionTo(ViewState.JOIN_LOBBY);
             }
@@ -57,8 +60,11 @@ public class ServerImplementation implements ControllerInterfaceServer, Runnable
             diffSubscriber.log(LogsFromServer.LOBBY_JOINED.getMessage());
             diffSubscriber.transitionTo(ViewState.LOBBY);
             if(lobbyToJoin.getLobbyPlayerList().size() == lobbyToJoin.getNumberOfMaxPlayer()){
+                //Handle the creation of a new game from the lobby
                 Game newGame = new Game(lobbyToJoin);
-                this.joinGame(newGame);
+                for(DiffSubscriber diffSub : lobbyToJoin.getSubscribers()){
+                    this.joinGame(newGame, diffSub, LogsFromServer.NEW_GAME_JOINED);
+                }
             }
         }else{
             diffSubscriber.log(LogsFromServer.LOBBY_IS_FULL.getMessage());
@@ -74,6 +80,7 @@ public class ServerImplementation implements ControllerInterfaceServer, Runnable
     public void leaveLobby(DiffSubscriber diffSubscriber) {
         Lobby lobbyToLeave = this.games.getLobby(diffSubscriber.getTableName());
         lobbyToLeave.unsubscribe(diffSubscriber);
+        games.subscribe(diffSubscriber);
         lobbyToLeave.removeUserName(diffSubscriber.getNickname());
         diffSubscriber.log(LogsFromServer.LOBBY_LEFT.getMessage());
         diffSubscriber.transitionTo(ViewState.JOIN_LOBBY);
@@ -85,8 +92,14 @@ public class ServerImplementation implements ControllerInterfaceServer, Runnable
     }
 
     @Override
-    public void joinGame(Game game) {
-        //lobby.getSubscribers();
+    public void joinGame(Game game, DiffSubscriber diffSubscriber, LogsFromServer log) {
+        GameParty gameParty = game.getGameParty();
+        GameDiffPublisher gameDiffPublisher = gameParty.getGameDiffPublisher();
+        gameDiffPublisher.subscribe(diffSubscriber);
+        gameParty.setGameDiffPublisher(gameDiffPublisher);
+        game.setGameParty(gameParty);
+        diffSubscriber.transitionTo(ViewState.CHOOSE_START_CARD);
+        diffSubscriber.log(log.getMessage());
     }
 
     @Override
