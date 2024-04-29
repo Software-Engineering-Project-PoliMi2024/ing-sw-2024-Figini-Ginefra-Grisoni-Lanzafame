@@ -50,7 +50,7 @@ public class Client {
 
         if (choice == 0) {
             System.out.println("You chose the textual interface!");
-            view = new TUI(controller);
+            view = new TUI(null);
         } else{
             System.out.println("You chose the graphical interface!");
             view = null;

@@ -1,23 +1,19 @@
 package it.polimi.ingsw.view.TUI.Renderables;
 
+import it.polimi.ingsw.controller2.ControllerInterfaceClient;
 import it.polimi.ingsw.view.TUI.inputs.CommandPrompt;
 import it.polimi.ingsw.view.TUI.inputs.CommandPromptResult;
 
 public class EchoRenderable extends Renderable{
     private String input = "";
 
-    public EchoRenderable(CommandPrompt[] relatedCommands){
-        super(relatedCommands);
+    public EchoRenderable(String name, CommandPrompt[] relatedCommands, ControllerInterfaceClient controller){
+        super(name, relatedCommands, controller);
     }
 
     @Override
     public void render() {
         System.out.println("Echo: " + input);
-    }
-
-    @Override
-    public void update() {
-        render();
     }
 
     @Override

@@ -7,8 +7,16 @@ import java.util.ArrayList;
 import java.util.List;
 
 public enum StateTUI {
-    STATE0(ViewState.SERVER_CONNECTION),
-    STATE1(null);
+    SERVER_CONNECTION(ViewState.SERVER_CONNECTION),
+    LOGIN_FORM(ViewState.LOGIN_FORM),
+    JOIN_GAME(ViewState.JOIN_GAME),
+    LOBBY(ViewState.LOBBY),
+    CHOOSE_START_CARD(ViewState.CHOOSE_START_CARD),
+    SELECT_OBJECTIVE(ViewState.SELECT_OBJECTIVE),
+    IDLE(ViewState.IDLE),
+    DRAW_CARD(ViewState.DRAW_CARD),
+    PLACE_CARD(ViewState.PLACE_CARD),
+    GAME_ENDING(ViewState.GAME_ENDING);
 
     private final ViewState referenceState;
     private final List<Renderable> targetRenderables;

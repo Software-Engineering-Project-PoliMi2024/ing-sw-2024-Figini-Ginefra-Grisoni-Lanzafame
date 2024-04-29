@@ -1,46 +1,44 @@
 package it.polimi.ingsw.view.TUI.Renderables;
 
+import it.polimi.ingsw.controller2.ControllerInterfaceClient;
+import it.polimi.ingsw.lightModel.LightLobby;
 import it.polimi.ingsw.model.tableReleted.GameParty;
 import it.polimi.ingsw.model.playerReleted.User;
+import it.polimi.ingsw.view.TUI.inputs.CommandPrompt;
+import it.polimi.ingsw.view.TUI.inputs.CommandPromptResult;
 
 import java.util.List;
 
 public class LobbyRenderable extends Renderable {
-    private GameParty gameParty;
+    private LightLobby lightLobby;
     private String userInput = "";
 
-    public LobbyRenderable(GameParty gameParty) {
-        super(null);
-        this.gameParty = gameParty;
+    public LobbyRenderable(String name, LightLobby lightLobby, CommandPrompt[] relatedCommands, ControllerInterfaceClient controller) {
+        super(name, relatedCommands, controller);
+        this.lightLobby = lightLobby;
     }
 
     @Override
     public void render() {
-        if (gameParty == null || gameParty.getUsersList().isEmpty()) {
-            System.out.println("Waiting for players...");
-        } else {
-            //System.out.println("Current lobby for game: " + gameParty.getGameName()); //where to retrieve name, missing method in game party ??
-            System.out.println("Players in lobby:");
-            List<User> users = gameParty.getUsersList();
-            for (User user : users) {
-                System.out.println("- " + user.getNickname());
-            }
-            System.out.println("Maximum players: " + gameParty.getNumberOfMaxPlayer());
+        System.out.println("=====================================================================");
+        System.out.println("Lobby of the game: " + lightLobby.name());
+        System.out.println("=====================================================================");
+        System.out.println("Players:");
+        List<String> nicknames = lightLobby.nicknames();
+        for (int i = 0; i < nicknames.size(); i++) {
+            System.out.println("\t[" + (i) + "] - " + nicknames.get(i));
         }
+        System.out.println("=====================================================================");
     }
 
     @Override
-    public void update() {
-        // re-render or clear the field
-        render();
-    }
-
-    @Override
-    public void updateInput(String input) {
-        this.userInput = input.trim();
-    }
-
-    public String getUserInput() {
-        return userInput;
+    public void updateCommand(CommandPromptResult answer) {
+        switch (answer.getCommand()) {
+            case CommandPrompt.DISPLAY_LOBBY:
+                this.render();
+                break;
+            default:
+                break;
+        }
     }
 }

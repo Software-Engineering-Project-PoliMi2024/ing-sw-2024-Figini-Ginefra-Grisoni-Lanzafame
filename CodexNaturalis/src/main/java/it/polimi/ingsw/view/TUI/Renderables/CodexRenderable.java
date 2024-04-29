@@ -1,5 +1,6 @@
 package it.polimi.ingsw.view.TUI.Renderables;
 
+import it.polimi.ingsw.controller2.ControllerInterfaceClient;
 import it.polimi.ingsw.lightModel.LightCodex;
 import it.polimi.ingsw.lightModel.LightPlacement;
 import it.polimi.ingsw.model.playerReleted.Position;
@@ -15,8 +16,8 @@ import java.util.Map;
 public class CodexRenderable extends CanvasRenderable{
     private final LightCodex codex;
     private final CardMuseum cardMuseum;
-    public CodexRenderable(LightCodex codex, CardMuseum cardMuseum, CommandPrompt[] relatedCommands) {
-        super(0, 0, relatedCommands);
+    public CodexRenderable(String name, LightCodex codex, CardMuseum cardMuseum, CommandPrompt[] relatedCommands, ControllerInterfaceClient controller) {
+        super(name, 0, 0, relatedCommands, controller);
         this.cardMuseum = cardMuseum;
         this.codex = codex;
         this.drawCodex();

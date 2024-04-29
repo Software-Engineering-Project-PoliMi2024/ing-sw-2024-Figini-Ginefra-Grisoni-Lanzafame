@@ -1,5 +1,6 @@
 package it.polimi.ingsw.view.TUI.Renderables;
 
+import it.polimi.ingsw.controller2.ControllerInterfaceClient;
 import it.polimi.ingsw.view.TUI.inputs.CommandPrompt;
 import it.polimi.ingsw.view.TUI.inputs.CommandPromptResult;
 import it.polimi.ingsw.view.TUI.observers.CommandObserver;
@@ -13,9 +14,16 @@ public abstract class Renderable implements InputObserver, CommandObserver {
 
     private final CommandPrompt[] relatedCommands;
 
-    public Renderable(CommandPrompt[] relatedCommands){
+    protected final ControllerInterfaceClient controller;
+
+    private final String name;
+
+    public Renderable(String name, CommandPrompt[] relatedCommands, ControllerInterfaceClient controller){
+        this.name = name;
 
         this.relatedCommands = relatedCommands;
+
+        this.controller = controller;
 
         if(relatedCommands != null) {
             for (CommandPrompt command : relatedCommands) {
@@ -25,10 +33,6 @@ public abstract class Renderable implements InputObserver, CommandObserver {
     }
 
     public abstract void render();
-
-    public void update(){
-        throw new UnsupportedOperationException("Update without input not supported");
-    };
 
     public void updateInput(String input){
         throw new UnsupportedOperationException("Update without input not supported");
@@ -45,6 +49,9 @@ public abstract class Renderable implements InputObserver, CommandObserver {
         return this.active;
     }
 
+    public String getName(){
+        return name;
+    }
     public CommandPrompt[] getRelatedCommands(){
         return relatedCommands;
     }

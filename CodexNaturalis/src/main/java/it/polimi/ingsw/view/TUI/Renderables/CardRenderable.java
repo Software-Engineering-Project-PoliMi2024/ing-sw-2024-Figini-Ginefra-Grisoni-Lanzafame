@@ -1,5 +1,6 @@
 package it.polimi.ingsw.view.TUI.Renderables;
 
+import it.polimi.ingsw.controller2.ControllerInterfaceClient;
 import it.polimi.ingsw.lightModel.LightCard;
 import it.polimi.ingsw.model.cardReleted.cards.CardWithCorners;
 import it.polimi.ingsw.model.cardReleted.utilityEnums.CardCorner;
@@ -19,8 +20,8 @@ public class CardRenderable extends Renderable {
     private final TextCard textCard;
     private final CardFace face;
 
-    public CardRenderable(LightCard target, CardFace face, CommandPrompt[] relatedCommands){
-        super(relatedCommands);
+    public CardRenderable(String name, LightCard target, CardFace face, CommandPrompt[] relatedCommands, ControllerInterfaceClient controller){
+        super(name, relatedCommands, controller);
         this.face = face;
         this.textCard = null;
     }
@@ -30,12 +31,6 @@ public class CardRenderable extends Renderable {
         Drawable card = textCard.get(this.face);
         System.out.print(card.toString());
     }
-
-    @Override
-    public void update() {
-
-    }
-
 
     public void updateInput(String input) {
         // Do nothing

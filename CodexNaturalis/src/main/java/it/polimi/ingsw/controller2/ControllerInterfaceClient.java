@@ -10,7 +10,7 @@ public interface ControllerInterfaceClient {
     void login(String nickname);
     void getActiveLobbyList();
     void createLobby(String gameName, int maxPlayerCount);
-    void joinLobby(String lobbyName, String nickname);
+    void joinLobby(String lobbyName);
     void disconnect();
     void leaveLobby();
     void selectStartCardFace(LightCard card, CardFace cardFace);

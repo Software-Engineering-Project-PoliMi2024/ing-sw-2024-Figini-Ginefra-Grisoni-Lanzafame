@@ -1,25 +1,20 @@
 package it.polimi.ingsw.view.TUI.Renderables;
 
 import it.polimi.ingsw.controller.socket.SocketController;
+import it.polimi.ingsw.controller2.ControllerInterfaceClient;
 import it.polimi.ingsw.view.TUI.inputs.CommandPrompt;
 import it.polimi.ingsw.view.TUI.inputs.CommandPromptResult;
 
 public class CreateGameFormRenderable extends Renderable {
 
-    public CreateGameFormRenderable(CommandPrompt[] relatedCommands){
-        super(relatedCommands);
+    public CreateGameFormRenderable(String name, CommandPrompt[] relatedCommands, ControllerInterfaceClient controller){
+        super(name, relatedCommands, controller);
     }
 
     @Override
     public void render() {
 
         System.out.println("Enter the name of the new game - number of players:");
-    }
-
-    @Override
-    public void update() {
-        // re-render or clear the field
-        render();
     }
 
     @Override
