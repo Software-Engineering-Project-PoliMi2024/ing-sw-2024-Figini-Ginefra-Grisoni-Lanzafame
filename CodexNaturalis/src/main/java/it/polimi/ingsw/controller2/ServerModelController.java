@@ -69,21 +69,23 @@ public class ServerModelController implements ControllerInterface {
     @Override
     public void joinLobby(String lobbyName) {
         Lobby lobbyToJoin = this.games.getLobby(lobbyName);
-        Boolean result = lobbyToJoin.addUserName(this.nickname);
-        if(result){
-            lobbyToJoin.subscribe(this.view, this.nickname);
-            view.log(LogsFromServer.LOBBY_JOINED.getMessage());
-            view.transitionTo(ViewState.LOBBY);
-            if(lobbyToJoin.getLobbyPlayerList().size() == lobbyToJoin.getNumberOfMaxPlayer()){
-                //Handle the creation of a new game from the lobby
-                Game newGame = new Game(lobbyToJoin);
-                for(DiffSubscriber diffSub : lobbyToJoin.getSubscribers()){
-                    lobbyToJoin.unsubscribe(diffSub);
-                    this.joinGame(newGame, LogsFromServer.NEW_GAME_JOINED);
+        if(lobbyToJoin!=null){
+            Boolean result = lobbyToJoin.addUserName(this.nickname);
+            if(result){
+                lobbyToJoin.subscribe(this.view, this.nickname);
+                view.log(LogsFromServer.LOBBY_JOINED.getMessage());
+                view.transitionTo(ViewState.LOBBY);
+                if(lobbyToJoin.getLobbyPlayerList().size() == lobbyToJoin.getNumberOfMaxPlayer()) {
+                    //Handle the creation of a new game from the lobby
+                    Game newGame = new Game(lobbyToJoin);
+                    for (DiffSubscriber diffSub : lobbyToJoin.getSubscribers()) {
+                        lobbyToJoin.unsubscribe(diffSub);
+                        this.joinGame(newGame, LogsFromServer.NEW_GAME_JOINED);
+                    }
                 }
             }
         }else{
-            view.log(LogsFromServer.LOBBY_IS_FULL.getMessage());
+            view.log(LogsFromServer.LOBBY_INEXISTENT.getMessage());
         }
     }
 
