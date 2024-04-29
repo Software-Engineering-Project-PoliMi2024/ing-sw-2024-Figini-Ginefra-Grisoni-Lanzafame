@@ -79,13 +79,21 @@ public class ServerImplementation implements ControllerInterfaceServer, Runnable
 
     @Override
     public void leaveLobby(DiffSubscriber diffSubscriber) {
-        Lobby lobbyToLeave = this.games.getLobby(diffSubscriber.getTableName());
-        lobbyToLeave.unsubscribe(diffSubscriber);
-        games.subscribe(diffSubscriber);
-        lobbyToLeave.removeUserName(diffSubscriber.getNickname());
-        diffSubscriber.log(LogsFromServer.LOBBY_LEFT.getMessage());
-        diffSubscriber.transitionTo(ViewState.JOIN_LOBBY);
-        synchronized (lobbyToLeave){
+        Lobby lobbyToLeave = null;
+        for(Lobby lobby : games.getLobbies()){
+            if(lobby.getLobbyName().contains(diffSubscriber.getNickname())){
+                 lobbyToLeave = lobby;
+                break;
+            }
+        }
+        if(lobbyToLeave==null){
+            throw new IllegalCallerException();
+        }else{
+            lobbyToLeave.unsubscribe(diffSubscriber);
+            games.subscribe(diffSubscriber);
+            lobbyToLeave.removeUserName(diffSubscriber.getNickname());
+            diffSubscriber.log(LogsFromServer.LOBBY_LEFT.getMessage());
+            diffSubscriber.transitionTo(ViewState.JOIN_LOBBY);
             if(lobbyToLeave.getLobbyPlayerList().isEmpty()){
                 this.games.removeLobby(lobbyToLeave);
             }
