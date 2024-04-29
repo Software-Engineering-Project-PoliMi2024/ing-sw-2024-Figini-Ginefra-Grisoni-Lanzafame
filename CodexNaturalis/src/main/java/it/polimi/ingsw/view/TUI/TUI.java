@@ -29,6 +29,8 @@ public class TUI extends View{
 
     private GameListRenderable gameList;
 
+    private LobbyRenderable lobbyRenderable;
+
     private final LightGame lightGame = new LightGame();
 
     private final LightLobby lightLobby = new LightLobby();
@@ -63,6 +65,10 @@ public class TUI extends View{
         gameList = new GameListRenderable("Game List", new CommandPrompt[]{CommandPrompt.DISPLAY_GAME_LIST, CommandPrompt.JOIN_GAME, CommandPrompt.CREATE_GAME}, controller);
         StateTUI.JOIN_LOBBY.attach(gameList);
         renderables.add(gameList);
+
+        lobbyRenderable = new LobbyRenderable("Lobby", lightLobby, new CommandPrompt[]{CommandPrompt.DISPLAY_LOBBY}, controller);
+        StateTUI.LOBBY.attach(lobbyRenderable);
+        renderables.add(lobbyRenderable);
     }
 
     public void run() {
