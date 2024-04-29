@@ -46,6 +46,7 @@ public class ServerImplementation implements ControllerInterfaceServer, Runnable
     public void createLobby(String gameName, int maxPlayerCount, DiffSubscriber diffSubscriber) {
         Lobby newLobby = new Lobby(maxPlayerCount, diffSubscriber.getNickname(), gameName);
         this.games.addLobby(newLobby);
+        games.unsubscribe(diffSubscriber);
         newLobby.subscribe(diffSubscriber);
         diffSubscriber.log(LogsFromServer.LOBBY_CREATED.getMessage());
         diffSubscriber.transitionTo(ViewState.LOBBY);
@@ -63,6 +64,7 @@ public class ServerImplementation implements ControllerInterfaceServer, Runnable
                 //Handle the creation of a new game from the lobby
                 Game newGame = new Game(lobbyToJoin);
                 for(DiffSubscriber diffSub : lobbyToJoin.getSubscribers()){
+                    lobbyToJoin.unsubscribe(diffSub);
                     this.joinGame(newGame, diffSub, LogsFromServer.NEW_GAME_JOINED);
                 }
             }
@@ -93,11 +95,7 @@ public class ServerImplementation implements ControllerInterfaceServer, Runnable
 
     @Override
     public void joinGame(Game game, DiffSubscriber diffSubscriber, LogsFromServer log) {
-        GameParty gameParty = game.getGameParty();
-        GameDiffPublisher gameDiffPublisher = gameParty.getGameDiffPublisher();
-        gameDiffPublisher.subscribe(diffSubscriber);
-        gameParty.setGameDiffPublisher(gameDiffPublisher);
-        game.setGameParty(gameParty);
+        game.subcribe(diffSubscriber);
         diffSubscriber.transitionTo(ViewState.CHOOSE_START_CARD);
         diffSubscriber.log(log.getMessage());
     }
