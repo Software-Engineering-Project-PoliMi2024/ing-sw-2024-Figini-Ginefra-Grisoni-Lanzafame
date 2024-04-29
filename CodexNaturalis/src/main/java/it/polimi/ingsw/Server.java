@@ -1,6 +1,7 @@
 package it.polimi.ingsw;
 
 import it.polimi.ingsw.controller.socket.server.SocketServer;
+import it.polimi.ingsw.controller2.ServerModelController;
 import it.polimi.ingsw.model.MultiGame;
 import it.polimi.ingsw.controller.RMI.ServerRMI;
 
@@ -10,8 +11,11 @@ import it.polimi.ingsw.controller.RMI.ServerRMI;
 public class Server {
     public static void main(String[] args) {
         System.out.println("SERVER STARTED! 🚀🚀🚀");
-
         MultiGame multiGame = new MultiGame();
+
+        ServerModelController serverImplementation = new ServerModelController(multiGame);
+        Thread serverImplementationThread = new Thread(serverImplementation, "Server Thread");
+        serverImplementationThread.start();
 
         SocketServer socketServer = new SocketServer(multiGame);
         ServerRMI serverRMI = new ServerRMI(multiGame);

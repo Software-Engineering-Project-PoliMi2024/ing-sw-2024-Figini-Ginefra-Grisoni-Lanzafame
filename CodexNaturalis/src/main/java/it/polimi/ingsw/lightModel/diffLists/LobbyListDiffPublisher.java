@@ -5,7 +5,7 @@ import it.polimi.ingsw.lightModel.diffs.LobbyListDiff;
 import java.util.ArrayList;
 import java.util.List;
 
-public class LobbyListDiffPublisher implements DiffPublisherDouble<LobbyListDiff> {
+public class LobbyListDiffPublisher implements DiffPublisher {
     private final List<DiffSubscriber> diffSubscribers;
     private final LobbyListDiff lobbyListDiff;
 
@@ -30,12 +30,10 @@ public class LobbyListDiffPublisher implements DiffPublisherDouble<LobbyListDiff
         }
     }
 
-    @Override
     public void notifySubscriber(DiffSubscriber diffSubscriber, LobbyListDiff lobbyListDiff) {
         diffSubscriber.updateLobbyList(lobbyListDiff);
     }
 
-    @Override
     public void subscribe(LobbyListDiff lightLobbyDiff) {
         synchronized (lobbyListDiff){
             lobbyListDiff.updateLobbyListDiff(lightLobbyDiff);
@@ -43,7 +41,6 @@ public class LobbyListDiffPublisher implements DiffPublisherDouble<LobbyListDiff
         this.notifySubscriber();
     }
 
-    @Override
     public void unsubscribe(LobbyListDiff lightLobbyDiff) {
         synchronized (lobbyListDiff){
             lobbyListDiff.updateLobbyListDiff(lightLobbyDiff);
