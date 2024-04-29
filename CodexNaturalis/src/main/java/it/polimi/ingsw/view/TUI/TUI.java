@@ -95,7 +95,7 @@ public class TUI extends View{
 
     @Override
     public void log(String logMsg) {
-
+        System.out.println(logMsg);
     }
 
     @Override
