@@ -1,13 +1,13 @@
 package it.polimi.ingsw.view.TUI.Renderables;
 
-import it.polimi.ingsw.controller2.ConnectionLayerClient;
+import it.polimi.ingsw.controller2.ControllerInterface;
 import it.polimi.ingsw.view.TUI.inputs.CommandPrompt;
 import it.polimi.ingsw.view.TUI.inputs.CommandPromptResult;
 
 public class EchoRenderable extends Renderable{
     private String input = "";
 
-    public EchoRenderable(String name, CommandPrompt[] relatedCommands, ConnectionLayerClient controller){
+    public EchoRenderable(String name, CommandPrompt[] relatedCommands, ControllerInterface controller){
         super(name, relatedCommands, controller);
     }
 

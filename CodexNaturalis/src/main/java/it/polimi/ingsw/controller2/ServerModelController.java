@@ -10,7 +10,7 @@ import it.polimi.ingsw.model.tableReleted.Game;
 import it.polimi.ingsw.model.tableReleted.Lobby;
 import it.polimi.ingsw.view.ViewState;
 
-public class ServerModelController implements ControllerInterface{
+public class ServerModelController implements ConnectionLayerClient {
     private final MultiGame games;
     private final ViewInterface view;
     private String nickname;

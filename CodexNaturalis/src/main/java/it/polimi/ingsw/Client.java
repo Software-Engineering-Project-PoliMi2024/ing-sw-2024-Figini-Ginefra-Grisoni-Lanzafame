@@ -1,7 +1,7 @@
 package it.polimi.ingsw;
 
 import it.polimi.ingsw.controller2.ConnectionClientRMI;
-import it.polimi.ingsw.controller2.ConnectionLayerClient;
+import it.polimi.ingsw.controller2.ControllerInterface;
 import it.polimi.ingsw.view.TUI.TUI;
 import it.polimi.ingsw.view.View;
 import it.polimi.ingsw.view.ViewState;
@@ -10,7 +10,7 @@ import java.util.Scanner;
 
 public class Client {
     public static void main(String[] args) {
-        ConnectionLayerClient controller;
+        ControllerInterface controller;
         View view;
         System.out.println("Hi there 👋!");
         System.out.println("Which communication protocol do you fancy today?🎩");

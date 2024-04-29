@@ -1,6 +1,6 @@
 package it.polimi.ingsw.view.TUI.Renderables;
 
-import it.polimi.ingsw.controller2.ConnectionLayerClient;
+import it.polimi.ingsw.controller2.ControllerInterface;
 import it.polimi.ingsw.lightModel.LightLobby;
 import it.polimi.ingsw.view.TUI.inputs.CommandPrompt;
 import it.polimi.ingsw.view.TUI.inputs.CommandPromptResult;
@@ -11,7 +11,7 @@ public class LobbyRenderable extends Renderable {
     private LightLobby lightLobby;
     private String userInput = "";
 
-    public LobbyRenderable(String name, LightLobby lightLobby, CommandPrompt[] relatedCommands, ConnectionLayerClient controller) {
+    public LobbyRenderable(String name, LightLobby lightLobby, CommandPrompt[] relatedCommands, ControllerInterface controller) {
         super(name, relatedCommands, controller);
         this.lightLobby = lightLobby;
     }

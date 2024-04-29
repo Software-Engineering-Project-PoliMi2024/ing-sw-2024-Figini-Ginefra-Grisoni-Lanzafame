@@ -1,5 +1,8 @@
 package it.polimi.ingsw.controller2;
 
-public interface ConnectionLayerClient extends ControllerInterface {
+import java.rmi.Remote;
+
+public interface ConnectionLayerClient extends Remote {
     public void connect(String ip, int port, ViewInterface view);
+
 }

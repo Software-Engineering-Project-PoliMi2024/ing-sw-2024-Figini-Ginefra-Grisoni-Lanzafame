@@ -1,6 +1,6 @@
 package it.polimi.ingsw.view.TUI.Renderables;
 
-import it.polimi.ingsw.controller2.ConnectionLayerClient;
+import it.polimi.ingsw.controller2.ControllerInterface;
 import it.polimi.ingsw.view.TUI.inputs.CommandPrompt;
 import it.polimi.ingsw.view.TUI.inputs.CommandPromptResult;
 import it.polimi.ingsw.view.TUI.observers.CommandObserver;
@@ -11,11 +11,11 @@ public abstract class Renderable implements InputObserver, CommandObserver {
 
     private final CommandPrompt[] relatedCommands;
 
-    protected final ConnectionLayerClient controller;
+    protected final ControllerInterface controller;
 
     private final String name;
 
-    public Renderable(String name, CommandPrompt[] relatedCommands, ConnectionLayerClient controller){
+    public Renderable(String name, CommandPrompt[] relatedCommands, ControllerInterface controller){
         this.name = name;
 
         this.relatedCommands = relatedCommands;

@@ -1,6 +1,6 @@
 package it.polimi.ingsw.view.TUI.Renderables;
 
-import it.polimi.ingsw.controller2.ConnectionLayerClient;
+import it.polimi.ingsw.controller2.ControllerInterface;
 import it.polimi.ingsw.model.cardReleted.cards.ObjectiveCard;
 import it.polimi.ingsw.view.TUI.inputs.CommandPrompt;
 
@@ -10,7 +10,7 @@ public class ObjectiveDisplayRenderable extends Renderable {
     private final List<ObjectiveCard> objectiveCards;
     private String choseSecretObjective = "";
 
-    public ObjectiveDisplayRenderable(List<ObjectiveCard> objectiveCards, String name, CommandPrompt[] relatedCommands, ConnectionLayerClient controller) {
+    public ObjectiveDisplayRenderable(List<ObjectiveCard> objectiveCards, String name, CommandPrompt[] relatedCommands, ControllerInterface controller) {
         super(name, relatedCommands, controller);
         this.objectiveCards = objectiveCards;
     }

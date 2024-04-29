@@ -1,21 +1,21 @@
 package it.polimi.ingsw.view;
 
-import it.polimi.ingsw.controller2.ControllerInterface;
+import it.polimi.ingsw.controller2.ConnectionLayerClient;
 import it.polimi.ingsw.controller2.ViewInterface;
 
 public abstract class View implements ViewInterface {
-    private final ControllerInterface controller;
+    private final ConnectionLayerClient controller;
 
     private ViewState currentState = null;
 
-    public View(ControllerInterface controller){
+    public View(ConnectionLayerClient controller){
 
         this.controller = controller;
     }
 
     public void run(){}
 
-    public ControllerInterface getController(){
+    public ConnectionLayerClient getController(){
         return this.controller;
     }
 

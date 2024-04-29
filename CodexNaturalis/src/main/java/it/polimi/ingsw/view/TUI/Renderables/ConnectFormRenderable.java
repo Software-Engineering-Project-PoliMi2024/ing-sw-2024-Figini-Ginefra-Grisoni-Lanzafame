@@ -1,14 +1,17 @@
 package it.polimi.ingsw.view.TUI.Renderables;
 
 import it.polimi.ingsw.controller2.ConnectionLayerClient;
+import it.polimi.ingsw.controller2.ControllerInterface;
 import it.polimi.ingsw.controller2.ViewInterface;
 import it.polimi.ingsw.view.TUI.inputs.CommandPrompt;
 import it.polimi.ingsw.view.TUI.inputs.CommandPromptResult;
 
 public class ConnectFormRenderable extends FormRenderable {
+    private final ConnectionLayerClient controller;
     private final ViewInterface view;
     public ConnectFormRenderable(String name, ViewInterface view, CommandPrompt[] relatedCommands, ConnectionLayerClient controller) {
-        super(name, relatedCommands, controller);
+        super(name, relatedCommands, null);
+        this.controller = controller;
         this.view = view;
     }
 

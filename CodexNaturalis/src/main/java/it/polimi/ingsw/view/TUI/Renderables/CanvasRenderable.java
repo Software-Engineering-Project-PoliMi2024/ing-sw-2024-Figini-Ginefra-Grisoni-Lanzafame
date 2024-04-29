@@ -1,12 +1,12 @@
 package it.polimi.ingsw.view.TUI.Renderables;
 
-import it.polimi.ingsw.controller2.ConnectionLayerClient;
+import it.polimi.ingsw.controller2.ControllerInterface;
 import it.polimi.ingsw.view.TUI.Renderables.drawables.Canvas;
 import it.polimi.ingsw.view.TUI.inputs.CommandPrompt;
 
 public class CanvasRenderable extends Renderable {
     protected final Canvas canvas;
-    public CanvasRenderable(String name, int width, int height, CommandPrompt[] relatedCommands, ConnectionLayerClient controller) {
+    public CanvasRenderable(String name, int width, int height, CommandPrompt[] relatedCommands, ControllerInterface controller) {
         super(name, relatedCommands, controller);
         canvas = new Canvas(width, height);
     }
