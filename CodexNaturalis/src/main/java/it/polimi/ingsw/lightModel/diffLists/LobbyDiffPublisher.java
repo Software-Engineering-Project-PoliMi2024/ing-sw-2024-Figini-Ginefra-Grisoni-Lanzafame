@@ -9,10 +9,11 @@ import java.util.List;
 import java.util.Map;
 
 public class LobbyDiffPublisher implements DiffPublisherNick {
-    Map<DiffSubscriber, String> subscribers;
+    private final Map<DiffSubscriber, String> subscribers;
     private final Map<DiffSubscriber, LobbyDiff> lobbyDiffMap;
 
     public LobbyDiffPublisher() {
+        this.subscribers = new HashMap<>();
         this.lobbyDiffMap = new HashMap<>();
     }
     /**
