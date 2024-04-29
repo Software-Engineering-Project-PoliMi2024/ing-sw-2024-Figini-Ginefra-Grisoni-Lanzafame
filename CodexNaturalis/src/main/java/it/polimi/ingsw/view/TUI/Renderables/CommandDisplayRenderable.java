@@ -52,7 +52,8 @@ public class CommandDisplayRenderable extends Renderable{
 
             System.out.println("You selected " + currentPrompt.getCommandName());
 
-            System.out.println(currentPrompt.next());
+            if(currentPrompt.hasNext())
+                System.out.println(currentPrompt.next());
         }
         else{
             if(currentPrompt.parseInput(input)){

@@ -11,6 +11,7 @@ import it.polimi.ingsw.view.TUI.inputs.InputHandler;
 import it.polimi.ingsw.view.View;
 import it.polimi.ingsw.view.ViewState;
 
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
@@ -39,14 +40,15 @@ public class TUI extends View{
 
         inputHandler.attach(commandDisplay);
 
-        commandDisplay.addCommandPrompt(CommandPrompt.CONNECT);
-
         connectForm = new ConnectFormRenderable("Connect form", this, new CommandPrompt[]{CommandPrompt.CONNECT}, controller);
         StateTUI.SERVER_CONNECTION.attach(connectForm);
 
-        renderables = List.of(new Renderable[]{commandDisplay});
+        renderables = new ArrayList<>();
+        renderables.add(commandDisplay);
+        renderables.add(connectForm);
 
-        this.setState(ViewState.SERVER_CONNECTION);
+
+        this.transitionTo(ViewState.SERVER_CONNECTION);
 
     }
 

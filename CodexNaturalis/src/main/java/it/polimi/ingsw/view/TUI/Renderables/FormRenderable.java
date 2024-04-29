@@ -6,7 +6,6 @@ import it.polimi.ingsw.view.TUI.inputs.CommandPrompt;
 import it.polimi.ingsw.view.TUI.inputs.CommandPromptResult;
 
 public class FormRenderable extends Renderable{
-    ConnectionLayerClient controller;
     public FormRenderable(String name, CommandPrompt[] commandPrompts, ControllerInterface controller) {
         super(name, commandPrompts, controller);
 
