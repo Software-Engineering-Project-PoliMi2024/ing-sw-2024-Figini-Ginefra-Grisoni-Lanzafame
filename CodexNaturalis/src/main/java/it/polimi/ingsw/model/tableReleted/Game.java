@@ -1,6 +1,8 @@
 package it.polimi.ingsw.model.tableReleted;
 
 
+import it.polimi.ingsw.lightModel.diffLists.DiffSubscriber;
+import it.polimi.ingsw.lightModel.diffLists.GameDiffPublisher;
 import it.polimi.ingsw.model.cardReleted.cardFactories.GoldCardFactory;
 import it.polimi.ingsw.model.cardReleted.cardFactories.ObjectiveCardFactory;
 import it.polimi.ingsw.model.cardReleted.cardFactories.ResourceCardFactory;
@@ -15,12 +17,12 @@ import java.io.Serializable;
 
 
 /**
- * @author Samuele
  * This class represents the game as a whole.
  * It contains a reference to all the players who are playing the match
  * and the decks that are being used.
  */
 public class Game implements Serializable {
+    private final GameDiffPublisher gameDiffPublisher;
     final private Deck<ObjectiveCard> objectiveCardDeck;
     final private Deck<ResourceCard> resourceCardDeck;
     final private Deck<GoldCard> goldCardDeck;
@@ -32,6 +34,7 @@ public class Game implements Serializable {
      * Constructs a new Game instance with a specified maximum number of players.
      */
     public Game(Lobby lobby) {
+        gameDiffPublisher = new GameDiffPublisher();
         this.name = lobby.getLobbyName();
         this.gameParty = new GameParty(lobby.getLobbyList().stream().toList());
         String filePath = "./cards/";
@@ -86,6 +89,15 @@ public class Game implements Serializable {
                 //", currentPlayer=" + currentPlayer.getNickname() +
                 ", numberOfMaxPlayer=" + gameParty.getNumberOfMaxPlayer() +
                 '}';
+    }
+
+    public GameDiffPublisher getGameDiffPublisher() {
+        return gameDiffPublisher;
+    }
+
+
+    public void subcribe(DiffSubscriber diffSubscriber){
+        gameDiffPublisher.subscribe(diffSubscriber);
     }
 
     @Override
