@@ -1,7 +1,7 @@
 package it.polimi.ingsw.model;
 
+import it.polimi.ingsw.controller2.ServerModelController;
 import it.polimi.ingsw.lightModel.Lightifier;
-import it.polimi.ingsw.lightModel.diffLists.DiffPublisher;
 import it.polimi.ingsw.lightModel.diffLists.DiffSubscriber;
 import it.polimi.ingsw.lightModel.diffLists.LobbyListDiffPublisher;
 import it.polimi.ingsw.model.playerReleted.User;
@@ -9,20 +9,22 @@ import it.polimi.ingsw.model.tableReleted.Game;
 import it.polimi.ingsw.model.tableReleted.Lobby;
 
 import java.io.Serializable;
+import java.util.HashMap;
 import java.util.HashSet;
-import java.util.List;
+import java.util.Map;
 import java.util.Set;
+import java.util.stream.Collectors;
 
 public class MultiGame implements Serializable {
     private final LobbyListDiffPublisher lobbyListDiffPublisher;
     private final Set<Game> games;
     private final LobbyList lobbies;
-    private final Set<String> usernames;
+    private final Map<ServerModelController, String> usernames;
     public MultiGame() {
         this.games = new HashSet<>();
         //usernames
-        this.usernames = new HashSet<>(); //user that are connected to the server
-        this.lobbies = new LobbyList();
+        this.usernames = new HashMap<>(); //user that are connected to the server
+        lobbies = new LobbyList();
         this.lobbyListDiffPublisher = new LobbyListDiffPublisher(Lightifier.lightify(lobbies));
     }
 
@@ -32,7 +34,7 @@ public class MultiGame implements Serializable {
 
     public Set<String> getUsernames() {
         synchronized (usernames) {
-            return usernames;
+            return new HashSet<>(usernames.values());
         }
     }
 
@@ -40,9 +42,13 @@ public class MultiGame implements Serializable {
         return games.add(game);
     }
 
-    public boolean addUser(String username) {
+    public boolean addUser(ServerModelController controller, String username) {
         synchronized (usernames){
-            return usernames.add(username);
+            if(isUnique(username)){
+                usernames.put(controller, username);
+                return true;
+            }else
+                return false;
         }
     }
 
