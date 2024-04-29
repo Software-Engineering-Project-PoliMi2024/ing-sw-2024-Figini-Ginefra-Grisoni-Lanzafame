@@ -120,8 +120,7 @@ public class ServerModelController implements ControllerInterface {
         view.log(log.getMessage());
     }
 
-    @Override
-    public void leaveGame() {
+    private void leaveGame() {
         Game gameToLeave = games.getGame(this.nickname);
         gameToLeave.unsubscrive(view);
     }

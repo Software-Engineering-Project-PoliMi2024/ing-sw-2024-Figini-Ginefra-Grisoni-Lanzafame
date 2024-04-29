@@ -16,5 +16,4 @@ public interface ControllerInterface {
     void choseSecretObjective(LightCard objectiveCard);
     void place(LightPlacement placement);
     void draw(DrawableCard deckID, int cardID);
-    void leaveGame();
 }
