@@ -8,7 +8,7 @@ import it.polimi.ingsw.model.cardReleted.utilityEnums.Resource;
 
 import java.util.*;
 
-public class GameDiffPublisher implements DiffPublisher{
+public class GameDiffPublisher implements DiffPublisherDouble<GameDiff>{
     public final Map<String, List<GameDiff>> gameDiffMap;
     public final List<DiffSubscriber> activeSubscribers;
     public GameDiffPublisher() {
@@ -48,6 +48,20 @@ public class GameDiffPublisher implements DiffPublisher{
         }
     }
 
+    @Override
+    public void notifySubscriber(DiffSubscriber diffSubscriber, GameDiff gameDiff) {
+
+    }
+
+    @Override
+    public void subscribe(GameDiff diffSubscriber) {
+
+    }
+
+    @Override
+    public void unsubscribe(GameDiff diffSubscriber) {
+
+    }
     private NewGameDiff newGameDiffAdder(DiffSubscriber diffSubscriber){
         return new NewGameDiff(
                 diffSubscriber.getTableName(),
