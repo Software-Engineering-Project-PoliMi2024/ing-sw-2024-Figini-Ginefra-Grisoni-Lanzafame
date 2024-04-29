@@ -12,6 +12,7 @@ import it.polimi.ingsw.model.cardReleted.utilityEnums.CardCorner;
 import it.polimi.ingsw.model.cardReleted.utilityEnums.Collectable;
 import it.polimi.ingsw.model.cardReleted.utilityEnums.Resource;
 import it.polimi.ingsw.model.cardReleted.utilityEnums.WritingMaterial;
+import it.polimi.ingsw.model.utilities.Pair;
 
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
@@ -78,6 +79,77 @@ public class ObjectiveCardFactory extends AbstractCardFactory<ObjectiveCard>{
     }
 
     /**
+     * Retrieves a queue of Objective cards from JSON file
+     * @return A queue of pairs containing ObjectiveCard and its multiplier
+     */
+    public Queue<Pair<ObjectiveCard, DiagonalCardPointMultiplier>> getCardsWithDiagonalMultiplier(){
+        JsonArray ResourceCards = getCardArray("ObjectiveCard");
+        Queue<Pair<ObjectiveCard, DiagonalCardPointMultiplier>> deckBuilder = new LinkedList<>();
+        for(int i=0; i<ResourceCards.size(); i++) {
+            JsonObject card = ResourceCards.get(i).getAsJsonObject();
+            deckBuilder.add(new Pair<>(new ObjectiveCard(getId(card), card.get("points").getAsInt(), getPointMultiplier(card)),
+                    new DiagonalCardPointMultiplier(card.get("multiplierD").getAsJsonObject().get("upwards").getAsBoolean(),
+                            Resource.valueOf(card.get("multiplierD").getAsJsonObject().get("resource").getAsString().toUpperCase()))));
+        }
+        return deckBuilder;
+    }
+
+    /**
+     * Retrieves a queue of Objective cards from JSON file
+     * @return A queue of pairs containing ObjectiveCard and its multiplier
+     */
+    public Queue<Pair<ObjectiveCard, LCardPointMultiplier>> getCardsWithLMultiplier(){
+        JsonArray ResourceCards = getCardArray("ObjectiveCard");
+        Queue<Pair<ObjectiveCard, LCardPointMultiplier>> deckBuilder = new LinkedList<>();
+        for(int i=0; i<ResourceCards.size(); i++) {
+            JsonObject card = ResourceCards.get(i).getAsJsonObject();
+            JsonObject multiplierL = card.getAsJsonObject("multiplierL");
+            deckBuilder.add(new Pair<>(new ObjectiveCard(getId(card), card.get("points").getAsInt(), getPointMultiplier(card)),
+                    new LCardPointMultiplier(CardCorner.valueOf(multiplierL.get("corner").getAsString().toUpperCase()),
+                            Resource.valueOf(multiplierL.get("singleResource").getAsString().toUpperCase()),
+                            Resource.valueOf(multiplierL.get("multiResource").getAsString().toUpperCase()))));
+        }
+        return deckBuilder;
+    }
+
+    /**
+     * Retrieves a queue of Objective cards from JSON file
+     * @return A queue of pairs containing ObjectiveCard and its multiplier
+     */
+    public Queue<Pair<ObjectiveCard, CollectableCardPointMultiplier>> getCardsWithCollectableMultiplier(){
+        Queue<Pair<ObjectiveCard, CollectableCardPointMultiplier>> deckBuilder = new LinkedList<>();
+        JsonArray ResourceCards = getCardArray("ObjectiveCard");
+        for(int i=0; i<ResourceCards.size(); i++) {
+            JsonObject card = ResourceCards.get(i).getAsJsonObject();
+            if(getCollectableMultiplier(card) != null){
+                deckBuilder.add(new Pair(new ObjectiveCard(getId(card), card.get("points").getAsInt(), getPointMultiplier(card)), getCollectableMultiplier(card)));
+            }
+        }
+        return deckBuilder;
+    }
+
+    private CollectableCardPointMultiplier getCollectableMultiplier(JsonObject card){
+        if(!card.has("multiplierCollectable")){
+            return null;
+        }
+
+        JsonObject multiplierL = card.getAsJsonObject("multiplierCollectable");
+        HashMap<Collectable, Integer> collectableMap = new HashMap<>();
+        //For each "element" get the key in UpperCase and use the enum toString to convert it
+        for (Map.Entry<String, JsonElement> element : multiplierL.entrySet()){
+            String key = element.getKey().toUpperCase();
+            if (key.equals("QUILL") || key.equals("INKWELL") || key.equals("MANUSCRIPT")){
+                collectableMap.put(WritingMaterial.valueOf(key),
+                        element.getValue().getAsInt());
+            }else{
+                collectableMap.put(Resource.valueOf(key),
+                        element.getValue().getAsInt());
+            }
+        }
+        return new CollectableCardPointMultiplier(collectableMap);
+        }
+
+    /**
      * This method use the toString method of both WritingMaterial and Resource enum
      * @param card that is being build
      * @return a pointer to the correct Multiplier
@@ -93,20 +165,7 @@ public class ObjectiveCardFactory extends AbstractCardFactory<ObjectiveCard>{
                     Resource.valueOf(multiplierL.get("singleResource").getAsString().toUpperCase()),
                     Resource.valueOf(multiplierL.get("multiResource").getAsString().toUpperCase()));
         }else{ //multiplierCollectable case
-            JsonObject multiplierL = card.getAsJsonObject("multiplierCollectable");
-            HashMap<Collectable, Integer> collectableMap = new HashMap<>();
-            //For each "element" get the key in UpperCase and use the enum toString to convert it
-            for (Map.Entry<String, JsonElement> element : multiplierL.entrySet()){
-                String key = element.getKey().toUpperCase();
-                if (key.equals("QUILL") || key.equals("INKWELL") || key.equals("MANUSCRIPT")){
-                    collectableMap.put(WritingMaterial.valueOf(key),
-                            element.getValue().getAsInt());
-                }else{
-                    collectableMap.put(Resource.valueOf(key),
-                            element.getValue().getAsInt());
-                }
-            }
-            return new CollectableCardPointMultiplier(collectableMap);
+            return this.getCollectableMultiplier(card);
         }
     }
 }

@@ -19,6 +19,10 @@ public class CardMuseum implements Serializable {
         return textCards.get(id);
     }
 
+    public Map<Integer, TextCard> getCards(){
+        return textCards;
+    }
+
     public int getSize(){
         return textCards.size();
     }

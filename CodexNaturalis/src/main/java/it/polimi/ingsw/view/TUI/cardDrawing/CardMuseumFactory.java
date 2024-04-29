@@ -1,12 +1,16 @@
 package it.polimi.ingsw.view.TUI.cardDrawing;
 
 import it.polimi.ingsw.model.cardReleted.cardFactories.GoldCardFactory;
+import it.polimi.ingsw.model.cardReleted.cardFactories.ObjectiveCardFactory;
 import it.polimi.ingsw.model.cardReleted.cardFactories.ResourceCardFactory;
 import it.polimi.ingsw.model.cardReleted.cardFactories.StartCardFactory;
 import it.polimi.ingsw.model.cardReleted.cards.GoldCard;
+import it.polimi.ingsw.model.cardReleted.cards.ObjectiveCard;
 import it.polimi.ingsw.model.cardReleted.cards.ResourceCard;
 import it.polimi.ingsw.model.cardReleted.cards.StartCard;
+import it.polimi.ingsw.model.cardReleted.pointMultiplyer.CollectableCardPointMultiplier;
 import it.polimi.ingsw.model.cardReleted.utilityEnums.CardFace;
+import it.polimi.ingsw.model.utilities.Pair;
 
 import java.io.*;
 import java.util.Queue;
@@ -75,6 +79,12 @@ public class CardMuseumFactory {
 
             System.out.println("Start cards loaded: " + startCards.size());
 
+            ObjectiveCardFactory objectiveCardFactory = new ObjectiveCardFactory(folderPath+sourceFileName, folderPath);
+
+            Queue<Pair<ObjectiveCard, CollectableCardPointMultiplier>> objectiveCardsWithCollectableMultiplier = objectiveCardFactory.getCardsWithCollectableMultiplier();
+            objectiveCardsWithCollectableMultiplier.forEach(pair -> cardMuseum.set(pair.first().getId(), CardPainter.drawObjectiveCardCollectableMultiplier(pair.first(), pair.second())));
+            System.out.println("Objective cards with collectable multiplier loaded: " + objectiveCardsWithCollectableMultiplier.size());
+
             System.out.println("CardMuseumFactory created of length: " + cardMuseum.getSize());
 
             try {
@@ -93,9 +103,9 @@ public class CardMuseumFactory {
     public static void main(String[] args){
         CardMuseum museum = new CardMuseumFactory("./cards/", true).getCardMuseum();
 
-        for(int i = 1; i < museum.getSize(); i++){
-            System.out.println("Card ID: " + i);
-            System.out.println(museum.get(i).get(CardFace.FRONT).toString());
+        for(int key : museum.getCards().keySet()){
+            System.out.println("Card ID: " + key);
+            System.out.println(museum.get(key).get(CardFace.FRONT).toString());
         }
     }
 }
