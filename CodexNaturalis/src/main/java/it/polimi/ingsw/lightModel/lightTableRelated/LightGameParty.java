@@ -1,10 +1,12 @@
-package it.polimi.ingsw.lightModel;
+package it.polimi.ingsw.lightModel.lightTableRelated;
+
+import it.polimi.ingsw.lightModel.Differentiable;
 
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-public class LightGameParty implements Differentiable{
+public class LightGameParty implements Differentiable {
     private String gameName;
     final private Map<String,Boolean> playerActiveList;
     private String currentPlayer;

@@ -1,8 +1,7 @@
 package it.polimi.ingsw.lightModel.diffs;
 
 import it.polimi.ingsw.lightModel.LightCard;
-import it.polimi.ingsw.lightModel.LightGame;
-import it.polimi.ingsw.lightModel.LightHand;
+import it.polimi.ingsw.lightModel.lightTableRelated.LightGame;
 
 public class HandDiffRemove extends HandDiff{
     /**

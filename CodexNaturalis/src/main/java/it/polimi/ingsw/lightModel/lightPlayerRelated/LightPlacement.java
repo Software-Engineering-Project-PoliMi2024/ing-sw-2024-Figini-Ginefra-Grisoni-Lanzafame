@@ -1,9 +1,11 @@
-package it.polimi.ingsw.lightModel;
+package it.polimi.ingsw.lightModel.lightPlayerRelated;
 
+import it.polimi.ingsw.lightModel.Differentiable;
+import it.polimi.ingsw.lightModel.LightCard;
 import it.polimi.ingsw.model.cardReleted.utilityEnums.CardFace;
 import it.polimi.ingsw.model.playerReleted.Position;
 
-public record LightPlacement(Position position, LightCard card, CardFace face) implements Differentiable{
+public record LightPlacement(Position position, LightCard card, CardFace face) implements Differentiable {
     /**
      * Represents a placement in the light model
      * @param position the position of the placement

@@ -1,8 +1,7 @@
 package it.polimi.ingsw.lightModel.diffs;
 
 import it.polimi.ingsw.lightModel.LightCard;
-import it.polimi.ingsw.model.cardReleted.utilityEnums.DrawableCard;
-import it.polimi.ingsw.lightModel.LightDeck;
+import it.polimi.ingsw.lightModel.lightTableRelated.LightDeck;
 
 public class DeckDiffBufferDraw extends DeckDiff{
     private final LightCard card;

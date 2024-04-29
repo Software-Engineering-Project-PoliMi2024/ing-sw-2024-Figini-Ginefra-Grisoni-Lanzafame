@@ -1,8 +1,7 @@
 package it.polimi.ingsw;
 
-import it.polimi.ingsw.controller2.ConnectionClientRMI;
-import it.polimi.ingsw.controller2.ConnectionLayerClient;
-import it.polimi.ingsw.controller2.ControllerInterface;
+import it.polimi.ingsw.controller2.ConnectionLayer.ConnectionClientRMI;
+import it.polimi.ingsw.controller2.ConnectionLayer.ConnectionLayerClient;
 import it.polimi.ingsw.view.TUI.TUI;
 import it.polimi.ingsw.view.View;
 import it.polimi.ingsw.view.ViewState;

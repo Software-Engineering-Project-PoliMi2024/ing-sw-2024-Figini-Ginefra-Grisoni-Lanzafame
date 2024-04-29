@@ -1,13 +1,14 @@
-package it.polimi.ingsw.controller2;
+package it.polimi.ingsw.view;
 
-import it.polimi.ingsw.lightModel.*;
+import it.polimi.ingsw.controller2.ControllerInterface;
 import it.polimi.ingsw.lightModel.diffLists.DiffSubscriber;
 import it.polimi.ingsw.lightModel.diffs.ModelDiffs;
-import it.polimi.ingsw.view.ViewState;
+import it.polimi.ingsw.lightModel.lightTableRelated.LightGame;
+import it.polimi.ingsw.lightModel.lightTableRelated.LightLobby;
+import it.polimi.ingsw.lightModel.lightTableRelated.LightLobbyList;
 
 import java.io.Serializable;
 import java.rmi.Remote;
-import java.util.List;
 
 public interface ViewInterface extends DiffSubscriber, Remote, Serializable {
     void setState(ViewState state);

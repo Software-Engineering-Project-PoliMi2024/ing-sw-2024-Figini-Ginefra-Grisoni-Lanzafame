@@ -1,13 +1,15 @@
-package it.polimi.ingsw.lightModel;
+package it.polimi.ingsw.lightModel.lightTableRelated;
 
+import it.polimi.ingsw.lightModel.*;
+import it.polimi.ingsw.lightModel.lightPlayerRelated.LightCodex;
+import it.polimi.ingsw.lightModel.lightPlayerRelated.LightHand;
+import it.polimi.ingsw.lightModel.lightPlayerRelated.LightHandOthers;
 import it.polimi.ingsw.model.cardReleted.utilityEnums.DrawableCard;
 import it.polimi.ingsw.model.cardReleted.utilityEnums.Resource;
-import it.polimi.ingsw.model.tableReleted.GameParty;
-import it.polimi.ingsw.view.TUI.Renderables.drawables.Drawable;
 
 import java.util.*;
 
-public class LightGame implements Differentiable{
+public class LightGame implements Differentiable {
     private final LightGameParty lightGameParty;
     private final Map<String, LightCodex> codexMap;
     private final LightHand hand;

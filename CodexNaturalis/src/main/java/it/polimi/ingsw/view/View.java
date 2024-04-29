@@ -1,7 +1,6 @@
 package it.polimi.ingsw.view;
 
-import it.polimi.ingsw.controller2.ConnectionLayerClient;
-import it.polimi.ingsw.controller2.ViewInterface;
+import it.polimi.ingsw.controller2.ConnectionLayer.ConnectionLayerClient;
 
 public abstract class View implements ViewInterface {
     private final ConnectionLayerClient controller;

@@ -1,8 +1,7 @@
 package it.polimi.ingsw.lightModel.diffs;
 
 import it.polimi.ingsw.lightModel.LightCard;
-import it.polimi.ingsw.lightModel.LightGame;
-import it.polimi.ingsw.lightModel.diffs.GameDiff;
+import it.polimi.ingsw.lightModel.lightTableRelated.LightGame;
 
 public class GameDiffPublicObj extends GameDiff {
     private final LightCard[] publicObjective = new LightCard[2];

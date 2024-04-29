@@ -1,5 +1,8 @@
-package it.polimi.ingsw.controller2;
+package it.polimi.ingsw.controller2.ConnectionLayer;
 
+import it.polimi.ingsw.controller2.LogsFromServer;
+import it.polimi.ingsw.controller2.ServerModelController;
+import it.polimi.ingsw.view.ViewInterface;
 import it.polimi.ingsw.model.MultiGame;
 import it.polimi.ingsw.view.ViewState;
 

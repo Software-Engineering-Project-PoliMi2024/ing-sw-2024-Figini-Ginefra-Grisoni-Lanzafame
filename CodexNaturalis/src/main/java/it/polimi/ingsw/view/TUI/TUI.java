@@ -1,9 +1,11 @@
 package it.polimi.ingsw.view.TUI;
 
-import it.polimi.ingsw.controller2.ConnectionLayerClient;
+import it.polimi.ingsw.controller2.ConnectionLayer.ConnectionLayerClient;
 import it.polimi.ingsw.controller2.ControllerInterface;
-import it.polimi.ingsw.lightModel.*;
 import it.polimi.ingsw.lightModel.diffs.ModelDiffs;
+import it.polimi.ingsw.lightModel.lightTableRelated.LightGame;
+import it.polimi.ingsw.lightModel.lightTableRelated.LightLobby;
+import it.polimi.ingsw.lightModel.lightTableRelated.LightLobbyList;
 import it.polimi.ingsw.view.TUI.Renderables.*;
 import it.polimi.ingsw.view.TUI.States.StateTUI;
 import it.polimi.ingsw.view.TUI.inputs.CommandPrompt;

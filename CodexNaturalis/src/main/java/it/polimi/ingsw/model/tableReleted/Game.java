@@ -1,12 +1,9 @@
 package it.polimi.ingsw.model.tableReleted;
 
 
-import it.polimi.ingsw.lightModel.LightGame;
+import it.polimi.ingsw.lightModel.lightTableRelated.LightGame;
 import it.polimi.ingsw.lightModel.diffLists.DiffSubscriber;
 import it.polimi.ingsw.lightModel.diffLists.GameDiffPublisher;
-import it.polimi.ingsw.lightModel.diffLists.GameDiffPublisher;
-import it.polimi.ingsw.lightModel.diffs.GameDiff;
-import it.polimi.ingsw.lightModel.diffs.GameDiffPlayerActivity;
 import it.polimi.ingsw.model.cardReleted.cardFactories.GoldCardFactory;
 import it.polimi.ingsw.model.cardReleted.cardFactories.ObjectiveCardFactory;
 import it.polimi.ingsw.model.cardReleted.cardFactories.ResourceCardFactory;

@@ -1,6 +1,9 @@
 package it.polimi.ingsw.lightModel.diffs;
 
-import it.polimi.ingsw.lightModel.*;
+import it.polimi.ingsw.lightModel.lightPlayerRelated.LightCodex;
+import it.polimi.ingsw.lightModel.lightPlayerRelated.LightHandOthers;
+import it.polimi.ingsw.lightModel.lightTableRelated.LightDeck;
+import it.polimi.ingsw.lightModel.lightTableRelated.LightGame;
 import it.polimi.ingsw.model.cardReleted.utilityEnums.DrawableCard;
 
 import java.util.HashMap;

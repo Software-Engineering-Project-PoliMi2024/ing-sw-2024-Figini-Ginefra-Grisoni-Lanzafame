@@ -1,4 +1,6 @@
-package it.polimi.ingsw.lightModel;
+package it.polimi.ingsw.lightModel.lightTableRelated;
+
+import it.polimi.ingsw.lightModel.Differentiable;
 
 import java.util.ArrayList;
 import java.util.List;

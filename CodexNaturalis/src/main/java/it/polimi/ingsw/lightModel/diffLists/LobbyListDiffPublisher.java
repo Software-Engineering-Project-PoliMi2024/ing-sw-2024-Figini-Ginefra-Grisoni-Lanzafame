@@ -1,6 +1,6 @@
 package it.polimi.ingsw.lightModel.diffLists;
 
-import it.polimi.ingsw.lightModel.LightLobbyList;
+import it.polimi.ingsw.lightModel.lightTableRelated.LightLobbyList;
 import it.polimi.ingsw.lightModel.diffs.LobbyListDiff;
 
 import java.util.ArrayList;

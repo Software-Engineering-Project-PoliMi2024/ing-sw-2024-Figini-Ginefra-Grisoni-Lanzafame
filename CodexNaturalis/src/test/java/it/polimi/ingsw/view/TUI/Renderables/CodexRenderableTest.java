@@ -1,8 +1,8 @@
 package it.polimi.ingsw.view.TUI.Renderables;
 
 import it.polimi.ingsw.lightModel.LightCard;
-import it.polimi.ingsw.lightModel.LightCodex;
-import it.polimi.ingsw.lightModel.LightPlacement;
+import it.polimi.ingsw.lightModel.lightPlayerRelated.LightCodex;
+import it.polimi.ingsw.lightModel.lightPlayerRelated.LightPlacement;
 import it.polimi.ingsw.model.cardReleted.utilityEnums.CardFace;
 import it.polimi.ingsw.model.playerReleted.Position;
 import it.polimi.ingsw.view.TUI.cardDrawing.CardMuseum;

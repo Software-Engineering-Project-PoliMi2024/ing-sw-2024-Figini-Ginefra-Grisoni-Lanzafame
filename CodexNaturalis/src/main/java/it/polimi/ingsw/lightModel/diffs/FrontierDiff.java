@@ -1,6 +1,6 @@
 package it.polimi.ingsw.lightModel.diffs;
 
-import it.polimi.ingsw.lightModel.LightFrontier;
+import it.polimi.ingsw.lightModel.lightPlayerRelated.LightFrontier;
 import it.polimi.ingsw.model.playerReleted.Position;
 
 import java.util.List;

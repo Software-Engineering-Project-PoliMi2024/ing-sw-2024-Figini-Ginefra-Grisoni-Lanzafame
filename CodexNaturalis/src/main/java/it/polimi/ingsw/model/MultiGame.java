@@ -7,13 +7,13 @@ import it.polimi.ingsw.lightModel.diffLists.LobbyListDiffPublisher;
 import it.polimi.ingsw.model.playerReleted.User;
 import it.polimi.ingsw.model.tableReleted.Game;
 import it.polimi.ingsw.model.tableReleted.Lobby;
+import it.polimi.ingsw.model.tableReleted.LobbyList;
 
 import java.io.Serializable;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
-import java.util.stream.Collectors;
 
 public class MultiGame implements Serializable {
     private final LobbyListDiffPublisher lobbyListDiffPublisher;
