@@ -1,17 +1,20 @@
 package it.polimi.ingsw.view.TUI.Renderables;
 
 import it.polimi.ingsw.controller2.ControllerInterfaceClient;
+import it.polimi.ingsw.controller2.ViewInterface;
 import it.polimi.ingsw.view.TUI.inputs.CommandPrompt;
 import it.polimi.ingsw.view.TUI.inputs.CommandPromptResult;
 
 public class ConnectFormRenderable extends FormRenderable {
-    public ConnectFormRenderable(String name, CommandPrompt[] relatedCommands, ControllerInterfaceClient controller) {
+    private final ViewInterface view;
+    public ConnectFormRenderable(String name, ViewInterface view, CommandPrompt[] relatedCommands, ControllerInterfaceClient controller) {
         super(name, relatedCommands, controller);
+        this.view = view;
     }
 
     public void updateCommand(CommandPromptResult command){
         String ip = command.getAnswer(0);
         int port = Integer.parseInt(command.getAnswer(1));
-        controller.connect(ip, port);
+        controller.connect(ip, port, view);
     }
 }

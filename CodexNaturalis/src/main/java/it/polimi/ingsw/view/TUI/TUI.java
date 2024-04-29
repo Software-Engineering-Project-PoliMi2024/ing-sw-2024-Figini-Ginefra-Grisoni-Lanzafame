@@ -51,7 +51,7 @@ public class TUI extends View{
 
         commandDisplay.addCommandPrompt(CommandPrompt.CONNECT);
 
-        connectForm = new ConnectFormRenderable("Connect form", new CommandPrompt[]{CommandPrompt.CONNECT}, controller);
+        connectForm = new ConnectFormRenderable("Connect form", this, new CommandPrompt[]{CommandPrompt.CONNECT}, controller);
         StateTUI.SERVER_CONNECTION.attach(connectForm);
 
         loginForm = new LoginFormRenderable("Login Form", new CommandPrompt[]{CommandPrompt.DISPLAY_LOBBY, CommandPrompt.LOGIN}, controller);
