@@ -2,6 +2,8 @@ package it.polimi.ingsw.view.TUI;
 
 import it.polimi.ingsw.controller.Controller;
 import it.polimi.ingsw.controller.socket.SocketController;
+import it.polimi.ingsw.lightModel.*;
+import it.polimi.ingsw.lightModel.diffs.ModelDiffs;
 import it.polimi.ingsw.model.cardReleted.cards.GoldCard;
 import it.polimi.ingsw.model.cardReleted.cards.ObjectiveCard;
 import it.polimi.ingsw.model.cardReleted.cards.ResourceCard;
@@ -86,32 +88,27 @@ public class TUI extends View{
     }
 
     @Override
-    public void updateLobbyList(LobbyListDiff diff) {
-        gameListRenderable.update(diff);
-    }
-
-    @Override
-    public void setLobbyGame(Game game) {
+    public void updateGameList(ModelDiffs<LightLobby> diff) {
 
     }
 
     @Override
-    public void setStartCard(StartCard card) {
+    public void updateLobby(ModelDiffs<LightLobby> diff) {
 
     }
 
     @Override
-    public void updateResourceDeck(Deck<ResourceCard> deck) {
+    public void setStartCard(LightCard startCard) {
 
     }
 
     @Override
-    public void updateGoldDeck(Deck<GoldCard> deck) {
+    public void updateDecks(ModelDiffs<LightDeck> deck) {
 
     }
 
     @Override
-    public void setSecretObjectiveOptions(List<ObjectiveCard> objectiveCards) {
+    public void setSecretObjectiveOptions(List<LightCard> objectiveCards) {
 
     }
 
@@ -141,12 +138,12 @@ public class TUI extends View{
     }
 
     @Override
-    public void updateCodex(Codex codex) {
+    public void updateCodex(ModelDiffs<LightCodex> codex) {
 
     }
 
     @Override
-    public void updateHand(Hand hand) {
+    public void updateHand(ModelDiffs<LightHand> hand) {
 
     }
 
@@ -154,6 +151,7 @@ public class TUI extends View{
     public void setFinalRanking(String[] nicks, int[] points) {
 
     }
+
 
     private void updateCommands(){
         commandDisplay.clearCommandPrompts();
