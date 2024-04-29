@@ -691,11 +691,6 @@
             "points" : "3",
             "multiplierCollectable" : {"plant": 0, "animal" : 0, "fungi": 0, "insect": 0, "manuscript" : 0, "quill" : 2, "inkwell":0},
             "imgID": "102"
-        },
-        {
-            "points" : 2,
-            "multiplierD" : {"upwards": 0, "resource" :"INSECT"},
-            "imgID": "90"
         }
     ]
 }
