@@ -58,7 +58,7 @@ public class TUI extends View{
         StateTUI.LOGIN_FORM.attach(loginForm);
 
         gameList = new GameListRenderable("Game List", new CommandPrompt[]{CommandPrompt.DISPLAY_GAME_LIST, CommandPrompt.JOIN_GAME}, controller);
-        StateTUI.JOIN_GAME.attach(gameList);
+        StateTUI.JOIN_LOBBY.attach(gameList);
 
         renderables = new Renderable[]{commandDisplay, connectForm, loginForm};
 
