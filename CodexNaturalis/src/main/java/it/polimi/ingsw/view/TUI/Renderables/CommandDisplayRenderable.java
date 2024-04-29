@@ -16,27 +16,13 @@ public class CommandDisplayRenderable extends Renderable{
         this.activePrompts = new LinkedHashMap<>();
     }
 
-    private void printSeparator(int width){
-        System.out.println(PromptStyle.HorizontalSeparator.repeat(width));
-    }
 
-    private void printBetweenSeparators(String text, int width){
-        System.out.print(PromptStyle.VerticalSeparator);
-        System.out.print(new PaddedString(text, width, TextAlign.CENTER));
-        System.out.println(PromptStyle.VerticalSeparator);
-    }
-
-    private void printInABox(String text, int width){
-        printSeparator(width+2);
-        printBetweenSeparators(text, width);
-        printSeparator(width+2);
-    }
 
     @Override
     public void render() {
         System.out.println(PromptStyle.HorizontalDoubleSeparator.repeat(52));
 
-        printBetweenSeparators("Active commands", 50);
+        PromptStyle.printBetweenSeparators("Active commands", 50);
 
         System.out.println(PromptStyle.HorizontalDoubleSeparator.repeat(52));
 
@@ -47,10 +33,10 @@ public class CommandDisplayRenderable extends Renderable{
 
             String CommandNumber = new DecoratedString("[" + i + "]", StringStyle.BOLD).toString();
 
-            printBetweenSeparators(CommandNumber, 50);
-            printBetweenSeparators(CommandLabel, 50);
+            PromptStyle.printBetweenSeparators(CommandNumber, 50);
+            PromptStyle.printBetweenSeparators(CommandLabel, 50);
 
-            printSeparator(52);
+            PromptStyle.printSeparator(52);
         }
 
         System.out.println("What do you want to do ❔");
@@ -83,14 +69,14 @@ public class CommandDisplayRenderable extends Renderable{
             this.currentPrompt = getPromptAtIndex(index);
 
 
-            this.printInABox("You selected " + new DecoratedString(currentPrompt.getCommandName(), StringStyle.UNDERLINE).toString(), 50);
+            PromptStyle.printInABox("You selected " + new DecoratedString(currentPrompt.getCommandName(), StringStyle.UNDERLINE).toString(), 50);
 
             if(currentPrompt.hasNext()) {
                 System.out.println(currentPrompt.next());
                 System.out.print("\t");
             }
             else{
-                this.printInABox(new DecoratedString(currentPrompt.getCommandName(), StringStyle.UNDERLINE).toString() + " completed", 50);
+                PromptStyle.printInABox(new DecoratedString(currentPrompt.getCommandName(), StringStyle.UNDERLINE).toString() + " completed", 50);
                 currentPrompt.notifyObservers();
                 currentPrompt.reset();
                 currentPrompt = null;
@@ -104,7 +90,7 @@ public class CommandDisplayRenderable extends Renderable{
                     System.out.print("\t");
                 }
                 else{
-                    this.printInABox(new DecoratedString(currentPrompt.getCommandName(), StringStyle.UNDERLINE).toString() + " completed", 50);
+                    PromptStyle.printInABox(new DecoratedString(currentPrompt.getCommandName(), StringStyle.UNDERLINE).toString() + " completed", 50);
                     currentPrompt.notifyObservers();
                     currentPrompt.reset();
                     currentPrompt = null;
