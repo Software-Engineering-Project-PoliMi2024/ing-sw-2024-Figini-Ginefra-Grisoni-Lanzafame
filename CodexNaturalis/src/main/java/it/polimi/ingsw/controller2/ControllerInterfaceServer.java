@@ -15,7 +15,7 @@ public interface ControllerInterfaceServer {
     void joinLobby(String lobbyName, DiffSubscriber diffSubscriber);
     void disconnect();
     void leaveLobby(DiffSubscriber diffSubscriber);
-    void joinGame(Game game);
+    void joinGame(Game game, DiffSubscriber diffSubscriber, LogsFromServer log);
     void leaveGame();
     void selectStartCardFace(LightCard card, CardFace cardFace);
     void choseSecretObjective(LightCard objectiveCard);
