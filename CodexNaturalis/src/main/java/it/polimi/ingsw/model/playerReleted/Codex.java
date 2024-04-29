@@ -1,5 +1,6 @@
 package it.polimi.ingsw.model.playerReleted;
 
+import it.polimi.ingsw.model.cardReleted.cards.CardWithCorners;
 import it.polimi.ingsw.model.cardReleted.cards.ObjectiveCard;
 import it.polimi.ingsw.model.cardReleted.utilityEnums.*;
 
@@ -143,7 +144,6 @@ public class Codex implements Serializable {
         this.frontier.updateFrontier(this, placement.position());
         updateCodexConsequences(placement);
     }
-
     public void pointsFromObjective(ObjectiveCard card){
         this.points += card.getPoints(this);
     }

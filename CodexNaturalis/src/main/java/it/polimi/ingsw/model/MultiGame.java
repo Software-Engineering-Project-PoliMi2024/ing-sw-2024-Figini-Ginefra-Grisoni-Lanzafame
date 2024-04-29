@@ -1,5 +1,8 @@
 package it.polimi.ingsw.model;
 
+import it.polimi.ingsw.lightModel.diffLists.DiffPublisher;
+import it.polimi.ingsw.lightModel.diffLists.DiffSubscriber;
+import it.polimi.ingsw.lightModel.diffLists.LobbyListDiffPublisher;
 import it.polimi.ingsw.model.tableReleted.Game;
 import it.polimi.ingsw.model.tableReleted.Lobby;
 
@@ -8,6 +11,7 @@ import java.util.HashSet;
 import java.util.Set;
 
 public class MultiGame implements Serializable {
+    private final LobbyListDiffPublisher lobbyListDiffPublisher;
     private final Set<Game> games;
     private final Set<Lobby> lobbies;
     private final Set<String> usernames;
@@ -17,6 +21,7 @@ public class MultiGame implements Serializable {
         //usernames
         this.usernames = new HashSet<>(); //user that are connected to the server
         this.lobbies = new HashSet<>();
+        this.lobbyListDiffPublisher = new LobbyListDiffPublisher();
     }
 
     public synchronized Set<Game> getGames() {
@@ -68,7 +73,6 @@ public class MultiGame implements Serializable {
             usernames.remove(username);
         }
     }
-
     /**
      * @return an array of String of each game's name
      */
@@ -78,7 +82,12 @@ public class MultiGame implements Serializable {
     public synchronized String[] getLobbyNames() {
         return lobbies.stream().map(Lobby::getLobbyName).toArray(String[]::new);
     }
-
+    public void subscribe(DiffSubscriber diffSubscriber) {
+        lobbyListDiffPublisher.subscribe(diffSubscriber);
+    }
+    public void unsubscribe(DiffSubscriber diffSubscriber) {
+        lobbyListDiffPublisher.unsubscribe(diffSubscriber);
+    }
     @Override
     public String toString() {
         return "MultiGame{" +

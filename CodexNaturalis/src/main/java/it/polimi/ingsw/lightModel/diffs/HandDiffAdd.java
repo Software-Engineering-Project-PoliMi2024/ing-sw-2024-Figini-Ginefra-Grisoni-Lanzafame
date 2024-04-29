@@ -1,6 +1,7 @@
 package it.polimi.ingsw.lightModel.diffs;
 
 import it.polimi.ingsw.lightModel.LightCard;
+import it.polimi.ingsw.lightModel.LightGame;
 import it.polimi.ingsw.lightModel.LightHand;
 
 public class HandDiffAdd extends HandDiff {
@@ -20,9 +21,9 @@ public class HandDiffAdd extends HandDiff {
         return playability;
     }
     /**
-     * @param hand the LightHand to which the diff applies
+     * @param game from which get the LightHand to which the diff applies
      */
-    public void apply(LightHand hand) {
-        hand.addCard(super.card, this.playability);
+    public void apply(LightGame game) {
+        game.addCard(super.card, this.playability);
     }
 }

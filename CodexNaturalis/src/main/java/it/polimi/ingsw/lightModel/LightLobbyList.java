@@ -7,7 +7,7 @@ import java.util.List;
  * This class is a container for the list of lobbies.
  */
 public class LightLobbyList implements Differentiable{
-    private List<LightLobby> lobbies;
+    private final List<LightLobby> lobbies;
     /**
      * Creates a LightLobbyList object.
      */

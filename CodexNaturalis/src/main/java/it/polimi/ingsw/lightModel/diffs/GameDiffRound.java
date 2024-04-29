@@ -1,10 +1,11 @@
 package it.polimi.ingsw.lightModel.diffs;
 
 import it.polimi.ingsw.lightModel.LightGame;
+import it.polimi.ingsw.lightModel.LightGameParty;
 
-public class GameDiffGameRound extends GameDiff{
+public class GameDiffRound extends GamePartyDiff {
     private final String currentPlayer;
-    public GameDiffGameRound(String currentPlayer) {
+    public GameDiffRound(String currentPlayer) {
         this.currentPlayer = currentPlayer;
     }
     @Override

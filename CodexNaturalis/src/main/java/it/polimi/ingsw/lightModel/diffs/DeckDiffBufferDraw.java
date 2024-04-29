@@ -8,12 +8,10 @@ public class DeckDiffBufferDraw extends DeckDiff{
     private final LightCard card;
     private final Integer position;
     /**
-     * @param deck the deck where the card is drawn
      * @param card the card drawn from the buffer
      * @param position the position in the buffer where the card is drawn
      */
-    DeckDiffBufferDraw(DrawableCard deck, LightCard card, Integer position) {
-        super(deck);
+    DeckDiffBufferDraw(LightCard card, Integer position) {
         this.card = card;
         this.position = position;
     }
@@ -21,10 +19,6 @@ public class DeckDiffBufferDraw extends DeckDiff{
      * @param lightDeck the deck to which the diff is applied
      */
     public void apply(LightDeck lightDeck) {
-        if(super.deck == DrawableCard.GOLDCARD) {
-            lightDeck.substituteGoldBufferCard(card, position);
-        }else if(super.deck == DrawableCard.RESOURCECARD){
-            lightDeck.substituteResourceBufferCard(card, position);
-        }
+            lightDeck.substituteBufferCard(card, position);
     }
 }
