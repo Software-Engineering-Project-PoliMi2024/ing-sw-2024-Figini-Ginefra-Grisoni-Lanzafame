@@ -5,6 +5,8 @@ import it.polimi.ingsw.lightModel.LightLobbyList;
 import it.polimi.ingsw.view.TUI.inputs.CommandPrompt;
 import it.polimi.ingsw.view.TUI.inputs.CommandPromptResult;
 
+import java.util.Objects;
+
 public class GameListRenderable extends Renderable {
     private final LightLobbyList lightLobbyList;
 
@@ -33,8 +35,7 @@ public class GameListRenderable extends Renderable {
                 this.render();
                 break;
             case CommandPrompt.JOIN_GAME:
-                int lobbyIndex = Integer.parseInt(answer.getAnswer(0));
-                controller.joinLobby(lightLobbyList.getLobbies().get(lobbyIndex).name());
+                controller.joinLobby(answer.getAnswer(0));
                 break;
             case CommandPrompt.CREATE_GAME:
                 String lobbyName = answer.getAnswer(0);
