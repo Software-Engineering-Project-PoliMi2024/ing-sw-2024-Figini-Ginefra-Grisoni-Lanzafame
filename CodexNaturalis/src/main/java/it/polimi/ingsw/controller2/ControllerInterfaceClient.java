@@ -6,6 +6,7 @@ import it.polimi.ingsw.lightModel.LightCard;
 import it.polimi.ingsw.lightModel.LightPlacement;
 
 public interface ControllerInterfaceClient {
+    void connect(String ip, int port);
     void login(String nickname);
     void getActiveLobbyList();
     void createLobby(String gameName, int maxPlayerCount);
