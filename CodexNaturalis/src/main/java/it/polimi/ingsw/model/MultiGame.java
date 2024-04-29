@@ -1,5 +1,6 @@
 package it.polimi.ingsw.model;
 
+import it.polimi.ingsw.lightModel.Lightifier;
 import it.polimi.ingsw.lightModel.diffLists.DiffPublisher;
 import it.polimi.ingsw.lightModel.diffLists.DiffSubscriber;
 import it.polimi.ingsw.lightModel.diffLists.LobbyListDiffPublisher;
@@ -13,15 +14,14 @@ import java.util.Set;
 public class MultiGame implements Serializable {
     private final LobbyListDiffPublisher lobbyListDiffPublisher;
     private final Set<Game> games;
-    private final Set<Lobby> lobbies;
+    private final LobbyList lobbies;
     private final Set<String> usernames;
-
     public MultiGame() {
         this.games = new HashSet<>();
         //usernames
         this.usernames = new HashSet<>(); //user that are connected to the server
-        this.lobbies = new HashSet<>();
-        this.lobbyListDiffPublisher = new LobbyListDiffPublisher();
+        this.lobbies = new LobbyList();
+        this.lobbyListDiffPublisher = new LobbyListDiffPublisher(Lightifier.lightify(lobbies));
     }
 
     public synchronized Set<Game> getGames() {
@@ -55,17 +55,17 @@ public class MultiGame implements Serializable {
         if (getGame(lobby.getLobbyName()) != null) {
             return false;
         } else
-            return lobbies.add(lobby);
+            return lobbies.addLobby(lobby);
     }
     public synchronized void removeLobby(Lobby lobby) {
         lobbies.remove(lobby);
     }
     public synchronized Lobby getLobby(String name) {
-        return lobbies.stream().filter(lobby -> lobby.getLobbyName().equals(name)).findFirst().orElse(null);
+        return lobbies.getLobbies().stream().filter(lobby -> lobby.getLobbyName().equals(name)).findFirst().orElse(null);
     }
 
     public synchronized Set<Lobby> getLobbies() {
-        return lobbies;
+        return lobbies.getLobbies();
     }
 
     public void removeUser(String username) {
@@ -80,7 +80,7 @@ public class MultiGame implements Serializable {
         return games.stream().map(Game::getName).toArray(String[]::new);
     }
     public synchronized String[] getLobbyNames() {
-        return lobbies.stream().map(Lobby::getLobbyName).toArray(String[]::new);
+        return lobbies.getLobbies().stream().map(Lobby::getLobbyName).toArray(String[]::new);
     }
     public void subscribe(DiffSubscriber diffSubscriber) {
         lobbyListDiffPublisher.subscribe(diffSubscriber);

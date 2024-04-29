@@ -1,6 +1,9 @@
 package it.polimi.ingsw.model.tableReleted;
 
 
+import it.polimi.ingsw.lightModel.diffLists.GameDiffPublisher;
+import it.polimi.ingsw.lightModel.diffs.GameDiff;
+import it.polimi.ingsw.lightModel.diffs.GameDiffPlayerActivity;
 import it.polimi.ingsw.model.cardReleted.cardFactories.GoldCardFactory;
 import it.polimi.ingsw.model.cardReleted.cardFactories.ObjectiveCardFactory;
 import it.polimi.ingsw.model.cardReleted.cardFactories.ResourceCardFactory;
@@ -33,7 +36,7 @@ public class Game implements Serializable {
      */
     public Game(Lobby lobby) {
         this.name = lobby.getLobbyName();
-        this.gameParty = new GameParty(lobby.getLobbyList().stream().toList());
+        this.gameParty = new GameParty(lobby.getLobbyPlayerList().stream().toList());
         String filePath = "./cards/";
         String sourceFileName = "cards.json";
         objectiveCardDeck =

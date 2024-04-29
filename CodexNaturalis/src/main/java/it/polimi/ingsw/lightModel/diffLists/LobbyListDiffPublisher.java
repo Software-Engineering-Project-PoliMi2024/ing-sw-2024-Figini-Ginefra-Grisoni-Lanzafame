@@ -1,6 +1,9 @@
 package it.polimi.ingsw.lightModel.diffLists;
 
+import it.polimi.ingsw.lightModel.LightLobbyList;
 import it.polimi.ingsw.lightModel.diffs.LobbyListDiff;
+import it.polimi.ingsw.lightModel.Lightifier;
+import it.polimi.ingsw.model.LobbyList;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -8,10 +11,11 @@ import java.util.List;
 public class LobbyListDiffPublisher implements DiffPublisher {
     private final List<DiffSubscriber> diffSubscribers;
     private final LobbyListDiff lobbyListDiff;
-
-    public LobbyListDiffPublisher() {
+    private final LightLobbyList lobbyList;
+    public LobbyListDiffPublisher(LightLobbyList lobbyList) {
         this.diffSubscribers = new ArrayList<>();
         this.lobbyListDiff = new LobbyListDiff(new ArrayList<>(), new ArrayList<>());
+        this.lobbyList = lobbyList;
     }
     @Override
     public void subscribe(DiffSubscriber diffSubscriber) {
@@ -19,7 +23,7 @@ public class LobbyListDiffPublisher implements DiffPublisher {
             diffSubscribers.add(diffSubscriber);
         }
         synchronized (lobbyListDiff){
-            this.notifySubscriber(diffSubscriber, new LobbyListDiff(new ArrayList<>(diffSubscriber.getLobbyList().getLobbies()),new ArrayList<>()));
+            this.notifySubscriber(diffSubscriber, new LobbyListDiff(new ArrayList<>(lobbyList.getLobbies()),new ArrayList<>()));
         }
     }
 

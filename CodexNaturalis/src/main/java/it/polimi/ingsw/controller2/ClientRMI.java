@@ -4,10 +4,11 @@ import it.polimi.ingsw.lightModel.LightCard;
 import it.polimi.ingsw.lightModel.LightPlacement;
 import it.polimi.ingsw.model.cardReleted.utilityEnums.CardFace;
 import it.polimi.ingsw.model.cardReleted.utilityEnums.DrawableCard;
+import it.polimi.ingsw.view.View;
 
 public class ClientRMI implements ControllerInterfaceClient{
     @Override
-    public void connect(String ip, int port) {
+    public void connect(String ip, int port, View view) {
 
     }
 
@@ -26,7 +27,7 @@ public class ClientRMI implements ControllerInterfaceClient{
     }
 
     @Override
-    public void joinLobby(String lobbyName, String nickname) {
+    public void joinLobby(String lobbyName) {
 
     }
 

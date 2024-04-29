@@ -2,18 +2,22 @@ package it.polimi.ingsw.lightModel.diffLists;
 
 import it.polimi.ingsw.lightModel.LightCard;
 import it.polimi.ingsw.lightModel.LightCodex;
+import it.polimi.ingsw.lightModel.LightGame;
 import it.polimi.ingsw.lightModel.LightHandOthers;
 import it.polimi.ingsw.lightModel.diffs.*;
 import it.polimi.ingsw.model.cardReleted.utilityEnums.Resource;
+import it.polimi.ingsw.model.tableReleted.Game;
 
 import java.util.*;
 
 public class GameDiffPublisher implements DiffPublisher{
-    public final Map<String, List<GameDiff>> gameDiffMap;
-    public final List<DiffSubscriber> activeSubscribers;
-    public GameDiffPublisher() {
+    private final Map<String, List<GameDiff>> gameDiffMap;
+    private final List<DiffSubscriber> activeSubscribers;
+    private final LightGame lightGame;
+    public GameDiffPublisher(LightGame lightGame) {
         this.gameDiffMap = new HashMap<>();
         this.activeSubscribers = new ArrayList<>();
+        this.lightGame = lightGame;
     }
 
     @Override
@@ -50,16 +54,16 @@ public class GameDiffPublisher implements DiffPublisher{
 
     private NewGameDiff newGameDiffAdder(DiffSubscriber diffSubscriber){
         return new NewGameDiff(
-                diffSubscriber.getTableName(),
-                diffSubscriber.getGamePlayerList(),
-                diffSubscriber.getCurrentPlayer(),
-                diffSubscriber.getDeckMap()
+                lightGame.getLightGameParty().getGameName(),
+                lightGame.getLightGameParty().getPlayerActiveList(),
+                lightGame.getLightGameParty().getCurrentPlayer(),
+                lightGame.getDecks()
         );
     }
     private List<CodexDiff> getCodexCurrentState(DiffSubscriber diffSubscriber){
         List<CodexDiff> codexDiff = new ArrayList<>();
         for(String nickname : gameDiffMap.keySet()){
-            LightCodex codex = diffSubscriber.getCodex(nickname);
+            LightCodex codex = lightGame.getCodexMap().get(nickname);
             codexDiff.add(new CodexDiff(
                     nickname,
                     codex.getPoints(),
@@ -74,16 +78,16 @@ public class GameDiffPublisher implements DiffPublisher{
     }
     private List<HandDiff> getHandCurrentState(DiffSubscriber diffSubscriber){
         List<HandDiff> handDiffAdd = new ArrayList<>();
-        for(LightCard card : diffSubscriber.getYourHand().getCards()){
-            handDiffAdd.add(new HandDiffAdd(card, diffSubscriber.getYourHand().isPlayble(card)));
+        for(LightCard card : lightGame.getHand().getCards()){
+            handDiffAdd.add(new HandDiffAdd(card, lightGame.getHand().isPlayble(card)));
         }
-        handDiffAdd.add(new HandDiffSetObj(diffSubscriber.getSecretObjective()));
+        handDiffAdd.add(new HandDiffSetObj(lightGame.getHand().getSecretObjective()));
         return handDiffAdd;
     }
     private List<HandOtherDiff> getHandOtherCurrentState(DiffSubscriber diffSubscriber){
         List<HandOtherDiff> handOtherDiff = new ArrayList<>();
         for(String nickname : gameDiffMap.keySet()){
-            LightHandOthers otherHand = diffSubscriber.getHandOthers(nickname);
+            LightHandOthers otherHand = lightGame.getHandOthers().get(nickname);
             for(Resource card : otherHand.getCards()){
                 handOtherDiff.add(new HandOtherDiffAdd(card, nickname));
             }
@@ -91,7 +95,7 @@ public class GameDiffPublisher implements DiffPublisher{
         return handOtherDiff;
     }
     private GameDiffPublicObj getPublicObjectiveCurrentState(DiffSubscriber diffSubscriber){
-        return new GameDiffPublicObj(diffSubscriber.getPublicObjective()[0], diffSubscriber.getPublicObjective()[1]);
+        return new GameDiffPublicObj(lightGame.getPublicObjective());
 
     }
     private List<GameDiff> getTotalCurrentState(DiffSubscriber diffSubscriber){

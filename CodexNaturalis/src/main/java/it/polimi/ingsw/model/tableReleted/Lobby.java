@@ -58,9 +58,6 @@ public class Lobby {
     public String getLobbyName() {
         return lobbyName;
     }
-    public List<String> getLobbyList() {
-        return lobbyPlayerList;
-    }
     @Override
     public boolean equals(Object obj){
             return obj instanceof Lobby && ((Lobby) obj).lobbyName.equals(lobbyName);

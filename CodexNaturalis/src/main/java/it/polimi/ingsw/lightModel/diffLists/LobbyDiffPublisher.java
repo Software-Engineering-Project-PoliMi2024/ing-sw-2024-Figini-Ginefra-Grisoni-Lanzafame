@@ -14,7 +14,7 @@ public class LobbyDiffPublisher implements DiffPublisher{
     public LobbyDiffPublisher() {
         this.lobbyDiffMap = new HashMap<>();
     }
-/**
+    /**
      * @param diffSubscriber the subscriber of the user that joins the lobby
      */
     @Override

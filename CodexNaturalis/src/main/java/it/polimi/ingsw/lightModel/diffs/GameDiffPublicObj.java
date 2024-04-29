@@ -7,9 +7,9 @@ import it.polimi.ingsw.lightModel.diffs.GameDiff;
 public class GameDiffPublicObj extends GameDiff {
     private final LightCard[] publicObjective = new LightCard[2];
 
-    public GameDiffPublicObj(LightCard publicObjective1, LightCard publicObjective2){
-        publicObjective[0] = publicObjective1;
-        publicObjective[1] = publicObjective2;
+    public GameDiffPublicObj(LightCard[] cards){
+        publicObjective[0] = cards[0];
+        publicObjective[1] = cards[1];
     }
     @Override
     public void apply(LightGame differentiableType) {

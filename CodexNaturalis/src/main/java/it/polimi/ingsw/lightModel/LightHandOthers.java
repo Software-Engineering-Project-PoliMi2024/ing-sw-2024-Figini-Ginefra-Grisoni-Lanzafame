@@ -2,7 +2,7 @@ package it.polimi.ingsw.lightModel;
 
 import it.polimi.ingsw.model.cardReleted.utilityEnums.Resource;
 
-public class LightHandOthers {
+public class LightHandOthers implements Differentiable {
     private final Resource[] cards;
     public LightHandOthers(){
         cards = new Resource[3];

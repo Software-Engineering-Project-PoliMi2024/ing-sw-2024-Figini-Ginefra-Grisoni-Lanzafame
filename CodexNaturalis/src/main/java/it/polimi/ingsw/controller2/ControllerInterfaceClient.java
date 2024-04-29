@@ -4,13 +4,14 @@ import it.polimi.ingsw.model.cardReleted.utilityEnums.CardFace;
 import it.polimi.ingsw.model.cardReleted.utilityEnums.DrawableCard;
 import it.polimi.ingsw.lightModel.LightCard;
 import it.polimi.ingsw.lightModel.LightPlacement;
+import it.polimi.ingsw.view.View;
 
 public interface ControllerInterfaceClient {
-    void connect(String ip, int port);
+    void connect(String ip, int port, View view);
     void login(String nickname);
     void getActiveLobbyList();
     void createLobby(String gameName, int maxPlayerCount);
-    void joinLobby(String lobbyName, String nickname);
+    void joinLobby(String lobbyName);
     void disconnect();
     void leaveLobby();
     void selectStartCardFace(LightCard card, CardFace cardFace);

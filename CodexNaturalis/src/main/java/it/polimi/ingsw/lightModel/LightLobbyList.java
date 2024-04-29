@@ -14,6 +14,9 @@ public class LightLobbyList implements Differentiable{
     public LightLobbyList() {
         this.lobbies = new ArrayList<>();
     }
+    public LightLobbyList(List<LightLobby> lobbies){
+        this.lobbies = lobbies;
+    }
     /**
      * Returns the list of lobbies.
      * @return the list of lobbies
