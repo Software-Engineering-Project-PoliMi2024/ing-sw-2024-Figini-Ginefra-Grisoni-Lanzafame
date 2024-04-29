@@ -1,40 +1,17 @@
 package it.polimi.ingsw.view.TUI.Renderables;
 
-public class ConnectFormRenderable extends Renderable {
-    private String ip = "";
-    private String port = "";
-    private String nickname = "";
+import it.polimi.ingsw.controller2.ControllerInterfaceClient;
+import it.polimi.ingsw.view.TUI.inputs.CommandPrompt;
+import it.polimi.ingsw.view.TUI.inputs.CommandPromptResult;
 
-    public ConnectFormRenderable() {
-        super(null);
+public class ConnectFormRenderable extends FormRenderable {
+    public ConnectFormRenderable(String name, CommandPrompt[] relatedCommands, ControllerInterfaceClient controller) {
+        super(name, relatedCommands, controller);
     }
 
-    @Override
-    public void render() {
-        if (ip.isEmpty()) {
-            System.out.println("Please enter server IP:");
-        } else if (port.isEmpty()) {
-            System.out.println("Please enter server port:");
-        } else if (nickname.isEmpty()) {
-            System.out.println("Please enter your nickname:");
-        }
+    public void updateCommand(CommandPromptResult command){
+        String ip = command.getAnswer(0);
+        int port = Integer.parseInt(command.getAnswer(1));
+        controller.connect(ip, port);
     }
-
-    @Override
-    public void update() {
-        // re-render or clear the field
-        render();
-    }
-
-    @Override
-    public void updateInput(String input) {
-        if (ip.isEmpty()) {
-            ip = input;
-        } else if (port.isEmpty()) {
-            port = input;
-        } else if (nickname.isEmpty()) {
-            nickname = input;
-        }
-    }
-
 }

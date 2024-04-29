@@ -11,6 +11,29 @@ import java.util.function.Predicate;
 
 public enum CommandPrompt implements Iterator<String>, CommandObserved {
     ECHO("echo", new String[]{"What do you want to echo?"}, new Predicate[]{s -> true}),
+    CONNECT("connect",
+            new String[]{
+                    "What's the server IP?",
+                    "What's the server port?",
+            },
+            new Predicate[]{
+                    s -> true,
+                    s -> {
+                        try {
+                            int i = Integer.parseInt(s.toString());
+                            return i > 0 && i < 65536;
+                        } catch (NumberFormatException e) {
+                            return false;
+                        }
+                    }
+            }),
+    LOGIN("login",
+            new String[]{
+                    "What's your username?",
+            },
+            new Predicate[]{
+                    s -> true,
+            }),
     CREATE_GAME("create game",
             new String[]{
                     "What's the name of the game?",
@@ -34,7 +57,15 @@ public enum CommandPrompt implements Iterator<String>, CommandObserved {
             },
             new Predicate[]{
                     s -> true,
-            });
+            }),
+
+    DISPLAY_GAME_LIST("display game list",
+            new String[]{},
+            new Predicate[]{}),
+
+    DISPLAY_LOBBY("display lobby",
+            new String[]{},
+            new Predicate[]{});
 
     private final String[] questions;
     private final Predicate<String>[] validators;

@@ -1,5 +1,6 @@
 package it.polimi.ingsw.view.TUI.Renderables;
 
+import it.polimi.ingsw.controller2.ControllerInterfaceClient;
 import it.polimi.ingsw.view.TUI.inputs.CommandPrompt;
 import it.polimi.ingsw.view.TUI.inputs.CommandPromptResult;
 
@@ -10,8 +11,8 @@ public class CommandDisplayRenderable extends Renderable{
 
     CommandPrompt currentPrompt;
 
-    public CommandDisplayRenderable(CommandPrompt[] relatedCommands) {
-        super(relatedCommands);
+    public CommandDisplayRenderable(String name, CommandPrompt[] relatedCommands, ControllerInterfaceClient controller) {
+        super(name, relatedCommands, controller);
         this.activePrompts = new LinkedHashMap<>();
     }
 
@@ -26,10 +27,6 @@ public class CommandDisplayRenderable extends Renderable{
         System.out.println("What do you want to do ❔");
     }
 
-    @Override
-    public void update() {
-        // Do nothing
-    }
 
     private CommandPrompt getPromptAtIndex(int index){
         return (CommandPrompt) activePrompts.keySet().toArray()[index];

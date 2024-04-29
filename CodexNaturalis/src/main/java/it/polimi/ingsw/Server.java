@@ -14,6 +14,7 @@ public class Server {
 
     public static void main(String[] args) {
         System.out.println("SERVER STARTED! 🚀🚀🚀");
+
         MultiGame multiGame = new MultiGame();
         Registry registry;
         int port = 1234;

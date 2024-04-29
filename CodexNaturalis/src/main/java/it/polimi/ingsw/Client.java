@@ -50,7 +50,7 @@ public class Client {
 
         if (choice == 0) {
             System.out.println("You chose the textual interface!");
-            view = new TUI(controller);
+            view = new TUI(null);
         } else{
             System.out.println("You chose the graphical interface!");
             view = null;
@@ -59,7 +59,6 @@ public class Client {
         System.out.println("Please enter your nickname(This will be done by the view_Connect_From):");
         String nickname = scanner.next();
         System.out.println("Great choice! Let's PLAY! 🎉🎉🎉");
-
         controller.connect("0.0.0.0", port, nickname, view, controller);
     }
 }

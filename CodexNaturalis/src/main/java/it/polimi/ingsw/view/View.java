@@ -1,6 +1,7 @@
 package it.polimi.ingsw.view;
 
 import it.polimi.ingsw.controller.Controller;
+import it.polimi.ingsw.controller2.ControllerInterfaceClient;
 import it.polimi.ingsw.controller2.ViewInterface;
 import it.polimi.ingsw.model.cardReleted.cards.GoldCard;
 import it.polimi.ingsw.model.cardReleted.cards.ObjectiveCard;
@@ -15,18 +16,18 @@ import it.polimi.ingsw.model.tableReleted.Game;
 import java.util.List;
 
 public abstract class View implements ViewInterface {
-    private final Controller controller;
+    private final ControllerInterfaceClient controller;
 
     private ViewState currentState = null;
 
-    public View(Controller controller){
+    public View(ControllerInterfaceClient controller){
 
         this.controller = controller;
     }
 
     public void run(){}
 
-    public Controller getController(){
+    public ControllerInterfaceClient getController(){
         return this.controller;
     }
 

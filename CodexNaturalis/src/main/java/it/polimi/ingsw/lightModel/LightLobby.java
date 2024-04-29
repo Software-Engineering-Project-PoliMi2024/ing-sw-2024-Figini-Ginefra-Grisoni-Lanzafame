@@ -1,5 +1,6 @@
 package it.polimi.ingsw.lightModel;
 
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -8,11 +9,9 @@ import java.util.List;
 public record LightLobby(List<String> nicknames, String name) implements Differentiable {
     /**
      * Creates a LightLobby object.
-     *
-     * @param nicknames the list of nicknames
-     * @param name      the name of the lobby
      */
-    public LightLobby {
+    public LightLobby (){
+        this(new ArrayList<>(), "");
     }
     /**
      * @return the list of nicknames

@@ -1,14 +1,16 @@
 package it.polimi.ingsw.view.TUI.Renderables;
 
+import it.polimi.ingsw.controller2.ControllerInterfaceClient;
 import it.polimi.ingsw.lightModel.LightLobbyList;
 import it.polimi.ingsw.lightModel.diffs.LobbyListDiff;
 import it.polimi.ingsw.view.TUI.inputs.CommandPrompt;
+import it.polimi.ingsw.view.TUI.inputs.CommandPromptResult;
 
 public class GameListRenderable extends Renderable {
     private final LightLobbyList lightLobbyList;
 
-    public GameListRenderable(CommandPrompt[] relatedCommands) {
-        super(relatedCommands);
+    public GameListRenderable(String name, CommandPrompt[] relatedCommands, ControllerInterfaceClient controller) {
+        super(name, relatedCommands, controller);
         this.lightLobbyList = new LightLobbyList();
     }
 
@@ -26,13 +28,22 @@ public class GameListRenderable extends Renderable {
         }
     }
 
-    public void update(LobbyListDiff diff) {
-        diff.apply(lightLobbyList);
-        render();
-    }
-
-    public void updateCommand(CommandPrompt commandPrompt) {
-        //Send Stuff to Controller
-        System.out.println("Sending stuff to controller");
+    public void updateCommand(CommandPromptResult answer) {
+        switch (answer.getCommand()) {
+            case CommandPrompt.DISPLAY_GAME_LIST:
+                this.render();
+                break;
+            case CommandPrompt.JOIN_GAME:
+                int lobbyIndex = Integer.parseInt(answer.getAnswer(0));
+                controller.joinLobby(lightLobbyList.getLobbies().get(lobbyIndex).name());
+                break;
+            case CommandPrompt.CREATE_GAME:
+                String lobbyName = answer.getAnswer(0);
+                int maxPlayers = Integer.parseInt(answer.getAnswer(1));
+                controller.createLobby(lobbyName, maxPlayers);
+                break;
+            default:
+                break;
+        }
     }
 }

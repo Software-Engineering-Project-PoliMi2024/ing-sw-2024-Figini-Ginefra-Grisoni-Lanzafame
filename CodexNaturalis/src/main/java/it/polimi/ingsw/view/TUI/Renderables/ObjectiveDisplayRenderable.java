@@ -1,14 +1,17 @@
 package it.polimi.ingsw.view.TUI.Renderables;
 
+import it.polimi.ingsw.controller2.ControllerInterfaceClient;
 import it.polimi.ingsw.model.cardReleted.cards.ObjectiveCard;
+import it.polimi.ingsw.view.TUI.inputs.CommandPrompt;
+
 import java.util.List;
 
 public class ObjectiveDisplayRenderable extends Renderable {
     private final List<ObjectiveCard> objectiveCards;
     private String choseSecretObjective = "";
 
-    public ObjectiveDisplayRenderable(List<ObjectiveCard> objectiveCards) {
-        super(null);
+    public ObjectiveDisplayRenderable(List<ObjectiveCard> objectiveCards, String name, CommandPrompt[] relatedCommands, ControllerInterfaceClient controller) {
+        super(name, relatedCommands, controller);
         this.objectiveCards = objectiveCards;
     }
 
@@ -18,12 +21,6 @@ public class ObjectiveDisplayRenderable extends Renderable {
         for (int i = 0; i < objectiveCards.size(); i++) {
             System.out.println((i + 1) + ". " + objectiveCards.get(i).toString());
         }
-    }
-
-    @Override
-    public void update() {
-        // re-render or clear the field
-        render();
     }
 
     @Override

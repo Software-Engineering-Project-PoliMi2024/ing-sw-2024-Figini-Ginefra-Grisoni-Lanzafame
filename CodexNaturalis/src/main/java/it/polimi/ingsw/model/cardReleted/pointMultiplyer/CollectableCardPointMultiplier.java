@@ -5,9 +5,10 @@ import it.polimi.ingsw.model.playerReleted.Codex;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.Map;
 
 public class CollectableCardPointMultiplier implements ObjectiveCardPointMultiplier {
-    final private HashMap<Collectable, Integer> targets;
+    final private Map<Collectable, Integer> targets;
 
     /** @param targets HashMap of the collectables that the player has to collect to get the multiplier*/
     public CollectableCardPointMultiplier(HashMap <Collectable, Integer> targets){
@@ -28,5 +29,9 @@ public class CollectableCardPointMultiplier implements ObjectiveCardPointMultipl
         }
 
         return multipliersTargetCollectables.stream().mapToInt(i -> i).min().orElse(0);
+    }
+
+    public Map<Collectable, Integer> getTargets() {
+        return targets;
     }
 }

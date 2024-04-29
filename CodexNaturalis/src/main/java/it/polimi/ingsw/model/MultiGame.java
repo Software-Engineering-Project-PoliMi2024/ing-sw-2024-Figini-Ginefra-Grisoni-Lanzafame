@@ -4,11 +4,13 @@ import it.polimi.ingsw.lightModel.Lightifier;
 import it.polimi.ingsw.lightModel.diffLists.DiffPublisher;
 import it.polimi.ingsw.lightModel.diffLists.DiffSubscriber;
 import it.polimi.ingsw.lightModel.diffLists.LobbyListDiffPublisher;
+import it.polimi.ingsw.model.playerReleted.User;
 import it.polimi.ingsw.model.tableReleted.Game;
 import it.polimi.ingsw.model.tableReleted.Lobby;
 
 import java.io.Serializable;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 
 public class MultiGame implements Serializable {
@@ -87,6 +89,23 @@ public class MultiGame implements Serializable {
     }
     public void unsubscribe(DiffSubscriber diffSubscriber) {
         lobbyListDiffPublisher.unsubscribe(diffSubscriber);
+    }
+
+    /**
+     * @param nickname of the player
+     * @return True if the nickname is Unique, false otherwise
+     */
+    public boolean isUnique(String nickname){
+        return !this.getUsernames().contains(nickname);
+    }
+
+    public Game inGame(String nickname){
+        for(Game game : this.getGames()){
+            if(game.getGameParty().getUsersList().stream().map(User::getNickname).toList().contains(nickname)){
+                return game;
+            }
+        }
+        return null;
     }
     @Override
     public String toString() {

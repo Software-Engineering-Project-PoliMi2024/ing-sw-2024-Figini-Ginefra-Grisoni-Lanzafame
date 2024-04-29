@@ -6,32 +6,34 @@ import it.polimi.ingsw.lightModel.diffLists.DiffSubscriber;
 import it.polimi.ingsw.model.MultiGame;
 import it.polimi.ingsw.model.cardReleted.utilityEnums.CardFace;
 import it.polimi.ingsw.model.cardReleted.utilityEnums.DrawableCard;
+import it.polimi.ingsw.model.tableReleted.Game;
+import it.polimi.ingsw.model.tableReleted.GameParty;
 import it.polimi.ingsw.model.tableReleted.Lobby;
 import it.polimi.ingsw.view.ViewState;
 
 public class ServerImplementation implements ControllerInterfaceServer, Runnable{
-    private final MultiGame games;
-    private final ViewInterface view;
-    private String nickname;
+    protected final MultiGame games;
 
-    public String getNickname() {
-        return nickname;
-    }
-
-    public void setNickname(String nickname) {
-        this.nickname = nickname;
-    }
-
-    public ServerImplementation(MultiGame games, ViewInterface view) {
+    public ServerImplementation(MultiGame games) {
         this.games = games;
-        this.view = view;
     }
     public void run() {
     }
 
     @Override
-    public void login(String nickname) {
-
+    public void login(String nickname, DiffSubscriber diffSubscriber) {
+        if(!this.games.isUnique(nickname)){
+            diffSubscriber.log(LogsFromServer.NAME_TAKEN.getMessage());
+        }else{
+            if(this.games.inGame(nickname)!=null){
+                this.joinGame(this.games.inGame(nickname), diffSubscriber, LogsFromServer.MID_GAME_JOINED);
+            }else{
+                this.games.addUser(nickname);
+                games.subscribe(diffSubscriber);
+                diffSubscriber.log(LogsFromServer.SERVER_JOINED.getMessage());
+                diffSubscriber.transitionTo(ViewState.JOIN_LOBBY);
+            }
+        }
     }
 
     @Override
@@ -41,30 +43,32 @@ public class ServerImplementation implements ControllerInterfaceServer, Runnable
 
     @Override
     public void createLobby(String gameName, int maxPlayerCount, DiffSubscriber diffSubscriber) {
-        Lobby newLobby = new Lobby(maxPlayerCount, this.nickname, gameName);
-        //TODO check if the lobby name is taken
-        //TODO the addLobby method should generate the diff to subscribe to the publisher
+        Lobby newLobby = new Lobby(maxPlayerCount, diffSubscriber.getNickname(), gameName);
         this.games.addLobby(newLobby);
-
+        games.unsubscribe(diffSubscriber);
         newLobby.subscribe(diffSubscriber);
-        view.log(LogsFromServer.LOBBY_CREATED.getMessage());
-        view.transitionTo(ViewState.LOBBY);
+        diffSubscriber.log(LogsFromServer.LOBBY_CREATED.getMessage());
+        diffSubscriber.transitionTo(ViewState.LOBBY);
     }
 
     @Override
     public void joinLobby(String lobbyName, DiffSubscriber diffSubscriber) {
         Lobby lobbyToJoin = this.games.getLobby(lobbyName);
-        Boolean result = lobbyToJoin.addUserName(this.nickname);
+        Boolean result = lobbyToJoin.addUserName(diffSubscriber.getNickname());
         if(result){
-            //TODO the subscribe should be implemented in lobby.addUserName
             lobbyToJoin.subscribe(diffSubscriber);
-            view.log(LogsFromServer.LOBBY_JOINED.getMessage());
-            view.transitionTo(ViewState.LOBBY);
+            diffSubscriber.log(LogsFromServer.LOBBY_JOINED.getMessage());
+            diffSubscriber.transitionTo(ViewState.LOBBY);
             if(lobbyToJoin.getLobbyPlayerList().size() == lobbyToJoin.getNumberOfMaxPlayer()){
-
+                //Handle the creation of a new game from the lobby
+                Game newGame = new Game(lobbyToJoin);
+                for(DiffSubscriber diffSub : lobbyToJoin.getSubscribers()){
+                    lobbyToJoin.unsubscribe(diffSub);
+                    this.joinGame(newGame, diffSub, LogsFromServer.NEW_GAME_JOINED);
+                }
             }
         }else{
-            view.log(LogsFromServer.LOBBY_IS_FULL.getMessage());
+            diffSubscriber.log(LogsFromServer.LOBBY_IS_FULL.getMessage());
         }
     }
 
@@ -75,12 +79,12 @@ public class ServerImplementation implements ControllerInterfaceServer, Runnable
 
     @Override
     public void leaveLobby(DiffSubscriber diffSubscriber) {
-        //Lobby lobbyToLeave = this.games.getLobby(diffSubscriber.getTableName());
-        //TODO lobby.remove user should implement unsubscribe
+        Lobby lobbyToLeave = this.games.getLobby(diffSubscriber.getTableName());
         lobbyToLeave.unsubscribe(diffSubscriber);
+        games.subscribe(diffSubscriber);
         lobbyToLeave.removeUserName(diffSubscriber.getNickname());
         diffSubscriber.log(LogsFromServer.LOBBY_LEFT.getMessage());
-        diffSubscriber.transitionTo(ViewState.JOIN_GAME);
+        diffSubscriber.transitionTo(ViewState.JOIN_LOBBY);
         synchronized (lobbyToLeave){
             if(lobbyToLeave.getLobbyPlayerList().isEmpty()){
                 this.games.removeLobby(lobbyToLeave);
@@ -89,8 +93,10 @@ public class ServerImplementation implements ControllerInterfaceServer, Runnable
     }
 
     @Override
-    public void joinGame(Lobby lobby) {
-        //lobby.getSubscribers();
+    public void joinGame(Game game, DiffSubscriber diffSubscriber, LogsFromServer log) {
+        game.subcribe(diffSubscriber);
+        diffSubscriber.transitionTo(ViewState.CHOOSE_START_CARD);
+        diffSubscriber.log(log.getMessage());
     }
 
     @Override
@@ -117,6 +123,4 @@ public class ServerImplementation implements ControllerInterfaceServer, Runnable
     public void draw(DrawableCard deckID, int cardID) {
 
     }
-    //TODO diff get-set (codex) modify the lightModel directly
-    //TODO diff to set lobbyName
 }

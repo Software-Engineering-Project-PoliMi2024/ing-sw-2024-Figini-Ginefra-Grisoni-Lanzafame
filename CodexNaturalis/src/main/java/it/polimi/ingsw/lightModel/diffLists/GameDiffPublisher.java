@@ -52,6 +52,20 @@ public class GameDiffPublisher implements DiffPublisher{
         }
     }
 
+    @Override
+    public void notifySubscriber(DiffSubscriber diffSubscriber, GameDiff gameDiff) {
+
+    }
+
+    @Override
+    public void subscribe(GameDiff diffSubscriber) {
+
+    }
+
+    @Override
+    public void unsubscribe(GameDiff diffSubscriber) {
+
+    }
     private NewGameDiff newGameDiffAdder(DiffSubscriber diffSubscriber){
         return new NewGameDiff(
                 lightGame.getLightGameParty().getGameName(),

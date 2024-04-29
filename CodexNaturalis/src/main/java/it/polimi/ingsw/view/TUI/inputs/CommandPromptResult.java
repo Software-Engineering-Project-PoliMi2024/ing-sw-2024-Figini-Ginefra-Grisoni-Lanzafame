@@ -26,4 +26,8 @@ public class CommandPromptResult {
         this.answers = answers;
     }
 
+    public CommandPrompt getCommand(){
+        return command;
+    }
+
 }

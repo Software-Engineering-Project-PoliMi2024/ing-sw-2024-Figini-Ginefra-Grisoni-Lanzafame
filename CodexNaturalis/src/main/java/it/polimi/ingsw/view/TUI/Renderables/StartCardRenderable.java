@@ -1,13 +1,15 @@
 package it.polimi.ingsw.view.TUI.Renderables;
 
+import it.polimi.ingsw.controller2.ControllerInterfaceClient;
 import it.polimi.ingsw.model.cardReleted.cards.StartCard;
+import it.polimi.ingsw.view.TUI.inputs.CommandPrompt;
 
 public class StartCardRenderable extends Renderable {
     private final StartCard startCard;
     private String selectStartCardFace = "";
 
-    public StartCardRenderable(StartCard startCard) {
-        super(null);
+    public StartCardRenderable(StartCard startCard, String name, CommandPrompt[] relatedCommands, ControllerInterfaceClient controller) {
+        super(name, relatedCommands, controller);
         this.startCard = startCard;
     }
 
@@ -18,12 +20,6 @@ public class StartCardRenderable extends Renderable {
         System.out.println("Choose which face of the card should be facing upwards:");
         System.out.println("1: FRONT");
         System.out.println("2: BACK");
-    }
-
-    @Override
-    public void update() {
-        // re-render or clear the field
-        render();
     }
 
     @Override
