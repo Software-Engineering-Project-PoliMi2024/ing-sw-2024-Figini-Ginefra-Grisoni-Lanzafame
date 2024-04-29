@@ -1,19 +1,9 @@
 package it.polimi.ingsw.view.TUI;
 
-import it.polimi.ingsw.controller.Controller;
-import it.polimi.ingsw.controller.socket.SocketController;
+import it.polimi.ingsw.controller2.ControllerInterface;
 import it.polimi.ingsw.controller2.ControllerInterfaceClient;
 import it.polimi.ingsw.lightModel.*;
 import it.polimi.ingsw.lightModel.diffs.ModelDiffs;
-import it.polimi.ingsw.model.cardReleted.cards.GoldCard;
-import it.polimi.ingsw.model.cardReleted.cards.ObjectiveCard;
-import it.polimi.ingsw.model.cardReleted.cards.ResourceCard;
-import it.polimi.ingsw.model.cardReleted.cards.StartCard;
-import it.polimi.ingsw.lightModel.diffs.LobbyListDiff;
-import it.polimi.ingsw.model.playerReleted.Codex;
-import it.polimi.ingsw.model.playerReleted.Hand;
-import it.polimi.ingsw.model.tableReleted.Deck;
-import it.polimi.ingsw.model.tableReleted.Game;
 import it.polimi.ingsw.view.TUI.Renderables.*;
 import it.polimi.ingsw.view.TUI.States.StateTUI;
 import it.polimi.ingsw.view.TUI.inputs.CommandPrompt;
@@ -22,7 +12,6 @@ import it.polimi.ingsw.view.View;
 import it.polimi.ingsw.view.ViewState;
 
 import java.util.Arrays;
-import java.util.List;
 
 public class TUI extends View{
     private final InputHandler inputHandler = new InputHandler();
@@ -54,7 +43,7 @@ public class TUI extends View{
         connectForm = new ConnectFormRenderable("Connect form", this, new CommandPrompt[]{CommandPrompt.CONNECT}, controller);
         StateTUI.SERVER_CONNECTION.attach(connectForm);
 
-        loginForm = new LoginFormRenderable("Login Form", new CommandPrompt[]{CommandPrompt.DISPLAY_LOBBY, CommandPrompt.LOGIN}, controller);
+        loginForm = new LoginFormRenderable("Login Form", new CommandPrompt[]{CommandPrompt.LOGIN}, controller);
         StateTUI.LOGIN_FORM.attach(loginForm);
 
         gameList = new GameListRenderable("Game List", new CommandPrompt[]{CommandPrompt.DISPLAY_GAME_LIST, CommandPrompt.JOIN_GAME, CommandPrompt.CREATE_GAME}, controller);

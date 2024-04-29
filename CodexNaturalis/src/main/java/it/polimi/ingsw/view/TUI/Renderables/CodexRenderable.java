@@ -1,5 +1,6 @@
 package it.polimi.ingsw.view.TUI.Renderables;
 
+import it.polimi.ingsw.controller2.ControllerInterface;
 import it.polimi.ingsw.controller2.ControllerInterfaceClient;
 import it.polimi.ingsw.lightModel.LightCodex;
 import it.polimi.ingsw.lightModel.LightPlacement;

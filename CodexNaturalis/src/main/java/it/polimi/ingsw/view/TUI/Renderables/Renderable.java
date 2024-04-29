@@ -1,13 +1,11 @@
 package it.polimi.ingsw.view.TUI.Renderables;
 
+import it.polimi.ingsw.controller2.ControllerInterface;
 import it.polimi.ingsw.controller2.ControllerInterfaceClient;
 import it.polimi.ingsw.view.TUI.inputs.CommandPrompt;
 import it.polimi.ingsw.view.TUI.inputs.CommandPromptResult;
 import it.polimi.ingsw.view.TUI.observers.CommandObserver;
 import it.polimi.ingsw.view.TUI.observers.InputObserver;
-
-import java.util.ArrayList;
-import java.util.List;
 
 public abstract class Renderable implements InputObserver, CommandObserver {
     private boolean active = false;

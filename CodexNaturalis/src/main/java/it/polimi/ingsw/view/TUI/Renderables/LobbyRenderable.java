@@ -1,9 +1,8 @@
 package it.polimi.ingsw.view.TUI.Renderables;
 
+import it.polimi.ingsw.controller2.ControllerInterface;
 import it.polimi.ingsw.controller2.ControllerInterfaceClient;
 import it.polimi.ingsw.lightModel.LightLobby;
-import it.polimi.ingsw.model.tableReleted.GameParty;
-import it.polimi.ingsw.model.playerReleted.User;
 import it.polimi.ingsw.view.TUI.inputs.CommandPrompt;
 import it.polimi.ingsw.view.TUI.inputs.CommandPromptResult;
 
