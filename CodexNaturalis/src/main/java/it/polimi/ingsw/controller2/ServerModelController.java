@@ -32,8 +32,8 @@ public class ServerModelController implements ControllerInterface {
         if(!this.games.isUnique(nickname)){
             view.log(LogsFromServer.NAME_TAKEN.getMessage());
         }else{
-            if(this.games.inGame(nickname)!=null){
-                this.joinGame(this.games.inGame(nickname), LogsFromServer.MID_GAME_JOINED);
+            if(games.inGame(nickname)){
+                this.joinGame(this.games.getUserGame(nickname), LogsFromServer.MID_GAME_JOINED);
             }else{
                 this.nickname = nickname;
                 this.games.addUser(this, nickname);
@@ -121,8 +121,12 @@ public class ServerModelController implements ControllerInterface {
     }
 
     private void leaveGame() {
-        Game gameToLeave = games.getGame(this.nickname);
-        gameToLeave.unsubscrive(view);
+        Game gameToLeave = games.getUserGame(this.nickname);
+        if(gameToLeave == null){
+            throw new IllegalCallerException(nickname + " is not in any game");
+        }else{
+            gameToLeave.unsubscrive(view);
+        }
     }
 
     @Override
