@@ -87,13 +87,13 @@ public class CardMuseumFactory {
             objectiveCardsWithCollectableMultiplier.forEach(pair -> cardMuseum.set(pair.first().getId(), CardPainter.drawObjectiveCardCollectableMultiplier(pair.first(), pair.second())));
             System.out.println("Objective cards with collectable multiplier loaded: " + objectiveCardsWithCollectableMultiplier.size());
 
-//            Queue<Pair<ObjectiveCard, LCardPointMultiplier>> objectiveCardsWithLMultiplier = objectiveCardFactory.getCardsWithLMultiplier();
-//            objectiveCardsWithLMultiplier.forEach(pair -> cardMuseum.set(pair.first().getId(), CardPainter.drawObjectiveCardLMultiplier(pair.first(), pair.second())));
-//            System.out.println("Objective cards with L multiplier loaded: " + objectiveCardsWithLMultiplier.size());
-//
-//            Queue<Pair<ObjectiveCard, DiagonalCardPointMultiplier>> objectiveCardsWithDiagonalMultiplier = objectiveCardFactory.getCardsWithDiagonalMultiplier();
-//            objectiveCardsWithDiagonalMultiplier.forEach(pair -> cardMuseum.set(pair.first().getId(), CardPainter.drawObjectiveCardDiagonalMultiplier(pair.first(), pair.second())));
-//            System.out.println("Objective cards with diagonal multiplier loaded: " + objectiveCardsWithDiagonalMultiplier.size());
+            Queue<Pair<ObjectiveCard, LCardPointMultiplier>> objectiveCardsWithLMultiplier = objectiveCardFactory.getCardsWithLMultiplier();
+            objectiveCardsWithLMultiplier.forEach(pair -> cardMuseum.set(pair.first().getId(), CardPainter.drawObjectiveCardLMultiplier(pair.first(), pair.second())));
+            System.out.println("Objective cards with L multiplier loaded: " + objectiveCardsWithLMultiplier.size());
+
+            Queue<Pair<ObjectiveCard, DiagonalCardPointMultiplier>> objectiveCardsWithDiagonalMultiplier = objectiveCardFactory.getCardsWithDiagonalMultiplier();
+            objectiveCardsWithDiagonalMultiplier.forEach(pair -> cardMuseum.set(pair.first().getId(), CardPainter.drawObjectiveCardDiagonalMultiplier(pair.first(), pair.second())));
+            System.out.println("Objective cards with diagonal multiplier loaded: " + objectiveCardsWithDiagonalMultiplier.size());
 
 
             System.out.println("CardMuseumFactory created of length: " + cardMuseum.getSize());
