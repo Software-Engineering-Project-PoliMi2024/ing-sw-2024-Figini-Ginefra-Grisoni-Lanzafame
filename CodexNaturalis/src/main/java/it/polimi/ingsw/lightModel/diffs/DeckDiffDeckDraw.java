@@ -3,7 +3,6 @@ package it.polimi.ingsw.lightModel.diffs;
 import it.polimi.ingsw.lightModel.lightTableRelated.LightGame;
 import it.polimi.ingsw.model.cardReleted.utilityEnums.DrawableCard;
 import it.polimi.ingsw.model.cardReleted.utilityEnums.Resource;
-import it.polimi.ingsw.lightModel.lightTableRelated.LightDeck;
 
 public class DeckDiffDeckDraw extends DeckDiff {
     private final Resource resource;
@@ -17,7 +16,7 @@ public class DeckDiffDeckDraw extends DeckDiff {
         this.deck = deck;
     }
     /**
-     * @param lightDeck the deck to which the diff is applied
+     * @param lightgame the game to which the diff is applied
      */
     public void apply(LightGame ligthgame) {
         ligthgame.setTopDeck(resource, deck);
