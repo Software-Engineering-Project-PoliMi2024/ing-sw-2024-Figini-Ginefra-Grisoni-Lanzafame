@@ -26,7 +26,7 @@ public class MultiGame implements Serializable {
         //usernames
         this.usernames = new HashMap<>(); //user that are connected to the server
         lobbies = new LobbyList();
-        this.lobbyListDiffPublisher = new LobbyListDiffPublisher(Lightifier.lightify(lobbies));
+        this.lobbyListDiffPublisher = new LobbyListDiffPublisher(lobbies);
     }
 
     public synchronized Set<Game> getGames() {

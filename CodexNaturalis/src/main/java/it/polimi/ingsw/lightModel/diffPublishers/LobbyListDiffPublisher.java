@@ -1,9 +1,12 @@
 package it.polimi.ingsw.lightModel.diffPublishers;
 
+import it.polimi.ingsw.lightModel.Lightifier;
 import it.polimi.ingsw.lightModel.diffObserverInterface.DiffPubliher;
 import it.polimi.ingsw.lightModel.diffObserverInterface.DiffSubscriber;
+import it.polimi.ingsw.lightModel.lightTableRelated.LightLobby;
 import it.polimi.ingsw.lightModel.lightTableRelated.LightLobbyList;
 import it.polimi.ingsw.lightModel.diffs.LobbyListDiff;
+import it.polimi.ingsw.model.tableReleted.LobbyList;
 
 import java.rmi.RemoteException;
 import java.util.ArrayList;
@@ -12,8 +15,8 @@ import java.util.List;
 public class LobbyListDiffPublisher implements DiffPubliher {
     private final List<DiffSubscriber> diffSubscribers;
     private final LobbyListDiff lobbyListDiff;
-    private final LightLobbyList lobbyList;
-    public LobbyListDiffPublisher(LightLobbyList lobbyList) {
+    private final LobbyList lobbyList;
+    public LobbyListDiffPublisher(LobbyList lobbyList) {
         this.diffSubscribers = new ArrayList<>();
         this.lobbyListDiff = new LobbyListDiff(new ArrayList<>(), new ArrayList<>());
         this.lobbyList = lobbyList;
@@ -22,7 +25,7 @@ public class LobbyListDiffPublisher implements DiffPubliher {
     public void subscribe(DiffSubscriber diffSubscriber) {
         synchronized (diffSubscribers) {
             diffSubscribers.add(diffSubscriber);
-            this.notifySubscriber(diffSubscriber, new LobbyListDiff(new ArrayList<>(lobbyList.getLobbies()),new ArrayList<>()));
+            this.notifySubscriber(diffSubscriber, new LobbyListDiff(new ArrayList<>(lobbyList.getLobbies().stream().map(Lightifier::lightify).toList()),new ArrayList<>()));
         }
     }
 
