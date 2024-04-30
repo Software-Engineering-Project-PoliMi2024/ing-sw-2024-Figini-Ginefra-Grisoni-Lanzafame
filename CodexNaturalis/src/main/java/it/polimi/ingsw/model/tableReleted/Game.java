@@ -1,6 +1,8 @@
 package it.polimi.ingsw.model.tableReleted;
 
 
+import it.polimi.ingsw.lightModel.Heavifier;
+import it.polimi.ingsw.lightModel.diffs.GameDiff;
 import it.polimi.ingsw.lightModel.lightTableRelated.LightGame;
 import it.polimi.ingsw.lightModel.diffObserverInterface.DiffSubscriber;
 import it.polimi.ingsw.lightModel.diffPublishers.GameDiffPublisher;
@@ -8,13 +10,14 @@ import it.polimi.ingsw.model.cardReleted.cardFactories.GoldCardFactory;
 import it.polimi.ingsw.model.cardReleted.cardFactories.ObjectiveCardFactory;
 import it.polimi.ingsw.model.cardReleted.cardFactories.ResourceCardFactory;
 import it.polimi.ingsw.model.cardReleted.cardFactories.StartCardFactory;
-import it.polimi.ingsw.model.cardReleted.cards.GoldCard;
-import it.polimi.ingsw.model.cardReleted.cards.ObjectiveCard;
-import it.polimi.ingsw.model.cardReleted.cards.ResourceCard;
-import it.polimi.ingsw.model.cardReleted.cards.StartCard;
+import it.polimi.ingsw.model.cardReleted.cards.*;
 import it.polimi.ingsw.model.playerReleted.User;
 
 import java.io.Serializable;
+import java.util.ArrayList;
+import java.util.LinkedList;
+import java.util.List;
+import java.util.Queue;
 
 
 /**
@@ -30,24 +33,18 @@ public class Game implements Serializable {
     final private Deck<StartCard> startingCardDeck;
     private final String name;
     private GameParty gameParty;
-
     /**
      * Constructs a new Game instance with a specified maximum number of players.
      */
-    public Game(Lobby lobby) {
+    public Game(Lobby lobby, CardLookUp<ObjectiveCard> objectiveCardCardLookUp, CardLookUp<ResourceCard> resourceCardCardLookUp,
+                CardLookUp<StartCard> startCardCardLookUp, CardLookUp<GoldCard> goldCardCardLookUp) {
         gameDiffPublisher = new GameDiffPublisher(this);
         this.name = lobby.getLobbyName();
         this.gameParty = new GameParty(lobby.getLobbyPlayerList().stream().toList());
-        String filePath = "./cards/";
-        String sourceFileName = "cards.json";
-        objectiveCardDeck =
-                new Deck<>(0, new ObjectiveCardFactory(filePath+sourceFileName, filePath).getCards());
-        resourceCardDeck =
-                new Deck<>(2, new ResourceCardFactory(filePath+sourceFileName, filePath).getCards());
-        goldCardDeck =
-                new Deck<>(2, new GoldCardFactory(filePath+sourceFileName, filePath).getCards());
-        startingCardDeck =
-                new Deck<>(0, new StartCardFactory(filePath+sourceFileName, filePath).getCards());
+        objectiveCardDeck = new Deck<>(0,objectiveCardCardLookUp.getQueue());
+        resourceCardDeck = new Deck<>(2, resourceCardCardLookUp.getQueue());
+        startingCardDeck = new Deck<>(0, startCardCardLookUp.getQueue());
+        goldCardDeck = new Deck<>(2, goldCardCardLookUp.getQueue());
     }
 
     /** @return the Objective Card Deck*/
@@ -96,13 +93,21 @@ public class Game implements Serializable {
         return gameDiffPublisher;
     }
 
-
     public void subcribe(DiffSubscriber diffSubscriber, String nickname){
         gameDiffPublisher.subscribe(diffSubscriber, nickname);
+    }
+
+    public void subcribe(GameDiff gameDiff){
+        gameDiffPublisher.subscribe(gameDiff);
+    }
+
+    public void subcribe(DiffSubscriber diffSubscriber, GameDiff gameDiffYou, GameDiff gameDiffOther){
+        gameDiffPublisher.subscribe(diffSubscriber, gameDiffYou, gameDiffOther);
     }
     public void unsubscrive(DiffSubscriber diffSubscriber){
         gameDiffPublisher.unsubscribe(diffSubscriber);
     }
+
     @Override
     public boolean equals(Object obj) {
         return obj instanceof Game && ((Game) obj).name.equals(name);

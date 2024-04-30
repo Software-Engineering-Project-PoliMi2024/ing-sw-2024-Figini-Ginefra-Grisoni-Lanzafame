@@ -12,9 +12,9 @@ import java.util.*;
 //a
 public class LightCodex implements Differentiable {
     private int points;
-    private final Map<Collectable, Integer> collectables;
+    private Map<Collectable, Integer> collectables;
     private final Map<Position, LightPlacement> placementHistory;
-    private final LightFrontier frontier;
+    private LightFrontier frontier;
     /** Constructor of the light codex class
      * initializes the points to 0
      * initializes the collectables to 0 for each collectable
@@ -98,5 +98,17 @@ public class LightCodex implements Differentiable {
             this.collectables.put(c, this.collectables.get(c) + addCollectables.get(c));
         for (Collectable c : removeCollectables.keySet())
             this.collectables.put(c, this.collectables.get(c) - removeCollectables.get(c));
+    }
+
+    public void setPoints(int points) {
+        this.points = points;
+    }
+
+    public void setFrontier(LightFrontier frontier) {
+        this.frontier = frontier;
+    }
+
+    public void setCollectables(Map<Collectable, Integer> collectables) {
+        this.collectables = collectables;
     }
 }

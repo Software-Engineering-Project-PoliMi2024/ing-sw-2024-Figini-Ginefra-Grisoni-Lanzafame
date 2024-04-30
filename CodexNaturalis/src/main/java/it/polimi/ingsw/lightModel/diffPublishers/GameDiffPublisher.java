@@ -73,10 +73,6 @@ public class GameDiffPublisher implements DiffPublisherNick {
         }
         notifySubscriber();
     }
-    public synchronized void subscribe(GameDiff diff, DiffSubscriber diffSubscriber){
-        gameDiffMap.get(activeSubscribers.get(diffSubscriber)).add(diff);
-        notifySubscriber();
-    }
     public synchronized void subscribe(List<GameDiff> diffs, DiffSubscriber diffSubscriber){
         gameDiffMap.get(activeSubscribers.get(diffSubscriber)).addAll(diffs);
         notifySubscriber();
@@ -106,10 +102,8 @@ public class GameDiffPublisher implements DiffPublisherNick {
                     nickname,
                     codex.getPoints(),
                     codex.getEarnedCollectables(),
-                    new HashMap<>(),
                     codex.getPlacementHistory().values().stream().toList(),
-                    codex.getFrontier().frontier(),
-                    new ArrayList<>()
+                    codex.getFrontier().frontier()
             ));
         }
         return codexDiff;
@@ -144,13 +138,26 @@ public class GameDiffPublisher implements DiffPublisherNick {
         return new GameDiffPublicObj(publicObj);
     }
     private List<GameDiff> getTotalCurrentState(DiffSubscriber diffSubscriber){
-        List<GameDiff> totalDiff = new ArrayList<>();
-        totalDiff.addAll(getDeckCurrentState());
+        List<GameDiff> totalDiff = new ArrayList<>(getDeckCurrentState());
         totalDiff.add(getPlayerActivity());
         totalDiff.addAll(getCodexCurrentState());
         totalDiff.addAll(getHandCurrentState(diffSubscriber));
         totalDiff.addAll(getHandOtherCurrentState(diffSubscriber));
         totalDiff.add(getPublicObjectiveCurrentState(diffSubscriber));
         return totalDiff;
+    }
+
+    public synchronized void subscribe(DiffSubscriber diffSubscriber, GameDiff playerGameDiff, GameDiff otherGameDiff){
+        for(DiffSubscriber diffSub : activeSubscribers.keySet()){
+            try{
+                if(activeSubscribers.get(diffSubscriber).equals(activeSubscribers.get(diffSub))){
+                    diffSubscriber.updateGame(playerGameDiff);
+                }else {
+                    diffSub.updateGame(otherGameDiff);
+                }
+            }catch (RemoteException r){
+                r.printStackTrace();
+            }
+        }
     }
 }

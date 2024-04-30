@@ -8,11 +8,17 @@ public enum LogsFromServer {
     LOBBY_IS_FULL("The lobby is full"),
     LOBBY_JOINED("Lobby joined"),
     LOBBY_LEFT("Lobby left"),
-    LOBBY_INEXISTENT("The lobby does not exist"),
+    LOBBY_NONEXISTENT("The lobby does not exist"),
     LOBBY_NAME_TAKEN("The lobby name is already taken"),
     LOBBY_CREATED("Lobby created"),
     NEW_GAME_JOINED("Joined a new game from the lobby"),
-    MID_GAME_JOINED("Joined your previous game");
+    MID_GAME_JOINED("Joined your previous game"),
+    START_CARD_PLACED("StartCard successfully placed"),
+    SECRET_OBJECTIVE_CHOSE("Secret Objective chose"),
+    CARD_PLACED("Card placed"),
+    CARD_DRAWN("Card Drawn"),
+    YOUR_TURN("It's your time to play");
+
     private final String message;
 
     LogsFromServer(String message) {

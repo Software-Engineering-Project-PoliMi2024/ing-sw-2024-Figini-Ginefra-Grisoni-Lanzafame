@@ -2,8 +2,10 @@ package it.polimi.ingsw.lightModel.lightTableRelated;
 
 import it.polimi.ingsw.lightModel.*;
 import it.polimi.ingsw.lightModel.lightPlayerRelated.LightCodex;
+import it.polimi.ingsw.lightModel.lightPlayerRelated.LightFrontier;
 import it.polimi.ingsw.lightModel.lightPlayerRelated.LightHand;
 import it.polimi.ingsw.lightModel.lightPlayerRelated.LightHandOthers;
+import it.polimi.ingsw.model.cardReleted.utilityEnums.Collectable;
 import it.polimi.ingsw.model.cardReleted.utilityEnums.DrawableCard;
 import it.polimi.ingsw.model.cardReleted.utilityEnums.Resource;
 
@@ -112,5 +114,16 @@ public class LightGame implements Differentiable {
     }
     public void removeCard(LightCard card){
         this.hand.removeCard(card);
+    }
+    public void setPoint(int points, String nickname){
+        codexMap.get(nickname).setPoints(points);
+    }
+
+    public void setFrontier(LightFrontier lightFrontier, String nickname){
+        codexMap.get(nickname).setFrontier(lightFrontier);
+    }
+
+    public void setCollectable(Map<Collectable, Integer> collectables, String nickname){
+        codexMap.get(nickname).setCollectables(collectables);
     }
 }
