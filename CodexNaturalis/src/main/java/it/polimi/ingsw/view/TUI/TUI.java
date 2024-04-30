@@ -110,7 +110,6 @@ public class TUI extends View{
         diff.apply(lightLobbyList);
     }
 
-
     @Override
     public void updateLobby(ModelDiffs<LightLobby> diff) {
         diff.apply(lightLobby);

@@ -1,11 +1,14 @@
 package it.polimi.ingsw.view.TUI.Renderables;
 
 import it.polimi.ingsw.controller2.ControllerInterface;
+import it.polimi.ingsw.lightModel.lightTableRelated.LightLobby;
 import it.polimi.ingsw.lightModel.lightTableRelated.LightLobbyList;
+import it.polimi.ingsw.view.TUI.Styles.PromptStyle;
 import it.polimi.ingsw.view.TUI.inputs.CommandPrompt;
 import it.polimi.ingsw.view.TUI.inputs.CommandPromptResult;
 
 import java.rmi.RemoteException;
+import java.util.List;
 import java.util.Objects;
 
 public class GameListRenderable extends Renderable {
@@ -19,14 +22,11 @@ public class GameListRenderable extends Renderable {
     @Override
     public void render() {
         if (lightLobbyList.getLobbies().isEmpty()) {
-            System.out.println("No games available to join.");
+            PromptStyle.printInABox("No games available", 70);
         } else {
             System.out.println("Available games:");
-            lightLobbyList.getLobbies().forEach(lobby -> {
-                System.out.println("Game: " + lobby.nicknames());
-                for(int i = 0; i < lobby.nicknames().size(); i++)
-                    System.out.println("\t[" + i + "] " + lobby.nicknames().get(i));
-            });
+            List<String> lobbyNames = lightLobbyList.getLobbies().stream().map(LightLobby::name).toList();
+            PromptStyle.printListInABox("Available games", lobbyNames, 70, 1);
         }
     }
 
