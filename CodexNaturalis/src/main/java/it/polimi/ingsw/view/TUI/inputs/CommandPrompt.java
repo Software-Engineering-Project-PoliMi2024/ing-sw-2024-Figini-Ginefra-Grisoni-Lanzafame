@@ -71,7 +71,27 @@ public enum CommandPrompt implements Iterator<String>, CommandObserved {
 
     LEAVE_LOBBY("Leave lobby",
             new String[]{},
-            new Predicate[]{});
+            new Predicate[]{}),
+
+    DISPLAY_START_FRONT("Display start card front",
+            new String[]{
+            },
+            new Predicate[]{
+            }),
+
+    DISPLAY_START_BACK("Display start card back",
+            new String[]{
+            },
+            new Predicate[]{
+            }),
+
+    CHOOSE_START_SIDE("Choose start side",
+            new String[]{
+                    "Which side do you want to choose? (front/back)",
+            },
+            new Predicate[]{
+                    s -> s.equals("front") || s.equals("back"),
+            });
 
     private final String[] questions;
     private final Predicate<String>[] validators;
