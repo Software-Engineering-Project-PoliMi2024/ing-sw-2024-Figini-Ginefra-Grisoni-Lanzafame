@@ -108,9 +108,21 @@ public class MultiGame implements Serializable {
         return !this.getUsernames().contains(nickname);
     }
 
-    public Game inGame(String nickname){
+    public Boolean inGame(String nickname){
+        if(getUserGame(nickname)==null){
+            return false;
+        }else{
+            return true;
+        }
+    }
+
+    /**
+     * @param nickName of the player
+     * @return Game if the player is in a Game, null otherwise
+     */
+    public Game getUserGame(String nickName){
         for(Game game : this.getGames()){
-            if(game.getGameParty().getUsersList().stream().map(User::getNickname).toList().contains(nickname)){
+            if(game.getGameParty().getUsersList().stream().map(User::getNickname).toList().contains(nickName)){
                 return game;
             }
         }
