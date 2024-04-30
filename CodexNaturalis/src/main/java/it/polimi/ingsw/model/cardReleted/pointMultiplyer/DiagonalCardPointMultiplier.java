@@ -44,4 +44,11 @@ public class DiagonalCardPointMultiplier implements ObjectiveCardPointMultiplier
         }
         return multiplier;
     }
+
+    public Resource getColor() {
+        return color;
+    }
+    public boolean isUpwards() {
+        return upwards;
+    }
 }

@@ -2,6 +2,8 @@ package it.polimi.ingsw.view.TUI.cardDrawing;
 
 import it.polimi.ingsw.model.cardReleted.cards.*;
 import it.polimi.ingsw.model.cardReleted.pointMultiplyer.CollectableCardPointMultiplier;
+import it.polimi.ingsw.model.cardReleted.pointMultiplyer.DiagonalCardPointMultiplier;
+import it.polimi.ingsw.model.cardReleted.pointMultiplyer.LCardPointMultiplier;
 import it.polimi.ingsw.model.cardReleted.utilityEnums.CardCorner;
 import it.polimi.ingsw.model.cardReleted.utilityEnums.CardFace;
 import it.polimi.ingsw.model.cardReleted.utilityEnums.Collectable;
@@ -9,7 +11,6 @@ import it.polimi.ingsw.model.cardReleted.utilityEnums.Resource;
 import it.polimi.ingsw.model.playerReleted.Position;
 import it.polimi.ingsw.view.TUI.Renderables.drawables.Drawable;
 import it.polimi.ingsw.view.TUI.Styles.CardTextStyle;
-import org.w3c.dom.Text;
 
 import java.util.Map;
 
@@ -74,6 +75,76 @@ public class CardPainter {
                 for(int i = 0; i < multiplier.getTargets().get(collectable); i++) {
                     drawable.addContent(CardTextStyle.getCollectableEmoji(collectable), x++, y);
                     x += 1 - n % 2;
+                }
+            }
+        }
+    }
+
+
+    private static void drawDiagonalMultiplier(DiagonalCardPointMultiplier multiplier, Drawable drawable) {
+        if (multiplier != null) {
+            Resource resource = multiplier.getColor();
+            boolean upwards = multiplier.isUpwards();
+            int y = drawable.getHeight() / 2;
+            int x = (drawable.getWidth() / 2) - 1;
+            int length = 3;
+            String emoji = CardTextStyle.getCollectableEmoji(resource);
+
+            if (upwards) {
+                for (int i = 0; i < length; i++) {
+                    int col = x + i;
+                    int row = y - 1 + i;
+                    drawable.addContent(emoji, col, row);
+                }
+            } else {
+                for (int i = 0; i < length; i++) {
+                    int col = x + i;
+                    int row = y + 1 - i;
+                    drawable.addContent(emoji, col, row);
+                }
+            }
+        }
+    }
+
+
+    private static void drawLMultiplier(LCardPointMultiplier multiplier, Drawable drawable) {
+        if (multiplier != null) {
+            CardCorner corner = multiplier.corner();
+            Resource singleResource = multiplier.singleResource();
+            Resource doubleResource = multiplier.doubleResource();
+            int y = drawable.getHeight() / 2;
+            int x = drawable.getWidth() / 2;
+            int length = 2;
+            String emoji = CardTextStyle.getCollectableEmoji(singleResource);
+            String emoji2 = CardTextStyle.getCollectableEmoji(doubleResource);
+
+            if ( corner == CardCorner.TL) {
+                drawable.addContent(emoji, x, y-1);
+                int col = x - 1 ;
+                for (int i = 0; i < length; i++) {
+                    int row = y + i;
+                    drawable.addContent(emoji2, col, row);
+                }
+            } else if ( corner == CardCorner.TR) {
+                drawable.addContent(emoji, x, y-1);
+                int col = x + 1 ;
+                for (int i = 0; i < length; i++) {
+                    int row = y + i;
+                    drawable.addContent(emoji2, col, row);
+                }
+            }else if ( corner == CardCorner.BR) {
+                drawable.addContent(emoji, x, y+1);
+                int col = x + 1 ;
+                for (int i = 0; i < length; i++) {
+                    int row = y - i;
+                    drawable.addContent(emoji2, col, row);
+                }
+            }else { //BL
+                drawable.addContent(emoji, x, y+1);
+                int col = x - 1 ;
+                for (int i = 0; i < length; i++) {
+                    int row = y - i;
+                    drawable.addContent(emoji2, col, row);
                 }
             }
         }
@@ -220,4 +291,39 @@ public class CardPainter {
 
         return new TextCard(drawable, drawable);
     }
+
+    public static TextCard drawObjectiveCardDiagonalMultiplier(ObjectiveCard card, DiagonalCardPointMultiplier multiplier){
+        Drawable drawable = new Drawable(CardTextStyle.getCardWidth(), CardTextStyle.getCardHeight());
+
+        String bg_filler = CardTextStyle.getStartFilling();
+
+        //Fill the background
+        drawable.fillContent(bg_filler);
+
+        //Draw the points
+        drawable.addContent(CardTextStyle.getNumberEmoji(card.getPoints()), drawable.getWidth() / 2, 0);
+
+        //Draw the multiplier
+        drawDiagonalMultiplier(multiplier, drawable);
+
+        return new TextCard(drawable, drawable);
+    }
+
+    public static TextCard drawObjectiveCardLMultiplier(ObjectiveCard card, LCardPointMultiplier multiplier){
+        Drawable drawable = new Drawable(CardTextStyle.getCardWidth(), CardTextStyle.getCardHeight());
+
+        String bg_filler = CardTextStyle.getStartFilling();
+
+        //Fill the background
+        drawable.fillContent(bg_filler);
+
+        //Draw the points
+        drawable.addContent(CardTextStyle.getNumberEmoji(card.getPoints()), drawable.getWidth() / 2, 0);
+
+        //Draw the multiplier
+        drawLMultiplier(multiplier, drawable);
+
+        return new TextCard(drawable, drawable);
+    }
+
 }
