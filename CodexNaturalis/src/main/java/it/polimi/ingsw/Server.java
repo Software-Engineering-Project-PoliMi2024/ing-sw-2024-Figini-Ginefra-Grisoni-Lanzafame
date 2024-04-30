@@ -33,7 +33,6 @@ public class Server {
             e.printStackTrace();
         }
 
-
         SocketServer socketServer = new SocketServer(multiGame);
         ServerRMI serverRMI = new ServerRMI(multiGame);
         Thread serverSocketThread = new Thread(socketServer, "Socket Server Listening Thread");

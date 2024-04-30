@@ -3,6 +3,8 @@ package it.polimi.ingsw.lightModel.diffPublishers;
 import it.polimi.ingsw.lightModel.diffObserverInterface.DiffPublisherNick;
 import it.polimi.ingsw.lightModel.diffObserverInterface.DiffSubscriber;
 import it.polimi.ingsw.lightModel.diffs.LobbyDiffEdit;
+import it.polimi.ingsw.lightModel.diffs.nuclearDiffs.FatManLobbyList;
+import it.polimi.ingsw.lightModel.diffs.nuclearDiffs.LittleBoyLobby;
 
 
 import java.rmi.RemoteException;
@@ -51,16 +53,26 @@ public class LobbyDiffPublisher implements DiffPublisherNick {
     }
 
     @Override
-    public void unsubscribe(DiffSubscriber diffSubscriber) {
-        synchronized (lobbyDiffMap) {
-            subscribers.remove(diffSubscriber);
-            lobbyDiffMap.remove(diffSubscriber);
-            for (DiffSubscriber subscriber : lobbyDiffMap.keySet()) {
-                // notify to the people already in the lobby that one user unsubscribed subscriber
-                lobbyDiffMap.put(subscriber, createDiffUnsubscriber(lobbyDiffMap.get(subscriber), diffSubscriber));
+    public synchronized void unsubscribe(DiffSubscriber diffSubscriber) {
+        for (DiffSubscriber subscriber : lobbyDiffMap.keySet()) {
+            List<String> toRem = new ArrayList<>();
+            toRem.add(subscribers.get(diffSubscriber));
+            // notify to the people already in the lobby that one user unsubscribed subscriber
+            try {
+                subscriber.updateLobby(new LobbyDiffEdit(toRem, new ArrayList<>()));
+            }catch (RemoteException r){
+                r.printStackTrace();
             }
-            this.notifySubscriber();
+            lobbyDiffMap.put(subscriber, createDiffUnsubscriber(lobbyDiffMap.get(subscriber), diffSubscriber));
         }
+        this.notifySubscriber();
+        try {
+            diffSubscriber.updateLobby(new LittleBoyLobby());
+        }catch (RemoteException r){
+            r.printStackTrace();
+        }
+        subscribers.remove(diffSubscriber);
+        lobbyDiffMap.remove(diffSubscriber);
     }
     private LobbyDiffEdit createDiffUnsubscriber(LobbyDiffEdit diffToModify, DiffSubscriber diffSubscriber){
         ArrayList<String> rmvNicknames = new ArrayList<>();
@@ -69,7 +81,7 @@ public class LobbyDiffPublisher implements DiffPublisherNick {
         return new LobbyDiffEdit(diffToModify, addNicknames, rmvNicknames);
     }
     @Override
-    public void notifySubscriber() {
+    public synchronized void notifySubscriber() {
         for(DiffSubscriber subscriber : lobbyDiffMap.keySet())
             try {
                 subscriber.updateLobby(this.lobbyDiffMap.get(subscriber));
@@ -77,11 +89,10 @@ public class LobbyDiffPublisher implements DiffPublisherNick {
                 r.printStackTrace();
             }
         for(DiffSubscriber subscriber : lobbyDiffMap.keySet())
-            synchronized (lobbyDiffMap) {
-                lobbyDiffMap.put(subscriber, new LobbyDiffEdit(new ArrayList<>(), new ArrayList<>()));
-            }
+            lobbyDiffMap.put(subscriber, new LobbyDiffEdit(new ArrayList<>(), new ArrayList<>()));
+
     }
-    public List<DiffSubscriber> getSubscribers(){
+    public synchronized List<DiffSubscriber> getSubscribers(){
         return new ArrayList<>(lobbyDiffMap.keySet());
     }
 }

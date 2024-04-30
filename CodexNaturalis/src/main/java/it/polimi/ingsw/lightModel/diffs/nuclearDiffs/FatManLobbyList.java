@@ -8,7 +8,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class FatManLobbyList extends LobbyListDiff {
-
+    public FatManLobbyList(){}
     @Override
     public void apply(LightLobbyList lobbyList) {
         lobbyList.setLobbies(new ArrayList<>());
