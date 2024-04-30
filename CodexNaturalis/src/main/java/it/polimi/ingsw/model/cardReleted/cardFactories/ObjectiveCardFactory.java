@@ -83,15 +83,16 @@ public class ObjectiveCardFactory extends AbstractCardFactory<ObjectiveCard>{
      * @return A queue of pairs containing ObjectiveCard and its multiplier
      */
     public Queue<Pair<ObjectiveCard, DiagonalCardPointMultiplier>> getCardsWithDiagonalMultiplier(){
-        JsonArray ResourceCards = getCardArray("ObjectiveCard");
         Queue<Pair<ObjectiveCard, DiagonalCardPointMultiplier>> deckBuilder = new LinkedList<>();
+        JsonArray ResourceCards = getCardArray("ObjectiveCard");
         for(int i=0; i<ResourceCards.size(); i++) {
             JsonObject card = ResourceCards.get(i).getAsJsonObject();
-            deckBuilder.add(new Pair<>(new ObjectiveCard(getId(card), card.get("points").getAsInt(), getPointMultiplier(card)),
-                    new DiagonalCardPointMultiplier(card.get("multiplierD").getAsJsonObject().get("upwards").getAsBoolean(),
-                            Resource.valueOf(card.get("multiplierD").getAsJsonObject().get("resource").getAsString().toUpperCase()))));
+            if(getDiagonalMultiplier(card) != null){
+                deckBuilder.add(new Pair(new ObjectiveCard(getId(card), card.get("points").getAsInt(), getPointMultiplier(card)), getDiagonalMultiplier(card)));
+            }
         }
         return deckBuilder;
+
     }
 
     /**
@@ -99,15 +100,13 @@ public class ObjectiveCardFactory extends AbstractCardFactory<ObjectiveCard>{
      * @return A queue of pairs containing ObjectiveCard and its multiplier
      */
     public Queue<Pair<ObjectiveCard, LCardPointMultiplier>> getCardsWithLMultiplier(){
-        JsonArray ResourceCards = getCardArray("ObjectiveCard");
         Queue<Pair<ObjectiveCard, LCardPointMultiplier>> deckBuilder = new LinkedList<>();
+        JsonArray ResourceCards = getCardArray("ObjectiveCard");
         for(int i=0; i<ResourceCards.size(); i++) {
             JsonObject card = ResourceCards.get(i).getAsJsonObject();
-            JsonObject multiplierL = card.getAsJsonObject("multiplierL");
-            deckBuilder.add(new Pair<>(new ObjectiveCard(getId(card), card.get("points").getAsInt(), getPointMultiplier(card)),
-                    new LCardPointMultiplier(CardCorner.valueOf(multiplierL.get("corner").getAsString().toUpperCase()),
-                            Resource.valueOf(multiplierL.get("singleResource").getAsString().toUpperCase()),
-                            Resource.valueOf(multiplierL.get("multiResource").getAsString().toUpperCase()))));
+            if(getLMultiplier(card) != null){
+                deckBuilder.add(new Pair(new ObjectiveCard(getId(card), card.get("points").getAsInt(), getPointMultiplier(card)), getLMultiplier(card)));
+            }
         }
         return deckBuilder;
     }
@@ -147,7 +146,39 @@ public class ObjectiveCardFactory extends AbstractCardFactory<ObjectiveCard>{
             }
         }
         return new CollectableCardPointMultiplier(collectableMap);
+    }
+
+    /**
+     * Retrieves the DiagonalCardPointMultiplier from the card
+     * @param card that is being build
+     * @return the DiagonalCardPointMultiplier
+     */
+    private DiagonalCardPointMultiplier getDiagonalMultiplier(JsonObject card){
+        if(!card.has("multiplierD")){
+            return null;
         }
+
+        JsonObject multiplierD = card.getAsJsonObject("multiplierD");
+        return new DiagonalCardPointMultiplier(multiplierD.get("upwards").getAsBoolean(),
+                Resource.valueOf(multiplierD.get("resource").getAsString().toUpperCase()));
+    }
+
+    /**
+     * Retrieves the LCardPointMultiplier from the card
+     * @param card that is being build
+     * @return the LCardPointMultiplier
+     */
+    private LCardPointMultiplier getLMultiplier(JsonObject card){
+        if(!card.has("multiplierL")){
+            return null;
+        }
+
+        JsonObject multiplierL = card.getAsJsonObject("multiplierL");
+        return new LCardPointMultiplier(CardCorner.valueOf(multiplierL.get("corner").getAsString().toUpperCase()),
+                Resource.valueOf(multiplierL.get("singleResource").getAsString().toUpperCase()),
+                Resource.valueOf(multiplierL.get("multiResource").getAsString().toUpperCase()));
+    }
+
 
     /**
      * This method use the toString method of both WritingMaterial and Resource enum
