@@ -42,7 +42,7 @@ public class ServerModelController implements ControllerInterface {
             }else{
                 this.nickname = nickname;
                 this.games.addUser(this, nickname);
-                games.subscribe(view);
+                getActiveLobbyList();
                 try {
                     view.log(LogsFromServer.SERVER_JOINED.getMessage());
                     view.transitionTo(ViewState.JOIN_LOBBY);
@@ -52,9 +52,7 @@ public class ServerModelController implements ControllerInterface {
             }
         }
     }
-
-    @Override
-    public void getActiveLobbyList() throws RemoteException{
+    private void getActiveLobbyList() {
         games.subscribe(view);
     }
 

@@ -11,7 +11,6 @@ import java.rmi.RemoteException;
 
 public interface ControllerInterface extends Serializable, Remote {
     void login(String nickname) throws RemoteException;
-    void getActiveLobbyList() throws RemoteException;
     void createLobby(String gameName, int maxPlayerCount) throws RemoteException;
     void joinLobby(String lobbyName) throws RemoteException;
     void disconnect() throws RemoteException;
