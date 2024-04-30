@@ -35,7 +35,7 @@ public class Game implements Serializable {
      * Constructs a new Game instance with a specified maximum number of players.
      */
     public Game(Lobby lobby) {
-        gameDiffPublisher = new GameDiffPublisher(new LightGame());
+        gameDiffPublisher = new GameDiffPublisher(this);
         this.name = lobby.getLobbyName();
         this.gameParty = new GameParty(lobby.getLobbyPlayerList().stream().toList());
         String filePath = "./cards/";

@@ -65,6 +65,9 @@ public class Codex implements Serializable {
 
         this.collectables.put(collectable, number);
     }
+    public Frontier getFrontier() {
+        return frontier;
+    }
 
     /** @return all the placement history of the codex */
     public ArrayList<Placement> getPlacementHistory(){

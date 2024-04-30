@@ -6,7 +6,13 @@ import it.polimi.ingsw.model.cardReleted.utilityEnums.Resource;
 public class LightHandOthers implements Differentiable {
     private final Resource[] cards;
     public LightHandOthers(){
-        cards = new Resource[3];
+        cards = new Resource[2];
+    }
+    public LightHandOthers(Resource[] cards){
+        if(cards.length > 3)
+            throw new IllegalArgumentException();
+        else
+            this.cards = cards;
     }
     public Resource[] getCards() {
         return cards;
