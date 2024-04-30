@@ -1,31 +1,46 @@
 package it.polimi.ingsw.model;
 
 import it.polimi.ingsw.controller2.ServerModelController;
-import it.polimi.ingsw.lightModel.Lightifier;
 import it.polimi.ingsw.lightModel.diffObserverInterface.DiffSubscriber;
 import it.polimi.ingsw.lightModel.diffPublishers.LobbyListDiffPublisher;
-import it.polimi.ingsw.lightModel.diffs.LobbyListDiff;
+import it.polimi.ingsw.lightModel.diffs.LobbyListDiffEdit;
+import it.polimi.ingsw.model.cardReleted.cardFactories.GoldCardFactory;
+import it.polimi.ingsw.model.cardReleted.cardFactories.ObjectiveCardFactory;
+import it.polimi.ingsw.model.cardReleted.cardFactories.ResourceCardFactory;
+import it.polimi.ingsw.model.cardReleted.cardFactories.StartCardFactory;
+import it.polimi.ingsw.model.cardReleted.cards.*;
 import it.polimi.ingsw.model.playerReleted.User;
 import it.polimi.ingsw.model.tableReleted.Game;
 import it.polimi.ingsw.model.tableReleted.Lobby;
 import it.polimi.ingsw.model.tableReleted.LobbyList;
 
 import java.io.Serializable;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.Map;
-import java.util.Set;
+import java.util.*;
 
 public class MultiGame implements Serializable {
     private final LobbyListDiffPublisher lobbyListDiffPublisher;
     private final Set<Game> games;
     private final LobbyList lobbies;
-    private final Map<ServerModelController, String> usernames;
+    private final Map<ServerModelController, String> username;
+    private final CardLookUp<ObjectiveCard> cardLookUpObjective;
+    private final CardLookUp<StartCard> cardLookUpStartCard;
+    private final CardLookUp<ResourceCard> cardLookUpResourceCard;
+    private final CardLookUp<GoldCard> cardLookUpGoldCard;
     public MultiGame() {
         this.games = new HashSet<>();
         //usernames
-        this.usernames = new HashMap<>(); //user that are connected to the server
+        this.username = new HashMap<>(); //user that are connected to the server
         lobbies = new LobbyList();
+        String filePath = "./cards/";
+        String sourceFileName = "cards.json";
+        cardLookUpObjective =
+                new CardLookUp<>(new ObjectiveCardFactory(filePath+sourceFileName, filePath).getCards());
+        cardLookUpStartCard =
+                new CardLookUp<>(new StartCardFactory(filePath+sourceFileName, filePath).getCards());
+        cardLookUpResourceCard =
+                new CardLookUp<>(new ResourceCardFactory(filePath+sourceFileName, filePath).getCards());
+        cardLookUpGoldCard =
+                new CardLookUp<>(new GoldCardFactory(filePath+sourceFileName, filePath).getCards());
         this.lobbyListDiffPublisher = new LobbyListDiffPublisher(lobbies);
     }
 
@@ -34,8 +49,8 @@ public class MultiGame implements Serializable {
     }
 
     public Set<String> getUsernames() {
-        synchronized (usernames) {
-            return new HashSet<>(usernames.values());
+        synchronized (username) {
+            return new HashSet<>(username.values());
         }
     }
 
@@ -44,9 +59,9 @@ public class MultiGame implements Serializable {
     }
 
     public boolean addUser(ServerModelController controller, String username) {
-        synchronized (usernames){
+        synchronized (this.username){
             if(isUnique(username)){
-                usernames.put(controller, username);
+                this.username.put(controller, username);
                 return true;
             }else
                 return false;
@@ -78,8 +93,8 @@ public class MultiGame implements Serializable {
     }
 
     public void removeUser(String username) {
-        synchronized (usernames){
-            usernames.remove(username);
+        synchronized (this.username){
+            this.username.remove(username);
         }
     }
     /**
@@ -97,7 +112,8 @@ public class MultiGame implements Serializable {
     public void unsubscribe(DiffSubscriber diffSubscriber) {
         lobbyListDiffPublisher.unsubscribe(diffSubscriber);
     }
-    public void subscribe(LobbyListDiff lightLobbyDiff){lobbyListDiffPublisher.subscribe(lightLobbyDiff);
+    public void subscribe(LobbyListDiffEdit lightLobbyDiff){
+        lobbyListDiffPublisher.subscribe(lightLobbyDiff);
     }
     /**
      * @param nickname of the player
@@ -136,11 +152,71 @@ public class MultiGame implements Serializable {
         }
         return null;
     }
+
+    public Boolean addPlayerToLobby(String lobbyName, String nickname){
+        Lobby lobbyToJoin = null;
+        for(Lobby lobby: this.lobbies.getLobbies()){
+            if(lobby.getLobbyName().equals(lobbyName)){
+                lobbyToJoin=lobby;
+                break;
+            }
+        }
+        if(lobbyToJoin==null){
+            throw new IllegalCallerException(lobbyName + " does not exits");
+        }else{
+            return lobbyToJoin.addUserName(nickname);
+        }
+    }
+
+    public Game createGame(Lobby lobby){
+        return new Game(lobby, cardLookUpObjective, cardLookUpResourceCard, cardLookUpStartCard, cardLookUpGoldCard);
+    }
+
+    public CardLookUp<ObjectiveCard> getCardLookUpObjective() {
+        return cardLookUpObjective;
+    }
+
+    public CardLookUp<StartCard> getCardLookUpStartCard() {
+        return cardLookUpStartCard;
+    }
+
+    public CardLookUp<ResourceCard> getCardLookUpResourceCard() {
+        return cardLookUpResourceCard;
+    }
+
+    public CardLookUp<GoldCard> getCardLookUpGoldCard() {
+        return cardLookUpGoldCard;
+    }
+
+    public User getUserFromNick(String nickname){
+        User returnUser = null;
+        List<User> userList = this.getGames().stream()
+                .map(Game::getGameParty)
+                .flatMap(gameParty -> gameParty.getUsersList().stream()).toList();
+        for(User user : userList){
+            if(user.getNickname().equals(nickname)){
+                returnUser = user;
+                break;
+            }
+        }
+        if(returnUser==null){
+            throw new IllegalCallerException(nickname + " does not exist");
+        }else{
+            return returnUser;
+        }
+    }
+
+    public Map<ServerModelController, String> getUsernameMap(){
+        return username;
+    }
+
+
+
     @Override
     public String toString() {
         return "MultiGame{" +
                 "games=" + games +
-                ", usernames=" + usernames +
+                ", usernames=" + username +
                 '}';
     }
 }

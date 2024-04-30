@@ -78,4 +78,19 @@ public class Deck<Element> implements Serializable {
     public Element drawFromDeck(){
         return actualDeck.poll();
     }
+
+    /**
+     * @return the top Card of the Deck don't remove it
+     */
+    public Element showTopCardOfDeck(){
+        return actualDeck.peek();
+    }
+    /**
+     * @return the bufferID card from the buffer but do not remove it
+     */
+    public Element showCardFromBuffer(int bufferId){
+        List<Element> tmpList = new LinkedList<>(buffer);
+        Element element = tmpList.get(bufferId);
+        return element;
+    }
 }

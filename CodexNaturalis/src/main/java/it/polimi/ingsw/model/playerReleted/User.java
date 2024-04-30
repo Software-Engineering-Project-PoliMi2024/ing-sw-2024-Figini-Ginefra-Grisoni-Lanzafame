@@ -1,5 +1,6 @@
 package it.polimi.ingsw.model.playerReleted;
 
+import it.polimi.ingsw.model.cardReleted.cards.ObjectiveCard;
 import it.polimi.ingsw.model.tableReleted.Game;
 
 import java.io.Serializable;
@@ -34,6 +35,14 @@ public class User implements Serializable {
 
     public void setUserHand(Hand hand){
         this.userHand=hand;
+    }
+
+    public void playCard(Placement placement){
+        this.userCodex.playCard(placement);
+    }
+
+    public void setSecretObject(ObjectiveCard objectiveCard){
+        userHand.setSecretObjective(objectiveCard);
     }
 
     @Override
