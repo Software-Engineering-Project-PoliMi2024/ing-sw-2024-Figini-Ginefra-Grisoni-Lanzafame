@@ -1,4 +1,21 @@
 ```mermaid
+stateDiagram-v2
+  View --> VirtualControllerSocket
+  VirtualControllerSocket --> ServerHandler
+  ServerHandler --> ClientHandler
+  ServerHandler --> VirtualControllerSocket
+    ServerHandler --> View
+
+  ClientHandler --> Controller
+  Controller --> MultiGame
+  MultiGame --> Controller
+  Controller --> VirtualViewSocket
+  VirtualViewSocket --> ClientHandler
+  MultiGame --> VirtualViewSocket
+
+```
+
+```mermaid
 sequenceDiagram
     title: Accesso al gioco
     actor Pippo
