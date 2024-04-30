@@ -1,8 +1,11 @@
-package it.polimi.ingsw.lightModel.diffLists;
+package it.polimi.ingsw.lightModel.diffPublishers;
 
+import it.polimi.ingsw.lightModel.diffObserverInterface.DiffPubliher;
+import it.polimi.ingsw.lightModel.diffObserverInterface.DiffSubscriber;
 import it.polimi.ingsw.lightModel.lightTableRelated.LightLobbyList;
 import it.polimi.ingsw.lightModel.diffs.LobbyListDiff;
 
+import java.rmi.RemoteException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -30,7 +33,11 @@ public class LobbyListDiffPublisher implements DiffPubliher {
         }
     }
     public void notifySubscriber(DiffSubscriber diffSubscriber, LobbyListDiff lobbyListDiff) {
-        diffSubscriber.updateLobbyList(lobbyListDiff);
+        try {
+            diffSubscriber.updateLobbyList(lobbyListDiff);
+        }catch (RemoteException r){
+            r.printStackTrace();
+        }
     }
     public void subscribe(LobbyListDiff lightLobbyDiff) {
         synchronized (diffSubscribers){

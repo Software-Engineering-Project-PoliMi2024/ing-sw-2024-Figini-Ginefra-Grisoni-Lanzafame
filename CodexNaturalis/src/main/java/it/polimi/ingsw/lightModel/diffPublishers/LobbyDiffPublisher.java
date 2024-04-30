@@ -1,8 +1,11 @@
-package it.polimi.ingsw.lightModel.diffLists;
+package it.polimi.ingsw.lightModel.diffPublishers;
 
+import it.polimi.ingsw.lightModel.diffObserverInterface.DiffPublisherNick;
+import it.polimi.ingsw.lightModel.diffObserverInterface.DiffSubscriber;
 import it.polimi.ingsw.lightModel.diffs.LobbyDiff;
 
 
+import java.rmi.RemoteException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -72,7 +75,11 @@ public class LobbyDiffPublisher implements DiffPublisherNick {
     @Override
     public void notifySubscriber() {
         for(DiffSubscriber subscriber : lobbyDiffMap.keySet())
-            subscriber.updateLobby(this.lobbyDiffMap.get(subscriber));
+            try {
+                subscriber.updateLobby(this.lobbyDiffMap.get(subscriber));
+            }catch (RemoteException r){
+                r.printStackTrace();
+            }
         for(DiffSubscriber subscriber : lobbyDiffMap.keySet())
             synchronized (lobbyDiffMap) {
                 lobbyDiffMap.put(subscriber, new LobbyDiff(new ArrayList<>(), new ArrayList<>()));

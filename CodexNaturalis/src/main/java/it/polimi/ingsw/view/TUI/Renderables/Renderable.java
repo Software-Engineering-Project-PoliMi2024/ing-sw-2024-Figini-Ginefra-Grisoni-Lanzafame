@@ -6,7 +6,9 @@ import it.polimi.ingsw.view.TUI.inputs.CommandPromptResult;
 import it.polimi.ingsw.view.TUI.observers.CommandObserver;
 import it.polimi.ingsw.view.TUI.observers.InputObserver;
 
-public abstract class Renderable implements InputObserver, CommandObserver {
+import java.io.Serializable;
+
+public abstract class Renderable implements InputObserver, CommandObserver, Serializable {
     private boolean active = false;
 
     private final CommandPrompt[] relatedCommands;

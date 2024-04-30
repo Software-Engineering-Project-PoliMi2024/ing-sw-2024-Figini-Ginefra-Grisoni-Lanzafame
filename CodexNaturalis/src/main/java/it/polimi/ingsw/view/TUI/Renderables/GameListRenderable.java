@@ -5,6 +5,7 @@ import it.polimi.ingsw.lightModel.lightTableRelated.LightLobbyList;
 import it.polimi.ingsw.view.TUI.inputs.CommandPrompt;
 import it.polimi.ingsw.view.TUI.inputs.CommandPromptResult;
 
+import java.rmi.RemoteException;
 import java.util.Objects;
 
 public class GameListRenderable extends Renderable {
@@ -35,12 +36,20 @@ public class GameListRenderable extends Renderable {
                 this.render();
                 break;
             case CommandPrompt.JOIN_GAME:
-                controller.joinLobby(answer.getAnswer(0));
+                try {
+                    controller.joinLobby(answer.getAnswer(0));
+                }catch (RemoteException r){
+                    r.printStackTrace();
+                }
                 break;
             case CommandPrompt.CREATE_GAME:
                 String lobbyName = answer.getAnswer(0);
                 int maxPlayers = Integer.parseInt(answer.getAnswer(1));
-                controller.createLobby(lobbyName, maxPlayers);
+                try {
+                    controller.createLobby(lobbyName, maxPlayers);
+                }catch (RemoteException r){
+                    r.printStackTrace();
+                }
                 break;
             default:
                 break;

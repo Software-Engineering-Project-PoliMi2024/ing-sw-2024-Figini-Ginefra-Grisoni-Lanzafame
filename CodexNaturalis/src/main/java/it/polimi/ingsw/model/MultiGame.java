@@ -2,8 +2,8 @@ package it.polimi.ingsw.model;
 
 import it.polimi.ingsw.controller2.ServerModelController;
 import it.polimi.ingsw.lightModel.Lightifier;
-import it.polimi.ingsw.lightModel.diffLists.DiffSubscriber;
-import it.polimi.ingsw.lightModel.diffLists.LobbyListDiffPublisher;
+import it.polimi.ingsw.lightModel.diffObserverInterface.DiffSubscriber;
+import it.polimi.ingsw.lightModel.diffPublishers.LobbyListDiffPublisher;
 import it.polimi.ingsw.lightModel.diffs.LobbyListDiff;
 import it.polimi.ingsw.model.playerReleted.User;
 import it.polimi.ingsw.model.tableReleted.Game;

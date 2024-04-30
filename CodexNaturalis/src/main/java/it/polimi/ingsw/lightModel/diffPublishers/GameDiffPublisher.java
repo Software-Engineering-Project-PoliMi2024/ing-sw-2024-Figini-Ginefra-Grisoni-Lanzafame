@@ -1,12 +1,15 @@
-package it.polimi.ingsw.lightModel.diffLists;
+package it.polimi.ingsw.lightModel.diffPublishers;
 
 import it.polimi.ingsw.lightModel.LightCard;
+import it.polimi.ingsw.lightModel.diffObserverInterface.DiffPublisherNick;
+import it.polimi.ingsw.lightModel.diffObserverInterface.DiffSubscriber;
 import it.polimi.ingsw.lightModel.lightPlayerRelated.LightCodex;
 import it.polimi.ingsw.lightModel.lightTableRelated.LightGame;
 import it.polimi.ingsw.lightModel.lightPlayerRelated.LightHandOthers;
 import it.polimi.ingsw.lightModel.diffs.*;
 import it.polimi.ingsw.model.cardReleted.utilityEnums.Resource;
 
+import java.rmi.RemoteException;
 import java.util.*;
 
 public class GameDiffPublisher implements DiffPublisherNick {
@@ -45,7 +48,11 @@ public class GameDiffPublisher implements DiffPublisherNick {
     public synchronized void notifySubscriber() {
         for (DiffSubscriber subscriber : activeSubscribers.keySet()) {
             for(GameDiff diff : gameDiffMap.get(activeSubscribers.get(subscriber))){
-                subscriber.updateGame(diff);
+                try {
+                    subscriber.updateGame(diff);
+                }catch (RemoteException r){
+                    r.printStackTrace();
+                }
                 gameDiffMap.get(activeSubscribers.get(subscriber)).remove(diff);
             }
         }

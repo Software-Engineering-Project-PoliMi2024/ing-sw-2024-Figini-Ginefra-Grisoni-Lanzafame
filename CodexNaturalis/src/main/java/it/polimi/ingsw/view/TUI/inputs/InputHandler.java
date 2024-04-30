@@ -3,11 +3,12 @@ package it.polimi.ingsw.view.TUI.inputs;
 import it.polimi.ingsw.view.TUI.observers.InputObserved;
 import it.polimi.ingsw.view.TUI.observers.InputObserver;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Scanner;
 
-public class InputHandler implements InputObserved, Runnable {
+public class InputHandler implements InputObserved, Runnable, Serializable {
     private boolean keepGoing = true;
     private final List<InputObserver> observers = new ArrayList<>();
 

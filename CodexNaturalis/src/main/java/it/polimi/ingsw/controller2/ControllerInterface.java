@@ -5,15 +5,19 @@ import it.polimi.ingsw.lightModel.lightPlayerRelated.LightPlacement;
 import it.polimi.ingsw.model.cardReleted.utilityEnums.CardFace;
 import it.polimi.ingsw.model.cardReleted.utilityEnums.DrawableCard;
 
-public interface ControllerInterface {
-    void login(String nickname);
-    void getActiveLobbyList();
-    void createLobby(String gameName, int maxPlayerCount);
-    void joinLobby(String lobbyName);
-    void disconnect();
-    void leaveLobby();
-    void selectStartCardFace(LightCard card, CardFace cardFace);
-    void choseSecretObjective(LightCard objectiveCard);
-    void place(LightPlacement placement);
-    void draw(DrawableCard deckID, int cardID);
+import java.io.Serializable;
+import java.rmi.Remote;
+import java.rmi.RemoteException;
+
+public interface ControllerInterface extends Serializable, Remote {
+    void login(String nickname) throws RemoteException;
+    void getActiveLobbyList() throws RemoteException;
+    void createLobby(String gameName, int maxPlayerCount) throws RemoteException;
+    void joinLobby(String lobbyName) throws RemoteException;
+    void disconnect() throws RemoteException;
+    void leaveLobby() throws RemoteException;
+    void selectStartCardFace(LightCard card, CardFace cardFace) throws RemoteException;
+    void choseSecretObjective(LightCard objectiveCard) throws RemoteException;
+    void place(LightPlacement placement) throws RemoteException;
+    void draw(DrawableCard deckID, int cardID) throws RemoteException;
 }
