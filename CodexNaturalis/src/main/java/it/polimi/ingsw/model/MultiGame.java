@@ -2,8 +2,8 @@ package it.polimi.ingsw.model;
 
 import it.polimi.ingsw.controller2.ServerModelController;
 import it.polimi.ingsw.lightModel.Lightifier;
-import it.polimi.ingsw.lightModel.diffLists.DiffSubscriber;
-import it.polimi.ingsw.lightModel.diffLists.LobbyListDiffPublisher;
+import it.polimi.ingsw.lightModel.diffObserverInterface.DiffSubscriber;
+import it.polimi.ingsw.lightModel.diffPublishers.LobbyListDiffPublisher;
 import it.polimi.ingsw.lightModel.diffs.LobbyListDiff;
 import it.polimi.ingsw.model.playerReleted.User;
 import it.polimi.ingsw.model.tableReleted.Game;
@@ -108,11 +108,32 @@ public class MultiGame implements Serializable {
         return !this.getUsernames().contains(nickname);
     }
 
-    public Game inGame(String nickname){
+    public Boolean inGame(String nickname){
+        if(getUserGame(nickname)==null){
+            return false;
+        }else{
+            return true;
+        }
+    }
+
+    /**
+     * @param nickName of the player
+     * @return Game if the player is in a Game, null otherwise
+     */
+    public Game getUserGame(String nickName){
         for(Game game : this.getGames()){
-            if(game.getGameParty().getUsersList().stream().map(User::getNickname).toList().contains(nickname)){
+            if(game.getGameParty().getUsersList().stream().map(User::getNickname).toList().contains(nickName)){
                 return game;
             }
+        }
+        return null;
+    }
+
+    public Lobby getUserLobby(String nickname){
+        for(Lobby lobby: lobbies.getLobbies()){
+            for(String name : lobby.getLobbyPlayerList())
+                if(name.equals(nickname))
+                    return lobby;
         }
         return null;
     }

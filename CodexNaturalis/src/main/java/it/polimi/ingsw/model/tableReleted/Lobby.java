@@ -1,7 +1,7 @@
 package it.polimi.ingsw.model.tableReleted;
 
-import it.polimi.ingsw.lightModel.diffLists.DiffSubscriber;
-import it.polimi.ingsw.lightModel.diffLists.LobbyDiffPublisher;
+import it.polimi.ingsw.lightModel.diffObserverInterface.DiffSubscriber;
+import it.polimi.ingsw.lightModel.diffPublishers.LobbyDiffPublisher;
 
 import java.io.Serializable;
 import java.util.*;

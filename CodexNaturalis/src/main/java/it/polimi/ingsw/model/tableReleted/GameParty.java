@@ -1,11 +1,8 @@
 package it.polimi.ingsw.model.tableReleted;
 
-import it.polimi.ingsw.lightModel.diffLists.DiffSubscriber;
-import it.polimi.ingsw.lightModel.diffLists.GameDiffPublisher;
 import it.polimi.ingsw.model.playerReleted.User;
 
 import java.io.Serializable;
-import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 

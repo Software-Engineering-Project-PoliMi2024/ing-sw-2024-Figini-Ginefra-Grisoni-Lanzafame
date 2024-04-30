@@ -1,4 +1,4 @@
-package it.polimi.ingsw.lightModel.diffLists;
+package it.polimi.ingsw.lightModel.diffObserverInterface;
 
 import java.io.Serializable;
 

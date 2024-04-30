@@ -4,7 +4,7 @@ import it.polimi.ingsw.lightModel.LightCard;
 import it.polimi.ingsw.lightModel.Lightifier;
 import it.polimi.ingsw.lightModel.diffs.LobbyListDiff;
 import it.polimi.ingsw.lightModel.lightPlayerRelated.LightPlacement;
-import it.polimi.ingsw.lightModel.diffLists.DiffSubscriber;
+import it.polimi.ingsw.lightModel.diffObserverInterface.DiffSubscriber;
 import it.polimi.ingsw.lightModel.lightTableRelated.LightLobby;
 import it.polimi.ingsw.model.MultiGame;
 import it.polimi.ingsw.model.cardReleted.utilityEnums.CardFace;
@@ -14,6 +14,7 @@ import it.polimi.ingsw.model.tableReleted.Lobby;
 import it.polimi.ingsw.view.ViewInterface;
 import it.polimi.ingsw.view.ViewState;
 
+import java.rmi.RemoteException;
 import java.util.ArrayList;
 
 public class ServerModelController implements ControllerInterface {
@@ -28,120 +29,156 @@ public class ServerModelController implements ControllerInterface {
     }
 
     @Override
-    public void login(String nickname) {
+    public void login(String nickname) throws RemoteException {
         if(!this.games.isUnique(nickname)){
-            view.log(LogsFromServer.NAME_TAKEN.getMessage());
+            try {
+                view.log(LogsFromServer.NAME_TAKEN.getMessage());
+            }catch (RemoteException r){
+                r.printStackTrace();
+            }
         }else{
-            if(this.games.inGame(nickname)!=null){
-                this.joinGame(this.games.inGame(nickname), LogsFromServer.MID_GAME_JOINED);
+            if(games.inGame(nickname)){
+                this.joinGame(this.games.getUserGame(nickname), LogsFromServer.MID_GAME_JOINED);
             }else{
                 this.nickname = nickname;
                 this.games.addUser(this, nickname);
-                games.subscribe(view);
-                view.log(LogsFromServer.SERVER_JOINED.getMessage());
-                view.transitionTo(ViewState.JOIN_LOBBY);
+                getActiveLobbyList();
+                try {
+                    view.log(LogsFromServer.SERVER_JOINED.getMessage());
+                    view.transitionTo(ViewState.JOIN_LOBBY);
+                }catch (RemoteException r) {
+                    r.printStackTrace();
+                }
             }
         }
     }
-
-    @Override
-    public void getActiveLobbyList() {
+    private void getActiveLobbyList() {
         games.subscribe(view);
     }
 
     @Override
-    public void createLobby(String gameName, int maxPlayerCount) {
-        Lobby newLobby = new Lobby(maxPlayerCount, this.nickname, gameName);
-        this.games.addLobby(newLobby);
-        games.unsubscribe(this.view);
-        newLobby.subscribe(this.view, this.nickname);
-        games.subscribe(getAddLobbyDiff(newLobby));
-        view.log(LogsFromServer.LOBBY_CREATED.getMessage());
-        view.transitionTo(ViewState.LOBBY);
+    public void createLobby(String gameName, int maxPlayerCount) throws RemoteException {
+        if(games.getLobby(gameName)!=null){
+            view.log(LogsFromServer.LOBBY_NAME_TAKEN.getMessage());
+        }else {
+            Lobby newLobby = new Lobby(maxPlayerCount, this.nickname, gameName);
+            this.games.addLobby(newLobby);
+            games.unsubscribe(this.view);
+            newLobby.subscribe(this.view, this.nickname);
+            games.subscribe(getAddLobbyDiff(newLobby));
+            try {
+                view.log(LogsFromServer.LOBBY_CREATED.getMessage());
+                view.transitionTo(ViewState.LOBBY);
+            } catch (RemoteException r) {
+                r.printStackTrace();
+            }
+        }
     }
 
-    private LobbyListDiff getAddLobbyDiff(Lobby lobby){
+    private LobbyListDiff getAddLobbyDiff(Lobby lobby) throws RemoteException{
         ArrayList<LightLobby> listDiffAdd = new ArrayList<>();
         listDiffAdd.add(Lightifier.lightify(lobby));
         return new LobbyListDiff(listDiffAdd, new ArrayList<>());
     }
 
     @Override
-    public void joinLobby(String lobbyName) {
+    public void joinLobby(String lobbyName) throws RemoteException{
         Lobby lobbyToJoin = this.games.getLobby(lobbyName);
-        Boolean result = lobbyToJoin.addUserName(this.nickname);
-        if(result){
-            lobbyToJoin.subscribe(this.view, this.nickname);
-            view.log(LogsFromServer.LOBBY_JOINED.getMessage());
-            view.transitionTo(ViewState.LOBBY);
-            if(lobbyToJoin.getLobbyPlayerList().size() == lobbyToJoin.getNumberOfMaxPlayer()){
-                //Handle the creation of a new game from the lobby
-                Game newGame = new Game(lobbyToJoin);
-                for(DiffSubscriber diffSub : lobbyToJoin.getSubscribers()){
-                    lobbyToJoin.unsubscribe(diffSub);
-                    this.joinGame(newGame, LogsFromServer.NEW_GAME_JOINED);
+        if(lobbyToJoin!=null){
+            Boolean result = lobbyToJoin.addUserName(this.nickname);
+            if(result){
+                lobbyToJoin.subscribe(this.view, this.nickname);
+                try {
+                    view.log(LogsFromServer.LOBBY_JOINED.getMessage());
+                    view.transitionTo(ViewState.LOBBY);
+                }catch (RemoteException r){
+                    r.printStackTrace();
+                }
+                if(lobbyToJoin.getLobbyPlayerList().size() == lobbyToJoin.getNumberOfMaxPlayer()) {
+                    //Handle the creation of a new game from the lobby
+                    Game newGame = new Game(lobbyToJoin);
+                    for (DiffSubscriber diffSub : lobbyToJoin.getSubscribers()) {
+                        lobbyToJoin.unsubscribe(diffSub);
+                        this.joinGame(newGame, LogsFromServer.NEW_GAME_JOINED);
+                    }
                 }
             }
         }else{
-            view.log(LogsFromServer.LOBBY_IS_FULL.getMessage());
+            try {
+                view.log(LogsFromServer.LOBBY_INEXISTENT.getMessage());
+            }catch (RemoteException r){
+                r.printStackTrace();
+            }
         }
     }
 
     @Override
-    public void disconnect() {
+    public void disconnect() throws RemoteException{
 
     }
 
     @Override
-    public void leaveLobby() {
-        Lobby lobbyToLeave = games.getLobby(this.nickname);
+    public void leaveLobby() throws RemoteException{
+        Lobby lobbyToLeave = games.getUserLobby(this.nickname);
         if(lobbyToLeave==null){
             throw new IllegalCallerException();
         }else{
             lobbyToLeave.unsubscribe(view);
             games.subscribe(view);
             lobbyToLeave.removeUserName(this.nickname);
-            view.log(LogsFromServer.LOBBY_LEFT.getMessage());
-            view.transitionTo(ViewState.JOIN_LOBBY);
+            try {
+                view.log(LogsFromServer.LOBBY_LEFT.getMessage());
+                view.transitionTo(ViewState.JOIN_LOBBY);
+            }catch (RemoteException r){
+                r.printStackTrace();
+            }
             if(lobbyToLeave.getLobbyPlayerList().isEmpty()){
                 this.games.removeLobby(lobbyToLeave);
                 games.subscribe(getRemoveLobbyDiff(lobbyToLeave));
             }
         }
     }
-    private LobbyListDiff getRemoveLobbyDiff(Lobby lobby){
+    private LobbyListDiff getRemoveLobbyDiff(Lobby lobby) throws RemoteException{
         ArrayList<LightLobby> listDiffRmv = new ArrayList<>();
         listDiffRmv.add(Lightifier.lightify(lobby));
         return new LobbyListDiff(new ArrayList<>(), listDiffRmv);
     }
-    public void joinGame(Game game, LogsFromServer log) {
+    public void joinGame(Game game, LogsFromServer log) throws RemoteException{
         game.subcribe(view, this.nickname);
-        view.transitionTo(ViewState.CHOOSE_START_CARD);
-        view.log(log.getMessage());
+        try {
+            view.transitionTo(ViewState.CHOOSE_START_CARD);
+            view.log(log.getMessage());
+        }catch (RemoteException r){
+            r.printStackTrace();
+        }
     }
 
-    private void leaveGame() {
-        Game gameToLeave = games.getGame(this.nickname);
-        gameToLeave.unsubscrive(view);
+    private void leaveGame(){
+        Game gameToLeave = games.getUserGame(this.nickname);
+        if(gameToLeave == null){
+            throw new IllegalCallerException(nickname + " is not in any game");
+        }else{
+            gameToLeave.unsubscrive(view);
+        }
     }
 
     @Override
-    public void selectStartCardFace(LightCard card, CardFace cardFace) {
-
-    }
-
-    @Override
-    public void choseSecretObjective(LightCard objectiveCard) {
-
-    }
-
-    @Override
-    public void place(LightPlacement placement) {
+    public void selectStartCardFace(LightCard card, CardFace cardFace) throws RemoteException{
 
     }
 
     @Override
-    public void draw(DrawableCard deckID, int cardID) {
+    public void choseSecretObjective(LightCard objectiveCard) throws RemoteException{
+
+    }
+
+    @Override
+    public void place(LightPlacement placement) throws RemoteException{
+
+    }
+
+    @Override
+    public void draw(DrawableCard deckID, int cardID) throws RemoteException{
 
     }
 }
