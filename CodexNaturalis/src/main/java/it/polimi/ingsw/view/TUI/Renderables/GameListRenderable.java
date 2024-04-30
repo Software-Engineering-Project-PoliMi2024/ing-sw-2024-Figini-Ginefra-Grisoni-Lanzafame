@@ -5,14 +5,15 @@ import it.polimi.ingsw.lightModel.lightTableRelated.LightLobbyList;
 import it.polimi.ingsw.view.TUI.inputs.CommandPrompt;
 import it.polimi.ingsw.view.TUI.inputs.CommandPromptResult;
 
+import java.rmi.RemoteException;
 import java.util.Objects;
 
 public class GameListRenderable extends Renderable {
     private final LightLobbyList lightLobbyList;
 
-    public GameListRenderable(String name, CommandPrompt[] relatedCommands, ControllerInterface controller) {
+    public GameListRenderable(String name, LightLobbyList lightLobbyList, CommandPrompt[] relatedCommands, ControllerInterface controller) {
         super(name, relatedCommands, controller);
-        this.lightLobbyList = new LightLobbyList();
+        this.lightLobbyList = lightLobbyList;
     }
 
     @Override
@@ -35,12 +36,22 @@ public class GameListRenderable extends Renderable {
                 this.render();
                 break;
             case CommandPrompt.JOIN_GAME:
-                controller.joinLobby(answer.getAnswer(0));
+                try {
+                    controller.joinLobby(answer.getAnswer(0));
+                }
+                catch (RemoteException e) {
+                    System.out.println("Error while joining the game.");
+                }
                 break;
             case CommandPrompt.CREATE_GAME:
-                String lobbyName = answer.getAnswer(0);
-                int maxPlayers = Integer.parseInt(answer.getAnswer(1));
-                controller.createLobby(lobbyName, maxPlayers);
+                try {
+                    String lobbyName = answer.getAnswer(0);
+                    int maxPlayers = Integer.parseInt(answer.getAnswer(1));
+                    controller.createLobby(lobbyName, maxPlayers);
+                }
+                catch (RemoteException e) {
+                    System.out.println("Error while creating the game.");
+                }
                 break;
             default:
                 break;
