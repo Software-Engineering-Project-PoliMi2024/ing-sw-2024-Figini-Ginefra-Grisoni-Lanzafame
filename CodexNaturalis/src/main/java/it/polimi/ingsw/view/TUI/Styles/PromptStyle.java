@@ -1,5 +1,8 @@
 package it.polimi.ingsw.view.TUI.Styles;
 
+import it.polimi.ingsw.view.TUI.Printing.Printable;
+import it.polimi.ingsw.view.TUI.Printing.Printer;
+
 import java.util.List;
 
 public class PromptStyle {
@@ -30,44 +33,66 @@ public class PromptStyle {
     public static final String ConnectionRight = "┤";
 
     public static void printSeparator(int width, String separator, String leftCorner, String rightCorner){
-        System.out.print(leftCorner);
-        System.out.print(separator.repeat(width-2));
-        System.out.println(rightCorner);
+        Printable printable = new Printable("");
+        printable.print(leftCorner);
+        printable.print(separator.repeat(width-2));
+        printable.println(rightCorner);
+        Printer.print(printable);
+    }
+
+    public static void printSeparator(Printable printable, int width, String separator, String leftCorner, String rightCorner){
+        printable.print(leftCorner);
+        printable.print(separator.repeat(width-2));
+        printable.println(rightCorner);
     }
 
     public static void printBetweenSeparators(String text, int width, String separator){
-        System.out.print(separator);
-        System.out.print(new PaddedString(text, width, TextAlign.CENTER));
-        System.out.println(separator);
+        Printable printable = new Printable("");
+        printable.print(separator);
+        printable.print(new PaddedString(text, width, TextAlign.CENTER));
+        printable.println(separator);
+        Printer.print(printable);
+    }
+
+    public static void printBetweenSeparators(Printable printable, String text, int width, String separator){
+        printable.print(separator);
+        printable.print(new PaddedString(text, width, TextAlign.CENTER));
+        printable.println(separator);
     }
 
     public static void printInABox(String text, int width){
-        printSeparator(width+2, PromptStyle.HorizontalSeparator, PromptStyle.CornerTopLeftRounded, PromptStyle.CornerTopRightRounded);
-        printBetweenSeparators(text, width, PromptStyle.VerticalSeparator);
-        printSeparator(width+2, PromptStyle.HorizontalSeparator, PromptStyle.CornerBottomLeftRounded, PromptStyle.CornerBottomRightRounded);
+        Printable printable = new Printable("");
+        printSeparator(printable, width+2, PromptStyle.HorizontalSeparator, PromptStyle.CornerTopLeftRounded, PromptStyle.CornerTopRightRounded);
+        printBetweenSeparators(printable, text, width, PromptStyle.VerticalSeparator);
+        printSeparator(printable, width+2, PromptStyle.HorizontalSeparator, PromptStyle.CornerBottomLeftRounded, PromptStyle.CornerBottomRightRounded);
+        Printer.print(printable);
     }
 
     public static void printInABoxDouble(String text, int width){
-        printSeparator(width+2, PromptStyle.HorizontalDoubleSeparator, PromptStyle.CornerTopLeftDouble, PromptStyle.CornerTopRightDouble);
-        printBetweenSeparators(text, width, PromptStyle.VerticalDoubleSeparator);
-        printSeparator(width+2, PromptStyle.HorizontalDoubleSeparator, PromptStyle.CornerBottomLeftDouble, PromptStyle.CornerBottomRightDouble);
+        Printable printable = new Printable("");
+        printSeparator(printable, width+2, PromptStyle.HorizontalDoubleSeparator, PromptStyle.CornerTopLeftDouble, PromptStyle.CornerTopRightDouble);
+        printBetweenSeparators(printable, text, width, PromptStyle.VerticalDoubleSeparator);
+        printSeparator(printable, width+2, PromptStyle.HorizontalDoubleSeparator, PromptStyle.CornerBottomLeftDouble, PromptStyle.CornerBottomRightDouble);
+        Printer.print(printable);
     }
 
     public static void printListInABox(String title, List<String> list, int width, int linesPerItem){
-        printSeparator(width+2, PromptStyle.HorizontalSeparator, PromptStyle.CornerTopLeftRounded, PromptStyle.CornerTopRightRounded);
-        printBetweenSeparators(title, width, PromptStyle.VerticalSeparator);
-        printSeparator(width+2, PromptStyle.HorizontalSeparator, PromptStyle.ConnectionLeft, PromptStyle.ConnectionRight);
+        Printable printable = new Printable("");
+        printSeparator(printable, width+2, PromptStyle.HorizontalSeparator, PromptStyle.CornerTopLeftRounded, PromptStyle.CornerTopRightRounded);
+        printBetweenSeparators(printable, title, width, PromptStyle.VerticalSeparator);
+        printSeparator(printable, width+2, PromptStyle.HorizontalSeparator, PromptStyle.ConnectionLeft, PromptStyle.ConnectionRight);
 
         int i = 0;
         for(String item : list){
-            printBetweenSeparators(item, width, PromptStyle.VerticalSeparator);
+            printBetweenSeparators(printable, item, width, PromptStyle.VerticalSeparator);
 
             if(i % linesPerItem == linesPerItem-1 && i != list.size()-1){
-                printBetweenSeparators("", width, PromptStyle.VerticalSeparator);
+                printBetweenSeparators(printable, "", width, PromptStyle.VerticalSeparator);
             }
             i++;
         }
-        printSeparator(width+2, PromptStyle.HorizontalSeparator, PromptStyle.CornerBottomLeftRounded, PromptStyle.CornerBottomRightRounded);
+        printSeparator(printable, width+2, PromptStyle.HorizontalSeparator, PromptStyle.CornerBottomLeftRounded, PromptStyle.CornerBottomRightRounded);
+        Printer.print(printable);
     }
 
     public static final String Title = "\n" +
