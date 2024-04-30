@@ -64,7 +64,7 @@ public class TUI extends View{
         StateTUI.LOGIN_FORM.attach(loginForm);
         renderables.add(loginForm);
 
-        gameList = new GameListRenderable("Game List", new CommandPrompt[]{CommandPrompt.DISPLAY_GAME_LIST, CommandPrompt.JOIN_GAME, CommandPrompt.CREATE_GAME}, controller);
+        gameList = new GameListRenderable("Game List", lightLobbyList, new CommandPrompt[]{CommandPrompt.DISPLAY_GAME_LIST, CommandPrompt.JOIN_GAME, CommandPrompt.CREATE_GAME}, controller);
         StateTUI.JOIN_LOBBY.attach(gameList);
         renderables.add(gameList);
 
@@ -107,18 +107,17 @@ public class TUI extends View{
 
     @Override
     public void updateLobbyList(ModelDiffs<LightLobbyList> diff) {
-
+        diff.apply(lightLobbyList);
     }
-
 
     @Override
     public void updateLobby(ModelDiffs<LightLobby> diff) {
-
+        diff.apply(lightLobby);
     }
 
     @Override
     public void updateGame(ModelDiffs<LightGame> diff) {
-
+        diff.apply(lightGame);
     }
 
     @Override
