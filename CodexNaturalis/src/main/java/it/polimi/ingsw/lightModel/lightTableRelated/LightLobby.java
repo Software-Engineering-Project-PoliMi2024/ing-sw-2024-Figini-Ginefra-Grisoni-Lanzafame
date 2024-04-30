@@ -8,24 +8,25 @@ import java.util.List;
 /**
  * This class is a container for the list of lobbies.
  */
-public record LightLobby(List<String> nicknames, String name) implements Differentiable {
+public class LightLobby implements Differentiable {
+    private List<String> nicknames;
+    private String name;
     /**
      * Creates a LightLobby object.
      */
     public LightLobby (){
-        this(new ArrayList<>(), "");
+        nicknames=  new ArrayList<>();
+        name = "";
     }
     /**
      * @return the list of nicknames
      */
-    @Override
     public List<String> nicknames() {
         return nicknames;
     }
     /**
      * @return the name of the lobby
      */
-    @Override
     public String name() {
         return name;
     }
@@ -36,5 +37,13 @@ public record LightLobby(List<String> nicknames, String name) implements Differe
     public void nickDiff(List<String> add, List<String> rmv){
         nicknames.removeAll(rmv);
         nicknames.addAll(add);
+    }
+
+    public void setName(String name) {
+        this.name = name;
+    }
+
+    public void setNicknames(List<String> nicknames) {
+        this.nicknames = nicknames;
     }
 }

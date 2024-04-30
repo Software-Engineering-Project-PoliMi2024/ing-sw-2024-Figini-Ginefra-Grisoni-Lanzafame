@@ -10,7 +10,7 @@ import java.util.List;
  * This class is a container for the list of lobbies.
  */
 public class LightLobbyList implements Differentiable {
-    private final List<LightLobby> lobbies;
+    private List<LightLobby> lobbies;
     /**
      * Creates a LightLobbyList object.
      */
@@ -34,5 +34,9 @@ public class LightLobbyList implements Differentiable {
     public void lobbiesDiff(List<LightLobby> add, List<LightLobby> rmv){
         rmv.forEach(lobbies::remove);
         lobbies.addAll(add);
+    }
+
+    public void setLobbies(List<LightLobby> lobbies) {
+        this.lobbies = lobbies;
     }
 }
