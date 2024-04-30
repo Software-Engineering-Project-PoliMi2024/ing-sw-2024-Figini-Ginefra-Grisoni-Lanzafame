@@ -9,6 +9,8 @@ import it.polimi.ingsw.lightModel.lightTableRelated.LightLobbyList;
 import it.polimi.ingsw.view.TUI.Renderables.*;
 import it.polimi.ingsw.view.TUI.States.StateTUI;
 import it.polimi.ingsw.view.TUI.Styles.PromptStyle;
+import it.polimi.ingsw.view.TUI.cardDrawing.CardMuseum;
+import it.polimi.ingsw.view.TUI.cardDrawing.CardMuseumFactory;
 import it.polimi.ingsw.view.TUI.inputs.CommandPrompt;
 import it.polimi.ingsw.view.TUI.inputs.InputHandler;
 import it.polimi.ingsw.view.View;
@@ -24,6 +26,8 @@ public class TUI extends View{
 
     private List<Renderable> renderables;
 
+    private CardMuseum cardMuseum = new CardMuseumFactory("./cards/").getCardMuseum();
+
     private final ConnectFormRenderable connectForm;
 
     private LoginFormRenderable loginForm;
@@ -31,6 +35,8 @@ public class TUI extends View{
     private GameListRenderable gameList;
 
     private LobbyRenderable lobbyRenderable;
+
+    private ChooseStartCardRenderable chooseStartCardRenderable;
 
     private final LightGame lightGame = new LightGame();
 
@@ -71,6 +77,15 @@ public class TUI extends View{
         lobbyRenderable = new LobbyRenderable("Lobby", lightLobby, new CommandPrompt[]{CommandPrompt.DISPLAY_LOBBY, CommandPrompt.LEAVE_LOBBY}, controller);
         StateTUI.LOBBY.attach(lobbyRenderable);
         renderables.add(lobbyRenderable);
+
+        chooseStartCardRenderable = new ChooseStartCardRenderable(
+                "Choose Start Card",
+                cardMuseum,
+                lightGame,
+                new CommandPrompt[]{CommandPrompt.DISPLAY_START_FRONT, CommandPrompt.DISPLAY_START_BACK, CommandPrompt.CHOOSE_START_SIDE},
+                controller);
+        StateTUI.CHOOSE_START_CARD.attach(chooseStartCardRenderable);
+        renderables.add(chooseStartCardRenderable);
     }
 
     public void run() {
