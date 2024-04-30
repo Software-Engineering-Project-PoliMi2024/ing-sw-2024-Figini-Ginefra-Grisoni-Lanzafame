@@ -129,6 +129,14 @@ public class MultiGame implements Serializable {
         return null;
     }
 
+    public Lobby getUserLobby(String nickname){
+        for(Lobby lobby: lobbies.getLobbies()){
+            for(String name : lobby.getLobbyPlayerList())
+                if(name.equals(nickname))
+                    return lobby;
+        }
+        return null;
+    }
     @Override
     public String toString() {
         return "MultiGame{" +

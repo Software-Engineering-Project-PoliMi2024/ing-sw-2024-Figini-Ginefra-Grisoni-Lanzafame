@@ -121,7 +121,7 @@ public class ServerModelController implements ControllerInterface {
 
     @Override
     public void leaveLobby() throws RemoteException{
-        Lobby lobbyToLeave = games.getLobby(this.nickname);
+        Lobby lobbyToLeave = games.getUserLobby(this.nickname);
         if(lobbyToLeave==null){
             throw new IllegalCallerException();
         }else{
