@@ -46,4 +46,17 @@ public class LCardPointMultiplier implements ObjectiveCardPointMultiplier {
         }
         return multiplier;
     }
+
+    public CardCorner corner() {
+        return corner;
+    }
+    public Resource singleResource() {
+        return singleResource;
+    }
+
+    public  Resource doubleResource(){
+        return doubleResource;
+    }
+
+
 }
