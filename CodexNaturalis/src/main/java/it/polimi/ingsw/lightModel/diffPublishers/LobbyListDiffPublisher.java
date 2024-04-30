@@ -3,8 +3,9 @@ package it.polimi.ingsw.lightModel.diffPublishers;
 import it.polimi.ingsw.lightModel.Lightifier;
 import it.polimi.ingsw.lightModel.diffObserverInterface.DiffPubliher;
 import it.polimi.ingsw.lightModel.diffObserverInterface.DiffSubscriber;
-import it.polimi.ingsw.lightModel.diffs.LobbyListDiffEdit;
-import it.polimi.ingsw.lightModel.diffs.nuclearDiffs.FatManLobbyList;
+import it.polimi.ingsw.lightModel.lightTableRelated.LightLobby;
+import it.polimi.ingsw.lightModel.lightTableRelated.LightLobbyList;
+import it.polimi.ingsw.lightModel.diffs.LobbyListDiff;
 import it.polimi.ingsw.model.tableReleted.LobbyList;
 
 import java.rmi.RemoteException;
@@ -13,38 +14,35 @@ import java.util.List;
 
 public class LobbyListDiffPublisher implements DiffPubliher {
     private final List<DiffSubscriber> diffSubscribers;
-    private final LobbyListDiffEdit lobbyListDiff;
+    private final LobbyListDiff lobbyListDiff;
     private final LobbyList lobbyList;
     public LobbyListDiffPublisher(LobbyList lobbyList) {
         this.diffSubscribers = new ArrayList<>();
-        this.lobbyListDiff = new LobbyListDiffEdit(new ArrayList<>(), new ArrayList<>());
+        this.lobbyListDiff = new LobbyListDiff(new ArrayList<>(), new ArrayList<>());
         this.lobbyList = lobbyList;
     }
     @Override
     public void subscribe(DiffSubscriber diffSubscriber) {
         synchronized (diffSubscribers) {
             diffSubscribers.add(diffSubscriber);
-            this.notifySubscriber(diffSubscriber, new LobbyListDiffEdit(new ArrayList<>(lobbyList.getLobbies().stream().map(Lightifier::lightify).toList()),new ArrayList<>()));
+            this.notifySubscriber(diffSubscriber, new LobbyListDiff(new ArrayList<>(lobbyList.getLobbies().stream().map(Lightifier::lightify).toList()),new ArrayList<>()));
         }
     }
 
     @Override
-    public synchronized void unsubscribe(DiffSubscriber diffSubscriber) {
-        diffSubscribers.remove(diffSubscriber);
-        try {
-            diffSubscriber.updateLobbyList(new FatManLobbyList());
-        }catch (RemoteException r){
-            r.printStackTrace();
+    public void unsubscribe(DiffSubscriber diffSubscriber) {
+        synchronized (diffSubscribers){
+            diffSubscribers.remove(diffSubscriber);
         }
     }
-    public void notifySubscriber(DiffSubscriber diffSubscriber, LobbyListDiffEdit lobbyListDiff) {
+    public void notifySubscriber(DiffSubscriber diffSubscriber, LobbyListDiff lobbyListDiff) {
         try {
             diffSubscriber.updateLobbyList(lobbyListDiff);
         }catch (RemoteException r){
             r.printStackTrace();
         }
     }
-    public void subscribe(LobbyListDiffEdit lightLobbyDiff) {
+    public void subscribe(LobbyListDiff lightLobbyDiff) {
         synchronized (diffSubscribers){
             lobbyListDiff.updateLobbyListDiff(lightLobbyDiff);
         }

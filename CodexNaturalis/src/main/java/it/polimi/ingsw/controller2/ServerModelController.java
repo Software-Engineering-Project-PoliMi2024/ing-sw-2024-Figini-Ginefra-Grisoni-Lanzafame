@@ -2,7 +2,7 @@ package it.polimi.ingsw.controller2;
 
 import it.polimi.ingsw.lightModel.LightCard;
 import it.polimi.ingsw.lightModel.Lightifier;
-import it.polimi.ingsw.lightModel.diffs.LobbyListDiffEdit;
+import it.polimi.ingsw.lightModel.diffs.LobbyListDiff;
 import it.polimi.ingsw.lightModel.lightPlayerRelated.LightPlacement;
 import it.polimi.ingsw.lightModel.diffObserverInterface.DiffSubscriber;
 import it.polimi.ingsw.lightModel.lightTableRelated.LightLobby;
@@ -30,7 +30,6 @@ public class ServerModelController implements ControllerInterface {
 
     @Override
     public void login(String nickname) throws RemoteException {
-        System.out.println();
         if(!this.games.isUnique(nickname)){
             try {
                 view.log(LogsFromServer.NAME_TAKEN.getMessage());
@@ -76,10 +75,10 @@ public class ServerModelController implements ControllerInterface {
         }
     }
 
-    private LobbyListDiffEdit getAddLobbyDiff(Lobby lobby){
+    private LobbyListDiff getAddLobbyDiff(Lobby lobby) throws RemoteException{
         ArrayList<LightLobby> listDiffAdd = new ArrayList<>();
         listDiffAdd.add(Lightifier.lightify(lobby));
-        return new LobbyListDiffEdit(listDiffAdd, new ArrayList<>());
+        return new LobbyListDiff(listDiffAdd, new ArrayList<>());
     }
 
     @Override
@@ -125,24 +124,24 @@ public class ServerModelController implements ControllerInterface {
             throw new IllegalCallerException();
         }else{
             lobbyToLeave.unsubscribe(view);
+            games.subscribe(view);
             lobbyToLeave.removeUserName(this.nickname);
-            if(lobbyToLeave.getLobbyPlayerList().isEmpty()){
-                this.games.removeLobby(lobbyToLeave);
-                games.subscribe(getRemoveLobbyDiff(lobbyToLeave));
-            }
             try {
                 view.log(LogsFromServer.LOBBY_LEFT.getMessage());
-                getActiveLobbyList();
                 view.transitionTo(ViewState.JOIN_LOBBY);
             }catch (RemoteException r){
                 r.printStackTrace();
             }
+            if(lobbyToLeave.getLobbyPlayerList().isEmpty()){
+                this.games.removeLobby(lobbyToLeave);
+                games.subscribe(getRemoveLobbyDiff(lobbyToLeave));
+            }
         }
     }
-    private LobbyListDiffEdit getRemoveLobbyDiff(Lobby lobby){
+    private LobbyListDiff getRemoveLobbyDiff(Lobby lobby) throws RemoteException{
         ArrayList<LightLobby> listDiffRmv = new ArrayList<>();
         listDiffRmv.add(Lightifier.lightify(lobby));
-        return new LobbyListDiffEdit(new ArrayList<>(), listDiffRmv);
+        return new LobbyListDiff(new ArrayList<>(), listDiffRmv);
     }
     public void joinGame(Game game, LogsFromServer log) throws RemoteException{
         game.subcribe(view, this.nickname);
