@@ -29,7 +29,7 @@ public enum StringStyle {
     }
 
     StringStyle(int r, int g, int b, boolean isBackground) {
-        this.style = isBackground ? "4" : "3" + "8;2;" + r + ";" + g + ";" + b;
+        this.style = (isBackground ? "4" : "3") + "8;2;" + r + ";" + g + ";" + b;
     }
 
     public String getStyle() {
