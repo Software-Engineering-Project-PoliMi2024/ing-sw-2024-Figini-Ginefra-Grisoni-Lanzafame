@@ -66,7 +66,7 @@ public class CardPainter {
     private static void drawCollectableMultiplier(CollectableCardPointMultiplier multiplier, Drawable drawable){
         if(multiplier != null){
             int n = multiplier.getTargets().values().stream().mapToInt(i -> i).sum();
-            int y = drawable.getHeight() / 2;
+            int y = drawable.getHeight() / 2+1;
             int x = (drawable.getWidth() - n) / 2;
 
             for(Collectable collectable : multiplier.getTargets().keySet()){
@@ -86,9 +86,9 @@ public class CardPainter {
             Resource resource = multiplier.getColor();
             boolean upwards = multiplier.isUpwards();
             int y = drawable.getHeight() / 2;
-            int x = (drawable.getWidth() / 2) - 1;
+            int x = (drawable.getWidth() / 2) - 1 - 2;
             int length = 3;
-            String emoji = CardTextStyle.getCollectableEmoji(resource);
+            String emoji = CardTextStyle.getResourceFilling(resource);
 
             if (upwards) {
                 for (int i = 0; i < length; i++) {
@@ -113,10 +113,10 @@ public class CardPainter {
             Resource singleResource = multiplier.singleResource();
             Resource doubleResource = multiplier.doubleResource();
             int y = drawable.getHeight() / 2;
-            int x = drawable.getWidth() / 2;
+            int x = drawable.getWidth() / 2 - 2;
             int length = 2;
-            String emoji = CardTextStyle.getCollectableEmoji(singleResource);
-            String emoji2 = CardTextStyle.getCollectableEmoji(doubleResource);
+            String emoji = CardTextStyle.getResourceFilling(singleResource);
+            String emoji2 = CardTextStyle.getResourceFilling(doubleResource);
 
             if ( corner == CardCorner.TL) {
                 drawable.addContent(emoji, x, y-1);
@@ -283,8 +283,11 @@ public class CardPainter {
         //Fill the background
         drawable.fillContent(bg_filler);
 
+        //Draw the equal sign
+        drawable.addContent(CardTextStyle.getEqualEmoji(), drawable.getWidth() / 2, drawable.getHeight() / 2);
+
         //Draw the points
-        drawable.addContent(CardTextStyle.getNumberEmoji(card.getPoints()), drawable.getWidth() / 2, 0);
+        drawable.addContent(CardTextStyle.getNumberEmoji(card.getPoints()), drawable.getWidth() / 2, drawable.getHeight() / 2 - 1);
 
         //Draw the multiplier
         drawCollectableMultiplier(multiplier, drawable);
@@ -300,8 +303,11 @@ public class CardPainter {
         //Fill the background
         drawable.fillContent(bg_filler);
 
+        //Draw the Equal sign
+        drawable.addContent(CardTextStyle.getEqualEmoji(), drawable.getWidth() / 2, drawable.getHeight() / 2);
+
         //Draw the points
-        drawable.addContent(CardTextStyle.getNumberEmoji(card.getPoints()), drawable.getWidth() / 2, 0);
+        drawable.addContent(CardTextStyle.getNumberEmoji(card.getPoints()), drawable.getWidth() / 2 + 2, drawable.getHeight() / 2);
 
         //Draw the multiplier
         drawDiagonalMultiplier(multiplier, drawable);
@@ -317,8 +323,11 @@ public class CardPainter {
         //Fill the background
         drawable.fillContent(bg_filler);
 
+        //Draw the Equal sign
+        drawable.addContent(CardTextStyle.getEqualEmoji(), drawable.getWidth() / 2, drawable.getHeight() / 2);
+
         //Draw the points
-        drawable.addContent(CardTextStyle.getNumberEmoji(card.getPoints()), drawable.getWidth() / 2, 0);
+        drawable.addContent(CardTextStyle.getNumberEmoji(card.getPoints()), drawable.getWidth() / 2 + 2, drawable.getHeight() / 2);
 
         //Draw the multiplier
         drawLMultiplier(multiplier, drawable);
