@@ -67,6 +67,10 @@ public enum CommandPrompt implements Iterator<String>, CommandObserved {
 
     DISPLAY_LOBBY("Display lobby",
             new String[]{},
+            new Predicate[]{}),
+
+    LEAVE_LOBBY("Leave lobby",
+            new String[]{},
             new Predicate[]{});
 
     private final String[] questions;

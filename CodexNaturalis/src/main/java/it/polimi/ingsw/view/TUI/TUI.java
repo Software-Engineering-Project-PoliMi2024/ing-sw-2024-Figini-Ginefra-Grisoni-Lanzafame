@@ -68,7 +68,7 @@ public class TUI extends View{
         StateTUI.JOIN_LOBBY.attach(gameList);
         renderables.add(gameList);
 
-        lobbyRenderable = new LobbyRenderable("Lobby", lightLobby, new CommandPrompt[]{CommandPrompt.DISPLAY_LOBBY}, controller);
+        lobbyRenderable = new LobbyRenderable("Lobby", lightLobby, new CommandPrompt[]{CommandPrompt.DISPLAY_LOBBY, CommandPrompt.LEAVE_LOBBY}, controller);
         StateTUI.LOBBY.attach(lobbyRenderable);
         renderables.add(lobbyRenderable);
     }
