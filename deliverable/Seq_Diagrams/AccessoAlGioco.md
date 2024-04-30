@@ -5,114 +5,117 @@ sequenceDiagram
 
     box black Client
         participant View
-        participant SocketClientController
+        participant VirtualControllerSocket
         participant ServerHandler
     end
 
     box purple Server
         participant ClientHandler
-        participant SocketServerController
+        participant VirtualViewSocket
+        participant Controller
         participant MultiGame
     end
 
-    View ->> +Pippo : Enter IP and port
+    View ->> +Pippo : Enter a Command
+    Pippo -->> View : Submit Connect
+    View ->> Pippo : Enter IP and port
     Pippo -->> -View : Submit IP and port
-    View ->> + SocketClientController : connectToServer(ip, port)
-    activate SocketClientController
-    SocketClientController ->> +SocketServerController : ping
-    SocketServerController ->> SocketClientController : ack
+    View ->> +VirtualControllerSocket : connect(ip, port)
+    VirtualControllerSocket ->> -ServerHandler : connectToServer(ip, port)
+    activate ServerHandler
+    ServerHandler ->> +VirtualViewSocket : ping
+    VirtualViewSocket -->> ServerHandler : ack
+    VirtualViewSocket ->> -ClientHandler : run
+    ServerHandler ->> -View : transitionTo(Login)
 
-    SocketServerController ->> ClientHandler : construct(MultiGame)
-    activate ClientHandler
-    SocketServerController ->> -ClientHandler : run()
-    deactivate ClientHandler
-
-    SocketClientController ->> +ServerHandler : construct(View)
-    SocketClientController ->> ServerHandler : run()
-    deactivate SocketClientController
-    SocketClientController ->> -View : transitionTo(Login)
-
+    View ->> +Pippo : Enter a Command
+    Pippo -->> View : Submit Login
     View ->> Pippo : Enter nickname
-    Pippo -->> View : Submit nickname
+    Pippo -->> -View : Submit nickname
 
-    View ->> SocketClientController : login(nickname)
-
-    SocketClientController ->> ServerHandler : sendActionMsg(loginMsg)
-
+    View ->> VirtualControllerSocket : login(nickname)
+    VirtualControllerSocket ->> ServerHandler : sendMsg(loginMsg)
     ServerHandler ->> ClientHandler : loginMsg
+    ClientHandler ->> +Controller : login(nickname)
+    Controller ->> MultiGame : isUnique(nickname)
+    MultiGame -->> Controller : false
+    Controller ->> MultiGame : isGame(nickname)
+    MultiGame -->> Controller : false
+    Controller ->> MultiGame : addUser(nickame)
+    Controller ->> MultiGame : games.subscribe(virtualView)
 
-    ClientHandler ->> SocketServerController : login(nickname)
+    MultiGame ->> VirtualViewSocket : updateLobbyList(modelDiffs)
+    VirtualViewSocket ->> ClientHandler : sendMsg(updateLobbyListMsg)
+    ClientHandler ->> ServerHandler : updateLobbyListMsg
+    ServerHandler ->> View : updateLobbyList(modelDiffs)
 
-    SocketServerController ->> MultiGame : isNickUnique(nickname)
+    Controller ->> VirtualViewSocket : log("Server Joined")
+    VirtualViewSocket ->> ClientHandler : sendMsg(logMsg)
+    ClientHandler ->> ServerHandler : logMsg
+    ServerHandler ->> View : log("Server Joined")
+    View ->> Pippo : "Server Joined"
 
-    MultiGame -->> SocketServerController : true
+    Controller ->> -VirtualViewSocket : transitionTo(JoinLobby)
+    VirtualViewSocket ->> ClientHandler : sendMsg(transitionMsg)
+    ClientHandler ->> ServerHandler : transitionMsg
+    ServerHandler ->> View : transitionTo(JoinLobby)
 
-    SocketServerController ->> MultiGame : isNickInGame(nickname)
+    View ->> +Pippo : Enter a Command
+    Pippo -->> View : Submit Display Lobby List
+    View ->> Pippo : Lobby List
+    deactivate Pippo
 
-    MultiGame -->> SocketServerController : false
+    View ->> +Pippo : Enter a Command
+    Pippo -->> View : Submit Join Game
+    View ->> Pippo : Enter a lobby name
+    Pippo -->> -View : Submit lobbyName
+    View ->> VirtualControllerSocket : joinLobby(lobbyName)
+    VirtualControllerSocket ->> ServerHandler : sendMsg(joinLobbyMsg)
+    ServerHandler ->> ClientHandler : joinLobbyMsg
+    ClientHandler ->> +Controller : joinLobby(lobbyName)
 
-    SocketServerController ->> ClientHandler : sendServerMsg(loginAnswerMsg(OK))
+    Controller ->> MultiGame : addPlayerToLobby(lobbyName, nickname)
 
-    ClientHandler ->> ServerHandler : loginAnswerMsg(OK)
-    ServerHandler ->> SocketClientController : loginAnswer(OK)
+    MultiGame ->> VirtualViewSocket : updateLobby(modelDiffs)
+    VirtualViewSocket ->> ClientHandler : sendMsg(updateLobbyMsg)
+    ClientHandler ->> ServerHandler : updateLobbyMsg
+    ServerHandler ->> View : updateLobby(modelDiffs)
 
-    SocketClientController ->> View : transitionTo(GameList)
+    Controller ->> VirtualViewSocket : log("Lobby Joined")
+    VirtualViewSocket ->> ClientHandler : sendMsg(logMsg)
+    ClientHandler ->> ServerHandler : logMsg
+    ServerHandler ->> View : log("Lobby Joined")
+    View ->> Pippo : "Lobby Joined"
 
-    SocketServerController ->> ClientHandler : sendServerMsg(gameListNotification(String[] gameList))
-
-    ClientHandler ->> ServerHandler : gameListNotification(String[] gameList)
-    ServerHandler ->> SocketClientController : updateGameList(String[] gameList)
-    SocketClientController ->> View : updateGameList(gameList)
-
-    View ->> Pippo : Display Game List
-
-    View ->> Pippo : Enter a game name
-
-    Pippo -->> View : Submit selected game name
-
-    View ->> SocketClientController : joinLobby(gameName)
+    Controller ->> VirtualViewSocket : transitionTo(Lobby)
+    VirtualViewSocket ->> ClientHandler : sendMsg(transitionMsg)
+    ClientHandler ->> ServerHandler : transitionMsg
+    ServerHandler ->> View : transitionTo(Lobby)
 
 
-    SocketClientController ->> ServerHandler : sendActionMsg(joinLobbyMsg(gameName))
+    Controller ->> MultiGame : isLobbyFull(lobbyName)
+    MultiGame -->> Controller : true
+    Controller ->> MultiGame : joinGame(nickname)
 
-    ServerHandler ->> ClientHandler : joinLobbyMsg(gameName)
+    MultiGame ->> VirtualViewSocket : updateGame(modelDiffs)
+    VirtualViewSocket ->> ClientHandler : sendMsg(updateGameMsg)
+    ClientHandler ->> ServerHandler : updateGameMsg
+    ServerHandler ->> View : updateGame(modelDiffs)
 
-    ClientHandler ->> SocketServerController : joinLobby(gameName)
 
-    SocketServerController ->> MultiGame : joinLobby(gameName)
+    Controller ->> VirtualViewSocket : log("Game started")
+    VirtualViewSocket ->> ClientHandler : sendMsg(logMsg)
+    ClientHandler ->> ServerHandler : logMsg
+    ServerHandler ->> View : log("Game started")
+    View ->> Pippo : "Game started"
 
-    MultiGame -->> SocketServerController : true
 
-    SocketServerController ->> ClientHandler : sendServerMsg(joinLobbyAnswerMsg(OK))
+    Controller ->> -VirtualViewSocket : transitionTo(ChooseStartCard)
+    VirtualViewSocket ->> ClientHandler : sendMsg(transitionMsg)
+    ClientHandler ->> ServerHandler : transitionMsg
+    ServerHandler ->> View : transitionTo(ChooseStartCard)
 
-    ClientHandler ->> ServerHandler : joinLobbyAnswerMsg(OK)
-
-    ServerHandler ->> SocketClientController : joinLobbyAnswer(OK)
-
-    SocketClientController ->> View : transitionTo(Lobby)
-
-    SocketServerController ->> ClientHandler : sendServerMsg(lobbyNotification(String[] nicks))
-
-    ClientHandler ->> ServerHandler : lobbyNotification(nicks)
-    ServerHandler ->> SocketClientController : updateLobby(nicks)
-    SocketClientController ->> View : updateLobby(nicks)
-
-    View ->> Pippo : Display Lobby
-
-    SocketServerController ->> MultiGame : isLobbyFull()
-
-    MultiGame -->> SocketServerController : true
-
-    SocketServerController ->> MultiGame : startGame(gameName)
-
-    SocketServerController ->> ClientHandler : sendServerMsg(gameStartedNotification)
-
-    ClientHandler ->> ServerHandler : gameStartedNotification
-    ServerHandler ->> SocketClientController : gameStarted()
-    SocketClientController ->> View : transitionTo(ChooseStartCard)
-
-    View ->> Pippo : Display Game stuff
-
+    View ->> Pippo : Enter a Command
 ```
 
 # Sequence Diagram Report: Game Access Flow
@@ -129,17 +132,16 @@ The sequence diagram illustrates the flow of actions involved in accessing a gam
 
 - Client:
 
-  - View: The visual interface where the user interacts.
-  - SocketClientController: It's the bridge between the view and the web communation. It has the methods to send data to the server and to react to the server's messages. The latter are inherited from the parent and are the same for both the Socket and RMI implementations.
-
-  - ServerHandler: Manages communication with the server.
+  - View: The user interface that displays the game and handles user input.
+  - VirtualControllerSocket: Manages communication with the actual controller. It implements a Controller interface.
+  - ServerHandler: Handles the connection between the client and the server handling the Socket messages.
 
 - Server:
 
-  - ClientHandler: Handles client connections and requests.
-  - SocketServerController: It's the bridge between the web communation and the model. It has the methods to send data to the client and to react to the client's messages. The latter are inherited from the parent and are the same for both the Socket and RMI implementations.
-
-  - MultiGame: Manages multiple game instances and lobbies. There is only one MultiGame instance for the whole server.
+  - ClientHandler: Manages the client connection on the server side.
+  - VirtualViewSocket: Manages communication with the actual view. It implements a View interface.
+  - Controller: The controller that processes the user input and updates the model.
+  - MultiGame: The model that manages the game state and player interactions.
 
 ## Disclaimer
 
@@ -150,24 +152,35 @@ The diagram has been written with an optimistic approach, assuming that all the 
 - Initial Connection:
 
   - Pippo enters the IP and port to connect.
-  - The View forwards this to the SocketClientController, which initiates the connection.
-  - SocketClientController pings the SocketServerController for acknowledgment.
-  - If successful, the SocketServerController constructs a ClientHandler to handle the connection.
+  - The View sends the IP and port to the VirtualControllerSocket.
+  - The VirtualControllerSocket connects to the server using the provided IP and port.
+  - The ServerHandler establishes the connection with the server.
+  - The server-side components acknowledge the connection and transition the View to the login interface.
 
 - Login Process:
 
-  - Pippo submits a nickname.
-  - The View sends this to the SocketClientController, which then logs in using the provided nickname.
-  - Server-side components check if the nickname is unique and not already in use in any ongoing game.
-  - If the nickname is unique and not in use, Pippo is logged in successfully and transitions to the game list interface.
+  - Pippo enters a nickname.
+  - The View sends the nickname to the VirtualControllerSocket.
+  - The VirtualControllerSocket sends a login message to the server.
+  - The server-side components process the login message.
+  - The Controller checks if the nickname is unique and not already in a game.
+  - If the nickname is unique, the Controller adds the player to the game and subscribes the Virtual View to the game updates.
+  - The MultiGame model updates the lobby list and notifies the Virtual Views.
+  - The View transitions to the lobby interface.
 
 - Game Lobby Access:
 
-  - Pippo selects a game from the displayed list.
-  - The chosen game name is sent to the SocketClientController, initiating the process to join the lobby.
-  - The server-side components ensure that the lobby is available and not full.
-  - If the lobby is available, Pippo successfully joins and transitions to the lobby interface.
+  - Pippo requests to join a game lobby.
+  - The View sends the lobby name to the VirtualControllerSocket.
+  - The VirtualControllerSocket sends a join lobby message to the server.
+  - The server-side components process the join lobby message.
+  - The Controller adds the player to the lobby and updates the lobby model.
+  - The MultiGame model updates the lobby and notifies the Virtual Views.
+  - The View transitions to the lobby interface.
 
 - Game Start:
-  - Once the lobby is full, the game starts.
-  - Players receive notifications, and the interface transitions to the game interface.
+
+  - The Controller checks if the lobby is full.
+  - If the lobby is full, the Controller starts the game.
+  - The MultiGame model updates the game state and notifies the Virtual Views.
+  - The View transitions to the game interface.
