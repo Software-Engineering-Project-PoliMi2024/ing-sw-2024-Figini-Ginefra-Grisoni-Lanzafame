@@ -97,8 +97,7 @@ public class MultiGame implements Serializable {
     public void unsubscribe(DiffSubscriber diffSubscriber) {
         lobbyListDiffPublisher.unsubscribe(diffSubscriber);
     }
-    public void subscribe(LobbyListDiff lightLobbyDiff){
-        lobbyListDiffPublisher.subscribe(lightLobbyDiff);
+    public void subscribe(LobbyListDiff lightLobbyDiff){lobbyListDiffPublisher.subscribe(lightLobbyDiff);
     }
     /**
      * @param nickname of the player

@@ -40,4 +40,12 @@ public class LobbyListDiff implements ModelDiffs<LightLobbyList> {
         this.addedLobby.addAll(oldDiff.getAddedLobby());
         this.removedLobby.addAll(oldDiff.getRemovedLobby());
     }
+
+    @Override
+    public String toString() {
+        return "LobbyListDiff{" +
+                "addedLobby=" + addedLobby.toString() +
+                ", removedLobby=" + removedLobby.toString() +
+                '}';
+    }
 }
