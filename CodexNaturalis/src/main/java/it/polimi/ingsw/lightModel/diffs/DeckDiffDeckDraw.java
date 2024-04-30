@@ -16,7 +16,7 @@ public class DeckDiffDeckDraw extends DeckDiff {
         this.deck = deck;
     }
     /**
-     * @param lightgame the game to which the diff is applied
+     * @param ligthgame the game to which the diff is applied
      */
     public void apply(LightGame ligthgame) {
         ligthgame.setTopDeck(resource, deck);
