@@ -60,16 +60,20 @@ public class ServerModelController implements ControllerInterface {
 
     @Override
     public void createLobby(String gameName, int maxPlayerCount) throws RemoteException {
-        Lobby newLobby = new Lobby(maxPlayerCount, this.nickname, gameName);
-        this.games.addLobby(newLobby);
-        games.unsubscribe(this.view);
-        newLobby.subscribe(this.view, this.nickname);
-        games.subscribe(getAddLobbyDiff(newLobby));
-        try {
-            view.log(LogsFromServer.LOBBY_CREATED.getMessage());
-            view.transitionTo(ViewState.LOBBY);
-        }catch (RemoteException r){
-            r.printStackTrace();
+        if(games.getLobby(gameName)!=null){
+            view.log(LogsFromServer.LOBBY_NAME_TAKEN.getMessage());
+        }else {
+            Lobby newLobby = new Lobby(maxPlayerCount, this.nickname, gameName);
+            this.games.addLobby(newLobby);
+            games.unsubscribe(this.view);
+            newLobby.subscribe(this.view, this.nickname);
+            games.subscribe(getAddLobbyDiff(newLobby));
+            try {
+                view.log(LogsFromServer.LOBBY_CREATED.getMessage());
+                view.transitionTo(ViewState.LOBBY);
+            } catch (RemoteException r) {
+                r.printStackTrace();
+            }
         }
     }
 

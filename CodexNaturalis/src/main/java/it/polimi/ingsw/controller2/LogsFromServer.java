@@ -9,6 +9,7 @@ public enum LogsFromServer {
     LOBBY_JOINED("Lobby joined"),
     LOBBY_LEFT("Lobby left"),
     LOBBY_INEXISTENT("The lobby does not exist"),
+    LOBBY_NAME_TAKEN("The lobby name is already taken"),
     LOBBY_CREATED("Lobby created"),
     NEW_GAME_JOINED("Joined a new game from the lobby"),
     MID_GAME_JOINED("Joined your previous game");
