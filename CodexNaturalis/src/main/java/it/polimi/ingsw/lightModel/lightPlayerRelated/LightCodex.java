@@ -33,6 +33,19 @@ public class LightCodex implements Differentiable {
 
         this.placementHistory = new LinkedHashMap<>();
     }
+
+    /**
+     * @param points the points of the related codex
+     * @param collectables the collectables of the related codex
+     * @param frontier the frontier of the related codex
+     * @param placementHistory the placement history of the related codex
+     */
+    public LightCodex(int points, Map<Collectable, Integer> collectables, LightFrontier frontier, Map<Position, LightPlacement> placementHistory){
+        this.points = points;
+        this.collectables = collectables;
+        this.frontier = frontier;
+        this.placementHistory = placementHistory;
+    }
     /** @return points of the related codex*/
     public int getPoints() { return this.points;}
     /**

@@ -86,10 +86,11 @@ public class LightGame implements Differentiable {
     public void setGoldDeck(LightDeck deck){
         decks.put(DrawableCard.GOLDCARD, deck);
     }
-    public void setDecks(Map<DrawableCard, LightDeck> decks){
-        for(DrawableCard deck : decks.keySet()){
-            this.decks.put(deck, decks.get(deck));
-        }
+    public void setTopDeck(Resource resource, DrawableCard type){
+        decks.get(type).setTopDeckCard(resource);
+    }
+    public void setDeckBuffer(LightCard card, DrawableCard type,Integer position){
+        decks.get(type).substituteBufferCard(card, position);
     }
     public void setGameName(String gameName) {
         this.lightGameParty.setGameName(gameName);
