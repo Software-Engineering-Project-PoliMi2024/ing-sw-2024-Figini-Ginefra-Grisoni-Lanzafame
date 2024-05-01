@@ -1,5 +1,6 @@
 package it.polimi.ingsw.view.TUI.cardDrawing;
 
+import it.polimi.ingsw.SignificantPaths;
 import it.polimi.ingsw.model.cardReleted.cardFactories.GoldCardFactory;
 import it.polimi.ingsw.model.cardReleted.cardFactories.ObjectiveCardFactory;
 import it.polimi.ingsw.model.cardReleted.cardFactories.ResourceCardFactory;
@@ -62,7 +63,7 @@ public class CardMuseumFactory {
 
             return loadMuseum();
         } catch (IOException | ClassNotFoundException e) {
-            String sourceFileName = "cards.json";
+            String sourceFileName = SignificantPaths.CardFile;
 
             CardMuseum cardMuseum = new CardMuseum();
 
