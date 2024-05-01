@@ -29,6 +29,10 @@ public class LightHand implements Differentiable {
         this.cardPlayability = cards;
         this.cards = cards.keySet().toArray(new LightCard[2]);
     }
+    public LightHand(Map<LightCard, Boolean> cards){
+        this.cardPlayability = cards;
+        this.cards = cards.keySet().toArray(new LightCard[2]);
+    }
     /**
      * Set the secret objective of the player
      * @param secretObjective the secret objective of the player
