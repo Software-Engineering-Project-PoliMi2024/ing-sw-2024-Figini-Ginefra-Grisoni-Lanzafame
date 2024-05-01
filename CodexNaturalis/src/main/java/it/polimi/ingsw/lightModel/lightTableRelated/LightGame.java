@@ -12,12 +12,12 @@ import it.polimi.ingsw.model.cardReleted.utilityEnums.Resource;
 import java.util.*;
 
 public class LightGame implements Differentiable {
-    private final LightGameParty lightGameParty;
-    private final Map<String, LightCodex> codexMap;
-    private final LightHand hand;
-    private final Map<String, LightHandOthers> handOthers;
-    private final Map<DrawableCard, LightDeck> decks;
-    private final LightCard[] publicObjective;
+    private LightGameParty lightGameParty;
+    private Map<String, LightCodex> codexMap;
+    private LightHand hand;
+    private Map<String, LightHandOthers> handOthers;
+    private Map<DrawableCard, LightDeck> decks;
+    private LightCard[] publicObjective;
 
     public LightGame(){
         this.lightGameParty = new LightGameParty();
@@ -125,5 +125,15 @@ public class LightGame implements Differentiable {
 
     public void setCollectable(Map<Collectable, Integer> collectables, String nickname){
         codexMap.get(nickname).setCollectables(collectables);
+    }
+    public void reset(){
+        this.lightGameParty = new LightGameParty();
+        this.codexMap = new HashMap<>();
+        this.hand = new LightHand();
+        this.handOthers = new HashMap<>();
+        this.decks = new HashMap<>();
+        decks.put(DrawableCard.RESOURCECARD, new LightDeck());
+        decks.put(DrawableCard.GOLDCARD, new LightDeck());
+        publicObjective = new LightCard[2];
     }
 }
