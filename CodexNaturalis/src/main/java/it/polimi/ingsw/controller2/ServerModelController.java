@@ -8,6 +8,7 @@ import it.polimi.ingsw.lightModel.lightPlayerRelated.LightPlacement;
 import it.polimi.ingsw.lightModel.diffObserverInterface.DiffSubscriber;
 import it.polimi.ingsw.lightModel.lightTableRelated.LightLobby;
 import it.polimi.ingsw.model.MultiGame;
+import it.polimi.ingsw.model.cardReleted.cards.Card;
 import it.polimi.ingsw.model.cardReleted.cards.CardInHand;
 import it.polimi.ingsw.model.cardReleted.cards.GoldCard;
 import it.polimi.ingsw.model.cardReleted.cards.ResourceCard;
@@ -29,6 +30,7 @@ public class ServerModelController implements ControllerInterface {
     private final MultiGame games;
     private final ViewInterface view;
     private String nickname;
+
 
     public ServerModelController(MultiGame games, ViewInterface view) {
         this.games = games;
@@ -154,6 +156,14 @@ public class ServerModelController implements ControllerInterface {
         listDiffRmv.add(Lightifier.lightify(lobby));
         return new LobbyListDiffEdit(new ArrayList<>(), listDiffRmv);
     }
+
+    /**
+     * Connects the user to the game. If it is the first time (the game is just being created), transitions the view
+     * to the CHOOSE_START_CARD state; otherwise, transitions the view to IDLE.
+     * @param game The game being accessed.
+     * @param log The log to be sent to the view (NEW_GAME_JOINED/MID_GAME_JOINED).
+     * @throws RemoteException If an error occurs during the sending of Diffs.
+     */
     public void joinGame(Game game, LogsFromServer log) throws RemoteException{
         game.subcribe(view, this.nickname);
         try {
@@ -179,6 +189,12 @@ public class ServerModelController implements ControllerInterface {
         }
     }
 
+    /**
+     * Set the StartCard chose by the user. Transition the view to the SELECET_OBJECTIVE
+     * @param card which is the StartCard chose by the user
+     * @param cardFace the startCard Face wich is visible in the codex
+     * @throws RemoteException if something goes with the sending of the Diffs
+     */
     @Override
     public void selectStartCardFace(LightCard card, CardFace cardFace) throws RemoteException{
         User user = games.getUserFromNick(this.nickname);
@@ -189,9 +205,19 @@ public class ServerModelController implements ControllerInterface {
         userGame.subcribe(new CodexDiff(this.nickname, user.getUserCodex().getPoints(),
                 user.getUserCodex().getEarnedCollectables(), getPlacementList(Lightifier.lightify(heavyPlacement)), user.getUserCodex().getFrontier().getFrontier()));
         view.log(LogsFromServer.START_CARD_PLACED.getMessage());
+        //Send the secretObjectiveCard choice to the view
+        for(LightCard secretObjectiveCardChoice : drawObjectiveCard()){
+            view.updateGame(new HandDiffAdd(secretObjectiveCardChoice, true));
+        }
         view.transitionTo(ViewState.SELECT_OBJECTIVE);
     }
 
+    /**
+     * Set the secretObjectiveCard chose by the user
+     * Start the game loop from the currentPlayer by placing his view to PLACECARD. The others view are in Idle
+     * @param card which represent the secret objective choose by the user
+     * @throws RemoteException if something goes with the sending of the Diffs
+     */
     @Override
     public void choseSecretObjective(LightCard card) throws RemoteException{
         User userToEdit = games.getUserFromNick(this.nickname);
@@ -206,6 +232,9 @@ public class ServerModelController implements ControllerInterface {
         }
     }
 
+    /**
+     * @return two random ObjectiveCard from the ObjectiveCard deck
+     */
     private List<LightCard> drawObjectiveCard(){
         Game userGame = games.getUserGame(this.nickname);
         List<LightCard> cardList = new ArrayList<>();
@@ -215,6 +244,11 @@ public class ServerModelController implements ControllerInterface {
         return cardList;
     }
 
+    /**
+     * Update the deck, trasition the player to DrawCard
+     * @param placement the LightPlacement created by placing the card
+     * @throws RemoteException if something goes with the sending of the Diffs
+     */
     @Override
     public void place(LightPlacement placement) throws RemoteException {
         User user = games.getUserFromNick(nickname);
@@ -229,11 +263,23 @@ public class ServerModelController implements ControllerInterface {
         view.transitionTo(ViewState.DRAW_CARD);
     }
 
+    /**
+     * @param placement the new Placement that is being added
+     * @return a mockList containing only the newPlacement
+     */
     private List<LightPlacement> getPlacementList(LightPlacement placement){
         List<LightPlacement> list = new ArrayList<>();
         list.add(placement);
         return list;
     }
+
+    /**
+     * Draw a card from the deckID-deck in the cardID-position
+     * Transition to the newPlayer and set the current one to Idle
+     * @param deckID the deck from which the card is drawn
+     * @param cardID the position from where draw the card (buffer/deck)
+     * @throws RemoteException if something goes with the sending of the Diffs
+     */
     @Override
     public void draw(DrawableCard deckID, int cardID) throws RemoteException {
         CardInHand drawCard;
@@ -243,42 +289,54 @@ public class ServerModelController implements ControllerInterface {
             Game userGame = games.getUserGame(this.nickname);
             if(deckID == DrawableCard.GOLDCARD){
                 Deck<GoldCard> goldDeck = userGame.getGoldCardDeck();
-                if(cardID==2){
-                    drawCard = goldDeck.drawFromDeck();
-                    userGame.subcribe(new DeckDiffDeckDraw(DrawableCard.GOLDCARD,
-                            goldDeck.showTopCardOfDeck().getPermanentResources(CardFace.BACK).stream().toList().getFirst()));
-                }else{
-                    drawCard = goldDeck.drawFromBuffer(cardID);
-                    userGame.subcribe(new DeckDiffDeckDraw(DrawableCard.GOLDCARD,
-                            goldDeck.showCardFromBuffer(cardID).getPermanentResources(CardFace.BACK).stream().toList().getFirst()));
-                }
-            }else{ //RESOURCE CARD DRAWN
+                drawCard = drawACard(goldDeck, DrawableCard.GOLDCARD, cardID, userGame);
+            }else {
                 Deck<ResourceCard> resourceDeck = userGame.getResourceCardDeck();
-                if(cardID==2){
-                    drawCard = userGame.getResourceCardDeck().drawFromDeck();
-                    userGame.subcribe(new DeckDiffDeckDraw(DrawableCard.RESOURCECARD,
-                            resourceDeck.showTopCardOfDeck().getPermanentResources(CardFace.BACK).stream().toList().getFirst()));
-                }else{
-                    drawCard = userGame.getResourceCardDeck().drawFromBuffer(cardID);
-                    userGame.subcribe(new DeckDiffDeckDraw(DrawableCard.RESOURCECARD,
-                            resourceDeck.showCardFromBuffer(cardID).getPermanentResources(CardFace.BACK).stream().toList().getFirst()));
-                }
+                drawCard = drawACard(resourceDeck, DrawableCard.RESOURCECARD, cardID, userGame);
             }
             User user = games.getUserFromNick(this.nickname);
             user.getUserHand().addCard(drawCard);
             userGame.subcribe(view, new HandDiffAdd(Lightifier.lightifyToCard(drawCard), drawCard.canBePlaced()),
                     new HandOtherDiffAdd(drawCard.getPermanentResources(CardFace.BACK).stream().toList().getFirst(), this.nickname));
+
             userGame.getGameParty().nextPlayer();
             String nextPlayerNickname = userGame.getGameParty().getCurrentPlayer().getNickname();
             userGame.subcribe(new GameDiffRound(nextPlayerNickname));
             ViewInterface nextPlayerView = nextPlayer(nextPlayerNickname).getView();
             nextPlayerView.log(LogsFromServer.YOUR_TURN.getMessage());
             nextPlayerView.transitionTo(ViewState.PLACE_CARD);
+
             view.log(LogsFromServer.CARD_DRAWN.getMessage());
             view.transitionTo(ViewState.IDLE);
         }
     }
 
+    /**
+     * @param deck from which drawn a Card
+     * @param drawableCard the type of card being drawn
+     * @param cardID the position from where draw the card (buffer/deck)
+     * @param userGame  the game where the card is being drawn
+     * @return the card drawn
+     * @param <T> a CardInHand (GoldCard/ResourceCard)
+     */
+    private <T extends CardInHand> T drawACard(Deck<T> deck, DrawableCard drawableCard, int cardID, Game userGame) {
+        T drawCard;
+        if (cardID == 2) {
+            drawCard = deck.drawFromDeck();
+            userGame.subcribe(new DeckDiffDeckDraw(drawableCard,
+                    deck.showTopCardOfDeck().getPermanentResources(CardFace.BACK).stream().toList().getFirst()));
+        } else {
+            drawCard = deck.drawFromBuffer(cardID);
+            userGame.subcribe(new DeckDiffDeckDraw(drawableCard,
+                    deck.showCardFromBuffer(cardID).getPermanentResources(CardFace.BACK).stream().toList().getFirst()));
+        }
+        return drawCard;
+    }
+
+    /**
+     * @param nextPlayerNickName the nickname of the new currentPlayer
+     * @return the Controller of the new currentPlayer
+     */
     public ServerModelController nextPlayer(String nextPlayerNickName){
         ServerModelController nextplayerContoller  = null;
        for(Map.Entry<ServerModelController, String> entry : this.games.getUsernameMap().entrySet()){
@@ -297,4 +355,5 @@ public class ServerModelController implements ControllerInterface {
     public ViewInterface getView() {
         return view;
     }
+
 }
