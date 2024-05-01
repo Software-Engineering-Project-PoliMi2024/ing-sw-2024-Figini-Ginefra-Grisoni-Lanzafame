@@ -13,6 +13,7 @@ import it.polimi.ingsw.model.cardReleted.utilityEnums.Collectable;
 import it.polimi.ingsw.model.cardReleted.utilityEnums.Resource;
 import it.polimi.ingsw.model.cardReleted.utilityEnums.WritingMaterial;
 import it.polimi.ingsw.model.utilities.Pair;
+import it.polimi.ingsw.view.TUI.Printing.Printer;
 
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
@@ -159,7 +160,7 @@ public class ObjectiveCardFactory extends AbstractCardFactory<ObjectiveCard>{
         }
 
         JsonObject multiplierD = card.getAsJsonObject("multiplierD");
-        return new DiagonalCardPointMultiplier(multiplierD.get("upwards").getAsBoolean(),
+        return new DiagonalCardPointMultiplier(multiplierD.get("upwards").getAsString().equals("1"),
                 Resource.valueOf(multiplierD.get("resource").getAsString().toUpperCase()));
     }
 

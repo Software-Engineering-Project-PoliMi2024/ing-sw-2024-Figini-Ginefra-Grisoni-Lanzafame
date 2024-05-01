@@ -14,19 +14,21 @@ public class CardTextStyle {
     public static final String ESCReset = "\u001B[0m";
 
     private static final Map<Collectable, String> collectableEmoji = Map.of(
-            Resource.ANIMAL, new DecoratedString("🐺", StringStyle.LIGHT_BG).toString(), // 🐺
-            Resource.INSECT, new DecoratedString("\uD83E\uDD8B", StringStyle.LIGHT_BG).toString(), //🦋
-            Resource.FUNGI, new DecoratedString("\uD83C\uDF44", StringStyle.LIGHT_BG).toString(), //🍄
-            Resource.PLANT, new DecoratedString("🌿", StringStyle.LIGHT_BG).toString(), //🌿
-            WritingMaterial.INKWELL, new DecoratedString("\uD83E\uDED9", StringStyle.LIGHT_BG).toString(), //🫙
-            WritingMaterial.QUILL, new DecoratedString("\uD83E\uDEB6", StringStyle.LIGHT_BG).toString(), //🪶
-            WritingMaterial.MANUSCRIPT, new DecoratedString("\uD83D\uDCDC", StringStyle.LIGHT_BG).toString(), //📜
+            Resource.ANIMAL, new DecoratedString("🐺", StringStyle.DARK_BG).toString(), // 🐺
+            Resource.INSECT, new DecoratedString("\uD83E\uDD8B", StringStyle.DARK_BG).toString(), //🦋
+            Resource.FUNGI, new DecoratedString("\uD83C\uDF44", StringStyle.DARK_BG).toString(), //🍄
+            Resource.PLANT, new DecoratedString("🌿", StringStyle.DARK_BG).toString(), //🌿
+            WritingMaterial.INKWELL, new DecoratedString("\uD83E\uDED9", StringStyle.DARK_BG).toString(), //🫙
+            WritingMaterial.QUILL, new DecoratedString("\uD83E\uDEB6", StringStyle.DARK_BG).toString(), //🪶
+            WritingMaterial.MANUSCRIPT, new DecoratedString("\uD83D\uDCDC", StringStyle.DARK_BG).toString(), //📜
             SpecialCollectable.EMPTY, new DecoratedString("\uD83C\uDFB5", StringStyle.DARK_BG).toString()  // "🎵"
     );
 
     private static final String backgroundEmoji = "▪\uFE0F";
 
-    private static final String coveredCornerMultiplierEmoji = "\uD83D\uDD17"; //🔗
+    private static final String coveredCornerMultiplierEmoji = new DecoratedString("\uD83D\uDD17", StringStyle.DARK_BG).toString(); //🔗
+
+    private static final String equalEmoji = new DecoratedString("✖\uFE0F", StringStyle.GOLD_BG).toString(); //✖️
 
     private static final String cornerFiller = new DecoratedString("\uD83D\uDD38", StringStyle.DARK_BG).toString(); //🔸
 
@@ -91,7 +93,7 @@ public class CardTextStyle {
     }
 
     public static String getNumberEmoji(int number){
-        return numberEmoji.get(number);
+        return new DecoratedString(numberEmoji.get(number), StringStyle.DARK_BG).toString();
     }
 
     public static String getBackgroundEmoji(){
@@ -116,6 +118,10 @@ public class CardTextStyle {
 
     public static String getFrontierFilling() {
         return frontierFilling;
+    }
+
+    public static String getEqualEmoji() {
+        return equalEmoji;
     }
 }
 
