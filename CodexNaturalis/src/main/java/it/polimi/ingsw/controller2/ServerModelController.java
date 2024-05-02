@@ -131,7 +131,7 @@ public class ServerModelController implements ControllerInterface {
                     //Handle the creation of a new game from the lobby
                     Game newGame = games.createGame(lobbyToJoin);
                     for (DiffSubscriber diffSub : lobbyToJoin.getSubscribers()) {
-                        lobbyToJoin.unsubscribe(diffSub);
+                        lobbyToJoin.unsubscribe(diffSub, lobbyName);
                         this.joinGame(newGame, LogsFromServer.NEW_GAME_JOINED);
                     }
                 }
@@ -164,7 +164,7 @@ public class ServerModelController implements ControllerInterface {
                 games.subscribe(getRemoveLobbyDiff(lobbyToLeave));
             }
 
-            lobbyToLeave.unsubscribe(view);
+            lobbyToLeave.unsubscribe(view, lobbyToLeave.getLobbyName());
             games.subscribe(view);
             try {
                 view.log(LogsFromServer.LOBBY_LEFT.getMessage());
