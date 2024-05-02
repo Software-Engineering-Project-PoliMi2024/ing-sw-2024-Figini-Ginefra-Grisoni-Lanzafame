@@ -32,10 +32,12 @@ public class LightLobbyList implements Differentiable {
      * @param rmv the lobbies to remove
      */
     public void lobbiesDiff(List<LightLobby> add, List<LightLobby> rmv){
+        ArrayList<LightLobby> lobbyModify = new ArrayList<>(lobbies);
         for(LightLobby lightLobby : rmv){
-            lobbies.remove(lightLobby);
+            lobbyModify.remove(lightLobby);
         }
-        lobbies.addAll(add);
+        lobbyModify.addAll(add);
+        lobbies = lobbyModify;
     }
 
     public void setLobbies(List<LightLobby> lobbies) {

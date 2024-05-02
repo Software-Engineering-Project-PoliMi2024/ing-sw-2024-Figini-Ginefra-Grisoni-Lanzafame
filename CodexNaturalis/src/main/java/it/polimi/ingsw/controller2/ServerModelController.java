@@ -172,17 +172,16 @@ public class ServerModelController implements ControllerInterface {
      */
     private void joinGame(Game game, LogsFromServer log) throws RemoteException {
         game.subcribe(view, this.nickname);
-        try {
-            view.log(log.getMessage());
-            if(log == LogsFromServer.NEW_GAME_JOINED){
-                view.transitionTo(ViewState.CHOOSE_START_CARD);
-                LightCard lightStartCard = Lightifier.lightifyToCard(game.getStartingCardDeck().drawFromDeck());
-                game.subcribe(new HandDiffAdd(lightStartCard, true));
-            }else{
-                view.transitionTo(ViewState.IDLE);
-            }
-        }catch (RemoteException r){
-            r.printStackTrace();
+        log(log);
+        /*TODO: questo sistema in cui si sceglie in base al log non mi piace per niente
+         *  direi che a prescindere si va in Idle, e poi con un check sul model si vede se è necessario scegliere
+         *  la start card*/
+        if (log == LogsFromServer.NEW_GAME_JOINED) {
+            transitionTo(ViewState.CHOOSE_START_CARD);
+            LightCard lightStartCard = Lightifier.lightifyToCard(game.getStartingCardDeck().drawFromDeck());
+            game.subcribe(new HandDiffAdd(lightStartCard, true));
+        } else {
+            transitionTo(ViewState.IDLE);
         }
     }
 
