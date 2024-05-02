@@ -5,7 +5,7 @@ import it.polimi.ingsw.lightModel.lightTableRelated.LightGame;
 
 public class GadgetGame extends GameDiff {
     @Override
-    public void apply(LightGame differentiableType) {
-
+    public void apply(LightGame lightGame) {
+        lightGame.reset();
     }
 }

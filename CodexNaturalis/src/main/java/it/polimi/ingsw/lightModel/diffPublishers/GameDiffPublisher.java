@@ -4,6 +4,7 @@ import it.polimi.ingsw.lightModel.LightCard;
 import it.polimi.ingsw.lightModel.Lightifier;
 import it.polimi.ingsw.lightModel.diffObserverInterface.DiffPublisherNick;
 import it.polimi.ingsw.lightModel.diffObserverInterface.DiffSubscriber;
+import it.polimi.ingsw.lightModel.diffs.nuclearDiffs.GadgetGame;
 import it.polimi.ingsw.lightModel.lightPlayerRelated.LightCodex;
 import it.polimi.ingsw.lightModel.lightPlayerRelated.LightHand;
 import it.polimi.ingsw.lightModel.lightTableRelated.LightGame;
@@ -15,6 +16,7 @@ import it.polimi.ingsw.model.cardReleted.cards.ResourceCard;
 import it.polimi.ingsw.model.cardReleted.utilityEnums.DrawableCard;
 import it.polimi.ingsw.model.cardReleted.utilityEnums.Resource;
 import it.polimi.ingsw.model.playerReleted.Hand;
+import it.polimi.ingsw.model.playerReleted.User;
 import it.polimi.ingsw.model.tableReleted.Deck;
 import it.polimi.ingsw.model.tableReleted.Game;
 
@@ -22,60 +24,63 @@ import java.rmi.RemoteException;
 import java.util.*;
 
 public class GameDiffPublisher implements DiffPublisherNick {
-    private final Map<String, List<GameDiff>> gameDiffMap;
+    private final List<String> connectedOnce;
+    //private final Map<String, List<GameDiff>> gameDiffMap;
     private final Map<DiffSubscriber, String> activeSubscribers;
     private final Game game;
     public GameDiffPublisher(Game game) {
-        this.gameDiffMap = new HashMap<>();
         this.activeSubscribers = new HashMap<>();
+        connectedOnce = new ArrayList<>();
         this.game = game;
     }
 
     @Override
     public synchronized void subscribe(DiffSubscriber diffSubscriber, String nickname) {
-        boolean firstTime = !gameDiffMap.containsKey(nickname);
-        if(firstTime) {
-            gameDiffMap.put(nickname, new ArrayList<>());
-        }
         GameDiffPlayerActivity communicateJoin = new GameDiffPlayerActivity(List.of(nickname), new ArrayList<>());
-        activeSubscribers.put(diffSubscriber, nickname);
-        gameDiffMap.get(nickname).addAll(getTotalCurrentState(diffSubscriber));
-        for(DiffSubscriber activeSubs : activeSubscribers.keySet()){
-            gameDiffMap.get(activeSubscribers.get(activeSubs)).add(communicateJoin);
+        for(DiffSubscriber subscriber : activeSubscribers.keySet()){
+            notifySubscriber(subscriber, communicateJoin);
         }
-        notifySubscriber();
+        activeSubscribers.put(diffSubscriber, nickname);
+        List<GameDiff> yours = getTotalCurrentState(diffSubscriber);
+        notifySubscriber(diffSubscriber, yours);
+
     }
     @Override
     public synchronized void unsubscribe(DiffSubscriber diffSubscriber) {
         GameDiffPlayerActivity communicateLeave = new GameDiffPlayerActivity(new ArrayList<>(), List.of(activeSubscribers.get(diffSubscriber)));
         activeSubscribers.remove(diffSubscriber);
-        for(DiffSubscriber subscriber : activeSubscribers.keySet())
-            gameDiffMap.get(activeSubscribers.get(subscriber)).add(communicateLeave);
-        notifySubscriber();
-    }
-    @Override
-    public synchronized void notifySubscriber() {
-        for (DiffSubscriber subscriber : activeSubscribers.keySet()) {
-            for(GameDiff diff : gameDiffMap.get(activeSubscribers.get(subscriber))){
-                try {
-                    subscriber.updateGame(diff);
-                }catch (RemoteException r){
-                    r.printStackTrace();
-                }
-                gameDiffMap.get(activeSubscribers.get(subscriber)).remove(diff);
-            }
+        for(DiffSubscriber subscriber : activeSubscribers.keySet()){
+            notifySubscriber(subscriber, communicateLeave);
         }
+
+        notifySubscriber(diffSubscriber, new GadgetGame());
     }
 
     public synchronized void subscribe(GameDiff diff) {
-        for(DiffSubscriber subscriber : activeSubscribers.keySet()){
-            gameDiffMap.get(activeSubscribers.get(subscriber)).add(diff);
+        for(DiffSubscriber diffSubscriber : activeSubscribers.keySet()){
+            notifySubscriber(diffSubscriber, diff);
         }
-        notifySubscriber();
     }
-    public synchronized void subscribe(List<GameDiff> diffs, DiffSubscriber diffSubscriber){
-        gameDiffMap.get(activeSubscribers.get(diffSubscriber)).addAll(diffs);
-        notifySubscriber();
+    public synchronized void subscribe(DiffSubscriber diffSubscriber, GameDiff playerGameDiff, GameDiff otherGameDiff){
+        for(DiffSubscriber subscriber : activeSubscribers.keySet()) {
+            if (activeSubscribers.get(diffSubscriber).equals(activeSubscribers.get(subscriber))) {
+                 notifySubscriber(subscriber, playerGameDiff);
+            } else {
+                notifySubscriber(subscriber, otherGameDiff);
+            }
+        }
+    }
+    public synchronized void notifySubscriber(DiffSubscriber diffSubscriber, GameDiff gameDiff){
+        try{
+            diffSubscriber.updateGame(gameDiff);
+        }catch (RemoteException r){
+            r.printStackTrace();
+        }
+    }
+    public synchronized void notifySubscriber(DiffSubscriber diffSubscriber, List<GameDiff> gameDiffs){
+        for(GameDiff gameDiff : gameDiffs){
+            notifySubscriber(diffSubscriber, gameDiff);
+        }
     }
     private List<DeckDiff> getDeckCurrentState(){
         List<DeckDiff> deckDiff = new ArrayList<>();
@@ -96,7 +101,7 @@ public class GameDiffPublisher implements DiffPublisherNick {
     }
     private List<CodexDiff> getCodexCurrentState(){
         List<CodexDiff> codexDiff = new ArrayList<>();
-        for(String nickname : gameDiffMap.keySet()){
+        for(String nickname : game.getGameParty().getUsersList().stream().map(User::getNickname).toList()){
             LightCodex codex = Lightifier.lightify(game.getGameParty().getUsersList().stream().filter(user -> user.getNickname().equals(nickname)).findFirst().get().getUserCodex());
             codexDiff.add(new CodexDiff(
                     nickname,
@@ -123,7 +128,7 @@ public class GameDiffPublisher implements DiffPublisherNick {
     }
     private List<HandOtherDiff> getHandOtherCurrentState(DiffSubscriber diffSubscriber){
         List<HandOtherDiff> handOtherDiff = new ArrayList<>();
-        for(String nickname : gameDiffMap.keySet()){
+        for(String nickname : game.getGameParty().getUsersList().stream().map(User::getNickname).toList()){
             if(!nickname.equals(activeSubscribers.get(diffSubscriber))){
                 LightHandOthers otherHand = Lightifier.lightifyOthers(game.getGameParty().getUsersList().stream().filter(user->user.getNickname().equals(nickname)).findFirst().get().getUserHand());
                 for(Resource card : otherHand.getCards()){
@@ -145,19 +150,5 @@ public class GameDiffPublisher implements DiffPublisherNick {
         totalDiff.addAll(getHandOtherCurrentState(diffSubscriber));
         totalDiff.add(getPublicObjectiveCurrentState(diffSubscriber));
         return totalDiff;
-    }
-
-    public synchronized void subscribe(DiffSubscriber diffSubscriber, GameDiff playerGameDiff, GameDiff otherGameDiff){
-        for(DiffSubscriber diffSub : activeSubscribers.keySet()){
-            try{
-                if(activeSubscribers.get(diffSubscriber).equals(activeSubscribers.get(diffSub))){
-                    diffSubscriber.updateGame(playerGameDiff);
-                }else {
-                    diffSub.updateGame(otherGameDiff);
-                }
-            }catch (RemoteException r){
-                r.printStackTrace();
-            }
-        }
     }
 }

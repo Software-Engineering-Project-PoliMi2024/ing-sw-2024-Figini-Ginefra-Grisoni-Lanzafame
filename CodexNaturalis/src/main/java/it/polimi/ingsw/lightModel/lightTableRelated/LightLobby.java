@@ -18,9 +18,9 @@ public class LightLobby implements Differentiable {
         nicknames=  new ArrayList<>();
         name = "";
     }
-    public LightLobby(List<String> players, String lobbyname){
-        nicknames = players;
-        lobbyname = lobbyname;
+    public LightLobby(List<String> nicknames, String name){
+        this.nicknames = nicknames;
+        this.name = name;
     }
     /**
      * @return the list of nicknames

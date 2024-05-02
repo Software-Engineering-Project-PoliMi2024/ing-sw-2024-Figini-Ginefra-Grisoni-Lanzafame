@@ -99,6 +99,7 @@ public class ServerModelController implements ControllerInterface {
             Boolean result = this.games.addPlayerToLobby(lobbyName, this.nickname);
             if(result){
                 lobbyToJoin.subscribe(this.view, this.nickname);
+                games.unsubscribe(view);
                 try {
                     view.log(LogsFromServer.LOBBY_JOINED.getMessage());
                     view.transitionTo(ViewState.LOBBY);
@@ -136,18 +137,19 @@ public class ServerModelController implements ControllerInterface {
         if(lobbyToLeave==null){
             throw new IllegalCallerException();
         }else{
+            lobbyToLeave.removeUserName(this.nickname);
+            if(lobbyToLeave.getLobbyPlayerList().isEmpty()){
+                this.games.removeLobby(lobbyToLeave);
+                games.subscribe(getRemoveLobbyDiff(lobbyToLeave));
+            }
+
             lobbyToLeave.unsubscribe(view);
             games.subscribe(view);
-            lobbyToLeave.removeUserName(this.nickname);
             try {
                 view.log(LogsFromServer.LOBBY_LEFT.getMessage());
                 view.transitionTo(ViewState.JOIN_LOBBY);
             }catch (RemoteException r){
                 r.printStackTrace();
-            }
-            if(lobbyToLeave.getLobbyPlayerList().isEmpty()){
-                this.games.removeLobby(lobbyToLeave);
-                games.subscribe(getRemoveLobbyDiff(lobbyToLeave));
             }
         }
     }

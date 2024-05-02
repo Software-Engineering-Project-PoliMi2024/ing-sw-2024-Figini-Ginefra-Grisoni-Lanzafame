@@ -49,7 +49,10 @@ public class Lightifier implements Serializable {
         for(CardInHand card : hand.getHand()){
             cardPlayability.put(lightifyToCard(card), card.canBePlaced());
         }
-        return new LightHand(lightifyToCard(hand.getSecretObjective()), cardPlayability);
+        LightHand h = new LightHand(cardPlayability);
+        if(hand.getSecretObjective() != null)
+            h.setSecretObjective(lightifyToCard(hand.getSecretObjective()));
+        return h;
     }
 
     public static LightHandOthers lightifyOthers(Hand hand){

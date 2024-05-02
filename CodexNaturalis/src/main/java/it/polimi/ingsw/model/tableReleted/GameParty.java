@@ -3,6 +3,7 @@ package it.polimi.ingsw.model.tableReleted;
 import it.polimi.ingsw.model.playerReleted.User;
 
 import java.io.Serializable;
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
@@ -12,8 +13,9 @@ public class GameParty implements Serializable {
     private int currentPlayerIndex;
 
     public GameParty(List<String> playerNames) {
-        Collections.shuffle(playerNames);
-        playerList = Collections.unmodifiableList(playerNames.stream().map(User::new).toList());
+        ArrayList<String> players = new ArrayList<>(playerNames);
+        Collections.shuffle(players);
+        playerList = players.stream().map(User::new).toList();
         currentPlayerIndex = 0;
         currentPlayer = playerList.getFirst();
     }
