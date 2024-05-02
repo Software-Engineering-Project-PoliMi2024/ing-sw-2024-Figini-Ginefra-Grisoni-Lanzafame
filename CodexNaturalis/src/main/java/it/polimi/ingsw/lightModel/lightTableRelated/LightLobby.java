@@ -50,4 +50,12 @@ public class LightLobby implements Differentiable {
     public void setNicknames(List<String> nicknames) {
         this.nicknames = nicknames;
     }
+
+    @Override
+    public boolean equals(Object obj) {
+        if(obj instanceof LightLobby lightLobby){
+            return lightLobby.name.equals(name);
+        }
+        return false;
+    }
 }
