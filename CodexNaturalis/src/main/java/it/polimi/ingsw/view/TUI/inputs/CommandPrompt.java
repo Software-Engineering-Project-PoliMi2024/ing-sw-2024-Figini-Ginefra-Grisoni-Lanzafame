@@ -61,29 +61,15 @@ public enum CommandPrompt implements Iterator<String>, CommandObserved {
                     s -> true,
             }),
 
-    DISPLAY_GAME_LIST("Display game list",
-            new String[]{},
-            new Predicate[]{}),
+    DISPLAY_GAME_LIST("Display game list"),
 
-    DISPLAY_LOBBY("Display lobby",
-            new String[]{},
-            new Predicate[]{}),
+    DISPLAY_LOBBY("Display lobby"),
 
-    LEAVE_LOBBY("Leave lobby",
-            new String[]{},
-            new Predicate[]{}),
+    LEAVE_LOBBY("Leave lobby"),
 
-    DISPLAY_START_FRONT("Display start card front",
-            new String[]{
-            },
-            new Predicate[]{
-            }),
+    DISPLAY_START_FRONT("Display start card front"),
 
-    DISPLAY_START_BACK("Display start card back",
-            new String[]{
-            },
-            new Predicate[]{
-            }),
+    DISPLAY_START_BACK("Display start card back"),
 
     CHOOSE_START_SIDE("Choose start side",
             new String[]{
@@ -91,6 +77,23 @@ public enum CommandPrompt implements Iterator<String>, CommandObserved {
             },
             new Predicate[]{
                     s -> s.equals("front") || s.equals("back"),
+            }),
+
+    DISPLAY_OBJECTIVE_OPTIONS("Display objective options"),
+
+    CHOOSE_OBJECTIVE_CARD("Choose objective card",
+            new String[]{
+                    "Which objective card do you want to choose?",
+            },
+            new Predicate[]{
+                    s -> {
+                        try {
+                            int i = Integer.parseInt(s.toString());
+                            return i >= 0 && i < 3;
+                        } catch (NumberFormatException e) {
+                            return false;
+                        }
+                    },
             });
 
     private final String[] questions;
@@ -109,6 +112,13 @@ public enum CommandPrompt implements Iterator<String>, CommandObserved {
         this.questions = prompts;
         this.validators = validators;
         this.currentResult = new CommandPromptResult(this, new String[prompts.length]);
+    }
+
+    CommandPrompt(String name) {
+        this.commandName = name;
+        this.questions = new String[]{};
+        this.validators = new Predicate[]{};
+        this.currentResult = new CommandPromptResult(this, new String[0]);
     }
 
     public String[] getQuestions() {

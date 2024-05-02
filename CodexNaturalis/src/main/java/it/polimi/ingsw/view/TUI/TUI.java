@@ -42,6 +42,8 @@ public class TUI extends View{
 
     private ChooseStartCardRenderable chooseStartCardRenderable;
 
+    private ChooseObjectiveCardRenderable chooseObjectiveCardRenderable;
+
     private final LightGame lightGame = new LightGame();
 
     private final LightLobby lightLobby = new LightLobby();
@@ -90,6 +92,14 @@ public class TUI extends View{
                 controller);
         StateTUI.CHOOSE_START_CARD.attach(chooseStartCardRenderable);
         renderables.add(chooseStartCardRenderable);
+
+        chooseObjectiveCardRenderable = new ChooseObjectiveCardRenderable(
+                "Choose Objective Card",
+                cardMuseum,
+                lightGame,
+                new CommandPrompt[]{CommandPrompt.DISPLAY_OBJECTIVE_OPTIONS, CommandPrompt.CHOOSE_OBJECTIVE_CARD},
+                controller);
+        StateTUI.SELECT_OBJECTIVE.attach(chooseObjectiveCardRenderable);
     }
 
     public void run() {
