@@ -55,13 +55,14 @@ public class ServerModelController implements ControllerInterface {
         if(!this.games.isUnique(nickname)){
             log(LogsFromServer.NAME_TAKEN);
         }else{
-            if(games.inGame(nickname)){
-                this.joinGame(this.games.getUserGame(nickname), LogsFromServer.MID_GAME_JOINED);
+            //Check if the player was already connected to a game
+            Boolean alreadyInGame=games.inGame(nickname);
+            if(alreadyInGame){
+                this.joinGame(this.games.getUserGame(nickname), alreadyInGame);
             }else{
                 this.nickname = nickname;
                 this.games.addUser(this, nickname);
                 getActiveLobbyList();
-
                 log(LogsFromServer.SERVER_JOINED);
                 transitionTo(ViewState.JOIN_LOBBY);
             }
@@ -122,7 +123,8 @@ public class ServerModelController implements ControllerInterface {
                     Game newGame = games.createGame(lobbyToJoin);
                     for (DiffSubscriber diffSub : lobbyToJoin.getSubscribers()) {
                         lobbyToJoin.unsubscribe(diffSub, lobbyName);
-                        this.joinGame(newGame, LogsFromServer.NEW_GAME_JOINED);
+                        //Player who are transitioning from a lobby to a game are of course not already in a match
+                        this.joinGame(newGame, false);
                     }
                 }
             }else{
@@ -167,21 +169,19 @@ public class ServerModelController implements ControllerInterface {
      * Connects the user to the game. If it is the first time (the game is just being created), transitions the view
      * to the CHOOSE_START_CARD state; otherwise, transitions the view to IDLE.
      * @param game The game being accessed.
-     * @param log The log to be sent to the view (NEW_GAME_JOINED/MID_GAME_JOINED).
+     * @param alreadyInGame is true if the player disconnected while still playing a match
      * @throws RemoteException If an error occurs during the sending of Diffs.
      */
-    private void joinGame(Game game, LogsFromServer log) throws RemoteException {
+    private void joinGame(Game game, boolean alreadyInGame) throws RemoteException {
         game.subcribe(view, this.nickname);
-        log(log);
-        /*TODO: questo sistema in cui si sceglie in base al log non mi piace per niente
-         *  direi che a prescindere si va in Idle, e poi con un check sul model si vede se è necessario scegliere
-         *  la start card*/
-        if (log == LogsFromServer.NEW_GAME_JOINED) {
+        if(alreadyInGame){
+            view.log(LogsFromServer.MID_GAME_JOINED.getMessage());
+            transitionTo(ViewState.IDLE);
+        }else{
+            view.log(LogsFromServer.NEW_GAME_JOINED.getMessage());
             transitionTo(ViewState.CHOOSE_START_CARD);
             LightCard lightStartCard = Lightifier.lightifyToCard(game.getStartingCardDeck().drawFromDeck());
             game.subcribe(new HandDiffAdd(lightStartCard, true));
-        } else {
-            transitionTo(ViewState.IDLE);
         }
     }
 
