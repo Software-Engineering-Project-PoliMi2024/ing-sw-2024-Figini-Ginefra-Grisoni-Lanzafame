@@ -19,7 +19,6 @@ import java.io.Serializable;
 import java.util.*;
 
 public class MultiGame implements Serializable {
-    private final LobbyListDiffPublisher lobbyListDiffPublisher;
     private final Set<Game> games;
     private final LobbyList lobbies;
     private final Map<ServerModelController, String> username;
@@ -42,7 +41,6 @@ public class MultiGame implements Serializable {
                 new CardLookUp<>(new ResourceCardFactory(filePath+sourceFileName, filePath).getCards());
         cardLookUpGoldCard =
                 new CardLookUp<>(new GoldCardFactory(filePath+sourceFileName, filePath).getCards());
-        this.lobbyListDiffPublisher = new LobbyListDiffPublisher(lobbies);
     }
 
     public synchronized Set<Game> getGames() {
@@ -108,13 +106,13 @@ public class MultiGame implements Serializable {
         return lobbies.getLobbies().stream().map(Lobby::getLobbyName).toArray(String[]::new);
     }
     public void subscribe(DiffSubscriber diffSubscriber) {
-        lobbyListDiffPublisher.subscribe(diffSubscriber);
+        lobbies.subscribe(diffSubscriber);
     }
     public void unsubscribe(DiffSubscriber diffSubscriber) {
-        lobbyListDiffPublisher.unsubscribe(diffSubscriber);
+        lobbies.unsubscribe(diffSubscriber);
     }
     public void subscribe(LobbyListDiffEdit lightLobbyDiff){
-        lobbyListDiffPublisher.subscribe(lightLobbyDiff);
+        lobbies.subscribe(lightLobbyDiff);
     }
     /**
      * @param nickname of the player
