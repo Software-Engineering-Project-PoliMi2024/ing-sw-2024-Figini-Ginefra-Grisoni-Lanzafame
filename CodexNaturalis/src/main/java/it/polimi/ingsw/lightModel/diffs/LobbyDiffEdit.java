@@ -6,6 +6,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class LobbyDiffEdit extends LobbyDiff {
+    private final String lobbyName;
     private final List<String> remove;
     private final List<String> add;
 
@@ -15,15 +16,17 @@ public class LobbyDiffEdit extends LobbyDiff {
     public LobbyDiffEdit() {
         this.remove = new ArrayList<>();
         this.add = new ArrayList<>();
+        this.lobbyName = "";
     }
 
     /**
      * @param remove the nicknames to remove
      * @param add the nicknames to add
      */
-    public LobbyDiffEdit(List<String> add, List<String> remove) {
+    public LobbyDiffEdit(List<String> add, List<String> remove, String lobbyName) {
         this.remove = new ArrayList<>(remove);
         this.add = new ArrayList<>(add);
+        this.lobbyName = lobbyName;
     }
 
     /**
@@ -31,11 +34,12 @@ public class LobbyDiffEdit extends LobbyDiff {
      * @param add the nicknames to add
      * @param remove the nicknames to remove
      */
-    public LobbyDiffEdit(LobbyDiffEdit lobbyDiff, List<String> add, List<String> remove) {
+    public LobbyDiffEdit(LobbyDiffEdit lobbyDiff, List<String> add, List<String> remove, String lobbyName) {
         this.remove = lobbyDiff.getRemove();
         this.remove.addAll(remove);
         this.add = lobbyDiff.getAdd();
         this.add.addAll(add);
+        this.lobbyName = lobbyName;
     }
     /**
      * @return the nicknames to add
@@ -53,6 +57,15 @@ public class LobbyDiffEdit extends LobbyDiff {
      * @param lightLobby the LightLobby to which the diff applies
      */
     public void apply(LightLobby lightLobby) {
+        setLobbyName(lightLobby, this.lobbyName);
         lightLobby.nickDiff(add, remove);
+    }
+
+    /**
+     * @param lightLobby the light lobby being edited
+     * @param lobbyName set the name of the lobby so that the renderable can display it
+     */
+    private void setLobbyName(LightLobby lightLobby, String lobbyName){
+        lightLobby.setName(lobbyName);
     }
 }

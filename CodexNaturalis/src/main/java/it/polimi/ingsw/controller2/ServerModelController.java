@@ -33,7 +33,11 @@ public class ServerModelController implements ControllerInterface {
     private final ViewInterface view;
     private String nickname;
 
-
+    /**
+     * The constructor of the class
+     * @param games the reference to the Multi-game on the server
+     * @param view The client's view interface associated with this controller.
+     */
     public ServerModelController(MultiGame games, ViewInterface view) {
         this.games = games;
         this.view = view;
@@ -41,6 +45,11 @@ public class ServerModelController implements ControllerInterface {
     public void run() {
     }
 
+    /**
+     * Log the player into the server. Check if his username is unique and if he is already in a game or not
+     * @param nickname of the client who is trying to loggin in
+     * @throws RemoteException in an error occurs during the sending/receiving of the data
+     */
     @Override
     public void login(String nickname) throws RemoteException {
         if(!this.games.isUnique(nickname)){
@@ -58,10 +67,22 @@ public class ServerModelController implements ControllerInterface {
             }
         }
     }
+
+    /**
+     * Subscribes the client's view (diffSubscriber) to the gamesPublisher, enabling
+     * the reception of all current and future lobbies.
+     */
     private void getActiveLobbyList() {
         games.subscribe(view);
     }
 
+    /**
+     * Creates a newLobby with the specified game name and maximum player count,
+     * and sends the diff  to all subscribers in the gamesPublisher list.
+     * @param gameName The name of the new lobby being created.
+     * @param maxPlayerCount The number of players needed to exit the lobby and start the game.
+     * @throws RemoteException If an error occurs during the sending or receiving of data.
+     */
     @Override
     public void createLobby(String gameName, int maxPlayerCount) throws RemoteException {
         if(games.getLobby(gameName)!=null){
@@ -70,7 +91,7 @@ public class ServerModelController implements ControllerInterface {
             Lobby newLobby = new Lobby(maxPlayerCount, this.nickname, gameName);
             this.games.addLobby(newLobby);
             games.unsubscribe(this.view);
-            newLobby.subscribe(this.view, this.nickname);
+            newLobby.subscribe(this.view, this.nickname, gameName);
             games.subscribe(getAddLobbyDiff(newLobby));
 
             log(LogsFromServer.LOBBY_CREATED);
@@ -90,7 +111,7 @@ public class ServerModelController implements ControllerInterface {
         if(lobbyToJoin!=null){
             Boolean result = this.games.addPlayerToLobby(lobbyName, this.nickname);
             if(result){
-                lobbyToJoin.subscribe(this.view, this.nickname);
+                lobbyToJoin.subscribe(this.view, this.nickname, lobbyToJoin.getLobbyName());
                 games.unsubscribe(view);
 
                 log(LogsFromServer.LOBBY_JOINED);
@@ -151,16 +172,17 @@ public class ServerModelController implements ControllerInterface {
      */
     private void joinGame(Game game, LogsFromServer log) throws RemoteException {
         game.subcribe(view, this.nickname);
-        LightCard lightStartCard = Lightifier.lightifyToCard(game.getStartingCardDeck().drawFromDeck());
-        game.subcribe(new HandDiffAdd(lightStartCard, true));
-        log(log);
-        /*TODO: questo sistema in cui si sceglie in base al log non mi piace per niente
-         *  direi che a prescindere si va in Idle, e poi con un check sul model si vede se è necessario scegliere
-         *  la start card*/
-        if (log == LogsFromServer.NEW_GAME_JOINED) {
-            transitionTo(ViewState.CHOOSE_START_CARD);
-        } else {
-            transitionTo(ViewState.IDLE);
+        try {
+            view.log(log.getMessage());
+            if(log == LogsFromServer.NEW_GAME_JOINED){
+                view.transitionTo(ViewState.CHOOSE_START_CARD);
+                LightCard lightStartCard = Lightifier.lightifyToCard(game.getStartingCardDeck().drawFromDeck());
+                game.subcribe(new HandDiffAdd(lightStartCard, true));
+            }else{
+                view.transitionTo(ViewState.IDLE);
+            }
+        }catch (RemoteException r){
+            r.printStackTrace();
         }
     }
 

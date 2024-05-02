@@ -23,53 +23,79 @@ public class LobbyDiffPublisher implements DiffPublisherNick {
         this.subscribers = new HashMap<>();
     }
     /**
+     * Add the subscriber in the subscribers map as require by the DiffPublisherNick Interface
      * @param diffSubscriber the subscriber of the user that joins the lobby
      */
     public synchronized void subscribe(DiffSubscriber diffSubscriber, String nickname) {
-        LobbyDiffEdit others = createDiffSubscribed(nickname);
+        subscribers.put(diffSubscriber, nickname);
+    }
+    /**
+     * @param diffSubscriber the subscriber of the user that joins the lobby
+     */
+    public synchronized void subscribe(DiffSubscriber diffSubscriber, String nickname, String gameName) {
+        LobbyDiffEdit others = createDiffSubscribed(nickname, gameName);
         for(DiffSubscriber subscriber : subscribers.keySet()){
             notifySubscriber(subscriber, others);
         }
-        subscribers.put(diffSubscriber, nickname);
-        LobbyDiffEdit yours = createDiffSubscriber();
+        subscribe(diffSubscriber, nickname);
+        LobbyDiffEdit yours = createDiffSubscriber(gameName);
         notifySubscriber(diffSubscriber, yours);
     }
     /**
-     * @return the diff for the people already in the lobby
+     * @return the diff for the "others" people already in the lobby
      */
-    private LobbyDiffEdit createDiffSubscribed(String nickname){
+    private LobbyDiffEdit createDiffSubscribed(String nickname, String gameName){
         // create a list of the nickname containing the nick of the new subscriber
         ArrayList<String> addNicknames = new ArrayList<>();
         addNicknames.add(nickname);
-        return new LobbyDiffEdit(addNicknames, new ArrayList<>());
+        return new LobbyDiffEdit(addNicknames, new ArrayList<>(), gameName);
     }
 
     /**
      * @return the diff for the new subscriber
      */
-    private LobbyDiffEdit createDiffSubscriber(){
+    private LobbyDiffEdit createDiffSubscriber(String gameName){
         // create a list of the nickname already in the lobby
         ArrayList<String> addNicknames = new ArrayList<>(subscribers.values());
-        return new LobbyDiffEdit(addNicknames, new ArrayList<>());
+        return new LobbyDiffEdit(addNicknames, new ArrayList<>(), gameName);
     }
 
+    /**
+     * Remove diffUnsubscriber as require by the DiffPublisherNick Interface
+     * @param diffUnsubscriber the subscriber being removed
+     */
     @Override
     public synchronized void unsubscribe(DiffSubscriber diffUnsubscriber) {
+        subscribers.remove(diffUnsubscriber);
+    }
+
+    public synchronized void unsubscribe(DiffSubscriber diffUnsubscriber, String gameName) {
         notifySubscriber(diffUnsubscriber, new LittleBoyLobby());
         String unsubscriberNick = subscribers.get(diffUnsubscriber);
-        subscribers.remove(diffUnsubscriber);
-
-        LobbyDiffEdit others = createDiffUnsubscriber(unsubscriberNick);
+        unsubscribe(diffUnsubscriber);
+        LobbyDiffEdit others = createDiffUnsubscriber(unsubscriberNick, gameName);
         for (DiffSubscriber subscriber : subscribers.keySet()) {
             notifySubscriber(subscriber, others);
         }
+
     }
-    private LobbyDiffEdit createDiffUnsubscriber(String unsubscriberNickname){
+
+    /**
+     * @param unsubscriberNickname the nick of who is leaving the lobby
+     * @param gameName the name of the lobby being leaved
+     * @return the LobbyDiffEdit for the remaining people in the lobby
+     */
+    private LobbyDiffEdit createDiffUnsubscriber(String unsubscriberNickname, String gameName){
         ArrayList<String> rmvNicknames = new ArrayList<>();
         rmvNicknames.add(unsubscriberNickname);
         ArrayList<String> addNicknames = new ArrayList<>();
-        return new LobbyDiffEdit(addNicknames, rmvNicknames);
+        return new LobbyDiffEdit(addNicknames, rmvNicknames, gameName);
     }
+
+    /**
+     * @param diffSubscriber being notified
+     * @param diff to be notified to the diffSubscriber
+     */
     public synchronized void notifySubscriber(DiffSubscriber diffSubscriber, LobbyDiff diff){
         try{
             diffSubscriber.updateLobby(diff);
@@ -77,6 +103,10 @@ public class LobbyDiffPublisher implements DiffPublisherNick {
             r.printStackTrace();
         }
     }
+
+    /**
+     * @return a List of all DiffSubscriber present in the lobby
+     */
     public List<DiffSubscriber> getSubscribers(){
         return new ArrayList<>(subscribers.keySet());
     }
