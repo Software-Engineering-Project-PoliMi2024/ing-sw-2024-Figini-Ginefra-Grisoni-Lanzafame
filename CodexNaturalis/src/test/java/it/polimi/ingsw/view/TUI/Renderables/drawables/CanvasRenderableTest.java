@@ -1,11 +1,5 @@
 package it.polimi.ingsw.view.TUI.Renderables.drawables;
 
-import it.polimi.ingsw.model.cardReleted.utilityEnums.CardFace;
-import it.polimi.ingsw.model.playerReleted.Position;
-import it.polimi.ingsw.model.tableReleted.Game;
-import it.polimi.ingsw.model.tableReleted.Lobby;
-import it.polimi.ingsw.view.TUI.Renderables.CanvasRenderable;
-import it.polimi.ingsw.view.TUI.Renderables.CardRenderable;
 import org.junit.jupiter.api.Test;
 
 class CanvasRenderableTest {

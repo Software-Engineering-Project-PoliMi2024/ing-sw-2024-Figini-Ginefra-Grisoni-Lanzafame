@@ -1,4 +1,4 @@
-package it.polimi.ingsw.view.TUI.Renderables;
+package it.polimi.ingsw.view.TUI.Renderables.CodexRelated;
 
 import it.polimi.ingsw.controller2.ControllerInterface;
 import it.polimi.ingsw.lightModel.lightPlayerRelated.LightCodex;
@@ -13,7 +13,7 @@ import it.polimi.ingsw.view.TUI.inputs.CommandPrompt;
 
 import java.util.Map;
 
-public class CodexRenderable extends CanvasRenderable{
+public class CodexRenderable extends CanvasRenderable {
     private final LightCodex codex;
     private final CardMuseum cardMuseum;
     public CodexRenderable(String name, LightCodex codex, CardMuseum cardMuseum, CommandPrompt[] relatedCommands, ControllerInterface controller) {

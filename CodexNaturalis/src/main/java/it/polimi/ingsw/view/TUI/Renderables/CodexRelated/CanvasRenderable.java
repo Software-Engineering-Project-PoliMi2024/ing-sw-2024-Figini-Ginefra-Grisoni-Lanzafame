@@ -1,6 +1,7 @@
-package it.polimi.ingsw.view.TUI.Renderables;
+package it.polimi.ingsw.view.TUI.Renderables.CodexRelated;
 
 import it.polimi.ingsw.controller2.ControllerInterface;
+import it.polimi.ingsw.view.TUI.Renderables.Renderable;
 import it.polimi.ingsw.view.TUI.Renderables.drawables.Canvas;
 import it.polimi.ingsw.view.TUI.inputs.CommandPrompt;
 

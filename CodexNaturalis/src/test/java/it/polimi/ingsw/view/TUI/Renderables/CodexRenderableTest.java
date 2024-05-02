@@ -5,6 +5,7 @@ import it.polimi.ingsw.lightModel.lightPlayerRelated.LightCodex;
 import it.polimi.ingsw.lightModel.lightPlayerRelated.LightPlacement;
 import it.polimi.ingsw.model.cardReleted.utilityEnums.CardFace;
 import it.polimi.ingsw.model.playerReleted.Position;
+import it.polimi.ingsw.view.TUI.Renderables.CodexRelated.CodexRenderable;
 import it.polimi.ingsw.view.TUI.cardDrawing.CardMuseum;
 import it.polimi.ingsw.view.TUI.cardDrawing.CardMuseumFactory;
 import it.polimi.ingsw.view.TUI.inputs.CommandPrompt;

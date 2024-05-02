@@ -1,15 +1,15 @@
-package it.polimi.ingsw.view.TUI.Renderables;
+package it.polimi.ingsw.view.TUI.Renderables.CardRelated;
 
 import it.polimi.ingsw.controller2.ControllerInterface;
 import it.polimi.ingsw.lightModel.LightCard;
 import it.polimi.ingsw.lightModel.lightTableRelated.LightGame;
 import it.polimi.ingsw.model.cardReleted.utilityEnums.CardFace;
-import it.polimi.ingsw.view.TUI.Printing.Printer;
+import it.polimi.ingsw.view.TUI.Renderables.CardRelated.CardRenderable;
 import it.polimi.ingsw.view.TUI.cardDrawing.CardMuseum;
 import it.polimi.ingsw.view.TUI.inputs.CommandPrompt;
 import it.polimi.ingsw.view.TUI.inputs.CommandPromptResult;
 
-public class ChooseStartCardRenderable extends CardRenderable{
+public class ChooseStartCardRenderable extends CardRenderable {
     public ChooseStartCardRenderable(String name, CardMuseum museum, LightGame game, CommandPrompt[] relatedCommands, ControllerInterface controller){
         super(name, museum, game, null, relatedCommands, controller);
     }

@@ -1,4 +1,4 @@
-package it.polimi.ingsw.view.TUI.Renderables;
+package it.polimi.ingsw.view.TUI.Renderables.Forms;
 
 import it.polimi.ingsw.controller2.ConnectionLayer.ConnectionLayerClient;
 import it.polimi.ingsw.view.ViewInterface;

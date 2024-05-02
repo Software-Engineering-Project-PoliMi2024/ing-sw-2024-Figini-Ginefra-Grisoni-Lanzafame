@@ -1,12 +1,13 @@
-package it.polimi.ingsw.view.TUI.Renderables;
+package it.polimi.ingsw.view.TUI.Renderables.Forms;
 
 import it.polimi.ingsw.controller2.ControllerInterface;
+import it.polimi.ingsw.view.TUI.Renderables.Forms.FormRenderable;
 import it.polimi.ingsw.view.TUI.inputs.CommandPrompt;
 import it.polimi.ingsw.view.TUI.inputs.CommandPromptResult;
 
 import java.rmi.RemoteException;
 
-public class LoginFormRenderable extends FormRenderable{
+public class LoginFormRenderable extends FormRenderable {
     public LoginFormRenderable(String name, CommandPrompt[] commandPrompts, ControllerInterface controller) {
         super(name, commandPrompts, controller);
     }
