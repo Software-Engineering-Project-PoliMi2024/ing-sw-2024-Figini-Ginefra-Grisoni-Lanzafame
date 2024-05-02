@@ -41,7 +41,6 @@ public class Lobby implements Serializable {
     }
     /**
      * Handles the removal of a user of the current game.
-     *
      * @param userName The user that need to be removed.
      * @throws IllegalArgumentException if the specified user is not found in the userList of this lobby.
      */
@@ -50,12 +49,24 @@ public class Lobby implements Serializable {
             throw new IllegalArgumentException("The user is not in this game");
         }
     }
+
+    /**
+     * @return the number of player needed to start the game
+     */
     public int getNumberOfMaxPlayer() {
         return numberOfMaxPlayer;
     }
+
+    /**
+     * @return a list containing all the players' nick in the lobby
+     */
     public List<String> getLobbyPlayerList() {
         return lobbyPlayerList;
     }
+
+    /**
+     * @return the name of the lobby duh
+     */
     public String getLobbyName() {
         return lobbyName;
     }
@@ -63,12 +74,26 @@ public class Lobby implements Serializable {
     public boolean equals(Object obj){
             return obj instanceof Lobby && ((Lobby) obj).lobbyName.equals(lobbyName);
     }
-    public void subscribe(DiffSubscriber subscriber, String nickname){
-        lobbyDiffPublisher.subscribe(subscriber, nickname);
+
+    /**
+     * @param diffSubscriber who is joining the lobby
+     * @param nickname of the diffSubscriber joining the lobby
+     * @param lobbyName of the lobby being joined
+     */
+    public void subscribe(DiffSubscriber diffSubscriber, String nickname, String lobbyName){
+        lobbyDiffPublisher.subscribe(diffSubscriber, nickname, lobbyName);
     }
+
+    /**
+     * @param unsubscriber who is leaving the lobby
+     */
     public void unsubscribe(DiffSubscriber unsubscriber){
         lobbyDiffPublisher.unsubscribe(unsubscriber);
     }
+
+    /**
+     * @return a list of all DiffSubscriber present in the lobby
+     */
     public List<DiffSubscriber> getSubscribers(){
         return lobbyDiffPublisher.getSubscribers();
     }
