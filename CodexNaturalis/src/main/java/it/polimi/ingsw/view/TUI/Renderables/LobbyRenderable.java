@@ -20,8 +20,9 @@ public class LobbyRenderable extends Renderable {
 
     @Override
     public void render() {
+        String lobbyName = lightLobby.name();
         List<String> nicknames = lightLobby.nicknames();
-        PromptStyle.printListInABox("Lobby", nicknames, 70, 1);
+        PromptStyle.printListInABox("Lobby - " + lobbyName, nicknames, 70, 1);
     }
 
     @Override
