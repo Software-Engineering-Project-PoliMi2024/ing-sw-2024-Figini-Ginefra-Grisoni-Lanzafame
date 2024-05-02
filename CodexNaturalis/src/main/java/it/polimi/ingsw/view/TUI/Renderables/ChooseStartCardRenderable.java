@@ -15,6 +15,12 @@ public class ChooseStartCardRenderable extends CardRenderable{
     }
 
     @Override
+    public void render() {
+        LightCard card = this.getLightGame().getHand().getCards()[0];
+        this.renderCard(card);
+    }
+
+    @Override
     public void updateCommand(CommandPromptResult answer) {
         switch (answer.getCommand()) {
             case CommandPrompt.CHOOSE_START_SIDE:

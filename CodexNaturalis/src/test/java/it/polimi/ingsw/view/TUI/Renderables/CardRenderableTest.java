@@ -12,7 +12,7 @@ class CardRenderableTest {
     void render() {
         System.out.println(Paths.get("").toAbsolutePath());
         Lobby lobby = new Lobby(2, "test", "test");
-        Game game = new Game(lobby);
+//        Game game = new Game(lobby);
 
 //        System.out.println("Resource Cards FRONT:");
 //        game.getResourceCardDeck().getBuffer().forEach(card -> {
