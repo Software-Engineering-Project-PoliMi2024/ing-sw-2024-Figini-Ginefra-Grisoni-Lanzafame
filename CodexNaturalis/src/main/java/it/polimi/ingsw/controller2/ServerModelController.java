@@ -52,10 +52,9 @@ public class ServerModelController implements ControllerInterface {
         if(!this.games.isUnique(nickname)){
             log(LogsFromServer.NAME_TAKEN);
         }else{
-            //Check if the player was already connected to a game
-            Boolean alreadyInGame=games.inGame(nickname);
-            if(alreadyInGame){
-                this.joinGame(this.games.getUserGame(nickname), alreadyInGame);
+            if(games.inGameParty(nickname)){
+                //The player must join a game
+                this.games.getUserGame(nickname).getGameLoopController().joinGame(nickname, this);
             }else{
                 this.nickname = nickname;
                 this.games.addUser(this, nickname);
@@ -89,7 +88,9 @@ public class ServerModelController implements ControllerInterface {
             Lobby newLobby = new Lobby(maxPlayerCount, this.nickname, gameName);
             this.games.addLobby(newLobby);
             games.unsubscribe(this.view);
+            //Create a new LobbyDiffEditLogin
             newLobby.subscribe(this.view, this.nickname, gameName, newLobby.getNumberOfMaxPlayer());
+            newLobby.setPlayerControllers(this, this.nickname);
             games.subscribe(getAddLobbyDiff(newLobby));
 
             log(LogsFromServer.LOBBY_CREATED);
@@ -109,16 +110,22 @@ public class ServerModelController implements ControllerInterface {
         if(lobbyToJoin!=null){
             Boolean result = this.games.addPlayerToLobby(lobbyName, this.nickname);
             if(result){
+                //create a new lobbyDiffEditLogin
                 lobbyToJoin.subscribe(this.view, this.nickname, lobbyToJoin.getLobbyName(), lobbyToJoin.getNumberOfMaxPlayer());
+                lobbyToJoin.setPlayerControllers(this, this.nickname);
                 games.unsubscribe(view);
 
                 log(LogsFromServer.LOBBY_JOINED);
                 transitionTo(ViewState.LOBBY);
 
                 if(lobbyToJoin.getLobbyPlayerList().size() == lobbyToJoin.getNumberOfMaxPlayer()) {
-                    //Handle the creation of a new game from the lobby
+                    //Handle the creation of a new game from the lobbyToJoin
                     Game newGame = games.createGame(lobbyToJoin);
                     for (DiffSubscriber diffSub : lobbyToJoin.getSubscribers()) {
+                        lobbyToJoin.unsubscribe(diffSub);
+                    }
+                    for(String nick : lobbyToJoin.getLobbyPlayerList()){
+                        newGame.getGameLoopController().joinGame(nick);
                         lobbyToJoin.unsubscribe(diffSub);
                         //Player who are transitioning from a lobby to a game are of course not already in a match
                         this.joinGame(newGame, false);
@@ -165,24 +172,8 @@ public class ServerModelController implements ControllerInterface {
     /**
      * Connects the user to the game. If it is the first time (the game is just being created), transitions the view
      * to the CHOOSE_START_CARD state; otherwise, transitions the view to IDLE.
-     * @param game The game being accessed.
-     * @param alreadyInGame is true if the player disconnected while still playing a match
      * @throws RemoteException If an error occurs during the sending of Diffs.
      */
-    private void joinGame(Game game, boolean alreadyInGame) throws RemoteException {
-        game.subcribe(view, this.nickname);
-        //TODO if a player disconnect before choosing a startCard everything go 9/11
-
-        if(alreadyInGame){
-            view.log(LogsFromServer.MID_GAME_JOINED.getMessage());
-            transitionTo(ViewState.IDLE);
-        }else{
-            view.log(LogsFromServer.NEW_GAME_JOINED.getMessage());
-            transitionTo(ViewState.CHOOSE_START_CARD);
-            LightCard lightStartCard = Lightifier.lightifyToCard(game.getStartingCardDeck().drawFromDeck());
-            game.subcribe(new HandDiffAdd(lightStartCard, true));
-        }
-    }
 
     private void leaveGame(){
         Game gameToLeave = games.getUserGame(this.nickname);
@@ -211,6 +202,7 @@ public class ServerModelController implements ControllerInterface {
                 user.getUserCodex().getEarnedCollectables(), getPlacementList(Lightifier.lightify(heavyPlacement)), user.getUserCodex().getFrontier().getFrontier()));
         log(LogsFromServer.START_CARD_PLACED);
         //Send the secretObjectiveCard choice to the view
+        //todo remove already handled in the gameLoop for mid-joining user
         for(LightCard secretObjectiveCardChoice : drawObjectiveCard()){
             updateGame(new HandDiffAdd(secretObjectiveCardChoice, true));
         }
@@ -225,6 +217,7 @@ public class ServerModelController implements ControllerInterface {
      */
     @Override
     public void choseSecretObjective(LightCard card) throws RemoteException{
+        //todo remove startcard choice from user hand
         User userToEdit = games.getUserFromNick(this.nickname);
         Game userGame = games.getUserGame(nickname);
         userToEdit.setSecretObject(Heavifier.heavifyObjectCard(card, games));

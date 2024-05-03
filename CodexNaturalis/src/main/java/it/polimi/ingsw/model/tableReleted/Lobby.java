@@ -1,12 +1,16 @@
 package it.polimi.ingsw.model.tableReleted;
 
 import it.polimi.ingsw.lightModel.diffPublishers.DiffSubscriber;
+import it.polimi.ingsw.controller.Controller;
+import it.polimi.ingsw.controller2.ServerModelController;
+import it.polimi.ingsw.lightModel.diffObserverInterface.DiffSubscriber;
 import it.polimi.ingsw.lightModel.diffPublishers.LobbyDiffPublisher;
 
 import java.io.Serializable;
 import java.util.*;
 
 public class Lobby implements Serializable {
+    private final Map<String, ServerModelController> playerControllers;
     private final LobbyDiffPublisher lobbyDiffPublisher;
     private final String lobbyName;
     final private List<String> lobbyPlayerList;
@@ -26,6 +30,7 @@ public class Lobby implements Serializable {
         this.lobbyName = lobbyName;
         lobbyPlayerList.add(creatorNickname);
         lobbyDiffPublisher = new LobbyDiffPublisher();
+        this.playerControllers = new HashMap<>();
     }
     /**
      * Handles the adding of a user to the current lobby.
@@ -96,5 +101,13 @@ public class Lobby implements Serializable {
      */
     public List<DiffSubscriber> getSubscribers(){
         return lobbyDiffPublisher.getSubscribers();
+    }
+
+    public void setPlayerControllers(ServerModelController controller, String nickname){
+        playerControllers.put(nickname, controller);
+    }
+
+    public Map<String, ServerModelController> getPlayerController(){
+        return playerControllers;
     }
 }

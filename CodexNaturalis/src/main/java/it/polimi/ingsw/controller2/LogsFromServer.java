@@ -11,7 +11,7 @@ public enum LogsFromServer {
     LOBBY_NONEXISTENT("The lobby does not exist"),
     LOBBY_NAME_TAKEN("The lobby name is already taken"),
     LOBBY_CREATED("Lobby created"),
-    NEW_GAME_JOINED("Joined a new game from the lobby"),
+    NEW_GAME_JOINED("Joined a new game not already started"),
     MID_GAME_JOINED("Joined your previous game"),
     START_CARD_PLACED("StartCard successfully placed"),
     SECRET_OBJECTIVE_CHOSE("Secret Objective chose"),
