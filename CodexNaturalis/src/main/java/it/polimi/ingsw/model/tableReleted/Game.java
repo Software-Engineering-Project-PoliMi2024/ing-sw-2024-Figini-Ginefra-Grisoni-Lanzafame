@@ -1,23 +1,13 @@
 package it.polimi.ingsw.model.tableReleted;
 
 
-import it.polimi.ingsw.lightModel.Heavifier;
 import it.polimi.ingsw.lightModel.diffs.GameDiff;
-import it.polimi.ingsw.lightModel.lightTableRelated.LightGame;
-import it.polimi.ingsw.lightModel.diffObserverInterface.DiffSubscriber;
+import it.polimi.ingsw.lightModel.diffPublishers.DiffSubscriber;
 import it.polimi.ingsw.lightModel.diffPublishers.GameDiffPublisher;
-import it.polimi.ingsw.model.cardReleted.cardFactories.GoldCardFactory;
-import it.polimi.ingsw.model.cardReleted.cardFactories.ObjectiveCardFactory;
-import it.polimi.ingsw.model.cardReleted.cardFactories.ResourceCardFactory;
-import it.polimi.ingsw.model.cardReleted.cardFactories.StartCardFactory;
 import it.polimi.ingsw.model.cardReleted.cards.*;
 import it.polimi.ingsw.model.playerReleted.User;
 
 import java.io.Serializable;
-import java.util.ArrayList;
-import java.util.LinkedList;
-import java.util.List;
-import java.util.Queue;
 
 
 /**

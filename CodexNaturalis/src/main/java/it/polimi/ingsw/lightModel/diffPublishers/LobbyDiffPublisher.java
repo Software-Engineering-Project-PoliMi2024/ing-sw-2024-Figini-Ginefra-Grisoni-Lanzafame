@@ -1,6 +1,5 @@
 package it.polimi.ingsw.lightModel.diffPublishers;
 
-import it.polimi.ingsw.lightModel.diffObserverInterface.DiffSubscriber;
 import it.polimi.ingsw.lightModel.diffs.LobbyDiff;
 import it.polimi.ingsw.lightModel.diffs.LobbyDiffEdit;
 import it.polimi.ingsw.lightModel.diffs.LobbyDiffEditLogin;

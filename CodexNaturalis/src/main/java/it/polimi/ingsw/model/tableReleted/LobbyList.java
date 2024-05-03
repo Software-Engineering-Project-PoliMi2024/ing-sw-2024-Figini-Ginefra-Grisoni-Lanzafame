@@ -1,13 +1,11 @@
 package it.polimi.ingsw.model.tableReleted;
 
-import it.polimi.ingsw.lightModel.diffObserverInterface.DiffSubscriber;
+import it.polimi.ingsw.lightModel.diffPublishers.DiffSubscriber;
 import it.polimi.ingsw.lightModel.diffPublishers.LobbyListDiffPublisher;
 import it.polimi.ingsw.lightModel.diffs.LobbyListDiffEdit;
 
 import java.io.Serializable;
-import java.util.ArrayList;
 import java.util.HashSet;
-import java.util.List;
 import java.util.Set;
 
 public class LobbyList implements Serializable{

@@ -1,7 +1,7 @@
 package it.polimi.ingsw.view;
 
 import it.polimi.ingsw.controller2.ControllerInterface;
-import it.polimi.ingsw.lightModel.diffObserverInterface.DiffSubscriber;
+import it.polimi.ingsw.lightModel.diffPublishers.DiffSubscriber;
 import it.polimi.ingsw.lightModel.diffs.ModelDiffs;
 import it.polimi.ingsw.lightModel.lightTableRelated.LightGame;
 import it.polimi.ingsw.lightModel.lightTableRelated.LightLobby;

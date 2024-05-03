@@ -1,24 +1,13 @@
 package it.polimi.ingsw.lightModel.diffPublishers;
 
-import it.polimi.ingsw.controller2.ControllerInterface;
-import it.polimi.ingsw.lightModel.Differentiable;
 import it.polimi.ingsw.lightModel.Lightifier;
-import it.polimi.ingsw.lightModel.diffObserverInterface.DiffSubscriber;
 import it.polimi.ingsw.lightModel.diffs.LobbyListDiffEdit;
-import it.polimi.ingsw.lightModel.diffs.ModelDiffs;
-import it.polimi.ingsw.lightModel.lightTableRelated.LightGame;
 import it.polimi.ingsw.lightModel.lightTableRelated.LightLobby;
-import it.polimi.ingsw.lightModel.lightTableRelated.LightLobbyList;
 import it.polimi.ingsw.model.tableReleted.Lobby;
 import it.polimi.ingsw.model.tableReleted.LobbyList;
-import it.polimi.ingsw.view.ViewInterface;
-import it.polimi.ingsw.view.ViewState;
 import org.junit.jupiter.api.Test;
 
-import java.rmi.RemoteException;
 import java.util.ArrayList;
-
-import static org.junit.jupiter.api.Assertions.*;
 
 class LobbyListDiffPublisherTest {
 

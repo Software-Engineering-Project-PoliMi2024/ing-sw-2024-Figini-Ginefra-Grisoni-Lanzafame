@@ -2,7 +2,6 @@ package it.polimi.ingsw.lightModel.diffPublishers;
 
 import it.polimi.ingsw.lightModel.LightCard;
 import it.polimi.ingsw.lightModel.Lightifier;
-import it.polimi.ingsw.lightModel.diffObserverInterface.DiffSubscriber;
 import it.polimi.ingsw.lightModel.diffs.nuclearDiffs.GadgetGame;
 import it.polimi.ingsw.lightModel.lightPlayerRelated.LightCodex;
 import it.polimi.ingsw.lightModel.lightPlayerRelated.LightHand;

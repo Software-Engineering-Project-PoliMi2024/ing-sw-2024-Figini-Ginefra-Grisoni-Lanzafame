@@ -2,8 +2,7 @@ package it.polimi.ingsw.model;
 
 import it.polimi.ingsw.SignificantPaths;
 import it.polimi.ingsw.controller2.ServerModelController;
-import it.polimi.ingsw.lightModel.diffObserverInterface.DiffSubscriber;
-import it.polimi.ingsw.lightModel.diffPublishers.LobbyListDiffPublisher;
+import it.polimi.ingsw.lightModel.diffPublishers.DiffSubscriber;
 import it.polimi.ingsw.lightModel.diffs.LobbyListDiffEdit;
 import it.polimi.ingsw.model.cardReleted.cardFactories.GoldCardFactory;
 import it.polimi.ingsw.model.cardReleted.cardFactories.ObjectiveCardFactory;

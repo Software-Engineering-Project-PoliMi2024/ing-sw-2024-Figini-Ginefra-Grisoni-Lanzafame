@@ -1,6 +1,5 @@
 package it.polimi.ingsw.controller2;
 
-import it.polimi.ingsw.lightModel.diffObserverInterface.DiffSubscriber;
 import it.polimi.ingsw.view.ViewState;
 
 import java.util.Map;

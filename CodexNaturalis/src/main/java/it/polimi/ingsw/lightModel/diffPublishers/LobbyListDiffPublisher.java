@@ -1,7 +1,6 @@
 package it.polimi.ingsw.lightModel.diffPublishers;
 
 import it.polimi.ingsw.lightModel.Lightifier;
-import it.polimi.ingsw.lightModel.diffObserverInterface.DiffSubscriber;
 import it.polimi.ingsw.lightModel.diffs.LobbyListDiffEdit;
 import it.polimi.ingsw.lightModel.diffs.nuclearDiffs.FatManLobbyList;
 import it.polimi.ingsw.lightModel.diffs.LobbyListDiff;
