@@ -14,18 +14,20 @@ public class Client {
         View view;
         System.out.println("Hi there 👋!");
         System.out.println("Which communication protocol do you fancy today?🎩");
+
         System.out.println("   [0] Socket");
         System.out.println("   [1] RMI");
 
         Scanner scanner = new Scanner(System.in);
+        String choice = scanner.nextLine();
 
-        int choice = scanner.nextInt();
-        while(choice != 0 && choice != 1) {
+        while(!choice.matches("[01]")) {
             System.out.println("Invalid choice! Please choose again.");
-            choice = scanner.nextInt();
+            choice = scanner.nextLine();
         }
+        int choiceInt = Integer.parseInt(choice);
 
-        if (choice == 0) {
+        if (choiceInt == 0) {
             System.out.println("You chose the Socket protocol!");
             controller = null;
         } else{
@@ -39,13 +41,14 @@ public class Client {
         System.out.println("   [0] Textual");
         System.out.println("   [1] Graphical");
 
-        choice = scanner.nextInt();
-        while(choice != 0 && choice != 1) {
+        choice = scanner.nextLine();
+        while(!choice.matches("[01]")) {
             System.out.println("Invalid choice! Please choose again.");
-            choice = scanner.nextInt();
+            choice = scanner.nextLine();
         }
+        choiceInt = Integer.parseInt(choice);
 
-        if (choice == 0) {
+        if (choiceInt == 0) {
             System.out.println("You chose the textual interface!");
             view = new TUI(controller);
         } else{
