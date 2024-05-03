@@ -74,4 +74,9 @@ public class LightLobby implements Differentiable {
     public int numberMaxPlayer(){
         return this.numberMaxPlayer;
     }
+    public void reset(){
+        this.setName(null);
+        this.setNicknames(new ArrayList<>());
+        this.setNumberMaxPlayer(0);
+    }
 }

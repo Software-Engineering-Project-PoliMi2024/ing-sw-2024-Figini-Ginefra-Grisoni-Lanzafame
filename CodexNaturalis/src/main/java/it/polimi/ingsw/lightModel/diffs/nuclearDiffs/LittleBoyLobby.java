@@ -8,7 +8,6 @@ import java.util.ArrayList;
 public class LittleBoyLobby extends LobbyDiff {
     @Override
     public void apply(LightLobby lightLobby) {
-        lightLobby.setName("");
-        lightLobby.setNicknames(new ArrayList<>());
+        lightLobby.reset();
     }
 }
