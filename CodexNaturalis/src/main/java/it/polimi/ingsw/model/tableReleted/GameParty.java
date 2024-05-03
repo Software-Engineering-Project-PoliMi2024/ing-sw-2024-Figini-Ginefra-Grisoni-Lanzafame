@@ -8,7 +8,7 @@ import java.util.Collections;
 import java.util.List;
 
 public class GameParty implements Serializable {
-    final private List<User> playerList; //player that have joined the game
+    final private List<User> playerList; //player that have joined the game at least once
     private User currentPlayer; //the player that is playing currently
     private int currentPlayerIndex;
 

@@ -63,19 +63,12 @@ public class LobbyDiffPublisher implements DiffPublisherNick {
         return new LobbyDiffEditLogin(addNicknames, new ArrayList<>(), gameName, numberOfMaxPlayer);
     }
 
-    /**
-     * Remove diffUnsubscriber as require by the DiffPublisherNick Interface
-     * @param diffUnsubscriber the subscriber being removed
-     */
+
     @Override
     public synchronized void unsubscribe(DiffSubscriber diffUnsubscriber) {
-        subscribers.remove(diffUnsubscriber);
-    }
-
-    public synchronized void unsubscribe(DiffSubscriber diffUnsubscriber, String gameName) {
         notifySubscriber(diffUnsubscriber, new LittleBoyLobby());
         String unsubscriberNick = subscribers.get(diffUnsubscriber);
-        unsubscribe(diffUnsubscriber);
+        subscribers.remove(diffUnsubscriber);
         LobbyDiffEdit others = createDiffUnsubscriber(unsubscriberNick);
         for (DiffSubscriber subscriber : subscribers.keySet()) {
             notifySubscriber(subscriber, others);

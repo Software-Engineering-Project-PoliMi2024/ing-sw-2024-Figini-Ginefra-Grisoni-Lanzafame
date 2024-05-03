@@ -3,7 +3,6 @@ package it.polimi.ingsw.model;
 import it.polimi.ingsw.SignificantPaths;
 import it.polimi.ingsw.controller2.ServerModelController;
 import it.polimi.ingsw.lightModel.diffObserverInterface.DiffSubscriber;
-import it.polimi.ingsw.lightModel.diffPublishers.LobbyListDiffPublisher;
 import it.polimi.ingsw.lightModel.diffs.LobbyListDiffEdit;
 import it.polimi.ingsw.model.cardReleted.cardFactories.GoldCardFactory;
 import it.polimi.ingsw.model.cardReleted.cardFactories.ObjectiveCardFactory;
@@ -21,7 +20,7 @@ import java.util.*;
 public class MultiGame implements Serializable {
     private final Set<Game> games;
     private final LobbyList lobbies;
-    // TODO: remove username map
+    // TODO: remove username map, leave a list of nicks
     private final Map<ServerModelController, String> username;
     private final CardLookUp<ObjectiveCard> cardLookUpObjective;
     private final CardLookUp<StartCard> cardLookUpStartCard;
@@ -127,7 +126,7 @@ public class MultiGame implements Serializable {
      * @param nickname of the user
      * @return true if the nick is already present in a game (e.g. the user disconnected while still playing a match)
      */
-    public Boolean inGame(String nickname){
+    public Boolean inGameParty(String nickname){
         if(getUserGame(nickname)==null){
             return false;
         }else{

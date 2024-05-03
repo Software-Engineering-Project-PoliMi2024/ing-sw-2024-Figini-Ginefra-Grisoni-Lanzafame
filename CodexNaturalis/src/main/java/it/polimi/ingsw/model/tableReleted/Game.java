@@ -1,6 +1,7 @@
 package it.polimi.ingsw.model.tableReleted;
 
 
+import it.polimi.ingsw.controller2.GameLoopController;
 import it.polimi.ingsw.lightModel.Heavifier;
 import it.polimi.ingsw.lightModel.diffs.GameDiff;
 import it.polimi.ingsw.lightModel.lightTableRelated.LightGame;
@@ -27,6 +28,7 @@ import java.util.Queue;
  */
 public class Game implements Serializable {
     private final GameDiffPublisher gameDiffPublisher;
+    private final GameLoopController gameLoopController;
     final private Deck<ObjectiveCard> objectiveCardDeck;
     final private Deck<ResourceCard> resourceCardDeck;
     final private Deck<GoldCard> goldCardDeck;
@@ -45,6 +47,7 @@ public class Game implements Serializable {
         resourceCardDeck = new Deck<>(2, resourceCardCardLookUp.getQueue());
         startingCardDeck = new Deck<>(0, startCardCardLookUp.getQueue());
         goldCardDeck = new Deck<>(2, goldCardCardLookUp.getQueue());
+        this.gameLoopController = new GameLoopController(this, lobby.getPlayerController());
     }
 
     /** @return the Objective Card Deck*/
@@ -111,5 +114,9 @@ public class Game implements Serializable {
     @Override
     public boolean equals(Object obj) {
         return obj instanceof Game && ((Game) obj).name.equals(name);
+    }
+
+    public GameLoopController getGameLoopController() {
+        return gameLoopController;
     }
 }

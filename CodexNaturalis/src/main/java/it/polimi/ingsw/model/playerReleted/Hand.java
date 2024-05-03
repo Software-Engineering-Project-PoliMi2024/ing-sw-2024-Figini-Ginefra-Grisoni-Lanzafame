@@ -1,15 +1,20 @@
 package it.polimi.ingsw.model.playerReleted;
 
+import it.polimi.ingsw.lightModel.*;
 import it.polimi.ingsw.model.cardReleted.cards.CardInHand;
 import it.polimi.ingsw.model.cardReleted.cards.ObjectiveCard;
+import it.polimi.ingsw.model.cardReleted.cards.StartCard;
 
 import java.io.Serializable;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 
 /**The class constructor*/
 public class Hand implements Serializable {
     private ObjectiveCard secretObjective;
+    private StartCard startCard;
+    private List<ObjectiveCard> secretObjectiveChoices;
     final private Set<CardInHand> playableHand;
     public Hand(){
         this.playableHand = new HashSet<>();
@@ -60,5 +65,21 @@ public class Hand implements Serializable {
                 "secretObjective is: " + secretObjective +
                 ", playableHand is made of: " + cardSetName +
                 '}';
+    }
+
+    public void setStartCard(StartCard startCard) {
+        this.startCard = startCard;
+    }
+
+    public StartCard getStartCard() {
+        return startCard;
+    }
+
+    public void setSecretObjectiveChoice(List<ObjectiveCard> secretObjectiveChoices) {
+        this.secretObjectiveChoices = secretObjectiveChoices;
+    }
+
+    public List<ObjectiveCard> getSecretObjectiveChoices() {
+        return secretObjectiveChoices;
     }
 }
