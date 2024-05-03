@@ -51,20 +51,24 @@ public class GameLoopController {
     }
     /**
      * joinGame from the lobby
-     * @param nickname of the player who is joining
      */
-    public void joinGame(String nickname){
-        ServerModelController controller = activePlayers.get(nickname);
-        User user = null;
-        for(User player : game.getGameParty().getUsersList()){
-            if(player.getNickname().equals(nickname)){
-                user=player;
-                break;
+    public void joinGame(){
+        User user;
+        for(String nick : game.getGameParty().getUsersList().stream().map(User::getNickname).toList()){
+            ServerModelController controller = activePlayers.get(nick);
+            if(controller == null){
+                throw new NullPointerException("Controller not found");
+            }else {
+                controller.transitionTo(ViewState.CHOOSE_START_CARD);
+                user = game.getGameParty().getUsersList().stream().filter(player -> player.getNickname().equals(nick)).findFirst().orElse(null);
+                if (user == null) {
+                    throw new NullPointerException("User not found");
+                } else {
+                    LightCard lightStartCard = Lightifier.lightifyToCard(getOrDrawStartCard(user));
+                    controller.updateGame(new HandDiffAdd(lightStartCard, true));
+                }
             }
         }
-        controller.transitionTo(ViewState.CHOOSE_START_CARD);
-        LightCard lightStartCard = Lightifier.lightifyToCard(getOrDrawStartCard(user));
-        controller.updateGame(new HandDiffAdd(lightStartCard, true));
     }
 
     private Boolean startCardIsPlaced(User user){

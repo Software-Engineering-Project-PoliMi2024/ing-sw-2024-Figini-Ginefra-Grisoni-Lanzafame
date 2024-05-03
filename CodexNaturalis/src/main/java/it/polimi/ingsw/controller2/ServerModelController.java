@@ -121,13 +121,13 @@ public class ServerModelController implements ControllerInterface {
                 if(lobbyToJoin.getLobbyPlayerList().size() == lobbyToJoin.getNumberOfMaxPlayer()) {
                     games.subscribe(getRemoveLobbyDiff(lobbyToJoin));
                     //Handle the creation of a new game from the lobbyToJoin
-                    Game newGame = games.createGame(lobbyToJoin);
                     for (DiffSubscriber diffSub : lobbyToJoin.getSubscribers()) {
                         lobbyToJoin.unsubscribe(diffSub);
                     }
-                    for(String nick : lobbyToJoin.getLobbyPlayerList()){
-                        newGame.getGameLoopController().joinGame(nick);
-                    }
+                    Game newGame = games.createGame(lobbyToJoin);
+                    games.removeLobby(lobbyToJoin);
+
+                    newGame.getGameLoopController().joinGame();
                 }
             }else{
                 log(LogsFromServer.LOBBY_IS_FULL);
@@ -369,6 +369,7 @@ public class ServerModelController implements ControllerInterface {
         }
     }
     public void transitionTo(ViewState state){
+        System.out.println(nickname + ":" + state);
         try {
             view.transitionTo(state);
         }catch (RemoteException r){
