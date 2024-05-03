@@ -13,6 +13,7 @@ import java.rmi.RemoteException;
 public class ViewTest implements ViewInterface {
     public LightLobbyList lightLobbyList;
     public LightLobby lightLobby;
+    public String name;
 
     public ViewTest() {
         lightLobbyList = new LightLobbyList();
