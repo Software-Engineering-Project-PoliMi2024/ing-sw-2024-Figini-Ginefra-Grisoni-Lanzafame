@@ -3,7 +3,6 @@ package it.polimi.ingsw.model;
 import it.polimi.ingsw.SignificantPaths;
 import it.polimi.ingsw.controller2.ServerModelController;
 import it.polimi.ingsw.lightModel.diffPublishers.DiffSubscriber;
-import it.polimi.ingsw.lightModel.diffObserverInterface.DiffSubscriber;
 import it.polimi.ingsw.lightModel.diffs.LobbyListDiffEdit;
 import it.polimi.ingsw.model.cardReleted.cardFactories.GoldCardFactory;
 import it.polimi.ingsw.model.cardReleted.cardFactories.ObjectiveCardFactory;
@@ -127,7 +126,7 @@ public class MultiGame implements Serializable {
      * @param nickname of the user
      * @return true if the nick is already present in a game (e.g. the user disconnected while still playing a match)
      */
-    public Boolean inGame(String nickname){
+    public Boolean inGameParty(String nickname){
         if(getUserGame(nickname)==null){
             return false;
         }else{

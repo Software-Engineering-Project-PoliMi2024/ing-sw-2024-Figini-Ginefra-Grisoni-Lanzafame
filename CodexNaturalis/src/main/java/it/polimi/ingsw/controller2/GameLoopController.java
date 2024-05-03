@@ -2,20 +2,15 @@ package it.polimi.ingsw.controller2;
 
 import it.polimi.ingsw.lightModel.LightCard;
 import it.polimi.ingsw.lightModel.Lightifier;
-import it.polimi.ingsw.lightModel.diffObserverInterface.DiffSubscriber;
 import it.polimi.ingsw.lightModel.diffs.HandDiffAdd;
-import it.polimi.ingsw.model.MultiGame;
 import it.polimi.ingsw.model.cardReleted.cards.ObjectiveCard;
 import it.polimi.ingsw.model.cardReleted.cards.StartCard;
 import it.polimi.ingsw.model.playerReleted.Position;
 import it.polimi.ingsw.model.playerReleted.User;
 import it.polimi.ingsw.model.tableReleted.Game;
-import it.polimi.ingsw.view.ViewInterface;
 import it.polimi.ingsw.view.ViewState;
 
-import java.rmi.RemoteException;
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -118,6 +113,8 @@ public class GameLoopController {
         return cardList;
     }
     public void placeCard(){
+
+    }
 
     public void leaveGame(ServerModelController controller, String nickname){
         activePlayers.remove(nickname, controller);

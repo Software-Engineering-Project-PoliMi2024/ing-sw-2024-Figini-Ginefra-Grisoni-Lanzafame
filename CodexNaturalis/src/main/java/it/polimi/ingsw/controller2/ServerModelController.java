@@ -126,9 +126,6 @@ public class ServerModelController implements ControllerInterface {
                     }
                     for(String nick : lobbyToJoin.getLobbyPlayerList()){
                         newGame.getGameLoopController().joinGame(nick);
-                        lobbyToJoin.unsubscribe(diffSub);
-                        //Player who are transitioning from a lobby to a game are of course not already in a match
-                        this.joinGame(newGame, false);
                     }
                 }
             }else{
