@@ -7,15 +7,12 @@ import it.polimi.ingsw.lightModel.diffObserverInterface.DiffSubscriber;
 import it.polimi.ingsw.lightModel.diffs.nuclearDiffs.GadgetGame;
 import it.polimi.ingsw.lightModel.lightPlayerRelated.LightCodex;
 import it.polimi.ingsw.lightModel.lightPlayerRelated.LightHand;
-import it.polimi.ingsw.lightModel.lightTableRelated.LightGame;
 import it.polimi.ingsw.lightModel.lightPlayerRelated.LightHandOthers;
 import it.polimi.ingsw.lightModel.diffs.*;
-import it.polimi.ingsw.model.cardReleted.cards.CardInHand;
 import it.polimi.ingsw.model.cardReleted.cards.GoldCard;
 import it.polimi.ingsw.model.cardReleted.cards.ResourceCard;
 import it.polimi.ingsw.model.cardReleted.utilityEnums.DrawableCard;
 import it.polimi.ingsw.model.cardReleted.utilityEnums.Resource;
-import it.polimi.ingsw.model.playerReleted.Hand;
 import it.polimi.ingsw.model.playerReleted.User;
 import it.polimi.ingsw.model.tableReleted.Deck;
 import it.polimi.ingsw.model.tableReleted.Game;
@@ -24,13 +21,10 @@ import java.rmi.RemoteException;
 import java.util.*;
 
 public class GameDiffPublisher implements DiffPublisherNick {
-    private final List<String> connectedOnce;
-    //private final Map<String, List<GameDiff>> gameDiffMap;
     private final Map<DiffSubscriber, String> activeSubscribers;
     private final Game game;
     public GameDiffPublisher(Game game) {
         this.activeSubscribers = new HashMap<>();
-        connectedOnce = new ArrayList<>();
         this.game = game;
     }
 

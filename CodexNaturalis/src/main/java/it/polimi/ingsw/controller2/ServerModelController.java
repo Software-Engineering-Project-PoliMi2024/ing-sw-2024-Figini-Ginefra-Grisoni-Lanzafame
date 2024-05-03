@@ -42,8 +42,6 @@ public class ServerModelController implements ControllerInterface {
         this.games = games;
         this.view = view;
     }
-    public void run() {
-    }
 
     /**
      * Log the player into the server. Check if his username is unique and if he is already in a game or not
@@ -175,6 +173,7 @@ public class ServerModelController implements ControllerInterface {
     private void joinGame(Game game, boolean alreadyInGame) throws RemoteException {
         game.subcribe(view, this.nickname);
         //TODO if a player disconnect before choosing a startCard everything go 9/11
+
         if(alreadyInGame){
             view.log(LogsFromServer.MID_GAME_JOINED.getMessage());
             transitionTo(ViewState.IDLE);
@@ -359,39 +358,48 @@ public class ServerModelController implements ControllerInterface {
        }
     }
 
+    @Override
+    public boolean equals(Object obj) {
+        if (obj instanceof ServerModelController) {
+            ServerModelController other = (ServerModelController) obj;
+            return this.nickname.equals(other.nickname);
+        } else {
+            return false;
+        }
+    }
+
     public ViewInterface getView() {
         return view;
     }
-
-    private void log(LogsFromServer log){
+    public void log(LogsFromServer log){
         try {
             view.log(log.getMessage());
         }catch (RemoteException r){
             r.printStackTrace();
         }
     }
-    private void transitionTo(ViewState state){
+    public void transitionTo(ViewState state){
         try {
             view.transitionTo(state);
         }catch (RemoteException r){
             r.printStackTrace();
         }
     }
-    private void updateLobby(ModelDiffs<LightLobby> diff){
+    public void updateLobby(ModelDiffs<LightLobby> diff){
         try {
             view.updateLobby(diff);
         }catch (RemoteException r){
             r.printStackTrace();
         }
     }
-    private void updateLobbyList(ModelDiffs<LightLobbyList> diff){
+    public void updateLobbyList(ModelDiffs<LightLobbyList> diff){
         try {
             view.updateLobbyList(diff);
         }catch (RemoteException r){
             r.printStackTrace();
         }
     }
-    private void updateGame(ModelDiffs<LightGame> diff){
+    public void updateGame(ModelDiffs<LightGame> diff){
         try {
             view.updateGame(diff);
         }catch (RemoteException r) {
