@@ -9,6 +9,7 @@ import java.util.List;
  * This class is a container for the list of lobbies.
  */
 public class LightLobby implements Differentiable {
+    private int numberMaxPlayer;
     private List<String> nicknames;
     private String name;
     /**
@@ -17,10 +18,12 @@ public class LightLobby implements Differentiable {
     public LightLobby (){
         nicknames=  new ArrayList<>();
         name = "";
+        numberMaxPlayer = 0;
     }
-    public LightLobby(List<String> nicknames, String name){
+    public LightLobby(List<String> nicknames, String name, int numberMaxPlayer){
         this.nicknames = nicknames;
         this.name = name;
+        this.numberMaxPlayer = numberMaxPlayer;
     }
     /**
      * @return the list of nicknames
@@ -43,10 +46,16 @@ public class LightLobby implements Differentiable {
         nicknames.addAll(add);
     }
 
+    /**
+     * @param name of the Lobby
+     */
     public void setName(String name) {
         this.name = name;
     }
 
+    /**
+     * @param nicknames List containing all users' nickname in the lobby
+     */
     public void setNicknames(List<String> nicknames) {
         this.nicknames = nicknames;
     }
@@ -57,5 +66,12 @@ public class LightLobby implements Differentiable {
             return lightLobby.name.equals(name);
         }
         return false;
+    }
+    public void setNumberMaxPlayer(int numberMaxPlayer) {
+        this.numberMaxPlayer = numberMaxPlayer;
+    }
+
+    public int numberMaxPlayer(){
+        return this.numberMaxPlayer;
     }
 }

@@ -4,10 +4,8 @@ import it.polimi.ingsw.lightModel.lightPlayerRelated.LightFrontier;
 import it.polimi.ingsw.lightModel.lightTableRelated.LightGame;
 import it.polimi.ingsw.lightModel.lightPlayerRelated.LightPlacement;
 import it.polimi.ingsw.model.cardReleted.utilityEnums.Collectable;
-import it.polimi.ingsw.model.playerReleted.Placement;
 import it.polimi.ingsw.model.playerReleted.Position;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
@@ -40,7 +38,7 @@ public class CodexDiff extends GameDiff{
     @Override
     public void apply(LightGame lightGame) {
         lightGame.setPoint(addPoints, this.owner);
-        lightGame.getCodexMap().get(this.owner).addPlacement(addPlacements);
+        lightGame.getCodexOthersMap().get(this.owner).addPlacement(addPlacements);
         lightGame.setFrontier(new LightFrontier(addFrontier), this.owner);
         lightGame.setCollectable(collectablesToAdd, this.owner);
     }
