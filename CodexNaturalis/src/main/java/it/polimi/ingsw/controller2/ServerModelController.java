@@ -92,7 +92,7 @@ public class ServerModelController implements ControllerInterface {
             Lobby newLobby = new Lobby(maxPlayerCount, this.nickname, gameName);
             this.games.addLobby(newLobby);
             games.unsubscribe(this.view);
-            newLobby.subscribe(this.view, this.nickname, gameName);
+            newLobby.subscribe(this.view, this.nickname, gameName, newLobby.getNumberOfMaxPlayer());
             games.subscribe(getAddLobbyDiff(newLobby));
 
             log(LogsFromServer.LOBBY_CREATED);
@@ -112,7 +112,7 @@ public class ServerModelController implements ControllerInterface {
         if(lobbyToJoin!=null){
             Boolean result = this.games.addPlayerToLobby(lobbyName, this.nickname);
             if(result){
-                lobbyToJoin.subscribe(this.view, this.nickname, lobbyToJoin.getLobbyName());
+                lobbyToJoin.subscribe(this.view, this.nickname, lobbyToJoin.getLobbyName(), lobbyToJoin.getNumberOfMaxPlayer());
                 games.unsubscribe(view);
 
                 log(LogsFromServer.LOBBY_JOINED);
@@ -174,6 +174,7 @@ public class ServerModelController implements ControllerInterface {
      */
     private void joinGame(Game game, boolean alreadyInGame) throws RemoteException {
         game.subcribe(view, this.nickname);
+        //TODO if a player disconnect before choosing a startCard everything go 9/11
         if(alreadyInGame){
             view.log(LogsFromServer.MID_GAME_JOINED.getMessage());
             transitionTo(ViewState.IDLE);

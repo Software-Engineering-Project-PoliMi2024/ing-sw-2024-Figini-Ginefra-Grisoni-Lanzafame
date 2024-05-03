@@ -25,7 +25,7 @@ public class Lightifier implements Serializable {
      * @return a LightLobby containing the PlayerList and the name of the lobby
      */
     public static LightLobby lightify(Lobby lobby) {
-        return new LightLobby(lobby.getLobbyPlayerList(), lobby.getLobbyName());
+        return new LightLobby(lobby.getLobbyPlayerList(), lobby.getLobbyName(), lobby.getNumberOfMaxPlayer());
     }
     public static LightLobbyList lightify(LobbyList lobbies){
         return new LightLobbyList(lobbies.getLobbies().stream().map(Lightifier::lightify).toList());
