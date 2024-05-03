@@ -40,4 +40,8 @@ public class CardRenderable extends LightGameRenderable {
         this.face = face;
     }
 
+    public CardFace getFace() {
+        return face;
+    }
+
 }

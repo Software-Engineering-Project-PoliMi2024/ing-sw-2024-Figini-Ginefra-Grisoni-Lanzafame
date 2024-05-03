@@ -8,7 +8,9 @@ import it.polimi.ingsw.lightModel.lightTableRelated.LightGame;
 import it.polimi.ingsw.lightModel.lightTableRelated.LightLobby;
 import it.polimi.ingsw.lightModel.lightTableRelated.LightLobbyList;
 import it.polimi.ingsw.view.TUI.Renderables.*;
+import it.polimi.ingsw.view.TUI.Renderables.CardRelated.ChooseObjectiveCardRenderable;
 import it.polimi.ingsw.view.TUI.Renderables.CardRelated.ChooseStartCardRenderable;
+import it.polimi.ingsw.view.TUI.Renderables.CardRelated.HandRenderable;
 import it.polimi.ingsw.view.TUI.Renderables.Forms.ConnectFormRenderable;
 import it.polimi.ingsw.view.TUI.Renderables.Forms.LoginFormRenderable;
 import it.polimi.ingsw.view.TUI.States.StateTUI;
@@ -43,6 +45,8 @@ public class TUI extends View{
     private ChooseStartCardRenderable chooseStartCardRenderable;
 
     private ChooseObjectiveCardRenderable chooseObjectiveCardRenderable;
+
+    private HandRenderable handRenderable;
 
     private final LightGame lightGame = new LightGame();
 
@@ -100,6 +104,18 @@ public class TUI extends View{
                 new CommandPrompt[]{CommandPrompt.DISPLAY_OBJECTIVE_OPTIONS, CommandPrompt.CHOOSE_OBJECTIVE_CARD},
                 controller);
         StateTUI.SELECT_OBJECTIVE.attach(chooseObjectiveCardRenderable);
+
+        handRenderable = new HandRenderable(
+                "Hand",
+                cardMuseum,
+                lightGame,
+                new CommandPrompt[]{CommandPrompt.DISPLAY_HAND_FRONT, CommandPrompt.DISPLAY_HAND_BACK, CommandPrompt.DISPLAY_SECRET_OBJECTIVE, CommandPrompt.PLACE_CARD},
+                controller);
+
+        StateTUI.PLACE_CARD.attach(handRenderable);
+        StateTUI.IDLE.attach(handRenderable);
+        StateTUI.DRAW_CARD.attach(handRenderable);
+        renderables.add(handRenderable);
     }
 
     public void run() {

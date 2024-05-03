@@ -94,7 +94,40 @@ public enum CommandPrompt implements Iterator<String>, CommandObserved {
                             return false;
                         }
                     },
+            }),
+
+    DISPLAY_HAND_FRONT("Display hand front"),
+    DISPLAY_HAND_BACK("Display hand back"),
+
+    DISPLAY_SECRET_OBJECTIVE("Display secret objective"),
+
+    PLACE_CARD("Place card",
+            new String[]{
+                    "Which card do you want to place?",
+                    "Face up or face down? (0/1)",
+                    "Where do you want to place it?",
+            },
+            new Predicate[]{
+                    s -> {
+                        try {
+                            int i = Integer.parseInt(s.toString());
+                            return i >= 0 && i < 3;
+                        } catch (NumberFormatException e) {
+                            return false;
+                        }
+                    },
+                    s -> s.equals("0") || s.equals("1"),
+                    s -> {
+                        try {
+                            int i = Integer.parseInt(s.toString());
+                            return i >= 0 && i < 100;
+                        } catch (NumberFormatException e) {
+                            return false;
+                        }
+                    },
             });
+
+
 
     private final String[] questions;
     private final Predicate<String>[] validators;
