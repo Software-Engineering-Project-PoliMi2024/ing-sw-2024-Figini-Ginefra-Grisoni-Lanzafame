@@ -26,6 +26,13 @@ public class GameDiffPublisher {
         this.game = game;
     }
 
+    /**
+     * Subscribes a new subscriber to the game
+     * the subscriber will receive the current state of the game
+     * the other players will receive the new subscriber nickname
+     * @param diffSubscriber the subscriber to the game
+     * @param nickname the nickname of the subscriber
+     */
     public synchronized void subscribe(DiffSubscriber diffSubscriber, String nickname) {
         GameDiffPlayerActivity communicateJoin = new GameDiffPlayerActivity(List.of(nickname), new ArrayList<>());
         for(DiffSubscriber subscriber : activeSubscribers.keySet()){
@@ -36,6 +43,13 @@ public class GameDiffPublisher {
         notifySubscriber(diffSubscriber, yours);
 
     }
+
+    /**
+     * Unsubscribes a subscriber from the gamePublisher
+     * the unsubscribed subscriber will receive a diff that formats the subscriber saves
+     * the other subscribers will receive a notification informing of the leaving subscriber
+     * @param diffSubscriber the subscriber to unsubscribe
+     */
     public synchronized void unsubscribe(DiffSubscriber diffSubscriber) {
         GameDiffPlayerActivity communicateLeave = new GameDiffPlayerActivity(new ArrayList<>(), List.of(activeSubscribers.get(diffSubscriber)));
         activeSubscribers.remove(diffSubscriber);
@@ -46,11 +60,23 @@ public class GameDiffPublisher {
         notifySubscriber(diffSubscriber, new GadgetGame());
     }
 
+    /**
+     * sends a diff to all the subscribers of the gamePublisher
+     * @param diff the diff to send
+     */
     public synchronized void subscribe(GameDiff diff) {
         for(DiffSubscriber diffSubscriber : activeSubscribers.keySet()){
             notifySubscriber(diffSubscriber, diff);
         }
     }
+
+    /**
+     * sends two different diffs to the subscribers of the gamePublisher:
+     * one to the subscriber given as parameter, the other to the other subscribers
+     * @param diffSubscriber the subscriber to send the first diff
+     * @param playerGameDiff the diff to send to the diffSubscriber given as parameter
+     * @param otherGameDiff the diff to send to the other subscribers
+     */
     public synchronized void subscribe(DiffSubscriber diffSubscriber, GameDiff playerGameDiff, GameDiff otherGameDiff){
         for(DiffSubscriber subscriber : activeSubscribers.keySet()) {
             if (activeSubscribers.get(diffSubscriber).equals(activeSubscribers.get(subscriber))) {
@@ -60,6 +86,12 @@ public class GameDiffPublisher {
             }
         }
     }
+
+    /**
+     * sends a diff to a single subscriber
+     * @param diffSubscriber the subscriber to send the diff
+     * @param gameDiff the diff to send
+     */
     public synchronized void notifySubscriber(DiffSubscriber diffSubscriber, GameDiff gameDiff){
         try{
             diffSubscriber.updateGame(gameDiff);
@@ -67,11 +99,21 @@ public class GameDiffPublisher {
             r.printStackTrace();
         }
     }
+
+    /**
+     * sends a list of diffs to a single subscriber
+     * @param diffSubscriber the subscriber to send the diffs
+     * @param gameDiffs the list of diffs to send
+     */
     public synchronized void notifySubscriber(DiffSubscriber diffSubscriber, List<GameDiff> gameDiffs){
         for(GameDiff gameDiff : gameDiffs){
             notifySubscriber(diffSubscriber, gameDiff);
         }
     }
+
+    /**
+     * @return a list of diffs containing the current state of the decks in the game
+     */
     private List<DeckDiff> getDeckCurrentState(){
         List<DeckDiff> deckDiff = new ArrayList<>();
         Deck<ResourceCard> resourceCardDeck = game.getResourceCardDeck();
@@ -86,9 +128,17 @@ public class GameDiffPublisher {
         deckDiff.add(new DeckDiffDeckDraw(DrawableCard.GOLDCARD, Lightifier.lightifyToResource(goldCardDeck.getActualDeck().stream().toList().getFirst())));
         return deckDiff;
     }
+
+    /**
+     * @return a diff containing the current state of the players in the game
+     */
     private GameDiffPlayerActivity getPlayerActivity(){
         return new GameDiffPlayerActivity(activeSubscribers.values().stream().toList(), new ArrayList<>());
     }
+
+    /**
+     * @return a list of diffs containing the current state of the codexes in the game
+     */
     private List<CodexDiff> getCodexCurrentState(){
         List<CodexDiff> codexDiff = new ArrayList<>();
         for(String nickname : game.getGameParty().getUsersList().stream().map(User::getNickname).toList()){
@@ -103,6 +153,11 @@ public class GameDiffPublisher {
         }
         return codexDiff;
     }
+
+    /**
+     * @param diffSubscriber the subscriber to get the hand from
+     * @return a list of diffs containing the current state of the hand of the subscriber
+     */
     private List<HandDiff> getHandCurrentState(DiffSubscriber diffSubscriber){
         List<HandDiff> handDiffAdd = new ArrayList<>();
         LightHand subscriberHand = Lightifier.lightifyYour(game.getGameParty()
@@ -116,6 +171,11 @@ public class GameDiffPublisher {
         handDiffAdd.add(new HandDiffSetObj(subscriberHand.getSecretObjective()));
         return handDiffAdd;
     }
+
+    /**
+     * @param diffSubscriber the subscriber to which send the hand of the other players
+     * @return a list of diffs containing the current state of the hand of the other players
+     */
     private List<HandOtherDiff> getHandOtherCurrentState(DiffSubscriber diffSubscriber){
         List<HandOtherDiff> handOtherDiff = new ArrayList<>();
         for(String nickname : game.getGameParty().getUsersList().stream().map(User::getNickname).toList()){
@@ -128,17 +188,26 @@ public class GameDiffPublisher {
         }
         return handOtherDiff;
     }
-    private GameDiffPublicObj getPublicObjectiveCurrentState(DiffSubscriber diffSubscriber){
+
+    /**
+     * @return a diff containing the current state of the public objectives in the game
+     */
+    private GameDiffPublicObj getPublicObjectiveCurrentState(){
         LightCard[] publicObj = game.getObjectiveCardDeck().getBuffer().stream().map(Lightifier::lightifyToCard).toArray(LightCard[]::new);
         return new GameDiffPublicObj(publicObj);
     }
+
+    /**
+     * @param diffSubscriber the subscriber from which perspective to get the total state of the game
+     * @return a list of diffs containing the current state of the game
+     */
     private List<GameDiff> getTotalCurrentState(DiffSubscriber diffSubscriber){
         List<GameDiff> totalDiff = new ArrayList<>(getDeckCurrentState());
         totalDiff.add(getPlayerActivity());
         totalDiff.addAll(getCodexCurrentState());
         totalDiff.addAll(getHandCurrentState(diffSubscriber));
         totalDiff.addAll(getHandOtherCurrentState(diffSubscriber));
-        totalDiff.add(getPublicObjectiveCurrentState(diffSubscriber));
+        totalDiff.add(getPublicObjectiveCurrentState());
         return totalDiff;
     }
 }

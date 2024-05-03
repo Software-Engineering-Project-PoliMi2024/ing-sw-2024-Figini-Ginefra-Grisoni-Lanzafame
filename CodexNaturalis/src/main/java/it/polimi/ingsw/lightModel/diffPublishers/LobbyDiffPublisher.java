@@ -15,10 +15,16 @@ import java.util.Map;
 public class LobbyDiffPublisher {
     private final Map<DiffSubscriber, String> subscribers;
 
+    /**
+     * Constructor for the LobbyDiffPublisher
+     */
     public LobbyDiffPublisher() {
         this.subscribers = new HashMap<>();
     }
     /**
+     * the subscriber will receive the current state of the lobby: its name, the number of max players
+     * and the list of the players already in the lobby
+     * the players already in the lobby will receive the new subscriber nickname
      * @param diffSubscriber the subscriber of the user that joins the lobby
      */
     public synchronized void subscribe(DiffSubscriber diffSubscriber, String nickname, String gameName, int numberOfMaxPlayer) {
@@ -43,7 +49,7 @@ public class LobbyDiffPublisher {
     /**
      * @param gameName name of the lobby being logged
      * @param numberOfMaxPlayer required to start the game from the lobby
-     * @return a LobbyDiffEditLogin for the new subscriber
+     * @return a LobbyDiffEditLogin for the new subscriber containing the information of the lobby
      */
     private LobbyDiffEditLogin createDiffSubscriber(String gameName, int numberOfMaxPlayer){
         // create a list of the nickname already in the lobby
@@ -52,7 +58,9 @@ public class LobbyDiffPublisher {
     }
 
     /**
-     * Remove diffUnsubscriber as require by the DiffPublisherNick Interface
+     * remove the subscriber from the lobbyPublisher
+     * resets the LightLobby stored local on the subscriber
+     * notifies the other subscribers of the leaving of the unsubscriber
      * @param diffUnsubscriber the subscriber being removed
      */
     public synchronized void unsubscribe(DiffSubscriber diffUnsubscriber) {
@@ -68,7 +76,7 @@ public class LobbyDiffPublisher {
 
     /**
      * @param unsubscriberNickname the nick of who is leaving the lobby
-     * @return the LobbyDiffEdit for the remaining people in the lobby
+     * @return the LobbyDiffEdit for the remaining people in the lobby about the unsubscriber
      */
     private LobbyDiffEdit createDiffUnsubscriber(String unsubscriberNickname){
         ArrayList<String> rmvNicknames = new ArrayList<>();
