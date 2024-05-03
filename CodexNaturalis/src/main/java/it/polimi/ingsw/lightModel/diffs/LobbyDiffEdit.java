@@ -57,15 +57,8 @@ public class LobbyDiffEdit extends LobbyDiff {
      * @param lightLobby the LightLobby to which the diff applies
      */
     public void apply(LightLobby lightLobby) {
-        setLobbyName(lightLobby, this.lobbyName);
+        lightLobby.setName(this.lobbyName);
         lightLobby.nickDiff(add, remove);
     }
 
-    /**
-     * @param lightLobby the light lobby being edited
-     * @param lobbyName set the name of the lobby so that the renderable can display it
-     */
-    private void setLobbyName(LightLobby lightLobby, String lobbyName){
-        lightLobby.setName(lobbyName);
-    }
 }

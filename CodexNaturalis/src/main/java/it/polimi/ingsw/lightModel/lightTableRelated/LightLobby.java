@@ -43,10 +43,16 @@ public class LightLobby implements Differentiable {
         nicknames.addAll(add);
     }
 
+    /**
+     * @param name of the Lobby
+     */
     public void setName(String name) {
         this.name = name;
     }
 
+    /**
+     * @param nicknames List containing all users' nickname in the lobby
+     */
     public void setNicknames(List<String> nicknames) {
         this.nicknames = nicknames;
     }
