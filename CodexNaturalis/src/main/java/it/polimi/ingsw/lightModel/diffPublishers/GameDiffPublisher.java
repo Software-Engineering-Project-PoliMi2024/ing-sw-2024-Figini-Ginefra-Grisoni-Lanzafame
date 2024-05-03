@@ -2,7 +2,6 @@ package it.polimi.ingsw.lightModel.diffPublishers;
 
 import it.polimi.ingsw.lightModel.LightCard;
 import it.polimi.ingsw.lightModel.Lightifier;
-import it.polimi.ingsw.lightModel.diffObserverInterface.DiffPublisherNick;
 import it.polimi.ingsw.lightModel.diffObserverInterface.DiffSubscriber;
 import it.polimi.ingsw.lightModel.diffs.nuclearDiffs.GadgetGame;
 import it.polimi.ingsw.lightModel.lightPlayerRelated.LightCodex;
@@ -20,7 +19,7 @@ import it.polimi.ingsw.model.tableReleted.Game;
 import java.rmi.RemoteException;
 import java.util.*;
 
-public class GameDiffPublisher implements DiffPublisherNick {
+public class GameDiffPublisher {
     private final Map<DiffSubscriber, String> activeSubscribers;
     private final Game game;
     public GameDiffPublisher(Game game) {
@@ -28,7 +27,6 @@ public class GameDiffPublisher implements DiffPublisherNick {
         this.game = game;
     }
 
-    @Override
     public synchronized void subscribe(DiffSubscriber diffSubscriber, String nickname) {
         GameDiffPlayerActivity communicateJoin = new GameDiffPlayerActivity(List.of(nickname), new ArrayList<>());
         for(DiffSubscriber subscriber : activeSubscribers.keySet()){
@@ -39,7 +37,6 @@ public class GameDiffPublisher implements DiffPublisherNick {
         notifySubscriber(diffSubscriber, yours);
 
     }
-    @Override
     public synchronized void unsubscribe(DiffSubscriber diffSubscriber) {
         GameDiffPlayerActivity communicateLeave = new GameDiffPlayerActivity(new ArrayList<>(), List.of(activeSubscribers.get(diffSubscriber)));
         activeSubscribers.remove(diffSubscriber);

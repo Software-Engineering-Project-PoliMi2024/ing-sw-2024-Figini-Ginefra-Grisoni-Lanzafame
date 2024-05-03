@@ -1,12 +1,9 @@
 package it.polimi.ingsw.lightModel.diffPublishers;
 
-import it.polimi.ingsw.lightModel.diffObserverInterface.DiffPubliher;
-import it.polimi.ingsw.lightModel.diffObserverInterface.DiffPublisherNick;
 import it.polimi.ingsw.lightModel.diffObserverInterface.DiffSubscriber;
 import it.polimi.ingsw.lightModel.diffs.LobbyDiff;
 import it.polimi.ingsw.lightModel.diffs.LobbyDiffEdit;
 import it.polimi.ingsw.lightModel.diffs.LobbyDiffEditLogin;
-import it.polimi.ingsw.lightModel.diffs.LobbyListDiffEdit;
 import it.polimi.ingsw.lightModel.diffs.nuclearDiffs.LittleBoyLobby;
 
 
@@ -16,19 +13,11 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-public class LobbyDiffPublisher implements DiffPublisherNick {
+public class LobbyDiffPublisher {
     private final Map<DiffSubscriber, String> subscribers;
-    //private final Map<DiffSubscriber, LobbyDiffEdit> lobbyDiffMap;
 
     public LobbyDiffPublisher() {
         this.subscribers = new HashMap<>();
-    }
-    /**
-     * Add the subscriber in the subscribers map as require by the DiffPublisherNick Interface
-     * @param diffSubscriber the subscriber of the user that joins the lobby
-     */
-    public synchronized void subscribe(DiffSubscriber diffSubscriber, String nickname) {
-        subscribers.put(diffSubscriber, nickname);
     }
     /**
      * @param diffSubscriber the subscriber of the user that joins the lobby
@@ -38,7 +27,7 @@ public class LobbyDiffPublisher implements DiffPublisherNick {
         for(DiffSubscriber subscriber : subscribers.keySet()){
             notifySubscriber(subscriber, others);
         }
-        subscribe(diffSubscriber, nickname);
+        subscribers.put(diffSubscriber, nickname);
         LobbyDiffEditLogin yours = createDiffSubscriber(gameName, numberOfMaxPlayer);
         notifySubscriber(diffSubscriber, yours);
     }
@@ -67,7 +56,6 @@ public class LobbyDiffPublisher implements DiffPublisherNick {
      * Remove diffUnsubscriber as require by the DiffPublisherNick Interface
      * @param diffUnsubscriber the subscriber being removed
      */
-    @Override
     public synchronized void unsubscribe(DiffSubscriber diffUnsubscriber) {
         subscribers.remove(diffUnsubscriber);
     }

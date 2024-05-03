@@ -84,10 +84,6 @@ public class Lobby implements Serializable {
         lobbyDiffPublisher.subscribe(diffSubscriber, nickname, lobbyName, numberOfMaxPlayer);
     }
 
-    public void subscribe(DiffSubscriber diffSubscriber, String nickname){
-        lobbyDiffPublisher.subscribe(diffSubscriber, nickname);
-    }
-
     /**
      * @param unsubscriber who is leaving the lobby
      */
