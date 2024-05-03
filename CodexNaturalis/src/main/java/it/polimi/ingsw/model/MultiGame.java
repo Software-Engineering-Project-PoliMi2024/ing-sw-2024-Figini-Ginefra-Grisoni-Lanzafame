@@ -21,6 +21,7 @@ import java.util.*;
 public class MultiGame implements Serializable {
     private final Set<Game> games;
     private final LobbyList lobbies;
+    // TODO: remove username map
     private final Map<ServerModelController, String> username;
     private final CardLookUp<ObjectiveCard> cardLookUpObjective;
     private final CardLookUp<StartCard> cardLookUpStartCard;
