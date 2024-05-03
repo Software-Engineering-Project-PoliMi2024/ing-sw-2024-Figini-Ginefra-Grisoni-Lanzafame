@@ -87,8 +87,8 @@ public class Lobby implements Serializable {
     /**
      * @param unsubscriber who is leaving the lobby
      */
-    public void unsubscribe(DiffSubscriber unsubscriber, String lobbyName){
-        lobbyDiffPublisher.unsubscribe(unsubscriber, lobbyName);
+    public void unsubscribe(DiffSubscriber unsubscriber){
+        lobbyDiffPublisher.unsubscribe(unsubscriber);
     }
 
     /**

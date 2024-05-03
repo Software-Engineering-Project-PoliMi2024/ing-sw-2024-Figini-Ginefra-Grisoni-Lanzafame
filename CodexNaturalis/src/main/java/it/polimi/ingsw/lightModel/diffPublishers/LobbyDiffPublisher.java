@@ -57,13 +57,9 @@ public class LobbyDiffPublisher {
      * @param diffUnsubscriber the subscriber being removed
      */
     public synchronized void unsubscribe(DiffSubscriber diffUnsubscriber) {
-        subscribers.remove(diffUnsubscriber);
-    }
-
-    public synchronized void unsubscribe(DiffSubscriber diffUnsubscriber, String gameName) {
         notifySubscriber(diffUnsubscriber, new LittleBoyLobby());
         String unsubscriberNick = subscribers.get(diffUnsubscriber);
-        unsubscribe(diffUnsubscriber);
+        subscribers.remove(diffUnsubscriber);
         LobbyDiffEdit others = createDiffUnsubscriber(unsubscriberNick);
         for (DiffSubscriber subscriber : subscribers.keySet()) {
             notifySubscriber(subscriber, others);
