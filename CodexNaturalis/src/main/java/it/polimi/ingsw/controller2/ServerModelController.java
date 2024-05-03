@@ -119,6 +119,7 @@ public class ServerModelController implements ControllerInterface {
                 transitionTo(ViewState.LOBBY);
 
                 if(lobbyToJoin.getLobbyPlayerList().size() == lobbyToJoin.getNumberOfMaxPlayer()) {
+                    games.subscribe(getRemoveLobbyDiff(lobbyToJoin));
                     //Handle the creation of a new game from the lobbyToJoin
                     Game newGame = games.createGame(lobbyToJoin);
                     for (DiffSubscriber diffSub : lobbyToJoin.getSubscribers()) {
