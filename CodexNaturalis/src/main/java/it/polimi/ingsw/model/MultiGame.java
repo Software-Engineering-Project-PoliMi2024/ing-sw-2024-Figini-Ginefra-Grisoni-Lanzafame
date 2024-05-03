@@ -19,7 +19,6 @@ import java.io.Serializable;
 import java.util.*;
 
 public class MultiGame implements Serializable {
-    private final LobbyListDiffPublisher lobbyListDiffPublisher;
     private final Set<Game> games;
     private final LobbyList lobbies;
     private final Map<ServerModelController, String> username;
@@ -42,7 +41,6 @@ public class MultiGame implements Serializable {
                 new CardLookUp<>(new ResourceCardFactory(filePath+sourceFileName, filePath).getCards());
         cardLookUpGoldCard =
                 new CardLookUp<>(new GoldCardFactory(filePath+sourceFileName, filePath).getCards());
-        this.lobbyListDiffPublisher = new LobbyListDiffPublisher(lobbies);
     }
 
     public synchronized Set<Game> getGames() {
@@ -108,13 +106,13 @@ public class MultiGame implements Serializable {
         return lobbies.getLobbies().stream().map(Lobby::getLobbyName).toArray(String[]::new);
     }
     public void subscribe(DiffSubscriber diffSubscriber) {
-        lobbyListDiffPublisher.subscribe(diffSubscriber);
+        lobbies.subscribe(diffSubscriber);
     }
     public void unsubscribe(DiffSubscriber diffSubscriber) {
-        lobbyListDiffPublisher.unsubscribe(diffSubscriber);
+        lobbies.unsubscribe(diffSubscriber);
     }
     public void subscribe(LobbyListDiffEdit lightLobbyDiff){
-        lobbyListDiffPublisher.subscribe(lightLobbyDiff);
+        lobbies.subscribe(lightLobbyDiff);
     }
     /**
      * @param nickname of the player
@@ -124,6 +122,10 @@ public class MultiGame implements Serializable {
         return !this.getUsernames().contains(nickname);
     }
 
+    /**
+     * @param nickname of the user
+     * @return true if the nick is already present in a game (e.g. the user disconnected while still playing a match)
+     */
     public Boolean inGame(String nickname){
         if(getUserGame(nickname)==null){
             return false;
@@ -145,6 +147,10 @@ public class MultiGame implements Serializable {
         return null;
     }
 
+    /**
+     * @param nickname of the user
+     * @return the Lobby if the user is in a lobby, null otherwise
+     */
     public Lobby getUserLobby(String nickname){
         for(Lobby lobby: lobbies.getLobbies()){
             for(String name : lobby.getLobbyPlayerList())
@@ -154,6 +160,13 @@ public class MultiGame implements Serializable {
         return null;
     }
 
+    /**
+     * Add player to the lobbyName
+     * @param lobbyName of the targetLobby
+     * @param nickname of the player
+     * @return true if the player is successfully added to the Lobby, false otherwise
+     * @throws IllegalCallerException if the lobby doesn't exist
+     */
     public Boolean addPlayerToLobby(String lobbyName, String nickname){
         Lobby lobbyToJoin = null;
         for(Lobby lobby: this.lobbies.getLobbies()){

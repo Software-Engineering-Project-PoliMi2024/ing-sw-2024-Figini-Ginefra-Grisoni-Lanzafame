@@ -20,12 +20,21 @@ import java.util.Map;
 import java.util.stream.Collectors;
 
 public class Lightifier implements Serializable {
+    /**
+     * @param lobby which will be lightened
+     * @return a LightLobby containing the PlayerList and the name of the lobby
+     */
     public static LightLobby lightify(Lobby lobby) {
         return new LightLobby(lobby.getLobbyPlayerList(), lobby.getLobbyName());
     }
     public static LightLobbyList lightify(LobbyList lobbies){
         return new LightLobbyList(lobbies.getLobbies().stream().map(Lightifier::lightify).toList());
     }
+
+    /**
+     * @param codex which will be lightened
+     * @return a LightCodex containing points, collectable, a lightFrontier and a list of LightPlacement,
+     */
     public static LightCodex lightify(Codex codex){
         Map<Position, LightPlacement> lightPlacementMap = new HashMap<>();
         for(Placement placement : codex.getPlacementHistory()){
@@ -33,17 +42,41 @@ public class Lightifier implements Serializable {
         }
         return new LightCodex(codex.getPoints(), codex.getEarnedCollectables(), lightify(codex.getFrontier()), lightPlacementMap);
     }
+
+    /**
+     * @param frontier which will be lightened
+     * @return a LighFrontier
+     */
     public static LightFrontier lightify(Frontier frontier){
         return new LightFrontier(frontier.getFrontier());
     }
+
+    /**
+     * @param placement which will be lightened
+     * @return a LighPlacement
+     */
     public static LightPlacement lightify(Placement placement){
         return new LightPlacement(placement.position(), lightifyToCard(placement.card()), placement.face());
     }
 
+    /**
+     * @param card which will be lightened
+     * @return a LighCard containing only the CardID
+     */
     public static LightCard lightifyToCard(Card card){
         return new LightCard(card.getId());
     }
+
+    /**
+     * @param card which will be lightened
+     * @return the permanentResource on the back of the card
+     */
     public static Resource lightifyToResource(CardInHand card){return card.getPermanentResources(CardFace.BACK).stream().toList().getFirst();}
+
+    /**
+     * @param hand which will be lightened
+     * @return a LighHand containing all the (light)CardInHand, the lightSecretObjective and each card playbility
+     */
     public static LightHand lightifyYour(Hand hand){
         HashMap<LightCard, Boolean> cardPlayability = new HashMap<>();
         for(CardInHand card : hand.getHand()){
@@ -55,6 +88,10 @@ public class Lightifier implements Serializable {
         return h;
     }
 
+    /**
+     * @param hand which will be lightened
+     * @return a LightHandOther containing the permanent resource of each CardInHand of the other player
+     */
     public static LightHandOthers lightifyOthers(Hand hand){
        return new LightHandOthers(hand.getHand().stream().map(CardInHand -> CardInHand.getPermanentResources(CardFace.BACK)).toArray(Resource[]::new));
     }

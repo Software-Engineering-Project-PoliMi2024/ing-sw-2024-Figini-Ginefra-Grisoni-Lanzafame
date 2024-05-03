@@ -6,7 +6,9 @@ import it.polimi.ingsw.lightModel.Lightifier;
 import it.polimi.ingsw.lightModel.diffs.*;
 import it.polimi.ingsw.lightModel.lightPlayerRelated.LightPlacement;
 import it.polimi.ingsw.lightModel.diffObserverInterface.DiffSubscriber;
+import it.polimi.ingsw.lightModel.lightTableRelated.LightGame;
 import it.polimi.ingsw.lightModel.lightTableRelated.LightLobby;
+import it.polimi.ingsw.lightModel.lightTableRelated.LightLobbyList;
 import it.polimi.ingsw.model.MultiGame;
 import it.polimi.ingsw.model.cardReleted.cards.Card;
 import it.polimi.ingsw.model.cardReleted.cards.CardInHand;
@@ -31,7 +33,11 @@ public class ServerModelController implements ControllerInterface {
     private final ViewInterface view;
     private String nickname;
 
-
+    /**
+     * The constructor of the class
+     * @param games the reference to the Multi-game on the server
+     * @param view The client's view interface associated with this controller.
+     */
     public ServerModelController(MultiGame games, ViewInterface view) {
         this.games = games;
         this.view = view;
@@ -39,50 +45,58 @@ public class ServerModelController implements ControllerInterface {
     public void run() {
     }
 
+    /**
+     * Log the player into the server. Check if his username is unique and if he is already in a game or not
+     * @param nickname of the client who is trying to loggin in
+     * @throws RemoteException in an error occurs during the sending/receiving of the data
+     */
     @Override
     public void login(String nickname) throws RemoteException {
         if(!this.games.isUnique(nickname)){
-            try {
-                view.log(LogsFromServer.NAME_TAKEN.getMessage());
-            }catch (RemoteException r){
-                r.printStackTrace();
-            }
+            log(LogsFromServer.NAME_TAKEN);
         }else{
-            if(games.inGame(nickname)){
-                this.joinGame(this.games.getUserGame(nickname), LogsFromServer.MID_GAME_JOINED);
+            //Check if the player was already connected to a game
+            Boolean alreadyInGame=games.inGame(nickname);
+            if(alreadyInGame){
+                this.joinGame(this.games.getUserGame(nickname), alreadyInGame);
             }else{
                 this.nickname = nickname;
                 this.games.addUser(this, nickname);
                 getActiveLobbyList();
-                try {
-                    view.log(LogsFromServer.SERVER_JOINED.getMessage());
-                    view.transitionTo(ViewState.JOIN_LOBBY);
-                }catch (RemoteException r) {
-                    r.printStackTrace();
-                }
+                log(LogsFromServer.SERVER_JOINED);
+                transitionTo(ViewState.JOIN_LOBBY);
             }
         }
     }
+
+    /**
+     * Subscribes the client's view (diffSubscriber) to the gamesPublisher, enabling
+     * the reception of all current and future lobbies.
+     */
     private void getActiveLobbyList() {
         games.subscribe(view);
     }
 
+    /**
+     * Creates a newLobby with the specified game name and maximum player count,
+     * and sends the diff  to all subscribers in the gamesPublisher list.
+     * @param gameName The name of the new lobby being created.
+     * @param maxPlayerCount The number of players needed to exit the lobby and start the game.
+     * @throws RemoteException If an error occurs during the sending or receiving of data.
+     */
     @Override
     public void createLobby(String gameName, int maxPlayerCount) throws RemoteException {
         if(games.getLobby(gameName)!=null){
-            view.log(LogsFromServer.LOBBY_NAME_TAKEN.getMessage());
+            log(LogsFromServer.LOBBY_NAME_TAKEN);
         }else {
             Lobby newLobby = new Lobby(maxPlayerCount, this.nickname, gameName);
             this.games.addLobby(newLobby);
             games.unsubscribe(this.view);
-            newLobby.subscribe(this.view, this.nickname);
+            newLobby.subscribe(this.view, this.nickname, gameName);
             games.subscribe(getAddLobbyDiff(newLobby));
-            try {
-                view.log(LogsFromServer.LOBBY_CREATED.getMessage());
-                view.transitionTo(ViewState.LOBBY);
-            } catch (RemoteException r) {
-                r.printStackTrace();
-            }
+
+            log(LogsFromServer.LOBBY_CREATED);
+            transitionTo(ViewState.LOBBY);
         }
     }
 
@@ -98,31 +112,26 @@ public class ServerModelController implements ControllerInterface {
         if(lobbyToJoin!=null){
             Boolean result = this.games.addPlayerToLobby(lobbyName, this.nickname);
             if(result){
-                lobbyToJoin.subscribe(this.view, this.nickname);
+                lobbyToJoin.subscribe(this.view, this.nickname, lobbyToJoin.getLobbyName());
                 games.unsubscribe(view);
-                try {
-                    view.log(LogsFromServer.LOBBY_JOINED.getMessage());
-                    view.transitionTo(ViewState.LOBBY);
-                }catch (RemoteException r){
-                    r.printStackTrace();
-                }
+
+                log(LogsFromServer.LOBBY_JOINED);
+                transitionTo(ViewState.LOBBY);
+
                 if(lobbyToJoin.getLobbyPlayerList().size() == lobbyToJoin.getNumberOfMaxPlayer()) {
                     //Handle the creation of a new game from the lobby
                     Game newGame = games.createGame(lobbyToJoin);
                     for (DiffSubscriber diffSub : lobbyToJoin.getSubscribers()) {
-                        lobbyToJoin.unsubscribe(diffSub);
-                        this.joinGame(newGame, LogsFromServer.NEW_GAME_JOINED);
+                        lobbyToJoin.unsubscribe(diffSub, lobbyName);
+                        //Player who are transitioning from a lobby to a game are of course not already in a match
+                        this.joinGame(newGame, false);
                     }
                 }
             }else{
-                view.log(LogsFromServer.LOBBY_IS_FULL.getMessage());
+                log(LogsFromServer.LOBBY_IS_FULL);
             }
         }else{
-            try {
-                view.log(LogsFromServer.LOBBY_NONEXISTENT.getMessage());
-            }catch (RemoteException r){
-                r.printStackTrace();
-            }
+            log(LogsFromServer.LOBBY_NONEXISTENT);
         }
     }
 
@@ -143,14 +152,11 @@ public class ServerModelController implements ControllerInterface {
                 games.subscribe(getRemoveLobbyDiff(lobbyToLeave));
             }
 
-            lobbyToLeave.unsubscribe(view);
+            lobbyToLeave.unsubscribe(view, lobbyToLeave.getLobbyName());
             games.subscribe(view);
-            try {
-                view.log(LogsFromServer.LOBBY_LEFT.getMessage());
-                view.transitionTo(ViewState.JOIN_LOBBY);
-            }catch (RemoteException r){
-                r.printStackTrace();
-            }
+
+            log(LogsFromServer.LOBBY_LEFT);
+            transitionTo(ViewState.JOIN_LOBBY);
         }
     }
     private LobbyListDiffEdit getRemoveLobbyDiff(Lobby lobby) throws RemoteException{
@@ -163,22 +169,19 @@ public class ServerModelController implements ControllerInterface {
      * Connects the user to the game. If it is the first time (the game is just being created), transitions the view
      * to the CHOOSE_START_CARD state; otherwise, transitions the view to IDLE.
      * @param game The game being accessed.
-     * @param log The log to be sent to the view (NEW_GAME_JOINED/MID_GAME_JOINED).
+     * @param alreadyInGame is true if the player disconnected while still playing a match
      * @throws RemoteException If an error occurs during the sending of Diffs.
      */
-    public void joinGame(Game game, LogsFromServer log) throws RemoteException{
+    private void joinGame(Game game, boolean alreadyInGame) throws RemoteException {
         game.subcribe(view, this.nickname);
-        try {
+        if(alreadyInGame){
+            view.log(LogsFromServer.MID_GAME_JOINED.getMessage());
+            transitionTo(ViewState.IDLE);
+        }else{
+            view.log(LogsFromServer.NEW_GAME_JOINED.getMessage());
+            transitionTo(ViewState.CHOOSE_START_CARD);
             LightCard lightStartCard = Lightifier.lightifyToCard(game.getStartingCardDeck().drawFromDeck());
             game.subcribe(new HandDiffAdd(lightStartCard, true));
-            view.log(log.getMessage());
-            if(log == LogsFromServer.NEW_GAME_JOINED){
-                view.transitionTo(ViewState.CHOOSE_START_CARD);
-            }else{
-                view.transitionTo(ViewState.IDLE);
-            }
-        }catch (RemoteException r){
-            r.printStackTrace();
         }
     }
 
@@ -203,15 +206,16 @@ public class ServerModelController implements ControllerInterface {
         Placement heavyPlacement = new Placement(new Position(0,0), Heavifier.heavifyStartCard(card, games), cardFace);
         user.playCard(heavyPlacement);
         Game userGame = games.getUserGame(this.nickname);
-        view.updateGame(new HandDiffRemove(card));
+
+        updateGame(new HandDiffRemove(card));
         userGame.subcribe(new CodexDiff(this.nickname, user.getUserCodex().getPoints(),
                 user.getUserCodex().getEarnedCollectables(), getPlacementList(Lightifier.lightify(heavyPlacement)), user.getUserCodex().getFrontier().getFrontier()));
-        view.log(LogsFromServer.START_CARD_PLACED.getMessage());
+        log(LogsFromServer.START_CARD_PLACED);
         //Send the secretObjectiveCard choice to the view
         for(LightCard secretObjectiveCardChoice : drawObjectiveCard()){
-            view.updateGame(new HandDiffAdd(secretObjectiveCardChoice, true));
+            updateGame(new HandDiffAdd(secretObjectiveCardChoice, true));
         }
-        view.transitionTo(ViewState.SELECT_OBJECTIVE);
+        transitionTo(ViewState.SELECT_OBJECTIVE);
     }
 
     /**
@@ -225,12 +229,12 @@ public class ServerModelController implements ControllerInterface {
         User userToEdit = games.getUserFromNick(this.nickname);
         Game userGame = games.getUserGame(nickname);
         userToEdit.setSecretObject(Heavifier.heavifyObjectCard(card, games));
-        view.log(LogsFromServer.SECRET_OBJECTIVE_CHOSE.getMessage());
+        log(LogsFromServer.SECRET_OBJECTIVE_CHOSE);
         String nextPlayerNick = userGame.getGameParty().getCurrentPlayer().getNickname();
         if(this.nickname.equals(nextPlayerNick)){
-            view.transitionTo(ViewState.IDLE);
+            transitionTo(ViewState.IDLE);
         }else{
-            view.transitionTo(ViewState.PLACE_CARD);
+            transitionTo(ViewState.PLACE_CARD);
         }
     }
 
@@ -261,8 +265,8 @@ public class ServerModelController implements ControllerInterface {
                 heavyPlacement.card().getPermanentResources(CardFace.BACK).stream().toList().getFirst(), this.nickname));
         userGame.subcribe(new CodexDiff(this.nickname, user.getUserCodex().getPoints(),
                 user.getUserCodex().getEarnedCollectables(), getPlacementList(placement), user.getUserCodex().getFrontier().getFrontier()));
-        view.log(LogsFromServer.CARD_PLACED.getMessage());
-        view.transitionTo(ViewState.DRAW_CARD);
+        log(LogsFromServer.CARD_PLACED);
+        transitionTo(ViewState.DRAW_CARD);
     }
 
     /**
@@ -308,8 +312,8 @@ public class ServerModelController implements ControllerInterface {
             nextPlayerView.log(LogsFromServer.YOUR_TURN.getMessage());
             nextPlayerView.transitionTo(ViewState.PLACE_CARD);
 
-            view.log(LogsFromServer.CARD_DRAWN.getMessage());
-            view.transitionTo(ViewState.IDLE);
+            log(LogsFromServer.CARD_DRAWN);
+            transitionTo(ViewState.IDLE);
         }
     }
 
@@ -358,4 +362,39 @@ public class ServerModelController implements ControllerInterface {
         return view;
     }
 
+    private void log(LogsFromServer log){
+        try {
+            view.log(log.getMessage());
+        }catch (RemoteException r){
+            r.printStackTrace();
+        }
+    }
+    private void transitionTo(ViewState state){
+        try {
+            view.transitionTo(state);
+        }catch (RemoteException r){
+            r.printStackTrace();
+        }
+    }
+    private void updateLobby(ModelDiffs<LightLobby> diff){
+        try {
+            view.updateLobby(diff);
+        }catch (RemoteException r){
+            r.printStackTrace();
+        }
+    }
+    private void updateLobbyList(ModelDiffs<LightLobbyList> diff){
+        try {
+            view.updateLobbyList(diff);
+        }catch (RemoteException r){
+            r.printStackTrace();
+        }
+    }
+    private void updateGame(ModelDiffs<LightGame> diff){
+        try {
+            view.updateGame(diff);
+        }catch (RemoteException r) {
+            r.printStackTrace();
+        }
+    }
 }
