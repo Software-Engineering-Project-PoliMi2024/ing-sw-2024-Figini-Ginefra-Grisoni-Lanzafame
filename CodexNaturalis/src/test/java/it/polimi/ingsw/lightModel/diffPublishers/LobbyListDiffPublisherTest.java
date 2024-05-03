@@ -43,7 +43,7 @@ class LobbyListDiffPublisherTest {
 
     private void printLobbies(ViewTest view){
         System.out.println("----------+----------");
-        for(LightLobby lightLobby : view.getLightLobbyList().getLobbies()){
+        for(LightLobby lightLobby : view.lightLobbyList.getLobbies()){
             System.out.println("# " + lightLobby.name());
             for(String nick : lightLobby.nicknames()){
                 System.out.println("- "+nick);

@@ -12,9 +12,11 @@ import java.rmi.RemoteException;
 
 public class ViewTest implements ViewInterface {
     public LightLobbyList lightLobbyList;
+    public LightLobby lightLobby;
 
     public ViewTest() {
         lightLobbyList = new LightLobbyList();
+        lightLobby = new LightLobby();
     }
 
     @Override
@@ -45,7 +47,7 @@ public class ViewTest implements ViewInterface {
 
     @Override
     public void updateLobby(ModelDiffs<LightLobby> diff) throws RemoteException {
-
+        diff.apply(this.lightLobby);
     }
 
     @Override
@@ -58,7 +60,4 @@ public class ViewTest implements ViewInterface {
 
     }
 
-    public LightLobbyList getLightLobbyList() {
-        return lightLobbyList;
-    }
 }
