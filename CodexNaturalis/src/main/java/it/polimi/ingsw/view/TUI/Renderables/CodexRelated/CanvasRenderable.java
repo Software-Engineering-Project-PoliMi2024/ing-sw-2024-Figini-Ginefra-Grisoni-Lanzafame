@@ -5,14 +5,29 @@ import it.polimi.ingsw.view.TUI.Renderables.Renderable;
 import it.polimi.ingsw.view.TUI.Renderables.drawables.Canvas;
 import it.polimi.ingsw.view.TUI.inputs.CommandPrompt;
 
+/**
+ * This class is a Renderable that can render a canvas.
+ */
 public class CanvasRenderable extends Renderable {
     protected final Canvas canvas;
+
+    /**
+     * Creates a new CanvasRenderable.
+     * @param name The name of the renderable.
+     * @param width The width of the canvas.
+     * @param height The height of the canvas.
+     * @param relatedCommands The commands related to this renderable.
+     * @param controller The controller to interact with.
+     */
     public CanvasRenderable(String name, int width, int height, CommandPrompt[] relatedCommands, ControllerInterface controller) {
         super(name, relatedCommands, controller);
         canvas = new Canvas(width, height);
     }
 
 
+    /**
+     * Renders the canvas.
+     */
     @Override
     public void render() {
         String[][] content = canvas.getContent();
