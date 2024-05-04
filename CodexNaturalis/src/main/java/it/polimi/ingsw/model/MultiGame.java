@@ -22,14 +22,16 @@ public class MultiGame implements Serializable {
     private final LobbyList lobbies;
     // TODO: remove username map, leave a list of nicks
     private final Map<ServerModelController, String> username;
+    private final List<String> usernames;
     private final CardLookUp<ObjectiveCard> cardLookUpObjective;
     private final CardLookUp<StartCard> cardLookUpStartCard;
     private final CardLookUp<ResourceCard> cardLookUpResourceCard;
     private final CardLookUp<GoldCard> cardLookUpGoldCard;
     public MultiGame() {
         this.games = new HashSet<>();
-        //usernames
-        this.username = new HashMap<>(); //user that are connected to the server
+
+        this.username = new HashMap<>();
+        this.usernames = new ArrayList<>(); //users that are currently connected to the server
         lobbies = new LobbyList();
         String filePath = SignificantPaths.CardFolder;
         String sourceFileName = SignificantPaths.CardFile;
@@ -47,9 +49,9 @@ public class MultiGame implements Serializable {
         return games;
     }
 
-    public Set<String> getUsernames() {
-        synchronized (username) {
-            return new HashSet<>(username.values());
+    public List<String> getUsernames() {
+        synchronized (usernames) {
+            return usernames;
         }
     }
 
@@ -58,12 +60,13 @@ public class MultiGame implements Serializable {
     }
 
     public boolean addUser(ServerModelController controller, String username) {
-        synchronized (this.username){
+        synchronized (usernames){
             if(isUnique(username)){
-                this.username.put(controller, username);
+                this.usernames.add(username);
                 return true;
-            }else
+            }else{
                 return false;
+            }
         }
     }
 
@@ -92,8 +95,8 @@ public class MultiGame implements Serializable {
     }
 
     public void removeUser(String username) {
-        synchronized (this.username){
-            this.username.remove(username);
+        synchronized (this.usernames){
+            this.usernames.remove(username);
         }
     }
     /**
@@ -126,7 +129,7 @@ public class MultiGame implements Serializable {
      * @param nickname of the user
      * @return true if the nick is already present in a game (e.g. the user disconnected while still playing a match)
      */
-    public Boolean inGameParty(String nickname){
+    public Boolean isInGameParty(String nickname){
         if(getUserGame(nickname)==null){
             return false;
         }else{
@@ -220,6 +223,7 @@ public class MultiGame implements Serializable {
         }
     }
 
+    //TODO remove legacy code after draw implementation in GameLoopController
     public Map<ServerModelController, String> getUsernameMap(){
         return username;
     }
@@ -230,7 +234,7 @@ public class MultiGame implements Serializable {
     public String toString() {
         return "MultiGame{" +
                 "games=" + games +
-                ", usernames=" + username +
+                ", usernames=" + usernames +
                 '}';
     }
 }
