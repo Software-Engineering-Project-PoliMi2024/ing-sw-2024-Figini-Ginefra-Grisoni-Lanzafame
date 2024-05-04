@@ -15,23 +15,48 @@ import it.polimi.ingsw.view.TUI.inputs.CommandPromptResult;
 
 import java.util.Map;
 
+/**
+ * This class is a Renderable that can render the main player's codex.
+ */
 public class CodexRenderable extends CanvasRenderable {
     protected final LightGame lightGame;
     private final CardMuseum cardMuseum;
+
+    /**
+     * Creates a new CodexRenderable.
+     * @param name The name of the renderable.
+     * @param lightGame The lightGame to render.
+     * @param cardMuseum The cardMuseum to use.
+     * @param relatedCommands The commands related to this renderable.
+     * @param controller The controller to interact with.
+     */
     public CodexRenderable(String name, LightGame lightGame, CardMuseum cardMuseum, CommandPrompt[] relatedCommands, ControllerInterface controller) {
         super(name, 0, 0, relatedCommands, controller);
         this.lightGame = lightGame;
         this.cardMuseum = cardMuseum;
     }
 
+    /**
+     * Converts a grid position to a canvas position. The Grid position is the position of the card in the codex in the same coordinate system as the model.
+     * @param p The grid position.
+     * @return The canvas position.
+     */
     private Position gridToCanvas(Position p){
         return new Position(p.getX() * (CardTextStyle.getCardWidth() - 2) + canvas.getWidth() / 2, p.getY() * (CardTextStyle.getCardHeight() - 2) + canvas.getHeight() / 2);
     }
 
+    /**
+     * Gets the codex of the main player. This method is overridden in CodexRenderableOthers.
+     * @return The codex of the main player.
+     */
     protected LightCodex getCodex(){
         return lightGame.getCodexMap().get(lightGame.getLightGameParty().getYourName());
     }
 
+    /**
+     * Draws a placement on the canvas.
+     * @param placement The placement to draw.
+     */
     public void drawPlacement(LightPlacement placement){
         Position canvasPosition = gridToCanvas(placement.position());
         TextCard card = cardMuseum.get(placement.card().id());
@@ -39,6 +64,9 @@ public class CodexRenderable extends CanvasRenderable {
         this.canvas.draw(cardDrawable, canvasPosition.getX(), canvasPosition.getY());
     }
 
+    /**
+     * Draws the codex on the canvas.
+     */
     public void drawCodex(){
         Map<Position, LightPlacement> placementHistory = getCodex().getPlacementHistory();
 
@@ -79,11 +107,18 @@ public class CodexRenderable extends CanvasRenderable {
         }
     }
 
+    /**
+     * Renders the codex.
+     */
     @Override
     public void render() {
         super.render();
     }
 
+    /**
+     * Updates the renderable based on the command prompt result.
+     * @param answer The answer to the command.
+     */
     @Override
     public void updateCommand(CommandPromptResult answer) {
         switch (answer.getCommand()){
