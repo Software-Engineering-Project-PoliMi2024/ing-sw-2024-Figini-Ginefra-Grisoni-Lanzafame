@@ -30,6 +30,7 @@ public class HandOthersRenderable extends CardRenderable{
         for(int i = 0; i < 3; i++){
             Resource resource = otherHand.getCards()[i];
             Printer.print(getMuseum().getResourceBack(resource).toString());
+            Printer.println("");
         }
     }
 

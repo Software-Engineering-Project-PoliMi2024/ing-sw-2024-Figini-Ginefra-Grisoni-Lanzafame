@@ -37,7 +37,8 @@ public class CommandDisplayRenderable extends Renderable{
 
         Printable printable = new Printable("");
         printable.println("What do you want to do ❔");
-        printable.print("\t");
+        //printable.print("\t");
+        Printer.print(printable);
     }
 
 
