@@ -12,7 +12,7 @@ public class LightDeck implements Differentiable {
      * Constructor of the class
      */
     public LightDeck() {
-        this.cardBuffer = new LightCard[1];
+        this.cardBuffer = new LightCard[2];
     }
     public LightCard[] getCardBuffer() {
         return cardBuffer;

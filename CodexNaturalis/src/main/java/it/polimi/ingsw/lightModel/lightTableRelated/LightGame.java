@@ -117,7 +117,10 @@ public class LightGame implements Differentiable {
         this.hand.removeCard(card);
     }
     public void setPoint(int points, String nickname){
-        codexOthersMap.get(nickname).setPoints(points);
+        if(codexOthersMap.get(nickname) == null){
+            codexOthersMap.put(nickname, new LightCodex());
+            codexOthersMap.get(nickname).setPoints(points);
+        }
     }
 
     public void setMyCodex(LightCodex myCodex) {

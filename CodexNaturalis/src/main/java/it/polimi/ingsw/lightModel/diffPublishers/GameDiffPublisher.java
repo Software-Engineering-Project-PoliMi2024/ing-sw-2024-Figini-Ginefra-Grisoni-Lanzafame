@@ -160,15 +160,20 @@ public class GameDiffPublisher {
      */
     private List<HandDiff> getHandCurrentState(DiffSubscriber diffSubscriber){
         List<HandDiff> handDiffAdd = new ArrayList<>();
-        LightHand subscriberHand = Lightifier.lightifyYour(game.getGameParty()
+        User user = game.getGameParty()
                 .getUsersList().stream()
-                .filter(user->user.getNickname()
+                .filter(u->u.getNickname()
                         .equals(activeSubscribers.get(diffSubscriber)))
-                .findFirst().get().getUserHand());
-        for(LightCard card : subscriberHand.getCards()){
-            handDiffAdd.add(new HandDiffAdd(card, subscriberHand.isPlayble(card)));
+                .findFirst().orElse(null);
+        if(user!=null) {
+            LightHand subscriberHand = Lightifier.lightifyYour(user.getUserHand());
+            for (LightCard card : subscriberHand.getCards()) {
+                if(card!=null)
+                    handDiffAdd.add(new HandDiffAdd(card, subscriberHand.isPlayble(card)));
+            }
+            if(subscriberHand.getSecretObjective() !=null)
+                handDiffAdd.add(new HandDiffSetObj(subscriberHand.getSecretObjective()));
         }
-        handDiffAdd.add(new HandDiffSetObj(subscriberHand.getSecretObjective()));
         return handDiffAdd;
     }
 
@@ -194,7 +199,9 @@ public class GameDiffPublisher {
      */
     private GameDiffPublicObj getPublicObjectiveCurrentState(){
         LightCard[] publicObj = game.getObjectiveCardDeck().getBuffer().stream().map(Lightifier::lightifyToCard).toArray(LightCard[]::new);
-        return new GameDiffPublicObj(publicObj);
+        if(publicObj.length == 2)
+            return new GameDiffPublicObj(publicObj);
+        return new GameDiffPublicObj();
     }
 
     /**
@@ -202,7 +209,9 @@ public class GameDiffPublisher {
      * @return a list of diffs containing the current state of the game
      */
     private List<GameDiff> getTotalCurrentState(DiffSubscriber diffSubscriber){
+
         List<GameDiff> totalDiff = new ArrayList<>(getDeckCurrentState());
+        totalDiff.add(new GameDiffGameName(game.getName()));
         totalDiff.add(getPlayerActivity());
         totalDiff.addAll(getCodexCurrentState());
         totalDiff.addAll(getHandCurrentState(diffSubscriber));
