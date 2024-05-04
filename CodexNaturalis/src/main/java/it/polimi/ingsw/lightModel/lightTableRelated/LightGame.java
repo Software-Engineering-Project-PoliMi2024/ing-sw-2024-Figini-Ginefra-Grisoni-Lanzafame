@@ -69,11 +69,10 @@ public class LightGame implements Differentiable {
         this.codexMap.put(owner, codex);
     }
     public void addOtherHand(String owner, Resource card){
-        this.handOthers.get(owner).addCard(card);
-    }
-    public void setOtherHand(Map<String, LightHandOthers> hands){
-        for(String owner : hands.keySet()){
-            this.handOthers.put(owner, hands.get(owner));
+        if(this.handOthers.get(owner) == null){
+            this.handOthers.put(owner, new LightHandOthers());
+        }else{
+            this.handOthers.get(owner).addCard(card);
         }
     }
     public LightDeck getResourceDeck(){
@@ -115,11 +114,13 @@ public class LightGame implements Differentiable {
     public void removeCard(LightCard card){
         this.hand.removeCard(card);
     }
-    public void setPoint(int points, String nickname){
+    public void checkCodex(String nickname){
         if(codexMap.get(nickname) == null){
             codexMap.put(nickname, new LightCodex());
-            codexMap.get(nickname).setPoints(points);
         }
+    }
+    public void setPoint(int points, String nickname){
+        codexMap.get(nickname).setPoints(points);
     }
 
     public void setFrontier(LightFrontier lightFrontier, String nickname){

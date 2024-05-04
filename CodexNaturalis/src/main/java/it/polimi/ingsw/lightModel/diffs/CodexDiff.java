@@ -37,6 +37,7 @@ public class CodexDiff extends GameDiff{
      */
     @Override
     public void apply(LightGame lightGame) {
+        lightGame.checkCodex(owner);
         lightGame.setPoint(addPoints, this.owner);
         lightGame.getCodexMap().get(this.owner).addPlacement(addPlacements);
         lightGame.setFrontier(new LightFrontier(addFrontier), this.owner);
