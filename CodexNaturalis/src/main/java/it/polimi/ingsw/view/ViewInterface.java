@@ -11,7 +11,7 @@ import java.io.Serializable;
 import java.rmi.Remote;
 import java.rmi.RemoteException;
 
-public interface ViewInterface extends DiffSubscriber, Serializable, Remote {
+public interface ViewInterface extends Serializable, Remote {
     void setState(ViewState state) throws RemoteException;
     void transitionTo(ViewState state) throws RemoteException;
     void postConnectionInitialization(ControllerInterface controller) throws RemoteException;
