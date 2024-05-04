@@ -1,10 +1,24 @@
 package it.polimi.ingsw.view.TUI.Renderables.drawables;
 
+/**
+ * This class is a drawable that represents a canvas. That is, a drawable that can draw other drawables.
+ */
 public class Canvas extends Drawable{
+    /**
+     * Creates a new Canvas.
+     * @param width The width of the canvas.
+     * @param height The height of the canvas.
+     */
     public Canvas(int width, int height) {
         super(width, height);
     }
 
+    /**
+     * Draws the given drawable at the given coordinates.
+     * @param drawable The drawable to draw.
+     * @param x The x coordinate.
+     * @param y The y coordinate.
+     */
     public void draw(Drawable drawable, int x, int y){
         String[][] content = drawable.getContent();
         x -= drawable.getWidth() / 2;
