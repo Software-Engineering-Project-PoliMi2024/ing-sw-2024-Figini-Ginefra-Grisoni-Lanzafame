@@ -19,25 +19,21 @@ public class ConnectionClientRMI implements ConnectionLayerClient{
      * @param view the view of the client
      */
     public void connect(String ip, int port, ViewInterface view) {
+        //TODO: if the ip or port are wrong, notify the user, use Futures
+        Registry registry;
         try {
-            Registry registry = LocateRegistry.getRegistry(ip, port);
-            ConnectionLayerServer connect = null;
-            try {
-                connect = (ConnectionLayerServer) registry.lookup("connect");
-            }catch (NotBoundException b){
-                System.out.println("No method connect found on the Server");
-                view.log(LogsFromServer.CONNECTION_ERROR.getMessage());
-                b.printStackTrace();
-            }
-            //expose client's view to the server
+            registry = LocateRegistry.getRegistry(ip, port);
+            System.out.println(registry.toString());
+            ConnectionLayerServer connect;
+            connect = (ConnectionLayerServer) registry.lookup("connect");
+            System.out.println(connect.toString());
             ViewInterface viewStub = (ViewInterface) UnicastRemoteObject.exportObject(view, 0);
             connect.connect(viewStub);
-        } catch (RemoteException r) { //serverOfflient
-            r.printStackTrace();
+        }catch (Exception e){
             try {
-                view.log(LogsFromServer.CONNECTION_ERROR.getMessage());
-            }catch (RemoteException rr) {
-                rr.printStackTrace();
+                view.logErr(LogsFromServer.CONNECTION_ERROR.getMessage());
+            }catch (RemoteException remoteException){
+                remoteException.printStackTrace();
             }
         }
     }
