@@ -4,7 +4,9 @@ import it.polimi.ingsw.controller2.ControllerInterface;
 import it.polimi.ingsw.lightModel.LightCard;
 import it.polimi.ingsw.lightModel.lightTableRelated.LightGame;
 import it.polimi.ingsw.model.cardReleted.utilityEnums.CardFace;
+import it.polimi.ingsw.view.TUI.Printing.Printer;
 import it.polimi.ingsw.view.TUI.Renderables.CardRelated.CardRenderable;
+import it.polimi.ingsw.view.TUI.Styles.PromptStyle;
 import it.polimi.ingsw.view.TUI.cardDrawing.CardMuseum;
 import it.polimi.ingsw.view.TUI.inputs.CommandPrompt;
 import it.polimi.ingsw.view.TUI.inputs.CommandPromptResult;
@@ -19,6 +21,15 @@ public class ChooseStartCardRenderable extends CardRenderable {
         LightCard card = this.getLightGame().getHand().getCards()[0];
         this.renderCard(card);
     }
+
+    @Override
+    public void setActive(boolean active) {
+        super.setActive(active);
+        if (active) {
+            Printer.println(PromptStyle.GameStart);
+        }
+    }
+
 
     @Override
     public void updateCommand(CommandPromptResult answer) {
