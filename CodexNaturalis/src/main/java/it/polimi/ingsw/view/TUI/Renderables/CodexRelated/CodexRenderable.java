@@ -29,7 +29,7 @@ public class CodexRenderable extends CanvasRenderable {
     }
 
     protected LightCodex getCodex(){
-        return lightGame.getMyCodex();
+        return lightGame.getCodexMap().get(lightGame.getLightGameParty().getYourName());
     }
 
     public void drawPlacement(LightPlacement placement){

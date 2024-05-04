@@ -2,9 +2,7 @@ package it.polimi.ingsw.view.TUI.Renderables.CodexRelated;
 
 import it.polimi.ingsw.controller2.ControllerInterface;
 import it.polimi.ingsw.lightModel.lightPlayerRelated.LightCodex;
-import it.polimi.ingsw.lightModel.lightPlayerRelated.LightPlacement;
 import it.polimi.ingsw.lightModel.lightTableRelated.LightGame;
-import it.polimi.ingsw.model.playerReleted.Position;
 import it.polimi.ingsw.view.TUI.cardDrawing.CardMuseum;
 import it.polimi.ingsw.view.TUI.inputs.CommandPrompt;
 import it.polimi.ingsw.view.TUI.inputs.CommandPromptResult;
@@ -21,7 +19,7 @@ public class CodexRenderableOthers extends CodexRenderable{
 
     @Override
     protected LightCodex getCodex(){
-        return lightGame.getCodexOthersMap().get(this.targetPlayer);
+        return lightGame.getCodexMap().get(this.targetPlayer);
     }
 
     @Override

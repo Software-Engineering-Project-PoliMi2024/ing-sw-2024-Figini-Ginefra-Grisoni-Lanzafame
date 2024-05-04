@@ -13,8 +13,7 @@ import java.util.*;
 
 public class LightGame implements Differentiable {
     private LightGameParty lightGameParty;
-    private LightCodex myCodex;
-    private Map<String, LightCodex> codexOthersMap;
+    private Map<String, LightCodex> codexMap;
     private LightHand hand;
     private Map<String, LightHandOthers> handOthers;
     private Map<DrawableCard, LightDeck> decks;
@@ -22,7 +21,7 @@ public class LightGame implements Differentiable {
 
     public LightGame(){
         this.lightGameParty = new LightGameParty();
-        this.codexOthersMap = new HashMap<>();
+        this.codexMap = new HashMap<>();
         this.hand = new LightHand();
         this.handOthers = new HashMap<>();
         this.decks = new HashMap<>();
@@ -58,16 +57,16 @@ public class LightGame implements Differentiable {
         return decks;
     }
 
-    public Map<String, LightCodex> getCodexOthersMap() {
-        return codexOthersMap;
+    public Map<String, LightCodex> getCodexMap() {
+        return codexMap;
     }
-    public void setCodexOthersMap(Map<String, LightCodex> codexOthersMap) {
-        for(String player : codexOthersMap.keySet()){
-            this.codexOthersMap.put(player, codexOthersMap.get(player));
+    public void setCodexMap(Map<String, LightCodex> codexMap) {
+        for(String player : codexMap.keySet()){
+            this.codexMap.put(player, codexMap.get(player));
         }
     }
     public void setCodexMap(String owner, LightCodex codex){
-        this.codexOthersMap.put(owner, codex);
+        this.codexMap.put(owner, codex);
     }
     public void addOtherHand(String owner, Resource card){
         this.handOthers.get(owner).addCard(card);
@@ -117,32 +116,33 @@ public class LightGame implements Differentiable {
         this.hand.removeCard(card);
     }
     public void setPoint(int points, String nickname){
-        codexOthersMap.get(nickname).setPoints(points);
-    }
-
-    public void setMyCodex(LightCodex myCodex) {
-        this.myCodex = myCodex;
-    }
-
-    public LightCodex getMyCodex() {
-        return myCodex;
+        if(codexMap.get(nickname) == null){
+            codexMap.put(nickname, new LightCodex());
+            codexMap.get(nickname).setPoints(points);
+        }
     }
 
     public void setFrontier(LightFrontier lightFrontier, String nickname){
-        codexOthersMap.get(nickname).setFrontier(lightFrontier);
+        codexMap.get(nickname).setFrontier(lightFrontier);
     }
 
     public void setCollectable(Map<Collectable, Integer> collectables, String nickname){
-        codexOthersMap.get(nickname).setCollectables(collectables);
+        codexMap.get(nickname).setCollectables(collectables);
+    }
+    public void setYourName(String yourName){
+        this.lightGameParty.setYourName(yourName);
     }
     public void reset(){
         this.lightGameParty = new LightGameParty();
-        this.codexOthersMap = new HashMap<>();
+        this.codexMap = new HashMap<>();
         this.hand = new LightHand();
         this.handOthers = new HashMap<>();
         this.decks = new HashMap<>();
         decks.put(DrawableCard.RESOURCECARD, new LightDeck());
         decks.put(DrawableCard.GOLDCARD, new LightDeck());
         publicObjective = new LightCard[2];
+    }
+    public LightCodex getMyCodex(){
+        return codexMap.get(lightGameParty.getYourName());
     }
 }

@@ -38,6 +38,7 @@ public class Game implements Serializable {
         resourceCardDeck = new Deck<>(2, resourceCardCardLookUp.getQueue());
         startingCardDeck = new Deck<>(0, startCardCardLookUp.getQueue());
         goldCardDeck = new Deck<>(2, goldCardCardLookUp.getQueue());
+        
         this.gameLoopController = new GameLoopController(this, lobby.getPlayerController());
     }
 
