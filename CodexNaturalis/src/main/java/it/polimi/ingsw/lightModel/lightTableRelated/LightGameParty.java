@@ -74,4 +74,7 @@ public class LightGameParty implements Differentiable {
     public void setYourName(String yourName) {
         this.yourName = yourName;
     }
+    public String getYourName() {
+        return this.yourName ;
+    }
 }
