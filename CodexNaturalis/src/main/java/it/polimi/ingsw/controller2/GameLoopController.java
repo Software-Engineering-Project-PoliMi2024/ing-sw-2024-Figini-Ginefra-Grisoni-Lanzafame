@@ -123,8 +123,12 @@ public class GameLoopController {
     public void leaveGame(ServerModelController controller, String nickname){
         activePlayers.remove(nickname, controller);
     }
-
-    public void startCardPlaced() {
+    /**
+     * Put the controller in a busy-wait until each player in the lobby placed their startCard
+     * Then draw the 2 possible secretObjective cards, and give them to the view.
+     * @param controller of the user who placed the card
+     */
+    public void startCardPlaced(ServerModelController controller) {
         boolean everyoneHasPlace = false;
         while (!everyoneHasPlace) {
             everyoneHasPlace = true;
@@ -141,16 +145,14 @@ public class GameLoopController {
         }
         //When every activePlayer has placed the startCard, remove players who left, go on the next state
         this.checkForDisconnectedUser();
-        for(ServerModelController controller : activePlayers.values()) {
-            controller.transitionTo(ViewState.SELECT_OBJECTIVE);
-            User user = game.getUserFromNick(controller.getNickname());
-            for (LightCard secretObjectiveCardChoice : getOrDrawSecretObjectiveChoices(user)) {
-                controller.updateGame(new HandDiffAdd(secretObjectiveCardChoice, true));
-            }
+        controller.transitionTo(ViewState.SELECT_OBJECTIVE);
+        User user = game.getUserFromNick(controller.getNickname());
+        for (LightCard secretObjectiveCardChoice : getOrDrawSecretObjectiveChoices(user)) {
+            controller.updateGame(new HandDiffAdd(secretObjectiveCardChoice, true));
         }
     }
 
-    public void secretObjectiveChose(){
+    public void secretObjectiveChose(ServerModelController controller){
         boolean everybodyHasChoose = false;
         while(!everybodyHasChoose){
             everybodyHasChoose = true;
@@ -163,16 +165,14 @@ public class GameLoopController {
             if(everybodyHasChoose){
                 break;
             }
-            //When every activePlayer has chose the secretObject, remove players who left, go on the next state
-            this.checkForDisconnectedUser();
-            User currentPlayer = game.getGameParty().getCurrentPlayer();
-            for(ServerModelController controller : activePlayers.values()){
-                if(controller.getNickname().equals(currentPlayer.getNickname())){
-                    controller.transitionTo(ViewState.PLACE_CARD);
-                }else{
-                    controller.transitionTo(ViewState.IDLE);
-                }
-            }
+        }
+        //When every activePlayer has chose the secretObject, remove players who left, go on the next state
+        this.checkForDisconnectedUser();
+        User currentPlayer = game.getGameParty().getCurrentPlayer();
+        if(controller.getNickname().equals(currentPlayer.getNickname())){
+            controller.transitionTo(ViewState.PLACE_CARD);
+        }else{
+            controller.transitionTo(ViewState.IDLE);
         }
     }
 
