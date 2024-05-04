@@ -110,4 +110,13 @@ public class Game implements Serializable {
     public GameLoopController getGameLoopController() {
         return gameLoopController;
     }
+
+    public User getUserFromNick(String nickname){
+        for(User user : this.getGameParty().getUsersList()){
+            if(user.getNickname().equals(nickname)){
+                return user;
+            }
+        }
+        throw new IllegalCallerException("Nickname not found in this game");
+    }
 }

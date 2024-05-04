@@ -31,7 +31,6 @@ public class GameLoopController {
                 if(startCardIsPlaced(user) && secretObjectiveIsChose(user)){
                     controller.log(LogsFromServer.MID_GAME_JOINED);
                     controller.transitionTo(ViewState.IDLE);
-                    break;
                 }else{
                     controller.log(LogsFromServer.NEW_GAME_JOINED);
                     if(!startCardIsPlaced(user)){
@@ -44,8 +43,8 @@ public class GameLoopController {
                             controller.updateGame(new HandDiffAdd(secretObjectiveCardChoice, true));
                         }
                     }
-                    break;
                 }
+                break;
             }
         }
     }
@@ -60,13 +59,14 @@ public class GameLoopController {
                 throw new NullPointerException("Controller not found");
             }else {
                 controller.transitionTo(ViewState.CHOOSE_START_CARD);
-                user = game.getGameParty().getUsersList().stream().filter(player -> player.getNickname().equals(nick)).findFirst().orElse(null);
-                if (user == null) {
+                try {
+                    user = game.getUserFromNick(nick);
+                }catch (IllegalCallerException e){
                     throw new NullPointerException("User not found");
-                } else {
-                    LightCard lightStartCard = Lightifier.lightifyToCard(getOrDrawStartCard(user));
-                    controller.updateGame(new HandDiffAdd(lightStartCard, true));
                 }
+                controller.log(LogsFromServer.NEW_GAME_JOINED);
+                LightCard lightStartCard = Lightifier.lightifyToCard(getOrDrawStartCard(user));
+                controller.updateGame(new HandDiffAdd(lightStartCard, true));
             }
         }
     }
@@ -124,9 +124,43 @@ public class GameLoopController {
         activePlayers.remove(nickname, controller);
     }
 
-    public void setup(){
-
+    public void startCardPlaced() {
+        boolean everyoneHasPlace = false;
+        while (!everyoneHasPlace) {
+            everyoneHasPlace = true;
+            for (String nick : activePlayers.keySet()) {
+                User user = game.getUserFromNick(nick);
+                if (user.getUserHand().getStartCard() != null) {
+                    everyoneHasPlace = false;
+                    break;
+                }
+            }
+            if (everyoneHasPlace) {
+                break; // Exit the while loop if everyone has their startCard placed
+            }
+        }
+        //When every activePlayer has placed the startCard, remove players who left, go on the next state
+        if(activePlayers.size() != game.getGameParty().getNumberOfMaxPlayer()){
+            for(User user : game.getGameParty().getUsersList()){
+                if(!activePlayers.containsKey(user.getNickname())){
+                    game.getGameParty().removeUser(user);
+                }
+            }
+        }
+        for(ServerModelController controller : activePlayers.values()) {
+            controller.transitionTo(ViewState.SELECT_OBJECTIVE);
+            User user;
+            try {
+                user = game.getUserFromNick(controller.getNickname());
+            } catch (IllegalCallerException e) {
+                throw new NullPointerException("User not found");
+            }
+            for (LightCard secretObjectiveCardChoice : getOrDrawSecretObjectiveChoices(user)) {
+                controller.updateGame(new HandDiffAdd(secretObjectiveCardChoice, true));
+            }
+        }
     }
+
 
     public void gameLoop(){
 
