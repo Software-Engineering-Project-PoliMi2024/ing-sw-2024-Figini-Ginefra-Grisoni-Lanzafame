@@ -86,7 +86,7 @@ public class MultiGame implements Serializable {
     public synchronized void removeLobby(Lobby lobby) {
         lobbies.remove(lobby);
     }
-    public synchronized Lobby getLobby(String name) {
+    public synchronized Lobby getLobbyByName(String name) {
         return lobbies.getLobbies().stream().filter(lobby -> lobby.getLobbyName().equals(name)).findFirst().orElse(null);
     }
 
