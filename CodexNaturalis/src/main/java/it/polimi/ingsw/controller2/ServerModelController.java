@@ -212,29 +212,15 @@ public class ServerModelController implements ControllerInterface {
      */
     @Override
     public void choseSecretObjective(LightCard card) throws RemoteException{
-        //todo remove startcard choice from user hand
         User userToEdit = games.getUserFromNick(this.nickname);
         Game userGame = games.getUserGame(nickname);
         userToEdit.setSecretObject(Heavifier.heavifyObjectCard(card, games));
-        log(LogsFromServer.SECRET_OBJECTIVE_CHOSE);
-        String nextPlayerNick = userGame.getGameParty().getCurrentPlayer().getNickname();
-        if(this.nickname.equals(nextPlayerNick)){
-            transitionTo(ViewState.IDLE);
-        }else{
-            transitionTo(ViewState.PLACE_CARD);
-        }
-    }
+        userToEdit.getUserHand().setSecretObjectiveChoice(null);
 
-    /**
-     * @return two random ObjectiveCard from the ObjectiveCard deck
-     */
-    private List<LightCard> drawObjectiveCard(){
-        Game userGame = games.getUserGame(this.nickname);
-        List<LightCard> cardList = new ArrayList<>();
-        for(int i=0;i<1;i++){
-            cardList.add(Lightifier.lightifyToCard(userGame.getObjectiveCardDeck().drawFromDeck()));
-        }
-        return cardList;
+        log(LogsFromServer.SECRET_OBJECTIVE_CHOSE);
+        log(LogsFromServer.WAIT_SECRET_OBJECTIVE);
+        userGame.getGameLoopController().secretObjectiveChose();
+
     }
 
     /**

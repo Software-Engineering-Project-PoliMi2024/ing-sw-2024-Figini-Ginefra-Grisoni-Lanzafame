@@ -18,8 +18,8 @@ public enum LogsFromServer {
     CARD_PLACED("Card placed"),
     CARD_DRAWN("Card Drawn"),
     YOUR_TURN("It's your time to play"),
-    WAIT_STARTCARD("Wait for the other players to place their StartCard"),
-    WAIT_SECRET_OBJECTIVE("Wait for the other players to choose their Secret Objective");
+    WAIT_STARTCARD("Waiting for the other players to place their StartCard"),
+    WAIT_SECRET_OBJECTIVE("Waiting for the other players to choose their Secret Objective");
 
     private final String message;
 

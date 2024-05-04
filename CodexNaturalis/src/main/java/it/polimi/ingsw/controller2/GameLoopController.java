@@ -140,6 +140,43 @@ public class GameLoopController {
             }
         }
         //When every activePlayer has placed the startCard, remove players who left, go on the next state
+        this.checkForDisconnectedUser();
+        for(ServerModelController controller : activePlayers.values()) {
+            controller.transitionTo(ViewState.SELECT_OBJECTIVE);
+            User user = game.getUserFromNick(controller.getNickname());
+            for (LightCard secretObjectiveCardChoice : getOrDrawSecretObjectiveChoices(user)) {
+                controller.updateGame(new HandDiffAdd(secretObjectiveCardChoice, true));
+            }
+        }
+    }
+
+    public void secretObjectiveChose(){
+        boolean everybodyHasChoose = false;
+        while(!everybodyHasChoose){
+            everybodyHasChoose = true;
+            for (String nick : activePlayers.keySet()) {
+                User user = game.getUserFromNick(nick);
+                if(user.getUserHand().getSecretObjectiveChoices()!=null){
+                    everybodyHasChoose=false;
+                }
+            }
+            if(everybodyHasChoose){
+                break;
+            }
+            //When every activePlayer has chose the secretObject, remove players who left, go on the next state
+            this.checkForDisconnectedUser();
+            User currentPlayer = game.getGameParty().getCurrentPlayer();
+            for(ServerModelController controller : activePlayers.values()){
+                if(controller.getNickname().equals(currentPlayer.getNickname())){
+                    controller.transitionTo(ViewState.PLACE_CARD);
+                }else{
+                    controller.transitionTo(ViewState.IDLE);
+                }
+            }
+        }
+    }
+
+    private void checkForDisconnectedUser(){
         if(activePlayers.size() != game.getGameParty().getNumberOfMaxPlayer()){
             for(User user : game.getGameParty().getUsersList()){
                 if(!activePlayers.containsKey(user.getNickname())){
@@ -147,22 +184,6 @@ public class GameLoopController {
                 }
             }
         }
-        for(ServerModelController controller : activePlayers.values()) {
-            controller.transitionTo(ViewState.SELECT_OBJECTIVE);
-            User user;
-            try {
-                user = game.getUserFromNick(controller.getNickname());
-            } catch (IllegalCallerException e) {
-                throw new NullPointerException("User not found");
-            }
-            for (LightCard secretObjectiveCardChoice : getOrDrawSecretObjectiveChoices(user)) {
-                controller.updateGame(new HandDiffAdd(secretObjectiveCardChoice, true));
-            }
-        }
     }
 
-
-    public void gameLoop(){
-
-    }
 }
