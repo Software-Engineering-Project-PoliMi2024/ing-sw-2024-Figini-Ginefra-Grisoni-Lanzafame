@@ -111,7 +111,6 @@ public class TUI extends View{
                 lightGame,
                 new CommandPrompt[]{CommandPrompt.DISPLAY_HAND_FRONT, CommandPrompt.DISPLAY_HAND_BACK, CommandPrompt.DISPLAY_SECRET_OBJECTIVE, CommandPrompt.PLACE_CARD},
                 controller);
-
         StateTUI.PLACE_CARD.attach(handRenderable);
         StateTUI.IDLE.attach(handRenderable);
         StateTUI.DRAW_CARD.attach(handRenderable);
@@ -121,7 +120,6 @@ public class TUI extends View{
     public void run() {
         inputHandler.start();
         commandDisplay.setActive(true);
-        commandDisplay.render();
     }
 
     @Override
@@ -143,6 +141,8 @@ public class TUI extends View{
         }
 
         updateCommands();
+
+        commandDisplay.render();
     }
 
     @Override

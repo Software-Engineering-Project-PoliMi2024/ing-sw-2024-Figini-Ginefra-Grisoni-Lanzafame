@@ -55,7 +55,6 @@ public class Client {
             System.out.println("You chose the graphical interface!");
             view = null;
         }
-        view.transitionTo(ViewState.SERVER_CONNECTION);
         view.run();
     }
 }
