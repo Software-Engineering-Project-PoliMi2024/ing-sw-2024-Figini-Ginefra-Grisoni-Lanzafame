@@ -23,10 +23,8 @@ public class ConnectionClientRMI implements ConnectionLayerClient{
         Registry registry;
         try {
             registry = LocateRegistry.getRegistry(ip, port);
-            System.out.println(registry.toString());
             ConnectionLayerServer connect;
             connect = (ConnectionLayerServer) registry.lookup("connect");
-            System.out.println(connect.toString());
             ViewInterface viewStub = (ViewInterface) UnicastRemoteObject.exportObject(view, 0);
             connect.connect(viewStub);
         }catch (Exception e){
