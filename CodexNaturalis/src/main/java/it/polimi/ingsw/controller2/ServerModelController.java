@@ -182,7 +182,7 @@ public class ServerModelController implements ControllerInterface {
     }
 
     /**
-     * Set the StartCard chose by the user. Transition the view to the SELECET_OBJECTIVE
+     * Set the StartCard chose by the user
      * @param card which is the StartCard chose by the user
      * @param cardFace the startCard Face wich is visible in the codex
      * @throws RemoteException if something goes with the sending of the Diffs
@@ -191,8 +191,7 @@ public class ServerModelController implements ControllerInterface {
     public void selectStartCardFace(LightCard card, CardFace cardFace) throws RemoteException{
         User user = games.getUserFromNick(this.nickname);
         Placement heavyPlacement = new Placement(new Position(0,0), Heavifier.heavifyStartCard(card, games), cardFace);
-        user.playCard(heavyPlacement);
-        user.getUserHand().setStartCard(null);
+        user.placeStartCard(heavyPlacement);
 
         Game userGame = games.getUserGame(this.nickname);
         updateGame(new HandDiffRemove(card));
@@ -206,7 +205,6 @@ public class ServerModelController implements ControllerInterface {
 
     /**
      * Set the secretObjectiveCard chose by the user
-     * Start the game loop from the currentPlayer by placing his view to PLACECARD. The others view are in Idle
      * @param card which represent the secret objective choose by the user
      * @throws RemoteException if something goes with the sending of the Diffs
      */
@@ -218,13 +216,12 @@ public class ServerModelController implements ControllerInterface {
         userToEdit.getUserHand().setSecretObjectiveChoice(null);
 
         log(LogsFromServer.SECRET_OBJECTIVE_CHOSE);
-        log(LogsFromServer.WAIT_SECRET_OBJECTIVE);
         userGame.getGameLoopController().secretObjectiveChose(this);
 
     }
 
     /**
-     * Update the deck, trasition the player to DrawCard
+     * Update the deck, Hand, Codex for the player and others
      * @param placement the LightPlacement created by placing the card
      * @throws RemoteException if something goes with the sending of the Diffs
      */
@@ -232,7 +229,8 @@ public class ServerModelController implements ControllerInterface {
     public void place(LightPlacement placement) throws RemoteException {
         User user = games.getUserFromNick(nickname);
         Placement heavyPlacement = Heavifier.heavify(placement, this.games);
-        user.playCard(heavyPlacement);
+        user.playCard(heavyPlacement); //place the card and remove it from the hand
+
         Game userGame = this.games.getUserGame(this.nickname);
         userGame.subcribe(view, new HandDiffRemove(placement.card()), new HandOtherDiffRemove(
                 heavyPlacement.card().getPermanentResources(CardFace.BACK).stream().toList().getFirst(), this.nickname));
@@ -273,20 +271,11 @@ public class ServerModelController implements ControllerInterface {
                 Deck<ResourceCard> resourceDeck = userGame.getResourceCardDeck();
                 drawCard = drawACard(resourceDeck, DrawableCard.RESOURCECARD, cardID, userGame);
             }
+            log(LogsFromServer.CARD_DRAWN);
             User user = games.getUserFromNick(this.nickname);
             user.getUserHand().addCard(drawCard);
             userGame.subcribe(view, new HandDiffAdd(Lightifier.lightifyToCard(drawCard), drawCard.canBePlaced()),
                     new HandOtherDiffAdd(drawCard.getPermanentResources(CardFace.BACK).stream().toList().getFirst(), this.nickname));
-
-            userGame.getGameParty().nextPlayer();
-            String nextPlayerNickname = userGame.getGameParty().getCurrentPlayer().getNickname();
-            userGame.subcribe(new GameDiffRound(nextPlayerNickname));
-            ViewInterface nextPlayerView = nextPlayer(nextPlayerNickname).getView();
-            nextPlayerView.log(LogsFromServer.YOUR_TURN.getMessage());
-            nextPlayerView.transitionTo(ViewState.PLACE_CARD);
-
-            log(LogsFromServer.CARD_DRAWN);
-            transitionTo(ViewState.IDLE);
         }
     }
 
