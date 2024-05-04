@@ -2,6 +2,7 @@ package it.polimi.ingsw.controller2;
 
 import it.polimi.ingsw.lightModel.LightCard;
 import it.polimi.ingsw.lightModel.Lightifier;
+import it.polimi.ingsw.lightModel.diffs.GameDiffRound;
 import it.polimi.ingsw.lightModel.diffs.HandDiffAdd;
 import it.polimi.ingsw.model.cardReleted.cards.ObjectiveCard;
 import it.polimi.ingsw.model.cardReleted.cards.StartCard;
@@ -123,8 +124,13 @@ public class GameLoopController {
     public void leaveGame(ServerModelController controller, String nickname){
         activePlayers.remove(nickname, controller);
     }
-
-    public void startCardPlaced() {
+    /**
+     * Put the controller in a busy-wait until each player in the lobby placed their startCard
+     * Then draw the 2 possible secretObjective cards, and give them to the view.
+     * @param controller of the user who placed the card
+     */
+    public void startCardPlaced(ServerModelController controller) {
+        controller.log(LogsFromServer.WAIT_STARTCARD);
         boolean everyoneHasPlace = false;
         while (!everyoneHasPlace) {
             everyoneHasPlace = true;
@@ -141,16 +147,15 @@ public class GameLoopController {
         }
         //When every activePlayer has placed the startCard, remove players who left, go on the next state
         this.checkForDisconnectedUser();
-        for(ServerModelController controller : activePlayers.values()) {
-            controller.transitionTo(ViewState.SELECT_OBJECTIVE);
-            User user = game.getUserFromNick(controller.getNickname());
-            for (LightCard secretObjectiveCardChoice : getOrDrawSecretObjectiveChoices(user)) {
-                controller.updateGame(new HandDiffAdd(secretObjectiveCardChoice, true));
-            }
+        controller.transitionTo(ViewState.SELECT_OBJECTIVE);
+        User user = game.getUserFromNick(controller.getNickname());
+        for (LightCard secretObjectiveCardChoice : getOrDrawSecretObjectiveChoices(user)) {
+            controller.updateGame(new HandDiffAdd(secretObjectiveCardChoice, true));
         }
     }
 
-    public void secretObjectiveChose(){
+    public void secretObjectiveChose(ServerModelController controller){
+        controller.log(LogsFromServer.WAIT_SECRET_OBJECTIVE);
         boolean everybodyHasChoose = false;
         while(!everybodyHasChoose){
             everybodyHasChoose = true;
@@ -163,17 +168,34 @@ public class GameLoopController {
             if(everybodyHasChoose){
                 break;
             }
-            //When every activePlayer has chose the secretObject, remove players who left, go on the next state
-            this.checkForDisconnectedUser();
-            User currentPlayer = game.getGameParty().getCurrentPlayer();
-            for(ServerModelController controller : activePlayers.values()){
-                if(controller.getNickname().equals(currentPlayer.getNickname())){
-                    controller.transitionTo(ViewState.PLACE_CARD);
-                }else{
-                    controller.transitionTo(ViewState.IDLE);
-                }
+        }
+        //When every activePlayer has chose the secretObject, remove players who left, go on the next state
+        this.checkForDisconnectedUser();
+        User currentPlayer = game.getGameParty().getCurrentPlayer();
+        while(!activePlayers.containsKey(currentPlayer.getNickname())){
+            currentPlayer=game.getGameParty().nextPlayer(); //if the currentPlayer is not an activePlayer, skip his turn
+        }
+        if(controller.getNickname().equals(currentPlayer.getNickname())){
+            controller.transitionTo(ViewState.PLACE_CARD);
+        }else{
+            controller.transitionTo(ViewState.IDLE);
+        }
+    }
+
+    public void cardPlace(ServerModelController controller){
+        User nextUser;
+        do{ //if the nextUser is not an activePlayer, skip his turn
+            nextUser = game.getGameParty().nextPlayer();
+        }while(!activePlayers.containsKey(nextUser.getNickname()));
+        controller.transitionTo(ViewState.IDLE);
+        for(ServerModelController serverModelController : activePlayers.values()){
+            serverModelController.updateGame(new GameDiffRound(nextUser.getNickname()));
+            if(serverModelController.getNickname().equals(nextUser.getNickname())){
+                serverModelController.log(LogsFromServer.YOUR_TURN);
+                serverModelController.transitionTo(ViewState.PLACE_CARD);
             }
         }
+
     }
 
     private void checkForDisconnectedUser(){
