@@ -28,7 +28,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 
-public class ServerModelController implements ControllerInterface {
+public class ServerModelController implements ControllerInterface, DiffSubscriber {
     private final MultiGame games;
     private final ViewInterface view;
     private String nickname;
@@ -60,7 +60,7 @@ public class ServerModelController implements ControllerInterface {
         }else{
             //Client is now logged-In. If he disconnects we have to update the model
             this.nickname = nickname;
-            heartbeatThread.start();
+            //heartbeatThread.start();
             System.out.println(this.nickname + " has connected");
             if(games.isInGameParty(nickname)){
                 //The player must join a game
@@ -73,13 +73,12 @@ public class ServerModelController implements ControllerInterface {
             }
         }
     }
-
     /**
      * Subscribes the client's view (diffSubscriber) to the gamesPublisher, enabling
      * the reception of all current and future lobbies.
      */
     private void getActiveLobbyList() {
-        games.subscribe(view);
+        games.subscribe(this);
     }
 
     /**
@@ -96,9 +95,9 @@ public class ServerModelController implements ControllerInterface {
         }else {
             Lobby newLobby = new Lobby(maxPlayerCount, this.nickname, gameName);
             this.games.addLobby(newLobby);
-            games.unsubscribe(this.view);
+            games.unsubscribe(this);
             //Create a new LobbyDiffEditLogin
-            newLobby.subscribe(this.view, this.nickname, gameName, newLobby.getNumberOfMaxPlayer());
+            newLobby.subscribe(this, this.nickname, gameName, newLobby.getNumberOfMaxPlayer());
             newLobby.setPlayerControllers(this, this.nickname);
             games.subscribe(getAddLobbyDiff(newLobby));
 
@@ -120,9 +119,9 @@ public class ServerModelController implements ControllerInterface {
             Boolean result = this.games.addPlayerToLobby(lobbyName, this.nickname);
             if(result){
                 //create a new lobbyDiffEditLogin
-                lobbyToJoin.subscribe(this.view, this.nickname, lobbyToJoin.getLobbyName(), lobbyToJoin.getNumberOfMaxPlayer());
+                lobbyToJoin.subscribe(this, this.nickname, lobbyToJoin.getLobbyName(), lobbyToJoin.getNumberOfMaxPlayer());
                 lobbyToJoin.setPlayerControllers(this, this.nickname);
-                games.unsubscribe(view);
+                games.unsubscribe(this);
 
                 log(LogsFromServer.LOBBY_JOINED);
                 transitionTo(ViewState.LOBBY);
@@ -163,8 +162,8 @@ public class ServerModelController implements ControllerInterface {
                 games.subscribe(getRemoveLobbyDiff(lobbyToLeave));
             }
 
-            lobbyToLeave.unsubscribe(view);
-            games.subscribe(view);
+            lobbyToLeave.unsubscribe(this);
+            games.subscribe(this);
 
             log(LogsFromServer.LOBBY_LEFT);
             transitionTo(ViewState.JOIN_LOBBY);
@@ -181,7 +180,7 @@ public class ServerModelController implements ControllerInterface {
         if(gameToLeave == null){
             throw new IllegalCallerException(nickname + " is not in any game");
         }else{
-            gameToLeave.unsubscrive(view);
+            gameToLeave.unsubscrive(this);
         }
     }
 
@@ -236,7 +235,7 @@ public class ServerModelController implements ControllerInterface {
         user.playCard(heavyPlacement); //place the card and remove it from the hand
 
         Game userGame = this.games.getUserGame(this.nickname);
-        userGame.subcribe(view, new HandDiffRemove(placement.card()), new HandOtherDiffRemove(
+        userGame.subcribe(this, new HandDiffRemove(placement.card()), new HandOtherDiffRemove(
                 heavyPlacement.card().getPermanentResources(CardFace.BACK).stream().toList().getFirst(), this.nickname));
         userGame.subcribe(new CodexDiff(this.nickname, user.getUserCodex().getPoints(),
                 user.getUserCodex().getEarnedCollectables(), getPlacementList(placement), user.getUserCodex().getFrontier().getFrontier()));
@@ -278,7 +277,7 @@ public class ServerModelController implements ControllerInterface {
             log(LogsFromServer.CARD_DRAWN);
             User user = games.getUserFromNick(this.nickname);
             user.getUserHand().addCard(drawCard);
-            userGame.subcribe(view, new HandDiffAdd(Lightifier.lightifyToCard(drawCard), drawCard.canBePlaced()),
+            userGame.subcribe(this, new HandDiffAdd(Lightifier.lightifyToCard(drawCard), drawCard.canBePlaced()),
                     new HandOtherDiffAdd(drawCard.getPermanentResources(CardFace.BACK).stream().toList().getFirst(), this.nickname));
         }
     }
