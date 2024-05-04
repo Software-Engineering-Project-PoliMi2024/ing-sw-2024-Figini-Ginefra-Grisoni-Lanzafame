@@ -201,7 +201,7 @@ public class ServerModelController implements ControllerInterface {
                 user.getUserCodex().getEarnedCollectables(), getPlacementList(Lightifier.lightify(heavyPlacement)), user.getUserCodex().getFrontier().getFrontier()));
         log(LogsFromServer.START_CARD_PLACED);
         log(LogsFromServer.WAIT_STARTCARD);
-        userGame.getGameLoopController().startCardPlaced();
+        userGame.getGameLoopController().startCardPlaced(this);
     }
 
     /**
@@ -219,7 +219,7 @@ public class ServerModelController implements ControllerInterface {
 
         log(LogsFromServer.SECRET_OBJECTIVE_CHOSE);
         log(LogsFromServer.WAIT_SECRET_OBJECTIVE);
-        userGame.getGameLoopController().secretObjectiveChose();
+        userGame.getGameLoopController().secretObjectiveChose(this);
 
     }
 
