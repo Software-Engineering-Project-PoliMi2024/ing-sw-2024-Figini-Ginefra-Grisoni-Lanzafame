@@ -13,7 +13,6 @@ import java.util.*;
 
 public class LightGame implements Differentiable {
     private LightGameParty lightGameParty;
-    private LightCodex myCodex;
     private Map<String, LightCodex> codexOthersMap;
     private LightHand hand;
     private Map<String, LightHandOthers> handOthers;
@@ -123,20 +122,15 @@ public class LightGame implements Differentiable {
         }
     }
 
-    public void setMyCodex(LightCodex myCodex) {
-        this.myCodex = myCodex;
-    }
-
-    public LightCodex getMyCodex() {
-        return myCodex;
-    }
-
     public void setFrontier(LightFrontier lightFrontier, String nickname){
         codexOthersMap.get(nickname).setFrontier(lightFrontier);
     }
 
     public void setCollectable(Map<Collectable, Integer> collectables, String nickname){
         codexOthersMap.get(nickname).setCollectables(collectables);
+    }
+    public void setYourName(String yourName){
+        this.lightGameParty.setYourName(yourName);
     }
     public void reset(){
         this.lightGameParty = new LightGameParty();

@@ -7,6 +7,7 @@ import java.util.List;
 import java.util.Map;
 
 public class LightGameParty implements Differentiable {
+    private String yourName;
     private String gameName;
     final private Map<String,Boolean> playerActiveList;
     private String currentPlayer;
@@ -68,5 +69,9 @@ public class LightGameParty implements Differentiable {
      */
     public void setActivePlayer(String player){
         playerActiveList.put(player,true);
+    }
+
+    public void setYourName(String yourName) {
+        this.yourName = yourName;
     }
 }
