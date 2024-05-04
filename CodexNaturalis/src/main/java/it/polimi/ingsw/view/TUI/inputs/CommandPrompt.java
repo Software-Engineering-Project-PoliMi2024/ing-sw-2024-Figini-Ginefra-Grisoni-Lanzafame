@@ -132,6 +132,17 @@ public enum CommandPrompt implements Iterator<String>, CommandObserved {
                         }
                     },
             },
+            true),
+
+    DISPLAY_CODEX("Display codex", true),
+
+    PEEK("Peek",
+            new String[]{
+                    "Which Player do you want to peek? Insert the nickname",
+            },
+            new Predicate[]{
+                    s -> true,
+            },
             true);
 
 

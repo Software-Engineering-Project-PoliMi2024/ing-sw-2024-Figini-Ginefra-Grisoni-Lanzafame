@@ -172,12 +172,6 @@ public class ServerModelController implements ControllerInterface {
         return new LobbyListDiffEdit(new ArrayList<>(), listDiffRmv);
     }
 
-    /**
-     * Connects the user to the game. If it is the first time (the game is just being created), transitions the view
-     * to the CHOOSE_START_CARD state; otherwise, transitions the view to IDLE.
-     * @throws RemoteException If an error occurs during the sending of Diffs.
-     */
-
     private void leaveGame(){
         Game gameToLeave = games.getUserGame(this.nickname);
         if(gameToLeave == null){
@@ -198,18 +192,16 @@ public class ServerModelController implements ControllerInterface {
         User user = games.getUserFromNick(this.nickname);
         Placement heavyPlacement = new Placement(new Position(0,0), Heavifier.heavifyStartCard(card, games), cardFace);
         user.playCard(heavyPlacement);
-        Game userGame = games.getUserGame(this.nickname);
+        user.getUserHand().setStartCard(null);
 
+        Game userGame = games.getUserGame(this.nickname);
         updateGame(new HandDiffRemove(card));
+
         userGame.subcribe(new CodexDiff(this.nickname, user.getUserCodex().getPoints(),
                 user.getUserCodex().getEarnedCollectables(), getPlacementList(Lightifier.lightify(heavyPlacement)), user.getUserCodex().getFrontier().getFrontier()));
         log(LogsFromServer.START_CARD_PLACED);
-        //Send the secretObjectiveCard choice to the view
-        //todo remove already handled in the gameLoop for mid-joining user
-        for(LightCard secretObjectiveCardChoice : drawObjectiveCard()){
-            updateGame(new HandDiffAdd(secretObjectiveCardChoice, true));
-        }
-        transitionTo(ViewState.SELECT_OBJECTIVE);
+        log(LogsFromServer.WAIT_STARTCARD);
+        userGame.getGameLoopController().startCardPlaced();
     }
 
     /**
@@ -220,29 +212,15 @@ public class ServerModelController implements ControllerInterface {
      */
     @Override
     public void choseSecretObjective(LightCard card) throws RemoteException{
-        //todo remove startcard choice from user hand
         User userToEdit = games.getUserFromNick(this.nickname);
         Game userGame = games.getUserGame(nickname);
         userToEdit.setSecretObject(Heavifier.heavifyObjectCard(card, games));
-        log(LogsFromServer.SECRET_OBJECTIVE_CHOSE);
-        String nextPlayerNick = userGame.getGameParty().getCurrentPlayer().getNickname();
-        if(this.nickname.equals(nextPlayerNick)){
-            transitionTo(ViewState.IDLE);
-        }else{
-            transitionTo(ViewState.PLACE_CARD);
-        }
-    }
+        userToEdit.getUserHand().setSecretObjectiveChoice(null);
 
-    /**
-     * @return two random ObjectiveCard from the ObjectiveCard deck
-     */
-    private List<LightCard> drawObjectiveCard(){
-        Game userGame = games.getUserGame(this.nickname);
-        List<LightCard> cardList = new ArrayList<>();
-        for(int i=0;i<1;i++){
-            cardList.add(Lightifier.lightifyToCard(userGame.getObjectiveCardDeck().drawFromDeck()));
-        }
-        return cardList;
+        log(LogsFromServer.SECRET_OBJECTIVE_CHOSE);
+        log(LogsFromServer.WAIT_SECRET_OBJECTIVE);
+        userGame.getGameLoopController().secretObjectiveChose();
+
     }
 
     /**
