@@ -13,15 +13,26 @@ import it.polimi.ingsw.model.cardReleted.pointMultiplyer.CollectableCardPointMul
 import it.polimi.ingsw.model.cardReleted.pointMultiplyer.DiagonalCardPointMultiplier;
 import it.polimi.ingsw.model.cardReleted.pointMultiplyer.LCardPointMultiplier;
 import it.polimi.ingsw.model.cardReleted.utilityEnums.CardFace;
+import it.polimi.ingsw.model.cardReleted.utilityEnums.Resource;
 import it.polimi.ingsw.model.utilities.Pair;
+import it.polimi.ingsw.view.TUI.Renderables.drawables.Drawable;
 
 import java.io.*;
+import java.util.LinkedHashMap;
+import java.util.Map;
 import java.util.Queue;
 
 public class CardMuseumFactory {
     private final CardMuseum cardMuseum;
     private final String folderPath;
     public static final String fileName = "CardMuseum.bin";
+
+    public final Map<Resource, Integer> resourceBacksIds = Map.of(
+        Resource.FUNGI, 1,
+        Resource.PLANT, 11,
+        Resource.ANIMAL, 21,
+        Resource.INSECT, 31
+    );
 
     public CardMuseumFactory(String folderPath) {
         this.folderPath = folderPath;
@@ -98,6 +109,11 @@ public class CardMuseumFactory {
 
 
             System.out.println("CardMuseumFactory created of length: " + cardMuseum.getSize());
+
+            for(Resource R : Resource.values()){
+                Drawable back = cardMuseum.get(resourceBacksIds.get(R)).get(CardFace.BACK);
+                cardMuseum.setResourceBack(R, back);
+            }
 
             try {
                 saveMuseum(cardMuseum);

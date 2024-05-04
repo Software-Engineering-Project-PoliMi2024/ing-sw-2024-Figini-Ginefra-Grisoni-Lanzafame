@@ -68,4 +68,9 @@ public class ViewTest implements ViewInterface {
 
     }
 
+    @Override
+    public void logErr(String logMsg) throws RemoteException {
+
+    }
+
 }
