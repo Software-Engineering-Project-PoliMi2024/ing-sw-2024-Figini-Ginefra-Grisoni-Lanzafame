@@ -50,6 +50,14 @@ public class Printable {
         this.content.append(content).append("\n");
     }
 
+    public void println(DecoratedString content){
+        this.content.append(content).append("\n");
+    }
+
+    public void println(PaddedString content){
+        this.content.append(content).append("\n");
+    }
+
     /**
      * This method appends a string to the content of the Printable object followed by a newline character and a tab character.
      * @param content the string to be appended.

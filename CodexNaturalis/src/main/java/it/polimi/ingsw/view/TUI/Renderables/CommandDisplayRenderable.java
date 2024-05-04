@@ -88,7 +88,6 @@ public class CommandDisplayRenderable extends Renderable{
                     Printer.printlnt(currentPrompt.next());
                 }
                 else{
-                    PromptStyle.printInABox(new DecoratedString(currentPrompt.getCommandName(), StringStyle.UNDERLINE).toString() + " completed", 50);
                     currentPrompt.notifyObservers();
                     currentPrompt.reset();
 

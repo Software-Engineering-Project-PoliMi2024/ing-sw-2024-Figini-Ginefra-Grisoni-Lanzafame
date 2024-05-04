@@ -16,6 +16,7 @@ public interface ViewInterface extends DiffSubscriber, Serializable, Remote {
     void transitionTo(ViewState state) throws RemoteException;
     void postConnectionInitialization(ControllerInterface controller) throws RemoteException;
     void log(String logMsg) throws RemoteException;
+    void logErr(String logMsg) throws RemoteException;
     void updateLobbyList(ModelDiffs<LightLobbyList> diff) throws RemoteException;
     void updateLobby(ModelDiffs<LightLobby> diff) throws RemoteException;
     void updateGame(ModelDiffs<LightGame> diff) throws RemoteException;

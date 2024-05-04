@@ -17,6 +17,7 @@ import it.polimi.ingsw.view.TUI.Renderables.Forms.ConnectFormRenderable;
 import it.polimi.ingsw.view.TUI.Renderables.Forms.LoginFormRenderable;
 import it.polimi.ingsw.view.TUI.States.StateTUI;
 import it.polimi.ingsw.view.TUI.Styles.PromptStyle;
+import it.polimi.ingsw.view.TUI.Styles.StringStyle;
 import it.polimi.ingsw.view.TUI.cardDrawing.CardMuseum;
 import it.polimi.ingsw.view.TUI.cardDrawing.CardMuseumFactory;
 import it.polimi.ingsw.view.TUI.inputs.CommandPrompt;
@@ -176,7 +177,13 @@ public class TUI extends View{
 
     @Override
     public void log(String logMsg) {
-        System.out.println(logMsg);
+        PromptStyle.printInABox(logMsg,50);
+    }
+
+    @Override
+    public void logErr(String logMsg) {
+        PromptStyle.printInABox(logMsg,50, StringStyle.RED_FOREGROUND);
+        commandDisplay.render();
     }
 
     @Override
