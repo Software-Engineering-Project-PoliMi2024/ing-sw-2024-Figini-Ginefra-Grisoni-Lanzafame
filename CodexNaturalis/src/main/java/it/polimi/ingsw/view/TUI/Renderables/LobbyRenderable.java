@@ -23,8 +23,12 @@ public class LobbyRenderable extends Renderable {
         String lobbyName = lightLobby.name();
         List<String> nicknames = lightLobby.nicknames();
         int numberOfMaxPlayer = lightLobby.numberMaxPlayer();
-        PromptStyle.printListInABox("Lobby - " + lobbyName + " Player needed to start - " + numberOfMaxPlayer,
-                nicknames, 70, 1);
+
+        for(int i = nicknames.size(); i < numberOfMaxPlayer; i++){
+            nicknames.add("?");
+        }
+
+        PromptStyle.printListInABox("Lobby - " + lobbyName, nicknames, 70, 1);
     }
 
     @Override
