@@ -11,13 +11,15 @@ import it.polimi.ingsw.view.ViewState;
 import java.rmi.RemoteException;
 
 public class ViewTest implements ViewInterface {
+    public String name;
     public LightLobbyList lightLobbyList;
     public LightLobby lightLobby;
-    public String name;
+    public LightGame lightGame;
 
     public ViewTest() {
         lightLobbyList = new LightLobbyList();
         lightLobby = new LightLobby();
+        lightGame = new LightGame();
     }
 
     @Override
@@ -53,7 +55,7 @@ public class ViewTest implements ViewInterface {
 
     @Override
     public void updateGame(ModelDiffs<LightGame> diff) throws RemoteException {
-
+        diff.apply(this.lightGame);
     }
 
     @Override
