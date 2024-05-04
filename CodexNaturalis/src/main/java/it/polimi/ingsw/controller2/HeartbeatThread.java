@@ -6,16 +6,24 @@ import java.rmi.Remote;
 import java.rmi.RemoteException;
 
 public class HeartbeatThread extends Thread{
-    private ServerModelController controller;
-    private ViewInterface view;
+    private final ServerModelController controller;
+    private final ViewInterface view;
 
     private Boolean stop = false;
 
+    /**
+     * The constructor of the class
+     * @param controller of the client which is being pinged
+     * @param view of the client which is being pinged
+     */
     public HeartbeatThread(ServerModelController controller, ViewInterface view) {
         this.controller = controller;
         this.view = view;
     }
 
+    /**
+     * Ping the client every 3 seconds to see if it is still online
+     */
     @Override
     public void run() {
         while (!stop) {
@@ -35,6 +43,9 @@ public class HeartbeatThread extends Thread{
         }
     }
 
+    /**
+     * @param stop if set to true kill the thread
+     */
     public void setStop(Boolean stop) {
         this.stop = stop;
     }

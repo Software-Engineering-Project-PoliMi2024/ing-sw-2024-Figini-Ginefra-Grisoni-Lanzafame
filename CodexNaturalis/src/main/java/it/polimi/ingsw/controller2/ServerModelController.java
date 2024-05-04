@@ -276,6 +276,7 @@ public class ServerModelController implements ControllerInterface {
             user.getUserHand().addCard(drawCard);
             userGame.subcribe(view, new HandDiffAdd(Lightifier.lightifyToCard(drawCard), drawCard.canBePlaced()),
                     new HandOtherDiffAdd(drawCard.getPermanentResources(CardFace.BACK).stream().toList().getFirst(), this.nickname));
+            userGame.getGameLoopController().cardPlace(this);
         }
     }
 
@@ -370,12 +371,15 @@ public class ServerModelController implements ControllerInterface {
         }
     }
 
+    /**
+     * if a client is no longer online, remove the user nick and controller from the activePlayer map
+     * @param isOn is false if the client connected to this controller is no longer online
+     */
     @Override
     public void receiveHeartbeat(Boolean isOn) {
         if(!isOn){
             System.out.println(this.nickname + " connection drop");
             heartbeatThread.setStop(true);
-            //Remove the nickname from the server. If the player is in a game, remove his controller from the activePlayer map
             this.games.removeUser(this.nickname);
             if(games.isInGameParty(this.nickname)){
                 this.games.getUserGame(nickname).getGameLoopController().leaveGame(this, this.nickname);
