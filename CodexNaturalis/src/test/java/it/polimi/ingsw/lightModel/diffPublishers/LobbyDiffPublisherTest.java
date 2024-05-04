@@ -1,5 +1,7 @@
 package it.polimi.ingsw.lightModel.diffPublishers;
 
+import it.polimi.ingsw.controller2.ServerModelController;
+import it.polimi.ingsw.model.MultiGame;
 import it.polimi.ingsw.model.tableReleted.Lobby;
 import org.junit.jupiter.api.Test;
 class LobbyDiffPublisherTest {
@@ -13,14 +15,19 @@ class LobbyDiffPublisherTest {
     */
     @Test
     void subscribePlayer() {
+        MultiGame games = new MultiGame();
         ViewTest view1 = new ViewTest();
         ViewTest view2 = new ViewTest();
         view1.name = "roberto";
         view2.name = "baggio";
         Lobby lobby = new Lobby(3,view1.name, "test");
 
-        lobby.subscribe(view1, view1.name, lobby.getLobbyName(), lobby.getNumberOfMaxPlayer());
-        lobby.subscribe(view2, view2.name, lobby.getLobbyName(), lobby.getNumberOfMaxPlayer());
+        ServerModelController controller1 = new ServerModelController(games, view1);
+        ServerModelController controller2 = new ServerModelController(games, view2);
+
+
+        lobby.subscribe(controller1, view1.name, lobby.getLobbyName(), lobby.getNumberOfMaxPlayer());
+        lobby.subscribe(controller2, view2.name, lobby.getLobbyName(), lobby.getNumberOfMaxPlayer());
 
         assert  view1.lightLobby.name().equals(lobby.getLobbyName()) &&
                 view1.lightLobby.numberMaxPlayer() == lobby.getNumberOfMaxPlayer() &&
@@ -45,6 +52,7 @@ class LobbyDiffPublisherTest {
     */
     @Test
     void unsubscribe() {
+        MultiGame games = new MultiGame();
         ViewTest view1 = new ViewTest();
         ViewTest view2 = new ViewTest();
         ViewTest view3 = new ViewTest();
@@ -52,11 +60,14 @@ class LobbyDiffPublisherTest {
         view2.name = "baggio";
         view3.name = "lime";
         Lobby lobby = new Lobby(3,view1.name, "test");
+        ServerModelController controller1 = new ServerModelController(games, view1);
+        ServerModelController controller2 = new ServerModelController(games, view2);
+        ServerModelController controller3 = new ServerModelController(games, view3);
 
-        lobby.subscribe(view1, view1.name, lobby.getLobbyName(), lobby.getNumberOfMaxPlayer());
-        lobby.subscribe(view2, view3.name, lobby.getLobbyName(), lobby.getNumberOfMaxPlayer());
-        lobby.unsubscribe(view2);
-        lobby.subscribe(view3, view3.name, lobby.getLobbyName(), lobby.getNumberOfMaxPlayer());
+        lobby.subscribe(controller1, view1.name, lobby.getLobbyName(), lobby.getNumberOfMaxPlayer());
+        lobby.subscribe(controller2, view3.name, lobby.getLobbyName(), lobby.getNumberOfMaxPlayer());
+        lobby.unsubscribe(controller2);
+        lobby.subscribe(controller3, view3.name, lobby.getLobbyName(), lobby.getNumberOfMaxPlayer());
 
         assert  view1.lightLobby.nicknames().contains(view1.name) &&
                 view1.lightLobby.nicknames().contains(view3.name) &&
