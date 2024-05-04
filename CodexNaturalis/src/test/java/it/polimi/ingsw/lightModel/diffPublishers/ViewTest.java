@@ -48,6 +48,11 @@ public class ViewTest implements ViewInterface {
     }
 
     @Override
+    public void logErr(String logMsg) throws RemoteException {
+
+    }
+
+    @Override
     public void updateLobbyList(ModelDiffs<LightLobbyList> diff) throws RemoteException {
         diff.apply(this.lightLobbyList);
         System.out.println("lobbyList updated");
@@ -65,11 +70,6 @@ public class ViewTest implements ViewInterface {
 
     @Override
     public void setFinalRanking(String[] nicks, int[] points) throws RemoteException {
-
-    }
-
-    @Override
-    public void logErr(String logMsg) throws RemoteException {
 
     }
 
