@@ -22,7 +22,6 @@ public class CodexRenderable extends CanvasRenderable {
         super(name, 0, 0, relatedCommands, controller);
         this.lightGame = lightGame;
         this.cardMuseum = cardMuseum;
-        this.drawCodex();
     }
 
     private Position gridToCanvas(Position p){
