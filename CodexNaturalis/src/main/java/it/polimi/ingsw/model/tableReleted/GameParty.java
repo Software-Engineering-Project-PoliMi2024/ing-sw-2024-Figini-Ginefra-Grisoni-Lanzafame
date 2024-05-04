@@ -13,6 +13,10 @@ public class GameParty implements Serializable {
     private User currentPlayer; //the player that is playing currently
     private int currentPlayerIndex;
 
+    /**
+     * The constructor of the class
+     * @param playerNames list of all players nicks' who can join this game
+     */
     public GameParty(List<String> playerNames) {
         ArrayList<String> players = new ArrayList<>(playerNames);
         Collections.shuffle(players);
@@ -45,10 +49,18 @@ public class GameParty implements Serializable {
     public User getCurrentPlayer() {
         return currentPlayer;
     }
+
+    /***
+     * @return the number Of Player needed to start the game
+     */
     public int getNumberOfMaxPlayer() {
         return playerList.size();
     }
 
+    /**
+     * Remove a user from the gameParty
+     * @param user being removed
+     */
     public void removeUser(User user){
         playerList.remove(user);
     }
