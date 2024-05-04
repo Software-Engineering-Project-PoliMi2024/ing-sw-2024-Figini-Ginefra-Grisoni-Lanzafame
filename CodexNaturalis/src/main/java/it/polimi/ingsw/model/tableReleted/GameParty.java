@@ -6,6 +6,7 @@ import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+import java.util.stream.Collectors;
 
 public class GameParty implements Serializable {
     final private List<User> playerList; //player that have joined the game at least once
@@ -15,7 +16,7 @@ public class GameParty implements Serializable {
     public GameParty(List<String> playerNames) {
         ArrayList<String> players = new ArrayList<>(playerNames);
         Collections.shuffle(players);
-        playerList = players.stream().map(User::new).toList();
+        playerList = players.stream().map(User::new).collect(Collectors.toList());
         currentPlayerIndex = 0;
         currentPlayer = playerList.getFirst();
     }
@@ -45,5 +46,9 @@ public class GameParty implements Serializable {
     }
     public int getNumberOfMaxPlayer() {
         return playerList.size();
+    }
+
+    public void removeUser(User user){
+        playerList.remove(user);
     }
 }

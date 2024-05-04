@@ -19,4 +19,5 @@ public interface ControllerInterface extends Serializable, Remote {
     void choseSecretObjective(LightCard objectiveCard) throws RemoteException;
     void place(LightPlacement placement) throws RemoteException;
     void draw(DrawableCard deckID, int cardID) throws RemoteException;
+    void receiveHeartbeat(Boolean isOn) throws RemoteException;
 }

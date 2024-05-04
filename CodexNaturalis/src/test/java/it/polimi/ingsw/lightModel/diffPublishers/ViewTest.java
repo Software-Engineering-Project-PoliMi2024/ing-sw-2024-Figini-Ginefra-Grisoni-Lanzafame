@@ -21,6 +21,11 @@ public class ViewTest implements ViewInterface {
     }
 
     @Override
+    public void isClientOn() {
+
+    }
+
+    @Override
     public void setState(ViewState state) throws RemoteException {
 
     }

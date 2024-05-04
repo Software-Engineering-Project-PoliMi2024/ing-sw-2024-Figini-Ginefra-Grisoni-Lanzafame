@@ -20,4 +20,5 @@ public interface ViewInterface extends DiffSubscriber, Serializable, Remote {
     void updateLobby(ModelDiffs<LightLobby> diff) throws RemoteException;
     void updateGame(ModelDiffs<LightGame> diff) throws RemoteException;
     void setFinalRanking(String[] nicks, int[] points) throws RemoteException;
+    void isClientOn() throws RemoteException;
 }

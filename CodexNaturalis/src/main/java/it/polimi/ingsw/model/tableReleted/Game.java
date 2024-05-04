@@ -33,7 +33,7 @@ public class Game implements Serializable {
                 CardLookUp<StartCard> startCardCardLookUp, CardLookUp<GoldCard> goldCardCardLookUp) {
         gameDiffPublisher = new GameDiffPublisher(this);
         this.name = lobby.getLobbyName();
-        this.gameParty = new GameParty(lobby.getLobbyPlayerList().stream().toList());
+        this.gameParty = new GameParty(lobby.getLobbyPlayerList());
         objectiveCardDeck = new Deck<>(0,objectiveCardCardLookUp.getQueue());
         resourceCardDeck = new Deck<>(2, resourceCardCardLookUp.getQueue());
         startingCardDeck = new Deck<>(0, startCardCardLookUp.getQueue());
@@ -109,5 +109,14 @@ public class Game implements Serializable {
 
     public GameLoopController getGameLoopController() {
         return gameLoopController;
+    }
+
+    public User getUserFromNick(String nickname){
+        for(User user : this.getGameParty().getUsersList()){
+            if(user.getNickname().equals(nickname)){
+                return user;
+            }
+        }
+        throw new IllegalCallerException("Nickname not found in this game");
     }
 }

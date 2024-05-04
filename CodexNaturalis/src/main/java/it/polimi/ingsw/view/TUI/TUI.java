@@ -215,4 +215,9 @@ public class TUI extends View{
         TUI tui = new TUI(null);
         tui.run();
     }
+
+    @Override
+    public void isClientOn() {
+        //No code but if this call goes through the client is still connected to the server
+    }
 }
