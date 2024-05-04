@@ -91,8 +91,12 @@ public class CommandDisplayRenderable extends Renderable{
                     PromptStyle.printInABox(new DecoratedString(currentPrompt.getCommandName(), StringStyle.UNDERLINE).toString() + " completed", 50);
                     currentPrompt.notifyObservers();
                     currentPrompt.reset();
+
+                    if(currentPrompt.isLocal())
+                        this.render();
+
                     currentPrompt = null;
-                    this.render();
+
                 }
             }
         }

@@ -12,7 +12,7 @@ import java.util.function.Consumer;
 import java.util.function.Predicate;
 
 public enum CommandPrompt implements Iterator<String>, CommandObserved {
-    ECHO("echo", new String[]{"What do you want to echo?"}, new Predicate[]{s -> true}),
+    ECHO("echo", new String[]{"What do you want to echo?"}, new Predicate[]{s -> true}, true),
     CONNECT(new DecoratedString("Connect", StringStyle.YELLOW_FOREGROUND).toString(),
             new String[]{
                     "What's the server IP?",
@@ -28,14 +28,16 @@ public enum CommandPrompt implements Iterator<String>, CommandObserved {
                             return false;
                         }
                     }
-            }),
+            },
+            false),
     LOGIN("Login",
             new String[]{
                     "What's your username?",
             },
             new Predicate[]{
                     s -> true,
-            }),
+            },
+            false),
     CREATE_GAME("Create game",
             new String[]{
                     "What's the name of the game?",
@@ -51,7 +53,8 @@ public enum CommandPrompt implements Iterator<String>, CommandObserved {
                             return false;
                         }
                     }
-            }),
+            },
+            false),
 
     JOIN_GAME("Join game",
             new String[]{
@@ -59,17 +62,18 @@ public enum CommandPrompt implements Iterator<String>, CommandObserved {
             },
             new Predicate[]{
                     s -> true,
-            }),
+            },
+            false),
 
-    DISPLAY_GAME_LIST("Display game list"),
+    DISPLAY_GAME_LIST("Display game list", true),
 
-    DISPLAY_LOBBY("Display lobby"),
+    DISPLAY_LOBBY("Display lobby", true),
 
-    LEAVE_LOBBY("Leave lobby"),
+    LEAVE_LOBBY("Leave lobby", true),
 
-    DISPLAY_START_FRONT("Display start card front"),
+    DISPLAY_START_FRONT("Display start card front", true),
 
-    DISPLAY_START_BACK("Display start card back"),
+    DISPLAY_START_BACK("Display start card back", true),
 
     CHOOSE_START_SIDE("Choose start side",
             new String[]{
@@ -77,9 +81,10 @@ public enum CommandPrompt implements Iterator<String>, CommandObserved {
             },
             new Predicate[]{
                     s -> s.equals("front") || s.equals("back"),
-            }),
+            },
+            false),
 
-    DISPLAY_OBJECTIVE_OPTIONS("Display objective options"),
+    DISPLAY_OBJECTIVE_OPTIONS("Display objective options", true),
 
     CHOOSE_OBJECTIVE_CARD("Choose objective card",
             new String[]{
@@ -94,12 +99,13 @@ public enum CommandPrompt implements Iterator<String>, CommandObserved {
                             return false;
                         }
                     },
-            }),
+            },
+            false),
 
-    DISPLAY_HAND_FRONT("Display hand front"),
-    DISPLAY_HAND_BACK("Display hand back"),
+    DISPLAY_HAND_FRONT("Display hand front", true),
+    DISPLAY_HAND_BACK("Display hand back", true),
 
-    DISPLAY_SECRET_OBJECTIVE("Display secret objective"),
+    DISPLAY_SECRET_OBJECTIVE("Display secret objective", true),
 
     PLACE_CARD("Place card",
             new String[]{
@@ -125,7 +131,8 @@ public enum CommandPrompt implements Iterator<String>, CommandObserved {
                             return false;
                         }
                     },
-            });
+            },
+            true);
 
 
 
@@ -140,18 +147,23 @@ public enum CommandPrompt implements Iterator<String>, CommandObserved {
 
     private int currentQuestion = 0;
 
-    CommandPrompt(String name, String[] prompts, Predicate<String>[] validators) {
+    // If the command is local, it doesn't interact with the controller
+    private boolean isLocal = false;
+
+    CommandPrompt(String name, String[] prompts, Predicate<String>[] validators, boolean isLocal) {
         this.commandName = name;
         this.questions = prompts;
         this.validators = validators;
         this.currentResult = new CommandPromptResult(this, new String[prompts.length]);
+        this.isLocal = isLocal;
     }
 
-    CommandPrompt(String name) {
+    CommandPrompt(String name, boolean isLocal) {
         this.commandName = name;
         this.questions = new String[]{};
         this.validators = new Predicate[]{};
         this.currentResult = new CommandPromptResult(this, new String[0]);
+        this.isLocal = isLocal;
     }
 
     public String[] getQuestions() {
@@ -223,4 +235,7 @@ public enum CommandPrompt implements Iterator<String>, CommandObserved {
         }
     }
 
+    public boolean isLocal() {
+        return isLocal;
+    }
 }

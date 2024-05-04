@@ -33,7 +33,7 @@ public class Game implements Serializable {
                 CardLookUp<StartCard> startCardCardLookUp, CardLookUp<GoldCard> goldCardCardLookUp) {
         gameDiffPublisher = new GameDiffPublisher(this);
         this.name = lobby.getLobbyName();
-        this.gameParty = new GameParty(lobby.getLobbyPlayerList().stream().toList());
+        this.gameParty = new GameParty(lobby.getLobbyPlayerList());
         objectiveCardDeck = new Deck<>(0,objectiveCardCardLookUp.getQueue());
         resourceCardDeck = new Deck<>(2, resourceCardCardLookUp.getQueue());
         startingCardDeck = new Deck<>(0, startCardCardLookUp.getQueue());

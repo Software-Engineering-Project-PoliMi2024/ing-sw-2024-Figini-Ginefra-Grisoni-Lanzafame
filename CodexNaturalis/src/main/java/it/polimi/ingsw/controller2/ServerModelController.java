@@ -31,6 +31,7 @@ public class ServerModelController implements ControllerInterface {
     private final MultiGame games;
     private final ViewInterface view;
     private String nickname;
+    private final HeartbeatThread heartbeatThread;
 
     /**
      * The constructor of the class
@@ -40,6 +41,7 @@ public class ServerModelController implements ControllerInterface {
     public ServerModelController(MultiGame games, ViewInterface view) {
         this.games = games;
         this.view = view;
+        heartbeatThread = new HeartbeatThread(this, view);
     }
 
     /**
@@ -52,11 +54,14 @@ public class ServerModelController implements ControllerInterface {
         if(!this.games.isUnique(nickname)){
             log(LogsFromServer.NAME_TAKEN);
         }else{
-            if(games.inGameParty(nickname)){
+            //Client is now logged-In. If he disconnects we have to update the model
+            this.nickname = nickname;
+            heartbeatThread.start();
+            System.out.println(this.nickname + " has connected");
+            if(games.isInGameParty(nickname)){
                 //The player must join a game
                 this.games.getUserGame(nickname).getGameLoopController().joinGame(nickname, this);
             }else{
-                this.nickname = nickname;
                 this.games.addUser(this, nickname);
                 getActiveLobbyList();
                 log(LogsFromServer.SERVER_JOINED);
@@ -126,7 +131,7 @@ public class ServerModelController implements ControllerInterface {
                     }
                     Game newGame = games.createGame(lobbyToJoin);
                     games.removeLobby(lobbyToJoin);
-
+                    games.addGame(newGame);
                     newGame.getGameLoopController().joinGame();
                 }
             }else{
@@ -396,5 +401,25 @@ public class ServerModelController implements ControllerInterface {
         }catch (RemoteException r) {
             r.printStackTrace();
         }
+    }
+
+    @Override
+    public void receiveHeartbeat(Boolean isOn) {
+        if(!isOn){
+            System.out.println(this.nickname + " connection drop");
+            heartbeatThread.setStop(true);
+            //Remove the nickname from the server. If the player is in a game, remove his controller from the activePlayer map
+            this.games.removeUser(this.nickname);
+            if(games.isInGameParty(this.nickname)){
+                this.games.getUserGame(nickname).getGameLoopController().leaveGame(this, this.nickname);
+            }
+        }
+    }
+
+    /**
+     * @return user nick
+     */
+    public String getNickname() {
+        return nickname;
     }
 }
