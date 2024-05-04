@@ -27,6 +27,7 @@ public class HandRenderable extends CardRenderable {
         this.renderCard(getLightGame().getHand().getSecretObjective());
     }
 
+
     @Override
     public void render() {
         PromptStyle.printInABox("Hand - " + this.getFace().toString(), CardTextStyle.getCardWidth() * 3);
@@ -41,7 +42,7 @@ public class HandRenderable extends CardRenderable {
             }
 
             PromptStyle.printInABox(text, CardTextStyle.getCardWidth() * 2);
-            this.renderCard(getLightGame().getHand().getCards()[i]);
+            this.renderCard(card);
         }
     }
 

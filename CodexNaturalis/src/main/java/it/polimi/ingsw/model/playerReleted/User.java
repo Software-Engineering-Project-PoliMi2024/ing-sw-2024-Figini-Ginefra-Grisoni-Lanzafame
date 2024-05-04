@@ -1,5 +1,6 @@
 package it.polimi.ingsw.model.playerReleted;
 
+import it.polimi.ingsw.model.cardReleted.cards.CardInHand;
 import it.polimi.ingsw.model.cardReleted.cards.ObjectiveCard;
 import it.polimi.ingsw.model.tableReleted.Game;
 
@@ -38,9 +39,20 @@ public class User implements Serializable {
     }
 
     public void playCard(Placement placement){
+        if(placement.position().x()==0 && placement.position().y() == 0){
+            throw new IllegalCallerException("The card provided cannot be a startCard");
+        }
         this.userCodex.playCard(placement);
+        this.getUserHand().removeCard((CardInHand) placement.card()); //A user can place only a CardInHand, so the cast is safe
     }
 
+    public void placeStartCard(Placement placement){
+        if(placement.position().x()!=0 || placement.position().y() != 0){
+            throw new IllegalCallerException("The card provided must be a startCard");
+        }
+        this.userCodex.playCard(placement);
+        this.getUserHand().setStartCard(null);
+    }
     public void setSecretObject(ObjectiveCard objectiveCard){
         userHand.setSecretObjective(objectiveCard);
     }

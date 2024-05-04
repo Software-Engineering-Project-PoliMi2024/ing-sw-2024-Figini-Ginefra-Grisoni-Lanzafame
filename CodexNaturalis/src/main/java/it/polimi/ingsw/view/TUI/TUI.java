@@ -10,6 +10,7 @@ import it.polimi.ingsw.lightModel.lightTableRelated.LightLobbyList;
 import it.polimi.ingsw.view.TUI.Renderables.*;
 import it.polimi.ingsw.view.TUI.Renderables.CardRelated.ChooseObjectiveCardRenderable;
 import it.polimi.ingsw.view.TUI.Renderables.CardRelated.ChooseStartCardRenderable;
+import it.polimi.ingsw.view.TUI.Renderables.CardRelated.HandOthersRenderable;
 import it.polimi.ingsw.view.TUI.Renderables.CardRelated.HandRenderable;
 import it.polimi.ingsw.view.TUI.Renderables.CodexRelated.CodexRenderable;
 import it.polimi.ingsw.view.TUI.Renderables.CodexRelated.CodexRenderableOthers;
@@ -54,6 +55,8 @@ public class TUI extends View{
     private CodexRenderable codexRenderable;
 
     private CodexRenderableOthers codexRenderableOthers;
+
+    private HandOthersRenderable handOthersRenderable;
 
     private final LightGame lightGame = new LightGame();
 
@@ -134,6 +137,17 @@ public class TUI extends View{
         StateTUI.DRAW_CARD.attach(codexRenderable);
         StateTUI.PLACE_CARD.attach(codexRenderable);
         renderables.add(codexRenderable);
+
+        handOthersRenderable = new HandOthersRenderable(
+                "Hand Others",
+                cardMuseum,
+                lightGame,
+                new CommandPrompt[]{CommandPrompt.DISPLAY_HAND_FRONT, CommandPrompt.DISPLAY_HAND_BACK, CommandPrompt.DISPLAY_SECRET_OBJECTIVE},
+                controller);
+        StateTUI.IDLE.attach(handOthersRenderable);
+        StateTUI.DRAW_CARD.attach(handOthersRenderable);
+        StateTUI.PLACE_CARD.attach(codexRenderableOthers);
+        renderables.add(handOthersRenderable);
 
         codexRenderableOthers = new CodexRenderableOthers(
                 "Codex Others",

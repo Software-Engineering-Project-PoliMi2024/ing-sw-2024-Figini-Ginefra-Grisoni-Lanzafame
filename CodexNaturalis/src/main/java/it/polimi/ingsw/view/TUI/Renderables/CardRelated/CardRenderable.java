@@ -44,4 +44,8 @@ public class CardRenderable extends LightGameRenderable {
         return face;
     }
 
+    public CardMuseum getMuseum() {
+        return museum;
+    }
+
 }
