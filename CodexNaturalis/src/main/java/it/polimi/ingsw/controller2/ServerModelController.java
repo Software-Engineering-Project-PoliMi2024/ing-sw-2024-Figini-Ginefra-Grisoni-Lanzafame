@@ -26,6 +26,7 @@ import java.rmi.RemoteException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 
 public class ServerModelController implements ControllerInterface {
     private final MultiGame games;
@@ -45,14 +46,17 @@ public class ServerModelController implements ControllerInterface {
     }
 
     /**
-     * Log the player into the server. Check if his username is unique and if he is already in a game or not
+     * Log the player into the server.
+     * Check if his username is unique and if he is already in a game or not
      * @param nickname of the client who is trying to loggin in
      * @throws RemoteException in an error occurs during the sending/receiving of the data
      */
     @Override
     public void login(String nickname) throws RemoteException {
-        if(!this.games.isUnique(nickname)){
+        if(!this.games.isUnique(nickname)) {
             log(LogsFromServer.NAME_TAKEN);
+        }else if(Objects.equals(nickname, "")){
+            log(LogsFromServer.EMPTY_NAME);
         }else{
             //Client is now logged-In. If he disconnects we have to update the model
             this.nickname = nickname;
