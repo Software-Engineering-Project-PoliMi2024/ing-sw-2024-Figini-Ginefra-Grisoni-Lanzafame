@@ -203,7 +203,8 @@ public class TUI extends View{
 
     @Override
     public void log(String logMsg) {
-        PromptStyle.printInABox(logMsg,50);
+
+        PromptStyle.printInABox(logMsg,50, StringStyle.GREEN_FOREGROUND);
     }
 
     @Override
