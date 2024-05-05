@@ -93,11 +93,7 @@ public class GameDiffPublisher {
      * @param gameDiff the diff to send
      */
     public synchronized void notifySubscriber(DiffSubscriber diffSubscriber, GameDiff gameDiff){
-        try{
-            diffSubscriber.updateGame(gameDiff);
-        }catch (RemoteException r){
-            r.printStackTrace();
-        }
+        diffSubscriber.updateGame(gameDiff);
     }
 
     /**

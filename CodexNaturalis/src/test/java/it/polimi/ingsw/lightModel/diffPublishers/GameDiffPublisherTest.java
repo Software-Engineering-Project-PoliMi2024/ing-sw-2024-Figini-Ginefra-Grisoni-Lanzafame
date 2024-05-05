@@ -1,5 +1,6 @@
 package it.polimi.ingsw.lightModel.diffPublishers;
 
+import it.polimi.ingsw.controller2.ServerModelController;
 import it.polimi.ingsw.model.MultiGame;
 import it.polimi.ingsw.model.tableReleted.Game;
 import it.polimi.ingsw.model.tableReleted.Lobby;
@@ -12,15 +13,18 @@ class GameDiffPublisherTest {
     @Test
     void subscribe() {
         MultiGame games = new MultiGame();
+
         ViewTest view1 = new ViewTest();
         ViewTest view2 = new ViewTest();
         view1.name = "rob";
         view2.name = "bob";
         Lobby lobby = new Lobby(3, view1.name, "rob's");
         Game game = games.createGame(lobby);
+        ServerModelController controller1 = new ServerModelController(games, view1);
+        ServerModelController controller2 = new ServerModelController(games, view2);
 
-        game.subcribe(view1, view1.name);
-        game.subcribe(view2, view2.name);
+        game.subcribe(controller1, view1.name);
+        game.subcribe(controller2, view2.name);
 
         ArrayList<String> names = new ArrayList<>();
         names.add(view1.name);
@@ -42,15 +46,18 @@ class GameDiffPublisherTest {
         view3.name = "cob";
         Lobby lobby = new Lobby(3, view1.name, "rob's");
         Game game = games.createGame(lobby);
+        ServerModelController controller1 = new ServerModelController(games, view1);
+        ServerModelController controller2 = new ServerModelController(games, view2);
+        ServerModelController controller3 = new ServerModelController(games, view3);
 
         ArrayList<String> namesActive = new ArrayList<>();
         namesActive.add(view1.name);
         namesActive.add(view3.name);
 
-        game.subcribe(view1, view1.name);
-        game.subcribe(view2, view2.name);
-        game.unsubscrive(view2);
-        game.subcribe(view3, view3.name);
+        game.subcribe(controller1, view1.name);
+        game.subcribe(controller2, view2.name);
+        game.unsubscrive(controller2);
+        game.subcribe(controller3, view3.name);
 
         assert  view1.lightGame.getLightGameParty().getGameName().equals(game.getName()) &&
                 view1.lightGame.getLightGameParty().getPlayerActiveList().keySet().containsAll(namesActive) &&

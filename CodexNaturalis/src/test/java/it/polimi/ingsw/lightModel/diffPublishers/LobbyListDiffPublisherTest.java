@@ -1,12 +1,15 @@
 package it.polimi.ingsw.lightModel.diffPublishers;
 
+import it.polimi.ingsw.controller2.ServerModelController;
 import it.polimi.ingsw.lightModel.Lightifier;
 import it.polimi.ingsw.lightModel.diffs.LobbyListDiffEdit;
 import it.polimi.ingsw.lightModel.lightTableRelated.LightLobby;
+import it.polimi.ingsw.model.MultiGame;
 import it.polimi.ingsw.model.tableReleted.Lobby;
 import it.polimi.ingsw.model.tableReleted.LobbyList;
 import org.junit.jupiter.api.Test;
 
+import java.rmi.RemoteException;
 import java.util.ArrayList;
 
 class LobbyListDiffPublisherTest {
@@ -15,9 +18,11 @@ class LobbyListDiffPublisherTest {
     // if the view is subscribed to the lobbyList it will receive the updates
     @Test
     void subscribeLobby() {
+        MultiGame games = new MultiGame();
         LobbyList lobbyList = new LobbyList();
         ViewTest view1 = new ViewTest();
-        lobbyList.subscribe(view1);
+        ServerModelController controller = new ServerModelController(games, view1);
+        lobbyList.subscribe(controller);
 
         Lobby lobby = new Lobby(3, "gianni", "gianni1");
         lobbyList.addLobby(lobby);
@@ -43,14 +48,21 @@ class LobbyListDiffPublisherTest {
     // once disconnected the view will lose all previous memory of the lobbyList and don't receive updates
     @Test
     void unsubscribe() {
+        MultiGame games = new MultiGame();
         LobbyList lobbyList = new LobbyList();
         Lobby lobbyAlreadyPresent = new Lobby(3, "gianni", "gianni1");
         Lobby lobbyToAddOnceDisconnected = new Lobby(3, "gianni", "gianni2");
         lobbyList.addLobby(lobbyAlreadyPresent);
 
         ViewTest view1 = new ViewTest();
-        lobbyList.subscribe(view1);
-        lobbyList.unsubscribe(view1);
+        view1.name = "giorgio";
+        ServerModelController controller = new ServerModelController(games, view1);
+        try {
+            controller.login(view1.name);
+        }catch (RemoteException r){
+        }
+        lobbyList.subscribe(controller);
+        lobbyList.unsubscribe(controller);
         lobbyList.addLobby(lobbyToAddOnceDisconnected);
 
         ArrayList<LightLobby> lobbiesDiff= new ArrayList<>();
@@ -69,9 +81,11 @@ class LobbyListDiffPublisherTest {
         LobbyList lobbyList = new LobbyList();
         Lobby lobby = new Lobby(3, "gianni", "gianni1");
         lobbyList.addLobby(lobby);
-
+        MultiGame games = new MultiGame();
         ViewTest view1 = new ViewTest();
-        lobbyList.subscribe(view1);
+        ServerModelController controller = new ServerModelController(games, view1);
+
+        lobbyList.subscribe(controller);
 
         printLobbies(view1);
         assert view1.lightLobbyList.getLobbies().size() == 1;

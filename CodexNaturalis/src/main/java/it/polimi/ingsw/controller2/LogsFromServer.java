@@ -19,7 +19,8 @@ public enum LogsFromServer {
     CARD_DRAWN("Card Drawn"),
     YOUR_TURN("It's your time to play"),
     WAIT_STARTCARD("Waiting for the other players to place their StartCard"),
-    WAIT_SECRET_OBJECTIVE("Waiting for the other players to choose their Secret Objective");
+    WAIT_SECRET_OBJECTIVE("Waiting for the other players to choose their Secret Objective"),
+    EMPTY_NAME("The name cannot be empty"),;
 
     private final String message;
 

@@ -171,7 +171,9 @@ public class GameLoopController {
             }
         }
         //When every activePlayer has placed the startCard, remove players who left, go on the next state
-        this.checkForDisconnectedUser();
+        synchronized (this){
+            this.checkForDisconnectedUser();
+        }
         controller.transitionTo(ViewState.SELECT_OBJECTIVE);
         User user = game.getUserFromNick(controller.getNickname());
         for (LightCard secretObjectiveCardChoice : getOrDrawSecretObjectiveChoices(user)) {
@@ -183,30 +185,37 @@ public class GameLoopController {
      * The put the currentPlayer view in PlaceCard and the others in idle
      * @param controller of the user who chose the objective
      */
-    public void secretObjectiveChose(ServerModelController controller){
+    public void secretObjectiveChose(ServerModelController controller) {
         controller.log(LogsFromServer.WAIT_SECRET_OBJECTIVE);
         boolean everybodyHasChoose = false;
-        while(!everybodyHasChoose){
+        while (!everybodyHasChoose) {
             everybodyHasChoose = true;
             for (String nick : activePlayers.keySet()) {
                 User user = game.getUserFromNick(nick);
-                if(user.getUserHand().getSecretObjectiveChoices()!=null){
-                    everybodyHasChoose=false;
+                if (user.getUserHand().getSecretObjectiveChoices() != null) {
+                    everybodyHasChoose = false;
                 }
             }
-            if(everybodyHasChoose){
+            if (everybodyHasChoose) {
                 break;
             }
         }
-        //When every activePlayer has chose the secretObject, remove players who left, go on the next state
-        this.checkForDisconnectedUser();
-        User currentPlayer = game.getGameParty().getCurrentPlayer();
-        while(!activePlayers.containsKey(currentPlayer.getNickname())){
-            currentPlayer=game.getGameParty().nextPlayer(); //if the currentPlayer is not an activePlayer, skip his turn
+        User currentPlayer;
+        /*All controllers will run this code, because everyone will be waiting in the loop above.
+        So I let the first controller that take the lock compute the nextPlayer. The other controllers will skip the while loop
+        If someone can think of a refactor, is more than welcome to change this mess*/
+        synchronized (this) {
+            this.checkForDisconnectedUser();
+            currentPlayer = game.getGameParty().getCurrentPlayer();
+            while (!activePlayers.containsKey(currentPlayer.getNickname())) {
+                currentPlayer = game.getGameParty().nextPlayer(); //if the currentPlayer is not an activePlayer, skip his turn
+            }
+            System.out.println("the next player is: " + currentPlayer.getNickname()); //debugging info, will be print once for each activePlayer
         }
-        if(controller.getNickname().equals(currentPlayer.getNickname())){
+        controller.updateGame(new GameDiffRound(currentPlayer.getNickname()));
+        if (controller.getNickname().equals(currentPlayer.getNickname())) {
             controller.transitionTo(ViewState.PLACE_CARD);
-        }else{
+        } else {
             controller.transitionTo(ViewState.IDLE);
         }
     }
@@ -216,10 +225,12 @@ public class GameLoopController {
      * @param controller of the currentPlayer who ended his turn
      */
     public void cardPlace(ServerModelController controller){
+        //all of this code will be run only once by the soon-to-be ex currentPlayer
         User nextUser;
-        do{ //if the nextUser is not an activePlayer, skip his turn
+        do{
             nextUser = game.getGameParty().nextPlayer();
         }while(!activePlayers.containsKey(nextUser.getNickname()));
+        System.out.println("the next player is: " + nextUser.getNickname());
         controller.transitionTo(ViewState.IDLE);
         for(ServerModelController serverModelController : activePlayers.values()){
             serverModelController.updateGame(new GameDiffRound(nextUser.getNickname()));

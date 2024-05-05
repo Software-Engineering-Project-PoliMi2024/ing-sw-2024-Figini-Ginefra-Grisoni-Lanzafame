@@ -95,15 +95,11 @@ public class Lobby implements Serializable {
         lobbyDiffPublisher.unsubscribe(unsubscriber);
     }
 
-    /**
-     * @return a list of all DiffSubscriber present in the lobby
-     */
-    public List<DiffSubscriber> getSubscribers(){
-        return lobbyDiffPublisher.getSubscribers();
-    }
-
     public void setPlayerControllers(ServerModelController controller, String nickname){
         playerControllers.put(nickname, controller);
+    }
+    public void clearPublisher(){
+        lobbyDiffPublisher.clear();
     }
 
     public Map<String, ServerModelController> getPlayerController(){
