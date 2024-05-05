@@ -1,8 +1,9 @@
-package it.polimi.ingsw.view.TUI.Renderables;
+package it.polimi.ingsw.view.TUI.Renderables.CardRelated;
 
 import it.polimi.ingsw.controller2.ControllerInterface;
 import it.polimi.ingsw.lightModel.lightTableRelated.LightLobby;
 import it.polimi.ingsw.lightModel.lightTableRelated.LightLobbyList;
+import it.polimi.ingsw.view.TUI.Renderables.Renderable;
 import it.polimi.ingsw.view.TUI.Styles.PromptStyle;
 import it.polimi.ingsw.view.TUI.inputs.CommandPrompt;
 import it.polimi.ingsw.view.TUI.inputs.CommandPromptResult;
@@ -11,14 +12,27 @@ import java.rmi.RemoteException;
 import java.util.List;
 import java.util.Objects;
 
+/**
+ * This class is a Renderable that represents a list of games.
+ */
 public class GameListRenderable extends Renderable {
     private final LightLobbyList lightLobbyList;
 
+    /**
+     * Creates a new GameListRenderable.
+     * @param name The name of the renderable.
+     * @param lightLobbyList The lightLobbyList to render.
+     * @param relatedCommands The commands related to this renderable.
+     * @param controller The controller to interact with.
+     */
     public GameListRenderable(String name, LightLobbyList lightLobbyList, CommandPrompt[] relatedCommands, ControllerInterface controller) {
         super(name, relatedCommands, controller);
         this.lightLobbyList = lightLobbyList;
     }
 
+    /**
+     * Renders the list of games.
+     */
     @Override
     public void render() {
         if (lightLobbyList.getLobbies().isEmpty()) {
@@ -30,6 +44,10 @@ public class GameListRenderable extends Renderable {
         }
     }
 
+    /**
+     * Updates the renderable based on the command prompt result.
+     * @param answer The command prompt result.
+     */
     public void updateCommand(CommandPromptResult answer) {
         switch (answer.getCommand()) {
             case CommandPrompt.DISPLAY_GAME_LIST:

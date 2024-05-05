@@ -17,17 +17,34 @@ import it.polimi.ingsw.view.TUI.inputs.CommandPromptResult;
 
 import java.util.List;
 
+/**
+ * This class is a Renderable that can render the hand of the main player.
+ */
 public class HandRenderable extends CardRenderable {
+
+    /**
+     * Creates a new HandRenderable.
+     * @param name The name of the renderable.
+     * @param museum The card museum to use.
+     * @param game The lightGame to render.
+     * @param relatedCommands The commands related to this renderable.
+     * @param controller The controller to interact with.
+     */
     public HandRenderable(String name, CardMuseum museum, LightGame game, CommandPrompt[] relatedCommands, ControllerInterface controller) {
         super(name, museum, game, CardFace.FRONT, relatedCommands, controller);
     }
 
+    /**
+     * Renders the secret objective card.
+     */
     public void renderSecretObjective(){
         PromptStyle.printInABox("Secret Objective", CardTextStyle.getCardWidth() * 2);
         this.renderCard(getLightGame().getHand().getSecretObjective());
     }
 
-
+    /**
+     * Renders the hand of the main player.
+     */
     @Override
     public void render() {
         PromptStyle.printInABox("Hand - " + this.getFace().toString(), CardTextStyle.getCardWidth() * 3);
@@ -46,7 +63,10 @@ public class HandRenderable extends CardRenderable {
         }
     }
 
-
+    /**
+     * Updates the renderable based on the command prompt result.
+     * @param answer The command prompt result.
+     */
     public void updateCommand(CommandPromptResult answer){
         switch (answer.getCommand()) {
             case CommandPrompt.DISPLAY_HAND_FRONT:

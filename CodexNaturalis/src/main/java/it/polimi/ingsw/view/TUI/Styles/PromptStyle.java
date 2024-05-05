@@ -55,7 +55,7 @@ public class PromptStyle {
     public static void printBetweenSeparators(String text, int width, String separator){
         Printable printable = new Printable("");
         printable.print(separator);
-        printable.print(new PaddedString(text, width, TextAlign.CENTER));
+        printable.print(new PaddedString(text, Math.max(width, text.length()), TextAlign.CENTER));
         printable.println(separator);
         Printer.print(printable);
     }
@@ -63,25 +63,26 @@ public class PromptStyle {
     public static void printBetweenSeparators(String text, int width, String separator, StringStyle style){
         Printable printable = new Printable("");
         printable.print(new DecoratedString(separator, style));
-        printable.print(new DecoratedString(new PaddedString(text, width, TextAlign.CENTER).toString(), style));
+        printable.print(new DecoratedString(new PaddedString(text, Math.max(width, text.length()), TextAlign.CENTER).toString(), style));
         printable.println(new DecoratedString(separator, style));
         Printer.print(printable);
     }
 
     public static void printBetweenSeparators(Printable printable, String text, int width, String separator){
         printable.print(separator);
-        printable.print(new PaddedString(text, width, TextAlign.CENTER));
+        printable.print(new PaddedString(text, Math.max(width, text.length()), TextAlign.CENTER));
         printable.println(separator);
     }
 
     public static void printBetweenSeparators(Printable printable, String text, int width, String separator, StringStyle style){
         printable.print(new DecoratedString(separator, style));
-        printable.print(new DecoratedString(new PaddedString(text, width, TextAlign.CENTER).toString(), style));
+        printable.print(new DecoratedString(new PaddedString(text, Math.max(width, text.length()), TextAlign.CENTER).toString(), style));
         printable.println(new DecoratedString(separator, style));
     }
 
     public static void printInABox(String text, int width){
         Printable printable = new Printable("");
+        width = Math.max(width, text.length());
         printSeparator(printable, width+2, PromptStyle.HorizontalSeparator, PromptStyle.CornerTopLeftRounded, PromptStyle.CornerTopRightRounded);
         printBetweenSeparators(printable, text, width, PromptStyle.VerticalSeparator);
         printSeparator(printable, width+2, PromptStyle.HorizontalSeparator, PromptStyle.CornerBottomLeftRounded, PromptStyle.CornerBottomRightRounded);
@@ -90,6 +91,7 @@ public class PromptStyle {
 
     public static void printInABoxDouble(String text, int width){
         Printable printable = new Printable("");
+        width = Math.max(width, text.length());
         printSeparator(printable, width+2, PromptStyle.HorizontalDoubleSeparator, PromptStyle.CornerTopLeftDouble, PromptStyle.CornerTopRightDouble);
         printBetweenSeparators(printable, text, width, PromptStyle.VerticalDoubleSeparator);
         printSeparator(printable, width+2, PromptStyle.HorizontalDoubleSeparator, PromptStyle.CornerBottomLeftDouble, PromptStyle.CornerBottomRightDouble);
@@ -98,6 +100,7 @@ public class PromptStyle {
 
     public static void printInABox(String text, int width, StringStyle style){
         Printable printable = new Printable("");
+        width = Math.max(width, text.length());
         printSeparator(printable, width+2, PromptStyle.HorizontalSeparator, PromptStyle.CornerTopLeftRounded, PromptStyle.CornerTopRightRounded, style);
         printBetweenSeparators(printable, text, width, PromptStyle.VerticalSeparator, style);
         printSeparator(printable, width+2, PromptStyle.HorizontalSeparator, PromptStyle.CornerBottomLeftRounded, PromptStyle.CornerBottomRightRounded, style);
@@ -106,6 +109,7 @@ public class PromptStyle {
 
     public static void printListInABox(String title, List<String> list, int width, int linesPerItem){
         Printable printable = new Printable("");
+        width = Math.max(width, title.length());
         printSeparator(printable, width+2, PromptStyle.HorizontalSeparator, PromptStyle.CornerTopLeftRounded, PromptStyle.CornerTopRightRounded);
         printBetweenSeparators(printable, title, width, PromptStyle.VerticalSeparator);
         printSeparator(printable, width+2, PromptStyle.HorizontalSeparator, PromptStyle.ConnectionLeft, PromptStyle.ConnectionRight);
@@ -131,4 +135,13 @@ public class PromptStyle {
             "╚██████╗╚██████╔╝██████╔╝███████╗██╔╝ ██╗    ██║██║ ╚████║    ██║ ╚████║██║  ██║   ██║   ╚██████╔╝██║  ██║██║  ██║███████╗██║███████║    \n" +
             " ╚═════╝ ╚═════╝ ╚═════╝ ╚══════╝╚═╝  ╚═╝    ╚═╝╚═╝  ╚═══╝    ╚═╝  ╚═══╝╚═╝  ╚═╝   ╚═╝    ╚═════╝ ╚═╝  ╚═╝╚═╝  ╚═╝╚══════╝╚═╝╚══════╝    \n" +
             "                                                                                                                                         \n";
+
+    public static String GameStart = "\n" +
+            " ██████╗  █████╗ ███╗   ███╗███████╗    ███████╗████████╗ █████╗ ██████╗ ████████╗███████╗██████╗ \n" +
+            "██╔════╝ ██╔══██╗████╗ ████║██╔════╝    ██╔════╝╚══██╔══╝██╔══██╗██╔══██╗╚══██╔══╝██╔════╝██╔══██╗\n" +
+            "██║  ███╗███████║██╔████╔██║█████╗      ███████╗   ██║   ███████║██████╔╝   ██║   █████╗  ██║  ██║\n" +
+            "██║   ██║██╔══██║██║╚██╔╝██║██╔══╝      ╚════██║   ██║   ██╔══██║██╔══██╗   ██║   ██╔══╝  ██║  ██║\n" +
+            "╚██████╔╝██║  ██║██║ ╚═╝ ██║███████╗    ███████║   ██║   ██║  ██║██║  ██║   ██║   ███████╗██████╔╝\n" +
+            " ╚═════╝ ╚═╝  ╚═╝╚═╝     ╚═╝╚══════╝    ╚══════╝   ╚═╝   ╚═╝  ╚═╝╚═╝  ╚═╝   ╚═╝   ╚══════╝╚═════╝ \n" +
+            "                                                                                                  \n";
 }

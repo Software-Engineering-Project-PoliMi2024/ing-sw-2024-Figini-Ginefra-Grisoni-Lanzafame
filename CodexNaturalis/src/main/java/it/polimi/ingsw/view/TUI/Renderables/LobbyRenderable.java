@@ -9,24 +9,44 @@ import it.polimi.ingsw.view.TUI.inputs.CommandPromptResult;
 import java.rmi.RemoteException;
 import java.util.List;
 
+/**
+ * This class is a Renderable that represents a lobby.
+ */
 public class LobbyRenderable extends Renderable {
-    private LightLobby lightLobby;
-    private String userInput = "";
+    private final LightLobby lightLobby;
 
+    /**
+     * Creates a new LobbyRenderable.
+     * @param name The name of the renderable.
+     * @param lightLobby The lightLobby to render.
+     * @param relatedCommands The commands related to this renderable.
+     * @param controller The controller to interact with.
+     */
     public LobbyRenderable(String name, LightLobby lightLobby, CommandPrompt[] relatedCommands, ControllerInterface controller) {
         super(name, relatedCommands, controller);
         this.lightLobby = lightLobby;
     }
 
+    /**
+     * Renders the lobby.
+     */
     @Override
     public void render() {
         String lobbyName = lightLobby.name();
         List<String> nicknames = lightLobby.nicknames();
         int numberOfMaxPlayer = lightLobby.numberMaxPlayer();
-        PromptStyle.printListInABox("Lobby - " + lobbyName + " Player needed to start - " + numberOfMaxPlayer,
-                nicknames, 70, 1);
+
+        for(int i = nicknames.size(); i < numberOfMaxPlayer; i++){
+            nicknames.add("?");
+        }
+
+        PromptStyle.printListInABox("Lobby - " + lobbyName, nicknames, 70, 1);
     }
 
+    /**
+     * Updates the renderable based on the command prompt result.
+     * @param answer The command prompt result.
+     */
     @Override
     public void updateCommand(CommandPromptResult answer) {
         switch (answer.getCommand()) {

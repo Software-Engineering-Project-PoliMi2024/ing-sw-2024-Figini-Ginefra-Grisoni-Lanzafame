@@ -19,12 +19,22 @@ public class GameLoopController {
     //A map containing the view for each ACTIVE player in the game
     private final Map<String, ServerModelController> activePlayers;
     private final Game game;
+
+    /**
+     * The constructor of the class
+     * @param game being directed by the GameLoopController
+     * @param activePlayers a map of nickname and control for each player
+     */
     public GameLoopController(Game game, Map<String, ServerModelController> activePlayers){
         this.activePlayers = activePlayers;
         this.game = game;
     }
 
-    //Joining of a player after game creation. I need this method to put his controller back in the activePlayers map
+    /**
+     * join a user back into the game after he left. Add his controller back to the activePlayer map
+     * @param nickname of the user who is joining
+     * @param controller of the user who is joining
+     */
     public void joinGame(String nickname, ServerModelController controller){
         activePlayers.put(nickname, controller);
         for(User user : game.getGameParty().getUsersList()){
@@ -72,14 +82,28 @@ public class GameLoopController {
         }
     }
 
+    /**
+     * @param user
+     * @return true if user place his start card, false otherwise
+     */
     private Boolean startCardIsPlaced(User user){
         return user.getUserCodex().getPlacementAt(new Position(0, 0)) != null;
     }
 
+
+    /**
+     * @param user
+     * @return true if user chose his secretObjective, false otherwise
+     */
     private Boolean secretObjectiveIsChose(User user){
         return user.getUserHand().getSecretObjective() != null;
     }
 
+    /**
+     * Draw a start card if the user never drawn one before or get it from the model
+     * @param user
+     * @return a StartCard
+     */
     private StartCard getOrDrawStartCard(User user){
         StartCard startCard;
         if(user.getUserHand().getStartCard()==null){
@@ -91,6 +115,11 @@ public class GameLoopController {
         return startCard;
     }
 
+    /**
+     * Draw two ObjectiveCards if the user never drawn them before or get them from the model
+     * @param user
+     * @return a List two objectiveCard in a light version
+     */
     private List<LightCard> getOrDrawSecretObjectiveChoices(User user){
         List<LightCard> secretLightObjectives = new ArrayList<>();
         if(user.getUserHand().getSecretObjectiveChoices()==null){
@@ -117,15 +146,11 @@ public class GameLoopController {
         user.getUserHand().setSecretObjectiveChoice(cardList);
         return cardList;
     }
-    public void placeCard(){
-
-    }
-
     public void leaveGame(ServerModelController controller, String nickname){
         activePlayers.remove(nickname, controller);
     }
     /**
-     * Put the controller in a busy-wait until each player in the lobby placed their startCard
+     * Put the controller in a busy-wait until each player in the activePlayer map has placed their startCard
      * Then draw the 2 possible secretObjective cards, and give them to the view.
      * @param controller of the user who placed the card
      */
@@ -146,47 +171,66 @@ public class GameLoopController {
             }
         }
         //When every activePlayer has placed the startCard, remove players who left, go on the next state
-        this.checkForDisconnectedUser();
+        synchronized (this){
+            this.checkForDisconnectedUser();
+        }
         controller.transitionTo(ViewState.SELECT_OBJECTIVE);
         User user = game.getUserFromNick(controller.getNickname());
         for (LightCard secretObjectiveCardChoice : getOrDrawSecretObjectiveChoices(user)) {
             controller.updateGame(new HandDiffAdd(secretObjectiveCardChoice, true));
         }
     }
-
-    public void secretObjectiveChose(ServerModelController controller){
+    /**
+     * Put the controller in a busy-wait until each player in the activePlayer map placed has chosen their secrectObj
+     * The put the currentPlayer view in PlaceCard and the others in idle
+     * @param controller of the user who chose the objective
+     */
+    public void secretObjectiveChose(ServerModelController controller) {
         controller.log(LogsFromServer.WAIT_SECRET_OBJECTIVE);
         boolean everybodyHasChoose = false;
-        while(!everybodyHasChoose){
+        while (!everybodyHasChoose) {
             everybodyHasChoose = true;
             for (String nick : activePlayers.keySet()) {
                 User user = game.getUserFromNick(nick);
-                if(user.getUserHand().getSecretObjectiveChoices()!=null){
-                    everybodyHasChoose=false;
+                if (user.getUserHand().getSecretObjectiveChoices() != null) {
+                    everybodyHasChoose = false;
                 }
             }
-            if(everybodyHasChoose){
+            if (everybodyHasChoose) {
                 break;
             }
         }
-        //When every activePlayer has chose the secretObject, remove players who left, go on the next state
-        this.checkForDisconnectedUser();
-        User currentPlayer = game.getGameParty().getCurrentPlayer();
-        while(!activePlayers.containsKey(currentPlayer.getNickname())){
-            currentPlayer=game.getGameParty().nextPlayer(); //if the currentPlayer is not an activePlayer, skip his turn
+        User currentPlayer;
+        /*All controllers will run this code, because everyone will be waiting in the loop above.
+        So I let the first controller that take the lock compute the nextPlayer. The other controllers will skip the while loop
+        If someone can think of a refactor, is more than welcome to change this mess*/
+        synchronized (this) {
+            this.checkForDisconnectedUser();
+            currentPlayer = game.getGameParty().getCurrentPlayer();
+            while (!activePlayers.containsKey(currentPlayer.getNickname())) {
+                currentPlayer = game.getGameParty().nextPlayer(); //if the currentPlayer is not an activePlayer, skip his turn
+            }
+            System.out.println("the next player is: " + currentPlayer.getNickname()); //debugging info, will be print once for each activePlayer
         }
-        if(controller.getNickname().equals(currentPlayer.getNickname())){
+        controller.updateGame(new GameDiffRound(currentPlayer.getNickname()));
+        if (controller.getNickname().equals(currentPlayer.getNickname())) {
             controller.transitionTo(ViewState.PLACE_CARD);
-        }else{
+        } else {
             controller.transitionTo(ViewState.IDLE);
         }
     }
 
+    /**
+     * Elaborate the view for the currentPlayer and the nextOne
+     * @param controller of the currentPlayer who ended his turn
+     */
     public void cardPlace(ServerModelController controller){
+        //all of this code will be run only once by the soon-to-be ex currentPlayer
         User nextUser;
-        do{ //if the nextUser is not an activePlayer, skip his turn
+        do{
             nextUser = game.getGameParty().nextPlayer();
         }while(!activePlayers.containsKey(nextUser.getNickname()));
+        System.out.println("the next player is: " + nextUser.getNickname());
         controller.transitionTo(ViewState.IDLE);
         for(ServerModelController serverModelController : activePlayers.values()){
             serverModelController.updateGame(new GameDiffRound(nextUser.getNickname()));
@@ -198,6 +242,9 @@ public class GameLoopController {
 
     }
 
+    /**
+     * if a player left the game and didn't join back before the end of a setup-state, his nick is removed from the gameParty
+     */
     private void checkForDisconnectedUser(){
         if(activePlayers.size() != game.getGameParty().getNumberOfMaxPlayer()){
             for(User user : game.getGameParty().getUsersList()){

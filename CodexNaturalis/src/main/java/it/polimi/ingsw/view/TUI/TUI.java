@@ -15,6 +15,7 @@ import it.polimi.ingsw.view.TUI.Renderables.CardRelated.HandRenderable;
 import it.polimi.ingsw.view.TUI.Renderables.CodexRelated.CodexRenderable;
 import it.polimi.ingsw.view.TUI.Renderables.CodexRelated.CodexRenderableOthers;
 import it.polimi.ingsw.view.TUI.Renderables.Forms.ConnectFormRenderable;
+import it.polimi.ingsw.view.TUI.Renderables.CardRelated.GameListRenderable;
 import it.polimi.ingsw.view.TUI.Renderables.Forms.LoginFormRenderable;
 import it.polimi.ingsw.view.TUI.States.StateTUI;
 import it.polimi.ingsw.view.TUI.Styles.PromptStyle;

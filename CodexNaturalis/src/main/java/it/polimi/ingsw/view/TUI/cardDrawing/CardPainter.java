@@ -14,14 +14,27 @@ import it.polimi.ingsw.view.TUI.Styles.CardTextStyle;
 
 import java.util.Map;
 
+/**
+ * This class is a painter of cards. It can draw a card on a Drawable.
+ */
 public class CardPainter {
+    /**
+     * Draws the requirements of a card.
+     * @param card The card to draw.
+     * @param drawable The drawable where to draw the card.
+     */
     private static void drawRequirements(GoldCard card, Drawable drawable){
+        //Get the requirements
         Map<Resource, Integer> requirements = card.getRequirements();
 
+        //If there are no requirements, return
         if(requirements.isEmpty())
             return;
 
+        //Count the number of requirements
         int n = requirements.keySet().stream().mapToInt(r -> requirements.get(r) != 0 ? 1 : 0).sum();
+
+        //Draw the requirements
         int y = drawable.getHeight() - 2;
         int x = (drawable.getWidth() - n) / 2;
 
@@ -34,6 +47,12 @@ public class CardPainter {
             x += 1 - n%2;
         }
     }
+
+    /**
+     * Draws the multiplier of a card.
+     * @param card The card to draw.
+     * @param drawable The drawable where to draw the card.
+     */
     private static void drawMultiplier(GoldCard card, Drawable drawable){
         if(card.getGoldCardPointMultiplier() != null){
             String multiplierEmojii = card.getGoldCardPointMultiplier().getTarget() == null ?
@@ -44,11 +63,21 @@ public class CardPainter {
         }
     }
 
+    /**
+     * Draws the points of a card.
+     * @param card The card to draw.
+     * @param drawable The drawable where to draw the card.
+     */
     private static void drawPoints(CardWithCorners card, Drawable drawable){
         if(card.getPoints() != 0)
             drawable.addContent(CardTextStyle.getNumberEmoji(card.getPoints()), drawable.getWidth()/2, 0);
     }
 
+    /**
+     * Draws the permanent resources of a card.
+     * @param card The card to draw.
+     * @param drawable The drawable where to draw the card.
+     */
     private static void drawPermanentResources(CardWithCorners card, Drawable drawable){
         if(card.getPermanentResources(CardFace.BACK).isEmpty())
             return;
@@ -63,6 +92,11 @@ public class CardPainter {
         }
     }
 
+    /**
+     * Draws the collectable multiplier of a gold card.
+     * @param multiplier The multiplier to draw.
+     * @param drawable The drawable where to draw the card.
+     */
     private static void drawCollectableMultiplier(CollectableCardPointMultiplier multiplier, Drawable drawable){
         if(multiplier != null){
             int n = multiplier.getTargets().values().stream().mapToInt(i -> i).sum();
@@ -80,7 +114,11 @@ public class CardPainter {
         }
     }
 
-
+    /**
+     * Draws the diagonal multiplier of a gold card.
+     * @param multiplier The multiplier to draw.
+     * @param drawable The drawable where to draw the card.
+     */
     private static void drawDiagonalMultiplier(DiagonalCardPointMultiplier multiplier, Drawable drawable) {
         if (multiplier != null) {
             Resource resource = multiplier.getColor();
@@ -106,7 +144,11 @@ public class CardPainter {
         }
     }
 
-
+    /**
+     * Draws the L multiplier of a gold card.
+     * @param multiplier The multiplier to draw.
+     * @param drawable The drawable where to draw the card.
+     */
     private static void drawLMultiplier(LCardPointMultiplier multiplier, Drawable drawable) {
         if (multiplier != null) {
             CardCorner corner = multiplier.corner();
@@ -150,6 +192,12 @@ public class CardPainter {
         }
     }
 
+    /**
+     * Draws the corners of a card.
+     * @param card The card to draw.
+     * @param face The face of the card to draw.
+     * @param drawable The drawable where to draw the card.
+     */
     private static void drawCorners(CardWithCorners card, CardFace face, Drawable drawable){
         for(CardCorner corner : CardCorner.values()){
             if(card.isCorner(corner, face) && card.getCollectableAt(corner, face) != null){
@@ -172,6 +220,12 @@ public class CardPainter {
         }
     }
 
+    /**
+     * Draws the common elements of a card front.
+     * @param card The card to draw.
+     * @param filler The filler to use.
+     * @param drawable The drawable where to draw the card.
+     */
     private static void drawBasicFront(CardWithCorners card, String filler, Drawable drawable){
         //Fill the background
         drawable.fillContent(filler);
@@ -183,6 +237,12 @@ public class CardPainter {
         drawPoints(card, drawable);
     }
 
+    /**
+     * Draws the common elements of a card back.
+     * @param card The card to draw.
+     * @param filler The filler to use.
+     * @param drawable The drawable where to draw the card.
+     */
     private static void drawBasicBack(CardWithCorners card, String filler, Drawable drawable){
         //Fill the background
         drawable.fillContent(filler);
@@ -194,6 +254,11 @@ public class CardPainter {
         drawPermanentResources(card, drawable);
     }
 
+    /**
+     * Draws a resource card.
+     * @param card The card to draw.
+     * @return The drawable of the card.
+     */
     public static TextCard drawResourceCard(ResourceCard card){
         //Draw the front
         Drawable front = new Drawable(CardTextStyle.getCardWidth(), CardTextStyle.getCardHeight());
@@ -211,6 +276,11 @@ public class CardPainter {
         return new TextCard(front, back);
     }
 
+    /**
+     * Draws a gold card.
+     * @param card The card to draw.
+     * @return The drawable of the card.
+     */
     public static TextCard drawGoldCard(GoldCard card){
         //Draw the front
         Drawable front = new Drawable(CardTextStyle.getCardWidth(), CardTextStyle.getCardHeight());
@@ -231,6 +301,11 @@ public class CardPainter {
         return new TextCard(front, back);
     }
 
+    /**
+     * Draws a start card.
+     * @param card The card to draw.
+     * @return The drawable of the card.
+     */
     public static  TextCard drawStartCard(StartCard card){
         //Draw the front
         Drawable front = new Drawable(CardTextStyle.getCardWidth(), CardTextStyle.getCardHeight());
@@ -247,8 +322,14 @@ public class CardPainter {
         return new TextCard(front, back);
     }
 
+    /**
+     * Draws a frontier card.
+     * @param number The number to draw.
+     * @return The drawable of the card.
+     */
     public static Drawable drawFrontierCard(int number){
         Drawable drawable = new Drawable(CardTextStyle.getCardWidth(), CardTextStyle.getCardHeight());
+
         //Draw the borders
         for(int i = 0; i < drawable.getWidth(); i++){
             drawable.addContent(CardTextStyle.getFrontierFilling(), i, 0);
@@ -275,6 +356,11 @@ public class CardPainter {
         return drawable;
     }
 
+    /**
+     * Draws an objective card with a collectable multiplier.
+     * @param card The card to draw.
+     * @return The drawable of the card.
+     */
     public static TextCard drawObjectiveCardCollectableMultiplier(ObjectiveCard card, CollectableCardPointMultiplier multiplier){
         Drawable drawable = new Drawable(CardTextStyle.getCardWidth(), CardTextStyle.getCardHeight());
 
@@ -295,6 +381,11 @@ public class CardPainter {
         return new TextCard(drawable, drawable);
     }
 
+    /**
+     * Draws an objective card with a diagonal multiplier.
+     * @param card The card to draw.
+     * @return The drawable of the card.
+     */
     public static TextCard drawObjectiveCardDiagonalMultiplier(ObjectiveCard card, DiagonalCardPointMultiplier multiplier){
         Drawable drawable = new Drawable(CardTextStyle.getCardWidth(), CardTextStyle.getCardHeight());
 
@@ -315,6 +406,11 @@ public class CardPainter {
         return new TextCard(drawable, drawable);
     }
 
+    /**
+     * Draws an objective card with an L multiplier.
+     * @param card The card to draw.
+     * @return The drawable of the card.
+     */
     public static TextCard drawObjectiveCardLMultiplier(ObjectiveCard card, LCardPointMultiplier multiplier){
         Drawable drawable = new Drawable(CardTextStyle.getCardWidth(), CardTextStyle.getCardHeight());
 

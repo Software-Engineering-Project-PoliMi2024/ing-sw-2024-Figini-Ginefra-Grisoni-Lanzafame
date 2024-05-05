@@ -22,11 +22,20 @@ import java.util.LinkedHashMap;
 import java.util.Map;
 import java.util.Queue;
 
+/**
+ * This class is a factory of CardMuseum. It can create a CardMuseum from the cards json file and save it to a binary file.
+ */
 public class CardMuseumFactory {
+    /** The card museum to create. */
     private final CardMuseum cardMuseum;
+
+    /** The folder path where the binary file is stored. */
     private final String folderPath;
+
+    /** The name of the binary file. */
     public static final String fileName = "CardMuseum.bin";
 
+    /** The first card id having a certain permanent resource. */
     public final Map<Resource, Integer> resourceBacksIds = Map.of(
         Resource.FUNGI, 1,
         Resource.PLANT, 11,
@@ -34,16 +43,30 @@ public class CardMuseumFactory {
         Resource.INSECT, 31
     );
 
+    /**
+     * Creates a new CardMuseumFactory.
+     * @param folderPath The folder path where the binary file is stored.
+     */
     public CardMuseumFactory(String folderPath) {
         this.folderPath = folderPath;
         cardMuseum = buildMuseum(false);
     }
 
+    /**
+     * Creates a new CardMuseumFactory.
+     * @param folderPath The folder path where the binary file is stored.
+     * @param forceReload True if the CardMuseum must be reloaded from the json file.
+     */
     public CardMuseumFactory(String folderPath, boolean forceReload) {
         this.folderPath = folderPath;
         cardMuseum = buildMuseum(forceReload);
     }
 
+    /**
+     * Saves the CardMuseum to a binary file.
+     * @param cardMuseum The CardMuseum to save.
+     * @throws IOException If an I/O error occurs.
+     */
     private void saveMuseum(CardMuseum cardMuseum) throws IOException {
         FileOutputStream file = new FileOutputStream(this.folderPath + fileName);
         ObjectOutputStream out = new ObjectOutputStream(file);
@@ -53,6 +76,12 @@ public class CardMuseumFactory {
         out.close();
     }
 
+    /**
+     * Loads the CardMuseum from a binary file.
+     * @return The CardMuseum loaded.
+     * @throws IOException If an I/O error occurs.
+     * @throws ClassNotFoundException If the class of a serialized object cannot be found.
+     */
     private CardMuseum loadMuseum() throws IOException, ClassNotFoundException {
         FileInputStream file = new FileInputStream(this.folderPath + fileName);
         ObjectInputStream in = new ObjectInputStream(file);
@@ -67,13 +96,23 @@ public class CardMuseumFactory {
         return museum;
     }
 
+    /**
+     * Builds the CardMuseum.
+     * @param forceReload True if the CardMuseum must be reloaded from the json file.
+     * @return The CardMuseum built.
+     */
     private CardMuseum buildMuseum(boolean forceReload) {
         try {
+            // If the CardMuseum must be reloaded, throw an IOException to force the creation of a new CardMuseum
             if(forceReload)
                 throw new IOException("Forced reload");
 
+            // Try to load the CardMuseum from the binary file
             return loadMuseum();
+
         } catch (IOException | ClassNotFoundException e) {
+            // If the CardMuseum cannot be loaded, create a new CardMuseum
+
             String sourceFileName = SignificantPaths.CardFile;
 
             CardMuseum cardMuseum = new CardMuseum();
@@ -116,6 +155,7 @@ public class CardMuseumFactory {
             }
 
             try {
+                // Save the CardMuseum to the binary file
                 saveMuseum(cardMuseum);
                 return loadMuseum();
             } catch (IOException | ClassNotFoundException ioException) {
@@ -124,10 +164,18 @@ public class CardMuseumFactory {
         }
     }
 
+    /**
+     * Gets the CardMuseum.
+     * @return The CardMuseum.
+     */
     public CardMuseum getCardMuseum() {
         return cardMuseum;
     }
 
+    /**
+     * Main method.
+     * @param args The arguments from the command line.
+     */
     public static void main(String[] args){
         CardMuseum museum = new CardMuseumFactory("./cards/", true).getCardMuseum();
 

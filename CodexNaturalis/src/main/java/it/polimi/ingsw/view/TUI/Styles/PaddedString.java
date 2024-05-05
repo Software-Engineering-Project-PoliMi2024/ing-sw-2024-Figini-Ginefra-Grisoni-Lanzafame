@@ -9,7 +9,7 @@ public record PaddedString(String content, int width, TextAlign align) {
             case CENTER -> {
                 //Count lenght ignoring ANSI escape codes
                 int contentLength = content.replaceAll("\u001B\\[[;\\d]*m", "").length();
-                int offset = (width - contentLength) / 2;
+                int offset = Math.max(0, (width - contentLength) / 2);
                 int remainder = (width - contentLength) % 2;
                 return String.format("%" + (offset + remainder + content.length()) + "s", content) + " ".repeat(offset);
             }
