@@ -70,7 +70,7 @@ public class MultiGame implements Serializable {
         }
     }
 
-    public synchronized Game getGame(String name) {
+    public synchronized Game getGameByName(String name) {
         return games.stream().filter(game -> game.getName().equals(name)).findFirst().orElse(null);
     }
     public synchronized void removeGame(Game game) {
@@ -78,7 +78,7 @@ public class MultiGame implements Serializable {
     }
 
     public synchronized Boolean addLobby(Lobby lobby) {
-        if (getGame(lobby.getLobbyName()) != null) {
+        if (getGameByName(lobby.getLobbyName()) != null) {
             return false;
         } else
             return lobbies.addLobby(lobby);

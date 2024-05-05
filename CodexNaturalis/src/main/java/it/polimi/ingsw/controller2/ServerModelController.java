@@ -54,13 +54,13 @@ public class ServerModelController implements ControllerInterface, DiffSubscribe
     @Override
     public void login(String nickname) throws RemoteException {
         if(!this.games.isUnique(nickname)) {
-            log(LogsFromServer.NAME_TAKEN);
+            logErr(LogsFromServer.NAME_TAKEN);
         }else if(Objects.equals(nickname, "")){
-            log(LogsFromServer.EMPTY_NAME);
+            logErr(LogsFromServer.EMPTY_NAME);
         }else{
             //Client is now logged-In. If he disconnects we have to update the model
             this.nickname = nickname;
-            //heartbeatThread.start();
+            //TODO: disconnect heartbeatThread.start();
             System.out.println(this.nickname + " has connected");
             if(games.isInGameParty(nickname)){
                 //The player must join a game
@@ -90,8 +90,8 @@ public class ServerModelController implements ControllerInterface, DiffSubscribe
      */
     @Override
     public void createLobby(String gameName, int maxPlayerCount) throws RemoteException {
-        if(games.getLobby(gameName)!=null){
-            log(LogsFromServer.LOBBY_NAME_TAKEN);
+        if(games.getLobbyByName(gameName)!=null){
+            logErr(LogsFromServer.LOBBY_NAME_TAKEN);
         }else {
             Lobby newLobby = new Lobby(maxPlayerCount, this.nickname, gameName);
             this.games.addLobby(newLobby);
@@ -114,13 +114,13 @@ public class ServerModelController implements ControllerInterface, DiffSubscribe
 
     @Override
     public void joinLobby(String lobbyName) throws RemoteException{
-        Lobby lobbyToJoin = this.games.getLobby(lobbyName);
+        Lobby lobbyToJoin = this.games.getLobbyByName(lobbyName);
         if(lobbyToJoin!=null){
             Boolean result = this.games.addPlayerToLobby(lobbyName, this.nickname);
             if(result){
                 //create a new lobbyDiffEditLogin
                 lobbyToJoin.subscribe(this, this.nickname, lobbyToJoin.getLobbyName(), lobbyToJoin.getNumberOfMaxPlayer());
-                lobbyToJoin.setPlayerControllers(this, this.nickname);
+                lobbyToJoin.setPlayerControllers(this, this.nickname); //TODO: why?
                 games.unsubscribe(this);
 
                 log(LogsFromServer.LOBBY_JOINED);
@@ -129,19 +129,17 @@ public class ServerModelController implements ControllerInterface, DiffSubscribe
                 if(lobbyToJoin.getLobbyPlayerList().size() == lobbyToJoin.getNumberOfMaxPlayer()) {
                     games.subscribe(getRemoveLobbyDiff(lobbyToJoin));
                     //Handle the creation of a new game from the lobbyToJoin
-                    for (DiffSubscriber diffSub : lobbyToJoin.getSubscribers()) {
-                        lobbyToJoin.unsubscribe(diffSub);
-                    }
+                    lobbyToJoin.clearPublisher();
                     Game newGame = games.createGame(lobbyToJoin);
                     games.removeLobby(lobbyToJoin);
                     games.addGame(newGame);
                     newGame.getGameLoopController().joinGame();
                 }
             }else{
-                log(LogsFromServer.LOBBY_IS_FULL);
+                logErr(LogsFromServer.LOBBY_IS_FULL);
             }
         }else{
-            log(LogsFromServer.LOBBY_NONEXISTENT);
+            logErr(LogsFromServer.LOBBY_NONEXISTENT);
         }
     }
 
@@ -373,6 +371,14 @@ public class ServerModelController implements ControllerInterface, DiffSubscribe
         }
     }
 
+    public void logErr(LogsFromServer log){
+        try {
+            view.logErr(log.getMessage());
+        }catch (RemoteException r) {
+            r.printStackTrace();
+        }
+    }
+
     @Override
     public void receiveHeartbeat(Boolean isOn) {
         if(!isOn){
@@ -392,4 +398,5 @@ public class ServerModelController implements ControllerInterface, DiffSubscribe
     public String getNickname() {
         return nickname;
     }
+
 }
