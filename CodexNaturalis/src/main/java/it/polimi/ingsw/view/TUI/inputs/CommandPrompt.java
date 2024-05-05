@@ -49,7 +49,7 @@ public enum CommandPrompt implements Iterator<String>, CommandObserved {
     CREATE_GAME("Create game",
             new String[]{
                     "What's the name of the game?",
-                    "How many players will be playing?",
+                    "How many players will be playing? (2-4)",
             },
             new Predicate[]{
                     s -> true,
@@ -79,7 +79,7 @@ public enum CommandPrompt implements Iterator<String>, CommandObserved {
     DISPLAY_LOBBY("Display lobby", true),
 
     /** The command to leave the lobby */
-    LEAVE_LOBBY("Leave lobby", true),
+    LEAVE_LOBBY("Leave lobby", false),
 
     /** The command to display the assigned start card front */
     DISPLAY_START_FRONT("Display start card front", true),

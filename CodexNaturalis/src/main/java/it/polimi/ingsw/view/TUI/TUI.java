@@ -154,7 +154,7 @@ public class TUI extends View{
                 "Hand Others",
                 cardMuseum,
                 lightGame,
-                new CommandPrompt[]{CommandPrompt.DISPLAY_HAND_FRONT, CommandPrompt.DISPLAY_HAND_BACK, CommandPrompt.DISPLAY_SECRET_OBJECTIVE},
+                new CommandPrompt[]{CommandPrompt.PEEK},
                 controller);
         StateTUI.IDLE.attach(handOthersRenderable);
         StateTUI.DRAW_CARD.attach(handOthersRenderable);
@@ -165,7 +165,7 @@ public class TUI extends View{
                 "Codex Others",
                 lightGame,
                 cardMuseum,
-                new CommandPrompt[]{CommandPrompt.DISPLAY_START_FRONT, CommandPrompt.DISPLAY_START_BACK, CommandPrompt.DISPLAY_OBJECTIVE_OPTIONS, CommandPrompt.DISPLAY_HAND_FRONT, CommandPrompt.DISPLAY_HAND_BACK, CommandPrompt.DISPLAY_SECRET_OBJECTIVE},
+                new CommandPrompt[]{CommandPrompt.PEEK},
                 controller);
         StateTUI.IDLE.attach(codexRenderableOthers);
         StateTUI.DRAW_CARD.attach(codexRenderableOthers);
@@ -203,7 +203,8 @@ public class TUI extends View{
 
     @Override
     public void log(String logMsg) {
-        PromptStyle.printInABox(logMsg,50);
+
+        PromptStyle.printInABox(logMsg,50, StringStyle.GREEN_FOREGROUND);
     }
 
     @Override
