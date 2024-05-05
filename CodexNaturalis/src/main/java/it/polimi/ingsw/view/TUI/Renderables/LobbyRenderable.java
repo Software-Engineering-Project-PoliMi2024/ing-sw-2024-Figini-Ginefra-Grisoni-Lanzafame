@@ -7,6 +7,7 @@ import it.polimi.ingsw.view.TUI.inputs.CommandPrompt;
 import it.polimi.ingsw.view.TUI.inputs.CommandPromptResult;
 
 import java.rmi.RemoteException;
+import java.util.LinkedList;
 import java.util.List;
 
 /**
@@ -33,14 +34,15 @@ public class LobbyRenderable extends Renderable {
     @Override
     public void render() {
         String lobbyName = lightLobby.name();
-        List<String> nicknames = lightLobby.nicknames();
+        List<String> nicknames = new LinkedList<>(lightLobby.nicknames());
+        int numberOfPlayers = nicknames.size();
         int numberOfMaxPlayer = lightLobby.numberMaxPlayer();
 
-        for(int i = nicknames.size(); i < numberOfMaxPlayer; i++){
+        for(int i = numberOfPlayers; i < numberOfMaxPlayer; i++){
             nicknames.add("?");
         }
 
-        PromptStyle.printListInABox("Lobby - " + lobbyName, nicknames, 70, 1);
+        PromptStyle.printListInABox(lobbyName + " [" + numberOfPlayers + "/" + numberOfMaxPlayer + "]", nicknames, 70, 1);
     }
 
     /**

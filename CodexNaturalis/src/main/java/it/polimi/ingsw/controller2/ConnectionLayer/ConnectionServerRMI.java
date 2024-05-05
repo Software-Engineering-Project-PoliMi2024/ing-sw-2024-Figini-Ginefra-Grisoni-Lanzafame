@@ -8,6 +8,7 @@ import it.polimi.ingsw.model.MultiGame;
 import it.polimi.ingsw.view.ViewState;
 
 import java.io.Serializable;
+import java.rmi.Remote;
 import java.rmi.RemoteException;
 import java.rmi.server.UnicastRemoteObject;
 import java.util.concurrent.ExecutorService;
@@ -15,7 +16,7 @@ import java.util.concurrent.Executors;
 import java.util.concurrent.Future;
 import java.util.concurrent.TimeUnit;
 
-public class ConnectionServerRMI implements ConnectionLayerServer, Serializable{
+public class ConnectionServerRMI implements ConnectionLayerServer{
     private final MultiGame multiGame;
     private ConnectionClientRMI clientStub;
     ExecutorService serverExecutor = Executors.newSingleThreadExecutor();

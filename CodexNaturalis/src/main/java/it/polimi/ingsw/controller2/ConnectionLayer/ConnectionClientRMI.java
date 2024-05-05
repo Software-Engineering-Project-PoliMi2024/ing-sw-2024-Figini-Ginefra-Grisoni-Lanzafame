@@ -13,7 +13,7 @@ import java.util.concurrent.Future;
 import java.util.concurrent.TimeUnit;
 
 public class ConnectionClientRMI implements ConnectionLayerClient{
-    private ConnectionLayerServer serverStub;
+    private ConnectionServerRMI serverStub;
     ExecutorService clientExecutor = Executors.newSingleThreadExecutor();
     ViewInterface view;
     int secondsTimeOut = 5;
@@ -26,9 +26,9 @@ public class ConnectionClientRMI implements ConnectionLayerClient{
      */
     public void connect(String ip, int port, ViewInterface view) {
         this.view = view;
-        Future<ConnectionLayerServer> connect = clientExecutor.submit(() -> {
+        Future<ConnectionServerRMI> connect = clientExecutor.submit(() -> {
             Registry registry = LocateRegistry.getRegistry(ip, port);
-            ConnectionLayerServer serverReference = (ConnectionLayerServer) registry.lookup("connect");
+            ConnectionServerRMI serverReference = (ConnectionServerRMI) registry.lookup("connect");
             ViewInterface viewStub = (ViewInterface) UnicastRemoteObject.exportObject(view, 0);
             serverReference.connect(viewStub);
             return serverReference;
@@ -44,6 +44,9 @@ public class ConnectionClientRMI implements ConnectionLayerClient{
             }catch (RemoteException r){
             }
         }
+
+        //(ConnectionClientRMI) UnicastRemoteObject.exportObject(this, 0);
+        //serverStub.setConnectionClient(connectClientStub);
     }
 
     @Override
