@@ -158,7 +158,7 @@ public class TUI extends View{
                 controller);
         StateTUI.IDLE.attach(handOthersRenderable);
         StateTUI.DRAW_CARD.attach(handOthersRenderable);
-        StateTUI.PLACE_CARD.attach(codexRenderableOthers);
+        StateTUI.PLACE_CARD.attach(handOthersRenderable);
         renderables.add(handOthersRenderable);
 
         codexRenderableOthers = new CodexRenderableOthers(
