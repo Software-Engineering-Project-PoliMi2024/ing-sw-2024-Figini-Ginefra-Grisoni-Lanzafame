@@ -1,6 +1,6 @@
 package it.polimi.ingsw.controller2;
 
-public enum Logs {
+public enum LogsOnClient {
     CONNECTION_ERROR("Connection error"),
     CONNECTION_SUCCESS("Connection success"),
     NAME_TAKEN("The nickname is already present in the server"),
@@ -21,12 +21,11 @@ public enum Logs {
     WAIT_STARTCARD("Waiting for the other players to place their StartCard"),
     WAIT_SECRET_OBJECTIVE("Waiting for the other players to choose their Secret Objective"),
     EMPTY_NAME("The name cannot be empty"),
-    SERVER_NOT_FOUND("The server was not found"),
     CONNECTION_LOST_CLIENT_SIDE("Lost connection with the server"),;
 
     private final String message;
 
-    Logs(String message) {
+    LogsOnClient(String message) {
         this.message = message;
     }
 
