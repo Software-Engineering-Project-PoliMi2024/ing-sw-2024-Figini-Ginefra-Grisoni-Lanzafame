@@ -148,6 +148,10 @@ public class GameLoopController {
     }
     public void leaveGame(ServerModelController controller, String nickname){
         activePlayers.remove(nickname, controller);
+        // TODO: Implement handling for the edge case where the leaving player is also
+        //  the one who hasn't placed the startCard or chose the secretObjective
+        //You could write a isLastOneToPlace()/isLastOneToChose() and updating the waiting activePlayers
+        //Todo Implementing handling for the edge case where the leaving player is the current one
     }
     /**
      * If the controller is not the last to place his startCard, wait for the other active players to do so
@@ -156,7 +160,7 @@ public class GameLoopController {
      * @param controller of the user who placed the card
      */
     public void startCardPlaced(ServerModelController controller) {
-        if(!everyoneHasPlace()){ //Not all activePlayer placed their starting Card
+        if(!everyonePlaced()){ //Not all activePlayer placed their starting Card
             controller.log(LogsFromServer.WAIT_STARTCARD);
         }else{
             this.checkForDisconnectedUsers();
@@ -177,19 +181,13 @@ public class GameLoopController {
      * @param controller of the user who chose the objective
      */
     public void secretObjectiveChose(ServerModelController controller){
-        if(!everyoneHasChose()){ //Not all activePlayer chose their secretObjective Card
+        if(!everyoneChose()){ //Not all activePlayer chose their secretObjective Card
             controller.log(LogsFromServer.WAIT_SECRET_OBJECTIVE);
         }else{
             this.checkForDisconnectedUsers();
-            User currentPlayer;
             //A player might disconnect as soon as he chose is secretObjective. He is not banned, but he can't be the
             //first player of the gameLoop
-            do{
-                game.getGameParty().nextPlayer();
-                currentPlayer = game.getGameParty().getCurrentPlayer();
-            }while(!activePlayers.containsKey(currentPlayer.getNickname()));
-            System.out.println("the next player is: " + currentPlayer.getNickname());
-
+            User currentPlayer = currentPlayer();
             for(ServerModelController controller1 : activePlayers.values()){
                 controller1.updateGame(new GameDiffRound(currentPlayer.getNickname()));
                 if (controller1.getNickname().equals(currentPlayer.getNickname())) {
@@ -207,16 +205,16 @@ public class GameLoopController {
      */
     public void cardDrawn(ServerModelController controller){
         //all of this code will be run only once by the soon-to-be ex currentPlayer
-        User nextUser;
+        User currentPlayer = currentPlayer();
         do{
             game.getGameParty().nextPlayer();
-            nextUser = game.getGameParty().getCurrentPlayer();
-        }while(!activePlayers.containsKey(nextUser.getNickname()));
-        System.out.println("the next player is: " + nextUser.getNickname());
+            currentPlayer = game.getGameParty().getCurrentPlayer();
+        }while(!activePlayers.containsKey(currentPlayer.getNickname()));
+        System.out.println("the next player is: " + currentPlayer.getNickname());
         controller.transitionTo(ViewState.IDLE);
         for(ServerModelController serverModelController : activePlayers.values()){
-            serverModelController.updateGame(new GameDiffRound(nextUser.getNickname()));
-            if(serverModelController.getNickname().equals(nextUser.getNickname())){
+            serverModelController.updateGame(new GameDiffRound(currentPlayer.getNickname()));
+            if(serverModelController.getNickname().equals(currentPlayer.getNickname())){
                 serverModelController.log(LogsFromServer.YOUR_TURN);
                 serverModelController.transitionTo(ViewState.PLACE_CARD);
             }
@@ -240,7 +238,7 @@ public class GameLoopController {
     /**
      * @return true if every activePlayer has chosen their secretObjective
      */
-    private boolean everyoneHasChose(){
+    private boolean everyoneChose(){
         boolean everybodyHasChoose = true;
         for (String nick : activePlayers.keySet()) {
             User user = game.getUserFromNick(nick);
@@ -253,7 +251,7 @@ public class GameLoopController {
     /**
      * @return true if every activePlayer has placed their startCard
      */
-    private boolean everyoneHasPlace() {
+    private boolean everyonePlaced() {
         boolean everyoneHasPlace = true;
         for (String nick : activePlayers.keySet()) {
             User user = game.getUserFromNick(nick);
@@ -263,5 +261,18 @@ public class GameLoopController {
             }
         }
         return everyoneHasPlace;
+    }
+
+    /**
+     * @return the User of the next activePlayer in the game
+     */
+    private User currentPlayer(){
+        User currentPlayer;
+        do{
+            game.getGameParty().nextPlayer();
+            currentPlayer = game.getGameParty().getCurrentPlayer();
+        }while(!activePlayers.containsKey(currentPlayer.getNickname()));
+        System.out.println("the next player is: " + currentPlayer.getNickname());
+        return currentPlayer;
     }
 }
