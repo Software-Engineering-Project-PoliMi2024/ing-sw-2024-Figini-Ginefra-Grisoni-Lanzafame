@@ -1,16 +1,22 @@
 package it.polimi.ingsw.controller2.ConnectionLayer;
 
-import it.polimi.ingsw.controller2.LogsFromServer;
+import it.polimi.ingsw.controller2.LogsOnClient;
 import it.polimi.ingsw.view.ViewInterface;
 
-import java.nio.channels.ScatteringByteChannel;
-import java.rmi.NotBoundException;
 import java.rmi.RemoteException;
 import java.rmi.registry.LocateRegistry;
 import java.rmi.registry.Registry;
 import java.rmi.server.UnicastRemoteObject;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
+import java.util.concurrent.Future;
+import java.util.concurrent.TimeUnit;
 
 public class ConnectionClientRMI implements ConnectionLayerClient{
+    private ConnectionLayerServer serverStub;
+    ExecutorService clientExecutor = Executors.newSingleThreadExecutor();
+    ViewInterface view;
+    int secondsTimeOut = 5;
     /**
      * Establishes a connection with the RMI server located at the specified IP address and port.
      * This method enables communication between a client and the server through RMI.
@@ -19,20 +25,40 @@ public class ConnectionClientRMI implements ConnectionLayerClient{
      * @param view the view of the client
      */
     public void connect(String ip, int port, ViewInterface view) {
-        //TODO: if the ip or port are wrong, notify the user, use Futures
-        Registry registry;
-        try {
-            registry = LocateRegistry.getRegistry(ip, port);
-            ConnectionLayerServer connect;
-            connect = (ConnectionLayerServer) registry.lookup("connect");
+        this.view = view;
+        Future<ConnectionLayerServer> connect = clientExecutor.submit(() -> {
+            Registry registry = LocateRegistry.getRegistry(ip, port);
+            ConnectionLayerServer serverReference = (ConnectionLayerServer) registry.lookup("connect");
             ViewInterface viewStub = (ViewInterface) UnicastRemoteObject.exportObject(view, 0);
-            connect.connect(viewStub);
-        }catch (Exception e){
+            serverReference.connect(viewStub);
+            return serverReference;
+        });
+        try {
+            serverStub = connect.get(secondsTimeOut, TimeUnit.SECONDS);
+            if(serverStub == null) //TODO: quanto è pulito?
+                throw new NullPointerException();
+        }
+        catch (Exception e){
             try {
-                view.logErr(LogsFromServer.CONNECTION_ERROR.getMessage());
-            }catch (RemoteException remoteException){
-                remoteException.printStackTrace();
+                view.logErr(LogsOnClient.CONNECTION_ERROR.getMessage());
+            }catch (RemoteException r){
             }
+        }
+    }
+
+    @Override
+    public void ping() throws RemoteException {
+        try {
+            serverStub.pong();
+        }catch (RemoteException e){
+            throw new RemoteException("Connection lost");
+        }
+    }
+
+    private void disconnect() {
+        try {
+            view.logErr(LogsOnClient.CONNECTION_LOST_CLIENT_SIDE.getMessage());
+        }catch (RemoteException r){
         }
     }
 }

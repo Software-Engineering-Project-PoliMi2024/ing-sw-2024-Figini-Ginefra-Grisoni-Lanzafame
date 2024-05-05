@@ -1,20 +1,25 @@
 package it.polimi.ingsw.controller2.ConnectionLayer;
 
-import it.polimi.ingsw.controller.Controller;
 import it.polimi.ingsw.controller2.ControllerInterface;
-import it.polimi.ingsw.controller2.LogsFromServer;
+import it.polimi.ingsw.controller2.LogsOnClient;
 import it.polimi.ingsw.controller2.ServerModelController;
 import it.polimi.ingsw.view.ViewInterface;
 import it.polimi.ingsw.model.MultiGame;
 import it.polimi.ingsw.view.ViewState;
 
 import java.io.Serializable;
-import java.rmi.Remote;
 import java.rmi.RemoteException;
 import java.rmi.server.UnicastRemoteObject;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
+import java.util.concurrent.Future;
+import java.util.concurrent.TimeUnit;
 
 public class ConnectionServerRMI implements ConnectionLayerServer, Serializable{
     private final MultiGame multiGame;
+    private ConnectionClientRMI clientStub;
+    ExecutorService serverExecutor = Executors.newSingleThreadExecutor();
+    int secondsTimeOut = 5;
 
     /**
      * The constructor of the class
@@ -32,12 +37,36 @@ public class ConnectionServerRMI implements ConnectionLayerServer, Serializable{
      */
     public void connect(ViewInterface view) throws RemoteException {
         //Create a ServerModelContoller for the new client
-        ControllerInterface controller = new ServerModelController(multiGame, view);
+
         //expose the controller to the client
-        ControllerInterface controllerStub = (ControllerInterface) UnicastRemoteObject.exportObject(controller, 0);
-        view.postConnectionInitialization(controllerStub);
-        
-        view.log(LogsFromServer.CONNECTION_SUCCESS.getMessage());
-        view.transitionTo(ViewState.LOGIN_FORM);
+        Future<ControllerInterface> connect = serverExecutor.submit(()->{
+            ControllerInterface controller = new ServerModelController(multiGame, view);
+            ControllerInterface controllerStub = (ControllerInterface) UnicastRemoteObject.exportObject(controller, 0);
+            view.postConnectionInitialization(controllerStub);
+            view.log(LogsOnClient.CONNECTION_SUCCESS.getMessage());
+            view.transitionTo(ViewState.LOGIN_FORM);
+            return controller;
+        });
+
+        try{
+            ControllerInterface controller = connect.get(secondsTimeOut, TimeUnit.SECONDS);
+        }catch (Exception e){
+            System.out.println("Error In Client Connection");
+        }
+
+    }
+
+    @Override
+    public void pong() throws RemoteException {
+        try {
+            clientStub.ping();
+        }catch (Exception e){
+            throw new RemoteException("Connection lost");
+
+        }
+    }
+
+    public void setConnectionClient(ConnectionLayerClient connectionClient){
+        this.clientStub = (ConnectionClientRMI) connectionClient;
     }
 }
