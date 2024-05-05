@@ -58,7 +58,7 @@ public class ChooseStartCardRenderable extends CardRenderable {
             case CommandPrompt.CHOOSE_START_SIDE:
                 try {
                     CardFace face = answer.getAnswer(0).equals("front") ? CardFace.FRONT : CardFace.BACK;
-                    controller.selectStartCardFace(this.getLightGame().getHand().getCards()[0], face);
+                    controller.selectStartCardFace(face);
                 }
                 catch (Exception e) {
                     e.printStackTrace();

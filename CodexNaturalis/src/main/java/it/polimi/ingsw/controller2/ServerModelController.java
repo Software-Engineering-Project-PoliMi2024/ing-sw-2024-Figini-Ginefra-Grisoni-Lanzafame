@@ -11,6 +11,7 @@ import it.polimi.ingsw.lightModel.lightTableRelated.LightLobby;
 import it.polimi.ingsw.lightModel.lightTableRelated.LightLobbyList;
 import it.polimi.ingsw.model.MultiGame;
 import it.polimi.ingsw.model.cardReleted.cards.CardInHand;
+import it.polimi.ingsw.model.cardReleted.cards.CardWithCorners;
 import it.polimi.ingsw.model.cardReleted.cards.GoldCard;
 import it.polimi.ingsw.model.cardReleted.cards.ResourceCard;
 import it.polimi.ingsw.model.cardReleted.utilityEnums.CardFace;
@@ -179,18 +180,18 @@ public class ServerModelController implements ControllerInterface, DiffSubscribe
 
     /**
      * Set the StartCard chose by the user
-     * @param card which is the StartCard chose by the user
      * @param cardFace the startCard Face wich is visible in the codex
      * @throws RemoteException if something goes with the sending of the Diffs
      */
     @Override
-    public void selectStartCardFace(LightCard card, CardFace cardFace) throws RemoteException{
+    public void selectStartCardFace(CardFace cardFace) throws RemoteException{
         User user = games.getUserFromNick(this.nickname);
-        Placement heavyPlacement = new Placement(new Position(0,0), Heavifier.heavifyStartCard(card, games), cardFace);
+        CardWithCorners card = user.getUserHand().getStartCard();
+        Placement heavyPlacement = new Placement(new Position(0,0), card, cardFace);
         user.placeStartCard(heavyPlacement);
 
         Game userGame = games.getUserGame(this.nickname);
-        updateGame(new HandDiffRemove(card));
+        updateGame(new HandDiffRemove(Lightifier.lightifyToCard(card)));
 
         userGame.subcribe(new CodexDiff(this.nickname, user.getUserCodex().getPoints(),
                 user.getUserCodex().getEarnedCollectables(), getPlacementList(Lightifier.lightify(heavyPlacement)), user.getUserCodex().getFrontier().getFrontier()));
