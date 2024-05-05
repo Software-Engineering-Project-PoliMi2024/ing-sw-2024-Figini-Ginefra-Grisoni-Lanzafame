@@ -150,53 +150,54 @@ public class GameLoopController {
         activePlayers.remove(nickname, controller);
     }
     /**
-     * Put the controller in a busy-wait until each player in the activePlayer map has placed their startCard
-     * Then draw the 2 possible secretObjective cards, and give them to the view.
+     * If the controller is not the last to place his startCard, wait for the other active players to do so
+     * The last activePlayer to place the card, ban everybody who left, and transition the others activePlayer to the Select-Objective state
+     * Each controller than will draw the 2 possible secretObjective cards, and give them to the view.
      * @param controller of the user who placed the card
      */
     public void startCardPlaced(ServerModelController controller) {
-        controller.log(LogsFromServer.WAIT_STARTCARD);
-        while(!everyoneHasPlace());
-        //When every activePlayer has placed the startCard, remove players who left, go on the next state
-        synchronized (this){
-            this.checkForDisconnectedUser();
-        }
-        controller.transitionTo(ViewState.SELECT_OBJECTIVE);
-        User user = game.getUserFromNick(controller.getNickname());
-        for (LightCard secretObjectiveCardChoice : getOrDrawSecretObjectiveChoices(user)) {
-            controller.updateGame(new HandDiffAdd(secretObjectiveCardChoice, true));
+        if(!everyoneHasPlace()){ //Not all activePlayer placed their starting Card
+            controller.log(LogsFromServer.WAIT_STARTCARD);
+        }else{
+            this.checkForDisconnectedUsers();
+            for(ServerModelController controller1 : activePlayers.values()){
+                controller1.transitionTo(ViewState.SELECT_OBJECTIVE);
+                User user = game.getUserFromNick(controller1.getNickname());
+                for (LightCard secretObjectiveCardChoice : getOrDrawSecretObjectiveChoices(user)) {
+                    controller1.updateGame(new HandDiffAdd(secretObjectiveCardChoice, true));
+                }
+            }
         }
     }
 
     /**
-     * Put the controller in a busy-wait until each player in the activePlayer map placed has chosen their secrectObj
-     * The put the currentPlayer view in PlaceCard and the others in idle
+     * If the controller is not the last to chose his secretObjective, wait for the other active players to do so
+     * The last activePlayer to choose the objective, ban everybody who left and retrieve the next player from the model
+     * Each controller who is not the activePlayer will go in the Idle state, the other in placeCard
      * @param controller of the user who chose the objective
      */
-    public void secretObjectiveChose(ServerModelController controller) {
-        controller.log(LogsFromServer.WAIT_SECRET_OBJECTIVE);
-        boolean everybodyHasChoose = false;
-        while (!everyoneHasChose());
-        User currentPlayer;
-        /*All controllers will run this code, because everyone will be waiting in the loop above.
-        So I let the first controller that take the lock compute the nextPlayer. The other controllers will skip the while loop
-        If someone can think of a refactor, is more than welcome to change this mess*/
-        synchronized (this) {
-            this.checkForDisconnectedUser();
-            currentPlayer = game.getGameParty().getCurrentPlayer();
-            while (!activePlayers.containsKey(currentPlayer.getNickname())) {
-                //if the currentPlayer is not an activePlayer, skip his turn. A player might leave when the other are controller are on this thread.
-                //This player is still present in the gameParty (he placed and chose all the cards needed) but it can't be the first player to play
+    public void secretObjectiveChose(ServerModelController controller){
+        if(!everyoneHasChose()){ //Not all activePlayer chose their secretObjective Card
+            controller.log(LogsFromServer.WAIT_SECRET_OBJECTIVE);
+        }else{
+            this.checkForDisconnectedUsers();
+            User currentPlayer;
+            //A player might disconnect as soon as he chose is secretObjective. He is not banned, but he can't be the
+            //first player of the gameLoop
+            do{
                 game.getGameParty().nextPlayer();
                 currentPlayer = game.getGameParty().getCurrentPlayer();
+            }while(!activePlayers.containsKey(currentPlayer.getNickname()));
+            System.out.println("the next player is: " + currentPlayer.getNickname());
+
+            for(ServerModelController controller1 : activePlayers.values()){
+                controller1.updateGame(new GameDiffRound(currentPlayer.getNickname()));
+                if (controller1.getNickname().equals(currentPlayer.getNickname())) {
+                    controller1.transitionTo(ViewState.PLACE_CARD);
+                } else {
+                    controller1.transitionTo(ViewState.IDLE);
+                }
             }
-            System.out.println("the next player is: " + currentPlayer.getNickname()); //debugging info, will be print once for each activePlayer
-        }
-        controller.updateGame(new GameDiffRound(currentPlayer.getNickname()));
-        if (controller.getNickname().equals(currentPlayer.getNickname())) {
-            controller.transitionTo(ViewState.PLACE_CARD);
-        } else {
-            controller.transitionTo(ViewState.IDLE);
         }
     }
 
@@ -226,7 +227,7 @@ public class GameLoopController {
     /**
      * if a player left the game and didn't join back before the end of a setup-state, his nick is removed from the gameParty
      */
-    private void checkForDisconnectedUser(){
+    private void checkForDisconnectedUsers(){
         if(activePlayers.size() != game.getGameParty().getNumberOfMaxPlayer()){
             for(User user : game.getGameParty().getUsersList()){
                 if(!activePlayers.containsKey(user.getNickname())){
@@ -236,6 +237,9 @@ public class GameLoopController {
         }
     }
 
+    /**
+     * @return true if every activePlayer has chosen their secretObjective
+     */
     private boolean everyoneHasChose(){
         boolean everybodyHasChoose = true;
         for (String nick : activePlayers.keySet()) {
@@ -246,7 +250,9 @@ public class GameLoopController {
         }
         return everybodyHasChoose;
     }
-
+    /**
+     * @return true if every activePlayer has placed their startCard
+     */
     private boolean everyoneHasPlace() {
         boolean everyoneHasPlace = true;
         for (String nick : activePlayers.keySet()) {
