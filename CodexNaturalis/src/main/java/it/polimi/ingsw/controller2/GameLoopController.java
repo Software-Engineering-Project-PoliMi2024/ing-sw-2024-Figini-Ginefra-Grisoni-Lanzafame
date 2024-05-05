@@ -171,7 +171,9 @@ public class GameLoopController {
             }
         }
         //When every activePlayer has placed the startCard, remove players who left, go on the next state
-        this.checkForDisconnectedUser();
+        synchronized (this){
+            this.checkForDisconnectedUser();
+        }
         controller.transitionTo(ViewState.SELECT_OBJECTIVE);
         User user = game.getUserFromNick(controller.getNickname());
         for (LightCard secretObjectiveCardChoice : getOrDrawSecretObjectiveChoices(user)) {
@@ -210,6 +212,7 @@ public class GameLoopController {
             }
             System.out.println("the next player is: " + currentPlayer.getNickname()); //debugging info, will be print once for each activePlayer
         }
+        controller.updateGame(new GameDiffRound(currentPlayer.getNickname()));
         if (controller.getNickname().equals(currentPlayer.getNickname())) {
             controller.transitionTo(ViewState.PLACE_CARD);
         } else {
