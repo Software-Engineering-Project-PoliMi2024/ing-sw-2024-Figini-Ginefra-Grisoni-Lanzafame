@@ -103,13 +103,13 @@ public enum CommandPrompt implements Iterator<String>, CommandObserved {
     /** The command to choose the objective card */
     CHOOSE_OBJECTIVE_CARD("Choose objective card",
             new String[]{
-                    "Which objective card do you want to choose?",
+                    "Which objective card do you want to choose? (1/2)",
             },
             new Predicate[]{
                     s -> {
                         try {
                             int i = Integer.parseInt(s.toString());
-                            return i >= 0 && i < 3;
+                            return i == 1 || i == 2;
                         } catch (NumberFormatException e) {
                             return false;
                         }
