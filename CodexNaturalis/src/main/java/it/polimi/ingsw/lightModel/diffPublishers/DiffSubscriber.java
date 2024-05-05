@@ -9,7 +9,7 @@ import java.io.Serializable;
 import java.rmi.RemoteException;
 
 public interface DiffSubscriber extends Serializable {
-    public void updateLobbyList(ModelDiffs<LightLobbyList> diff) throws RemoteException;
-    public void updateLobby(ModelDiffs<LightLobby> diff) throws RemoteException;
-    public void updateGame(ModelDiffs<LightGame> diff) throws RemoteException;
+    public void updateLobbyList(ModelDiffs<LightLobbyList> diff);
+    public void updateLobby(ModelDiffs<LightLobby> diff);
+    public void updateGame(ModelDiffs<LightGame> diff);
 }

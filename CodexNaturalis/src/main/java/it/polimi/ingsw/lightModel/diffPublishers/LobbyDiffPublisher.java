@@ -63,7 +63,7 @@ public class LobbyDiffPublisher {
      * notifies the other subscribers of the leaving of the unsubscriber
      * @param diffUnsubscriber the subscriber being removed
      */
-    public synchronized void unsubscribe(DiffSubscriber diffUnsubscriber) {
+    public void unsubscribe(DiffSubscriber diffUnsubscriber) {
         notifySubscriber(diffUnsubscriber, new LittleBoyLobby());
         String unsubscriberNick = subscribers.get(diffUnsubscriber);
         subscribers.remove(diffUnsubscriber);
@@ -90,18 +90,14 @@ public class LobbyDiffPublisher {
      * @param diff to be notified to the diffSubscriber
      */
     public synchronized void notifySubscriber(DiffSubscriber diffSubscriber, LobbyDiff diff){
-        try{
-            diffSubscriber.updateLobby(diff);
-        }catch (RemoteException r){
-            r.printStackTrace();
-        }
+        diffSubscriber.updateLobby(diff);
     }
 
-    /**
-     * @return a List of all DiffSubscriber present in the lobby
-     */
-    public List<DiffSubscriber> getSubscribers(){
-        return new ArrayList<>(subscribers.keySet());
+    public synchronized void clear(){
+        for(DiffSubscriber diffSubscriber : subscribers.keySet()){
+            diffSubscriber.updateLobby(new LittleBoyLobby());
+        }
+        subscribers.clear();
     }
 }
 

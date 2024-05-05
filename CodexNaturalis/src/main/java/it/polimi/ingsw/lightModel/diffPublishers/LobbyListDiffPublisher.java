@@ -61,10 +61,6 @@ public class LobbyListDiffPublisher {
      * @param lobbyListDiff the diff to be sent to the subscriber
      */
     public synchronized void notifySubscriber(DiffSubscriber diffSubscriber, LobbyListDiff lobbyListDiff) {
-        try {
-            diffSubscriber.updateLobbyList(lobbyListDiff);
-        }catch (RemoteException r){
-            r.printStackTrace();
-        }
+        diffSubscriber.updateLobbyList(lobbyListDiff);
     }
 }
