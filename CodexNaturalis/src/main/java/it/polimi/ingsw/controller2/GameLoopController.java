@@ -204,6 +204,7 @@ public class GameLoopController {
         while(!activePlayers.containsKey(currentPlayer.getNickname())){
             currentPlayer=game.getGameParty().nextPlayer(); //if the currentPlayer is not an activePlayer, skip his turn
         }
+        System.out.println("the next player is: " + currentPlayer.getNickname());
         if(controller.getNickname().equals(currentPlayer.getNickname())){
             controller.transitionTo(ViewState.PLACE_CARD);
         }else{
@@ -220,6 +221,7 @@ public class GameLoopController {
         do{ //if the nextUser is not an activePlayer, skip his turn
             nextUser = game.getGameParty().nextPlayer();
         }while(!activePlayers.containsKey(nextUser.getNickname()));
+        System.out.println("the next player is: " + nextUser.getNickname());
         controller.transitionTo(ViewState.IDLE);
         for(ServerModelController serverModelController : activePlayers.values()){
             serverModelController.updateGame(new GameDiffRound(nextUser.getNickname()));
