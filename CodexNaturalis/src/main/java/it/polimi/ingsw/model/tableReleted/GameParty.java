@@ -29,7 +29,7 @@ public class GameParty implements Serializable {
      * if there is no currentPlayer, it creates it by launching the chooseStartingOrder method
      * @throws IllegalCallerException if the game is empty.
      */
-    public User nextPlayer() throws IllegalCallerException {
+    public void nextPlayer() throws IllegalCallerException {
         if(playerList.isEmpty()){
             throw new IllegalCallerException("The game is empty, there is no next player");
         }
@@ -38,7 +38,6 @@ public class GameParty implements Serializable {
         } else {
             currentPlayerIndex = (currentPlayerIndex + 1) % playerList.size();
             currentPlayer = playerList.get(currentPlayerIndex);
-            return currentPlayer;
         }
     }
     /** @return list of the players in this match*/

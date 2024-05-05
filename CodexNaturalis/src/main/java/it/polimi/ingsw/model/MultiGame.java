@@ -20,8 +20,6 @@ import java.util.*;
 public class MultiGame implements Serializable {
     private final Set<Game> games;
     private final LobbyList lobbies;
-    // TODO: remove username map, leave a list of nicks
-    private final Map<ServerModelController, String> username;
     private final List<String> usernames;
     private final CardLookUp<ObjectiveCard> cardLookUpObjective;
     private final CardLookUp<StartCard> cardLookUpStartCard;
@@ -29,8 +27,6 @@ public class MultiGame implements Serializable {
     private final CardLookUp<GoldCard> cardLookUpGoldCard;
     public MultiGame() {
         this.games = new HashSet<>();
-
-        this.username = new HashMap<>();
         this.usernames = new ArrayList<>(); //users that are currently connected to the server
         lobbies = new LobbyList();
         String filePath = SignificantPaths.CardFolder;
@@ -221,11 +217,6 @@ public class MultiGame implements Serializable {
         }else{
             return returnUser;
         }
-    }
-
-    //TODO remove legacy code after draw implementation in GameLoopController
-    public Map<ServerModelController, String> getUsernameMap(){
-        return username;
     }
 
 
