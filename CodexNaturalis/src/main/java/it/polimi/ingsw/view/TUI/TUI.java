@@ -17,6 +17,7 @@ import it.polimi.ingsw.view.TUI.Renderables.CodexRelated.CodexRenderableOthers;
 import it.polimi.ingsw.view.TUI.Renderables.Forms.ConnectFormRenderable;
 import it.polimi.ingsw.view.TUI.Renderables.CardRelated.GameListRenderable;
 import it.polimi.ingsw.view.TUI.Renderables.Forms.LoginFormRenderable;
+import it.polimi.ingsw.view.TUI.Renderables.Forms.PlaceCardForm;
 import it.polimi.ingsw.view.TUI.States.StateTUI;
 import it.polimi.ingsw.view.TUI.Styles.PromptStyle;
 import it.polimi.ingsw.view.TUI.Styles.StringStyle;
@@ -52,6 +53,8 @@ public class TUI extends View{
     private ChooseObjectiveCardRenderable chooseObjectiveCardRenderable;
 
     private HandRenderable handRenderable;
+
+    private PlaceCardForm placeCardForm;
 
     private CodexRenderable codexRenderable;
 
@@ -121,12 +124,20 @@ public class TUI extends View{
                 "Hand",
                 cardMuseum,
                 lightGame,
-                new CommandPrompt[]{CommandPrompt.DISPLAY_HAND_FRONT, CommandPrompt.DISPLAY_HAND_BACK, CommandPrompt.DISPLAY_SECRET_OBJECTIVE, CommandPrompt.PLACE_CARD},
+                new CommandPrompt[]{CommandPrompt.DISPLAY_HAND_FRONT, CommandPrompt.DISPLAY_HAND_BACK, CommandPrompt.DISPLAY_SECRET_OBJECTIVE},
                 controller);
         StateTUI.PLACE_CARD.attach(handRenderable);
         StateTUI.IDLE.attach(handRenderable);
         StateTUI.DRAW_CARD.attach(handRenderable);
         renderables.add(handRenderable);
+
+        placeCardForm = new PlaceCardForm(
+                "Place Card",
+                lightGame,
+                new CommandPrompt[]{CommandPrompt.PLACE_CARD},
+                controller);
+        StateTUI.PLACE_CARD.attach(placeCardForm);
+        renderables.add(placeCardForm);
 
         codexRenderable = new CodexRenderable(
                 "Codex",
@@ -143,18 +154,18 @@ public class TUI extends View{
                 "Hand Others",
                 cardMuseum,
                 lightGame,
-                new CommandPrompt[]{CommandPrompt.DISPLAY_HAND_FRONT, CommandPrompt.DISPLAY_HAND_BACK, CommandPrompt.DISPLAY_SECRET_OBJECTIVE},
+                new CommandPrompt[]{CommandPrompt.PEEK},
                 controller);
         StateTUI.IDLE.attach(handOthersRenderable);
         StateTUI.DRAW_CARD.attach(handOthersRenderable);
-        StateTUI.PLACE_CARD.attach(codexRenderableOthers);
+        StateTUI.PLACE_CARD.attach(handOthersRenderable);
         renderables.add(handOthersRenderable);
 
         codexRenderableOthers = new CodexRenderableOthers(
                 "Codex Others",
                 lightGame,
                 cardMuseum,
-                new CommandPrompt[]{CommandPrompt.DISPLAY_START_FRONT, CommandPrompt.DISPLAY_START_BACK, CommandPrompt.DISPLAY_OBJECTIVE_OPTIONS, CommandPrompt.DISPLAY_HAND_FRONT, CommandPrompt.DISPLAY_HAND_BACK, CommandPrompt.DISPLAY_SECRET_OBJECTIVE},
+                new CommandPrompt[]{CommandPrompt.PEEK},
                 controller);
         StateTUI.IDLE.attach(codexRenderableOthers);
         StateTUI.DRAW_CARD.attach(codexRenderableOthers);

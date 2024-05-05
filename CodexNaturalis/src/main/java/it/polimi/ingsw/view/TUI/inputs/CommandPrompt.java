@@ -49,7 +49,7 @@ public enum CommandPrompt implements Iterator<String>, CommandObserved {
     CREATE_GAME("Create game",
             new String[]{
                     "What's the name of the game?",
-                    "How many players will be playing?",
+                    "How many players will be playing? (2-4)",
             },
             new Predicate[]{
                     s -> true,
@@ -79,7 +79,7 @@ public enum CommandPrompt implements Iterator<String>, CommandObserved {
     DISPLAY_LOBBY("Display lobby", true),
 
     /** The command to leave the lobby */
-    LEAVE_LOBBY("Leave lobby", true),
+    LEAVE_LOBBY("Leave lobby", false),
 
     /** The command to display the assigned start card front */
     DISPLAY_START_FRONT("Display start card front", true),
@@ -103,13 +103,13 @@ public enum CommandPrompt implements Iterator<String>, CommandObserved {
     /** The command to choose the objective card */
     CHOOSE_OBJECTIVE_CARD("Choose objective card",
             new String[]{
-                    "Which objective card do you want to choose?",
+                    "Which objective card do you want to choose? (1/2)",
             },
             new Predicate[]{
                     s -> {
                         try {
                             int i = Integer.parseInt(s.toString());
-                            return i >= 0 && i < 3;
+                            return i == 1 || i == 2;
                         } catch (NumberFormatException e) {
                             return false;
                         }

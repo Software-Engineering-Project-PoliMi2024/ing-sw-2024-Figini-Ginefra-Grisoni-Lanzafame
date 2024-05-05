@@ -140,7 +140,7 @@ public class GameLoopController {
      */
     private List<ObjectiveCard> drawObjectiveCard(User user){
         List<ObjectiveCard> cardList = new ArrayList<>();
-        for(int i=0;i<1;i++){
+        for(int i=0;i<2;i++){
             cardList.add(this.game.getObjectiveCardDeck().drawFromDeck());
         }
         user.getUserHand().setSecretObjectiveChoice(cardList);
@@ -156,20 +156,7 @@ public class GameLoopController {
      */
     public void startCardPlaced(ServerModelController controller) {
         controller.log(LogsFromServer.WAIT_STARTCARD);
-        boolean everyoneHasPlace = false;
-        while (!everyoneHasPlace) {
-            everyoneHasPlace = true;
-            for (String nick : activePlayers.keySet()) {
-                User user = game.getUserFromNick(nick);
-                if (user.getUserHand().getStartCard() != null) {
-                    everyoneHasPlace = false;
-                    break;
-                }
-            }
-            if (everyoneHasPlace) {
-                break; // Exit the while loop if everyone has their startCard placed
-            }
-        }
+        while(!everyoneHasPlace());
         //When every activePlayer has placed the startCard, remove players who left, go on the next state
         synchronized (this){
             this.checkForDisconnectedUser();
@@ -180,6 +167,7 @@ public class GameLoopController {
             controller.updateGame(new HandDiffAdd(secretObjectiveCardChoice, true));
         }
     }
+
     /**
      * Put the controller in a busy-wait until each player in the activePlayer map placed has chosen their secrectObj
      * The put the currentPlayer view in PlaceCard and the others in idle
@@ -188,18 +176,7 @@ public class GameLoopController {
     public void secretObjectiveChose(ServerModelController controller) {
         controller.log(LogsFromServer.WAIT_SECRET_OBJECTIVE);
         boolean everybodyHasChoose = false;
-        while (!everybodyHasChoose) {
-            everybodyHasChoose = true;
-            for (String nick : activePlayers.keySet()) {
-                User user = game.getUserFromNick(nick);
-                if (user.getUserHand().getSecretObjectiveChoices() != null) {
-                    everybodyHasChoose = false;
-                }
-            }
-            if (everybodyHasChoose) {
-                break;
-            }
-        }
+        while (!everyoneHasChose());
         User currentPlayer;
         /*All controllers will run this code, because everyone will be waiting in the loop above.
         So I let the first controller that take the lock compute the nextPlayer. The other controllers will skip the while loop
@@ -208,7 +185,10 @@ public class GameLoopController {
             this.checkForDisconnectedUser();
             currentPlayer = game.getGameParty().getCurrentPlayer();
             while (!activePlayers.containsKey(currentPlayer.getNickname())) {
-                currentPlayer = game.getGameParty().nextPlayer(); //if the currentPlayer is not an activePlayer, skip his turn
+                //if the currentPlayer is not an activePlayer, skip his turn. A player might leave when the other are controller are on this thread.
+                //This player is still present in the gameParty (he placed and chose all the cards needed) but it can't be the first player to play
+                game.getGameParty().nextPlayer();
+                currentPlayer = game.getGameParty().getCurrentPlayer();
             }
             System.out.println("the next player is: " + currentPlayer.getNickname()); //debugging info, will be print once for each activePlayer
         }
@@ -224,11 +204,12 @@ public class GameLoopController {
      * Elaborate the view for the currentPlayer and the nextOne
      * @param controller of the currentPlayer who ended his turn
      */
-    public void cardPlace(ServerModelController controller){
+    public void cardDrawn(ServerModelController controller){
         //all of this code will be run only once by the soon-to-be ex currentPlayer
         User nextUser;
         do{
-            nextUser = game.getGameParty().nextPlayer();
+            game.getGameParty().nextPlayer();
+            nextUser = game.getGameParty().getCurrentPlayer();
         }while(!activePlayers.containsKey(nextUser.getNickname()));
         System.out.println("the next player is: " + nextUser.getNickname());
         controller.transitionTo(ViewState.IDLE);
@@ -255,4 +236,26 @@ public class GameLoopController {
         }
     }
 
+    private boolean everyoneHasChose(){
+        boolean everybodyHasChoose = true;
+        for (String nick : activePlayers.keySet()) {
+            User user = game.getUserFromNick(nick);
+            if (user.getUserHand().getSecretObjectiveChoices() != null) {
+                everybodyHasChoose = false;
+            }
+        }
+        return everybodyHasChoose;
+    }
+
+    private boolean everyoneHasPlace() {
+        boolean everyoneHasPlace = true;
+        for (String nick : activePlayers.keySet()) {
+            User user = game.getUserFromNick(nick);
+            if (user.getUserHand().getStartCard() != null) {
+                everyoneHasPlace = false;
+                break;
+            }
+        }
+        return everyoneHasPlace;
+    }
 }

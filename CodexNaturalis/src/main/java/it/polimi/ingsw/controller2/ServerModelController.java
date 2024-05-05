@@ -25,7 +25,6 @@ import it.polimi.ingsw.view.ViewState;
 import java.rmi.RemoteException;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Map;
 import java.util.Objects;
 
 public class ServerModelController implements ControllerInterface, DiffSubscriber {
@@ -277,7 +276,7 @@ public class ServerModelController implements ControllerInterface, DiffSubscribe
             user.getUserHand().addCard(drawCard);
             userGame.subcribe(this, new HandDiffAdd(Lightifier.lightifyToCard(drawCard), drawCard.canBePlaced()),
                     new HandOtherDiffAdd(drawCard.getPermanentResources(CardFace.BACK).stream().toList().getFirst(), this.nickname));
-            userGame.getGameLoopController().cardPlace(this);
+            userGame.getGameLoopController().cardDrawn(this);
         }
     }
 
@@ -303,24 +302,6 @@ public class ServerModelController implements ControllerInterface, DiffSubscribe
         return drawCard;
     }
 
-    /**
-     * @param nextPlayerNickName the nickname of the new currentPlayer
-     * @return the Controller of the new currentPlayer
-     */
-    public ServerModelController nextPlayer(String nextPlayerNickName){
-        ServerModelController nextplayerContoller  = null;
-       for(Map.Entry<ServerModelController, String> entry : this.games.getUsernameMap().entrySet()){
-           if(entry.getValue().equals(nextPlayerNickName)){
-               nextplayerContoller=entry.getKey();
-               break;
-           }
-       }
-       if (nextplayerContoller == null){
-           throw new IllegalCallerException(nextPlayerNickName + " is not in the server");
-       }else{
-           return nextplayerContoller;
-       }
-    }
 
     @Override
     public boolean equals(Object obj) {
@@ -402,5 +383,4 @@ public class ServerModelController implements ControllerInterface, DiffSubscribe
     public String getNickname() {
         return nickname;
     }
-
 }

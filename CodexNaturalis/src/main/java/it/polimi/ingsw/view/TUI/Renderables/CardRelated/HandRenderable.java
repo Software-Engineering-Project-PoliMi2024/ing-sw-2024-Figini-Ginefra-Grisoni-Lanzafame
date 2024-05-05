@@ -81,25 +81,6 @@ public class HandRenderable extends CardRenderable {
                 this.setFace(CardFace.FRONT);
                 this.renderSecretObjective();
                 break;
-            case CommandPrompt.PLACE_CARD:
-                try {
-                    int cardIndex = Integer.parseInt(answer.getAnswer(0));
-                    CardFace face = Integer.parseInt(answer.getAnswer(1)) == 0 ? CardFace.FRONT : CardFace.BACK;
-                    int frontierIndex = Integer.parseInt(answer.getAnswer(2));
-
-                    LightCard card = getLightGame().getHand().getCards()[cardIndex];
-
-                    LightFrontier frontier = getLightGame().getMyCodex().getFrontier();
-                    List<Position> positions = frontier.frontier();
-
-                    if(frontierIndex < frontier.size() && getLightGame().getHand().isPlayble(card)){
-                        LightPlacement placement = new LightPlacement(positions.get(frontierIndex), card, face);
-                        this.controller.place(placement);
-                    }
-                } catch (Exception e) {
-                    e.printStackTrace();
-                }
-                break;
             default:
                 break;
         }
