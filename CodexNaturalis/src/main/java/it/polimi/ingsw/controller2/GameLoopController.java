@@ -40,10 +40,10 @@ public class GameLoopController {
         for(User user : game.getGameParty().getUsersList()){
             if(user.getNickname().equals(nickname)){
                 if(startCardIsPlaced(user) && secretObjectiveIsChose(user)){
-                    controller.log(LogsFromServer.MID_GAME_JOINED);
+                    controller.log(LogsOnClient.MID_GAME_JOINED);
                     controller.transitionTo(ViewState.IDLE);
                 }else{
-                    controller.log(LogsFromServer.NEW_GAME_JOINED);
+                    controller.log(LogsOnClient.NEW_GAME_JOINED);
                     if(!startCardIsPlaced(user)){
                         controller.transitionTo(ViewState.CHOOSE_START_CARD);
                         LightCard lightStartCard = Lightifier.lightifyToCard(getOrDrawStartCard(user));
@@ -75,7 +75,7 @@ public class GameLoopController {
                 }catch (IllegalCallerException e){
                     throw new NullPointerException("User not found");
                 }
-                controller.log(LogsFromServer.NEW_GAME_JOINED);
+                controller.log(LogsOnClient.NEW_GAME_JOINED);
                 LightCard lightStartCard = Lightifier.lightifyToCard(getOrDrawStartCard(user));
                 controller.updateGame(new HandDiffAdd(lightStartCard, true));
             }
@@ -157,7 +157,7 @@ public class GameLoopController {
      */
     public void startCardPlaced(ServerModelController controller) {
         if(!everyoneHasPlace()){ //Not all activePlayer placed their starting Card
-            controller.log(LogsFromServer.WAIT_STARTCARD);
+            controller.log(LogsOnClient.WAIT_STARTCARD);
         }else{
             this.checkForDisconnectedUsers();
             for(ServerModelController controller1 : activePlayers.values()){
@@ -178,7 +178,7 @@ public class GameLoopController {
      */
     public void secretObjectiveChose(ServerModelController controller){
         if(!everyoneHasChose()){ //Not all activePlayer chose their secretObjective Card
-            controller.log(LogsFromServer.WAIT_SECRET_OBJECTIVE);
+            controller.log(LogsOnClient.WAIT_SECRET_OBJECTIVE);
         }else{
             this.checkForDisconnectedUsers();
             User currentPlayer;
@@ -217,7 +217,7 @@ public class GameLoopController {
         for(ServerModelController serverModelController : activePlayers.values()){
             serverModelController.updateGame(new GameDiffRound(nextUser.getNickname()));
             if(serverModelController.getNickname().equals(nextUser.getNickname())){
-                serverModelController.log(LogsFromServer.YOUR_TURN);
+                serverModelController.log(LogsOnClient.YOUR_TURN);
                 serverModelController.transitionTo(ViewState.PLACE_CARD);
             }
         }

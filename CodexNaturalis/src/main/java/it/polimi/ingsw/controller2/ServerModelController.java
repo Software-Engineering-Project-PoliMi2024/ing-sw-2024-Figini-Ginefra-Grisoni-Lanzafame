@@ -53,9 +53,9 @@ public class ServerModelController implements ControllerInterface, DiffSubscribe
     @Override
     public void login(String nickname) throws RemoteException {
         if(!this.games.isUnique(nickname)) {
-            logErr(LogsFromServer.NAME_TAKEN);
+            logErr(LogsOnClient.NAME_TAKEN);
         }else if(Objects.equals(nickname, "")){
-            logErr(LogsFromServer.EMPTY_NAME);
+            logErr(LogsOnClient.EMPTY_NAME);
         }else{
             //Client is now logged-In. If he disconnects we have to update the model
             this.nickname = nickname;
@@ -68,7 +68,7 @@ public class ServerModelController implements ControllerInterface, DiffSubscribe
             }else{
                 this.games.addUser(this, nickname);
                 getActiveLobbyList();
-                log(LogsFromServer.SERVER_JOINED);
+                log(LogsOnClient.SERVER_JOINED);
                 transitionTo(ViewState.JOIN_LOBBY);
             }
         }
@@ -91,7 +91,7 @@ public class ServerModelController implements ControllerInterface, DiffSubscribe
     @Override
     public void createLobby(String gameName, int maxPlayerCount) throws RemoteException {
         if(games.getLobbyByName(gameName)!=null){
-            logErr(LogsFromServer.LOBBY_NAME_TAKEN);
+            logErr(LogsOnClient.LOBBY_NAME_TAKEN);
         }else {
             Lobby newLobby = new Lobby(maxPlayerCount, this.nickname, gameName);
             this.games.addLobby(newLobby);
@@ -101,7 +101,7 @@ public class ServerModelController implements ControllerInterface, DiffSubscribe
             newLobby.setPlayerControllers(this, this.nickname);
             games.subscribe(getAddLobbyDiff(newLobby));
 
-            log(LogsFromServer.LOBBY_CREATED);
+            log(LogsOnClient.LOBBY_CREATED);
             transitionTo(ViewState.LOBBY);
         }
     }
@@ -120,10 +120,10 @@ public class ServerModelController implements ControllerInterface, DiffSubscribe
             if(result){
                 //create a new lobbyDiffEditLogin
                 lobbyToJoin.subscribe(this, this.nickname, lobbyToJoin.getLobbyName(), lobbyToJoin.getNumberOfMaxPlayer());
-                lobbyToJoin.setPlayerControllers(this, this.nickname); //TODO: why?
+                lobbyToJoin.setPlayerControllers(this, this.nickname);
                 games.unsubscribe(this);
 
-                log(LogsFromServer.LOBBY_JOINED);
+                log(LogsOnClient.LOBBY_JOINED);
                 transitionTo(ViewState.LOBBY);
 
                 if(lobbyToJoin.getLobbyPlayerList().size() == lobbyToJoin.getNumberOfMaxPlayer()) {
@@ -136,16 +136,11 @@ public class ServerModelController implements ControllerInterface, DiffSubscribe
                     newGame.getGameLoopController().joinGame();
                 }
             }else{
-                logErr(LogsFromServer.LOBBY_IS_FULL);
+                logErr(LogsOnClient.LOBBY_IS_FULL);
             }
         }else{
-            logErr(LogsFromServer.LOBBY_NONEXISTENT);
+            logErr(LogsOnClient.LOBBY_NONEXISTENT);
         }
-    }
-
-    @Override
-    public void disconnect() throws RemoteException{
-
     }
 
     @Override
@@ -163,7 +158,7 @@ public class ServerModelController implements ControllerInterface, DiffSubscribe
             lobbyToLeave.unsubscribe(this);
             games.subscribe(this);
 
-            log(LogsFromServer.LOBBY_LEFT);
+            log(LogsOnClient.LOBBY_LEFT);
             transitionTo(ViewState.JOIN_LOBBY);
         }
     }
@@ -199,7 +194,7 @@ public class ServerModelController implements ControllerInterface, DiffSubscribe
 
         userGame.subcribe(new CodexDiff(this.nickname, user.getUserCodex().getPoints(),
                 user.getUserCodex().getEarnedCollectables(), getPlacementList(Lightifier.lightify(heavyPlacement)), user.getUserCodex().getFrontier().getFrontier()));
-        log(LogsFromServer.START_CARD_PLACED);
+        log(LogsOnClient.START_CARD_PLACED);
         userGame.getGameLoopController().startCardPlaced(this);
     }
 
@@ -215,7 +210,7 @@ public class ServerModelController implements ControllerInterface, DiffSubscribe
         userToEdit.setSecretObject(Heavifier.heavifyObjectCard(card, games));
         userToEdit.getUserHand().setSecretObjectiveChoice(null);
 
-        log(LogsFromServer.SECRET_OBJECTIVE_CHOSE);
+        log(LogsOnClient.SECRET_OBJECTIVE_CHOSE);
         userGame.getGameLoopController().secretObjectiveChose(this);
 
     }
@@ -236,7 +231,7 @@ public class ServerModelController implements ControllerInterface, DiffSubscribe
                 heavyPlacement.card().getPermanentResources(CardFace.BACK).stream().toList().getFirst(), this.nickname));
         userGame.subcribe(new CodexDiff(this.nickname, user.getUserCodex().getPoints(),
                 user.getUserCodex().getEarnedCollectables(), getPlacementList(placement), user.getUserCodex().getFrontier().getFrontier()));
-        log(LogsFromServer.CARD_PLACED);
+        log(LogsOnClient.CARD_PLACED);
         transitionTo(ViewState.DRAW_CARD);
     }
 
@@ -271,7 +266,7 @@ public class ServerModelController implements ControllerInterface, DiffSubscribe
                 Deck<ResourceCard> resourceDeck = userGame.getResourceCardDeck();
                 drawCard = drawACard(resourceDeck, DrawableCard.RESOURCECARD, cardID, userGame);
             }
-            log(LogsFromServer.CARD_DRAWN);
+            log(LogsOnClient.CARD_DRAWN);
             User user = games.getUserFromNick(this.nickname);
             user.getUserHand().addCard(drawCard);
             userGame.subcribe(this, new HandDiffAdd(Lightifier.lightifyToCard(drawCard), drawCard.canBePlaced()),
@@ -304,6 +299,11 @@ public class ServerModelController implements ControllerInterface, DiffSubscribe
 
 
     @Override
+    public void disconnect() throws RemoteException{
+
+    }
+
+    @Override
     public boolean equals(Object obj) {
         if (obj instanceof ServerModelController) {
             ServerModelController other = (ServerModelController) obj;
@@ -316,7 +316,7 @@ public class ServerModelController implements ControllerInterface, DiffSubscribe
     public ViewInterface getView() {
         return view;
     }
-    public void log(LogsFromServer log){
+    public void log(LogsOnClient log){
         try {
             view.log(log.getMessage());
         }catch (RemoteException r){
@@ -353,7 +353,7 @@ public class ServerModelController implements ControllerInterface, DiffSubscribe
         }
     }
 
-    public void logErr(LogsFromServer log){
+    public void logErr(LogsOnClient log){
         try {
             view.logErr(log.getMessage());
         }catch (RemoteException r) {
