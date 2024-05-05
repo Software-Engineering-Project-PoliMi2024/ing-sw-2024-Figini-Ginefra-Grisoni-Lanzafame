@@ -60,6 +60,7 @@ public class ServerModelController implements ControllerInterface, DiffSubscribe
             //Client is now logged-In. If he disconnects we have to update the model
             this.nickname = nickname;
             //TODO: disconnect heartbeatThread.start();
+            //at the moment there is a function called heartbeatThread.stop() who kill the thread. But we can improve on that
             System.out.println(this.nickname + " has connected");
             if(games.isInGameParty(nickname)){
                 //The player must join a game
@@ -199,7 +200,6 @@ public class ServerModelController implements ControllerInterface, DiffSubscribe
         userGame.subcribe(new CodexDiff(this.nickname, user.getUserCodex().getPoints(),
                 user.getUserCodex().getEarnedCollectables(), getPlacementList(Lightifier.lightify(heavyPlacement)), user.getUserCodex().getFrontier().getFrontier()));
         log(LogsFromServer.START_CARD_PLACED);
-        log(LogsFromServer.WAIT_STARTCARD);
         userGame.getGameLoopController().startCardPlaced(this);
     }
 
