@@ -22,7 +22,7 @@ public class PlaceCardForm extends FormRenderable{
     public void updateCommand(CommandPromptResult answer){
         if(answer.getCommand() == CommandPrompt.PLACE_CARD){
             try {
-                int cardIndex = Integer.parseInt(answer.getAnswer(0));
+                int cardIndex = Integer.parseInt(answer.getAnswer(0)) - 1;
                 CardFace face = Integer.parseInt(answer.getAnswer(1)) == 0 ? CardFace.FRONT : CardFace.BACK;
                 int frontierIndex = Integer.parseInt(answer.getAnswer(2));
 
