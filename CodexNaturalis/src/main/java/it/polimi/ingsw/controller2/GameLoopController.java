@@ -226,7 +226,7 @@ public class GameLoopController {
         if(activePlayers.size() != game.getGameParty().getNumberOfMaxPlayer()){
             for(User user : game.getGameParty().getUsersList()){
                 if(!activePlayers.containsKey(user.getNickname())){
-                    game.getGameParty().removeUser(user);
+                    game.removeUser(user);
                 }
             }
         }
@@ -264,13 +264,12 @@ public class GameLoopController {
      * @return the User of the next activePlayer in the game
      */
     private User calculateNextPlayer(){
-        User currentPlayer;
+        User nextPlayer;
         do{
-            game.getGameParty().nextPlayer();
-            currentPlayer = game.getGameParty().getCurrentPlayer();
-        }while(!activePlayers.containsKey(currentPlayer.getNickname()));
-        System.out.println("the next player is: " + currentPlayer.getNickname());
-        return currentPlayer;
+            nextPlayer = game.nextPlayer();
+        }while(!activePlayers.containsKey(nextPlayer.getNickname()));
+        System.out.println("the next player is: " + nextPlayer.getNickname());
+        return nextPlayer;
     }
 
     /**
@@ -315,6 +314,7 @@ public class GameLoopController {
         }
         for(ServerModelController controller : activePlayers.values()){
             controller.updateGame(new GameDiffWinner(realWinner));
+
             controller.transitionTo(ViewState.GAME_ENDING);
         }
     }
@@ -382,7 +382,7 @@ public class GameLoopController {
             for(int i = 0; i<2; i++){
                 CardInHand resourceCard = game.getResourceCardDeck().drawFromDeck();
                 user.getUserHand().addCard(resourceCard);
-                game.subscribe(controller, new HandDiffAdd(Lightifier.lightifyToCard(resourceCard), true),
+                game.subscribe(controller, new HandDiffAdd(Lightifier.lightifyToCard(resourceCard), resourceCard.canBePlaced(user.getUserCodex())),
                         new HandOtherDiffAdd(Lightifier.lightifyToResource(resourceCard), controller.getNickname()));
             }
             CardInHand goldCard = game.getGoldCardDeck().drawFromDeck();

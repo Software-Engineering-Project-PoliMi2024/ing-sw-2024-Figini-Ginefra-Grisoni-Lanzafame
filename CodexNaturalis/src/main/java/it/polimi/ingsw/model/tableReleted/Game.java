@@ -142,4 +142,12 @@ public class Game implements Serializable {
     public List<ObjectiveCard> getCommonObjective() {
         return commonObjective;
     }
+
+    public void removeUser(User user){
+        this.gameParty.removeUser(user);
+    }
+
+    public User nextPlayer(){
+        return  this.gameParty.nextPlayer();
+    }
 }

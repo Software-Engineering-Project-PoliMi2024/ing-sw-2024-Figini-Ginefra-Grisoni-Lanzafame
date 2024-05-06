@@ -66,7 +66,9 @@ public class Lightifier implements Serializable {
      * @param card which will be lightened
      * @return the permanentResource on the back of the card
      */
-    public static Resource lightifyToResource(CardInHand card){return card.getPermanentResources(CardFace.BACK).stream().toList().getFirst();}
+    public static Resource lightifyToResource(CardInHand card){
+        return card.getPermanentResources(CardFace.BACK).stream().toList().getFirst();
+    }
 
     /**
      * @param hand which will be lightened

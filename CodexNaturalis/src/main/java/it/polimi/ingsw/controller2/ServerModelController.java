@@ -232,7 +232,7 @@ public class ServerModelController implements ControllerInterface, DiffSubscribe
 
         Game userGame = this.games.getUserGame(this.nickname);
         userGame.subscribe(this, new HandDiffRemove(placement.card()), new HandOtherDiffRemove(
-                heavyPlacement.card().getPermanentResources(CardFace.BACK).stream().toList().getFirst(), this.nickname));
+                heavyPlacement.card().getPermanentResources(CardFace.BACK).stream().findFirst().orElse(null), this.nickname));
         userGame.subscribe(new CodexDiff(this.nickname, user.getUserCodex().getPoints(),
                 user.getUserCodex().getEarnedCollectables(), getPlacementList(placement), user.getUserCodex().getFrontier().getFrontier()));
         log(LogsOnClient.CARD_PLACED);

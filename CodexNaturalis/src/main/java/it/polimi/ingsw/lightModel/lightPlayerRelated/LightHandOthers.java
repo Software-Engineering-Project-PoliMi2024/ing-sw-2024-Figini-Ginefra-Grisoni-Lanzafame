@@ -33,11 +33,15 @@ public class LightHandOthers implements Differentiable {
             for(int i=0; i<cards.length; i++){
                 if(cards[i]==null){
                     cards[i]=card;
+                    break;
                 }
             }
         }
     }
     public void removeCard(Resource card){
+        if(card == null){
+            throw new IllegalArgumentException("card can not be null");
+        }
         boolean found = false;
         for(int i=0; i<cards.length && !found; i++){
             if(cards[i].equals(card)){
