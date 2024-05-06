@@ -38,8 +38,7 @@ public class GameDiffPublisher {
             notifySubscriber(subscriber, communicateJoin);
         }
         activeSubscribers.put(diffSubscriber, nickname);
-        List<GameDiff> yours = getTotalCurrentState(diffSubscriber);
-        notifySubscriber(diffSubscriber, yours);
+        notifySubscriber(diffSubscriber, getTotalCurrentState(diffSubscriber));
 
     }
 
@@ -93,17 +92,6 @@ public class GameDiffPublisher {
      */
     public synchronized void notifySubscriber(DiffSubscriber diffSubscriber, GameDiff gameDiff){
         diffSubscriber.updateGame(gameDiff);
-    }
-
-    /**
-     * sends a list of diffs to a single subscriber
-     * @param diffSubscriber the subscriber to send the diffs
-     * @param gameDiffs the list of diffs to send
-     */
-    public synchronized void notifySubscriber(DiffSubscriber diffSubscriber, List<GameDiff> gameDiffs){
-        for(GameDiff gameDiff : gameDiffs){
-            notifySubscriber(diffSubscriber, gameDiff);
-        }
     }
 
     /**
@@ -203,16 +191,18 @@ public class GameDiffPublisher {
      * @param diffSubscriber the subscriber from which perspective to get the total state of the game
      * @return a list of diffs containing the current state of the game
      */
-    private List<GameDiff> getTotalCurrentState(DiffSubscriber diffSubscriber){
-
-        List<GameDiff> totalDiff = new ArrayList<>(getDeckCurrentState());
-        totalDiff.add(new GameDiffGameName(game.getName()));
-        totalDiff.add(new GameDiffYourName(activeSubscribers.get(diffSubscriber)));
-        totalDiff.add(getPlayerActivity());
-        totalDiff.addAll(getCodexCurrentState());
-        totalDiff.addAll(getHandCurrentState(diffSubscriber));
-        totalDiff.addAll(getHandOtherCurrentState(diffSubscriber));
-        totalDiff.add(getPublicObjectiveCurrentState());
-        return totalDiff;
+    private GameDiffNewGame getTotalCurrentState(DiffSubscriber diffSubscriber){
+        GameDiffNewGame newGameDiff = new GameDiffNewGame(
+                new GameDiffGameName(game.getName()),
+                new GameDiffYourName(activeSubscribers.get(diffSubscriber)),
+                new GameDiffInitializeCodexMap(game.getGameParty().getUsersList().stream().map(User::getNickname).toList()),
+                getPlayerActivity(),
+                getDeckCurrentState(),
+                getCodexCurrentState(),
+                getHandCurrentState(diffSubscriber),
+                getHandOtherCurrentState(diffSubscriber),
+                getPublicObjectiveCurrentState()
+                );
+        return newGameDiff;
     }
 }
