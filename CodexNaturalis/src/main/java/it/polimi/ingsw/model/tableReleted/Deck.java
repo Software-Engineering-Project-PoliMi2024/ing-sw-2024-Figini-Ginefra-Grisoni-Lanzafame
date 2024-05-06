@@ -1,5 +1,7 @@
 package it.polimi.ingsw.model.tableReleted;
 
+import it.polimi.ingsw.model.cardReleted.cards.Card;
+
 import java.io.Serializable;
 import java.util.*;
 
@@ -65,7 +67,10 @@ public class Deck<Element> implements Serializable {
         Element element = tmpList.get(indexElement);
         if(element!=null){
             buffer.remove(element);
-            buffer.add(this.drawFromDeck());
+            Element newElement = this.drawFromDeck();
+            if(newElement != null){
+                buffer.add(newElement);
+            }
             return element;
         }
         throw new IllegalArgumentException("Element not in buffer");
@@ -92,5 +97,9 @@ public class Deck<Element> implements Serializable {
         List<Element> tmpList = new LinkedList<>(buffer);
         Element element = tmpList.get(bufferId);
         return element;
+    }
+
+    public boolean isEmpty(){
+        return actualDeck.isEmpty() && buffer.isEmpty();
     }
 }

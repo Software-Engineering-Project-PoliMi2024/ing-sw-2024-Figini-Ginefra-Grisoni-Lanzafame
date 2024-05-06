@@ -63,4 +63,8 @@ public class GameParty implements Serializable {
     public void removeUser(User user){
         playerList.remove(user);
     }
+
+    public User getFirstPlayerInOrder() {
+        return playerList.getFirst();
+    }
 }
