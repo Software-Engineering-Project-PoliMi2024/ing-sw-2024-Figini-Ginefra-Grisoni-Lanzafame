@@ -50,7 +50,7 @@ public class StartCard extends CardWithCorners {
     @Override
     public HashSet <Resource> getPermanentResources(CardFace face){
         if (face == CardFace.BACK)
-            return permanentResources;
+            return new HashSet<>(permanentResources);
         else
             return new HashSet<Resource>();
     }

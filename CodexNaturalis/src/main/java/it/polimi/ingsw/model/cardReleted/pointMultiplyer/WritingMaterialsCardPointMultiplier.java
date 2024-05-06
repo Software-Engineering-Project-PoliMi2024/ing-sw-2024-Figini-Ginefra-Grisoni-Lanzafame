@@ -14,6 +14,10 @@ public class WritingMaterialsCardPointMultiplier implements GoldCardPointMultipl
         this.target = target;
     }
 
+    public WritingMaterialsCardPointMultiplier(WritingMaterialsCardPointMultiplier other){
+        this(other.target);
+    }
+
     /** @param codex the codex where the card is inserted
      *  @return the multiplicator of the points*/
     @Override
@@ -25,4 +29,10 @@ public class WritingMaterialsCardPointMultiplier implements GoldCardPointMultipl
     public WritingMaterial getTarget(){
         return target;
     }
+
+    public GoldCardPointMultiplier getCopy(){
+        return new WritingMaterialsCardPointMultiplier(this);
+    }
+
+
 }
