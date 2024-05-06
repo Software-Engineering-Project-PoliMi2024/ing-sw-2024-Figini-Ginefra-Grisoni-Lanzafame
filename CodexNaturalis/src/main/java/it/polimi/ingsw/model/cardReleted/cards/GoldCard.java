@@ -55,7 +55,7 @@ public class GoldCard extends CardInHand {
      * @return the GoldCardPointMultiplier of the card
      */
     public GoldCardPointMultiplier getGoldCardPointMultiplier(){
-        return multiplier.getCopy();
+        return multiplier == null ? null : multiplier.getCopy();
     }
 
     /**

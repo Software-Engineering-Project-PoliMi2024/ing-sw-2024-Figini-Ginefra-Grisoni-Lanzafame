@@ -18,7 +18,6 @@ import it.polimi.ingsw.model.utilities.Pair;
 import it.polimi.ingsw.view.TUI.Renderables.drawables.Drawable;
 
 import java.io.*;
-import java.util.LinkedHashMap;
 import java.util.Map;
 import java.util.Queue;
 
@@ -170,18 +169,5 @@ public class CardMuseumFactory {
      */
     public CardMuseum getCardMuseum() {
         return cardMuseum;
-    }
-
-    /**
-     * Main method.
-     * @param args The arguments from the command line.
-     */
-    public static void main(String[] args){
-        CardMuseum museum = new CardMuseumFactory("./cards/", true).getCardMuseum();
-
-        for(int key : museum.getCards().keySet()){
-            System.out.println("Card ID: " + key);
-            System.out.println(museum.get(key).get(CardFace.FRONT).toString());
-        }
     }
 }
