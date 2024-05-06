@@ -192,7 +192,6 @@ public class ServerModelController implements ControllerInterface, DiffSubscribe
 
         Game userGame = games.getUserGame(this.nickname);
         updateGame(new HandDiffRemove(Lightifier.lightifyToCard(card)));
-
         userGame.subcribe(new CodexDiff(this.nickname, user.getUserCodex().getPoints(),
                 user.getUserCodex().getEarnedCollectables(), getPlacementList(Lightifier.lightify(heavyPlacement)), user.getUserCodex().getFrontier().getFrontier()));
         log(LogsOnClient.START_CARD_PLACED);

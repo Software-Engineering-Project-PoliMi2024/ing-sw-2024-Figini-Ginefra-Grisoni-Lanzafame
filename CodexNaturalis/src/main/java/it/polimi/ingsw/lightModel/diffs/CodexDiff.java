@@ -11,10 +11,10 @@ import java.util.Map;
 
 public class CodexDiff extends GameDiff{
     private final String owner;
-    private final int addPoints;
-    private final Map<Collectable, Integer> collectablesToAdd;
+    private final int setPoints;
+    private final Map<Collectable, Integer> collectables;
     private final List<LightPlacement> addPlacements;
-    private final List<Position> addFrontier;
+    private final List<Position> frontier;
     /**
      * This class represents the differences between two codexes
      * @param owner the owner of the codex
@@ -25,10 +25,10 @@ public class CodexDiff extends GameDiff{
      */
     public CodexDiff(String owner, int points, Map<Collectable, Integer> collectables, List<LightPlacement> placements, List<Position> frontier){
         this.owner = owner;
-        this.addPoints = points;
-        this.collectablesToAdd = collectables;
+        this.setPoints = points;
+        this.collectables = collectables;
         this.addPlacements = placements;
-        this.addFrontier = frontier;
+        this.frontier = frontier;
 
     }
 
@@ -38,9 +38,9 @@ public class CodexDiff extends GameDiff{
     @Override
     public void apply(LightGame lightGame) {
         lightGame.checkCodex(owner);
-        lightGame.setPoint(addPoints, this.owner);
+        lightGame.setPoint(setPoints, this.owner);
         lightGame.getCodexMap().get(this.owner).addPlacement(addPlacements);
-        lightGame.setFrontier(new LightFrontier(addFrontier), this.owner);
-        lightGame.setCollectable(collectablesToAdd, this.owner);
+        lightGame.setFrontier(new LightFrontier(frontier), this.owner);
+        lightGame.setCollectable(collectables, this.owner);
     }
 }

@@ -168,7 +168,7 @@ public class GameLoopController {
      * @param controller of the user who placed the card
      */
     public void startCardPlaced(ServerModelController controller) {
-        if(!everyoneHasPlace()){ //Not all activePlayer placed their starting Card
+        if(!everyonePlaced()){ //Not all activePlayer placed their starting Card
             controller.log(LogsOnClient.WAIT_STARTCARD);
         }else{
             this.checkForDisconnectedUsers();
@@ -183,7 +183,7 @@ public class GameLoopController {
      * @param controller of the user who chose the objective
      */
     public void secretObjectiveChose(ServerModelController controller){
-        if(!everyoneHasChose()){ //Not all activePlayer chose their secretObjective Card
+        if(!everyoneChose()){ //Not all activePlayer chose their secretObjective Card
             controller.log(LogsOnClient.WAIT_SECRET_OBJECTIVE);
         }else{
             this.checkForDisconnectedUsers();
@@ -201,9 +201,9 @@ public class GameLoopController {
         //all of this code will be run only once by the soon-to-be ex currentPlayer
         User currentPlayer = currentPlayer();
         for(ServerModelController serverModelController : activePlayers.values()){
-            serverModelController.updateGame(new GameDiffRound(nextUser.getNickname()));
-            if(serverModelController.getNickname().equals(nextUser.getNickname())){
-                serverModelController.log(LogsFromServer.YOUR_TURN);
+            serverModelController.updateGame(new GameDiffRound(currentPlayer.getNickname()));
+            if(serverModelController.getNickname().equals(currentPlayer.getNickname())){
+                serverModelController.log(LogsOnClient.YOUR_TURN);
                 serverModelController.transitionTo(ViewState.PLACE_CARD);
             }
         }
