@@ -20,6 +20,11 @@ public class DiagonalCardPointMultiplier implements ObjectiveCardPointMultiplier
         this.color = color;
     }
 
+    /**@param other the multiplier to copy*/
+    public DiagonalCardPointMultiplier(DiagonalCardPointMultiplier other){
+        this(other.upwards, other.color);
+    }
+
     /**@return the multiplier of the points
      * @param codex the codex from which to calc the multiplier factor*/
     public int getMultiplier(Codex codex){
@@ -50,5 +55,9 @@ public class DiagonalCardPointMultiplier implements ObjectiveCardPointMultiplier
     }
     public boolean isUpwards() {
         return upwards;
+    }
+
+    public ObjectiveCardPointMultiplier getCopy(){
+        return new DiagonalCardPointMultiplier(this);
     }
 }

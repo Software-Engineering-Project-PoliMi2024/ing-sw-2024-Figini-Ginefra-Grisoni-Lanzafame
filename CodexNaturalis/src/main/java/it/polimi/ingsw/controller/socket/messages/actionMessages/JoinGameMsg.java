@@ -1,11 +1,6 @@
 package it.polimi.ingsw.controller.socket.messages.actionMessages;
 
-import it.polimi.ingsw.controller.socket.messages.serverMessages.answerMessages.JoinGameAnswerMsg;
-import it.polimi.ingsw.controller.socket.messages.serverMessages.notificationMessages.JoinGameNotificationMsg;
 import it.polimi.ingsw.controller.socket.server.SocketClientHandler;
-import it.polimi.ingsw.model.playerReleted.User;
-import it.polimi.ingsw.model.tableReleted.FullMatchException;
-import it.polimi.ingsw.model.tableReleted.Game;
 
 import java.io.IOException;
 

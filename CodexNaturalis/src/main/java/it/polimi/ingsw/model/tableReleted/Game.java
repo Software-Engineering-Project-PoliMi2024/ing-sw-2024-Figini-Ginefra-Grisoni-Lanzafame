@@ -25,6 +25,7 @@ public class Game implements Serializable {
     final private Deck<StartCard> startingCardDeck;
     private final String name;
     private GameParty gameParty;
+    private boolean isLastTurn;
     /**
      * Constructs a new Game instance with a specified maximum number of players.
      */
@@ -87,18 +88,18 @@ public class Game implements Serializable {
         return gameDiffPublisher;
     }
 
-    public void subcribe(DiffSubscriber diffSubscriber, String nickname){
+    public void subscribe(DiffSubscriber diffSubscriber, String nickname){
         gameDiffPublisher.subscribe(diffSubscriber, nickname);
     }
 
-    public void subcribe(GameDiff gameDiff){
+    public void subscribe(GameDiff gameDiff){
         gameDiffPublisher.subscribe(gameDiff);
     }
 
-    public void subcribe(DiffSubscriber diffSubscriber, GameDiff gameDiffYou, GameDiff gameDiffOther){
+    public void subscribe(DiffSubscriber diffSubscriber, GameDiff gameDiffYou, GameDiff gameDiffOther){
         gameDiffPublisher.subscribe(diffSubscriber, gameDiffYou, gameDiffOther);
     }
-    public void unsubscrive(DiffSubscriber diffSubscriber){
+    public void unsubscribe(DiffSubscriber diffSubscriber){
         gameDiffPublisher.unsubscribe(diffSubscriber);
     }
 
@@ -118,5 +119,17 @@ public class Game implements Serializable {
             }
         }
         throw new IllegalCallerException("Nickname not found in this game");
+    }
+
+    public boolean decksAreEmpty(){
+        return goldCardDeck.isEmpty() && resourceCardDeck.isEmpty();
+    }
+
+    public void setLastTurn(boolean lastTurn) {
+        isLastTurn = lastTurn;
+    }
+
+    public boolean isLastTurn() {
+        return isLastTurn;
     }
 }

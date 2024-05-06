@@ -5,7 +5,6 @@ import org.junit.jupiter.api.Test;
 import static org.junit.jupiter.api.Assertions.*;
 
 class PositionTest {
-
     @Test
     void ToString() {
         Position position = new Position(1, 1);
@@ -46,5 +45,11 @@ class PositionTest {
         Position position = new Position(1, 1);
         Position position2 = new Position(1, 1);
         assertEquals(position.hashCode(), position2.hashCode());
+    }
+
+    @Test
+    void add_inputNull_shouldThrowIllegalArgumentException() {
+        Position position = new Position(1, 1);
+        assertThrows(IllegalArgumentException.class, () -> position.add(null));
     }
 }

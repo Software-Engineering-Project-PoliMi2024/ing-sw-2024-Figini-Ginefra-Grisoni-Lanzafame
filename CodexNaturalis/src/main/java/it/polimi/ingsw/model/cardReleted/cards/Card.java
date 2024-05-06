@@ -28,6 +28,6 @@ public abstract class Card implements Serializable {
     /** @return the points of the card multiplied by the multiplier
      * @param codex the codex from which calc the points */
     public int getPoints(Codex codex){
-        return 0;
+        return codex.getPoints();
     }
 }

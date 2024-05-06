@@ -20,6 +20,17 @@ public class Deck<Element> implements Serializable {
         this.shuffle();
         this.populateBuffer();
     }
+
+    /**
+     * Copy constructor
+     * @param other the deck to copy
+     */
+    public Deck(Deck<Element> other){
+        this.bufferSize = other.bufferSize;
+        this.actualDeck = new LinkedList<>(other.actualDeck);
+        this.buffer = new LinkedHashSet<>(other.buffer);
+    }
+
     /**
      * Shuffle the deck
      */
@@ -44,7 +55,7 @@ public class Deck<Element> implements Serializable {
      * @return the buffer
      */
     public Set<Element> getBuffer(){
-        return buffer;
+         return new LinkedHashSet<>(buffer);
     }
 
     /**
@@ -52,7 +63,7 @@ public class Deck<Element> implements Serializable {
      * @return the actual deck
      */
     public Queue<Element> getActualDeck() {
-        return actualDeck;
+        return new LinkedList<>(actualDeck);
     }
 
     /**
@@ -65,7 +76,10 @@ public class Deck<Element> implements Serializable {
         Element element = tmpList.get(indexElement);
         if(element!=null){
             buffer.remove(element);
-            buffer.add(this.drawFromDeck());
+            Element newElement = this.drawFromDeck();
+            if(newElement != null){
+                buffer.add(newElement);
+            }
             return element;
         }
         throw new IllegalArgumentException("Element not in buffer");
@@ -90,7 +104,10 @@ public class Deck<Element> implements Serializable {
      */
     public Element showCardFromBuffer(int bufferId){
         List<Element> tmpList = new LinkedList<>(buffer);
-        Element element = tmpList.get(bufferId);
-        return element;
+        return tmpList.get(bufferId);
+    }
+
+    public boolean isEmpty(){
+        return actualDeck.isEmpty() && buffer.isEmpty();
     }
 }

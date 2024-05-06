@@ -21,6 +21,8 @@ public enum LogsOnClient {
     WAIT_STARTCARD("Waiting for the other players to place their StartCard"),
     WAIT_SECRET_OBJECTIVE("Waiting for the other players to choose their Secret Objective"),
     EMPTY_NAME("The name cannot be empty"),
+    LAST_TURN("The last round of turns is starting now"),
+    GAME_END("Game ended"),
     CONNECTION_LOST_CLIENT_SIDE("Lost connection with the server"),;
 
     private final String message;
