@@ -19,6 +19,16 @@ public class LightLobby implements Differentiable {
         nicknames=  new ArrayList<>();
         name = "";
     }
+
+    /**
+     *
+     * @param lobby the LightLobby to copy
+     */
+    public LightLobby(LightLobby lobby){
+        this.nicknames = new ArrayList<>(lobby.nicknames);
+        this.name = lobby.name;
+        this.numberMaxPlayer = lobby.numberMaxPlayer;
+    }
     public LightLobby(List<String> nicknames, String name, int numberMaxPlayer){
         this.nicknames = nicknames;
         this.name = name;
