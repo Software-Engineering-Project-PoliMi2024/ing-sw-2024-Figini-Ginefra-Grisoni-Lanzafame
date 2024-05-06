@@ -3,7 +3,9 @@ package it.polimi.ingsw.controller2;
 import it.polimi.ingsw.lightModel.LightCard;
 import it.polimi.ingsw.lightModel.Lightifier;
 import it.polimi.ingsw.lightModel.diffs.game.GameDiffCurrentPlayer;
+import it.polimi.ingsw.lightModel.diffs.game.GameDiffWinner;
 import it.polimi.ingsw.lightModel.diffs.game.HandDiffAdd;
+import it.polimi.ingsw.model.cardReleted.cards.Card;
 import it.polimi.ingsw.model.cardReleted.cards.ObjectiveCard;
 import it.polimi.ingsw.model.cardReleted.cards.StartCard;
 import it.polimi.ingsw.model.playerReleted.Position;
@@ -11,9 +13,8 @@ import it.polimi.ingsw.model.playerReleted.User;
 import it.polimi.ingsw.model.tableReleted.Game;
 import it.polimi.ingsw.view.ViewState;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
+import java.util.stream.Collectors;
 
 public class GameLoopController {
     //A map containing the view for each ACTIVE player in the game
@@ -150,7 +151,6 @@ public class GameLoopController {
     }
     public void leaveGame(ServerModelController controller, String nickname){
         String currentPlayerNick = game.getGameParty().getCurrentPlayer().getNickname();
-        game.unsubscribe(controller);
         if(everyonePlaced() && everyoneChose() && controller.getNickname().equals(currentPlayerNick)){
             //Todo Implementing handling for the edge case where the leaving player is the playing one
             activePlayers.remove(nickname, controller);
@@ -283,20 +283,14 @@ public class GameLoopController {
      */
     private void gameLoop(){
         User nextPlayer = calculateNextPlayer();
-
-        if(checkForChickenDinner() && nextPlayer.equals(game.getGameParty().getFirstPlayerInOrder()) && !game.isLastTurn()){
+        if(game.isLastTurn() && nextPlayer.equals(game.getGameParty().getFirstPlayerInOrder())){
+            this.endGame();
+        } else if (checkForChickenDinner() && nextPlayer.equals(game.getGameParty().getFirstPlayerInOrder()) && !game.isLastTurn()){
             game.setLastTurn(true);
             for(ServerModelController controller : activePlayers.values()){
                 controller.log(LogsOnClient.LAST_TURN);
             }
-        } else if (game.isLastTurn() && nextPlayer.equals(game.getGameParty().getFirstPlayerInOrder())) {
-            for(ServerModelController controller : activePlayers.values()){
-                controller.log(LogsOnClient.GAME_END);
-                controller.transitionTo(ViewState.GAME_ENDING);
-            }
-            return;
         }
-
         for(ServerModelController controller : activePlayers.values()){
             controller.updateGame(new GameDiffCurrentPlayer(nextPlayer.getNickname()));
             if (controller.getNickname().equals(nextPlayer.getNickname())) {
@@ -304,6 +298,36 @@ public class GameLoopController {
             } else {
                 controller.transitionTo(ViewState.IDLE);
             }
+        }
+    }
+
+    private int getPlayerPoint(String nick){
+        User user = game.getUserFromNick(nick);
+        return user.getUserCodex().getPoints() +
+                game.getCommonObjective().stream().mapToInt(objectiveCard -> objectiveCard.getPoints(user.getUserCodex())).sum()
+                + game.getUserFromNick(nick).getUserHand().getSecretObjective().getPoints(user.getUserCodex());
+    }
+
+    private int getWinnerPoint(String nick){
+        User user = game.getUserFromNick(nick);
+        return game.getCommonObjective().stream().mapToInt(objectiveCard -> objectiveCard.getPoints(user.getUserCodex())).sum()
+                + user.getUserHand().getSecretObjective().getPoints(user.getUserCodex());
+    }
+    private void endGame() {
+        //Calculate all possibleWinners (player(s) who scored the max amount of points in the game
+        int maxPoint = activePlayers.keySet().stream().mapToInt(this::getPlayerPoint).max().orElse(0);
+        List<String> possibleWinners = activePlayers.keySet().stream().filter(nick -> this.getPlayerPoint(nick) == maxPoint).toList();
+        //calculate the real winner(s) by checking the points obtain from the objective Card
+        List<String> realWinner;
+        if(possibleWinners.size()!=1){
+            int winnerPoint = activePlayers.keySet().stream().mapToInt(this::getWinnerPoint).max().orElse(0);
+            realWinner = activePlayers.keySet().stream().filter(nick -> this.getWinnerPoint(nick) == winnerPoint).toList();
+        }else{
+            realWinner = new ArrayList<>(possibleWinners);
+        }
+        for(ServerModelController controller : activePlayers.values()){
+            controller.updateGame(new GameDiffWinner(realWinner));
+            controller.transitionTo(ViewState.GAME_ENDING);
         }
     }
 

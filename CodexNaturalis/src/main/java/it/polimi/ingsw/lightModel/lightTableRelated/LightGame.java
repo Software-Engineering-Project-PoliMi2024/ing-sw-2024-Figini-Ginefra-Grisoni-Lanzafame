@@ -18,6 +18,7 @@ public class LightGame implements Differentiable {
     private Map<String, LightHandOthers> handOthers;
     private Map<DrawableCard, LightDeck> decks;
     private LightCard[] publicObjective;
+    private final List<String> winners;
 
     public LightGame(){
         this.lightGameParty = new LightGameParty();
@@ -28,6 +29,7 @@ public class LightGame implements Differentiable {
         decks.put(DrawableCard.RESOURCECARD, new LightDeck());
         decks.put(DrawableCard.GOLDCARD, new LightDeck());
         publicObjective = new LightCard[2];
+        this.winners = new ArrayList<>();
     }
     public void addObjective(LightCard objective){
         for(int i = 0; i<publicObjective.length; i++){
@@ -145,5 +147,9 @@ public class LightGame implements Differentiable {
     }
     public LightCodex getMyCodex(){
         return codexMap.get(lightGameParty.getYourName());
+    }
+
+    public void setWinners(List<String> winners){
+        this.winners.addAll(winners);
     }
 }
