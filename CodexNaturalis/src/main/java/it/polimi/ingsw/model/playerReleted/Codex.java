@@ -57,8 +57,8 @@ public class Codex implements Serializable {
      * @throws IllegalArgumentException if tries to set a collectable to less than 0
      * */
     public void setEarnedCollectables(Collectable collectable, int number){
-        if (Arrays.stream(Resource.values()).anyMatch(res -> res == collectable) ||
-                Arrays.stream(WritingMaterial.values()).anyMatch(res -> res == collectable))
+        if (!Arrays.stream(Resource.values()).anyMatch(res -> res == collectable) &&
+                !Arrays.stream(WritingMaterial.values()).anyMatch(res -> res == collectable))
             throw new IllegalArgumentException("collectable must be a writing material or a resource");
         if (number < 0)
             throw new IllegalArgumentException("the number of collectables " +

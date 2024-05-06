@@ -149,7 +149,7 @@ public class GameDiffPublisher {
                         .equals(activeSubscribers.get(diffSubscriber)))
                 .findFirst().orElse(null);
         if(user!=null) {
-            LightHand subscriberHand = Lightifier.lightifyYour(user.getUserHand());
+            LightHand subscriberHand = Lightifier.lightifyYour(user.getUserHand(), user);
             for (LightCard card : subscriberHand.getCards()) {
                 if(card!=null)
                     handDiffAdd.add(new HandDiffAdd(card, subscriberHand.isPlayble(card)));

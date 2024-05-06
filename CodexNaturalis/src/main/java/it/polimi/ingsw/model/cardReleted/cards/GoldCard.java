@@ -64,4 +64,14 @@ public class GoldCard extends CardInHand {
     public CardInHand copy() {
         return new GoldCard(this);
     }
+
+    @Override
+    public boolean canBePlaced(Codex codex) {
+        Map<Collectable, Integer> earned =  codex.getEarnedCollectables();
+        for (Resource resource : requirements.keySet()){
+            if (earned.getOrDefault(resource, 0) < requirements.get(resource))
+                return false;
+        }
+        return true;
+    }
 }
