@@ -6,6 +6,7 @@ import it.polimi.ingsw.model.cardReleted.utilityEnums.CardFace;
 import it.polimi.ingsw.model.cardReleted.utilityEnums.Collectable;
 import it.polimi.ingsw.model.cardReleted.utilityEnums.Resource;
 
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Map;
 
@@ -20,6 +21,11 @@ public class StartCard extends CardWithCorners {
         super(id, 0, frontCorners);
         this.backCorners = backCorners;
         this.permanentResources = permanentResources;
+    }
+
+    /** @param other the card to copy */
+    public StartCard(StartCard other){
+        this(other.getId(), other.getFrontCorners(), other.getBackCorners(), other.getPermanentResources(CardFace.BACK));
     }
 
     /**@param corner the corner to check
@@ -52,7 +58,11 @@ public class StartCard extends CardWithCorners {
         if (face == CardFace.BACK)
             return new HashSet<>(permanentResources);
         else
-            return new HashSet<Resource>();
+            return new HashSet<>();
+    }
+
+    public Map<CardCorner, Collectable> getBackCorners() {
+        return new HashMap<>(backCorners);
     }
 
 }

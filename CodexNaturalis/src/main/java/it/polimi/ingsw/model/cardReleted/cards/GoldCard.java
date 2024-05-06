@@ -1,6 +1,7 @@
 package it.polimi.ingsw.model.cardReleted.cards;
 
 import it.polimi.ingsw.model.cardReleted.utilityEnums.CardCorner;
+import it.polimi.ingsw.model.cardReleted.utilityEnums.CardFace;
 import it.polimi.ingsw.model.cardReleted.utilityEnums.Collectable;
 import it.polimi.ingsw.model.cardReleted.pointMultiplyer.GoldCardPointMultiplier;
 import it.polimi.ingsw.model.cardReleted.utilityEnums.Resource;
@@ -28,6 +29,14 @@ public class GoldCard extends CardInHand {
     }
 
     /**
+     * The copy constructor of the class
+     * @param other the card to copy
+     */
+    public GoldCard(GoldCard other){
+        this(other.getId(), other.getPoints(), other.getRequirements(), other.getGoldCardPointMultiplier(), other.getFrontCorners(), other.getPermanentResources(CardFace.BACK).stream().findFirst().orElse(null));
+    }
+
+    /**
      * @return the requirements for placing the card
      */
     public Map<Resource, Integer> getRequirements() {
@@ -47,5 +56,12 @@ public class GoldCard extends CardInHand {
      */
     public GoldCardPointMultiplier getGoldCardPointMultiplier(){
         return multiplier.getCopy();
+    }
+
+    /**
+     * @return a copy of the card
+     */
+    public CardInHand copy() {
+        return new GoldCard(this);
     }
 }

@@ -5,6 +5,7 @@ import it.polimi.ingsw.model.cardReleted.utilityEnums.CardFace;
 import it.polimi.ingsw.model.cardReleted.utilityEnums.Collectable;
 import it.polimi.ingsw.model.cardReleted.utilityEnums.Resource;
 
+import java.util.HashMap;
 import java.util.Map;
 import java.util.Set;
 
@@ -41,5 +42,9 @@ public abstract class CardWithCorners extends Card {
      * */
     public GoldCardPointMultiplier getGoldCardPointMultiplier(){
         return null;
+    }
+
+    public Map<CardCorner, Collectable> getFrontCorners(){
+        return new HashMap<>(this.frontCorners);
     }
 }

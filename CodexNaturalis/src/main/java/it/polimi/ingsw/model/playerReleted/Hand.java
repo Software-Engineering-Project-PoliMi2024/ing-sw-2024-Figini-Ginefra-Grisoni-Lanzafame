@@ -1,14 +1,11 @@
 package it.polimi.ingsw.model.playerReleted;
 
-import it.polimi.ingsw.lightModel.*;
 import it.polimi.ingsw.model.cardReleted.cards.CardInHand;
 import it.polimi.ingsw.model.cardReleted.cards.ObjectiveCard;
 import it.polimi.ingsw.model.cardReleted.cards.StartCard;
 
 import java.io.Serializable;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
+import java.util.*;
 
 /**The class constructor*/
 public class Hand implements Serializable {
@@ -29,7 +26,7 @@ public class Hand implements Serializable {
         if(playableHand.size()==3){
             throw new IllegalCallerException("Each player can have a max of 3 card in hand");
         }else{
-            playableHand.add(card);
+            playableHand.add(card.copy());
         }
     }
 
@@ -48,11 +45,11 @@ public class Hand implements Serializable {
     }
     /** @return the user nickname*/
     public Set<CardInHand> getHand(){
-        return this.playableHand;
+        return new LinkedHashSet<>(playableHand);
     }
     /** @return the secretObjective nickname*/
     public ObjectiveCard getSecretObjective(){
-        return this.secretObjective;
+        return secretObjective == null ? null : new ObjectiveCard(secretObjective);
     }
 
     @Override
@@ -68,18 +65,18 @@ public class Hand implements Serializable {
     }
 
     public void setStartCard(StartCard startCard) {
-        this.startCard = startCard;
+        this.startCard = startCard == null ? null : new StartCard(startCard);
     }
 
     public StartCard getStartCard() {
-        return startCard;
+        return startCard == null ? null : new StartCard(startCard);
     }
 
     public void setSecretObjectiveChoice(List<ObjectiveCard> secretObjectiveChoices) {
-        this.secretObjectiveChoices = secretObjectiveChoices;
+        this.secretObjectiveChoices = secretObjectiveChoices == null ? null : new LinkedList<>(secretObjectiveChoices);
     }
 
     public List<ObjectiveCard> getSecretObjectiveChoices() {
-        return secretObjectiveChoices;
+        return new ArrayList<>(secretObjectiveChoices);
     }
 }
