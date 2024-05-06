@@ -37,6 +37,7 @@ public class GameLoopController {
      */
     public void joinGame(String nickname, ServerModelController controller){
         activePlayers.put(nickname, controller);
+        game.subscribe(controller, nickname);
         for(User user : game.getGameParty().getUsersList()){
             if(user.getNickname().equals(nickname)){
                 if(startCardIsPlaced(user) && secretObjectiveIsChose(user)){
@@ -66,6 +67,7 @@ public class GameLoopController {
         User user;
         for(String nick : game.getGameParty().getUsersList().stream().map(User::getNickname).toList()){
             ServerModelController controller = activePlayers.get(nick);
+            game.subscribe(controller, nick);
             if(controller == null){
                 throw new NullPointerException("Controller not found");
             }else {
