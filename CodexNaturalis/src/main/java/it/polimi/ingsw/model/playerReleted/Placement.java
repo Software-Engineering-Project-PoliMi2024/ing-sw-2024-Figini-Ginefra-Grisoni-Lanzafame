@@ -15,7 +15,6 @@ public record Placement(Position position, CardWithCorners card, CardFace face) 
      * @param other the placement to copy
      */
     public Placement(Placement other){
-
         this(other.position(), other.card(), other.face());
     }
 
