@@ -2,9 +2,9 @@ package it.polimi.ingsw.view.TUI.Renderables.CardRelated;
 
 import it.polimi.ingsw.SignificantPaths;
 import it.polimi.ingsw.lightModel.LightCard;
-import it.polimi.ingsw.lightModel.diffs.GameDiff;
-import it.polimi.ingsw.lightModel.diffs.HandDiffAdd;
-import it.polimi.ingsw.lightModel.diffs.HandDiffSetObj;
+import it.polimi.ingsw.lightModel.diffs.game.GameDiff;
+import it.polimi.ingsw.lightModel.diffs.game.HandDiffAdd;
+import it.polimi.ingsw.lightModel.diffs.game.HandDiffSetObj;
 import it.polimi.ingsw.lightModel.lightTableRelated.LightGame;
 import it.polimi.ingsw.view.TUI.cardDrawing.CardMuseum;
 import it.polimi.ingsw.view.TUI.cardDrawing.CardMuseumFactory;
@@ -12,8 +12,6 @@ import it.polimi.ingsw.view.TUI.inputs.CommandPrompt;
 import it.polimi.ingsw.view.TUI.inputs.CommandPromptResult;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-
-import static org.junit.jupiter.api.Assertions.*;
 
 class HandRenderableTest {
     HandRenderable renderable;

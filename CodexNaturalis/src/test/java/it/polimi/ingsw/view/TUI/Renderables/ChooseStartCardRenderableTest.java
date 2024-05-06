@@ -2,8 +2,8 @@ package it.polimi.ingsw.view.TUI.Renderables;
 
 import it.polimi.ingsw.SignificantPaths;
 import it.polimi.ingsw.lightModel.LightCard;
-import it.polimi.ingsw.lightModel.diffs.GameDiff;
-import it.polimi.ingsw.lightModel.diffs.HandDiffAdd;
+import it.polimi.ingsw.lightModel.diffs.game.GameDiff;
+import it.polimi.ingsw.lightModel.diffs.game.HandDiffAdd;
 import it.polimi.ingsw.lightModel.lightTableRelated.LightGame;
 import it.polimi.ingsw.view.TUI.Renderables.CardRelated.ChooseStartCardRenderable;
 import it.polimi.ingsw.view.TUI.cardDrawing.CardMuseum;

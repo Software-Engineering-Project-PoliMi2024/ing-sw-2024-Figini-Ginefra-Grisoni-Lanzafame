@@ -2,8 +2,7 @@ package it.polimi.ingsw.model.tableReleted;
 
 
 import it.polimi.ingsw.controller2.GameLoopController;
-import it.polimi.ingsw.lightModel.Heavifier;
-import it.polimi.ingsw.lightModel.diffs.GameDiff;
+import it.polimi.ingsw.lightModel.diffs.game.GameDiff;
 import it.polimi.ingsw.lightModel.diffPublishers.DiffSubscriber;
 import it.polimi.ingsw.lightModel.diffPublishers.GameDiffPublisher;
 import it.polimi.ingsw.model.cardReleted.cards.*;

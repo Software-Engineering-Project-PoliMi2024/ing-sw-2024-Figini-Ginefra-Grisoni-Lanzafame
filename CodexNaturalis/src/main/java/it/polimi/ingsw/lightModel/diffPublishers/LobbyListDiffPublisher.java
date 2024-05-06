@@ -1,12 +1,11 @@
 package it.polimi.ingsw.lightModel.diffPublishers;
 
 import it.polimi.ingsw.lightModel.Lightifier;
-import it.polimi.ingsw.lightModel.diffs.LobbyListDiffEdit;
+import it.polimi.ingsw.lightModel.diffs.lobby_lobbyList.LobbyListDiffEdit;
 import it.polimi.ingsw.lightModel.diffs.nuclearDiffs.FatManLobbyList;
-import it.polimi.ingsw.lightModel.diffs.LobbyListDiff;
+import it.polimi.ingsw.lightModel.diffs.lobby_lobbyList.LobbyListDiff;
 import it.polimi.ingsw.model.tableReleted.LobbyList;
 
-import java.rmi.RemoteException;
 import java.util.ArrayList;
 import java.util.List;
 

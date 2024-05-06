@@ -2,13 +2,12 @@ package it.polimi.ingsw.view.TUI.Renderables.CardRelated;
 
 import it.polimi.ingsw.SignificantPaths;
 import it.polimi.ingsw.lightModel.LightCard;
-import it.polimi.ingsw.lightModel.diffs.*;
+import it.polimi.ingsw.lightModel.diffs.game.*;
 import it.polimi.ingsw.lightModel.lightPlayerRelated.LightPlacement;
 import it.polimi.ingsw.lightModel.lightTableRelated.LightGame;
 import it.polimi.ingsw.model.cardReleted.utilityEnums.CardFace;
 import it.polimi.ingsw.model.cardReleted.utilityEnums.Resource;
 import it.polimi.ingsw.model.playerReleted.Position;
-import it.polimi.ingsw.view.TUI.Renderables.CodexRelated.CodexRenderable;
 import it.polimi.ingsw.view.TUI.Renderables.CodexRelated.CodexRenderableOthers;
 import it.polimi.ingsw.view.TUI.cardDrawing.CardMuseum;
 import it.polimi.ingsw.view.TUI.cardDrawing.CardMuseumFactory;
@@ -19,8 +18,6 @@ import org.junit.jupiter.api.Test;
 
 import java.util.ArrayList;
 import java.util.List;
-
-import static org.junit.jupiter.api.Assertions.*;
 
 class PeekTest {
     CodexRenderableOthers codexRenderable;

@@ -2,7 +2,7 @@ package it.polimi.ingsw.model.tableReleted;
 
 import it.polimi.ingsw.lightModel.diffPublishers.DiffSubscriber;
 import it.polimi.ingsw.lightModel.diffPublishers.LobbyListDiffPublisher;
-import it.polimi.ingsw.lightModel.diffs.LobbyListDiffEdit;
+import it.polimi.ingsw.lightModel.diffs.lobby_lobbyList.LobbyListDiffEdit;
 
 import java.io.Serializable;
 import java.util.HashSet;

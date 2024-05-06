@@ -2,8 +2,8 @@ package it.polimi.ingsw.controller2;
 
 import it.polimi.ingsw.lightModel.LightCard;
 import it.polimi.ingsw.lightModel.Lightifier;
-import it.polimi.ingsw.lightModel.diffs.GameDiffRound;
-import it.polimi.ingsw.lightModel.diffs.HandDiffAdd;
+import it.polimi.ingsw.lightModel.diffs.game.GameDiffRound;
+import it.polimi.ingsw.lightModel.diffs.game.HandDiffAdd;
 import it.polimi.ingsw.model.cardReleted.cards.ObjectiveCard;
 import it.polimi.ingsw.model.cardReleted.cards.StartCard;
 import it.polimi.ingsw.model.playerReleted.Position;

@@ -2,7 +2,7 @@ package it.polimi.ingsw.lightModel.diffPublishers;
 
 import it.polimi.ingsw.controller2.ServerModelController;
 import it.polimi.ingsw.lightModel.Lightifier;
-import it.polimi.ingsw.lightModel.diffs.LobbyListDiffEdit;
+import it.polimi.ingsw.lightModel.diffs.lobby_lobbyList.LobbyListDiffEdit;
 import it.polimi.ingsw.lightModel.lightTableRelated.LightLobby;
 import it.polimi.ingsw.model.MultiGame;
 import it.polimi.ingsw.model.tableReleted.Lobby;

@@ -2,12 +2,14 @@ package it.polimi.ingsw.view.TUI.Renderables.CodexRelated;
 
 import it.polimi.ingsw.SignificantPaths;
 import it.polimi.ingsw.lightModel.LightCard;
-import it.polimi.ingsw.lightModel.diffs.*;
+import it.polimi.ingsw.lightModel.diffs.game.CodexDiff;
+import it.polimi.ingsw.lightModel.diffs.game.GameDiff;
+import it.polimi.ingsw.lightModel.diffs.game.GameDiffGameNames;
+import it.polimi.ingsw.lightModel.diffs.game.GameDiffPlayerActivity;
 import it.polimi.ingsw.lightModel.lightPlayerRelated.LightPlacement;
 import it.polimi.ingsw.lightModel.lightTableRelated.LightGame;
 import it.polimi.ingsw.model.cardReleted.utilityEnums.CardFace;
 import it.polimi.ingsw.model.playerReleted.Position;
-import it.polimi.ingsw.view.TUI.Renderables.CardRelated.ChooseObjectiveCardRenderable;
 import it.polimi.ingsw.view.TUI.cardDrawing.CardMuseum;
 import it.polimi.ingsw.view.TUI.cardDrawing.CardMuseumFactory;
 import it.polimi.ingsw.view.TUI.inputs.CommandPrompt;
@@ -17,8 +19,6 @@ import org.junit.jupiter.api.Test;
 
 import java.util.ArrayList;
 import java.util.List;
-
-import static org.junit.jupiter.api.Assertions.*;
 
 class CodexRenderableTest {
     CodexRenderable renderable;

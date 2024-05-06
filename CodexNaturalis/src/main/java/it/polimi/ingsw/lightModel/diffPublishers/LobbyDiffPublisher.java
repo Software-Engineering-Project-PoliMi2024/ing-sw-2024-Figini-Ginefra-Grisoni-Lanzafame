@@ -1,15 +1,13 @@
 package it.polimi.ingsw.lightModel.diffPublishers;
 
-import it.polimi.ingsw.lightModel.diffs.LobbyDiff;
-import it.polimi.ingsw.lightModel.diffs.LobbyDiffEdit;
-import it.polimi.ingsw.lightModel.diffs.LobbyDiffEditLogin;
+import it.polimi.ingsw.lightModel.diffs.lobby_lobbyList.LobbyDiff;
+import it.polimi.ingsw.lightModel.diffs.lobby_lobbyList.LobbyDiffEdit;
+import it.polimi.ingsw.lightModel.diffs.lobby_lobbyList.LobbyDiffEditLogin;
 import it.polimi.ingsw.lightModel.diffs.nuclearDiffs.LittleBoyLobby;
 
 
-import java.rmi.RemoteException;
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 
 public class LobbyDiffPublisher {
@@ -98,6 +96,10 @@ public class LobbyDiffPublisher {
             diffSubscriber.updateLobby(new LittleBoyLobby());
         }
         subscribers.clear();
+    }
+
+    public synchronized void notifyStateDiff(DiffSubscriber diffSubscriber){
+
     }
 }
 

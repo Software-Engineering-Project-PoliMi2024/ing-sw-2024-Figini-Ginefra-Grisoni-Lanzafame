@@ -2,11 +2,11 @@ package it.polimi.ingsw.lightModel.diffPublishers;
 
 import it.polimi.ingsw.lightModel.LightCard;
 import it.polimi.ingsw.lightModel.Lightifier;
+import it.polimi.ingsw.lightModel.diffs.game.*;
 import it.polimi.ingsw.lightModel.diffs.nuclearDiffs.GadgetGame;
 import it.polimi.ingsw.lightModel.lightPlayerRelated.LightCodex;
 import it.polimi.ingsw.lightModel.lightPlayerRelated.LightHand;
 import it.polimi.ingsw.lightModel.lightPlayerRelated.LightHandOthers;
-import it.polimi.ingsw.lightModel.diffs.*;
 import it.polimi.ingsw.model.cardReleted.cards.GoldCard;
 import it.polimi.ingsw.model.cardReleted.cards.ResourceCard;
 import it.polimi.ingsw.model.cardReleted.utilityEnums.DrawableCard;
@@ -15,7 +15,6 @@ import it.polimi.ingsw.model.playerReleted.User;
 import it.polimi.ingsw.model.tableReleted.Deck;
 import it.polimi.ingsw.model.tableReleted.Game;
 
-import java.rmi.RemoteException;
 import java.util.*;
 
 public class GameDiffPublisher {

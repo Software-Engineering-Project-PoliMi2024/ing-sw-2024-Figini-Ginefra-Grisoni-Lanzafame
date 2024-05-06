@@ -1,14 +1,10 @@
 package it.polimi.ingsw.lightModel;
 
-import it.polimi.ingsw.lightModel.diffs.CodexDiff;
-import it.polimi.ingsw.lightModel.diffs.HandDiff;
 import it.polimi.ingsw.lightModel.lightPlayerRelated.*;
 import it.polimi.ingsw.lightModel.lightTableRelated.LightLobby;
 import it.polimi.ingsw.lightModel.lightTableRelated.LightLobbyList;
 import it.polimi.ingsw.model.cardReleted.cards.Card;
 import it.polimi.ingsw.model.cardReleted.cards.CardInHand;
-import it.polimi.ingsw.model.cardReleted.cards.CardWithCorners;
-import it.polimi.ingsw.model.cardReleted.cards.StartCard;
 import it.polimi.ingsw.model.cardReleted.utilityEnums.CardFace;
 import it.polimi.ingsw.model.cardReleted.utilityEnums.Resource;
 import it.polimi.ingsw.model.playerReleted.*;
@@ -18,7 +14,6 @@ import it.polimi.ingsw.model.tableReleted.Lobby;
 import java.io.Serializable;
 import java.util.HashMap;
 import java.util.Map;
-import java.util.stream.Collectors;
 
 public class Lightifier implements Serializable {
     /**

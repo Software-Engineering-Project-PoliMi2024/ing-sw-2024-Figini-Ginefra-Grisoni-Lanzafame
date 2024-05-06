@@ -1,4 +1,4 @@
-package it.polimi.ingsw.lightModel.diffs;
+package it.polimi.ingsw.lightModel.diffs.lobby_lobbyList;
 
 import it.polimi.ingsw.lightModel.lightTableRelated.LightLobby;
 import it.polimi.ingsw.lightModel.lightTableRelated.LightLobbyList;

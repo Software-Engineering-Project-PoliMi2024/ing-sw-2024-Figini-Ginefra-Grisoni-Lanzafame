@@ -1,5 +1,6 @@
-package it.polimi.ingsw.lightModel.diffs;
+package it.polimi.ingsw.lightModel.diffs.game;
 
+import it.polimi.ingsw.lightModel.diffs.ModelDiffs;
 import it.polimi.ingsw.lightModel.lightPlayerRelated.LightFrontier;
 import it.polimi.ingsw.model.playerReleted.Position;
 
