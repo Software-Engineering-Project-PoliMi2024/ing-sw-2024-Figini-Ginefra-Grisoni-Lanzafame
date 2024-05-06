@@ -1,7 +1,5 @@
 package it.polimi.ingsw.model.tableReleted;
 
-import it.polimi.ingsw.model.cardReleted.cards.Card;
-
 import java.io.Serializable;
 import java.util.*;
 
@@ -22,6 +20,17 @@ public class Deck<Element> implements Serializable {
         this.shuffle();
         this.populateBuffer();
     }
+
+    /**
+     * Copy constructor
+     * @param other the deck to copy
+     */
+    public Deck(Deck<Element> other){
+        this.bufferSize = other.bufferSize;
+        this.actualDeck = new LinkedList<>(other.actualDeck);
+        this.buffer = new LinkedHashSet<>(other.buffer);
+    }
+
     /**
      * Shuffle the deck
      */
@@ -46,7 +55,7 @@ public class Deck<Element> implements Serializable {
      * @return the buffer
      */
     public Set<Element> getBuffer(){
-        return buffer;
+         return new LinkedHashSet<>(buffer);
     }
 
     /**
@@ -54,7 +63,7 @@ public class Deck<Element> implements Serializable {
      * @return the actual deck
      */
     public Queue<Element> getActualDeck() {
-        return actualDeck;
+        return new LinkedList<>(actualDeck);
     }
 
     /**
@@ -95,8 +104,7 @@ public class Deck<Element> implements Serializable {
      */
     public Element showCardFromBuffer(int bufferId){
         List<Element> tmpList = new LinkedList<>(buffer);
-        Element element = tmpList.get(bufferId);
-        return element;
+        return tmpList.get(bufferId);
     }
 
     public boolean isEmpty(){
