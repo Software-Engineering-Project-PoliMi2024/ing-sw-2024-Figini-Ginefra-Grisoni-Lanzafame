@@ -16,17 +16,17 @@ import java.util.concurrent.Executors;
 import java.util.concurrent.Future;
 import java.util.concurrent.TimeUnit;
 
-public class ConnectionServerRMI implements ConnectionLayerServer{
+public class ConnectionServerRMI implements ConnectionLayerServer {
     private final MultiGame multiGame;
-    private ConnectionClientRMI clientStub;
     ExecutorService serverExecutor = Executors.newSingleThreadExecutor();
     int secondsTimeOut = 5;
 
     /**
      * The constructor of the class
+     *
      * @param multiGame the wrapper for the Model present in the server
      */
-    public ConnectionServerRMI(MultiGame multiGame){
+    public ConnectionServerRMI(MultiGame multiGame) {
         this.multiGame = multiGame;
     }
 
@@ -36,11 +36,11 @@ public class ConnectionServerRMI implements ConnectionLayerServer{
      * @param view the view of the client which is trying to connect
      * @throws RemoteException if a communication-related exception occurs during the execution of this method.
      */
-    public void connect(ViewInterface view) throws RemoteException {
-        //Create a ServerModelContoller for the new client
+    public synchronized void connect(ViewInterface view) throws RemoteException {
+        //Create a ServerModelController for the new client
 
         //expose the controller to the client
-        Future<ControllerInterface> connect = serverExecutor.submit(()->{
+        Future<ControllerInterface> connect = serverExecutor.submit(() -> {
             ControllerInterface controller = new ServerModelController(multiGame, view);
             ControllerInterface controllerStub = (ControllerInterface) UnicastRemoteObject.exportObject(controller, 0);
             view.postConnectionInitialization(controllerStub);
@@ -49,25 +49,12 @@ public class ConnectionServerRMI implements ConnectionLayerServer{
             return controller;
         });
 
-        try{
+        try {
             ControllerInterface controller = connect.get(secondsTimeOut, TimeUnit.SECONDS);
-        }catch (Exception e){
+        } catch (Exception e) {
             System.out.println("Error In Client Connection");
         }
 
     }
 
-    @Override
-    public void pong() throws RemoteException {
-        try {
-            clientStub.ping();
-        }catch (Exception e){
-            throw new RemoteException("Connection lost");
-
-        }
-    }
-
-    public void setConnectionClient(ConnectionLayerClient connectionClient){
-        this.clientStub = (ConnectionClientRMI) connectionClient;
-    }
 }

@@ -1,7 +1,9 @@
 package it.polimi.ingsw.controller2.ConnectionLayer;
 
+import it.polimi.ingsw.SignificantPaths;
 import it.polimi.ingsw.controller2.LogsOnClient;
 import it.polimi.ingsw.view.ViewInterface;
+import it.polimi.ingsw.view.ViewState;
 
 import java.rmi.RemoteException;
 import java.rmi.registry.LocateRegistry;
@@ -13,10 +15,10 @@ import java.util.concurrent.Future;
 import java.util.concurrent.TimeUnit;
 
 public class ConnectionClientRMI implements ConnectionLayerClient{
-    private ConnectionLayerServer serverStub;
-    ExecutorService clientExecutor = Executors.newSingleThreadExecutor();
-    ViewInterface view;
-    int secondsTimeOut = 5;
+    private final ExecutorService clientExecutor = Executors.newSingleThreadExecutor();
+    private ViewInterface view;
+    int secondsTimeOut = SignificantPaths.secondsTimeOut;
+
     /**
      * Establishes a connection with the RMI server located at the specified IP address and port.
      * This method enables communication between a client and the server through RMI.
@@ -24,7 +26,7 @@ public class ConnectionClientRMI implements ConnectionLayerClient{
      * @param port The port number where the RMI server is listening.
      * @param view the view of the client
      */
-    public void connect(String ip, int port, ViewInterface view) {
+    public void connect(String ip, int port, ViewInterface view) throws RemoteException{
         this.view = view;
         Future<ConnectionLayerServer> connect = clientExecutor.submit(() -> {
             Registry registry = LocateRegistry.getRegistry(ip, port);
@@ -34,7 +36,7 @@ public class ConnectionClientRMI implements ConnectionLayerClient{
             return serverReference;
         });
         try {
-            serverStub = connect.get(secondsTimeOut, TimeUnit.SECONDS);
+            ConnectionLayerServer serverStub = connect.get(secondsTimeOut, TimeUnit.SECONDS);
             if(serverStub == null)
                 throw new NullPointerException();
         }
@@ -45,24 +47,6 @@ public class ConnectionClientRMI implements ConnectionLayerClient{
             }catch (RemoteException r){
             }
         }
-
-        //(ConnectionClientRMI) UnicastRemoteObject.exportObject(this, 0);
-        //serverStub.setConnectionClient(connectClientStub);
     }
 
-    @Override
-    public void ping() throws RemoteException {
-        try {
-            serverStub.pong();
-        }catch (RemoteException e){
-            throw new RemoteException("Connection lost");
-        }
-    }
-
-    private void disconnect() {
-        try {
-            view.logErr(LogsOnClient.CONNECTION_LOST_CLIENT_SIDE.getMessage());
-        }catch (RemoteException r){
-        }
-    }
 }

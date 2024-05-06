@@ -4,8 +4,9 @@ import it.polimi.ingsw.controller2.ConnectionLayer.ConnectionClientRMI;
 import it.polimi.ingsw.controller2.ConnectionLayer.ConnectionLayerClient;
 import it.polimi.ingsw.view.TUI.TUI;
 import it.polimi.ingsw.view.View;
-import it.polimi.ingsw.view.ViewState;
 
+import java.rmi.RemoteException;
+import java.rmi.server.UnicastRemoteObject;
 import java.util.Scanner;
 
 public class Client {
