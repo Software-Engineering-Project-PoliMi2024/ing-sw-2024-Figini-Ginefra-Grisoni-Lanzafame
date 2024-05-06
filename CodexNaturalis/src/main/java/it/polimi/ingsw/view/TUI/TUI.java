@@ -143,7 +143,7 @@ public class TUI extends View{
                 "Codex",
                 lightGame,
                 cardMuseum,
-                new CommandPrompt[]{CommandPrompt.DISPLAY_START_FRONT, CommandPrompt.DISPLAY_START_BACK, CommandPrompt.DISPLAY_OBJECTIVE_OPTIONS, CommandPrompt.DISPLAY_HAND_FRONT, CommandPrompt.DISPLAY_HAND_BACK, CommandPrompt.DISPLAY_SECRET_OBJECTIVE},
+                new CommandPrompt[]{CommandPrompt.DISPLAY_CODEX},
                 controller);
         StateTUI.IDLE.attach(codexRenderable);
         StateTUI.DRAW_CARD.attach(codexRenderable);
