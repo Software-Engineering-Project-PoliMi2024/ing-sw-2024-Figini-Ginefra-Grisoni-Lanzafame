@@ -3,6 +3,7 @@ package it.polimi.ingsw.controller2;
 import it.polimi.ingsw.lightModel.LightCard;
 import it.polimi.ingsw.lightModel.Lightifier;
 import it.polimi.ingsw.lightModel.diffs.game.GameDiffCurrentPlayer;
+import it.polimi.ingsw.lightModel.diffs.game.GameDiffWinner;
 import it.polimi.ingsw.lightModel.diffs.game.HandDiffAdd;
 import it.polimi.ingsw.model.cardReleted.cards.ObjectiveCard;
 import it.polimi.ingsw.model.cardReleted.cards.StartCard;
@@ -11,9 +12,7 @@ import it.polimi.ingsw.model.playerReleted.User;
 import it.polimi.ingsw.model.tableReleted.Game;
 import it.polimi.ingsw.view.ViewState;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 public class GameLoopController {
     //A map containing the view for each ACTIVE player in the game
@@ -71,13 +70,13 @@ public class GameLoopController {
             if(controller == null){
                 throw new NullPointerException("Controller not found");
             }else {
+                controller.log(LogsOnClient.NEW_GAME_JOINED);
                 controller.transitionTo(ViewState.CHOOSE_START_CARD);
                 try {
                     user = game.getUserFromNick(nick);
                 }catch (IllegalCallerException e){
                     throw new NullPointerException("User not found");
                 }
-                controller.log(LogsOnClient.NEW_GAME_JOINED);
                 LightCard lightStartCard = Lightifier.lightifyToCard(getOrDrawStartCard(user));
                 controller.updateGame(new HandDiffAdd(lightStartCard, true));
             }
@@ -85,7 +84,7 @@ public class GameLoopController {
     }
 
     /**
-     * @param user
+     * @param user who is playing
      * @return true if user place his start card, false otherwise
      */
     private Boolean startCardIsPlaced(User user){
@@ -94,7 +93,7 @@ public class GameLoopController {
 
 
     /**
-     * @param user
+     * @param user who is playing
      * @return true if user chose his secretObjective, false otherwise
      */
     private Boolean secretObjectiveIsChose(User user){
@@ -103,7 +102,7 @@ public class GameLoopController {
 
     /**
      * Draw a start card if the user never drawn one before or get it from the model
-     * @param user
+     * @param user who is drawing the startCard
      * @return a StartCard
      */
     private StartCard getOrDrawStartCard(User user){
@@ -119,7 +118,7 @@ public class GameLoopController {
 
     /**
      * Draw two ObjectiveCards if the user never drawn them before or get them from the model
-     * @param user
+     * @param user who is drawing the objectiveCard
      * @return a List two objectiveCard in a light version
      */
     private List<LightCard> getOrDrawSecretObjectiveChoices(User user){
@@ -150,7 +149,6 @@ public class GameLoopController {
     }
     public void leaveGame(ServerModelController controller, String nickname){
         String currentPlayerNick = game.getGameParty().getCurrentPlayer().getNickname();
-        game.unsubscribe(controller);
         if(everyonePlaced() && everyoneChose() && controller.getNickname().equals(currentPlayerNick)){
             //Todo Implementing handling for the edge case where the leaving player is the playing one
             activePlayers.remove(nickname, controller);
@@ -173,6 +171,7 @@ public class GameLoopController {
     public void startCardPlaced(ServerModelController controller) {
         if(!everyonePlaced()){ //Not all activePlayer placed their starting Card
             controller.log(LogsOnClient.WAIT_STARTCARD);
+            controller.transitionTo(ViewState.WAITING_STATE);
         }else{
             this.checkForDisconnectedUsers();
             this.secretObjectiveSetup();
@@ -188,6 +187,7 @@ public class GameLoopController {
     public void secretObjectiveChose(ServerModelController controller){
         if(!everyoneChose()){ //Not all activePlayer chose their secretObjective Card
             controller.log(LogsOnClient.WAIT_SECRET_OBJECTIVE);
+            controller.transitionTo(ViewState.WAITING_STATE);
         }else{
             this.checkForDisconnectedUsers();
             //A player might disconnect while he is in waiting, after he chose the secretObj.
@@ -281,20 +281,14 @@ public class GameLoopController {
      */
     private void gameLoop(){
         User nextPlayer = calculateNextPlayer();
-
-        if(checkForChickenDinner() && nextPlayer.equals(game.getGameParty().getFirstPlayerInOrder()) && !game.isLastTurn()){
+        if(game.isLastTurn() && nextPlayer.equals(game.getGameParty().getFirstPlayerInOrder())){
+            this.endGame();
+        } else if (checkForChickenDinner() && nextPlayer.equals(game.getGameParty().getFirstPlayerInOrder()) && !game.isLastTurn()){
             game.setLastTurn(true);
             for(ServerModelController controller : activePlayers.values()){
                 controller.log(LogsOnClient.LAST_TURN);
             }
-        } else if (game.isLastTurn() && nextPlayer.equals(game.getGameParty().getFirstPlayerInOrder())) {
-            for(ServerModelController controller : activePlayers.values()){
-                controller.log(LogsOnClient.GAME_END);
-                controller.transitionTo(ViewState.GAME_ENDING);
-            }
-            return;
         }
-
         for(ServerModelController controller : activePlayers.values()){
             controller.updateGame(new GameDiffCurrentPlayer(nextPlayer.getNickname()));
             if (controller.getNickname().equals(nextPlayer.getNickname())) {
@@ -302,6 +296,36 @@ public class GameLoopController {
             } else {
                 controller.transitionTo(ViewState.IDLE);
             }
+        }
+    }
+
+    private int getPlayerPoint(String nick){
+        User user = game.getUserFromNick(nick);
+        return user.getUserCodex().getPoints() +
+                game.getCommonObjective().stream().mapToInt(objectiveCard -> objectiveCard.getPoints(user.getUserCodex())).sum()
+                + game.getUserFromNick(nick).getUserHand().getSecretObjective().getPoints(user.getUserCodex());
+    }
+
+    private int getWinnerPoint(String nick){
+        User user = game.getUserFromNick(nick);
+        return game.getCommonObjective().stream().mapToInt(objectiveCard -> objectiveCard.getPoints(user.getUserCodex())).sum()
+                + user.getUserHand().getSecretObjective().getPoints(user.getUserCodex());
+    }
+    private void endGame() {
+        //Calculate all possibleWinners (player(s) who scored the max amount of points in the game
+        int maxPoint = activePlayers.keySet().stream().mapToInt(this::getPlayerPoint).max().orElse(0);
+        List<String> possibleWinners = activePlayers.keySet().stream().filter(nick -> this.getPlayerPoint(nick) == maxPoint).toList();
+        //calculate the real winner(s) by checking the points obtain from the objective Card
+        List<String> realWinner;
+        if(possibleWinners.size()!=1){
+            int winnerPoint = activePlayers.keySet().stream().mapToInt(this::getWinnerPoint).max().orElse(0);
+            realWinner = activePlayers.keySet().stream().filter(nick -> this.getWinnerPoint(nick) == winnerPoint).toList();
+        }else{
+            realWinner = new ArrayList<>(possibleWinners);
+        }
+        for(ServerModelController controller : activePlayers.values()){
+            controller.updateGame(new GameDiffWinner(realWinner));
+            controller.transitionTo(ViewState.GAME_ENDING);
         }
     }
 

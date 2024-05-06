@@ -7,6 +7,7 @@ import it.polimi.ingsw.lightModel.diffs.ModelDiffs;
 import it.polimi.ingsw.lightModel.lightTableRelated.LightGame;
 import it.polimi.ingsw.lightModel.lightTableRelated.LightLobby;
 import it.polimi.ingsw.lightModel.lightTableRelated.LightLobbyList;
+import it.polimi.ingsw.view.TUI.Printing.Printer;
 import it.polimi.ingsw.view.TUI.Renderables.*;
 import it.polimi.ingsw.view.TUI.Renderables.CardRelated.ChooseObjectiveCardRenderable;
 import it.polimi.ingsw.view.TUI.Renderables.CardRelated.ChooseStartCardRenderable;
@@ -36,9 +37,9 @@ public class TUI extends View{
     private final InputHandler inputHandler = new InputHandler();
     private final CommandDisplayRenderable commandDisplay;
 
-    private List<Renderable> renderables;
+    private final List<Renderable> renderables;
 
-    private CardMuseum cardMuseum = new CardMuseumFactory(SignificantPaths.CardFolder).getCardMuseum();
+    private final CardMuseum cardMuseum = new CardMuseumFactory(SignificantPaths.CardFolder).getCardMuseum();
 
     private final ConnectFormRenderable connectForm;
 
@@ -143,7 +144,7 @@ public class TUI extends View{
                 "Codex",
                 lightGame,
                 cardMuseum,
-                new CommandPrompt[]{CommandPrompt.DISPLAY_START_FRONT, CommandPrompt.DISPLAY_START_BACK, CommandPrompt.DISPLAY_OBJECTIVE_OPTIONS, CommandPrompt.DISPLAY_HAND_FRONT, CommandPrompt.DISPLAY_HAND_BACK, CommandPrompt.DISPLAY_SECRET_OBJECTIVE},
+                new CommandPrompt[]{CommandPrompt.DISPLAY_CODEX},
                 controller);
         StateTUI.IDLE.attach(codexRenderable);
         StateTUI.DRAW_CARD.attach(codexRenderable);
@@ -203,13 +204,16 @@ public class TUI extends View{
 
     @Override
     public void log(String logMsg) {
-
+        Printer.println("");
         PromptStyle.printInABox(logMsg,50, StringStyle.GREEN_FOREGROUND);
+        Printer.println("");
     }
 
     @Override
     public void logErr(String logMsg) {
+        Printer.println("");
         PromptStyle.printInABox(logMsg,50, StringStyle.RED_FOREGROUND);
+        Printer.println("");
         commandDisplay.render();
     }
 

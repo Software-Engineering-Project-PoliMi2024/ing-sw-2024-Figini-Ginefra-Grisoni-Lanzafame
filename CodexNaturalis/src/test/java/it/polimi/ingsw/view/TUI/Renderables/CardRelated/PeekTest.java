@@ -17,6 +17,7 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 
 class PeekTest {
@@ -30,8 +31,13 @@ class PeekTest {
         codexRenderable = new CodexRenderableOthers("name", lightGame, museum, new CommandPrompt[]{}, null);
         handRenderable = new HandOthersRenderable("name", museum, lightGame, new CommandPrompt[]{}, null);
 
-        GameDiff diff = new GameDiffPlayerActivity(List.of(new String[]{"Player1", "Player2"}), new ArrayList<>());
+
+        GameDiff diff = new GameDiffInitializeCodexMap(List.of(new String[]{"Player1", "Player2"}));
         diff.apply(lightGame);
+        diff = new GameDiffPlayerActivity(List.of(new String[]{"Player1", "Player2"}), new ArrayList<>());
+        diff.apply(lightGame);
+
+
 
         diff = new GameDiffGameName("TestGame");
         diff.apply(lightGame);
@@ -46,10 +52,10 @@ class PeekTest {
                 new Position(1, 1)
         });
 
-        diff = new CodexDiff("Player1", 0, null, placements, positions);
+        diff = new CodexDiff("Player1", 0, new HashMap<>(), placements, positions);
         diff.apply(lightGame);
 
-        diff = new CodexDiff("Player2", 0, null, placements, positions);
+        diff = new CodexDiff("Player2", 0, new HashMap<>(), placements, positions);
         diff.apply(lightGame);
 
         diff = new HandOtherDiffAdd(Resource.INSECT, "Player2");

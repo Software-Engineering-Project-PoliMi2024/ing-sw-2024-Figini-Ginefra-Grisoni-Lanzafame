@@ -7,6 +7,7 @@ import it.polimi.ingsw.lightModel.diffs.nuclearDiffs.GadgetGame;
 import it.polimi.ingsw.lightModel.lightPlayerRelated.LightCodex;
 import it.polimi.ingsw.lightModel.lightPlayerRelated.LightHand;
 import it.polimi.ingsw.lightModel.lightPlayerRelated.LightHandOthers;
+import it.polimi.ingsw.model.cardReleted.cards.Card;
 import it.polimi.ingsw.model.cardReleted.cards.GoldCard;
 import it.polimi.ingsw.model.cardReleted.cards.ResourceCard;
 import it.polimi.ingsw.model.cardReleted.utilityEnums.DrawableCard;
@@ -181,7 +182,7 @@ public class GameDiffPublisher {
      * @return a diff containing the current state of the public objectives in the game
      */
     private GameDiffPublicObj getPublicObjectiveCurrentState(){
-        LightCard[] publicObj = game.getObjectiveCardDeck().getBuffer().stream().map(Lightifier::lightifyToCard).toArray(LightCard[]::new);
+        LightCard[] publicObj = game.getCommonObjective().stream().map(Lightifier::lightifyToCard).toArray(LightCard[]::new);
         if(publicObj.length == 2)
             return new GameDiffPublicObj(publicObj);
         return new GameDiffPublicObj();
