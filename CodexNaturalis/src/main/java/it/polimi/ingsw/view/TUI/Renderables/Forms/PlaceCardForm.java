@@ -31,7 +31,7 @@ public class PlaceCardForm extends FormRenderable{
                 LightFrontier frontier = game.getMyCodex().getFrontier();
                 List<Position> positions = frontier.frontier();
 
-                if(frontierIndex < frontier.size() && game.getHand().isPlayble(card)){
+                if(frontierIndex < frontier.size() && (game.getHand().isPlayble(card) || face == CardFace.BACK)){
                     LightPlacement placement = new LightPlacement(positions.get(frontierIndex), card, face);
                     this.controller.place(placement);
                 }

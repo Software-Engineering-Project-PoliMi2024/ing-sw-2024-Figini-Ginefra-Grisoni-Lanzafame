@@ -2,11 +2,8 @@ package it.polimi.ingsw.view.TUI.Renderables.CardRelated;
 
 import it.polimi.ingsw.controller2.ControllerInterface;
 import it.polimi.ingsw.lightModel.LightCard;
-import it.polimi.ingsw.lightModel.lightPlayerRelated.LightFrontier;
-import it.polimi.ingsw.lightModel.lightPlayerRelated.LightPlacement;
 import it.polimi.ingsw.lightModel.lightTableRelated.LightGame;
 import it.polimi.ingsw.model.cardReleted.utilityEnums.CardFace;
-import it.polimi.ingsw.model.playerReleted.Position;
 import it.polimi.ingsw.view.TUI.Styles.CardTextStyle;
 import it.polimi.ingsw.view.TUI.Styles.DecoratedString;
 import it.polimi.ingsw.view.TUI.Styles.PromptStyle;
@@ -14,8 +11,6 @@ import it.polimi.ingsw.view.TUI.Styles.StringStyle;
 import it.polimi.ingsw.view.TUI.cardDrawing.CardMuseum;
 import it.polimi.ingsw.view.TUI.inputs.CommandPrompt;
 import it.polimi.ingsw.view.TUI.inputs.CommandPromptResult;
-
-import java.util.List;
 
 /**
  * This class is a Renderable that can render the hand of the main player.
@@ -54,7 +49,7 @@ public class HandRenderable extends CardRenderable {
 
             LightCard card = getLightGame().getHand().getCards()[i];
 
-            if(!getLightGame().getHand().isPlayble(card)){
+            if(this.getFace() == CardFace.FRONT && !getLightGame().getHand().isPlayble(card)){
                 text = new DecoratedString(text, StringStyle.STRIKETHROUGH).toString();
             }
 
