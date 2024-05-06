@@ -8,7 +8,6 @@ public abstract class View implements ViewInterface {
     private ViewState currentState = null;
 
     public View(ConnectionLayerClient controller){
-
         this.controller = controller;
     }
 
@@ -29,5 +28,4 @@ public abstract class View implements ViewInterface {
     public void transitionTo(ViewState state){
         this.currentState = state;
     }
-
 }

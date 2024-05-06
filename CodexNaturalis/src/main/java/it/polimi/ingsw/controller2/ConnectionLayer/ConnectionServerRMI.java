@@ -18,7 +18,7 @@ import java.util.concurrent.TimeUnit;
 
 public class ConnectionServerRMI implements ConnectionLayerServer {
     private final MultiGame multiGame;
-    ExecutorService serverExecutor = Executors.newSingleThreadExecutor();
+    private final ExecutorService serverExecutor = Executors.newSingleThreadExecutor();
     int secondsTimeOut = 5;
 
     /**
@@ -56,5 +56,4 @@ public class ConnectionServerRMI implements ConnectionLayerServer {
         }
 
     }
-
 }

@@ -5,6 +5,8 @@ import it.polimi.ingsw.lightModel.diffPublishers.ViewTest;
 import it.polimi.ingsw.lightModel.diffs.lobby_lobbyList.LobbyListDiffEdit;
 import it.polimi.ingsw.lightModel.lightTableRelated.LightLobby;
 import it.polimi.ingsw.model.MultiGame;
+import it.polimi.ingsw.model.cardReleted.utilityEnums.CardFace;
+import it.polimi.ingsw.model.playerReleted.Hand;
 import it.polimi.ingsw.model.playerReleted.User;
 import it.polimi.ingsw.model.tableReleted.Lobby;
 import org.junit.jupiter.api.Test;
@@ -165,6 +167,13 @@ class ServerModelControllerTest {
         assert multiGame.getGameByName(lobbyName2).getGameParty().getUsersList().stream().map(User::getNickname).toList().contains(view5.name);
         assert multiGame.getGameByName(lobbyName2).getGameParty().getNumberOfMaxPlayer() == 2;
 
+        assert multiGame.getGameByName(lobbyName2).getGameParty().getUsersList().stream().map(User::getUserHand).map(Hand::getStartCard).toList().size() == 2;
+        assert view3.lightGame.getHand().getCards()[0].id() != 0;
+        assert view3.lightGame.getHand().getCards()[1] == null;
+        assert view3.lightGame.getHand().getCards()[2] == null;
+        assert view5.lightGame.getHand().getCards()[0].id() != 0;
+        assert view5.lightGame.getHand().getCards()[1] == null;
+        assert view5.lightGame.getHand().getCards()[2] == null;
 
     }
     @Test
@@ -236,5 +245,50 @@ class ServerModelControllerTest {
         assert multiGame.getLobbyByName(lobbyName1).getLobbyPlayerList().contains(view3.name);
         assert !multiGame.getLobbyByName(lobbyName1).getLobbyPlayerList().contains(view2.name);
         assert multiGame.getGameByName(lobbyName2) == null;
+    }
+
+    @Test
+    void selectStartCardFace() {
+        MultiGame multiGame = new MultiGame();
+
+        ViewTest view1 = new ViewTest();
+        ViewTest view2 = new ViewTest();
+        ViewTest view3 = new ViewTest();
+        ViewTest view4 = new ViewTest();
+        ViewTest view5 = new ViewTest();
+
+        ServerModelController serverModelController1 = new ServerModelController(multiGame, view1);
+        ServerModelController serverModelController2 = new ServerModelController(multiGame, view2);
+
+        view1.name = "giorgia";
+        view2.name = "meloni";
+        view3.name = "salvini";
+        view4.name = "renzi";
+        view5.name = "draghi";
+        String lobbyName1 = "test1";
+
+        try{
+            serverModelController1.login(view1.name);
+            serverModelController1.createLobby(lobbyName1, 2);
+            serverModelController2.login(view2.name);
+            serverModelController2.joinLobby(lobbyName1);
+            serverModelController1.selectStartCardFace(CardFace.FRONT);
+        }catch (RemoteException r){
+            r.printStackTrace();
+        }
+
+        System.out.println(view1.lightGame.getCodexMap().keySet());
+    }
+
+    @Test
+    void choseSecretObjective() {
+    }
+
+    @Test
+    void place() {
+    }
+
+    @Test
+    void draw() {
     }
 }

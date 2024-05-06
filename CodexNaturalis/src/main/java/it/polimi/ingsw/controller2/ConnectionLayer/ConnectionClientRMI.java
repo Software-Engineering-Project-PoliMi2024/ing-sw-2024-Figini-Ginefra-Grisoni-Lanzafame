@@ -27,13 +27,16 @@ public class ConnectionClientRMI implements ConnectionLayerClient{
      * @param view the view of the client
      */
     public void connect(String ip, int port, ViewInterface view) throws RemoteException{
-        this.view = view;
         Future<ConnectionLayerServer> connect = clientExecutor.submit(() -> {
-            Registry registry = LocateRegistry.getRegistry(ip, port);
-            ConnectionLayerServer serverReference = (ConnectionLayerServer) registry.lookup("connect");
-            ViewInterface viewStub = (ViewInterface) UnicastRemoteObject.exportObject(view, 0);
-            serverReference.connect(viewStub);
-            return serverReference;
+            try {
+                Registry registry = LocateRegistry.getRegistry(ip, port);
+                ConnectionLayerServer serverReference = (ConnectionLayerServer) registry.lookup("connect");
+                ViewInterface viewStub = (ViewInterface) UnicastRemoteObject.exportObject(view, 0);
+                serverReference.connect(viewStub);
+                return serverReference;
+            } catch (Exception e) {
+                throw new RuntimeException(e);
+            }
         });
         try {
             ConnectionLayerServer serverStub = connect.get(secondsTimeOut, TimeUnit.SECONDS);
@@ -42,13 +45,10 @@ public class ConnectionClientRMI implements ConnectionLayerClient{
         }
         catch (Exception e){
             try {
-                e.printStackTrace();
+                //e.printStackTrace();
                 view.logErr(LogsOnClient.CONNECTION_ERROR.getMessage());
             }catch (RemoteException r){
             }
         }
     }
-
-
 }
-
