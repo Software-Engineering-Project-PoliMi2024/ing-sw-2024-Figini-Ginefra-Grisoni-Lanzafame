@@ -1,6 +1,5 @@
 package it.polimi.ingsw.view.TUI.cardDrawing;
 
-import it.polimi.ingsw.model.cardReleted.utilityEnums.DrawableCard;
 import it.polimi.ingsw.model.cardReleted.utilityEnums.Resource;
 import it.polimi.ingsw.view.TUI.Renderables.drawables.Drawable;
 
@@ -42,14 +41,6 @@ public class CardMuseum implements Serializable {
      */
     public TextCard get(int id){
         return textCards.get(id);
-    }
-
-    /**
-     * Gets all the card from the museum.
-     * @return The cards in the museum indexed by their id.
-     */
-    public Map<Integer, TextCard> getCards(){
-        return textCards;
     }
 
     /**
