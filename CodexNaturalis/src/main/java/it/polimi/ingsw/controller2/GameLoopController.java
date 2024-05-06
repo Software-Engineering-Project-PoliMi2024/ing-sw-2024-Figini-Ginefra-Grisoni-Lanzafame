@@ -2,7 +2,7 @@ package it.polimi.ingsw.controller2;
 
 import it.polimi.ingsw.lightModel.LightCard;
 import it.polimi.ingsw.lightModel.Lightifier;
-import it.polimi.ingsw.lightModel.diffs.game.GameDiffRound;
+import it.polimi.ingsw.lightModel.diffs.game.GameDiffCurrentPlayer;
 import it.polimi.ingsw.lightModel.diffs.game.HandDiffAdd;
 import it.polimi.ingsw.model.cardReleted.cards.ObjectiveCard;
 import it.polimi.ingsw.model.cardReleted.cards.StartCard;
@@ -153,10 +153,10 @@ public class GameLoopController {
             activePlayers.remove(nickname, controller);
         }else if(isLastToPlace(controller)){
             activePlayers.remove(nickname, controller);
-            this.secrectObjectiveSetup();
+            this.secretObjectiveSetup();
         }else if(isLastToChose(controller)){
             activePlayers.remove(nickname, controller);
-            this.gameLoopStarter();
+            this.gameLoop();
         }else{
             activePlayers.remove(nickname, controller);
         }
@@ -172,7 +172,7 @@ public class GameLoopController {
             controller.log(LogsOnClient.WAIT_STARTCARD);
         }else{
             this.checkForDisconnectedUsers();
-            this.secrectObjectiveSetup();
+            this.secretObjectiveSetup();
         }
     }
 
@@ -189,25 +189,32 @@ public class GameLoopController {
             this.checkForDisconnectedUsers();
             //A player might disconnect while he is in waiting, after he chose the secretObj.
             // He is not banned, but he can't be the first player of the gameLoop
-            this.gameLoopStarter();
+            this.gameLoop();
         }
     }
 
     /**
-     * Elaborate the view for the currentPlayer and the nextOne
+     * Elaborate the view for the currentPlayer. Calculate the nextPlayer
      * @param controller of the currentPlayer who ended his turn
      */
     public void cardDrawn(ServerModelController controller){
-        //all of this code will be run only once by the soon-to-be ex currentPlayer
-        User currentPlayer = currentPlayer();
-        for(ServerModelController serverModelController : activePlayers.values()){
-            serverModelController.updateGame(new GameDiffRound(currentPlayer.getNickname()));
-            if(serverModelController.getNickname().equals(currentPlayer.getNickname())){
-                serverModelController.log(LogsOnClient.YOUR_TURN);
-                serverModelController.transitionTo(ViewState.PLACE_CARD);
+        controller.transitionTo(ViewState.WAITING_STATE);
+        this.gameLoop();
+    }
+
+    private boolean checkForChickenDinner() {
+        boolean thereAreWinner = false;
+        if(game.decksAreEmpty()){
+            thereAreWinner=true;
+        }else{
+            for(String nick : activePlayers.keySet()){
+                if(game.getUserFromNick(nick).getUserCodex().getPoints()>=20){
+                    thereAreWinner = true;
+                    break;
+                }
             }
         }
-
+        return thereAreWinner;
     }
 
     /**
@@ -254,7 +261,7 @@ public class GameLoopController {
     /**
      * @return the User of the next activePlayer in the game
      */
-    private User currentPlayer(){
+    private User calculateNextPlayer(){
         User currentPlayer;
         do{
             game.getGameParty().nextPlayer();
@@ -262,6 +269,37 @@ public class GameLoopController {
         }while(!activePlayers.containsKey(currentPlayer.getNickname()));
         System.out.println("the next player is: " + currentPlayer.getNickname());
         return currentPlayer;
+    }
+
+    /**
+     * Calculate the next currentPlayer, if it is the firstPlayer in order and condition are met set the lastTurn=true;
+     * If lastTurn is true and the next currentPlayer is the firstPlayer end the game
+     * Adjust the view of each activePlayer accordingly
+     */
+    private void gameLoop(){
+        User nextPlayer = calculateNextPlayer();
+
+        if(checkForChickenDinner() && nextPlayer.equals(game.getGameParty().getFirstPlayerInOrder()) && !game.isLastTurn()){
+            game.setLastTurn(true);
+            for(ServerModelController controller : activePlayers.values()){
+                controller.log(LogsOnClient.LAST_TURN);
+            }
+        } else if (game.isLastTurn() && nextPlayer.equals(game.getGameParty().getFirstPlayerInOrder())) {
+            for(ServerModelController controller : activePlayers.values()){
+                controller.log(LogsOnClient.GAME_END);
+                controller.transitionTo(ViewState.GAME_ENDING);
+            }
+            return;
+        }
+
+        for(ServerModelController controller : activePlayers.values()){
+            controller.updateGame(new GameDiffCurrentPlayer(nextPlayer.getNickname()));
+            if (controller.getNickname().equals(nextPlayer.getNickname())) {
+                controller.transitionTo(ViewState.PLACE_CARD);
+            } else {
+                controller.transitionTo(ViewState.IDLE);
+            }
+        }
     }
 
     private boolean isLastToPlace(ServerModelController controller){
@@ -288,31 +326,16 @@ public class GameLoopController {
         return lastToChose;
     }
 
+
     /**
      * For each activePlayer, draw 2 objectiveCard, and send them to the view
      */
-    private void secrectObjectiveSetup(){
+    private void secretObjectiveSetup(){
         for(ServerModelController controller1 : activePlayers.values()){
             controller1.transitionTo(ViewState.SELECT_OBJECTIVE);
             User user = game.getUserFromNick(controller1.getNickname());
             for (LightCard secretObjectiveCardChoice : getOrDrawSecretObjectiveChoices(user)) {
                 controller1.updateGame(new HandDiffAdd(secretObjectiveCardChoice, true));
-            }
-        }
-    }
-
-    /**
-     * Calculate the next currentPlayer, send it to each active Player controller.
-     * Adjust the view of each activePlayer accordingly
-     */
-    private void gameLoopStarter(){
-        User currentPlayer = currentPlayer();
-        for(ServerModelController controller1 : activePlayers.values()){
-            controller1.updateGame(new GameDiffRound(currentPlayer.getNickname()));
-            if (controller1.getNickname().equals(currentPlayer.getNickname())) {
-                controller1.transitionTo(ViewState.PLACE_CARD);
-            } else {
-                controller1.transitionTo(ViewState.IDLE);
             }
         }
     }

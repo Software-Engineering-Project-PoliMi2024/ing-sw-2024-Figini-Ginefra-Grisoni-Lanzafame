@@ -6,6 +6,7 @@ import it.polimi.ingsw.lightModel.diffs.game.GameDiff;
 import it.polimi.ingsw.lightModel.diffPublishers.DiffSubscriber;
 import it.polimi.ingsw.lightModel.diffPublishers.GameDiffPublisher;
 import it.polimi.ingsw.model.cardReleted.cards.*;
+import it.polimi.ingsw.model.cardReleted.utilityEnums.DrawableCard;
 import it.polimi.ingsw.model.playerReleted.User;
 
 import java.io.Serializable;
@@ -25,6 +26,7 @@ public class Game implements Serializable {
     final private Deck<StartCard> startingCardDeck;
     private final String name;
     private GameParty gameParty;
+    private boolean isLastTurn;
     /**
      * Constructs a new Game instance with a specified maximum number of players.
      */
@@ -118,5 +120,17 @@ public class Game implements Serializable {
             }
         }
         throw new IllegalCallerException("Nickname not found in this game");
+    }
+
+    public boolean decksAreEmpty(){
+        return goldCardDeck.isEmpty() && resourceCardDeck.isEmpty();
+    }
+
+    public void setLastTurn(boolean lastTurn) {
+        isLastTurn = lastTurn;
+    }
+
+    public boolean isLastTurn() {
+        return isLastTurn;
     }
 }
