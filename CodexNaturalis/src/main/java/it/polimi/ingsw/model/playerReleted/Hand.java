@@ -86,4 +86,11 @@ public class Hand implements Serializable {
     public List<ObjectiveCard> getSecretObjectiveChoices() {
         return secretObjectiveChoices == null ? null : new ArrayList<>(secretObjectiveChoices);
     }
+
+    public void addSecretObjectiveChoice(ObjectiveCard objectiveCard){
+        if(secretObjectiveChoices == null){
+            secretObjectiveChoices = new LinkedList<>();
+        }
+        secretObjectiveChoices.add(objectiveCard);
+    }
 }
