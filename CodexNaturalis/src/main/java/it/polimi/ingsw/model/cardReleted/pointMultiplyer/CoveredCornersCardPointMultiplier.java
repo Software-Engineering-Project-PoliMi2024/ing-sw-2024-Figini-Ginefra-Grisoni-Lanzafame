@@ -31,4 +31,8 @@ public class CoveredCornersCardPointMultiplier implements GoldCardPointMultiplie
     public WritingMaterial getTarget(){
         return null;
     }
+
+    public GoldCardPointMultiplier getCopy(){
+        return new CoveredCornersCardPointMultiplier();
+    }
 }

@@ -9,5 +9,7 @@ import java.io.Serializable;
 public interface GoldCardPointMultiplier extends Serializable {
     int getMultiplier(Codex codex, GoldCard goldCard);
 
+    public GoldCardPointMultiplier getCopy();
+
     public WritingMaterial getTarget();
 }

@@ -6,6 +6,7 @@ import it.polimi.ingsw.model.cardReleted.pointMultiplyer.GoldCardPointMultiplier
 import it.polimi.ingsw.model.cardReleted.utilityEnums.Resource;
 import it.polimi.ingsw.model.playerReleted.Codex;
 
+import java.util.HashMap;
 import java.util.Map;
 
 public class GoldCard extends CardInHand {
@@ -30,7 +31,7 @@ public class GoldCard extends CardInHand {
      * @return the requirements for placing the card
      */
     public Map<Resource, Integer> getRequirements() {
-        return requirements;
+        return new HashMap<>(requirements);
     }
 
     @Override
@@ -45,6 +46,6 @@ public class GoldCard extends CardInHand {
      * @return the GoldCardPointMultiplier of the card
      */
     public GoldCardPointMultiplier getGoldCardPointMultiplier(){
-        return multiplier;
+        return multiplier.getCopy();
     }
 }
