@@ -15,6 +15,7 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 
 class CodexRenderableTest {
@@ -25,7 +26,10 @@ class CodexRenderableTest {
         LightGame lightGame = new LightGame();
         renderable = new CodexRenderable("name", lightGame, museum, new CommandPrompt[]{}, null);
 
-        GameDiff diff = new GameDiffPlayerActivity(List.of(new String[]{"Player1"}), new ArrayList<>());
+        GameDiff diff = new GameDiffInitializeCodexMap(List.of(new String[]{"Player1"}));
+        diff.apply(lightGame);
+
+        diff = new GameDiffPlayerActivity(List.of(new String[]{"Player1"}), new ArrayList<>());
         diff.apply(lightGame);
 
         diff = new GameDiffGameName("TestGame");
@@ -41,7 +45,8 @@ class CodexRenderableTest {
                 new Position(1, 1)
         });
 
-        diff = new CodexDiff("Player1", 0, null, placements, positions);
+
+        diff = new CodexDiff("Player1", 0, new HashMap<>(), placements, positions);
         diff.apply(lightGame);
     }
 
