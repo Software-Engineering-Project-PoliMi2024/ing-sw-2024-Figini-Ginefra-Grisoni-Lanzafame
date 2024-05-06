@@ -4,13 +4,13 @@ import it.polimi.ingsw.lightModel.lightTableRelated.LightGame;
 
 import java.util.List;
 
-public class GameDiffInitializeGame extends GameDiff{
+public class GameDiffInitializeCodexMap extends GameDiff{
     private final List<String> players;
-    public GameDiffInitializeGame(List<String> players) {
+    public GameDiffInitializeCodexMap(List<String> players) {
         this.players = players;
     }
     @Override
     public void apply(LightGame game) {
-        game.gameStartInizialization(players);
+        game.gameInitializeCodexMap(players);
     }
 }

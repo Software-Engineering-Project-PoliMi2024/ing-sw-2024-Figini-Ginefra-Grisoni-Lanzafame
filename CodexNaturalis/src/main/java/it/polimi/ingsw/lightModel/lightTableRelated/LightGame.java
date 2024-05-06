@@ -75,7 +75,7 @@ public class LightGame implements Differentiable {
             this.handOthers.get(owner).addCard(card);
         }
     }
-    public void gameStartInizialization(List<String> owners){
+    public void gameInitializeCodexMap(List<String> owners){
         for(String owner : owners){
             this.codexMap.put(owner, new LightCodex());
         }
