@@ -193,9 +193,10 @@ public class ServerModelController implements ControllerInterface, DiffSubscribe
         user.placeStartCard(heavyPlacement);
 
         Game userGame = games.getUserGame(this.nickname);
-        updateGame(new HandDiffRemove(Lightifier.lightifyToCard(card)));
+        this.updateGame(new HandDiffRemove(Lightifier.lightifyToCard(card))); //remove the startCard from the Hand
         userGame.subscribe(new CodexDiff(this.nickname, user.getUserCodex().getPoints(),
                 user.getUserCodex().getEarnedCollectables(), getPlacementList(Lightifier.lightify(heavyPlacement)), user.getUserCodex().getFrontier().getFrontier()));
+
         log(LogsOnClient.START_CARD_PLACED);
         userGame.getGameLoopController().startCardPlaced(this);
     }
@@ -211,6 +212,7 @@ public class ServerModelController implements ControllerInterface, DiffSubscribe
         Game userGame = games.getUserGame(nickname);
         userToEdit.setSecretObject(Heavifier.heavifyObjectCard(card, games));
         userToEdit.getUserHand().setSecretObjectiveChoice(null);
+        this.updateGame(new HandDiffSetObj(card));
 
         log(LogsOnClient.SECRET_OBJECTIVE_CHOSE);
         userGame.getGameLoopController().secretObjectiveChose(this);
