@@ -127,6 +127,7 @@ public class TUI extends View{
                 lightGame,
                 new CommandPrompt[]{CommandPrompt.DISPLAY_HAND_FRONT, CommandPrompt.DISPLAY_HAND_BACK, CommandPrompt.DISPLAY_SECRET_OBJECTIVE},
                 controller);
+        StateTUI.SELECT_OBJECTIVE.attach(handRenderable);
         StateTUI.PLACE_CARD.attach(handRenderable);
         StateTUI.IDLE.attach(handRenderable);
         StateTUI.DRAW_CARD.attach(handRenderable);
@@ -146,6 +147,7 @@ public class TUI extends View{
                 cardMuseum,
                 new CommandPrompt[]{CommandPrompt.DISPLAY_CODEX},
                 controller);
+        StateTUI.SELECT_OBJECTIVE.attach(codexRenderable);
         StateTUI.IDLE.attach(codexRenderable);
         StateTUI.DRAW_CARD.attach(codexRenderable);
         StateTUI.PLACE_CARD.attach(codexRenderable);
@@ -157,6 +159,7 @@ public class TUI extends View{
                 lightGame,
                 new CommandPrompt[]{CommandPrompt.PEEK},
                 controller);
+        StateTUI.SELECT_OBJECTIVE.attach(handOthersRenderable);
         StateTUI.IDLE.attach(handOthersRenderable);
         StateTUI.DRAW_CARD.attach(handOthersRenderable);
         StateTUI.PLACE_CARD.attach(handOthersRenderable);
@@ -168,6 +171,7 @@ public class TUI extends View{
                 cardMuseum,
                 new CommandPrompt[]{CommandPrompt.PEEK},
                 controller);
+        StateTUI.SELECT_OBJECTIVE.attach(codexRenderableOthers);
         StateTUI.IDLE.attach(codexRenderableOthers);
         StateTUI.DRAW_CARD.attach(codexRenderableOthers);
         StateTUI.PLACE_CARD.attach(codexRenderableOthers);
