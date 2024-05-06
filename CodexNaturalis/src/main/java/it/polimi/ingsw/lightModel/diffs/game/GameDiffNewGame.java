@@ -5,9 +5,7 @@ import it.polimi.ingsw.lightModel.lightTableRelated.LightGame;
 import java.util.List;
 
 public class GameDiffNewGame extends GameDiff{
-    private final GameDiffGameName gameName;
-    private final GameDiffYourName yourName;
-    private final GameDiffInitializeCodexMap initializeCodexMap;
+    private final GameDiffInitialization initialization;
     private final GameDiffPlayerActivity playerActivity;
     private final List<DeckDiff> decks;
     private final List<CodexDiff> codex;
@@ -15,10 +13,8 @@ public class GameDiffNewGame extends GameDiff{
     private final List<HandOtherDiff> handOther;
     private final GameDiffPublicObj publicObjs;
 
-    public GameDiffNewGame(GameDiffGameName gameName, GameDiffYourName yourName, GameDiffInitializeCodexMap initializeCodexMap, GameDiffPlayerActivity playerActivity, List<DeckDiff> decks, List<CodexDiff> codex, List<HandDiff> handYours, List<HandOtherDiff> handOther, GameDiffPublicObj publicObjs) {
-        this.gameName = gameName;
-        this.yourName = yourName;
-        this.initializeCodexMap = initializeCodexMap;
+    public GameDiffNewGame(GameDiffInitialization initializeCodexMap, GameDiffPlayerActivity playerActivity, List<DeckDiff> decks, List<CodexDiff> codex, List<HandDiff> handYours, List<HandOtherDiff> handOther, GameDiffPublicObj publicObjs) {
+        this.initialization = initializeCodexMap;
         this.playerActivity = playerActivity;
         this.decks = decks;
         this.codex = codex;
@@ -29,9 +25,7 @@ public class GameDiffNewGame extends GameDiff{
     }
     @Override
     public void apply(LightGame game) {
-        gameName.apply(game);
-        yourName.apply(game);
-        initializeCodexMap.apply(game);
+        initialization.apply(game);
         playerActivity.apply(game);
         for (DeckDiff d : decks) {
             d.apply(game);

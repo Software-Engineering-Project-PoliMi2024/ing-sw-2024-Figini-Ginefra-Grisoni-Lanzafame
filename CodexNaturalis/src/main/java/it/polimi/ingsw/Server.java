@@ -2,6 +2,7 @@ package it.polimi.ingsw;
 
 import it.polimi.ingsw.controller.socket.server.SocketServer;
 import it.polimi.ingsw.controller2.ConnectionLayer.ConnectionLayerServer;
+import it.polimi.ingsw.controller2.ConnectionLayer.ConnectionLayerServerRMI;
 import it.polimi.ingsw.controller2.ConnectionLayer.ConnectionServerRMI;
 import it.polimi.ingsw.model.MultiGame;
 import it.polimi.ingsw.controller.RMI.ServerRMI;

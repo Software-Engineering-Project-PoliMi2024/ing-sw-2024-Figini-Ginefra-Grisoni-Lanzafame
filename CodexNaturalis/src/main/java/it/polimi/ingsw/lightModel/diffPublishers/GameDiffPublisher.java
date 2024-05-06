@@ -7,7 +7,6 @@ import it.polimi.ingsw.lightModel.diffs.nuclearDiffs.GadgetGame;
 import it.polimi.ingsw.lightModel.lightPlayerRelated.LightCodex;
 import it.polimi.ingsw.lightModel.lightPlayerRelated.LightHand;
 import it.polimi.ingsw.lightModel.lightPlayerRelated.LightHandOthers;
-import it.polimi.ingsw.model.cardReleted.cards.Card;
 import it.polimi.ingsw.model.cardReleted.cards.GoldCard;
 import it.polimi.ingsw.model.cardReleted.cards.ResourceCard;
 import it.polimi.ingsw.model.cardReleted.utilityEnums.DrawableCard;
@@ -194,9 +193,7 @@ public class GameDiffPublisher {
      */
     private GameDiffNewGame getTotalCurrentState(DiffSubscriber diffSubscriber){
         GameDiffNewGame newGameDiff = new GameDiffNewGame(
-                new GameDiffGameName(game.getName()),
-                new GameDiffYourName(activeSubscribers.get(diffSubscriber)),
-                new GameDiffInitializeCodexMap(game.getGameParty().getUsersList().stream().map(User::getNickname).toList()),
+                new GameDiffInitialization(game.getGameParty().getUsersList().stream().map(User::getNickname).toList(), new GameDiffGameName(game.getName()),new GameDiffYourName(activeSubscribers.get(diffSubscriber)) ),
                 getPlayerActivity(),
                 getDeckCurrentState(),
                 getCodexCurrentState(),
