@@ -46,7 +46,7 @@ public class Codex implements Serializable {
      * the amount present in the codex
      * @return th map of collectables */
     public Map<Collectable, Integer> getEarnedCollectables(){
-        return this.collectables;
+        return new HashMap<>(this.collectables);
     }
 
     /** update the hash with the current writing material or resources contained in the codex
@@ -66,7 +66,7 @@ public class Codex implements Serializable {
         this.collectables.put(collectable, number);
     }
     public Frontier getFrontier() {
-        return frontier;
+        return new Frontier(frontier);
     }
 
     /** @return all the placement history of the codex */
@@ -81,7 +81,9 @@ public class Codex implements Serializable {
     public Placement getPlacementAt(Position position){
         if (position == null)
             throw new IllegalArgumentException("position cannot be null");
-        return this.placementHistory.get(position);
+        Placement p = this.placementHistory.get(position);
+
+        return p == null ? null : new Placement(p);
     }
 
     /** method to add a placement to the placements history in the codex
@@ -90,6 +92,7 @@ public class Codex implements Serializable {
     private void addPlacement(Placement placement){
         if (placement == null)
             throw new IllegalArgumentException("placement cannot be null");
+        placement = new Placement(placement);
         this.placementHistory.put(placement.position(), placement);
     }
 
