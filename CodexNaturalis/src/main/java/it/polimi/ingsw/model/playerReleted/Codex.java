@@ -1,6 +1,5 @@
 package it.polimi.ingsw.model.playerReleted;
 
-import it.polimi.ingsw.model.cardReleted.cards.CardWithCorners;
 import it.polimi.ingsw.model.cardReleted.cards.ObjectiveCard;
 import it.polimi.ingsw.model.cardReleted.utilityEnums.*;
 
@@ -31,6 +30,13 @@ public class Codex implements Serializable {
         this.frontier = new Frontier();
 
         this.placementHistory = new LinkedHashMap<>();
+    }
+
+    public Codex(Codex other){
+        this.points = other.points;
+        this.collectables = new HashMap<>(other.collectables);
+        this.frontier = new Frontier(other.frontier);
+        this.placementHistory = new LinkedHashMap<>(other.placementHistory);
     }
     /** @return points of the related codex*/
     public int getPoints() {

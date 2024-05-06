@@ -17,6 +17,13 @@ public class Hand implements Serializable {
         this.playableHand = new HashSet<>();
     }
 
+    public Hand(Hand other){
+        this.playableHand = new HashSet<>(other.playableHand);
+        this.secretObjective = other.getSecretObjective();
+        this.startCard = other.getStartCard();
+        this.secretObjectiveChoices = other.getSecretObjectiveChoices();
+    }
+
     /**
      * Add a card to the player hand
      * @param card the card that need to be added

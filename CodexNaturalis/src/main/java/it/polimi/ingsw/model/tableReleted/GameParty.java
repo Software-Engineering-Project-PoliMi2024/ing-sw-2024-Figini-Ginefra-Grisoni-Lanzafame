@@ -5,6 +5,7 @@ import it.polimi.ingsw.model.playerReleted.User;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -24,6 +25,13 @@ public class GameParty implements Serializable {
         currentPlayerIndex = 0;
         currentPlayer = playerList.getFirst();
     }
+
+    public GameParty(GameParty other){
+        this.playerList = new ArrayList<>(other.playerList);
+        this.currentPlayer = new User(other.currentPlayer);
+        this.currentPlayerIndex = other.currentPlayerIndex;
+    }
+
     /**
      * This method advances the game to the next player in the rotation sequence.
      * if there is no currentPlayer, it creates it by launching the chooseStartingOrder method
@@ -42,11 +50,11 @@ public class GameParty implements Serializable {
     }
     /** @return list of the players in this match*/
     public List<User> getUsersList() {
-        return playerList;
+        return new LinkedList<>(playerList);
     }
     /** @return the current Player*/
     public User getCurrentPlayer() {
-        return currentPlayer;
+        return new User(currentPlayer);
     }
 
     /***
@@ -65,6 +73,6 @@ public class GameParty implements Serializable {
     }
 
     public User getFirstPlayerInOrder() {
-        return playerList.getFirst();
+        return new User(playerList.getFirst());
     }
 }

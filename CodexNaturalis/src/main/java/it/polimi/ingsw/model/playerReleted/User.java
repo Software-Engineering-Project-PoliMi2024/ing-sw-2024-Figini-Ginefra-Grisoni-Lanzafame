@@ -2,7 +2,6 @@ package it.polimi.ingsw.model.playerReleted;
 
 import it.polimi.ingsw.model.cardReleted.cards.CardInHand;
 import it.polimi.ingsw.model.cardReleted.cards.ObjectiveCard;
-import it.polimi.ingsw.model.tableReleted.Game;
 
 import java.io.Serializable;
 
@@ -15,6 +14,12 @@ public class User implements Serializable {
         this.nickname = nickname;
         this.userCodex = new Codex();
         this.userHand = new Hand();
+    }
+
+    public User(User other){
+        this.nickname = other.nickname;
+        this.userCodex = new Codex(other.userCodex);
+        this.userHand = new Hand(other.userHand);
     }
 
     /** @return the user nickname*/
