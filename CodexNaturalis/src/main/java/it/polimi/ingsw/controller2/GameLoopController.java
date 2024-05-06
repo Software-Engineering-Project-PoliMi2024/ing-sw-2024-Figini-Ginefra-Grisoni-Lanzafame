@@ -173,6 +173,7 @@ public class GameLoopController {
     public void startCardPlaced(ServerModelController controller) {
         if(!everyonePlaced()){ //Not all activePlayer placed their starting Card
             controller.log(LogsOnClient.WAIT_STARTCARD);
+            controller.transitionTo(ViewState.WAITING_STATE);
         }else{
             this.checkForDisconnectedUsers();
             this.secretObjectiveSetup();
@@ -188,6 +189,7 @@ public class GameLoopController {
     public void secretObjectiveChose(ServerModelController controller){
         if(!everyoneChose()){ //Not all activePlayer chose their secretObjective Card
             controller.log(LogsOnClient.WAIT_SECRET_OBJECTIVE);
+            controller.transitionTo(ViewState.WAITING_STATE);
         }else{
             this.checkForDisconnectedUsers();
             //A player might disconnect while he is in waiting, after he chose the secretObj.
