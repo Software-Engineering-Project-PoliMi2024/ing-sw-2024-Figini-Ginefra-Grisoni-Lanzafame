@@ -2,6 +2,7 @@ package it.polimi.ingsw;
 
 import it.polimi.ingsw.controller.socket.server.SocketServer;
 import it.polimi.ingsw.controller2.ConnectionLayer.ConnectionLayerServer;
+import it.polimi.ingsw.controller2.ConnectionLayer.ConnectionLayerServerRMI;
 import it.polimi.ingsw.controller2.ConnectionLayer.ConnectionServerRMI;
 import it.polimi.ingsw.model.MultiGame;
 import it.polimi.ingsw.controller.RMI.ServerRMI;
@@ -22,8 +23,8 @@ public class Server {
         Registry registry;
         try {
             registry = (LocateRegistry.createRegistry(SignificantPaths.port));
-            ConnectionLayerServer connection = new ConnectionServerRMI(multiGame);
-            ConnectionLayerServer stub = (ConnectionLayerServer) UnicastRemoteObject.exportObject(connection, 0);
+            ConnectionLayerServerRMI connection = new ConnectionServerRMI(multiGame);
+            ConnectionLayerServerRMI stub = (ConnectionLayerServerRMI) UnicastRemoteObject.exportObject(connection, 0);
             registry.rebind("connect", stub);
             System.out.println("RMI Server started on port " + SignificantPaths.port + "🚔!");
         } catch (Exception e) {
