@@ -5,7 +5,6 @@ import it.polimi.ingsw.lightModel.Lightifier;
 import it.polimi.ingsw.lightModel.diffs.game.GameDiffCurrentPlayer;
 import it.polimi.ingsw.lightModel.diffs.game.GameDiffWinner;
 import it.polimi.ingsw.lightModel.diffs.game.HandDiffAdd;
-import it.polimi.ingsw.model.cardReleted.cards.Card;
 import it.polimi.ingsw.model.cardReleted.cards.ObjectiveCard;
 import it.polimi.ingsw.model.cardReleted.cards.StartCard;
 import it.polimi.ingsw.model.playerReleted.Position;
@@ -14,7 +13,6 @@ import it.polimi.ingsw.model.tableReleted.Game;
 import it.polimi.ingsw.view.ViewState;
 
 import java.util.*;
-import java.util.stream.Collectors;
 
 public class GameLoopController {
     //A map containing the view for each ACTIVE player in the game
@@ -72,13 +70,13 @@ public class GameLoopController {
             if(controller == null){
                 throw new NullPointerException("Controller not found");
             }else {
+                controller.log(LogsOnClient.NEW_GAME_JOINED);
                 controller.transitionTo(ViewState.CHOOSE_START_CARD);
                 try {
                     user = game.getUserFromNick(nick);
                 }catch (IllegalCallerException e){
                     throw new NullPointerException("User not found");
                 }
-                controller.log(LogsOnClient.NEW_GAME_JOINED);
                 LightCard lightStartCard = Lightifier.lightifyToCard(getOrDrawStartCard(user));
                 controller.updateGame(new HandDiffAdd(lightStartCard, true));
             }
@@ -86,7 +84,7 @@ public class GameLoopController {
     }
 
     /**
-     * @param user
+     * @param user who is playing
      * @return true if user place his start card, false otherwise
      */
     private Boolean startCardIsPlaced(User user){
@@ -95,7 +93,7 @@ public class GameLoopController {
 
 
     /**
-     * @param user
+     * @param user who is playing
      * @return true if user chose his secretObjective, false otherwise
      */
     private Boolean secretObjectiveIsChose(User user){
@@ -104,7 +102,7 @@ public class GameLoopController {
 
     /**
      * Draw a start card if the user never drawn one before or get it from the model
-     * @param user
+     * @param user who is drawing the startCard
      * @return a StartCard
      */
     private StartCard getOrDrawStartCard(User user){
@@ -120,7 +118,7 @@ public class GameLoopController {
 
     /**
      * Draw two ObjectiveCards if the user never drawn them before or get them from the model
-     * @param user
+     * @param user who is drawing the objectiveCard
      * @return a List two objectiveCard in a light version
      */
     private List<LightCard> getOrDrawSecretObjectiveChoices(User user){
