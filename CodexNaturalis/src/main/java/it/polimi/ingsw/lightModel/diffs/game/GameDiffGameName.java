@@ -4,7 +4,7 @@ import it.polimi.ingsw.lightModel.lightTableRelated.LightGame;
 
 public class GameDiffGameName extends GameDiff{
     private final String gameName;
-    public GameDiffGameName(String gameName, String yourName) {
+    public GameDiffGameName(String gameName) {
         this.gameName = gameName;
     }
     @Override

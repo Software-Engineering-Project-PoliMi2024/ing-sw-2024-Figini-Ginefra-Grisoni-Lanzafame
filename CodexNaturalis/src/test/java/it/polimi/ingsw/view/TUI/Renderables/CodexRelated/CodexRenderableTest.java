@@ -2,10 +2,7 @@ package it.polimi.ingsw.view.TUI.Renderables.CodexRelated;
 
 import it.polimi.ingsw.SignificantPaths;
 import it.polimi.ingsw.lightModel.LightCard;
-import it.polimi.ingsw.lightModel.diffs.game.CodexDiff;
-import it.polimi.ingsw.lightModel.diffs.game.GameDiff;
-import it.polimi.ingsw.lightModel.diffs.game.GameDiffGameNames;
-import it.polimi.ingsw.lightModel.diffs.game.GameDiffPlayerActivity;
+import it.polimi.ingsw.lightModel.diffs.game.*;
 import it.polimi.ingsw.lightModel.lightPlayerRelated.LightPlacement;
 import it.polimi.ingsw.lightModel.lightTableRelated.LightGame;
 import it.polimi.ingsw.model.cardReleted.utilityEnums.CardFace;
@@ -31,7 +28,9 @@ class CodexRenderableTest {
         GameDiff diff = new GameDiffPlayerActivity(List.of(new String[]{"Player1"}), new ArrayList<>());
         diff.apply(lightGame);
 
-        diff = new GameDiffGameNames("TestGame", "Player1");
+        diff = new GameDiffGameName("TestGame");
+        diff.apply(lightGame);
+        diff = new GameDiffYourName("Player1");
         diff.apply(lightGame);
 
         List<LightPlacement> placements = List.of(new LightPlacement[]{

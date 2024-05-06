@@ -206,7 +206,8 @@ public class GameDiffPublisher {
     private List<GameDiff> getTotalCurrentState(DiffSubscriber diffSubscriber){
 
         List<GameDiff> totalDiff = new ArrayList<>(getDeckCurrentState());
-        totalDiff.add(new GameDiffGameNames(game.getName(), activeSubscribers.get(diffSubscriber)));
+        totalDiff.add(new GameDiffGameName(game.getName()));
+        totalDiff.add(new GameDiffYourName(activeSubscribers.get(diffSubscriber)));
         totalDiff.add(getPlayerActivity());
         totalDiff.addAll(getCodexCurrentState());
         totalDiff.addAll(getHandCurrentState(diffSubscriber));
