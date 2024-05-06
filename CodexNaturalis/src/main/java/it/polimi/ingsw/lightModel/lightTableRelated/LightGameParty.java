@@ -33,6 +33,15 @@ public class LightGameParty implements Differentiable {
             playerActiveList.put(player, true);
         }
     }
+
+    /**
+     * @param other the LightGameParty to copy
+     */
+    public LightGameParty(LightGameParty other){
+        this.gameName = other.gameName;
+        this.currentPlayer = other.currentPlayer;
+        this.playerActiveList = new HashMap<>(other.playerActiveList);
+    }
     /**
      * @return the map of the player and if they are active
      */
