@@ -8,12 +8,11 @@ import java.io.Serializable;
  */
 public record Position(int x, int y) implements Serializable {
     /**
-     * Class constructor
-     *
-     * @param x x coordinate
-     * @param y y coordinate
+     * Copy Constructor
+     * @param other position to copy
      */
-    public Position {
+    public Position(Position other) {
+        this(other.x, other.y);
     }
 
 
