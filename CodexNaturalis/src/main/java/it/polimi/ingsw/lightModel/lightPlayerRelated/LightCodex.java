@@ -48,37 +48,33 @@ public class LightCodex implements Differentiable {
     }
     /** @return points of the related codex*/
     public int getPoints() { return this.points;}
-    /**
-     * @param points the points to be added to the codex
-     */
-    public void addPoints(int points) {
-        this.points += points;
-    }
 
     /**
      * @return the collectables of the related codex
      */
     public Map<Collectable, Integer> getEarnedCollectables(){
-        return this.collectables;
+        return new HashMap<>(this.collectables);
     }
     /**
      * @return the frontier of the related codex
      */
     public LightFrontier getFrontier() {
-        return frontier;
+        return new LightFrontier(frontier);
     }
     /**
      * @return the placement history of the related codex
      */
     public Map<Position, LightPlacement> getPlacementHistory() {
-        return placementHistory;
+        return new HashMap<>(placementHistory);
     }
     /**
      * @param placementDiff the placements to be added to the placement history
      */
     public void addPlacement(List<LightPlacement> placementDiff){
-        for (LightPlacement p : placementDiff)
+        for (LightPlacement p : placementDiff) {
+            p = new LightPlacement(p);
             this.placementHistory.put(p.position(), p);
+        }
     }
 
     /**
@@ -105,10 +101,10 @@ public class LightCodex implements Differentiable {
     }
 
     public void setFrontier(LightFrontier frontier) {
-        this.frontier = frontier;
+        this.frontier = new LightFrontier(frontier);
     }
 
     public void setCollectables(Map<Collectable, Integer> collectables) {
-        this.collectables = collectables;
+        this.collectables = new HashMap<>(collectables);
     }
 }

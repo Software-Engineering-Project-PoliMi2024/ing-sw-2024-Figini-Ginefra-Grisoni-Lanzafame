@@ -14,6 +14,14 @@ public record LightFrontier(List<Position> frontier) implements Differentiable {
         this.frontier.removeAll(rmv);
         this.frontier.addAll(add);
     }
+
+    /**
+     * @param other the frontier to copy
+     */
+    public LightFrontier(LightFrontier other) {
+        this(other.frontier);
+    }
+
     /**
      * @return the frontier
      */

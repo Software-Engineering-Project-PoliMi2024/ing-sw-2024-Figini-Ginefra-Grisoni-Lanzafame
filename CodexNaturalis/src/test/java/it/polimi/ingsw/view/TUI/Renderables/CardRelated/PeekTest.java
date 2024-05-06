@@ -33,7 +33,9 @@ class PeekTest {
         GameDiff diff = new GameDiffPlayerActivity(List.of(new String[]{"Player1", "Player2"}), new ArrayList<>());
         diff.apply(lightGame);
 
-        diff = new GameDiffGameNames("TestGame", "Player1");
+        diff = new GameDiffGameName("TestGame");
+        diff.apply(lightGame);
+        diff = new GameDiffYourName( "Player1");
         diff.apply(lightGame);
 
         List<LightPlacement> placements = List.of(new LightPlacement[]{
