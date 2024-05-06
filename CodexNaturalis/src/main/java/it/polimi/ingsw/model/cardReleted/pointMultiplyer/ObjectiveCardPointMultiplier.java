@@ -6,4 +6,6 @@ import java.io.Serializable;
 
 public interface ObjectiveCardPointMultiplier extends Serializable {
     int getMultiplier(Codex codex);
+
+    ObjectiveCardPointMultiplier getCopy();
 }

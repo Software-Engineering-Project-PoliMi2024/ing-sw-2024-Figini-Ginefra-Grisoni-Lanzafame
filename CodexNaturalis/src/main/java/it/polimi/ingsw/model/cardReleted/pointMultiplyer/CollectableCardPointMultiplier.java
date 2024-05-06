@@ -15,6 +15,11 @@ public class CollectableCardPointMultiplier implements ObjectiveCardPointMultipl
         this.targets = targets;
     }
 
+    /** @param other the multiplier to copy*/
+    public CollectableCardPointMultiplier(CollectableCardPointMultiplier other){
+        this(new HashMap<>(other.targets));
+    }
+
     /** @param codex the codex where the card is inserted
      *  @return the multiplicator of the points*/
     @Override
@@ -33,5 +38,9 @@ public class CollectableCardPointMultiplier implements ObjectiveCardPointMultipl
 
     public Map<Collectable, Integer> getTargets() {
         return targets;
+    }
+
+    public ObjectiveCardPointMultiplier getCopy(){
+        return new CollectableCardPointMultiplier(this);
     }
 }

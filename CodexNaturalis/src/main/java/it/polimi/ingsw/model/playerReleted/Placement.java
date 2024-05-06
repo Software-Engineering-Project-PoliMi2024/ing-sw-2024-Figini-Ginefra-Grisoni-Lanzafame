@@ -11,13 +11,11 @@ import java.io.Serializable;
  */
 public record Placement(Position position, CardWithCorners card, CardFace face) implements Serializable{
     /**
-     * The constructor of the class
-     *
-     * @param position     the position of the placement
-     * @param card         the card to place
-     * @param face         the face of the card
+     * Copy constructor
+     * @param other the placement to copy
      */
-    public Placement {
+    public Placement(Placement other){
+        this(other.position(), other.card(), other.face());
     }
 
 }

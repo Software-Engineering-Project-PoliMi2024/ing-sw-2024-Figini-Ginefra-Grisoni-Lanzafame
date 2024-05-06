@@ -11,10 +11,22 @@ import java.util.List;
  * The frontier is the set of positions that are free and adjacent to a placement
  */
 public class Frontier implements Serializable {
+    /** The frontier */
     List<Position> frontier;
 
+    /**
+     * Default constructor
+     */
     public Frontier(){
         frontier = new ArrayList<>();
+    }
+
+    /**
+     * Copy constructor
+     * @param other the frontier to copy
+     */
+    public Frontier(Frontier other){
+        this.frontier = new ArrayList<>(other.frontier);
     }
 
     /**returns the map describing for each
@@ -44,7 +56,7 @@ public class Frontier implements Serializable {
      * @return the frontier
      */
     public List<Position> getFrontier(){
-        return this.frontier;
+        return new ArrayList<>(this.frontier);
     }
 
     /**
@@ -66,7 +78,7 @@ public class Frontier implements Serializable {
             throw new IllegalArgumentException("Position cannot be null");
 
         if(!frontier.contains(position))
-            frontier.add(position);
+            frontier.add(new Position(position));
     }
 
     /**

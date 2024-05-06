@@ -21,6 +21,11 @@ public class LCardPointMultiplier implements ObjectiveCardPointMultiplier {
         this.doubleResource = doubleResource;
     }
 
+    /**@param other the multiplier to copy*/
+    public LCardPointMultiplier(LCardPointMultiplier other){
+        this(other.corner, other.singleResource, other.doubleResource);
+    }
+
     /**@param codex the codex to calc the multiplier
      * @return the multiplier of the points*/
     @Override
@@ -59,4 +64,7 @@ public class LCardPointMultiplier implements ObjectiveCardPointMultiplier {
     }
 
 
+    public ObjectiveCardPointMultiplier getCopy(){
+        return new LCardPointMultiplier(this);
+    }
 }

@@ -74,4 +74,6 @@ public abstract class CardInHand extends CardWithCorners {
     public boolean canBePlaced(){
         return true;
     }
+
+    public abstract CardInHand copy();
 }

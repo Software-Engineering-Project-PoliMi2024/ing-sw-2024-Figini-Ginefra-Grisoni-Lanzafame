@@ -13,10 +13,20 @@ public class ObjectiveCard extends Card {
         this.multiplier = multiplier;
     }
 
+    /** @param other the card to copy */
+    public ObjectiveCard(ObjectiveCard other){
+        this(other.getId(), other.getPoints(), other.getMultiplier());
+    }
+
     /** @return the points of the card multiplied by the multiplier
      * @param codex the codex from which calc the points */
     @Override
     public int getPoints(Codex codex){
         return multiplier.getMultiplier(codex) * super.getPoints();
+    }
+
+    /** @return the multiplier of the card */
+    public ObjectiveCardPointMultiplier getMultiplier(){
+        return multiplier.getCopy();
     }
 }
