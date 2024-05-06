@@ -23,8 +23,8 @@ public class Server {
         Registry registry;
         try {
             registry = (LocateRegistry.createRegistry(SignificantPaths.port));
-            ConnectionLayerServerRMI connection = new ConnectionServerRMI(multiGame);
-            ConnectionLayerServerRMI stub = (ConnectionLayerServerRMI) UnicastRemoteObject.exportObject(connection, 0);
+            ConnectionLayerServer connection = new ConnectionServerRMI(multiGame);
+            ConnectionLayerServer stub = (ConnectionLayerServer) UnicastRemoteObject.exportObject(connection, 0);
             registry.rebind("connect", stub);
             System.out.println("RMI Server started on port " + SignificantPaths.port + "🚔!");
         } catch (Exception e) {

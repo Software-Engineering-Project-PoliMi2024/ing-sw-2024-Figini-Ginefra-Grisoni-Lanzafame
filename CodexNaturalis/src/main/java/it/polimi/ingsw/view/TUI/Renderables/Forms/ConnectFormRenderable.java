@@ -33,10 +33,7 @@ public class ConnectFormRenderable extends FormRenderable {
     public void updateCommand(CommandPromptResult command){
         String ip = command.getAnswer(0);
         int port = Integer.parseInt(command.getAnswer(1));
-        try {
-            controller.connect(ip, port, view);
-        } catch (RemoteException e) {
-            e.printStackTrace();
-        }
+        controller.connect(ip, port, view);
+
     }
 }
