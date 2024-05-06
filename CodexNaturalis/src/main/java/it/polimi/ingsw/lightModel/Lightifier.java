@@ -8,6 +8,7 @@ import it.polimi.ingsw.lightModel.lightTableRelated.LightLobbyList;
 import it.polimi.ingsw.model.cardReleted.cards.Card;
 import it.polimi.ingsw.model.cardReleted.cards.CardInHand;
 import it.polimi.ingsw.model.cardReleted.cards.CardWithCorners;
+import it.polimi.ingsw.model.cardReleted.cards.StartCard;
 import it.polimi.ingsw.model.cardReleted.utilityEnums.CardFace;
 import it.polimi.ingsw.model.cardReleted.utilityEnums.Resource;
 import it.polimi.ingsw.model.playerReleted.*;
@@ -66,7 +67,6 @@ public class Lightifier implements Serializable {
     public static LightCard lightifyToCard(Card card){
         return new LightCard(card.getId());
     }
-
     /**
      * @param card which will be lightened
      * @return the permanentResource on the back of the card
