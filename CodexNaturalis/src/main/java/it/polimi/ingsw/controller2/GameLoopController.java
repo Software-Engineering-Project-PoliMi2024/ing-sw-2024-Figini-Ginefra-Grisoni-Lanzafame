@@ -148,6 +148,7 @@ public class GameLoopController {
     }
     public void leaveGame(ServerModelController controller, String nickname){
         String currentPlayerNick = game.getGameParty().getCurrentPlayer().getNickname();
+        game.unsubscribe(controller);
         if(everyonePlaced() && everyoneChose() && controller.getNickname().equals(currentPlayerNick)){
             //Todo Implementing handling for the edge case where the leaving player is the playing one
             activePlayers.remove(nickname, controller);

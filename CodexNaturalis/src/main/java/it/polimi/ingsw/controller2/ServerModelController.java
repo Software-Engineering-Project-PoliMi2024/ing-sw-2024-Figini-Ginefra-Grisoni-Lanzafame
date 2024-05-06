@@ -176,7 +176,7 @@ public class ServerModelController implements ControllerInterface, DiffSubscribe
         if(gameToLeave == null){
             throw new IllegalCallerException(nickname + " is not in any game");
         }else{
-            gameToLeave.unsubscrive(this);
+            gameToLeave.unsubscribe(this);
         }
     }
 
@@ -194,7 +194,7 @@ public class ServerModelController implements ControllerInterface, DiffSubscribe
 
         Game userGame = games.getUserGame(this.nickname);
         updateGame(new HandDiffRemove(Lightifier.lightifyToCard(card)));
-        userGame.subcribe(new CodexDiff(this.nickname, user.getUserCodex().getPoints(),
+        userGame.subscribe(new CodexDiff(this.nickname, user.getUserCodex().getPoints(),
                 user.getUserCodex().getEarnedCollectables(), getPlacementList(Lightifier.lightify(heavyPlacement)), user.getUserCodex().getFrontier().getFrontier()));
         log(LogsOnClient.START_CARD_PLACED);
         userGame.getGameLoopController().startCardPlaced(this);
@@ -229,9 +229,9 @@ public class ServerModelController implements ControllerInterface, DiffSubscribe
         user.playCard(heavyPlacement); //place the card and remove it from the hand
 
         Game userGame = this.games.getUserGame(this.nickname);
-        userGame.subcribe(this, new HandDiffRemove(placement.card()), new HandOtherDiffRemove(
+        userGame.subscribe(this, new HandDiffRemove(placement.card()), new HandOtherDiffRemove(
                 heavyPlacement.card().getPermanentResources(CardFace.BACK).stream().toList().getFirst(), this.nickname));
-        userGame.subcribe(new CodexDiff(this.nickname, user.getUserCodex().getPoints(),
+        userGame.subscribe(new CodexDiff(this.nickname, user.getUserCodex().getPoints(),
                 user.getUserCodex().getEarnedCollectables(), getPlacementList(placement), user.getUserCodex().getFrontier().getFrontier()));
         log(LogsOnClient.CARD_PLACED);
         transitionTo(ViewState.DRAW_CARD);
@@ -271,7 +271,7 @@ public class ServerModelController implements ControllerInterface, DiffSubscribe
             log(LogsOnClient.CARD_DRAWN);
             User user = games.getUserFromNick(this.nickname);
             user.getUserHand().addCard(drawCard);
-            userGame.subcribe(this, new HandDiffAdd(Lightifier.lightifyToCard(drawCard), drawCard.canBePlaced()),
+            userGame.subscribe(this, new HandDiffAdd(Lightifier.lightifyToCard(drawCard), drawCard.canBePlaced()),
                     new HandOtherDiffAdd(drawCard.getPermanentResources(CardFace.BACK).stream().toList().getFirst(), this.nickname));
             userGame.getGameLoopController().cardDrawn(this);
         }
@@ -289,11 +289,11 @@ public class ServerModelController implements ControllerInterface, DiffSubscribe
         T drawCard;
         if (cardID == 2) {
             drawCard = deck.drawFromDeck();
-            userGame.subcribe(new DeckDiffDeckDraw(drawableCard,
+            userGame.subscribe(new DeckDiffDeckDraw(drawableCard,
                     deck.showTopCardOfDeck().getPermanentResources(CardFace.BACK).stream().toList().getFirst()));
         } else {
             drawCard = deck.drawFromBuffer(cardID);
-            userGame.subcribe(new DeckDiffDeckDraw(drawableCard,
+            userGame.subscribe(new DeckDiffDeckDraw(drawableCard,
                     deck.showCardFromBuffer(cardID).getPermanentResources(CardFace.BACK).stream().toList().getFirst()));
         }
         return drawCard;
@@ -302,7 +302,14 @@ public class ServerModelController implements ControllerInterface, DiffSubscribe
 
     @Override
     public void disconnect() throws RemoteException{
-
+        this.games.removeUser(this.nickname);//Free the nick from the server, so it can be re-used by other people
+        if(games.isInGameParty(this.nickname)){ //Handle the removing of the user from a game
+            this.games.getUserGame(nickname).getGameLoopController().leaveGame(this, this.nickname);
+        } else if (games.getUserLobby(this.nickname)!=null) { //Handle the removing of the user from a lobby
+            games.getUserLobby(this.nickname).unsubscribe(this);
+        }else{//Remove the user from the lobbyDiffPublisher list
+            games.unsubscribe(this);
+        }
     }
 
     @Override

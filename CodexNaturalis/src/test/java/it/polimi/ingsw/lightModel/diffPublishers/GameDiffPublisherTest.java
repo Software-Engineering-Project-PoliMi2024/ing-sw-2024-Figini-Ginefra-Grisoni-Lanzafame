@@ -23,8 +23,8 @@ class GameDiffPublisherTest {
         ServerModelController controller1 = new ServerModelController(games, view1);
         ServerModelController controller2 = new ServerModelController(games, view2);
 
-        game.subcribe(controller1, view1.name);
-        game.subcribe(controller2, view2.name);
+        game.subscribe(controller1, view1.name);
+        game.subscribe(controller2, view2.name);
 
         ArrayList<String> names = new ArrayList<>();
         names.add(view1.name);
@@ -54,10 +54,10 @@ class GameDiffPublisherTest {
         namesActive.add(view1.name);
         namesActive.add(view3.name);
 
-        game.subcribe(controller1, view1.name);
-        game.subcribe(controller2, view2.name);
-        game.unsubscrive(controller2);
-        game.subcribe(controller3, view3.name);
+        game.subscribe(controller1, view1.name);
+        game.subscribe(controller2, view2.name);
+        game.unsubscribe(controller2);
+        game.subscribe(controller3, view3.name);
 
         assert  view1.lightGame.getLightGameParty().getGameName().equals(game.getName()) &&
                 view1.lightGame.getLightGameParty().getPlayerActiveList().keySet().containsAll(namesActive) &&

@@ -6,7 +6,6 @@ import it.polimi.ingsw.lightModel.diffs.game.GameDiff;
 import it.polimi.ingsw.lightModel.diffPublishers.DiffSubscriber;
 import it.polimi.ingsw.lightModel.diffPublishers.GameDiffPublisher;
 import it.polimi.ingsw.model.cardReleted.cards.*;
-import it.polimi.ingsw.model.cardReleted.utilityEnums.DrawableCard;
 import it.polimi.ingsw.model.playerReleted.User;
 
 import java.io.Serializable;
@@ -89,18 +88,18 @@ public class Game implements Serializable {
         return gameDiffPublisher;
     }
 
-    public void subcribe(DiffSubscriber diffSubscriber, String nickname){
+    public void subscribe(DiffSubscriber diffSubscriber, String nickname){
         gameDiffPublisher.subscribe(diffSubscriber, nickname);
     }
 
-    public void subcribe(GameDiff gameDiff){
+    public void subscribe(GameDiff gameDiff){
         gameDiffPublisher.subscribe(gameDiff);
     }
 
-    public void subcribe(DiffSubscriber diffSubscriber, GameDiff gameDiffYou, GameDiff gameDiffOther){
+    public void subscribe(DiffSubscriber diffSubscriber, GameDiff gameDiffYou, GameDiff gameDiffOther){
         gameDiffPublisher.subscribe(diffSubscriber, gameDiffYou, gameDiffOther);
     }
-    public void unsubscrive(DiffSubscriber diffSubscriber){
+    public void unsubscribe(DiffSubscriber diffSubscriber){
         gameDiffPublisher.unsubscribe(diffSubscriber);
     }
 
