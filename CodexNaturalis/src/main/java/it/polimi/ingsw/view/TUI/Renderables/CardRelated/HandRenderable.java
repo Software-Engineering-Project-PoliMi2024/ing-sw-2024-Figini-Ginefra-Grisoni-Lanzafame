@@ -48,6 +48,9 @@ public class HandRenderable extends CardRenderable {
             String text = "Card " + cardNumber;
 
             LightCard card = getLightGame().getHand().getCards()[i];
+            if(card == null){
+                continue;
+            }
 
             if(this.getFace() == CardFace.FRONT && !getLightGame().getHand().isPlayble(card)){
                 text = new DecoratedString(text, StringStyle.STRIKETHROUGH).toString();
