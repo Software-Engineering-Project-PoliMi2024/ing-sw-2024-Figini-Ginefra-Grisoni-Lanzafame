@@ -44,22 +44,22 @@ public class Game implements Serializable {
 
     /** @return the Objective Card Deck*/
     public Deck<ObjectiveCard> getObjectiveCardDeck() {
-        return objectiveCardDeck;
+        return new Deck<>(objectiveCardDeck);
     }
 
     /** @return the Resource Card Deck*/
     public Deck<ResourceCard> getResourceCardDeck() {
-        return resourceCardDeck;
+        return new Deck<>(resourceCardDeck);
     }
 
     /** @return the Gold Card Deck*/
     public Deck<GoldCard> getGoldCardDeck() {
-        return goldCardDeck;
+        return new Deck<>(goldCardDeck);
     }
 
     /** @return the Starting Card Deck*/
     public Deck<StartCard> getStartingCardDeck() {
-        return startingCardDeck;
+        return new Deck<>(startingCardDeck);
     }
 
     public String getName() {
@@ -67,11 +67,12 @@ public class Game implements Serializable {
     }
 
     public GameParty getGameParty() {
-        return gameParty;
+        return new GameParty(gameParty);
     }
 
     public void setGameParty(GameParty gameParty){
-        this.gameParty = gameParty;
+
+        this.gameParty = new GameParty(gameParty);
     }
     @Override
     public String toString() {
@@ -82,10 +83,6 @@ public class Game implements Serializable {
                 //", currentPlayer=" + currentPlayer.getNickname() +
                 ", numberOfMaxPlayer=" + gameParty.getNumberOfMaxPlayer() +
                 '}';
-    }
-
-    public GameDiffPublisher getGameDiffPublisher() {
-        return gameDiffPublisher;
     }
 
     public void subscribe(DiffSubscriber diffSubscriber, String nickname){

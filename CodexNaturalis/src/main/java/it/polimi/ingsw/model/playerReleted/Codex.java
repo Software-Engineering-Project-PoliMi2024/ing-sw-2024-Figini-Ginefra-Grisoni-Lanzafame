@@ -42,17 +42,12 @@ public class Codex implements Serializable {
     public int getPoints() {
         return this.points;
     }
-    /** set the points related to the codex
-     * @param p the points value to set */
-    public void setPoints(int p){
-        this.points = p;
-    }
 
     /** returns the map describing for each collectable (writing material or resource)
      * the amount present in the codex
      * @return th map of collectables */
     public Map<Collectable, Integer> getEarnedCollectables(){
-        return new HashMap<>(this.collectables);
+        return this.collectables;
     }
 
     /** update the hash with the current writing material or resources contained in the codex
