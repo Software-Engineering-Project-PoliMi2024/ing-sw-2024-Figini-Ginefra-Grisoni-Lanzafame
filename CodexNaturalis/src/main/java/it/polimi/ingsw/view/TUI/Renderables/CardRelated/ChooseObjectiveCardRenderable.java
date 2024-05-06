@@ -38,14 +38,14 @@ public class ChooseObjectiveCardRenderable extends CardRenderable {
         String firstOptionNumber = new DecoratedString("[1]", StringStyle.BOLD).toString();
         PromptStyle.printInABox("Option " + firstOptionNumber, CardTextStyle.getCardWidth() * 2);
 
-        LightCard firstOption = getLightGame().getHand().getCards()[0];
-        this.renderCard(firstOption);
+        LightCard[] options = getLightGame().getHand().getSecretObjectiveOptions();
+
+        this.renderCard(options[0]);
 
         String secondOptionNumber = new DecoratedString("[2]", StringStyle.BOLD).toString();
         PromptStyle.printInABox("Option " + secondOptionNumber, CardTextStyle.getCardWidth() * 2);
 
-        LightCard secondOption = getLightGame().getHand().getCards()[1];
-        this.renderCard(secondOption);
+        this.renderCard(options[1]);
     }
 
     /**
@@ -57,7 +57,7 @@ public class ChooseObjectiveCardRenderable extends CardRenderable {
             case CommandPrompt.CHOOSE_OBJECTIVE_CARD:
                 try {
                     int cardIndex = Integer.parseInt(command.getAnswer(0)) - 1;
-                    controller.choseSecretObjective(getLightGame().getHand().getCards()[cardIndex]);
+                    controller.choseSecretObjective(getLightGame().getHand().getSecretObjectiveOptions()[cardIndex]);
                 }
                 catch (RemoteException e) {
                     e.printStackTrace();

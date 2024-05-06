@@ -2,9 +2,8 @@ package it.polimi.ingsw.controller2;
 
 import it.polimi.ingsw.lightModel.LightCard;
 import it.polimi.ingsw.lightModel.Lightifier;
-import it.polimi.ingsw.lightModel.diffs.game.GameDiffCurrentPlayer;
-import it.polimi.ingsw.lightModel.diffs.game.GameDiffWinner;
-import it.polimi.ingsw.lightModel.diffs.game.HandDiffAdd;
+import it.polimi.ingsw.lightModel.diffs.game.*;
+import it.polimi.ingsw.model.cardReleted.cards.CardInHand;
 import it.polimi.ingsw.model.cardReleted.cards.ObjectiveCard;
 import it.polimi.ingsw.model.cardReleted.cards.StartCard;
 import it.polimi.ingsw.model.playerReleted.Position;
@@ -227,7 +226,7 @@ public class GameLoopController {
         if(activePlayers.size() != game.getGameParty().getNumberOfMaxPlayer()){
             for(User user : game.getGameParty().getUsersList()){
                 if(!activePlayers.containsKey(user.getNickname())){
-                    game.getGameParty().removeUser(user);
+                    game.removeUser(user);
                 }
             }
         }
@@ -265,13 +264,12 @@ public class GameLoopController {
      * @return the User of the next activePlayer in the game
      */
     private User calculateNextPlayer(){
-        User currentPlayer;
+        User nextPlayer;
         do{
-            game.getGameParty().nextPlayer();
-            currentPlayer = game.getGameParty().getCurrentPlayer();
-        }while(!activePlayers.containsKey(currentPlayer.getNickname()));
-        System.out.println("the next player is: " + currentPlayer.getNickname());
-        return currentPlayer;
+            nextPlayer = game.nextPlayer();
+        }while(!activePlayers.containsKey(nextPlayer.getNickname()));
+        System.out.println("the next player is: " + nextPlayer.getNickname());
+        return nextPlayer;
     }
 
     /**
@@ -299,20 +297,11 @@ public class GameLoopController {
         }
     }
 
-    private int getPlayerPoint(String nick){
-        User user = game.getUserFromNick(nick);
-        return user.getUserCodex().getPoints() +
-                game.getCommonObjective().stream().mapToInt(objectiveCard -> objectiveCard.getPoints(user.getUserCodex())).sum()
-                + game.getUserFromNick(nick).getUserHand().getSecretObjective().getPoints(user.getUserCodex());
-    }
-
-    private int getWinnerPoint(String nick){
-        User user = game.getUserFromNick(nick);
-        return game.getCommonObjective().stream().mapToInt(objectiveCard -> objectiveCard.getPoints(user.getUserCodex())).sum()
-                + user.getUserHand().getSecretObjective().getPoints(user.getUserCodex());
-    }
+    /**
+     * Calculate the winner of the game. Change the view of each controller to GAME_ENDING
+     */
     private void endGame() {
-        //Calculate all possibleWinners (player(s) who scored the max amount of points in the game
+        //Calculate all possibleWinners player(s) who scored the max amount of points in the game
         int maxPoint = activePlayers.keySet().stream().mapToInt(this::getPlayerPoint).max().orElse(0);
         List<String> possibleWinners = activePlayers.keySet().stream().filter(nick -> this.getPlayerPoint(nick) == maxPoint).toList();
         //calculate the real winner(s) by checking the points obtain from the objective Card
@@ -325,10 +314,34 @@ public class GameLoopController {
         }
         for(ServerModelController controller : activePlayers.values()){
             controller.updateGame(new GameDiffWinner(realWinner));
+
             controller.transitionTo(ViewState.GAME_ENDING);
         }
     }
 
+    /**
+     * @param nick of the player
+     * @return the point of the nick obtain exclusively from the common and secret Objective card
+     */
+    private int getWinnerPoint(String nick){
+        User user = game.getUserFromNick(nick);
+        return game.getCommonObjective().stream().mapToInt(objectiveCard -> objectiveCard.getPoints(user.getUserCodex())).sum()
+                + user.getUserHand().getSecretObjective().getPoints(user.getUserCodex());
+    }
+    /**
+     * @param nick of the player
+     * @return the point of the nick obtain during the game
+     */
+    private int getPlayerPoint(String nick){
+        User user = game.getUserFromNick(nick);
+        return user.getUserCodex().getPoints() +
+                game.getCommonObjective().stream().mapToInt(objectiveCard -> objectiveCard.getPoints(user.getUserCodex())).sum()
+                + game.getUserFromNick(nick).getUserHand().getSecretObjective().getPoints(user.getUserCodex());
+    }
+    /**
+     * @param controller the player on which the check is being done
+     * @return true if the controller is the last one left to place the startCard
+     */
     private boolean isLastToPlace(ServerModelController controller){
         boolean lastToPlace = true;
         for(ServerModelController othersController : activePlayers.values()){
@@ -341,6 +354,10 @@ public class GameLoopController {
         return lastToPlace;
     }
 
+    /**
+     * @param controller the player on which the check is being done
+     * @return true if the controller is the last one left to choose the secretObjective
+     */
     private boolean isLastToChose(ServerModelController controller){
         boolean lastToChose = true;
         for(ServerModelController othersController : activePlayers.values()){
@@ -355,14 +372,29 @@ public class GameLoopController {
 
 
     /**
-     * For each activePlayer, draw 2 objectiveCard, and send them to the view
+     * For each activePlayer, draw 2 objectiveCard, populate the hand, and send all the diffs to the view
      */
     private void secretObjectiveSetup(){
-        for(ServerModelController controller1 : activePlayers.values()){
-            controller1.transitionTo(ViewState.SELECT_OBJECTIVE);
-            User user = game.getUserFromNick(controller1.getNickname());
+        for(ServerModelController controller : activePlayers.values()){
+            controller.transitionTo(ViewState.SELECT_OBJECTIVE);
+            User user = game.getUserFromNick(controller.getNickname());
+            //Draw and send diff about my CardInHands to me and others
+            for(int i = 0; i<2; i++){
+                CardInHand resourceCard = game.getResourceCardDeck().drawFromDeck();
+                user.getUserHand().addCard(resourceCard);
+                game.subscribe(controller, new HandDiffAdd(Lightifier.lightifyToCard(resourceCard), resourceCard.canBePlaced(user.getUserCodex())),
+                        new HandOtherDiffAdd(Lightifier.lightifyToResource(resourceCard), controller.getNickname()));
+            }
+            CardInHand goldCard = game.getGoldCardDeck().drawFromDeck();
+            user.getUserHand().addCard(goldCard);
+            game.subscribe(controller, new HandDiffAdd(Lightifier.lightifyToCard(goldCard), goldCard.canBePlaced(user.getUserCodex())),
+                    new HandOtherDiffAdd(Lightifier.lightifyToResource(goldCard), controller.getNickname()));
+
+            LightCard[] lightCommonObj = game.getCommonObjective().stream().map(Lightifier::lightifyToCard).toArray(LightCard[]::new);
+            controller.updateGame(new GameDiffPublicObj(lightCommonObj));
+
             for (LightCard secretObjectiveCardChoice : getOrDrawSecretObjectiveChoices(user)) {
-                controller1.updateGame(new HandDiffAdd(secretObjectiveCardChoice, true));
+                controller.updateGame(new HandDiffAddOneSecretObjectiveOption(secretObjectiveCardChoice));
             }
         }
     }

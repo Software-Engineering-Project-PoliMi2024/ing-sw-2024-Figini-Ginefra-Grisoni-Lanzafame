@@ -11,6 +11,7 @@ public class LightHand implements Differentiable {
     private LightCard secretObjective;
     private final Map<LightCard, Boolean> cardPlayability;
     private final LightCard[] cards;
+    private final LightCard[] secretObjectiveOptions = new LightCard[2];
 
     /**
      * The constructor of the class
@@ -28,6 +29,7 @@ public class LightHand implements Differentiable {
         this.secretObjective = obj;
         this.cardPlayability = cards;
         this.cards = cards.keySet().toArray(new LightCard[2]);
+
     }
     public LightHand(Map<LightCard, Boolean> cards){
         this.cardPlayability = cards;
@@ -109,5 +111,27 @@ public class LightHand implements Differentiable {
         if(!found){
             throw new IllegalArgumentException();
         }
+    }
+
+    /**
+     * Add a card to the secret objective options
+     * @param card that need to be added
+     * @throws IllegalCallerException if the secret objective options are already full
+     */
+    public void addSecretObjectiveOption(LightCard card){
+        if(secretObjectiveOptions[0]==null){
+            secretObjectiveOptions[0] = card;
+        }else if(secretObjectiveOptions[1]==null){
+            secretObjectiveOptions[1] = card;
+        }else{
+            throw new IllegalCallerException("The secret objective options are already full");
+        }
+    }
+
+    /**
+     * @return a copy of the secret objective options
+     */
+    public LightCard[] getSecretObjectiveOptions() {
+        return new LightCard[]{secretObjectiveOptions[0], secretObjectiveOptions[1]};
     }
 }

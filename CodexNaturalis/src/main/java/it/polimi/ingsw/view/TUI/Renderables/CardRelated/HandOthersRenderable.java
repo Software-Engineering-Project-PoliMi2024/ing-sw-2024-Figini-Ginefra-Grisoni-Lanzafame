@@ -48,6 +48,10 @@ public class HandOthersRenderable extends CardRenderable{
         LightHandOthers otherHand = getLightGame().getHandOthers().get(this.targetPlayer);
         for(int i = 0; i < 3; i++){
             Resource resource = otherHand.getCards()[i];
+            if(resource == null){
+                continue;
+            }
+
             Printer.print(getMuseum().getResourceBack(resource).toString());
             Printer.println("");
         }

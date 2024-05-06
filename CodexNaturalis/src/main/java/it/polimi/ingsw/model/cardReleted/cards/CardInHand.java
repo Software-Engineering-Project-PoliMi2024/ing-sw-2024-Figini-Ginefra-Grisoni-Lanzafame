@@ -1,9 +1,11 @@
 package it.polimi.ingsw.model.cardReleted.cards;
 
 import it.polimi.ingsw.model.cardReleted.utilityEnums.*;
+import it.polimi.ingsw.model.playerReleted.Codex;
 
 import java.util.HashSet;
 import java.util.Map;
+import java.util.Objects;
 import java.util.Set;
 
 public abstract class CardInHand extends CardWithCorners {
@@ -71,9 +73,14 @@ public abstract class CardInHand extends CardWithCorners {
      * checks if the card can be placed
      * @return true if the card can be placed, false otherwise
      */
-    public boolean canBePlaced(){
+    public boolean canBePlaced(Codex codex){
         return true;
     }
 
     public abstract CardInHand copy();
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(permanentResource);
+    }
 }

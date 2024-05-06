@@ -66,16 +66,18 @@ public class Lightifier implements Serializable {
      * @param card which will be lightened
      * @return the permanentResource on the back of the card
      */
-    public static Resource lightifyToResource(CardInHand card){return card.getPermanentResources(CardFace.BACK).stream().toList().getFirst();}
+    public static Resource lightifyToResource(CardInHand card){
+        return card.getPermanentResources(CardFace.BACK).stream().toList().getFirst();
+    }
 
     /**
      * @param hand which will be lightened
      * @return a LighHand containing all the (light)CardInHand, the lightSecretObjective and each card playbility
      */
-    public static LightHand lightifyYour(Hand hand){
+    public static LightHand lightifyYour(Hand hand, User user){
         HashMap<LightCard, Boolean> cardPlayability = new HashMap<>();
         for(CardInHand card : hand.getHand()){
-            cardPlayability.put(lightifyToCard(card), card.canBePlaced());
+            cardPlayability.put(lightifyToCard(card), card.canBePlaced(user.getUserCodex()));
         }
         LightHand h = new LightHand(cardPlayability);
         if(hand.getSecretObjective() != null)
