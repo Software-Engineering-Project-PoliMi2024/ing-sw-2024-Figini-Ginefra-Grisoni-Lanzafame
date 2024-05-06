@@ -17,7 +17,7 @@ public enum CardCorner implements Serializable {
     }
 
     public Position getOffset(){
-        return offset;
+        return new Position(offset);
     }
 
     /*public String toString(){
