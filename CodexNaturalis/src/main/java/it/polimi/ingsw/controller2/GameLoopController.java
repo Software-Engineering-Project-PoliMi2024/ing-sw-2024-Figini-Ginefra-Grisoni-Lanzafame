@@ -2,9 +2,8 @@ package it.polimi.ingsw.controller2;
 
 import it.polimi.ingsw.lightModel.LightCard;
 import it.polimi.ingsw.lightModel.Lightifier;
-import it.polimi.ingsw.lightModel.diffs.game.GameDiffCurrentPlayer;
-import it.polimi.ingsw.lightModel.diffs.game.GameDiffWinner;
-import it.polimi.ingsw.lightModel.diffs.game.HandDiffAdd;
+import it.polimi.ingsw.lightModel.diffs.game.*;
+import it.polimi.ingsw.model.cardReleted.cards.CardInHand;
 import it.polimi.ingsw.model.cardReleted.cards.ObjectiveCard;
 import it.polimi.ingsw.model.cardReleted.cards.StartCard;
 import it.polimi.ingsw.model.playerReleted.Position;
@@ -373,14 +372,29 @@ public class GameLoopController {
 
 
     /**
-     * For each activePlayer, draw 2 objectiveCard, and send them to the view
+     * For each activePlayer, draw 2 objectiveCard, populate the hand, and send all the diffs to the view
      */
     private void secretObjectiveSetup(){
-        for(ServerModelController controller1 : activePlayers.values()){
-            controller1.transitionTo(ViewState.SELECT_OBJECTIVE);
-            User user = game.getUserFromNick(controller1.getNickname());
+        for(ServerModelController controller : activePlayers.values()){
+            controller.transitionTo(ViewState.SELECT_OBJECTIVE);
+            User user = game.getUserFromNick(controller.getNickname());
+            //Draw and send diff about my CardInHands to me and others
+            for(int i = 0; i<2; i++){
+                CardInHand resourceCard = game.getResourceCardDeck().drawFromDeck();
+                user.getUserHand().addCard(resourceCard);
+                game.subscribe(controller, new HandDiffAdd(Lightifier.lightifyToCard(resourceCard), true),
+                        new HandOtherDiffAdd(Lightifier.lightifyToResource(resourceCard), controller.getNickname()));
+            }
+            CardInHand goldCard = game.getGoldCardDeck().drawFromDeck();
+            user.getUserHand().addCard(goldCard);
+            game.subscribe(controller, new HandDiffAdd(Lightifier.lightifyToCard(goldCard), goldCard.canBePlaced(user.getUserCodex())),
+                    new HandOtherDiffAdd(Lightifier.lightifyToResource(goldCard), controller.getNickname()));
+
+            LightCard[] lightCommonObj = game.getCommonObjective().stream().map(Lightifier::lightifyToCard).toArray(LightCard[]::new);
+            controller.updateGame(new GameDiffPublicObj(lightCommonObj));
+
             for (LightCard secretObjectiveCardChoice : getOrDrawSecretObjectiveChoices(user)) {
-                controller1.updateGame(new HandDiffAdd(secretObjectiveCardChoice, true));
+                controller.updateGame(new HandDiffAddOneSecretObjectiveOption(secretObjectiveCardChoice));
             }
         }
     }

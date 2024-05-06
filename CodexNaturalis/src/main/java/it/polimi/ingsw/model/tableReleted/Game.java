@@ -48,22 +48,22 @@ public class Game implements Serializable {
 
     /** @return the Objective Card Deck*/
     public Deck<ObjectiveCard> getObjectiveCardDeck() {
-        return new Deck<>(objectiveCardDeck);
+        return objectiveCardDeck;
     }
 
     /** @return the Resource Card Deck*/
     public Deck<ResourceCard> getResourceCardDeck() {
-        return new Deck<>(resourceCardDeck);
+        return resourceCardDeck;
     }
 
     /** @return the Gold Card Deck*/
     public Deck<GoldCard> getGoldCardDeck() {
-        return new Deck<>(goldCardDeck);
+        return goldCardDeck;
     }
 
     /** @return the Starting Card Deck*/
     public Deck<StartCard> getStartingCardDeck() {
-        return new Deck<>(startingCardDeck);
+        return startingCardDeck;
     }
 
     public String getName() {
