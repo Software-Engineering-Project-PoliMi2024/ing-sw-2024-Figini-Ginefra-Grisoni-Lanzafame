@@ -14,4 +14,8 @@ public record LightPlacement(Position position, LightCard card, CardFace face) i
      */
     public LightPlacement{
     }
+
+    public LightPlacement(LightPlacement other){
+        this(other.position(), other.card(), other.face());
+    }
 }
