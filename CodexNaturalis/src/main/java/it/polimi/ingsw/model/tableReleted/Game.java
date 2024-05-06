@@ -9,6 +9,8 @@ import it.polimi.ingsw.model.cardReleted.cards.*;
 import it.polimi.ingsw.model.playerReleted.User;
 
 import java.io.Serializable;
+import java.util.ArrayList;
+import java.util.List;
 
 
 /**
@@ -26,6 +28,7 @@ public class Game implements Serializable {
     private final String name;
     private GameParty gameParty;
     private boolean isLastTurn;
+    private final List<ObjectiveCard> commonObjective;
     /**
      * Constructs a new Game instance with a specified maximum number of players.
      */
@@ -38,7 +41,8 @@ public class Game implements Serializable {
         resourceCardDeck = new Deck<>(2, resourceCardCardLookUp.getQueue());
         startingCardDeck = new Deck<>(0, startCardCardLookUp.getQueue());
         goldCardDeck = new Deck<>(2, goldCardCardLookUp.getQueue());
-        
+        this.commonObjective = new ArrayList<>();
+        this.populateCommonObjective();
         this.gameLoopController = new GameLoopController(this, lobby.getPlayerController());
     }
 
@@ -128,5 +132,14 @@ public class Game implements Serializable {
 
     public boolean isLastTurn() {
         return isLastTurn;
+    }
+
+    private void populateCommonObjective(){
+        for(int i = 0;i<2;i++){
+            commonObjective.add(objectiveCardDeck.drawFromDeck());
+        }
+    }
+    public List<ObjectiveCard> getCommonObjective() {
+        return commonObjective;
     }
 }
