@@ -13,6 +13,7 @@ public enum StateTUI {
     LOBBY(ViewState.LOBBY),
     CHOOSE_START_CARD(ViewState.CHOOSE_START_CARD),
     SELECT_OBJECTIVE(ViewState.SELECT_OBJECTIVE),
+    WAITING_STATE(ViewState.WAITING_STATE),
     IDLE(ViewState.IDLE),
     DRAW_CARD(ViewState.DRAW_CARD),
     PLACE_CARD(ViewState.PLACE_CARD),
