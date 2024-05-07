@@ -23,6 +23,8 @@ public enum StringStyle {
     BLUE_FOREGROUND(0, 116, 186, false),
 
     PURPLE_FOREGROUND(141, 101, 197, false),
+
+    GOLD_FOREGROUND(255, 176, 46, false),
     STRIKETHROUGH("9");
     private final String style;
 
