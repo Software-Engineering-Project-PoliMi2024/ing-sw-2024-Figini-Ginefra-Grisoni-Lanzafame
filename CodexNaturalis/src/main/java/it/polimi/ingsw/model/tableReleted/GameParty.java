@@ -22,7 +22,7 @@ public class GameParty implements Serializable {
         ArrayList<String> players = new ArrayList<>(playerNames);
         Collections.shuffle(players);
         playerList = players.stream().map(User::new).collect(Collectors.toList());
-        currentPlayerIndex = 0;
+        currentPlayerIndex = -1;
         currentPlayer = playerList.getFirst();
     }
 
