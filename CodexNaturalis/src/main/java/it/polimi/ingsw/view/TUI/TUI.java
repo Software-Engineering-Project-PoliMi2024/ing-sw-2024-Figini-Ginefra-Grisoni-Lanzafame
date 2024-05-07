@@ -206,6 +206,7 @@ public class TUI extends View{
                 lightGame,
                 new CommandPrompt[]{CommandPrompt.DISPLAY_LEADERBOARD},
                 controller);
+        StateTUI.SELECT_OBJECTIVE.attach(leaderboardRenderable);
         StateTUI.IDLE.attach(leaderboardRenderable);
         StateTUI.PLACE_CARD.attach(leaderboardRenderable);
         StateTUI.DRAW_CARD.attach(leaderboardRenderable);
