@@ -1,6 +1,6 @@
 package it.polimi.ingsw.view.TUI.Renderables.CodexRelated;
 
-import it.polimi.ingsw.SignificantPaths;
+import it.polimi.ingsw.Configs;
 import it.polimi.ingsw.lightModel.LightCard;
 import it.polimi.ingsw.lightModel.diffs.game.*;
 import it.polimi.ingsw.lightModel.lightPlayerRelated.LightPlacement;
@@ -22,7 +22,7 @@ class CodexRenderableTest {
     CodexRenderable renderable;
     @BeforeEach
     void setUp() {
-        CardMuseum museum = new CardMuseumFactory(SignificantPaths.CardFolder).getCardMuseum();
+        CardMuseum museum = new CardMuseumFactory(Configs.CardFolder).getCardMuseum();
         LightGame lightGame = new LightGame();
         renderable = new CodexRenderable("name", lightGame, museum, new CommandPrompt[]{}, null);
 

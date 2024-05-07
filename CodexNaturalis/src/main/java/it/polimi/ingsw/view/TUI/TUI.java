@@ -1,6 +1,6 @@
 package it.polimi.ingsw.view.TUI;
 
-import it.polimi.ingsw.SignificantPaths;
+import it.polimi.ingsw.Configs;
 import it.polimi.ingsw.controller2.ConnectionLayer.ConnectionLayerClient;
 import it.polimi.ingsw.controller2.ControllerInterface;
 import it.polimi.ingsw.lightModel.diffs.ModelDiffs;
@@ -39,7 +39,7 @@ public class TUI extends View{
 
     private final List<Renderable> renderables;
 
-    private final CardMuseum cardMuseum = new CardMuseumFactory(SignificantPaths.CardFolder).getCardMuseum();
+    private final CardMuseum cardMuseum = new CardMuseumFactory(Configs.CardFolder).getCardMuseum();
 
     private final ConnectFormRenderable connectForm;
 

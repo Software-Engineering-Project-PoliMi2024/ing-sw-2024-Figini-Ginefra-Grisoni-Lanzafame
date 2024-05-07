@@ -1,6 +1,6 @@
 package it.polimi.ingsw.view.TUI.Renderables.CardRelated;
 
-import it.polimi.ingsw.SignificantPaths;
+import it.polimi.ingsw.Configs;
 import it.polimi.ingsw.lightModel.LightCard;
 import it.polimi.ingsw.lightModel.diffs.game.*;
 import it.polimi.ingsw.lightModel.lightPlayerRelated.LightPlacement;
@@ -25,7 +25,7 @@ class PeekTest {
     HandOthersRenderable handRenderable;
     @BeforeEach
     void setUp() {
-        CardMuseum museum = new CardMuseumFactory(SignificantPaths.CardFolder).getCardMuseum();
+        CardMuseum museum = new CardMuseumFactory(Configs.CardFolder).getCardMuseum();
         LightGame lightGame = new LightGame();
 
         codexRenderable = new CodexRenderableOthers("name", lightGame, museum, new CommandPrompt[]{}, null);

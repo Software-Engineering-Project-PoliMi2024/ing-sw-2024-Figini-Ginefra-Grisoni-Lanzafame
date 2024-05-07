@@ -1,6 +1,6 @@
 package it.polimi.ingsw.model;
 
-import it.polimi.ingsw.SignificantPaths;
+import it.polimi.ingsw.Configs;
 import it.polimi.ingsw.controller2.ServerModelController;
 import it.polimi.ingsw.lightModel.diffPublishers.DiffSubscriber;
 import it.polimi.ingsw.lightModel.diffs.lobby_lobbyList.LobbyListDiffEdit;
@@ -29,8 +29,8 @@ public class MultiGame implements Serializable {
         this.games = new HashSet<>();
         this.usernames = new ArrayList<>(); //users that are currently connected to the server
         lobbies = new LobbyList();
-        String filePath = SignificantPaths.CardFolder;
-        String sourceFileName = SignificantPaths.CardFile;
+        String filePath = Configs.CardFolder;
+        String sourceFileName = Configs.CardFile;
         cardLookUpObjective =
                 new CardLookUp<>(new ObjectiveCardFactory(filePath+sourceFileName, filePath).getCards());
         cardLookUpStartCard =

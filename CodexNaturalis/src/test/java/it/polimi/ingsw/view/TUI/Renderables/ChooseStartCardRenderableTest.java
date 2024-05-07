@@ -1,6 +1,6 @@
 package it.polimi.ingsw.view.TUI.Renderables;
 
-import it.polimi.ingsw.SignificantPaths;
+import it.polimi.ingsw.Configs;
 import it.polimi.ingsw.lightModel.LightCard;
 import it.polimi.ingsw.lightModel.diffs.game.GameDiff;
 import it.polimi.ingsw.lightModel.diffs.game.HandDiffAdd;
@@ -17,7 +17,7 @@ class ChooseStartCardRenderableTest {
     ChooseStartCardRenderable renderable;
     @BeforeEach
     void setUp() {
-        CardMuseum museum = new CardMuseumFactory(SignificantPaths.CardFolder).getCardMuseum();
+        CardMuseum museum = new CardMuseumFactory(Configs.CardFolder).getCardMuseum();
         LightGame lightGame = new LightGame();
         renderable = new ChooseStartCardRenderable("name", museum, lightGame, new CommandPrompt[]{}, null);
         LightCard startCard = new LightCard(82);

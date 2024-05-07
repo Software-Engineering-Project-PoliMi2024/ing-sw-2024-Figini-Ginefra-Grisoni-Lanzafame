@@ -1,9 +1,8 @@
 package it.polimi.ingsw.controller2.ConnectionLayer;
 
-import it.polimi.ingsw.SignificantPaths;
+import it.polimi.ingsw.Configs;
 import it.polimi.ingsw.controller2.LogsOnClient;
 import it.polimi.ingsw.view.ViewInterface;
-import it.polimi.ingsw.view.ViewState;
 
 import java.rmi.RemoteException;
 import java.rmi.registry.LocateRegistry;
@@ -17,7 +16,7 @@ import java.util.concurrent.TimeUnit;
 public class ConnectionClientRMI implements ConnectionLayerClient{
     private final ExecutorService clientExecutor = Executors.newSingleThreadExecutor();
     private ViewInterface view;
-    int secondsTimeOut = SignificantPaths.secondsTimeOut;
+    int secondsTimeOut = Configs.secondsTimeOut;
 
     /**
      * Establishes a connection with the RMI server located at the specified IP address and port.

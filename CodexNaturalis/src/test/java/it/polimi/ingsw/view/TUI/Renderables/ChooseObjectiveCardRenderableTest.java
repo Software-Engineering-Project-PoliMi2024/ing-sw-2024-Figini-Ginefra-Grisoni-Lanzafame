@@ -1,9 +1,8 @@
 package it.polimi.ingsw.view.TUI.Renderables;
 
-import it.polimi.ingsw.SignificantPaths;
+import it.polimi.ingsw.Configs;
 import it.polimi.ingsw.lightModel.LightCard;
 import it.polimi.ingsw.lightModel.diffs.game.GameDiff;
-import it.polimi.ingsw.lightModel.diffs.game.HandDiffAdd;
 import it.polimi.ingsw.lightModel.diffs.game.HandDiffAddOneSecretObjectiveOption;
 import it.polimi.ingsw.lightModel.lightTableRelated.LightGame;
 import it.polimi.ingsw.view.TUI.Renderables.CardRelated.ChooseObjectiveCardRenderable;
@@ -18,7 +17,7 @@ class ChooseObjectiveCardRenderableTest {
     ChooseObjectiveCardRenderable renderable;
     @BeforeEach
     void setUp() {
-        CardMuseum museum = new CardMuseumFactory(SignificantPaths.CardFolder).getCardMuseum();
+        CardMuseum museum = new CardMuseumFactory(Configs.CardFolder).getCardMuseum();
         LightGame lightGame = new LightGame();
         renderable = new ChooseObjectiveCardRenderable("name", museum, lightGame, new CommandPrompt[]{}, null);
         LightCard objectiveCard1 = new LightCard(87);

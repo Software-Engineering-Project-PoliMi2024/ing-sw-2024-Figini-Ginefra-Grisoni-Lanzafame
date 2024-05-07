@@ -21,11 +21,11 @@ public class Server {
         MultiGame multiGame = new MultiGame();
         Registry registry;
         try {
-            registry = (LocateRegistry.createRegistry(SignificantPaths.port));
+            registry = (LocateRegistry.createRegistry(Configs.port));
             ConnectionLayerServer connection = new ConnectionServerRMI(multiGame);
             ConnectionLayerServer stub = (ConnectionLayerServer) UnicastRemoteObject.exportObject(connection, 0);
             registry.rebind("connect", stub);
-            System.out.println("RMI Server started on port " + SignificantPaths.port + "🚔!");
+            System.out.println("RMI Server started on port " + Configs.port + "🚔!");
         } catch (Exception e) {
             System.err.println("Server exception: can't open registry " +
                     "or error while binding the object");
