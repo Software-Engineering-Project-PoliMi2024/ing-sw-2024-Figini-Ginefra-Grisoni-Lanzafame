@@ -59,7 +59,7 @@ public class LobbyRenderable extends Renderable {
                 try {
                     controller.leaveLobby();
                 }
-                catch (RemoteException e) {
+                catch (Exception e) {
                     e.printStackTrace();
                 }
                 break;

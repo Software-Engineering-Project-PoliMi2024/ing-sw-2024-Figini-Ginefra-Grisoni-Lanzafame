@@ -1,7 +1,8 @@
 package it.polimi.ingsw;
 
-import it.polimi.ingsw.controller2.ConnectionLayer.ConnectionClientRMI;
 import it.polimi.ingsw.controller2.ConnectionLayer.ConnectionLayerClient;
+import it.polimi.ingsw.controller2.ConnectionLayer.VirtualRMI.VirtualControllerRMI;
+import it.polimi.ingsw.controller2.VirtualLayer.VirtualController;
 import it.polimi.ingsw.view.TUI.TUI;
 import it.polimi.ingsw.view.View;
 
@@ -9,7 +10,7 @@ import java.util.Scanner;
 
 public class Client {
     public static void main(String[] args) {
-        ConnectionLayerClient controller;
+        VirtualController controller;
         View view;
         System.out.println("Hi there 👋!");
         System.out.println("Which communication protocol do you fancy today?🎩");
@@ -31,7 +32,7 @@ public class Client {
             controller = null;
         } else{
             System.out.println("You chose the RMI protocol!");
-            controller = new ConnectionClientRMI();
+            controller = new VirtualControllerRMI();
         }
 
         System.out.println("Great choice! Let's move on! 🎉");

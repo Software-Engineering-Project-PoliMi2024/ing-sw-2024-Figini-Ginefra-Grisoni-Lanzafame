@@ -59,7 +59,7 @@ public class ChooseObjectiveCardRenderable extends CardRenderable {
                     int cardIndex = Integer.parseInt(command.getAnswer(0)) - 1;
                     controller.choseSecretObjective(getLightGame().getHand().getSecretObjectiveOptions()[cardIndex]);
                 }
-                catch (RemoteException e) {
+                catch (Exception e) {
                     e.printStackTrace();
                 }
                 break;

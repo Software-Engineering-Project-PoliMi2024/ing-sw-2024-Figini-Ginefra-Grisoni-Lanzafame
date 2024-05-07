@@ -35,7 +35,7 @@ public class LoginFormRenderable extends FormRenderable {
     public void updateCommand(CommandPromptResult command){
         try{
             controller.login(command.getAnswer(0));
-        }catch (RemoteException r){
+        }catch (Exception r){
             r.printStackTrace();
         }
     }

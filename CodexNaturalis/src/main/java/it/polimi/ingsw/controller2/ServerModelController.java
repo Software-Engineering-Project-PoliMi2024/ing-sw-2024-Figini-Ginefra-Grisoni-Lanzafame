@@ -27,6 +27,7 @@ import it.polimi.ingsw.view.ViewInterface;
 import it.polimi.ingsw.view.ViewState;
 
 import java.rmi.RemoteException;
+import java.rmi.server.UnicastRemoteObject;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
@@ -39,9 +40,6 @@ public class ServerModelController implements ControllerInterface, DiffSubscribe
     private final MultiGame games;
     private final ViewInterface view;
     private String nickname;
-    private final HeartbeatThread heartbeatThread;
-    private final ThreadPoolExecutor controllerExecutor = new ThreadPoolExecutor(2, 4, 10, TimeUnit.MILLISECONDS, new LinkedBlockingQueue<>());
-
     /**
      * The constructor of the class
      * @param games the reference to the Multi-game on the server
@@ -50,7 +48,6 @@ public class ServerModelController implements ControllerInterface, DiffSubscribe
     public ServerModelController(MultiGame games, ViewInterface view) {
         this.games = games;
         this.view = view;
-        heartbeatThread = new HeartbeatThread(this, view);
     }
 
     /**
@@ -344,32 +341,42 @@ public class ServerModelController implements ControllerInterface, DiffSubscribe
 
 
 
+    public ViewInterface getView() {
+        return view;
+    }
+    public void log(LogsOnClient log){
+        try {
+            view.log(log.getMessage());
+        }catch (Exception r){
+            r.printStackTrace();
+        }
+    }
     public void transitionTo(ViewState state){
         System.out.println(nickname + ":" + state);
         try {
             view.transitionTo(state);
-        }catch (RemoteException r){
+        }catch (Exception r){
             r.printStackTrace();
         }
     }
     public void updateLobby(ModelDiffs<LightLobby> diff){
         try {
             view.updateLobby(diff);
-        }catch (RemoteException r){
+        }catch (Exception r){
             r.printStackTrace();
         }
     }
     public void updateLobbyList(ModelDiffs<LightLobbyList> diff){
         try {
             view.updateLobbyList(diff);
-        }catch (RemoteException r){
+        }catch (Exception r){
             r.printStackTrace();
         }
     }
     public void updateGame(ModelDiffs<LightGame> diff){
         try {
             view.updateGame(diff);
-        }catch (RemoteException r) {
+        }catch (Exception r) {
             r.printStackTrace();
         }
     }
@@ -391,54 +398,18 @@ public class ServerModelController implements ControllerInterface, DiffSubscribe
     public void logErr(LogsOnClient log){
         try {
             view.logErr(log.getMessage());
-        }catch (RemoteException r) {
+        }catch (Exception r) {
             r.printStackTrace();
-        }
-    }
-    public void pingPong(){
-        Future<Void> ping = controllerExecutor.submit(()->{
-            try {
-                Thread.sleep(10000);
-                view.pingPong();
-                return null;
-            } catch (Exception e) {
-                throw new RuntimeException();
-            }
-        });
-        try {
-            ping.get(Configs.secondsTimeOut, TimeUnit.SECONDS);
-        }catch (Exception e){
-            try {
-                this.disconnect();
-            }catch (RemoteException r){
-            }
         }
     }
 
     public void logGame(LogsOnClient log){
-        try{
+        try {
             view.logGame(log.getMessage());
-        }catch(RemoteException r){
+        }catch (Exception r){
             r.printStackTrace();
         }
     }
-
-    /**
-     * if a client is no longer online, remove the user nick and controller from the activePlayer map
-     * @param isOn is false if the client connected to this controller is no longer online
-     */
-    @Override
-    public void receiveHeartbeat(Boolean isOn) {
-        if(!isOn){
-            System.out.println(this.nickname + " connection drop");
-            heartbeatThread.setStop(true);
-            this.games.removeUser(this.nickname);
-            if(games.isInGameParty(this.nickname)){
-                this.games.getUserGame(nickname).getGameLoopController().leaveGame(this, this.nickname);
-            }
-        }
-    }
-
     /**
      * @return user nick
      */

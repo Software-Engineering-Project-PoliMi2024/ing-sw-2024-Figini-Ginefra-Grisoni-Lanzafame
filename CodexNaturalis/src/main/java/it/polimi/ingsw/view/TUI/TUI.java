@@ -3,6 +3,8 @@ package it.polimi.ingsw.view.TUI;
 import it.polimi.ingsw.Configs;
 import it.polimi.ingsw.controller2.ConnectionLayer.ConnectionLayerClient;
 import it.polimi.ingsw.controller2.ControllerInterface;
+import it.polimi.ingsw.controller2.VirtualLayer.VirtualController;
+import it.polimi.ingsw.controller2.VirtualLayer.VirtualView;
 import it.polimi.ingsw.lightModel.diffs.ModelDiffs;
 import it.polimi.ingsw.lightModel.lightTableRelated.LightGame;
 import it.polimi.ingsw.lightModel.lightTableRelated.LightLobby;
@@ -76,7 +78,7 @@ public class TUI extends View{
     private final LightLobbyList lightLobbyList = new LightLobbyList();
 
 
-    public TUI(ConnectionLayerClient controller){
+    public TUI(VirtualController controller){
         super(controller);
         System.out.println(PromptStyle.Title);
         commandDisplay = new CommandDisplayRenderable("Commands", null, null);
@@ -90,13 +92,6 @@ public class TUI extends View{
         renderables.add(commandDisplay);
         renderables.add(connectForm);
 
-
-        this.transitionTo(ViewState.SERVER_CONNECTION);
-
-    }
-
-    @Override
-    public void postConnectionInitialization(ControllerInterface controller){
         loginForm = new LoginFormRenderable("Login Form", new CommandPrompt[]{CommandPrompt.LOGIN}, controller);
         StateTUI.LOGIN_FORM.attach(loginForm);
         renderables.add(loginForm);
@@ -223,6 +218,7 @@ public class TUI extends View{
         StateTUI.DRAW_CARD.attach(leaderboardRenderable);
         StateTUI.GAME_ENDING.attach(leaderboardRenderable);
         renderables.add(leaderboardRenderable);
+
     }
 
     public void run() {
@@ -320,8 +316,4 @@ public class TUI extends View{
         tui.run();
     }
 
-    @Override
-    public void isClientOn() {
-        //No code but if this call goes through the client is still connected to the server
-    }
 }

@@ -5,4 +5,5 @@ public class Configs {
     public static String CardFile = "cards.json";
     public static int port = 1234;
     public static int secondsTimeOut = 5;
+    public static int pingPongFrequency = 10;
 }

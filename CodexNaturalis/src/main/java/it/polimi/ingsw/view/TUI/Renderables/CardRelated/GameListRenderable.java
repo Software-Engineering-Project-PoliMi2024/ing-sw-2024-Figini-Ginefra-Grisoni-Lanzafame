@@ -57,7 +57,7 @@ public class GameListRenderable extends Renderable {
                 try {
                     controller.joinLobby(answer.getAnswer(0));
                 }
-                catch (RemoteException e) {
+                catch (Exception e) {
                     System.out.println("Error while joining the game.");
                 }
                 break;
@@ -67,7 +67,7 @@ public class GameListRenderable extends Renderable {
                     int maxPlayers = Integer.parseInt(answer.getAnswer(1));
                     controller.createLobby(lobbyName, maxPlayers);
                 }
-                catch (RemoteException e) {
+                catch (Exception e) {
                     System.out.println("Error while creating the game.");
                 }
                 break;

@@ -35,7 +35,7 @@ public class ConnectFormRenderable extends FormRenderable {
         int port = Integer.parseInt(command.getAnswer(1));
         try {
             controller.connect(ip, port, view);
-        }catch (RemoteException e) {
+        }catch (Exception e) {
             e.printStackTrace();
         }
 

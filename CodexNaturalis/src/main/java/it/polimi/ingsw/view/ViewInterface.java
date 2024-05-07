@@ -13,7 +13,6 @@ import java.rmi.RemoteException;
 public interface ViewInterface extends Serializable, Remote {
     void setState(ViewState state) throws RemoteException;
     void transitionTo(ViewState state) throws RemoteException;
-    void postConnectionInitialization(ControllerInterface controller) throws RemoteException;
     /** Logs a message to the view. */
     void log(String logMsg) throws RemoteException;
 
@@ -29,5 +28,4 @@ public interface ViewInterface extends Serializable, Remote {
     void updateLobby(ModelDiffs<LightLobby> diff) throws RemoteException;
     void updateGame(ModelDiffs<LightGame> diff) throws RemoteException;
     void setFinalRanking(String[] nicks, int[] points) throws RemoteException;
-    void isClientOn() throws RemoteException;
 }

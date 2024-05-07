@@ -1,8 +1,11 @@
 package it.polimi.ingsw.controller2.ConnectionLayer;
 
+import it.polimi.ingsw.controller2.ConnectionLayer.VirtualRMI.VirtualViewRMI;
 import it.polimi.ingsw.controller2.ControllerInterface;
 import it.polimi.ingsw.controller2.LogsOnClient;
 import it.polimi.ingsw.controller2.ServerModelController;
+import it.polimi.ingsw.controller2.VirtualLayer.VirtualController;
+import it.polimi.ingsw.controller2.VirtualLayer.VirtualView;
 import it.polimi.ingsw.view.ViewInterface;
 import it.polimi.ingsw.model.MultiGame;
 import it.polimi.ingsw.view.ViewState;
@@ -36,21 +39,28 @@ public class ConnectionServerRMI implements ConnectionLayerServer {
      * @param view the view of the client which is trying to connect
      * @throws RemoteException if a communication-related exception occurs during the execution of this method.
      */
-    public synchronized void connect(ViewInterface view) throws RemoteException {
+    public void connect(PingPongInterface pingPong, ViewInterface view, VirtualController controller) throws RemoteException {
         //Create a ServerModelController for the new client
 
         //expose the controller to the client
-        Future<ControllerInterface> connect = serverExecutor.submit(() -> {
-            ControllerInterface controller = new ServerModelController(multiGame, view);
-            ControllerInterface controllerStub = (ControllerInterface) UnicastRemoteObject.exportObject(controller, 0);
-            view.postConnectionInitialization(controllerStub);
-            view.log(LogsOnClient.CONNECTION_SUCCESS.getMessage());
-            view.transitionTo(ViewState.LOGIN_FORM);
-            return controller;
+        Future<Void> connect = serverExecutor.submit(() -> {
+            VirtualView virtualView = new VirtualViewRMI(view);
+            ControllerInterface controllerOnServer = new ServerModelController(multiGame, virtualView);
+            virtualView.setController(controllerOnServer);
+            virtualView.setPingPongStub(pingPong);
+            ControllerInterface controllerStub = (ControllerInterface) UnicastRemoteObject.exportObject(controllerOnServer, 0);
+            PingPongInterface virtualViewStub = (PingPongInterface) UnicastRemoteObject.exportObject(virtualView, 0);
+            pingPong.setPingPongStub(virtualViewStub);
+            controller.setControllerStub(controllerStub);
+            controller.pingPong();
+            virtualView.pingPong();
+            virtualView.log(LogsOnClient.CONNECTION_SUCCESS.getMessage());
+            virtualView.transitionTo(ViewState.LOGIN_FORM);
+            return null;
         });
 
         try {
-            ControllerInterface controller = connect.get(secondsTimeOut, TimeUnit.SECONDS);
+            connect.get(secondsTimeOut, TimeUnit.SECONDS);
         } catch (Exception e) {
             System.out.println("Error In Client Connection");
         }
