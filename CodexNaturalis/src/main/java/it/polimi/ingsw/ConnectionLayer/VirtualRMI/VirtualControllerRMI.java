@@ -1,11 +1,11 @@
-package it.polimi.ingsw.controller2.ConnectionLayer.VirtualRMI;
+package it.polimi.ingsw.ConnectionLayer.VirtualRMI;
 
 import it.polimi.ingsw.Configs;
-import it.polimi.ingsw.controller2.ConnectionLayer.ConnectionLayerServer;
-import it.polimi.ingsw.controller2.ConnectionLayer.PingPongInterface;
+import it.polimi.ingsw.ConnectionLayer.ConnectionLayerServer;
+import it.polimi.ingsw.ConnectionLayer.PingPongInterface;
+import it.polimi.ingsw.ConnectionLayer.VirtualLayer.VirtualController;
 import it.polimi.ingsw.controller2.ControllerInterface;
 import it.polimi.ingsw.controller2.LogsOnClient;
-import it.polimi.ingsw.controller2.VirtualLayer.VirtualController;
 import it.polimi.ingsw.lightModel.LightCard;
 import it.polimi.ingsw.lightModel.diffs.nuclearDiffs.FatManLobbyList;
 import it.polimi.ingsw.lightModel.diffs.nuclearDiffs.GadgetGame;
@@ -16,7 +16,6 @@ import it.polimi.ingsw.model.cardReleted.utilityEnums.DrawableCard;
 import it.polimi.ingsw.view.ViewInterface;
 import it.polimi.ingsw.view.ViewState;
 
-import java.rmi.RemoteException;
 import java.rmi.registry.LocateRegistry;
 import java.rmi.registry.Registry;
 import java.rmi.server.UnicastRemoteObject;

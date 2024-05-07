@@ -1,7 +1,6 @@
-package it.polimi.ingsw.controller2.VirtualLayer;
+package it.polimi.ingsw.ConnectionLayer.VirtualLayer;
 
-import it.polimi.ingsw.controller2.ConnectionLayer.ConnectionLayerServer;
-import it.polimi.ingsw.controller2.ConnectionLayer.PingPongInterface;
+import it.polimi.ingsw.ConnectionLayer.PingPongInterface;
 import it.polimi.ingsw.controller2.ControllerInterface;
 import it.polimi.ingsw.lightModel.diffs.ModelDiffs;
 import it.polimi.ingsw.lightModel.lightTableRelated.LightGame;
@@ -12,7 +11,7 @@ import it.polimi.ingsw.view.ViewState;
 
 import java.rmi.RemoteException;
 
-public interface VirtualView extends ViewInterface, PingPongInterface{
+public interface VirtualView extends ViewInterface, PingPongInterface {
     @Override
     void checkEmpty() throws RemoteException;
     @Override

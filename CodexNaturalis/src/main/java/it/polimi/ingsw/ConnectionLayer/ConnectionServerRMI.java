@@ -1,17 +1,15 @@
-package it.polimi.ingsw.controller2.ConnectionLayer;
+package it.polimi.ingsw.ConnectionLayer;
 
-import it.polimi.ingsw.controller2.ConnectionLayer.VirtualRMI.VirtualViewRMI;
+import it.polimi.ingsw.ConnectionLayer.VirtualRMI.VirtualViewRMI;
 import it.polimi.ingsw.controller2.ControllerInterface;
 import it.polimi.ingsw.controller2.LogsOnClient;
 import it.polimi.ingsw.controller2.ServerModelController;
-import it.polimi.ingsw.controller2.VirtualLayer.VirtualController;
-import it.polimi.ingsw.controller2.VirtualLayer.VirtualView;
+import it.polimi.ingsw.ConnectionLayer.VirtualLayer.VirtualController;
+import it.polimi.ingsw.ConnectionLayer.VirtualLayer.VirtualView;
 import it.polimi.ingsw.view.ViewInterface;
 import it.polimi.ingsw.model.MultiGame;
 import it.polimi.ingsw.view.ViewState;
 
-import java.io.Serializable;
-import java.rmi.Remote;
 import java.rmi.RemoteException;
 import java.rmi.server.UnicastRemoteObject;
 import java.util.concurrent.ExecutorService;

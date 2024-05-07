@@ -1,8 +1,7 @@
 package it.polimi.ingsw;
 
-import it.polimi.ingsw.controller2.ConnectionLayer.ConnectionLayerClient;
-import it.polimi.ingsw.controller2.ConnectionLayer.VirtualRMI.VirtualControllerRMI;
-import it.polimi.ingsw.controller2.VirtualLayer.VirtualController;
+import it.polimi.ingsw.ConnectionLayer.VirtualRMI.VirtualControllerRMI;
+import it.polimi.ingsw.ConnectionLayer.VirtualLayer.VirtualController;
 import it.polimi.ingsw.view.TUI.TUI;
 import it.polimi.ingsw.view.View;
 

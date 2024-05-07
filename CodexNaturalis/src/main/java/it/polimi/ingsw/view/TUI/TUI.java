@@ -1,10 +1,7 @@
 package it.polimi.ingsw.view.TUI;
 
 import it.polimi.ingsw.Configs;
-import it.polimi.ingsw.controller2.ConnectionLayer.ConnectionLayerClient;
-import it.polimi.ingsw.controller2.ControllerInterface;
-import it.polimi.ingsw.controller2.VirtualLayer.VirtualController;
-import it.polimi.ingsw.controller2.VirtualLayer.VirtualView;
+import it.polimi.ingsw.ConnectionLayer.VirtualLayer.VirtualController;
 import it.polimi.ingsw.lightModel.diffs.ModelDiffs;
 import it.polimi.ingsw.lightModel.lightTableRelated.LightGame;
 import it.polimi.ingsw.lightModel.lightTableRelated.LightLobby;
@@ -24,7 +21,6 @@ import it.polimi.ingsw.view.TUI.Styles.StringStyle;
 import it.polimi.ingsw.view.TUI.cardDrawing.CardMuseum;
 import it.polimi.ingsw.view.TUI.cardDrawing.CardMuseumFactory;
 import it.polimi.ingsw.view.TUI.inputs.CommandPrompt;
-import it.polimi.ingsw.view.TUI.inputs.CommandPromptResult;
 import it.polimi.ingsw.view.TUI.inputs.InputHandler;
 import it.polimi.ingsw.view.View;
 import it.polimi.ingsw.view.ViewState;

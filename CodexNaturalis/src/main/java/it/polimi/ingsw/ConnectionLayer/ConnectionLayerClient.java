@@ -1,4 +1,4 @@
-package it.polimi.ingsw.controller2.ConnectionLayer;
+package it.polimi.ingsw.ConnectionLayer;
 
 import it.polimi.ingsw.view.ViewInterface;
 

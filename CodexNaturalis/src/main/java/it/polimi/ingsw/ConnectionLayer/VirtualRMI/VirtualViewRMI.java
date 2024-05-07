@@ -1,10 +1,9 @@
-package it.polimi.ingsw.controller2.ConnectionLayer.VirtualRMI;
+package it.polimi.ingsw.ConnectionLayer.VirtualRMI;
 
 import it.polimi.ingsw.Configs;
-import it.polimi.ingsw.controller2.ConnectionLayer.PingPongInterface;
+import it.polimi.ingsw.ConnectionLayer.PingPongInterface;
+import it.polimi.ingsw.ConnectionLayer.VirtualLayer.VirtualView;
 import it.polimi.ingsw.controller2.ControllerInterface;
-import it.polimi.ingsw.controller2.VirtualLayer.VirtualController;
-import it.polimi.ingsw.controller2.VirtualLayer.VirtualView;
 import it.polimi.ingsw.lightModel.diffs.ModelDiffs;
 import it.polimi.ingsw.lightModel.lightTableRelated.LightGame;
 import it.polimi.ingsw.lightModel.lightTableRelated.LightLobby;
@@ -13,10 +12,9 @@ import it.polimi.ingsw.view.ViewInterface;
 import it.polimi.ingsw.view.ViewState;
 
 import java.rmi.RemoteException;
-import java.rmi.server.UnicastRemoteObject;
 import java.util.concurrent.*;
 
-public class VirtualViewRMI implements VirtualView{
+public class VirtualViewRMI implements VirtualView {
     private final ViewInterface viewStub;
     private PingPongInterface pingPongStub;
     private ControllerInterface controller;
