@@ -103,8 +103,8 @@ public class ServerModelController implements ControllerInterface, DiffSubscribe
             newLobby.subscribe(this, this.nickname, gameName, newLobby.getNumberOfMaxPlayer());
             newLobby.setPlayerControllers(this, this.nickname);
             games.subscribe(getAddLobbyDiff(newLobby));
-
             log(LogsOnClient.LOBBY_CREATED);
+            log(LogsOnClient.LOBBY_JOINED);
             transitionTo(ViewState.LOBBY);
         }
     }
@@ -125,17 +125,21 @@ public class ServerModelController implements ControllerInterface, DiffSubscribe
                 lobbyToJoin.subscribe(this, this.nickname, lobbyToJoin.getLobbyName(), lobbyToJoin.getNumberOfMaxPlayer());
                 lobbyToJoin.setPlayerControllers(this, this.nickname);
                 games.unsubscribe(this);
-
                 log(LogsOnClient.LOBBY_JOINED);
                 transitionTo(ViewState.LOBBY);
 
                 if(lobbyToJoin.getLobbyPlayerList().size() == lobbyToJoin.getNumberOfMaxPlayer()) {
-                    games.subscribe(getRemoveLobbyDiff(lobbyToJoin));
                     //Handle the creation of a new game from the lobbyToJoin
-                    lobbyToJoin.clearPublisher();
                     Game newGame = games.createGame(lobbyToJoin);
-                    games.removeLobby(lobbyToJoin);
                     games.addGame(newGame);
+
+                    for(ServerModelController controller : lobbyToJoin.getPlayerController().values()){
+                        controller.log(LogsOnClient.GAME_CREATED);
+                    }
+
+                    lobbyToJoin.clearPublisher();
+                    games.removeLobby(lobbyToJoin);
+                    games.subscribe(getRemoveLobbyDiff(lobbyToJoin));
                     newGame.getGameLoopController().joinGame();
                 }
             }else{
@@ -301,9 +305,12 @@ public class ServerModelController implements ControllerInterface, DiffSubscribe
         return drawCard;
     }
 
-
+    /**
+     * Check where the Player his and remove the reference to his controller.
+     * If the player his in a game, unsubscribe his controller and delegate to the GameLoopController what to remove next
+     */
     @Override
-    public void disconnect() throws RemoteException{
+    public void disconnect(){
         this.games.removeUser(this.nickname);//Free the nick from the server, so it can be re-used by other people
         if(games.isInGameParty(this.nickname)){ //Handle the removing of the user from a game
             games.getUserGame(this.nickname).unsubscribe(this);

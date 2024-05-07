@@ -23,6 +23,7 @@ public enum LogsOnClient {
     EMPTY_NAME("The name cannot be empty"),
     LAST_TURN("The last round of turns is starting now"),
     GAME_END("Game ended"),
+    GAME_CREATED("Lobby is full, the game is starting"),
     CONNECTION_LOST_CLIENT_SIDE("Lost connection with the server"),;
 
     private final String message;

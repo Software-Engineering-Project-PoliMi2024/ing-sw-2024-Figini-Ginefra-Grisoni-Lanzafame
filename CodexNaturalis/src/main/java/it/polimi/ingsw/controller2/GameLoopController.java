@@ -1,5 +1,6 @@
 package it.polimi.ingsw.controller2;
 
+import it.polimi.ingsw.controller.Controller;
 import it.polimi.ingsw.lightModel.LightCard;
 import it.polimi.ingsw.lightModel.Lightifier;
 import it.polimi.ingsw.lightModel.diffs.game.*;
@@ -42,7 +43,6 @@ public class GameLoopController {
                     controller.log(LogsOnClient.MID_GAME_JOINED);
                     controller.transitionTo(ViewState.IDLE);
                 }else{
-                    controller.log(LogsOnClient.NEW_GAME_JOINED);
                     if(!startCardIsPlaced(user)){
                         controller.transitionTo(ViewState.CHOOSE_START_CARD);
                         LightCard lightStartCard = Lightifier.lightifyToCard(getOrDrawStartCard(user));
@@ -290,6 +290,7 @@ public class GameLoopController {
         for(ServerModelController controller : activePlayers.values()){
             controller.updateGame(new GameDiffCurrentPlayer(nextPlayer.getNickname()));
             if (controller.getNickname().equals(nextPlayer.getNickname())) {
+                controller.log(LogsOnClient.YOUR_TURN);
                 controller.transitionTo(ViewState.PLACE_CARD);
             } else {
                 controller.transitionTo(ViewState.IDLE);
@@ -314,7 +315,7 @@ public class GameLoopController {
         }
         for(ServerModelController controller : activePlayers.values()){
             controller.updateGame(new GameDiffWinner(realWinner));
-
+            controller.log(LogsOnClient.GAME_END);
             controller.transitionTo(ViewState.GAME_ENDING);
         }
     }
