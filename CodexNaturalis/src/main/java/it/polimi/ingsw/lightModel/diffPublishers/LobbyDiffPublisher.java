@@ -23,7 +23,11 @@ public class LobbyDiffPublisher {
      * the subscriber will receive the current state of the lobby: its name, the number of max players
      * and the list of the players already in the lobby
      * the players already in the lobby will receive the new subscriber nickname
-     * @param diffSubscriber the subscriber of the user that joins the lobby
+     * Send the appropriated log to everyone
+     * @param diffSubscriber The subscriber of the user that joins the lobby.
+     * @param nickname The nickname of the user joining the lobby.
+     * @param gameName The name of the lobby's game.
+     * @param numberOfMaxPlayer The maximum number of players allowed in the lobby.
      */
     public synchronized void subscribe(DiffSubscriber diffSubscriber, String nickname, String gameName, int numberOfMaxPlayer) {
         LobbyDiffEdit others = createDiffSubscribed(nickname);

@@ -1,7 +1,5 @@
 package it.polimi.ingsw.controller2;
 
-import it.polimi.ingsw.controller.Controller;
-import it.polimi.ingsw.controller.socket.SocketController;
 import it.polimi.ingsw.lightModel.LightCard;
 import it.polimi.ingsw.lightModel.Lightifier;
 import it.polimi.ingsw.lightModel.diffs.game.*;
@@ -13,6 +11,7 @@ import it.polimi.ingsw.model.playerReleted.User;
 import it.polimi.ingsw.model.tableReleted.Game;
 import it.polimi.ingsw.view.ViewState;
 
+import java.security.PublicKey;
 import java.util.*;
 
 public class GameLoopController {
@@ -38,10 +37,11 @@ public class GameLoopController {
     public void joinGame(String nickname, ServerModelController controller){
         activePlayers.put(nickname, controller);
         game.subscribe(controller, nickname);
+        //pls notice that this is a log before the transition
+        this.logYouAndOther(controller, LogsOnClient.MID_GAME_JOINED, LogsOnClient.PLAYER_REJOINED);
         for(User user : game.getGameParty().getUsersList()){
             if(user.getNickname().equals(nickname)){
                 if(startCardIsPlaced(user) && secretObjectiveIsChose(user)){
-                    controller.log(LogsOnClient.MID_GAME_JOINED);
                     controller.transitionTo(ViewState.IDLE);
                 }else{
                     if(!startCardIsPlaced(user)){
@@ -70,6 +70,7 @@ public class GameLoopController {
             if(controller == null){
                 throw new NullPointerException("Controller not found");
             }else {
+                controller.logYou(LogsOnClient.NEW_GAME_JOINED);
                 controller.transitionTo(ViewState.CHOOSE_START_CARD);
                 try {
                     user = game.getUserFromNick(nick);
@@ -151,16 +152,28 @@ public class GameLoopController {
         if(everyonePlaced() && everyoneChose() && controller.getNickname().equals(currentPlayerNick)){
             //Todo Implementing handling for the edge case where the leaving player is the playing one
             activePlayers.remove(nickname, controller);
+            for(ServerModelController stillActiveController : activePlayers.values()){
+                stillActiveController.logOther(controller.getNickname(), LogsOnClient.PLAYER_GAME_LEFT);
+            }
         }else if(isLastToPlace(controller)){
             activePlayers.remove(nickname, controller);
+            for(ServerModelController stillActiveController : activePlayers.values()){
+                stillActiveController.logOther(controller.getNickname(), LogsOnClient.PLAYER_GAME_LEFT);
+            }
+            this.logAll(LogsOnClient.EVERYONE_PLACED_STARTCARD);
             this.secretObjectiveSetup();
         }else if(isLastToChose(controller)){
             activePlayers.remove(nickname, controller);
-            this.gameLoop();
+            for(ServerModelController stillActiveController : activePlayers.values()){
+                stillActiveController.logOther(controller.getNickname(), LogsOnClient.PLAYER_GAME_LEFT);
+            }
+            this.logAll(LogsOnClient.EVERYONE_CHOSE);
+            this.gameLoopStarter();
         }else{
             activePlayers.remove(nickname, controller);
         }
     }
+
     /**
      * If the controller is not the last to place his startCard, wait for the other active players to do so
      * The last activePlayer to place the card, ban everybody who left, and transition the others activePlayer to the Select-Objective state
@@ -168,20 +181,12 @@ public class GameLoopController {
      * @param controller of the user who placed the card
      */
     public void startCardPlaced(ServerModelController controller) {
-        controller.log(LogsOnClient.YOU_PLACED);
-        for(ServerModelController otherControllers : activePlayers.values()){
-            if(!otherControllers.equals(controller)){
-                LogsOnClient.PLAYER_PLACE_STARTCARD.setPrefix(controller.getNickname());
-                otherControllers.log(LogsOnClient.PLAYER_PLACE_STARTCARD);
-            }
-        }
+        this.logYouAndOther(controller, LogsOnClient.YOU_PLACE_STARTCARD, LogsOnClient.PLAYER_PLACE_STARTCARD);
         if(!everyonePlaced()){ //Not all activePlayer placed their starting Card
-            controller.log(LogsOnClient.WAIT_STARTCARD);
+            controller.logYou(LogsOnClient.WAIT_STARTCARD);
             controller.transitionTo(ViewState.WAITING_STATE);
         }else{
-            for(ServerModelController allController : activePlayers.values()){
-                allController.log(LogsOnClient.EVERYONE_PLACED_STARTCARD);
-            }
+            this.logAll(LogsOnClient.EVERYONE_PLACED_STARTCARD);
             this.checkForDisconnectedUsers();
             this.secretObjectiveSetup();
         }
@@ -194,25 +199,17 @@ public class GameLoopController {
      * @param controller of the user who chose the objective
      */
     public void secretObjectiveChose(ServerModelController controller){
-        controller.log(LogsOnClient.YOU_CHOSE);
-        for(ServerModelController otherControllers : activePlayers.values()){
-            if(!otherControllers.equals(controller)){
-                LogsOnClient.PLAYER_CHOSE.setPrefix(controller.getNickname());
-                otherControllers.log(LogsOnClient.PLAYER_CHOSE);
-            }
-        }
+        logYouAndOther(controller, LogsOnClient.YOU_CHOSE, LogsOnClient.PLAYER_CHOSE);
         if(!everyoneChose()){ //Not all activePlayer chose their secretObjective Card
-            controller.log(LogsOnClient.WAIT_SECRET_OBJECTIVE);
+            controller.logYou(LogsOnClient.WAIT_SECRET_OBJECTIVE);
             controller.transitionTo(ViewState.WAITING_STATE);
         }else{
             this.checkForDisconnectedUsers();
-            for(ServerModelController allController : activePlayers.values()){
-                allController.log(LogsOnClient.EVERYONE_CHOSE);
-                allController.log(LogsOnClient.DECK_SHUFFLE);
-            }
+            this.logAll(LogsOnClient.EVERYONE_CHOSE);
+            this.logAll(LogsOnClient.DECK_SHUFFLE);
             //A player might disconnect while he is in waiting, after he chose the secretObj.
             // He is not banned, but he can't be the first player of the gameLoop
-            this.gameLoop();
+            this.gameLoopStarter();
         }
     }
 
@@ -221,16 +218,9 @@ public class GameLoopController {
      * @param controller of the currentPlayer who ended his turn
      */
     public void cardDrawn(ServerModelController controller){
-        for(ServerModelController allController : activePlayers.values()){
-            if(!allController.equals(controller)){
-                LogsOnClient.PLAYER_DRAW.setPrefix(controller.getNickname());
-                allController.log(LogsOnClient.PLAYER_DRAW);
-            }else{
-                controller.log(LogsOnClient.YOU_DRAW);
-            }
-        }
+        this.logYouAndOther(controller, LogsOnClient.YOU_PLACED, LogsOnClient.YOU_DRAW);
         controller.transitionTo(ViewState.WAITING_STATE);
-        this.gameLoop();
+        this.gameLoop(controller);
     }
 
     private boolean checkForChickenDinner() {
@@ -306,20 +296,25 @@ public class GameLoopController {
      * If lastTurn is true and the next currentPlayer is the firstPlayer end the game
      * Adjust the view of each activePlayer accordingly
      */
-    private void gameLoop(){
+    private void gameLoop(ServerModelController oldCurrentPlayerController){
         User nextPlayer = calculateNextPlayer();
         if(game.isLastTurn() && nextPlayer.equals(game.getGameParty().getFirstPlayerInOrder())){
             this.endGame();
         } else if (checkForChickenDinner() && nextPlayer.equals(game.getGameParty().getFirstPlayerInOrder()) && !game.isLastTurn()){
             game.setLastTurn(true);
-            for(ServerModelController controller : activePlayers.values()){
-                controller.log(LogsOnClient.LAST_TURN);
-            }
+            this.logAll(LogsOnClient.LAST_TURN);
         }
+        this.logYouAndOther(activePlayers.get(nextPlayer.getNickname()), LogsOnClient.YOUR_TURN, LogsOnClient.PLAYER_TURN);
+        oldCurrentPlayerController.transitionTo(ViewState.IDLE);
+        activePlayers.get(nextPlayer.getNickname()).transitionTo(ViewState.PLACE_CARD);
+    }
+
+    private void gameLoopStarter() {
+        User nextPlayer = calculateNextPlayer();
         for(ServerModelController controller : activePlayers.values()){
             controller.updateGame(new GameDiffCurrentPlayer(nextPlayer.getNickname()));
             if (controller.getNickname().equals(nextPlayer.getNickname())) {
-                controller.log(LogsOnClient.YOUR_TURN);
+                controller.logYou(LogsOnClient.YOUR_TURN);
                 controller.transitionTo(ViewState.PLACE_CARD);
             } else {
                 controller.transitionTo(ViewState.IDLE);
@@ -342,9 +337,9 @@ public class GameLoopController {
         }else{
             realWinner = new ArrayList<>(possibleWinners);
         }
+        this.logAll(LogsOnClient.GAME_END);
         for(ServerModelController controller : activePlayers.values()){
             controller.updateGame(new GameDiffWinner(realWinner));
-            controller.log(LogsOnClient.GAME_END);
             controller.transitionTo(ViewState.GAME_ENDING);
         }
     }
@@ -431,5 +426,21 @@ public class GameLoopController {
 
     public Map<String, ServerModelController> getActivePlayers() {
         return activePlayers;
+    }
+
+    private void logYouAndOther(ServerModelController controller, LogsOnClient youlog, LogsOnClient theirLog){
+        for(ServerModelController allControllers : activePlayers.values()){
+            if(!allControllers.equals(controller)){
+                allControllers.logOther(controller.getNickname(), theirLog);
+            }else{
+                controller.logYou(youlog);
+            }
+        }
+    }
+
+    private void logAll(LogsOnClient logsOnClient) {
+        for(ServerModelController allController : activePlayers.values()){
+            allController.logGame(logsOnClient);
+        }
     }
 }

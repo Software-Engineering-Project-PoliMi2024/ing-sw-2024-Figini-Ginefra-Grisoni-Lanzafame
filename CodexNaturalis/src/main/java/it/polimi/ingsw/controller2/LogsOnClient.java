@@ -1,55 +1,54 @@
 package it.polimi.ingsw.controller2;
 
 public enum LogsOnClient {
-    CONNECTION_ERROR("Connection error"),
-    CONNECTION_SUCCESS("Connection success"),
-    NAME_TAKEN("The nickname is already present in the server"),
-    SERVER_JOINED("Server Joined"),
-    PLAYER_JOINED_LOBBY(" joined the lobby"),
-    LOBBY_IS_FULL("The lobby is full"),
-    LOBBY_JOINED("Lobby joined"),
-    LOBBY_LEFT("Lobby left"),
-    LOBBY_NONEXISTENT("The lobby does not exist"),
-    LOBBY_NAME_TAKEN("The lobby name is already taken"),
-    LOBBY_CREATED("Lobby created"),
-    NEW_GAME_JOINED("Joined a new game not already started"),
-    MID_GAME_JOINED("Joined your previous game"),
-    START_CARD_PLACED("StartCard successfully placed"),
-    SECRET_OBJECTIVE_CHOSE("Secret Objective chosen"),
-    CARD_PLACED("Card placed"),
-    CARD_DRAWN("Card Drawn"),
-    YOUR_TURN("It's your time to play"),
-    WAIT_STARTCARD("Waiting for others to place their StartCard"),
-    WAIT_SECRET_OBJECTIVE("Waiting for others to choose their Secret Objective"),
-    EMPTY_NAME("The name cannot be empty"),
-    LAST_TURN("The last round of turns is starting now"),
-    GAME_END("Game ended"),
-    GAME_CREATED("Lobby is full, the game is starting"),
-    PLAYER_PLACE_STARTCARD(" placed his StartCard"),
-    YOU_PLACE_STARTCARD("The StartCard successfully placed on your Codex"),
-    EVERYONE_PLACED_STARTCARD("Everybody placed their StartCard"),
-    PLAYER_CHOSE(" chose his SecretObjective"),
-    YOU_CHOSE("SecrectObjective successfully selected"),
-    EVERYONE_CHOSE("Everybody chose their SecretObjective"),
-    CONNECTION_LOST_CLIENT_SIDE("Lost connection with the server"),
-    PLAYER_PLACED(" placed a new Card"),
-    YOU_PLACED("A new Card was added to your Codex"),
-    PLAYER_DRAW(" drawn a new Card"),
-    YOU_DRAW("A new Card was added to your Hand"),
-    DECK_SHUFFLE("The Resource and Gold card decks are now shuffled");
-
+    CONNECTION_ERROR("Failed to connect to the server."),
+    CONNECTION_SUCCESS("Connected to the server successfully."),
+    NAME_TAKEN("The chosen nickname is already in use."),
+    SERVER_JOINED("Joined the server."),
+    PLAYER_JOINED_LOBBY(" joined the lobby."),
+    LOBBY_IS_FULL("The lobby is currently full."),
+    LOBBY_JOINED("Successfully joined the lobby."),
+    LOBBY_LEFT("Left the lobby."),
+    LOBBY_NONEXISTENT("The requested lobby does not exist."),
+    LOBBY_NAME_TAKEN("The specified lobby name is already taken."),
+    LOBBY_CREATED("Created a new lobby."),
+    NEW_GAME_JOINED("Joined a new game."),
+    MID_GAME_JOINED("Rejoined a previous game."),
+    START_CARD_PLACED("Start Card successfully placed."),
+    SECRET_OBJECTIVE_CHOSE("Secret Objective successfully chosen."),
+    CARD_PLACED("Card successfully placed."),
+    CARD_DRAWN("Card successfully drawn."),
+    YOUR_TURN("It's now your turn to play."),
+    PLAYER_TURN("'s turn"),
+    WAIT_STARTCARD("Waiting for other players to place their Start Cards."),
+    WAIT_SECRET_OBJECTIVE("Waiting for other players to choose their Secret Objectives."),
+    EMPTY_NAME("Nickname cannot be empty."),
+    LAST_TURN("The final round of turns has begun."),
+    GAME_END("The game has ended."),
+    GAME_CREATED("Lobby is full, the game is starting."),
+    PLAYER_REJOINED(" rejoined the game"),
+    PLAYER_JOIN_LOBBY(" joined the lobby"),
+    PLAYER_PLACE_STARTCARD(" placed their Start Card."),
+    YOU_PLACE_STARTCARD("Successfully placed your Start Card."),
+    EVERYONE_PLACED_STARTCARD("All players have placed their Start Cards."),
+    PLAYER_CHOSE(" chose their Secret Objective."),
+    YOU_CHOSE("Successfully chose your Secret Objective."),
+    EVERYONE_CHOSE("All players have chosen their Secret Objectives."),
+    CONNECTION_LOST_CLIENT_SIDE("Lost connection with the server."),
+    PLAYER_PLACED(" placed a card."),
+    YOU_PLACED("Successfully placed a card in your Codex."),
+    PLAYER_DRAW(" drew a card."),
+    YOU_DRAW("Successfully drew a card to your Hand."),
+    DECK_SHUFFLE("The Resource and Gold card decks have been shuffled."),
+    GAME_LEFT("Game left"),
+    PLAYER_GAME_LEFT(" left the game");
     private final String message;
-    private String prefix = "";
 
     LogsOnClient(String message) {
         this.message = message;
     }
 
     public String getMessage() {
-        return prefix + message;
-    }
-
-    public void setPrefix(String prefix){
-        this.prefix = prefix;
+        return message;
     }
 }
