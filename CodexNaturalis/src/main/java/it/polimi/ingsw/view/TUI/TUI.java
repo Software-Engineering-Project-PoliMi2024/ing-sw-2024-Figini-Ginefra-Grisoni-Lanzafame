@@ -9,14 +9,11 @@ import it.polimi.ingsw.lightModel.lightTableRelated.LightLobby;
 import it.polimi.ingsw.lightModel.lightTableRelated.LightLobbyList;
 import it.polimi.ingsw.view.TUI.Printing.Printer;
 import it.polimi.ingsw.view.TUI.Renderables.*;
-import it.polimi.ingsw.view.TUI.Renderables.CardRelated.ChooseObjectiveCardRenderable;
-import it.polimi.ingsw.view.TUI.Renderables.CardRelated.ChooseStartCardRenderable;
-import it.polimi.ingsw.view.TUI.Renderables.CardRelated.HandOthersRenderable;
-import it.polimi.ingsw.view.TUI.Renderables.CardRelated.HandRenderable;
+import it.polimi.ingsw.view.TUI.Renderables.CardRelated.*;
 import it.polimi.ingsw.view.TUI.Renderables.CodexRelated.CodexRenderable;
 import it.polimi.ingsw.view.TUI.Renderables.CodexRelated.CodexRenderableOthers;
 import it.polimi.ingsw.view.TUI.Renderables.Forms.ConnectFormRenderable;
-import it.polimi.ingsw.view.TUI.Renderables.CardRelated.GameListRenderable;
+import it.polimi.ingsw.view.TUI.Renderables.Forms.DrawCardForm;
 import it.polimi.ingsw.view.TUI.Renderables.Forms.LoginFormRenderable;
 import it.polimi.ingsw.view.TUI.Renderables.Forms.PlaceCardForm;
 import it.polimi.ingsw.view.TUI.States.StateTUI;
@@ -62,6 +59,10 @@ public class TUI extends View{
     private CodexRenderableOthers codexRenderableOthers;
 
     private HandOthersRenderable handOthersRenderable;
+
+    private DeckRenderable deckRenderable;
+
+    private DrawCardForm drawCardForm;
 
     private final LightGame lightGame = new LightGame();
 
@@ -178,6 +179,25 @@ public class TUI extends View{
         StateTUI.DRAW_CARD.attach(codexRenderableOthers);
         StateTUI.PLACE_CARD.attach(codexRenderableOthers);
         renderables.add(codexRenderableOthers);
+
+        deckRenderable = new DeckRenderable(
+                "Deck",
+                cardMuseum,
+                lightGame,
+                new CommandPrompt[]{CommandPrompt.DISPLAY_DECKS},
+                controller);
+        StateTUI.SELECT_OBJECTIVE.attach(deckRenderable);
+        StateTUI.IDLE.attach(deckRenderable);
+        StateTUI.DRAW_CARD.attach(deckRenderable);
+        StateTUI.PLACE_CARD.attach(deckRenderable);
+        renderables.add(deckRenderable);
+
+        drawCardForm = new DrawCardForm(
+                "Draw Card",
+                new CommandPrompt[]{CommandPrompt.DRAW_CARD},
+                controller);
+        StateTUI.DRAW_CARD.attach(drawCardForm);
+        renderables.add(drawCardForm);
     }
 
     public void run() {

@@ -165,6 +165,18 @@ public enum CommandPrompt implements Iterator<String>, CommandObserved {
                     s -> true,
             },
             true),
+
+    DRAW_CARD("Draw card",
+            new String[]{
+                    "Which deck do you want to draw from? (0/gold - 1/resource)",
+                    "Where do you want to draw from? (0/Buffer - 1/Buffer - 2/NextDraw)",
+            },
+            new Predicate[]{
+                    s -> s.equals("0") || s.equals("1"),
+                    s -> s.equals("0") || s.equals("1") || s.equals("2"),
+            },
+            false),
+
     DISPLAY_LEADERBOARD("Display leaderboard", true),
 
     DISPLAY_DECKS("Display decks", true);
