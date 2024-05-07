@@ -77,6 +77,15 @@ public class CodexRenderableOthers extends CodexRenderable{
                     return;
                 }
 
+                if(!lightGame.getCodexMap().containsKey(nickname)){
+                    try {
+                        view.logErr("The player " + nickname + " does not exist");
+                    } catch (RemoteException e) {
+                        throw new RuntimeException(e);
+                    }
+                    return;
+                }
+
                 this.setTargetPlayer(nickname);
                 drawCodex();
                 this.render();
