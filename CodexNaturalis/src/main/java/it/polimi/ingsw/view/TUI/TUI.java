@@ -22,6 +22,7 @@ import it.polimi.ingsw.view.TUI.Styles.StringStyle;
 import it.polimi.ingsw.view.TUI.cardDrawing.CardMuseum;
 import it.polimi.ingsw.view.TUI.cardDrawing.CardMuseumFactory;
 import it.polimi.ingsw.view.TUI.inputs.CommandPrompt;
+import it.polimi.ingsw.view.TUI.inputs.CommandPromptResult;
 import it.polimi.ingsw.view.TUI.inputs.InputHandler;
 import it.polimi.ingsw.view.View;
 import it.polimi.ingsw.view.ViewState;
@@ -61,6 +62,8 @@ public class TUI extends View{
     private HandOthersRenderable handOthersRenderable;
 
     private DeckRenderable deckRenderable;
+
+    private PostGameStateRenderable postGameStateRenderable;
 
     private DrawCardForm drawCardForm;
 
@@ -193,6 +196,13 @@ public class TUI extends View{
         StateTUI.DRAW_CARD.attach(deckRenderable);
         StateTUI.PLACE_CARD.attach(deckRenderable);
         renderables.add(deckRenderable);
+
+        postGameStateRenderable = new PostGameStateRenderable(
+                "Post Game",
+                lightGame,
+                new CommandPrompt[]{CommandPrompt.DISPLAY_POSTGAME},
+                controller);
+        StateTUI.GAME_ENDING.attach(leaderboardRenderable);
 
         drawCardForm = new DrawCardForm(
                 "Draw Card",

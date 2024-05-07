@@ -179,7 +179,9 @@ public enum CommandPrompt implements Iterator<String>, CommandObserved {
 
     DISPLAY_LEADERBOARD("Display leaderboard", true),
 
-    DISPLAY_DECKS("Display decks", true);
+    DISPLAY_DECKS("Display decks", true),
+
+    DISPLAY_POSTGAME("Display decks", true);
 
     /** The questions to ask the user. */
     private final String[] questions;
