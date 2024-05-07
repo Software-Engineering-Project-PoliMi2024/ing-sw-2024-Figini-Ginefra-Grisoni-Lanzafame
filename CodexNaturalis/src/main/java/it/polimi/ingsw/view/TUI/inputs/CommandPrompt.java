@@ -128,7 +128,7 @@ public enum CommandPrompt implements Iterator<String>, CommandObserved {
     /** The command to place a card */
     PLACE_CARD("Place card",
             new String[]{
-                    "Which card do you want to place?",
+                    "Which card do you want to place? (1/2/3)",
                     "Face up or face down? (0/1)",
                     "Where do you want to place it?",
             },
@@ -136,7 +136,7 @@ public enum CommandPrompt implements Iterator<String>, CommandObserved {
                     s -> {
                         try {
                             int i = Integer.parseInt(s.toString());
-                            return i >= 0 && i < 3;
+                            return i > 0 && i < 4;
                         } catch (NumberFormatException e) {
                             return false;
                         }
@@ -200,7 +200,7 @@ public enum CommandPrompt implements Iterator<String>, CommandObserved {
     private int currentQuestion = 0;
 
     /** Whether the command is local. That means it doesn't interact with the controller. */
-    private boolean isLocal = false;
+    private final boolean isLocal;
 
     /**
      * Creates a new CommandPrompt.
