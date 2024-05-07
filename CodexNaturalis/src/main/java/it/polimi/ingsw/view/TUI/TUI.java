@@ -64,6 +64,8 @@ public class TUI extends View{
 
     private DrawCardForm drawCardForm;
 
+    private LeaderboardRenderable leaderboardRenderable;
+
     private final LightGame lightGame = new LightGame();
 
     private final LightLobby lightLobby = new LightLobby();
@@ -198,6 +200,17 @@ public class TUI extends View{
                 controller);
         StateTUI.DRAW_CARD.attach(drawCardForm);
         renderables.add(drawCardForm);
+
+        leaderboardRenderable = new LeaderboardRenderable(
+                "Leaderboard",
+                lightGame,
+                new CommandPrompt[]{CommandPrompt.DISPLAY_LEADERBOARD},
+                controller);
+        StateTUI.IDLE.attach(leaderboardRenderable);
+        StateTUI.PLACE_CARD.attach(leaderboardRenderable);
+        StateTUI.DRAW_CARD.attach(leaderboardRenderable);
+        StateTUI.GAME_ENDING.attach(leaderboardRenderable);
+        renderables.add(leaderboardRenderable);
     }
 
     public void run() {
