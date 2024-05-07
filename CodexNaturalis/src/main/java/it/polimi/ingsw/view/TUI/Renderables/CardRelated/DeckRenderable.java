@@ -42,7 +42,7 @@ public class DeckRenderable extends CardRenderable {
             if (card == null) {
                 continue;
             }
-            String cardNumber = new DecoratedString("[" + (i + 1) + "]", StringStyle.BOLD).toString();
+            String cardNumber = new DecoratedString("[" + i + "]", StringStyle.BOLD).toString();
             String text = "Card " + cardNumber;
 
             PromptStyle.printInABox(text, CardTextStyle.getCardWidth() * 2);
