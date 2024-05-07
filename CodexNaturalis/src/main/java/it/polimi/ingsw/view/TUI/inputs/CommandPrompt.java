@@ -8,7 +8,6 @@ import it.polimi.ingsw.view.TUI.observers.CommandObserver;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
-import java.util.function.Consumer;
 import java.util.function.Predicate;
 
 /**
@@ -165,7 +164,10 @@ public enum CommandPrompt implements Iterator<String>, CommandObserved {
             new Predicate[]{
                     s -> true,
             },
-            true);
+            true),
+    DISPLAY_LEADERBOARD("Display leaderboard", true),
+
+    DISPLAY_DECKS("Display decks", true);
 
     /** The questions to ask the user. */
     private final String[] questions;
