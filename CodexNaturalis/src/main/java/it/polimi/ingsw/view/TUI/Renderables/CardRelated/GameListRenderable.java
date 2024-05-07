@@ -36,7 +36,7 @@ public class GameListRenderable extends Renderable {
     @Override
     public void render() {
         if (lightLobbyList.getLobbies().isEmpty()) {
-            PromptStyle.printInABox("No games available", 70);
+            PromptStyle.printInABox("No lobbies available", 70);
         } else {
             List<String> lobbyNames = lightLobbyList.getLobbies().stream().map(LightLobby::name).toList();
             System.out.println(lobbyNames);
