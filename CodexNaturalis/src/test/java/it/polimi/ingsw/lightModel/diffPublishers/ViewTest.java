@@ -73,4 +73,8 @@ public class ViewTest implements ViewInterface {
 
     }
 
+    @Override
+    public void pingPong() throws RemoteException {
+
+    }
 }
