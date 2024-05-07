@@ -23,22 +23,12 @@ public class ViewTest implements ViewInterface {
     }
 
     @Override
-    public void isClientOn() {
-
-    }
-
-    @Override
     public void setState(ViewState state) throws RemoteException {
 
     }
 
     @Override
     public void transitionTo(ViewState state) throws RemoteException {
-
-    }
-
-    @Override
-    public void postConnectionInitialization(ControllerInterface controller) throws RemoteException {
 
     }
 
