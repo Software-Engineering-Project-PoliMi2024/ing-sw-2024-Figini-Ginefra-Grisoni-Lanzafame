@@ -73,4 +73,15 @@ public class ViewTest implements ViewInterface {
 
     }
 
+    @Override
+    public void logOthers(String logMsg) throws RemoteException {
+
+    }
+
+    @Override
+    public void logGame(String logMsg) throws RemoteException {
+
+    }
+
+
 }

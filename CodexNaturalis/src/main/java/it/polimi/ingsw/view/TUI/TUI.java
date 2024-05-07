@@ -260,6 +260,21 @@ public class TUI extends View{
     }
 
     @Override
+    public void logOthers(String logMsg){
+        Printer.println("");
+        PromptStyle.printInABox(logMsg,50, StringStyle.PURPLE_FOREGROUND);
+        Printer.println("");
+    }
+
+    @Override
+    public void logGame(String logMsg){
+        Printer.println("");
+        PromptStyle.printInABox(logMsg,50, StringStyle.BLUE_FOREGROUND);
+        Printer.println("");
+    }
+
+
+    @Override
     public void logErr(String logMsg) {
         Printer.println("");
         PromptStyle.printInABox(logMsg,50, StringStyle.RED_FOREGROUND);
