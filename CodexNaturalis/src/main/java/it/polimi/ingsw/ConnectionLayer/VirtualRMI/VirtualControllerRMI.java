@@ -209,7 +209,7 @@ public class VirtualControllerRMI implements VirtualController {
         Future<ConnectionLayerServer> connect = controllerExecutor.submit(() -> {
             try {
                 Registry registry = LocateRegistry.getRegistry(ip, port);
-                ConnectionLayerServer serverReference = (ConnectionLayerServer) registry.lookup("connect");
+                ConnectionLayerServer serverReference = (ConnectionLayerServer) registry.lookup(Configs.connectionClassLabelRMI);
                 ViewInterface viewStub = (ViewInterface) UnicastRemoteObject.exportObject(view, 0);
                 VirtualController controllerStub = (VirtualController) UnicastRemoteObject.exportObject(this, 0);
                 serverReference.connect(controllerStub, viewStub, controllerStub);
