@@ -1,7 +1,7 @@
 package it.polimi.ingsw;
 
-import it.polimi.ingsw.ConnectionLayer.ConnectionLayerServer;
-import it.polimi.ingsw.ConnectionLayer.ConnectionServerRMI;
+import it.polimi.ingsw.connectionLayer.ConnectionLayerServer;
+import it.polimi.ingsw.connectionLayer.ConnectionServerRMI;
 import it.polimi.ingsw.model.MultiGame;
 import it.polimi.ingsw.view.TUI.Printing.Printer;
 

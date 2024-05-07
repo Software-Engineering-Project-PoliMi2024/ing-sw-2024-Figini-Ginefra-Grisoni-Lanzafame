@@ -1,4 +1,4 @@
-package it.polimi.ingsw.ConnectionLayer;
+package it.polimi.ingsw.connectionLayer;
 
 import java.io.Serializable;
 import java.rmi.Remote;

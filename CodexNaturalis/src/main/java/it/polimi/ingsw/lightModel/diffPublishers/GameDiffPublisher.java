@@ -15,9 +15,10 @@ import it.polimi.ingsw.model.playerReleted.User;
 import it.polimi.ingsw.model.tableReleted.Deck;
 import it.polimi.ingsw.model.tableReleted.Game;
 
+import java.io.Serializable;
 import java.util.*;
 
-public class GameDiffPublisher {
+public class GameDiffPublisher implements Serializable {
     private final Map<DiffSubscriber, String> activeSubscribers;
     private final Game game;
     public GameDiffPublisher(Game game) {

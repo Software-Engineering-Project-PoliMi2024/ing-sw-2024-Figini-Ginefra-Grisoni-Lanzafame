@@ -1,6 +1,6 @@
-package it.polimi.ingsw.ConnectionLayer;
+package it.polimi.ingsw.connectionLayer;
 
-import it.polimi.ingsw.ConnectionLayer.VirtualLayer.VirtualController;
+import it.polimi.ingsw.connectionLayer.VirtualLayer.VirtualController;
 import it.polimi.ingsw.view.ViewInterface;
 
 import java.io.Serializable;

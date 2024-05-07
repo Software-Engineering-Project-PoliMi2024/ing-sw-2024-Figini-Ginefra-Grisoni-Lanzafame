@@ -11,10 +11,11 @@ import it.polimi.ingsw.model.playerReleted.User;
 import it.polimi.ingsw.model.tableReleted.Game;
 import it.polimi.ingsw.view.ViewState;
 
+import java.io.Serializable;
 import java.security.PublicKey;
 import java.util.*;
 
-public class GameLoopController {
+public class GameLoopController implements Serializable {
     //A map containing the view for each ACTIVE player in the game
     private final Map<String, ServerModelController> activePlayers;
     private final Game game;

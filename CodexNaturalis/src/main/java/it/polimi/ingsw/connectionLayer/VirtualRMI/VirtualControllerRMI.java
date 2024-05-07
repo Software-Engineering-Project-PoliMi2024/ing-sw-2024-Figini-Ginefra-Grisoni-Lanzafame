@@ -1,9 +1,9 @@
-package it.polimi.ingsw.ConnectionLayer.VirtualRMI;
+package it.polimi.ingsw.connectionLayer.VirtualRMI;
 
 import it.polimi.ingsw.Configs;
-import it.polimi.ingsw.ConnectionLayer.ConnectionLayerServer;
-import it.polimi.ingsw.ConnectionLayer.PingPongInterface;
-import it.polimi.ingsw.ConnectionLayer.VirtualLayer.VirtualController;
+import it.polimi.ingsw.connectionLayer.ConnectionLayerServer;
+import it.polimi.ingsw.connectionLayer.PingPongInterface;
+import it.polimi.ingsw.connectionLayer.VirtualLayer.VirtualController;
 import it.polimi.ingsw.controller2.ControllerInterface;
 import it.polimi.ingsw.controller2.LogsOnClient;
 import it.polimi.ingsw.lightModel.LightCard;

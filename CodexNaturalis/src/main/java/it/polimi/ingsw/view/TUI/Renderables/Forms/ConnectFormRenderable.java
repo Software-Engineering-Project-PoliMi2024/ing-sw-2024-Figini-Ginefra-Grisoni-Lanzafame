@@ -1,6 +1,6 @@
 package it.polimi.ingsw.view.TUI.Renderables.Forms;
 
-import it.polimi.ingsw.ConnectionLayer.ConnectionLayerClient;
+import it.polimi.ingsw.connectionLayer.ConnectionLayerClient;
 import it.polimi.ingsw.view.ViewInterface;
 import it.polimi.ingsw.view.TUI.inputs.CommandPrompt;
 import it.polimi.ingsw.view.TUI.inputs.CommandPromptResult;

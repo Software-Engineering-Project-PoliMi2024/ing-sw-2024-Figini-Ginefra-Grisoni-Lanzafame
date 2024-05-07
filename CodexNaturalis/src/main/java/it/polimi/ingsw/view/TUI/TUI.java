@@ -1,7 +1,7 @@
 package it.polimi.ingsw.view.TUI;
 
 import it.polimi.ingsw.Configs;
-import it.polimi.ingsw.ConnectionLayer.VirtualLayer.VirtualController;
+import it.polimi.ingsw.connectionLayer.VirtualLayer.VirtualController;
 import it.polimi.ingsw.lightModel.diffs.ModelDiffs;
 import it.polimi.ingsw.lightModel.lightTableRelated.LightGame;
 import it.polimi.ingsw.lightModel.lightTableRelated.LightLobby;

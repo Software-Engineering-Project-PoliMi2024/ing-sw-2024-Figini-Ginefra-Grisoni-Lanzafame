@@ -1,7 +1,7 @@
-package it.polimi.ingsw.ConnectionLayer.VirtualLayer;
+package it.polimi.ingsw.connectionLayer.VirtualLayer;
 
-import it.polimi.ingsw.ConnectionLayer.ConnectionLayerClient;
-import it.polimi.ingsw.ConnectionLayer.PingPongInterface;
+import it.polimi.ingsw.connectionLayer.ConnectionLayerClient;
+import it.polimi.ingsw.connectionLayer.PingPongInterface;
 import it.polimi.ingsw.controller2.ControllerInterface;
 
 import java.rmi.RemoteException;
