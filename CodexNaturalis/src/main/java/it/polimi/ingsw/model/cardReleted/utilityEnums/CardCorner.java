@@ -3,6 +3,7 @@ package it.polimi.ingsw.model.cardReleted.utilityEnums;
 import it.polimi.ingsw.model.playerReleted.Position;
 
 import java.io.Serializable;
+import java.util.Arrays;
 
 public enum CardCorner implements Serializable {
 
@@ -18,6 +19,11 @@ public enum CardCorner implements Serializable {
 
     public Position getOffset(){
         return new Position(offset);
+    }
+
+    public CardCorner getOpposite(){
+        Position offset = this.getOffset().multiply(-1);
+        return Arrays.stream(CardCorner.values()).filter(corner -> corner.getOffset().equals(offset)).findFirst().orElse(null);
     }
 
     /*public String toString(){

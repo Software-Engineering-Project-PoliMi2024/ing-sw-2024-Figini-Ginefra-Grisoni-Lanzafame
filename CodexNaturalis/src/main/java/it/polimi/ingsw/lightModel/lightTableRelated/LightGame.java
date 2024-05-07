@@ -154,4 +154,8 @@ public class LightGame implements Differentiable {
     public void setWinners(List<String> winners){
         this.winners.addAll(winners);
     }
+
+    public List<String> getWinners() {
+        return new ArrayList<>(winners);
+    }
 }

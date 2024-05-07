@@ -8,7 +8,6 @@ import it.polimi.ingsw.view.TUI.observers.CommandObserver;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
-import java.util.function.Consumer;
 import java.util.function.Predicate;
 
 /**
@@ -64,16 +63,16 @@ public enum CommandPrompt implements Iterator<String>, CommandObserved {
             },
             false),
     /** The command to join an existing game */
-    JOIN_GAME("Join game",
+    JOIN_GAME("Join lobby",
             new String[]{
-                    "What's the name of the game?",
+                    "What's the name of the lobby?",
             },
             new Predicate[]{
                     s -> true,
             },
             false),
     /** The command to display the current list of games with free spots */
-    DISPLAY_GAME_LIST("Display game list", true),
+    DISPLAY_GAME_LIST("Display lobbies list", true),
 
     /** The command to display the lobby the player is currently in*/
     DISPLAY_LOBBY("Display lobby", true),
@@ -88,7 +87,7 @@ public enum CommandPrompt implements Iterator<String>, CommandObserved {
     DISPLAY_START_BACK("Display start card back", true),
 
     /** The command to choose the side of the start card */
-    CHOOSE_START_SIDE("Choose start side",
+    CHOOSE_START_SIDE("Choose start card side",
             new String[]{
                     "Which side do you want to choose? (front/back)",
             },
@@ -118,10 +117,10 @@ public enum CommandPrompt implements Iterator<String>, CommandObserved {
             false),
 
     /** The command to display the hand front */
-    DISPLAY_HAND_FRONT("Display hand front", true),
-
-    /** The command to display the hand back */
-    DISPLAY_HAND_BACK("Display hand back", true),
+    DISPLAY_HAND("Display hand",
+            new String[]{"Which face do you want to display? (0/front - 1/back)"},
+            new Predicate[]{s -> s.equals("0") || s.equals("1")},
+            true),
 
     /** The command to display the secret objective */
     DISPLAY_SECRET_OBJECTIVE("Display secret objective", true),
@@ -129,7 +128,7 @@ public enum CommandPrompt implements Iterator<String>, CommandObserved {
     /** The command to place a card */
     PLACE_CARD("Place card",
             new String[]{
-                    "Which card do you want to place?",
+                    "Which card do you want to place? (1/2/3)",
                     "Face up or face down? (0/1)",
                     "Where do you want to place it?",
             },
@@ -137,7 +136,7 @@ public enum CommandPrompt implements Iterator<String>, CommandObserved {
                     s -> {
                         try {
                             int i = Integer.parseInt(s.toString());
-                            return i >= 0 && i < 3;
+                            return i > 0 && i < 4;
                         } catch (NumberFormatException e) {
                             return false;
                         }
@@ -152,7 +151,7 @@ public enum CommandPrompt implements Iterator<String>, CommandObserved {
                         }
                     },
             },
-            true),
+            false),
 
     /** The command to display the codex */
     DISPLAY_CODEX("Display codex", true),
@@ -165,7 +164,24 @@ public enum CommandPrompt implements Iterator<String>, CommandObserved {
             new Predicate[]{
                     s -> true,
             },
-            true);
+            true),
+
+    DRAW_CARD("Draw card",
+            new String[]{
+                    "Which deck do you want to draw from? (0/gold - 1/resource)",
+                    "Where do you want to draw from? (0/Buffer - 1/Buffer - 2/NextDraw)",
+            },
+            new Predicate[]{
+                    s -> s.equals("0") || s.equals("1"),
+                    s -> s.equals("0") || s.equals("1") || s.equals("2"),
+            },
+            false),
+
+    DISPLAY_LEADERBOARD("Display leaderboard", true),
+
+    DISPLAY_DECKS("Display decks", true),
+
+    DISPLAY_POSTGAME("Display decks", true);
 
     /** The questions to ask the user. */
     private final String[] questions;
@@ -186,7 +202,7 @@ public enum CommandPrompt implements Iterator<String>, CommandObserved {
     private int currentQuestion = 0;
 
     /** Whether the command is local. That means it doesn't interact with the controller. */
-    private boolean isLocal = false;
+    private final boolean isLocal;
 
     /**
      * Creates a new CommandPrompt.

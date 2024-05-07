@@ -77,7 +77,7 @@ public class ServerModelController implements ControllerInterface, DiffSubscribe
             }else{
                 this.games.addUser(this, nickname);
                 getActiveLobbyList();
-                log(LogsOnClient.SERVER_JOINED);
+                logYou(LogsOnClient.SERVER_JOINED);
                 transitionTo(ViewState.JOIN_LOBBY);
             }
         }
@@ -109,8 +109,8 @@ public class ServerModelController implements ControllerInterface, DiffSubscribe
             newLobby.subscribe(this, this.nickname, gameName, newLobby.getNumberOfMaxPlayer());
             newLobby.setPlayerControllers(this, this.nickname);
             games.subscribe(getAddLobbyDiff(newLobby));
-
-            log(LogsOnClient.LOBBY_CREATED);
+            logGame(LogsOnClient.LOBBY_CREATED);
+            logYou(LogsOnClient.LOBBY_JOINED);
             transitionTo(ViewState.LOBBY);
         }
     }
@@ -131,17 +131,21 @@ public class ServerModelController implements ControllerInterface, DiffSubscribe
                 lobbyToJoin.subscribe(this, this.nickname, lobbyToJoin.getLobbyName(), lobbyToJoin.getNumberOfMaxPlayer());
                 lobbyToJoin.setPlayerControllers(this, this.nickname);
                 games.unsubscribe(this);
-
-                log(LogsOnClient.LOBBY_JOINED);
+                logYou(LogsOnClient.LOBBY_JOINED);
                 transitionTo(ViewState.LOBBY);
-
+                //TODO log other controller about the player who just joined
                 if(lobbyToJoin.getLobbyPlayerList().size() == lobbyToJoin.getNumberOfMaxPlayer()) {
-                    games.subscribe(getRemoveLobbyDiff(lobbyToJoin));
                     //Handle the creation of a new game from the lobbyToJoin
-                    lobbyToJoin.clearPublisher();
                     Game newGame = games.createGame(lobbyToJoin);
-                    games.removeLobby(lobbyToJoin);
                     games.addGame(newGame);
+
+                    for(ServerModelController controller : lobbyToJoin.getPlayerController().values()){
+                        controller.logGame(LogsOnClient.GAME_CREATED);
+                    }
+
+                    lobbyToJoin.clearPublisher();
+                    games.removeLobby(lobbyToJoin);
+                    games.subscribe(getRemoveLobbyDiff(lobbyToJoin));
                     newGame.getGameLoopController().joinGame();
                 }
             }else{
@@ -166,8 +170,8 @@ public class ServerModelController implements ControllerInterface, DiffSubscribe
 
             lobbyToLeave.unsubscribe(this);
             games.subscribe(this);
-
-            log(LogsOnClient.LOBBY_LEFT);
+            //todo notify other about the player who left
+            logYou(LogsOnClient.LOBBY_LEFT);
             transitionTo(ViewState.JOIN_LOBBY);
         }
     }
@@ -202,8 +206,6 @@ public class ServerModelController implements ControllerInterface, DiffSubscribe
         this.updateGame(new HandDiffRemove(Lightifier.lightifyToCard(card))); //remove the startCard from the Hand
         userGame.subscribe(new CodexDiff(this.nickname, user.getUserCodex().getPoints(),
                 user.getUserCodex().getEarnedCollectables(), getPlacementList(Lightifier.lightify(heavyPlacement)), user.getUserCodex().getFrontier().getFrontier()));
-
-        log(LogsOnClient.START_CARD_PLACED);
         userGame.getGameLoopController().startCardPlaced(this);
     }
 
@@ -220,7 +222,7 @@ public class ServerModelController implements ControllerInterface, DiffSubscribe
         userToEdit.getUserHand().setSecretObjectiveChoice(null);
         this.updateGame(new HandDiffSetObj(card));
 
-        log(LogsOnClient.SECRET_OBJECTIVE_CHOSE);
+        logYou(LogsOnClient.SECRET_OBJECTIVE_CHOSE);
         userGame.getGameLoopController().secretObjectiveChose(this);
 
     }
@@ -241,7 +243,13 @@ public class ServerModelController implements ControllerInterface, DiffSubscribe
                 heavyPlacement.card().getPermanentResources(CardFace.BACK).stream().findFirst().orElse(null), this.nickname));
         userGame.subscribe(new CodexDiff(this.nickname, user.getUserCodex().getPoints(),
                 user.getUserCodex().getEarnedCollectables(), getPlacementList(placement), user.getUserCodex().getFrontier().getFrontier()));
-        log(LogsOnClient.CARD_PLACED);
+        for(ServerModelController allControllers : userGame.getGameLoopController().getActivePlayers().values()){
+                if(!allControllers.equals(this)){
+                    this.logOther(this.nickname, LogsOnClient.PLAYER_PLACED);
+                }else{
+                    this.logYou(LogsOnClient.YOU_PLACED);
+                }
+        }
         transitionTo(ViewState.DRAW_CARD);
     }
 
@@ -276,7 +284,7 @@ public class ServerModelController implements ControllerInterface, DiffSubscribe
                 Deck<ResourceCard> resourceDeck = userGame.getResourceCardDeck();
                 drawCard = drawACard(resourceDeck, DrawableCard.RESOURCECARD, cardID, userGame);
             }
-            log(LogsOnClient.CARD_DRAWN);
+            logYou(LogsOnClient.CARD_DRAWN);
             User user = games.getUserFromNick(this.nickname);
             user.getUserHand().addCard(drawCard);
             userGame.subscribe(this, new HandDiffAdd(Lightifier.lightifyToCard(drawCard), drawCard.canBePlaced(user.getUserCodex())),
@@ -307,9 +315,12 @@ public class ServerModelController implements ControllerInterface, DiffSubscribe
         return drawCard;
     }
 
-
+    /**
+     * Check where the Player his and remove the reference to his controller.
+     * If the player his in a game, unsubscribe his controller and delegate to the GameLoopController what to remove next
+     */
     @Override
-    public void disconnect() throws RemoteException{
+    public void disconnect(){
         this.games.removeUser(this.nickname);//Free the nick from the server, so it can be re-used by other people
         if(games.isInGameParty(this.nickname)){ //Handle the removing of the user from a game
             games.getUserGame(this.nickname).unsubscribe(this);
@@ -331,16 +342,8 @@ public class ServerModelController implements ControllerInterface, DiffSubscribe
         }
     }
 
-    public ViewInterface getView() {
-        return view;
-    }
-    public void log(LogsOnClient log){
-        try {
-            view.log(log.getMessage());
-        }catch (RemoteException r){
-            r.printStackTrace();
-        }
-    }
+
+
     public void transitionTo(ViewState state){
         System.out.println(nickname + ":" + state);
         try {
@@ -371,6 +374,20 @@ public class ServerModelController implements ControllerInterface, DiffSubscribe
         }
     }
 
+    public void logYou(LogsOnClient log){
+        try {
+            view.log(log.getMessage());
+        }catch (RemoteException r){
+            r.printStackTrace();
+        }
+    }
+    public void logOther(String prefix, LogsOnClient log){
+        try{
+            view.logOthers(prefix + log.getMessage());
+        }catch (RemoteException r){
+            r.printStackTrace();
+        }
+    }
     public void logErr(LogsOnClient log){
         try {
             view.logErr(log.getMessage());
@@ -395,6 +412,14 @@ public class ServerModelController implements ControllerInterface, DiffSubscribe
                 this.disconnect();
             }catch (RemoteException r){
             }
+        }
+    }
+
+    public void logGame(LogsOnClient log){
+        try{
+            view.logGame(log.getMessage());
+        }catch(RemoteException r){
+            r.printStackTrace();
         }
     }
 

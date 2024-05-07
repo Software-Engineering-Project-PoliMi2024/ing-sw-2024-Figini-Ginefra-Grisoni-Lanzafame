@@ -42,7 +42,7 @@ public class CodexRenderable extends CanvasRenderable {
      * @return The canvas position.
      */
     private Position gridToCanvas(Position p){
-        return new Position(p.getX() * (CardTextStyle.getCardWidth() - 2) + canvas.getWidth() / 2, p.getY() * (CardTextStyle.getCardHeight() - 2) + canvas.getHeight() / 2);
+        return new Position(p.getX() * (CardTextStyle.getCardWidth() - 2) + canvas.getWidth() / 2, -p.getY() * (CardTextStyle.getCardHeight() - 2) + canvas.getHeight() / 2);
     }
 
     /**

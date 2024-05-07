@@ -14,8 +14,17 @@ public interface ViewInterface extends Serializable, Remote {
     void setState(ViewState state) throws RemoteException;
     void transitionTo(ViewState state) throws RemoteException;
     void postConnectionInitialization(ControllerInterface controller) throws RemoteException;
+    /** Logs a message to the view. */
     void log(String logMsg) throws RemoteException;
+
+    /** Logs an error message to the view. And renders the active commands*/
     void logErr(String logMsg) throws RemoteException;
+
+    /** Logs a message to the view relative to somebody else's action. */
+    void logOthers(String logMsg) throws RemoteException;
+
+    /** Logs a message to the view relative to the game. */
+    void logGame(String logMsg) throws RemoteException;
     void updateLobbyList(ModelDiffs<LightLobbyList> diff) throws RemoteException;
     void updateLobby(ModelDiffs<LightLobby> diff) throws RemoteException;
     void updateGame(ModelDiffs<LightGame> diff) throws RemoteException;

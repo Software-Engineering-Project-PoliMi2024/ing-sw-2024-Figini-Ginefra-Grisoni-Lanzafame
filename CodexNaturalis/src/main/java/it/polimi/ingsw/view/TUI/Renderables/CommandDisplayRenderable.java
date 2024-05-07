@@ -12,7 +12,11 @@ import java.util.*;
  * This class is the renderable that displays the active commands.
  */
 public class CommandDisplayRenderable extends Renderable{
-    private final Map<CommandPrompt, Integer> activePrompts;
+    /** The active local prompts. */
+    private final Map<CommandPrompt, Integer> activeLocalPrompts;
+
+    /** The active non-local prompts. */
+    private final Map<CommandPrompt, Integer> activeActionPrompts;
     CommandPrompt currentPrompt;
 
     /**
@@ -23,7 +27,8 @@ public class CommandDisplayRenderable extends Renderable{
      */
     public CommandDisplayRenderable(String name, CommandPrompt[] relatedCommands, ControllerInterface controller) {
         super(name, relatedCommands, controller);
-        this.activePrompts = new LinkedHashMap<>();
+        this.activeLocalPrompts = new LinkedHashMap<>();
+        this.activeActionPrompts = new LinkedHashMap<>();
     }
 
     /**
@@ -31,18 +36,39 @@ public class CommandDisplayRenderable extends Renderable{
      */
     @Override
     public void render() {
+        PromptStyle.printInABoxDouble("Active Commands", 50);
+
+
         List<String> commands = new ArrayList<>();
 
-        for(int i = 0; i < activePrompts.size(); i++){
-            CommandPrompt prompt = getPromptAtIndex(i);
-            String CommandLabel = new DecoratedString(prompt.getCommandName(), StringStyle.UNDERLINE).toString();
+        if(!activeLocalPrompts.isEmpty()) {
+            for (int i = 0; i < activeLocalPrompts.size(); i++) {
+                CommandPrompt prompt = getPromptAtIndex(i);
+                String CommandLabel = new DecoratedString(prompt.getCommandName(), StringStyle.UNDERLINE).toString();
 
-            String CommandNumber = new DecoratedString("[" + i + "]", StringStyle.BOLD).toString();
+                String CommandNumber = new DecoratedString("[" + i + "]", StringStyle.BOLD).toString();
 
-            commands.add(CommandNumber);
-            commands.add(CommandLabel);
+                commands.add(CommandNumber);
+                commands.add(CommandLabel);
+            }
+
+            PromptStyle.printListInABox("Active Display Commands", commands, 50, 2);
         }
-        PromptStyle.printListInABox("Active Commands", commands, 50, 2);
+
+
+        if(!activeActionPrompts.isEmpty()) {
+            commands.clear();
+            for (int i = 0; i < activeActionPrompts.size(); i++) {
+                CommandPrompt prompt = getPromptAtIndex(i + activeLocalPrompts.size());
+                String CommandLabel = new DecoratedString(prompt.getCommandName(), StringStyle.UNDERLINE).toString();
+
+                String CommandNumber = new DecoratedString("[" + (i + activeLocalPrompts.size()) + "]", StringStyle.BOLD).toString();
+
+                commands.add(CommandNumber);
+                commands.add(CommandLabel);
+            }
+            PromptStyle.printListInABox("Active Action Commands", commands, 50, 2);
+        }
 
         Printable printable = new Printable("");
         printable.println("What do you want to do ❔");
@@ -56,7 +82,10 @@ public class CommandDisplayRenderable extends Renderable{
      * @return The prompt at the given index.
      */
     private CommandPrompt getPromptAtIndex(int index){
-        return (CommandPrompt)activePrompts.keySet().toArray()[index];
+        if(index < activeLocalPrompts.size())
+            return (CommandPrompt)activeLocalPrompts.keySet().toArray()[index];
+        else
+            return (CommandPrompt) activeActionPrompts.keySet().toArray()[index - activeLocalPrompts.size()];
     }
 
     /**
@@ -80,9 +109,9 @@ public class CommandDisplayRenderable extends Renderable{
             int index = Integer.parseInt(input);
 
             //Checks if the number is in the range of the active prompts
-            if(index < 0 || index >= activePrompts.size()){
+            if(index < 0 || index >= activeLocalPrompts.size() + activeActionPrompts.size()){
                 Printable printable = new Printable("");
-                printable.println("Invalid input, please insert a number between 0 and " + (activePrompts.size() - 1));
+                printable.println("Invalid input, please insert a number between 0 and " + (activeLocalPrompts.size() + activeActionPrompts.size() - 1));
                 printable.print("\t");
                 Printer.print(printable);
                 return;
@@ -129,14 +158,41 @@ public class CommandDisplayRenderable extends Renderable{
     }
 
     /**
+     * Adds a command prompt to the given map.
+     * @param map The map to add the command prompt to.
+     * @param prompt The command prompt to add.
+     */
+    private void addCommandPromptTo(Map<CommandPrompt, Integer> map, CommandPrompt prompt){
+        if(!map.containsKey(prompt))
+            map.put(prompt, 1);
+        else
+            map.put(prompt, map.get(prompt) + 1);
+    }
+
+    /**
+     * Removes a command prompt from the given map.
+     * @param map The map to remove the command prompt from.
+     * @param prompt The command prompt to remove.
+     */
+    private void removeCommandPromptFrom(Map<CommandPrompt, Integer> map, CommandPrompt prompt){
+        if(!map.containsKey(prompt))
+            throw new IllegalArgumentException("Prompt not found");
+
+        if(map.get(prompt) == 1)
+            map.remove(prompt);
+        else
+            map.put(prompt, map.get(prompt) - 1);
+    }
+
+    /**
      * Adds a command prompt to the active prompts.
      * @param prompt The command prompt to add.
      */
     public void addCommandPrompt(CommandPrompt prompt){
-        if(!activePrompts.containsKey(prompt))
-            activePrompts.put(prompt, 1);
+        if(prompt.isLocal())
+            addCommandPromptTo(activeLocalPrompts, prompt);
         else
-            activePrompts.put(prompt, activePrompts.get(prompt) + 1);
+            addCommandPromptTo(activeActionPrompts, prompt);
     }
 
     /**
@@ -144,19 +200,17 @@ public class CommandDisplayRenderable extends Renderable{
      * @param prompt The command prompt to remove.
      */
     public void removeCommandPrompt(CommandPrompt prompt){
-        if(!activePrompts.containsKey(prompt))
-            throw new IllegalArgumentException("Prompt not found");
-
-        if(activePrompts.get(prompt) == 1)
-            activePrompts.remove(prompt);
+        if(prompt.isLocal())
+            removeCommandPromptFrom(activeLocalPrompts, prompt);
         else
-            activePrompts.put(prompt, activePrompts.get(prompt) - 1);
+            removeCommandPromptFrom(activeActionPrompts, prompt);
     }
 
     /**
      * Clears all the active command prompts.
      */
     public void clearCommandPrompts(){
-        activePrompts.clear();
+        activeLocalPrompts.clear();
+        activeActionPrompts.clear();
     }
 }
