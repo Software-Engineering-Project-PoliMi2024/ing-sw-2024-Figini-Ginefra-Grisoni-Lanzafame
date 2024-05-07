@@ -1,5 +1,6 @@
 package it.polimi.ingsw.controller2;
 
+import it.polimi.ingsw.controller2.pingPong.PingPongInterface;
 import it.polimi.ingsw.lightModel.LightCard;
 import it.polimi.ingsw.lightModel.lightPlayerRelated.LightPlacement;
 import it.polimi.ingsw.model.cardReleted.utilityEnums.CardFace;
@@ -9,7 +10,7 @@ import java.io.Serializable;
 import java.rmi.Remote;
 import java.rmi.RemoteException;
 
-public interface ControllerInterface extends Serializable, Remote {
+public interface ControllerInterface extends Serializable, Remote, PingPongInterface {
     void login(String nickname) throws RemoteException;
     void createLobby(String gameName, int maxPlayerCount) throws RemoteException;
     void joinLobby(String lobbyName) throws RemoteException;

@@ -1,5 +1,6 @@
 package it.polimi.ingsw.controller2;
 
+import it.polimi.ingsw.Configs;
 import it.polimi.ingsw.lightModel.Heavifier;
 import it.polimi.ingsw.lightModel.LightCard;
 import it.polimi.ingsw.lightModel.Lightifier;
@@ -29,12 +30,17 @@ import java.rmi.RemoteException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
+import java.util.concurrent.Future;
+import java.util.concurrent.LinkedBlockingQueue;
+import java.util.concurrent.ThreadPoolExecutor;
+import java.util.concurrent.TimeUnit;
 
 public class ServerModelController implements ControllerInterface, DiffSubscriber {
     private final MultiGame games;
     private final ViewInterface view;
     private String nickname;
     private final HeartbeatThread heartbeatThread;
+    private final ThreadPoolExecutor controllerExecutor = new ThreadPoolExecutor(2, 4, 10, TimeUnit.MILLISECONDS, new LinkedBlockingQueue<>());
 
     /**
      * The constructor of the class
@@ -370,6 +376,25 @@ public class ServerModelController implements ControllerInterface, DiffSubscribe
             view.logErr(log.getMessage());
         }catch (RemoteException r) {
             r.printStackTrace();
+        }
+    }
+    public void pingPong(){
+        Future<Void> ping = controllerExecutor.submit(()->{
+            try {
+                Thread.sleep(10000);
+                view.pingPong();
+                return null;
+            } catch (Exception e) {
+                throw new RuntimeException();
+            }
+        });
+        try {
+            ping.get(Configs.secondsTimeOut, TimeUnit.SECONDS);
+        }catch (Exception e){
+            try {
+                this.disconnect();
+            }catch (RemoteException r){
+            }
         }
     }
 
