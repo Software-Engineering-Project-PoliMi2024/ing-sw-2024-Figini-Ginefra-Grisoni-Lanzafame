@@ -7,6 +7,9 @@ import it.polimi.ingsw.view.TUI.Styles.PromptStyle;
 import it.polimi.ingsw.view.TUI.cardDrawing.CardMuseum;
 import it.polimi.ingsw.view.TUI.inputs.CommandPrompt;
 import it.polimi.ingsw.view.TUI.inputs.CommandPromptResult;
+import it.polimi.ingsw.view.ViewInterface;
+
+import java.rmi.RemoteException;
 
 /**
  * This class is a Renderable that can render the codex of players who are not the main player.
@@ -14,6 +17,8 @@ import it.polimi.ingsw.view.TUI.inputs.CommandPromptResult;
 public class CodexRenderableOthers extends CodexRenderable{
     /** The nickname of the player whose codex is being rendered. */
     private String targetPlayer = null;
+
+    private final ViewInterface view;
 
     /**
      * Creates a new CodexRenderableOthers.
@@ -23,8 +28,9 @@ public class CodexRenderableOthers extends CodexRenderable{
      * @param relatedCommands The commands related to this renderable.
      * @param controller The controller to interact with.
      */
-    public CodexRenderableOthers(String name, LightGame lightGame, CardMuseum cardMuseum, CommandPrompt[] relatedCommands, ControllerInterface controller) {
+    public CodexRenderableOthers(String name, ViewInterface view, LightGame lightGame, CardMuseum cardMuseum, CommandPrompt[] relatedCommands, ControllerInterface controller) {
         super(name, lightGame, cardMuseum, relatedCommands, controller);
+        this.view = view;
     }
 
     /**
@@ -62,6 +68,15 @@ public class CodexRenderableOthers extends CodexRenderable{
         switch (answer.getCommand()){
             case CommandPrompt.PEEK:
                 String nickname = answer.getAnswer(0);
+                if(nickname.equals(lightGame.getLightGameParty().getYourName())){
+                    try {
+                        view.logErr("You can't peek at your own codex");
+                    } catch (RemoteException e) {
+                        throw new RuntimeException(e);
+                    }
+                    return;
+                }
+
                 this.setTargetPlayer(nickname);
                 drawCodex();
                 this.render();

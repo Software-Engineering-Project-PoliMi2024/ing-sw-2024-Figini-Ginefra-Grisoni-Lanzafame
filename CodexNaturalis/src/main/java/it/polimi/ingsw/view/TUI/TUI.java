@@ -155,6 +155,7 @@ public class TUI extends View{
 
         handOthersRenderable = new HandOthersRenderable(
                 "Hand Others",
+                this,
                 cardMuseum,
                 lightGame,
                 new CommandPrompt[]{CommandPrompt.PEEK},
@@ -167,6 +168,7 @@ public class TUI extends View{
 
         codexRenderableOthers = new CodexRenderableOthers(
                 "Codex Others",
+                this,
                 lightGame,
                 cardMuseum,
                 new CommandPrompt[]{CommandPrompt.PEEK},
