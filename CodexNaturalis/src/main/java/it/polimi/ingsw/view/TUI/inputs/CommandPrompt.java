@@ -87,7 +87,7 @@ public enum CommandPrompt implements Iterator<String>, CommandObserved {
     DISPLAY_START_BACK("Display start card back", true),
 
     /** The command to choose the side of the start card */
-    CHOOSE_START_SIDE("Choose start side",
+    CHOOSE_START_SIDE("Choose start card side",
             new String[]{
                     "Which side do you want to choose? (front/back)",
             },
