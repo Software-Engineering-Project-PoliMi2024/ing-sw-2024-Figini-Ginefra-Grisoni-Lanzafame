@@ -117,10 +117,10 @@ public enum CommandPrompt implements Iterator<String>, CommandObserved {
             false),
 
     /** The command to display the hand front */
-    DISPLAY_HAND_FRONT("Display hand front", true),
-
-    /** The command to display the hand back */
-    DISPLAY_HAND_BACK("Display hand back", true),
+    DISPLAY_HAND("Display hand",
+            new String[]{"Which face do you want to display? (0/front - 1/back)"},
+            new Predicate[]{s -> s.equals("0") || s.equals("1")},
+            true),
 
     /** The command to display the secret objective */
     DISPLAY_SECRET_OBJECTIVE("Display secret objective", true),

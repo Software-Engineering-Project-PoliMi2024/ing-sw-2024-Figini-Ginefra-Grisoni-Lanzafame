@@ -131,7 +131,7 @@ public class TUI extends View{
                 "Hand",
                 cardMuseum,
                 lightGame,
-                new CommandPrompt[]{CommandPrompt.DISPLAY_HAND_FRONT, CommandPrompt.DISPLAY_HAND_BACK, CommandPrompt.DISPLAY_SECRET_OBJECTIVE},
+                new CommandPrompt[]{CommandPrompt.DISPLAY_HAND, CommandPrompt.DISPLAY_SECRET_OBJECTIVE},
                 controller);
         StateTUI.SELECT_OBJECTIVE.attach(handRenderable);
         StateTUI.PLACE_CARD.attach(handRenderable);
@@ -259,6 +259,21 @@ public class TUI extends View{
         PromptStyle.printInABox(logMsg,50, StringStyle.GREEN_FOREGROUND);
         Printer.println("");
     }
+
+    @Override
+    public void logOthers(String logMsg){
+        Printer.println("");
+        PromptStyle.printInABox(logMsg,50, StringStyle.PURPLE_FOREGROUND);
+        Printer.println("");
+    }
+
+    @Override
+    public void logGame(String logMsg){
+        Printer.println("");
+        PromptStyle.printInABox(logMsg,50, StringStyle.BLUE_FOREGROUND);
+        Printer.println("");
+    }
+
 
     @Override
     public void logErr(String logMsg) {

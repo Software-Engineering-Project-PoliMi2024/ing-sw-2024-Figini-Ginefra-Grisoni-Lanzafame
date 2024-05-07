@@ -21,6 +21,8 @@ public enum StringStyle {
     GREEN_FOREGROUND(0, 210, 106, false),
     YELLOW_FOREGROUND("33"),
     BLUE_FOREGROUND(0, 116, 186, false),
+
+    PURPLE_FOREGROUND(141, 101, 197, false),
     STRIKETHROUGH("9");
     private final String style;
 
