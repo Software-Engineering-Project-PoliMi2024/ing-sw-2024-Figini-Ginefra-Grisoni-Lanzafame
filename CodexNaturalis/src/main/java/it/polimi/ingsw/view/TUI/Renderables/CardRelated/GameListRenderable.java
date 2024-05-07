@@ -40,7 +40,7 @@ public class GameListRenderable extends Renderable {
         } else {
             List<String> lobbyNames = lightLobbyList.getLobbies().stream().map(LightLobby::name).toList();
             System.out.println(lobbyNames);
-            PromptStyle.printListInABox("Available games", lobbyNames, 70, 1);
+            PromptStyle.printListInABox("Available lobbies", lobbyNames, 70, 1);
         }
     }
 

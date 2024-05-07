@@ -63,16 +63,16 @@ public enum CommandPrompt implements Iterator<String>, CommandObserved {
             },
             false),
     /** The command to join an existing game */
-    JOIN_GAME("Join game",
+    JOIN_GAME("Join lobby",
             new String[]{
-                    "What's the name of the game?",
+                    "What's the name of the lobby?",
             },
             new Predicate[]{
                     s -> true,
             },
             false),
     /** The command to display the current list of games with free spots */
-    DISPLAY_GAME_LIST("Display game list", true),
+    DISPLAY_GAME_LIST("Display lobbies list", true),
 
     /** The command to display the lobby the player is currently in*/
     DISPLAY_LOBBY("Display lobby", true),
