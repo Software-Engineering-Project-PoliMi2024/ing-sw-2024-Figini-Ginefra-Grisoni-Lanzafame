@@ -32,13 +32,13 @@ class HandRenderableTest {
 
     @Test
     void displayHandFront() {
-        CommandPromptResult answer = new CommandPromptResult(CommandPrompt.DISPLAY_HAND_FRONT, new String[]{});
+        CommandPromptResult answer = new CommandPromptResult(CommandPrompt.DISPLAY_HAND, new String[]{"0"});
         renderable.updateCommand(answer);
     }
 
     @Test
     void displayHandBack() {
-        CommandPromptResult answer = new CommandPromptResult(CommandPrompt.DISPLAY_HAND_BACK, new String[]{});
+        CommandPromptResult answer = new CommandPromptResult(CommandPrompt.DISPLAY_HAND, new String[]{"1"});
         renderable.updateCommand(answer);
     }
 

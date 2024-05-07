@@ -131,7 +131,7 @@ public class TUI extends View{
                 "Hand",
                 cardMuseum,
                 lightGame,
-                new CommandPrompt[]{CommandPrompt.DISPLAY_HAND_FRONT, CommandPrompt.DISPLAY_HAND_BACK, CommandPrompt.DISPLAY_SECRET_OBJECTIVE},
+                new CommandPrompt[]{CommandPrompt.DISPLAY_HAND, CommandPrompt.DISPLAY_SECRET_OBJECTIVE},
                 controller);
         StateTUI.SELECT_OBJECTIVE.attach(handRenderable);
         StateTUI.PLACE_CARD.attach(handRenderable);

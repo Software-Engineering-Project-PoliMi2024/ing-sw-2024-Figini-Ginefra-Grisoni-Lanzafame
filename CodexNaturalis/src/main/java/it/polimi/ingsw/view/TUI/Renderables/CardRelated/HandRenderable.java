@@ -67,12 +67,9 @@ public class HandRenderable extends CardRenderable {
      */
     public void updateCommand(CommandPromptResult answer){
         switch (answer.getCommand()) {
-            case CommandPrompt.DISPLAY_HAND_FRONT:
-                this.setFace(CardFace.FRONT);
-                this.render();
-                break;
-            case CommandPrompt.DISPLAY_HAND_BACK:
-                this.setFace(CardFace.BACK);
+            case CommandPrompt.DISPLAY_HAND:
+                int cardIndex = Integer.parseInt(answer.getAnswer(0));
+                this.setFace(cardIndex == 0 ? CardFace.FRONT : CardFace.BACK);
                 this.render();
                 break;
             case CommandPrompt.DISPLAY_SECRET_OBJECTIVE:
