@@ -30,7 +30,7 @@ public class Frontier implements Serializable {
     }
 
     /**returns the map describing for each
-     * Updates the frontier after a placement
+     * Update the frontier after a placement
      * @throws IllegalArgumentException if codex or position are null
      * @param codex the codex
      * @param position the position of the placement
@@ -41,9 +41,13 @@ public class Frontier implements Serializable {
 
         this.removePosition(position);
 
-        for (CardCorner corner : CardCorner.values()) {
-            Position possiblePosition = position.add(corner.getOffset());
+        Placement placement = codex.getPlacementAt(position);
 
+        for (CardCorner corner : CardCorner.values()) {
+            if(!placement.card().isCorner(corner, placement.face()))
+                continue;
+
+            Position possiblePosition = position.add(corner.getOffset());
             if (codex.getPlacementAt(possiblePosition) == null) {
                 this.addPosition(possiblePosition);
             }
