@@ -5,6 +5,7 @@ import it.polimi.ingsw.lightModel.LightCard;
 import it.polimi.ingsw.lightModel.lightTableRelated.LightDeck;
 import it.polimi.ingsw.lightModel.lightTableRelated.LightGame;
 import it.polimi.ingsw.model.cardReleted.utilityEnums.CardFace;
+import it.polimi.ingsw.view.TUI.Printing.Printer;
 import it.polimi.ingsw.view.TUI.Styles.CardTextStyle;
 import it.polimi.ingsw.view.TUI.Styles.DecoratedString;
 import it.polimi.ingsw.view.TUI.Styles.PromptStyle;
@@ -28,10 +29,10 @@ public class DeckRenderable extends CardRenderable {
 
     @Override
     public void render() {
-        PromptStyle.printInABox("Gold Deck - Visible Cards", CardTextStyle.getCardWidth() * 2);
+        PromptStyle.printInABox("Gold Deck ", CardTextStyle.getCardWidth() * 2);
         renderDeck(goldDeck);
 
-        PromptStyle.printInABox("Resource Deck - Visible Cards", CardTextStyle.getCardWidth() * 2);
+        PromptStyle.printInABox("Resource Deck ", CardTextStyle.getCardWidth() * 2);
         renderDeck(resourceDeck);
     }
 
@@ -49,11 +50,9 @@ public class DeckRenderable extends CardRenderable {
         }
         // Render the top invisible card resource only, showing resource back
         if (deck.getCardDeck() != null) {
-            PromptStyle.printInABox("Next Draw: " + getMuseum().getResourceBack(deck.getCardDeck()).toString(), CardTextStyle.getCardWidth());
-        }
-        if (deck.getCardDeck() != null) {
             String resourceBack = getMuseum().getResourceBack(deck.getCardDeck()).toString();
-            PromptStyle.printInABox("Next Draw"  + resourceBack , CardTextStyle.getCardWidth() * 3);
+            PromptStyle.printInABox("Next Draw" , CardTextStyle.getCardWidth() * 3);
+            Printer.println(  resourceBack );
         }
     }
 
