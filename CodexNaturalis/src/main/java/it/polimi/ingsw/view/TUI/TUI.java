@@ -219,6 +219,7 @@ public class TUI extends View{
         StateTUI.GAME_ENDING.attach(leaderboardRenderable);
         renderables.add(leaderboardRenderable);
 
+        this.transitionTo(ViewState.SERVER_CONNECTION);
     }
 
     public void run() {
