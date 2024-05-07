@@ -1,7 +1,7 @@
 package it.polimi.ingsw;
 
 public class Configs {
-    public static String connectionClassLabelRMI = "connect";
+    public static String connectionLabelRMI = "connect";
     public static String CardFolder = "./cards/";
     public static String CardFile = "cards.json";
     public static int port = 1234;

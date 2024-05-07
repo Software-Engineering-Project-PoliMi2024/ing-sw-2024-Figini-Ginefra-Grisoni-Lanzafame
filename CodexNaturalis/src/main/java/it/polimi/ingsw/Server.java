@@ -47,7 +47,7 @@ public class Server {
             registry = (LocateRegistry.createRegistry(Configs.port));
             ConnectionLayerServer connection = new ConnectionServerRMI(multiGame);
             ConnectionLayerServer stub = (ConnectionLayerServer) UnicastRemoteObject.exportObject(connection, 0);
-            registry.rebind(Configs.connectionClassLabelRMI, stub);
+            registry.rebind(Configs.connectionLabelRMI, stub);
             System.out.println("RMI Server started on port " + Configs.port + "🚔!");
         } catch (Exception e) {
             System.err.println("Server exception: can't open registry " +
