@@ -29,10 +29,10 @@ public class DeckRenderable extends CardRenderable {
 
     @Override
     public void render() {
-        PromptStyle.printInABox("Gold Deck ", CardTextStyle.getCardWidth() * 2);
+        PromptStyle.printInABox("Gold Deck ", CardTextStyle.getCardWidth() * 3);
         renderDeck(goldDeck);
 
-        PromptStyle.printInABox("Resource Deck ", CardTextStyle.getCardWidth() * 2);
+        PromptStyle.printInABox("Resource Deck ", CardTextStyle.getCardWidth() * 3);
         renderDeck(resourceDeck);
     }
 
@@ -51,7 +51,7 @@ public class DeckRenderable extends CardRenderable {
         // Render the top invisible card resource only, showing resource back
         if (deck.getCardDeck() != null) {
             String resourceBack = getMuseum().getResourceBack(deck.getCardDeck()).toString();
-            PromptStyle.printInABox("Next Draw" , CardTextStyle.getCardWidth() * 3);
+            PromptStyle.printInABox("Next Draw" , CardTextStyle.getCardWidth() * 2);
             Printer.println(  resourceBack );
         }
     }
