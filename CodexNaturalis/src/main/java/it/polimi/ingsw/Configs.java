@@ -1,6 +1,7 @@
 package it.polimi.ingsw;
 
 public class Configs {
+    public static String gameSavesDir = "./gameSaves/";
     public static String connectionLabelRMI = "connect";
     public static String CardFolder = "./cards/";
     public static String CardFile = "cards.json";
