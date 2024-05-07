@@ -151,7 +151,7 @@ public enum CommandPrompt implements Iterator<String>, CommandObserved {
                         }
                     },
             },
-            true),
+            false),
 
     /** The command to display the codex */
     DISPLAY_CODEX("Display codex", true),

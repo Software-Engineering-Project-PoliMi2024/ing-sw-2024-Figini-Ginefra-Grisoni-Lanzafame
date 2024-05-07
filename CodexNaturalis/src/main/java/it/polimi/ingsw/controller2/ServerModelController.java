@@ -239,7 +239,14 @@ public class ServerModelController implements ControllerInterface, DiffSubscribe
                 heavyPlacement.card().getPermanentResources(CardFace.BACK).stream().findFirst().orElse(null), this.nickname));
         userGame.subscribe(new CodexDiff(this.nickname, user.getUserCodex().getPoints(),
                 user.getUserCodex().getEarnedCollectables(), getPlacementList(placement), user.getUserCodex().getFrontier().getFrontier()));
-        log(LogsOnClient.CARD_PLACED);
+        for(ServerModelController allControllers : userGame.getGameLoopController().getActivePlayers().values()){
+                if(!allControllers.equals(this)){
+                    LogsOnClient.PLAYER_PLACED.setPrefix(this.getNickname());
+                    allControllers.log(LogsOnClient.PLAYER_PLACED);
+                }else{
+                    this.log(LogsOnClient.YOU_PLACED);
+                }
+        }
         transitionTo(ViewState.DRAW_CARD);
     }
 

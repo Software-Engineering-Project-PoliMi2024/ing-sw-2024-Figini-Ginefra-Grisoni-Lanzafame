@@ -1,6 +1,7 @@
 package it.polimi.ingsw.controller2;
 
 import it.polimi.ingsw.controller.Controller;
+import it.polimi.ingsw.controller.socket.SocketController;
 import it.polimi.ingsw.lightModel.LightCard;
 import it.polimi.ingsw.lightModel.Lightifier;
 import it.polimi.ingsw.lightModel.diffs.game.*;
@@ -69,7 +70,6 @@ public class GameLoopController {
             if(controller == null){
                 throw new NullPointerException("Controller not found");
             }else {
-                controller.log(LogsOnClient.NEW_GAME_JOINED);
                 controller.transitionTo(ViewState.CHOOSE_START_CARD);
                 try {
                     user = game.getUserFromNick(nick);
@@ -168,10 +168,20 @@ public class GameLoopController {
      * @param controller of the user who placed the card
      */
     public void startCardPlaced(ServerModelController controller) {
+        controller.log(LogsOnClient.YOU_PLACED);
+        for(ServerModelController otherControllers : activePlayers.values()){
+            if(!otherControllers.equals(controller)){
+                LogsOnClient.PLAYER_PLACE_STARTCARD.setPrefix(controller.getNickname());
+                otherControllers.log(LogsOnClient.PLAYER_PLACE_STARTCARD);
+            }
+        }
         if(!everyonePlaced()){ //Not all activePlayer placed their starting Card
             controller.log(LogsOnClient.WAIT_STARTCARD);
             controller.transitionTo(ViewState.WAITING_STATE);
         }else{
+            for(ServerModelController allController : activePlayers.values()){
+                allController.log(LogsOnClient.EVERYONE_PLACED_STARTCARD);
+            }
             this.checkForDisconnectedUsers();
             this.secretObjectiveSetup();
         }
@@ -184,11 +194,22 @@ public class GameLoopController {
      * @param controller of the user who chose the objective
      */
     public void secretObjectiveChose(ServerModelController controller){
+        controller.log(LogsOnClient.YOU_CHOSE);
+        for(ServerModelController otherControllers : activePlayers.values()){
+            if(!otherControllers.equals(controller)){
+                LogsOnClient.PLAYER_CHOSE.setPrefix(controller.getNickname());
+                otherControllers.log(LogsOnClient.PLAYER_CHOSE);
+            }
+        }
         if(!everyoneChose()){ //Not all activePlayer chose their secretObjective Card
             controller.log(LogsOnClient.WAIT_SECRET_OBJECTIVE);
             controller.transitionTo(ViewState.WAITING_STATE);
         }else{
             this.checkForDisconnectedUsers();
+            for(ServerModelController allController : activePlayers.values()){
+                allController.log(LogsOnClient.EVERYONE_CHOSE);
+                allController.log(LogsOnClient.DECK_SHUFFLE);
+            }
             //A player might disconnect while he is in waiting, after he chose the secretObj.
             // He is not banned, but he can't be the first player of the gameLoop
             this.gameLoop();
@@ -200,6 +221,14 @@ public class GameLoopController {
      * @param controller of the currentPlayer who ended his turn
      */
     public void cardDrawn(ServerModelController controller){
+        for(ServerModelController allController : activePlayers.values()){
+            if(!allController.equals(controller)){
+                LogsOnClient.PLAYER_DRAW.setPrefix(controller.getNickname());
+                allController.log(LogsOnClient.PLAYER_DRAW);
+            }else{
+                controller.log(LogsOnClient.YOU_DRAW);
+            }
+        }
         controller.transitionTo(ViewState.WAITING_STATE);
         this.gameLoop();
     }
@@ -398,5 +427,9 @@ public class GameLoopController {
                 controller.updateGame(new HandDiffAddOneSecretObjectiveOption(secretObjectiveCardChoice));
             }
         }
+    }
+
+    public Map<String, ServerModelController> getActivePlayers() {
+        return activePlayers;
     }
 }
