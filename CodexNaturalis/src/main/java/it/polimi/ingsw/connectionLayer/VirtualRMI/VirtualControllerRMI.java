@@ -16,6 +16,7 @@ import it.polimi.ingsw.model.cardReleted.utilityEnums.DrawableCard;
 import it.polimi.ingsw.view.ViewInterface;
 import it.polimi.ingsw.view.ViewState;
 
+import java.rmi.RemoteException;
 import java.rmi.registry.LocateRegistry;
 import java.rmi.registry.Registry;
 import java.rmi.server.UnicastRemoteObject;
@@ -182,6 +183,12 @@ public class VirtualControllerRMI implements VirtualController {
 
     public synchronized void disconnect(){
         pingPongExecutor = Executors.newSingleThreadScheduledExecutor();
+        try {
+            UnicastRemoteObject.unexportObject(this, true);
+            UnicastRemoteObject.unexportObject(view, true);
+        }catch (RemoteException r){
+            r.printStackTrace();
+        }
         this.erase();
         try {
             view.logErr(LogsOnClient.CONNECTION_LOST_CLIENT_SIDE.getMessage());
