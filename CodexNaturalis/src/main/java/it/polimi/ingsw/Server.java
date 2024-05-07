@@ -44,11 +44,11 @@ public class Server {
         }
 
 
-        SocketServer socketServer = new SocketServer(multiGame);
-        ServerRMI serverRMI = new ServerRMI(multiGame);
-        Thread serverSocketThread = new Thread(socketServer, "Socket Server Listening Thread");
-        Thread serverRMIThread = new Thread(serverRMI, "RMI Server Listening Thread");
-        serverSocketThread.start();
-        serverRMIThread.start();
+//        SocketServer socketServer = new SocketServer(multiGame);
+//        ServerRMI serverRMI = new ServerRMI(multiGame);
+//        Thread serverSocketThread = new Thread(socketServer, "Socket Server Listening Thread");
+//        Thread serverRMIThread = new Thread(serverRMI, "RMI Server Listening Thread");
+//        serverSocketThread.start();
+//        serverRMIThread.start();
     }
 }
