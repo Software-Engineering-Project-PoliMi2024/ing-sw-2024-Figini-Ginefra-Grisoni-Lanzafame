@@ -155,6 +155,7 @@ public class TUI extends View{
                 controller);
         StateTUI.SELECT_OBJECTIVE.attach(codexRenderable);
         StateTUI.IDLE.attach(codexRenderable);
+        StateTUI.WAITING_STATE.attach(codexRenderable);
         StateTUI.DRAW_CARD.attach(codexRenderable);
         StateTUI.PLACE_CARD.attach(codexRenderable);
         renderables.add(codexRenderable);
