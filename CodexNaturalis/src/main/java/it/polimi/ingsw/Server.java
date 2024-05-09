@@ -18,28 +18,14 @@ import java.util.Scanner;
  */
 public class Server {
     public static void main(String[] args) {
-        System.out.println("SERVER STARTED! 🚀🚀🚀");
-        System.out.println("show IP? (possible only with internet connection)");
 
-        System.out.println("0 = no / 1 = yes");
-
-        Scanner scanner = new Scanner(System.in);
-        String choice = scanner.nextLine();
-
-        while(!choice.matches("[01]")) {
-            System.out.println("Invalid choice! Please choose again.");
-            choice = scanner.nextLine();
+        try (Socket socket = new Socket()) {
+            socket.connect(new InetSocketAddress("google.com", 80));
+            Printer.println("IP: " + socket.getLocalAddress().getHostAddress());
+        } catch (IOException e) {
+            System.out.println("No internet connection, can't get IP address");
         }
-        int choiceInt = Integer.parseInt(choice);
 
-        if (choiceInt == 1) {
-            try (Socket socket = new Socket()) {
-                socket.connect(new InetSocketAddress("google.com", 80));
-                Printer.println("IP: " + socket.getLocalAddress().getHostAddress());
-            } catch (IOException e) {
-                throw new RuntimeException(e);
-            }
-        }
 
         MultiGame multiGame = new MultiGame();
         Registry registry;
