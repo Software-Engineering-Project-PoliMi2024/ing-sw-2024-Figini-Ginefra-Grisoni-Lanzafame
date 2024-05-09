@@ -2,6 +2,7 @@ package it.polimi.ingsw;
 
 import it.polimi.ingsw.connectionLayer.VirtualRMI.VirtualControllerRMI;
 import it.polimi.ingsw.connectionLayer.VirtualLayer.VirtualController;
+import it.polimi.ingsw.connectionLayer.VirtualSocket.VirtualControllerSocket;
 import it.polimi.ingsw.view.TUI.TUI;
 import it.polimi.ingsw.view.View;
 
@@ -28,7 +29,7 @@ public class Client {
 
         if (choiceInt == 0) {
             System.out.println("You chose the Socket protocol!");
-            controller = null;
+            controller = new VirtualControllerSocket();
         } else{
             System.out.println("You chose the RMI protocol!");
             controller = new VirtualControllerRMI();

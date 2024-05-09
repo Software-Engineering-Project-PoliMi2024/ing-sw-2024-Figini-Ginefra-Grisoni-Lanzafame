@@ -2,16 +2,24 @@ package it.polimi.ingsw;
 
 import it.polimi.ingsw.connectionLayer.ConnectionLayerServer;
 import it.polimi.ingsw.connectionLayer.ConnectionServerRMI;
+import it.polimi.ingsw.connectionLayer.Socket.ClientHandler;
+import it.polimi.ingsw.connectionLayer.Socket.ServerMsg.LogMsg;
+import it.polimi.ingsw.connectionLayer.Socket.ServerMsg.TransitionToMsg;
+import it.polimi.ingsw.connectionLayer.VirtualLayer.VirtualView;
+import it.polimi.ingsw.connectionLayer.VirtualSocket.VirtualViewSocket;
+import it.polimi.ingsw.controller2.LogsOnClient;
+import it.polimi.ingsw.controller2.ServerModelController;
 import it.polimi.ingsw.model.MultiGame;
 import it.polimi.ingsw.view.TUI.Printing.Printer;
+import it.polimi.ingsw.view.ViewState;
 
 import java.io.IOException;
 import java.net.InetSocketAddress;
+import java.net.ServerSocket;
 import java.net.Socket;
 import java.rmi.registry.LocateRegistry;
 import java.rmi.registry.Registry;
 import java.rmi.server.UnicastRemoteObject;
-import java.util.Scanner;
 
 /**
  * Starts the server, create an object of MultiGame, starts his SocketServer Thread
@@ -25,21 +33,62 @@ public class Server {
         } catch (IOException e) {
             System.out.println("No internet connection, can't get IP address");
         }
-
-
         MultiGame multiGame = new MultiGame();
+
         Registry registry;
         try {
-            registry = (LocateRegistry.createRegistry(Configs.port));
+            registry = (LocateRegistry.createRegistry(Configs.rmiPort));
             ConnectionLayerServer connection = new ConnectionServerRMI(multiGame);
             ConnectionLayerServer stub = (ConnectionLayerServer) UnicastRemoteObject.exportObject(connection, 0);
             registry.rebind(Configs.connectionLabelRMI, stub);
-            System.out.println("RMI Server started on port " + Configs.port + "🚔!");
+            System.out.println("RMI Server started on port " + Configs.rmiPort + "🚔!");
         } catch (Exception e) {
             System.err.println("Server exception: can't open registry " +
                     "or error while binding the object");
             e.printStackTrace();
         }
+
+        ServerSocket server;
+        try {
+            server = new ServerSocket(Configs.socketPort);
+        } catch (IOException e) {
+            System.out.println("cannot open server socket");
+            System.exit(1);
+            return;
+        }
+        Thread serverSocketThread = new Thread(() -> {
+            System.out.println("Socket Server started on port " + server.getLocalPort() + "🚔!");
+            while (true) {
+                try {
+                    //todo this should be done in a connectionServerSocket but I still don't know how to do it
+                    Socket client = server.accept();
+                    ClientHandler clientHandler = new ClientHandler(client);
+                    Thread clientHandlerThread = new Thread(clientHandler, "clientHandler of" + client.getInetAddress());
+                    clientHandlerThread.start();
+
+                    VirtualView virtualView = new VirtualViewSocket(clientHandler);
+                    while(!clientHandler.isReady()) {
+                        try {
+                            Thread.sleep(10);
+                        } catch (InterruptedException e) {
+                            e.printStackTrace();
+                        }
+                        clientHandler.setOwner(virtualView);
+                    }
+
+                    ServerModelController controller = new ServerModelController(multiGame, virtualView);
+                    virtualView.setController(controller);
+                    clientHandler.setController(controller);
+
+                    virtualView.log(LogsOnClient.SERVER_JOINED.getMessage());
+                    virtualView.transitionTo(ViewState.LOGIN_FORM);
+                } catch (IOException e) {
+                    System.out.println("connection dropped");
+                    e.printStackTrace();
+                }
+            }
+        }, "Socket Server Listening Thread");
+        serverSocketThread.start();
 
 
 //        SocketServer socketServer = new SocketServer(multiGame);
