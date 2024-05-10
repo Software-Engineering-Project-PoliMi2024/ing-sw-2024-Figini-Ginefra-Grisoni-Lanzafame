@@ -3,6 +3,7 @@ package it.polimi.ingsw.view.TUI.Renderables.CardRelated;
 import it.polimi.ingsw.controller2.ControllerInterface;
 import it.polimi.ingsw.lightModel.lightTableRelated.LightLobby;
 import it.polimi.ingsw.lightModel.lightTableRelated.LightLobbyList;
+import it.polimi.ingsw.view.ControllerProvider;
 import it.polimi.ingsw.view.TUI.Renderables.Renderable;
 import it.polimi.ingsw.view.TUI.Styles.PromptStyle;
 import it.polimi.ingsw.view.TUI.inputs.CommandPrompt;
@@ -23,10 +24,10 @@ public class GameListRenderable extends Renderable {
      * @param name The name of the renderable.
      * @param lightLobbyList The lightLobbyList to render.
      * @param relatedCommands The commands related to this renderable.
-     * @param controller The controller to interact with.
+     * @param view The controller provider.
      */
-    public GameListRenderable(String name, LightLobbyList lightLobbyList, CommandPrompt[] relatedCommands, ControllerInterface controller) {
-        super(name, relatedCommands, controller);
+    public GameListRenderable(String name, LightLobbyList lightLobbyList, CommandPrompt[] relatedCommands, ControllerProvider view) {
+        super(name, relatedCommands, view);
         this.lightLobbyList = lightLobbyList;
     }
 
@@ -55,7 +56,7 @@ public class GameListRenderable extends Renderable {
                 break;
             case CommandPrompt.JOIN_GAME:
                 try {
-                    controller.joinLobby(answer.getAnswer(0));
+                    view.getController().joinLobby(answer.getAnswer(0));
                 }
                 catch (Exception e) {
                     System.out.println("Error while joining the game.");
@@ -65,7 +66,7 @@ public class GameListRenderable extends Renderable {
                 try {
                     String lobbyName = answer.getAnswer(0);
                     int maxPlayers = Integer.parseInt(answer.getAnswer(1));
-                    controller.createLobby(lobbyName, maxPlayers);
+                    view.getController().createLobby(lobbyName, maxPlayers);
                 }
                 catch (Exception e) {
                     System.out.println("Error while creating the game.");

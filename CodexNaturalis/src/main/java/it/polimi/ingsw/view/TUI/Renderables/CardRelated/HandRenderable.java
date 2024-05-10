@@ -4,6 +4,7 @@ import it.polimi.ingsw.controller2.ControllerInterface;
 import it.polimi.ingsw.lightModel.LightCard;
 import it.polimi.ingsw.lightModel.lightTableRelated.LightGame;
 import it.polimi.ingsw.model.cardReleted.utilityEnums.CardFace;
+import it.polimi.ingsw.view.ControllerProvider;
 import it.polimi.ingsw.view.TUI.Printing.Printer;
 import it.polimi.ingsw.view.TUI.Renderables.CodexRelated.CanvasRenderable;
 import it.polimi.ingsw.view.TUI.Renderables.drawables.Drawable;
@@ -29,10 +30,10 @@ public class HandRenderable extends CanvasRenderable {
      * @param museum The card museum to use.
      * @param game The lightGame to render.
      * @param relatedCommands The commands related to this renderable.
-     * @param controller The controller to interact with.
+     * @param view The controller provider.
      */
-    public HandRenderable(String name, CardMuseum museum, LightGame game, CommandPrompt[] relatedCommands, ControllerInterface controller) {
-        super(name, CardTextStyle.getCardWidth() * 3 + 3, CardTextStyle.getCardHeight(), relatedCommands, controller);
+    public HandRenderable(String name, CardMuseum museum, LightGame game, CommandPrompt[] relatedCommands, ControllerProvider view) {
+        super(name, CardTextStyle.getCardWidth() * 3 + 3, CardTextStyle.getCardHeight(), relatedCommands, view);
         this.museum = museum;
         this.lightGame = game;
     }

@@ -5,6 +5,7 @@ import it.polimi.ingsw.lightModel.LightCard;
 import it.polimi.ingsw.lightModel.lightTableRelated.LightDeck;
 import it.polimi.ingsw.lightModel.lightTableRelated.LightGame;
 import it.polimi.ingsw.model.cardReleted.utilityEnums.CardFace;
+import it.polimi.ingsw.view.ControllerProvider;
 import it.polimi.ingsw.view.TUI.Printing.Printer;
 import it.polimi.ingsw.view.TUI.Styles.CardTextStyle;
 import it.polimi.ingsw.view.TUI.Styles.DecoratedString;
@@ -21,8 +22,8 @@ public class DeckRenderable extends CardRenderable {
     private final LightDeck goldDeck;
     private final LightDeck resourceDeck;
 
-    public DeckRenderable(String name, CardMuseum museum, LightGame game, CommandPrompt[] relatedCommands, ControllerInterface controller) {
-        super(name, museum, game, CardFace.FRONT, relatedCommands, controller);
+    public DeckRenderable(String name, CardMuseum museum, LightGame game, CommandPrompt[] relatedCommands, ControllerProvider view) {
+        super(name, museum, game, CardFace.FRONT, relatedCommands, view);
         this.goldDeck = game.getGoldDeck();
         this.resourceDeck = game.getResourceDeck();
     }

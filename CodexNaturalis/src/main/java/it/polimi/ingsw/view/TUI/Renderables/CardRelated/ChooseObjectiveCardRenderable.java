@@ -4,6 +4,7 @@ import it.polimi.ingsw.controller2.ControllerInterface;
 import it.polimi.ingsw.lightModel.LightCard;
 import it.polimi.ingsw.lightModel.lightTableRelated.LightGame;
 import it.polimi.ingsw.model.cardReleted.utilityEnums.CardFace;
+import it.polimi.ingsw.view.ControllerProvider;
 import it.polimi.ingsw.view.TUI.Renderables.CardRelated.CardRenderable;
 import it.polimi.ingsw.view.TUI.Styles.CardTextStyle;
 import it.polimi.ingsw.view.TUI.Styles.DecoratedString;
@@ -25,10 +26,10 @@ public class ChooseObjectiveCardRenderable extends CardRenderable {
      * @param museum The card museum to use.
      * @param game The lightGame to render.
      * @param relatedCommands The commands related to this renderable.
-     * @param controller The controller to interact with.
+     * @param view The controller provider.
      */
-    public ChooseObjectiveCardRenderable(String name, CardMuseum museum, LightGame game, CommandPrompt[] relatedCommands, ControllerInterface controller){
-        super(name, museum, game, CardFace.FRONT, relatedCommands, controller);
+    public ChooseObjectiveCardRenderable(String name, CardMuseum museum, LightGame game, CommandPrompt[] relatedCommands, ControllerProvider view){
+        super(name, museum, game, CardFace.FRONT, relatedCommands, view);
     }
 
     /**
@@ -57,7 +58,7 @@ public class ChooseObjectiveCardRenderable extends CardRenderable {
             case CommandPrompt.CHOOSE_OBJECTIVE_CARD:
                 try {
                     int cardIndex = Integer.parseInt(command.getAnswer(0)) - 1;
-                    controller.choseSecretObjective(getLightGame().getHand().getSecretObjectiveOptions()[cardIndex]);
+                    view.getController().choseSecretObjective(getLightGame().getHand().getSecretObjectiveOptions()[cardIndex]);
                 }
                 catch (Exception e) {
                     e.printStackTrace();

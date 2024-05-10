@@ -136,7 +136,6 @@ public class TUI implements ActualView {
 
         handOthersRenderable = new HandOthersRenderable(
                 "Hand Others",
-                this,
                 cardMuseum,
                 lightGame,
                 new CommandPrompt[]{CommandPrompt.PEEK},
@@ -152,8 +151,7 @@ public class TUI implements ActualView {
                 this,
                 lightGame,
                 cardMuseum,
-                new CommandPrompt[]{CommandPrompt.PEEK},
-                this);
+                new CommandPrompt[]{CommandPrompt.PEEK});
         StateTUI.SELECT_OBJECTIVE.attach(codexRenderableOthers);
         StateTUI.IDLE.attach(codexRenderableOthers);
         StateTUI.DRAW_CARD.attach(codexRenderableOthers);

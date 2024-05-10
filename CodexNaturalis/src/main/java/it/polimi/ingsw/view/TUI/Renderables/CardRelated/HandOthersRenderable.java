@@ -5,6 +5,7 @@ import it.polimi.ingsw.lightModel.lightPlayerRelated.LightHandOthers;
 import it.polimi.ingsw.lightModel.lightTableRelated.LightGame;
 import it.polimi.ingsw.model.cardReleted.utilityEnums.CardFace;
 import it.polimi.ingsw.model.cardReleted.utilityEnums.Resource;
+import it.polimi.ingsw.view.ControllerProvider;
 import it.polimi.ingsw.view.TUI.Printing.Printer;
 import it.polimi.ingsw.view.TUI.Styles.CardTextStyle;
 import it.polimi.ingsw.view.TUI.Styles.PromptStyle;
@@ -21,8 +22,6 @@ import java.rmi.RemoteException;
 public class HandOthersRenderable extends CardRenderable{
     /** The nickname of the player whose hand is being rendered. */
     private String targetPlayer = null;
-    private final ViewInterface view;
-
 
     /**
      * Creates a new HandOthersRenderable.
@@ -30,11 +29,11 @@ public class HandOthersRenderable extends CardRenderable{
      * @param museum The card museum to use.
      * @param game The lightGame to render.
      * @param relatedCommands The commands related to this renderable.
-     * @param controller The controller to interact with.
+     * @param view The controller provider.
      */
-    public HandOthersRenderable(String name, ViewInterface view, CardMuseum museum, LightGame game, CommandPrompt[] relatedCommands, ControllerInterface controller){
-        super(name, museum, game, CardFace.FRONT, relatedCommands, controller);
-        this.view = view;
+    public HandOthersRenderable(String name, CardMuseum museum, LightGame game, CommandPrompt[] relatedCommands, ControllerProvider view){
+        super(name, museum, game, CardFace.FRONT, relatedCommands, view);
+
     }
 
     /**

@@ -4,6 +4,7 @@ import it.polimi.ingsw.controller2.ControllerInterface;
 import it.polimi.ingsw.lightModel.LightCard;
 import it.polimi.ingsw.lightModel.lightTableRelated.LightGame;
 import it.polimi.ingsw.model.cardReleted.utilityEnums.CardFace;
+import it.polimi.ingsw.view.ControllerProvider;
 import it.polimi.ingsw.view.TUI.Printing.Printer;
 import it.polimi.ingsw.view.TUI.Renderables.CardRelated.CardRenderable;
 import it.polimi.ingsw.view.TUI.Styles.PromptStyle;
@@ -21,10 +22,10 @@ public class ChooseStartCardRenderable extends CardRenderable {
      * @param museum The card museum to use.
      * @param game The lightGame to render.
      * @param relatedCommands The commands related to this renderable.
-     * @param controller The controller to interact with.
+     * @param view The controller provider.
      */
-    public ChooseStartCardRenderable(String name, CardMuseum museum, LightGame game, CommandPrompt[] relatedCommands, ControllerInterface controller){
-        super(name, museum, game, null, relatedCommands, controller);
+    public ChooseStartCardRenderable(String name, CardMuseum museum, LightGame game, CommandPrompt[] relatedCommands, ControllerProvider view){
+        super(name, museum, game, null, relatedCommands, view);
     }
 
     /**
@@ -58,7 +59,7 @@ public class ChooseStartCardRenderable extends CardRenderable {
             case CommandPrompt.CHOOSE_START_SIDE:
                 try {
                     CardFace face = answer.getAnswer(0).equals("front") ? CardFace.FRONT : CardFace.BACK;
-                    controller.selectStartCardFace(face);
+                    view.getController().selectStartCardFace(face);
                 }
                 catch (Exception e) {
                     e.printStackTrace();

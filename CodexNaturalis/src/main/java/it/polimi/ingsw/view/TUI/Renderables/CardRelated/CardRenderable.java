@@ -4,6 +4,7 @@ import it.polimi.ingsw.controller2.ControllerInterface;
 import it.polimi.ingsw.lightModel.LightCard;
 import it.polimi.ingsw.lightModel.lightTableRelated.LightGame;
 import it.polimi.ingsw.model.cardReleted.utilityEnums.CardFace;
+import it.polimi.ingsw.view.ControllerProvider;
 import it.polimi.ingsw.view.TUI.Printing.Printer;
 import it.polimi.ingsw.view.TUI.Renderables.LightGameRenderable;
 import it.polimi.ingsw.view.TUI.Renderables.drawables.Drawable;
@@ -28,10 +29,10 @@ public class CardRenderable extends LightGameRenderable {
      * @param game The lightGame to render.
      * @param face The face of the card to render.
      * @param relatedCommands The commands related to this renderable.
-     * @param controller The controller to interact with.
+     * @param view The controller provider.
      */
-    public CardRenderable(String name, CardMuseum museum, LightGame game, CardFace face, CommandPrompt[] relatedCommands, ControllerInterface controller){
-        super(name, relatedCommands, game, controller);
+    public CardRenderable(String name, CardMuseum museum, LightGame game, CardFace face, CommandPrompt[] relatedCommands, ControllerProvider view){
+        super(name, relatedCommands, game, view);
         this.face = face;
         this.museum = museum;
     }
