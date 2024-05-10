@@ -10,6 +10,7 @@ import it.polimi.ingsw.view.ActualView;
 import it.polimi.ingsw.view.ViewState;
 import javafx.application.Application;
 import javafx.application.Platform;
+import javafx.scene.Scene;
 import javafx.stage.Stage;
 
 import java.rmi.RemoteException;
@@ -27,12 +28,15 @@ public class GUI extends Application implements ActualView {
     public void start(Stage primaryStage) {
         ConnectionFormControllerGUI.view = this;
         this.primaryStage = primaryStage;
+        primaryStage.setFullScreen(true);
+        primaryStage.setTitle("Sagrada");
+        primaryStage.setScene(new Scene(StateGUI.SERVER_CONNECTION.getRoot(), 800, 600));
         transitionTo(StateGUI.SERVER_CONNECTION);
     }
 
     public void transitionTo(StateGUI state) {
         Platform.runLater(() -> {
-                primaryStage.setScene(state.getScene());
+                primaryStage.getScene().setRoot(state.getRoot());
                 primaryStage.show();
         });
     }

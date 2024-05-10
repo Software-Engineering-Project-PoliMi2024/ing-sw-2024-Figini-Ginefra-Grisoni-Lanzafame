@@ -15,8 +15,6 @@ public enum StateGUI {
     private final ViewState referenceState;
     private final Parent root;
 
-    private final Scene scene;
-
     StateGUI(ViewState referenceState, String fxmlPath) {
         this.referenceState = referenceState;
 
@@ -26,15 +24,10 @@ public enum StateGUI {
             throw new RuntimeException(e);
         }
 
-        this.scene = new Scene(root, 400, 400);
     }
 
     public Parent getRoot() {
         return root;
-    }
-
-    public Scene getScene() {
-        return scene;
     }
 
     public boolean references(ViewState state) {
