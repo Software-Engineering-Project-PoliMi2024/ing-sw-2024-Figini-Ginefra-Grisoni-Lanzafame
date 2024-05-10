@@ -32,8 +32,8 @@ import java.util.Arrays;
 import java.util.List;
 
 public class TUI implements ActualView {
-    //private VirtualController controller;
-    private StateTUI state;
+    private VirtualController controller;
+    private ViewState state;
     private final InputHandler inputHandler = new InputHandler();
     private final CommandDisplayRenderable commandDisplay;
     private final List<Renderable> renderables;
@@ -71,15 +71,15 @@ public class TUI implements ActualView {
         renderables.add(commandDisplay);
         renderables.add(connectForm);
 
-        loginForm = new LoginFormRenderable("Login Form", new CommandPrompt[]{CommandPrompt.LOGIN}, controller);
+        loginForm = new LoginFormRenderable("Login Form", new CommandPrompt[]{CommandPrompt.LOGIN}, this);
         StateTUI.LOGIN_FORM.attach(loginForm);
         renderables.add(loginForm);
 
-        gameList = new GameListRenderable("Game List", lightLobbyList, new CommandPrompt[]{CommandPrompt.DISPLAY_GAME_LIST, CommandPrompt.JOIN_GAME, CommandPrompt.CREATE_GAME}, controller);
+        gameList = new GameListRenderable("Game List", lightLobbyList, new CommandPrompt[]{CommandPrompt.DISPLAY_GAME_LIST, CommandPrompt.JOIN_GAME, CommandPrompt.CREATE_GAME}, this);
         StateTUI.JOIN_LOBBY.attach(gameList);
         renderables.add(gameList);
 
-        lobbyRenderable = new LobbyRenderable("Lobby", lightLobby, new CommandPrompt[]{CommandPrompt.DISPLAY_LOBBY, CommandPrompt.LEAVE_LOBBY}, controller);
+        lobbyRenderable = new LobbyRenderable("Lobby", lightLobby, new CommandPrompt[]{CommandPrompt.DISPLAY_LOBBY, CommandPrompt.LEAVE_LOBBY}, this);
         StateTUI.LOBBY.attach(lobbyRenderable);
         renderables.add(lobbyRenderable);
 
@@ -88,7 +88,7 @@ public class TUI implements ActualView {
                 cardMuseum,
                 lightGame,
                 new CommandPrompt[]{CommandPrompt.DISPLAY_START_FRONT, CommandPrompt.DISPLAY_START_BACK, CommandPrompt.CHOOSE_START_SIDE},
-                controller);
+                this);
         StateTUI.CHOOSE_START_CARD.attach(chooseStartCardRenderable);
         renderables.add(chooseStartCardRenderable);
 
@@ -97,7 +97,7 @@ public class TUI implements ActualView {
                 cardMuseum,
                 lightGame,
                 new CommandPrompt[]{CommandPrompt.DISPLAY_OBJECTIVE_OPTIONS, CommandPrompt.CHOOSE_OBJECTIVE_CARD},
-                controller);
+                this);
         StateTUI.SELECT_OBJECTIVE.attach(chooseObjectiveCardRenderable);
         renderables.add(chooseObjectiveCardRenderable);
 
@@ -106,7 +106,7 @@ public class TUI implements ActualView {
                 cardMuseum,
                 lightGame,
                 new CommandPrompt[]{CommandPrompt.DISPLAY_HAND, CommandPrompt.DISPLAY_SECRET_OBJECTIVE},
-                controller);
+                this);
         StateTUI.SELECT_OBJECTIVE.attach(handRenderable);
         StateTUI.PLACE_CARD.attach(handRenderable);
         StateTUI.IDLE.attach(handRenderable);
@@ -117,7 +117,7 @@ public class TUI implements ActualView {
                 "Place Card",
                 lightGame,
                 new CommandPrompt[]{CommandPrompt.PLACE_CARD},
-                controller);
+                this);
         StateTUI.PLACE_CARD.attach(placeCardForm);
         renderables.add(placeCardForm);
 
@@ -126,7 +126,7 @@ public class TUI implements ActualView {
                 lightGame,
                 cardMuseum,
                 new CommandPrompt[]{CommandPrompt.DISPLAY_CODEX},
-                controller);
+                this);
         StateTUI.SELECT_OBJECTIVE.attach(codexRenderable);
         StateTUI.IDLE.attach(codexRenderable);
         StateTUI.WAITING_STATE.attach(codexRenderable);
@@ -140,7 +140,7 @@ public class TUI implements ActualView {
                 cardMuseum,
                 lightGame,
                 new CommandPrompt[]{CommandPrompt.PEEK},
-                controller);
+                this);
         StateTUI.SELECT_OBJECTIVE.attach(handOthersRenderable);
         StateTUI.IDLE.attach(handOthersRenderable);
         StateTUI.DRAW_CARD.attach(handOthersRenderable);
@@ -153,7 +153,7 @@ public class TUI implements ActualView {
                 lightGame,
                 cardMuseum,
                 new CommandPrompt[]{CommandPrompt.PEEK},
-                controller);
+                this);
         StateTUI.SELECT_OBJECTIVE.attach(codexRenderableOthers);
         StateTUI.IDLE.attach(codexRenderableOthers);
         StateTUI.DRAW_CARD.attach(codexRenderableOthers);
@@ -165,7 +165,7 @@ public class TUI implements ActualView {
                 cardMuseum,
                 lightGame,
                 new CommandPrompt[]{CommandPrompt.DISPLAY_DECKS},
-                controller);
+                this);
         StateTUI.SELECT_OBJECTIVE.attach(deckRenderable);
         StateTUI.IDLE.attach(deckRenderable);
         StateTUI.DRAW_CARD.attach(deckRenderable);
@@ -176,13 +176,13 @@ public class TUI implements ActualView {
                 "Post Game",
                 lightGame,
                 new CommandPrompt[]{CommandPrompt.DISPLAY_POSTGAME},
-                controller);
+                this);
         StateTUI.GAME_ENDING.attach(leaderboardRenderable);
 
         drawCardForm = new DrawCardForm(
                 "Draw Card",
                 new CommandPrompt[]{CommandPrompt.DRAW_CARD},
-                controller);
+                this);
         StateTUI.DRAW_CARD.attach(drawCardForm);
         renderables.add(drawCardForm);
 
@@ -190,7 +190,7 @@ public class TUI implements ActualView {
                 "Leaderboard",
                 lightGame,
                 new CommandPrompt[]{CommandPrompt.DISPLAY_LEADERBOARD},
-                controller);
+                this);
         StateTUI.SELECT_OBJECTIVE.attach(leaderboardRenderable);
         StateTUI.IDLE.attach(leaderboardRenderable);
         StateTUI.PLACE_CARD.attach(leaderboardRenderable);
