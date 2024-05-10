@@ -20,6 +20,14 @@ public class VirtualControllerSocket implements VirtualController {
 
     private ViewInterface view;
     private ServerHandler serverHandler;
+
+    /**
+     * Connects to the server
+     * @param ip the ip of the server
+     * @param port the port of the server
+     * @param view the view that will be used to communicate with the user
+     * @throws Exception if an error occurs in the view
+     */
     @Override
     public void connect(String ip, int port, ViewInterface view) throws Exception {
         this.view = view;

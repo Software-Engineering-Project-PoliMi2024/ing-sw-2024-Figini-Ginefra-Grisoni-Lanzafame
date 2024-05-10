@@ -33,8 +33,7 @@ public class ClientHandler implements Runnable{
     }
 
     /**
-     * Connects to the client and runs the event loop
-     * creating input and output connection to the client.
+     * Initialized the input and output streams and starts the listening thread
      */
     @Override
     public void run()
@@ -62,6 +61,10 @@ public class ClientHandler implements Runnable{
 
     }
 
+    /**
+     * Sends a message to the client
+     * @param serverMsg The message to be sent
+     */
     public void sendServerMessage(ServerMsg serverMsg){
         serverMsg.setIndex(msgIndex);
         msgIndex++;
@@ -73,6 +76,10 @@ public class ClientHandler implements Runnable{
         }
     }
 
+    /**
+     * Handles the messages received from the client. If a message is received out of order (i.e. with an index higher than the expected one)
+     * it is stored in a queue until the expected message is received. Then all the messages in the queue are processed
+     */
     private void handleMsg(){
         System.out.println("Listening for messages of " + client.getInetAddress() + ":" + client.getPort());
         int expectedIndex = 0;
@@ -111,6 +118,12 @@ public class ClientHandler implements Runnable{
         }
     }
 
+    /**
+     * @param queue The queue of messages already present on the server
+     * @param expectedIndex The index of the next message expected by the server
+     * * @return A queue of ClientMsg objects that form a continuous sequence starting from the expected index.
+     *  If no such sequence can be formed, it will return a queue containing only the message with the expected index
+     */
     private Queue<ClientMsg> continueMessagesWindow(Queue<ClientMsg> queue, int expectedIndex){
         Queue<ClientMsg> toBeProcessMsgs = new LinkedList<>();
         boolean continuous = true;
@@ -128,6 +141,11 @@ public class ClientHandler implements Runnable{
         }
         return toBeProcessMsgs;
     }
+
+    /**
+     * Processes the messages in the queue
+     * @param queue The queue of messages to be processed
+     */
     private void processMsgs(Queue<ClientMsg> queue){
         while(!queue.isEmpty()){
             ClientMsg clientMsg = queue.poll();

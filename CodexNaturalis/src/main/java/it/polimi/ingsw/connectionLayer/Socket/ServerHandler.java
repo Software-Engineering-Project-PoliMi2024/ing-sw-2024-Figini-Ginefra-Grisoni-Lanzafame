@@ -25,10 +25,17 @@ public class ServerHandler implements Runnable{
     private int msgIndex;
     private final Queue<ServerMsg> recivedMsgs = new PriorityQueue<>(Comparator.comparingInt(ServerMsg::getIndex));
 
+    /**
+     * Initializes a new handler using a specific socket that is present on a server.
+     * @param server The socket connection to the server.
+     */
     public ServerHandler(Socket server) {
         this.server = server;
     }
 
+    /**
+     * Initialized the input and output streams and starts the listening thread
+     */
     @Override
     public void run() {
         try {
@@ -51,7 +58,10 @@ public class ServerHandler implements Runnable{
         Thread listeningThread = new Thread(this::handleMsg, "Listening Thread");
         listeningThread.start();
     }
-
+    /**
+     * Sends a message to the server
+     * @param clientMsg The message to be sent
+     */
     public void sendServerMessage(ClientMsg clientMsg) {
         clientMsg.setIndex(msgIndex);
         msgIndex++;
@@ -62,7 +72,10 @@ public class ServerHandler implements Runnable{
             e.printStackTrace();
         }
     }
-
+    /**
+     * Handles the messages received from the server. If a message is received out of order (i.e. with an index higher than the expected one)
+     * it is stored in a queue until the expected message is received. Then all the messages in the queue are processed
+     */
     private void handleMsg() {
         System.out.println("Listening for messages of " + server.getInetAddress());
         int expectedIndex = 0;
@@ -100,7 +113,12 @@ public class ServerHandler implements Runnable{
             }
         }
     }
-
+    /**
+     * @param queue The queue of messages already present on the client
+     * @param expectedIndex The index of the next message expected by the client
+     * * @return A queue of ServerMsg objects that form a continuous sequence starting from the expected index.
+     *  If no such sequence can be formed, it will return a queue containing only the message with the expected index
+     */
     private Queue<ServerMsg> continueMessagesWindow(Queue<ServerMsg> queue, int expectedIndex){
         Queue<ServerMsg> toBeProcessMsgs = new LinkedList<>();
         boolean continuous = true;
@@ -119,6 +137,10 @@ public class ServerHandler implements Runnable{
         return toBeProcessMsgs;
     }
 
+    /**
+     * Processes the messages in the queue
+     * @param queue The queue of messages to be processed
+     */
     private void processMsg(Queue<ServerMsg> queue) {
         while(!queue.isEmpty()){
             ServerMsg clientMsg = queue.poll();
