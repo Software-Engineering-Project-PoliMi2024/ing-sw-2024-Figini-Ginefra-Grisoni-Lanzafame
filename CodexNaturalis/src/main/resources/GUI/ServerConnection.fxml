@@ -1,10 +1,25 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
 <?import javafx.scene.control.Button?>
+<?import javafx.scene.control.ChoiceBox?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.TextField?>
 <?import javafx.scene.layout.AnchorPane?>
+<?import javafx.scene.text.Font?>
+<?import javafx.scene.text.Text?>
 
-<AnchorPane prefHeight="464.0" prefWidth="383.0" xmlns="http://javafx.com/javafx/21" xmlns:fx="http://javafx.com/fxml/1" fx:controller="it.polimi.ingsw.view.GUI.ControllerGUI">
+<AnchorPane prefHeight="464.0" prefWidth="383.0" xmlns="http://javafx.com/javafx/21" xmlns:fx="http://javafx.com/fxml/1" fx:controller="it.polimi.ingsw.view.GUI.ConnectionFormControllerGUI">
    <children>
-      <Button layoutX="161.0" layoutY="219.0" mnemonicParsing="false" onAction="#connect" text="Connect" />
+      <Button layoutX="162.0" layoutY="342.0" mnemonicParsing="false" onAction="#connect" text="Connect" />
+      <ChoiceBox fx:id="protocolChoice" layoutX="116.0" layoutY="86.0" prefWidth="150.0" />
+      <Label layoutX="141.0" layoutY="35.0" prefHeight="43.0" prefWidth="101.0" text="PROTOCOL" textAlignment="JUSTIFY">
+         <font>
+            <Font size="18.0" />
+         </font>
+      </Label>
+      <TextField fx:id="ipText" layoutX="116.0" layoutY="169.0" promptText="0.0.0.0" />
+      <Text layoutX="111.0" layoutY="165.0" strokeType="OUTSIDE" strokeWidth="0.0" text="IP" />
+      <TextField fx:id="portText" layoutX="117.0" layoutY="250.0" promptText="1234" />
+      <Text layoutX="106.0" layoutY="245.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Port" />
    </children>
 </AnchorPane>

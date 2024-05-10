@@ -7,7 +7,6 @@ import it.polimi.ingsw.lightModel.lightTableRelated.LightGame;
 import it.polimi.ingsw.lightModel.lightTableRelated.LightLobby;
 import it.polimi.ingsw.lightModel.lightTableRelated.LightLobbyList;
 import it.polimi.ingsw.view.ActualView;
-import it.polimi.ingsw.view.ViewInterface;
 import it.polimi.ingsw.view.ViewState;
 import javafx.application.Application;
 import javafx.application.Platform;
@@ -18,7 +17,7 @@ import java.util.Arrays;
 
 public class GUI extends Application implements ActualView {
     private Stage primaryStage;
-    private VirtualController controller;
+    static private VirtualController controller;
 
     public void run() {
         launch();
@@ -26,10 +25,7 @@ public class GUI extends Application implements ActualView {
 
     @Override
     public void start(Stage primaryStage) {
-        System.out.println("Starting GUI: " + this);
-        controller = new VirtualControllerRMI();
-        ControllerGUI.setController(controller);
-        ControllerGUI.setView(this);
+        ConnectionFormControllerGUI.view = this;
         this.primaryStage = primaryStage;
         transitionTo(StateGUI.SERVER_CONNECTION);
     }
@@ -93,11 +89,21 @@ public class GUI extends Application implements ActualView {
 
     @Override
     public void setController(VirtualController controller) {
-
+        GUI.controller = controller;
     }
 
     @Override
     public VirtualController getController() {
-        return null;
+        return controller;
     }
+
+    public static VirtualController getControllerStatic() {
+        return controller;
+    }
+
+    public static void setControllerStatic(VirtualController controller) {
+        GUI.controller = controller;
+    }
+
+
 }
