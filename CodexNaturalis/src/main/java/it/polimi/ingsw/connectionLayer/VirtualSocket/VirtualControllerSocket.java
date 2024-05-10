@@ -5,6 +5,7 @@ import it.polimi.ingsw.connectionLayer.Socket.ClientMsg.LoginMsg;
 import it.polimi.ingsw.connectionLayer.Socket.ServerHandler;
 import it.polimi.ingsw.connectionLayer.VirtualLayer.VirtualController;
 import it.polimi.ingsw.controller2.ControllerInterface;
+import it.polimi.ingsw.controller2.LogsOnClient;
 import it.polimi.ingsw.lightModel.LightCard;
 import it.polimi.ingsw.lightModel.lightPlayerRelated.LightPlacement;
 import it.polimi.ingsw.model.cardReleted.utilityEnums.CardFace;
@@ -25,13 +26,13 @@ public class VirtualControllerSocket implements VirtualController {
         Socket server;
         try {
             server = new Socket(ip, port);
-        } catch (IOException e) {
-            System.out.println("server unreachable");
+        } catch (IOException e) { //catch a "UnknownHostException" or a "ConnectException"
+            view.logErr(LogsOnClient.CONNECTION_ERROR.getMessage());
             return;
         }
         //If the connection goes well
         this.serverHandler = new ServerHandler(server);
-        Thread serverHandlerThread = new Thread(serverHandler, "serverHandeler of " + server.getInetAddress().getHostAddress());
+        Thread serverHandlerThread = new Thread(serverHandler, "serverHandler of " + server.getInetAddress().getHostAddress());
         serverHandlerThread.start();
         while (!serverHandler.isReady()) {
             try {
@@ -39,9 +40,9 @@ public class VirtualControllerSocket implements VirtualController {
             } catch (InterruptedException e) {
                 e.printStackTrace();
             }
-            serverHandler.setOwner(this); //set the owner only when the serverHandler is ready to receive and send messages
-            serverHandler.setView(view);
         }
+        serverHandler.setOwner(this); //set the owner only when the serverHandler is ready to receive and send messages
+        serverHandler.setView(view);
     }
 
     @Override

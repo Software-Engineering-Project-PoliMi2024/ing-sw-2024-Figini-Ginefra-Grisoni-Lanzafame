@@ -1,6 +1,6 @@
 package it.polimi.ingsw.controller2;
 
-import it.polimi.ingsw.Configs;
+
 import it.polimi.ingsw.lightModel.Heavifier;
 import it.polimi.ingsw.lightModel.LightCard;
 import it.polimi.ingsw.lightModel.Lightifier;
@@ -27,14 +27,9 @@ import it.polimi.ingsw.view.ViewInterface;
 import it.polimi.ingsw.view.ViewState;
 
 import java.rmi.RemoteException;
-import java.rmi.server.UnicastRemoteObject;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
-import java.util.concurrent.Future;
-import java.util.concurrent.LinkedBlockingQueue;
-import java.util.concurrent.ThreadPoolExecutor;
-import java.util.concurrent.TimeUnit;
 
 public class ServerModelController implements ControllerInterface, DiffSubscriber {
     private final MultiGame games;
@@ -318,14 +313,19 @@ public class ServerModelController implements ControllerInterface, DiffSubscribe
      */
     @Override
     public void disconnect(){
-        this.games.removeUser(this.nickname);//Free the nick from the server, so it can be re-used by other people
-        if(games.isInGameParty(this.nickname)){ //Handle the removing of the user from a game
-            games.getUserGame(this.nickname).unsubscribe(this);
-            this.games.getUserGame(nickname).getGameLoopController().leaveGame(this, this.nickname);
-        } else if (games.getUserLobby(this.nickname)!=null) { //Handle the removing of the user from a lobby
-            games.getUserLobby(this.nickname).unsubscribe(this);
-        }else{//Remove the user from the lobbyDiffPublisher list
-            games.unsubscribe(this);
+        if(this.nickname == null){
+            System.out.println("Client disconnected before logging in"); //todo remove this
+            return; //The client disconnected before logging in, no action needed
+        }else{
+            this.games.removeUser(this.nickname);//Free the nick from the server, so it can be re-used by other people
+            if(games.isInGameParty(this.nickname)){ //Handle the removing of the user from a game
+                games.getUserGame(this.nickname).unsubscribe(this);
+                this.games.getUserGame(nickname).getGameLoopController().leaveGame(this, this.nickname);
+            } else if (games.getUserLobby(this.nickname)!=null) { //Handle the removing of the user from a lobby
+                games.getUserLobby(this.nickname).unsubscribe(this);
+            }else{//Remove the user from the lobbyDiffPublisher list
+                games.unsubscribe(this);
+            }
         }
     }
 

@@ -3,23 +3,24 @@ package it.polimi.ingsw.connectionLayer.Socket;
 import it.polimi.ingsw.connectionLayer.Socket.ClientMsg.ClientMsg;
 import it.polimi.ingsw.connectionLayer.Socket.ServerMsg.ServerMsg;
 import it.polimi.ingsw.connectionLayer.VirtualLayer.VirtualView;
-import it.polimi.ingsw.connectionLayer.VirtualSocket.VirtualViewSocket;
 import it.polimi.ingsw.controller2.ControllerInterface;
-import it.polimi.ingsw.model.MultiGame;
-import it.polimi.ingsw.model.playerReleted.User;
-import it.polimi.ingsw.model.tableReleted.Game;
 
 import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.net.Socket;
+import java.util.*;
 
 public class ClientHandler implements Runnable{
     private final Socket client;
     private VirtualView owner;
     private ObjectOutputStream output;
     private ObjectInputStream input;
-    private ControllerInterface controller; //because the view is a viewInterface and the getter must return a viewInterface
+    private ControllerInterface controller;
+    private int msgIndex;
+    //Create a queue of messages ordered by index, lower index first
+    private final Queue<ClientMsg> recivedMsgs = new PriorityQueue<>(Comparator.comparingInt(ClientMsg::getIndex));
+
     private boolean ready = false;
 
     /**
@@ -38,6 +39,7 @@ public class ClientHandler implements Runnable{
     @Override
     public void run()
     {
+        msgIndex = 0;
         try {
             output = new ObjectOutputStream(client.getOutputStream());
             input = new ObjectInputStream(client.getInputStream());
@@ -46,13 +48,23 @@ public class ClientHandler implements Runnable{
             return;
         }
         System.out.println("Connected to " + client.getInetAddress());
-        Thread listeningThread = new Thread(this::HandleMsg, "Listening Thread");
-        listeningThread.start();
+        //Inform the Server that the connection streams are ready, wait for controller and virtualView to be set
         ready = true;
+        while(this.owner == null || this.controller == null){
+            try {
+                Thread.sleep(10);
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            }
+        }
+        Thread listeningThread = new Thread(this::handleMsg, "Listening Thread");
+        listeningThread.start();
+
     }
 
     public void sendServerMessage(ServerMsg serverMsg){
-        //todo add queue of messages
+        serverMsg.setIndex(msgIndex);
+        msgIndex++;
         try{
             output.writeObject(serverMsg);
         } catch (IOException e) {
@@ -61,30 +73,70 @@ public class ClientHandler implements Runnable{
         }
     }
 
-    public void HandleMsg(){
-        System.out.println("Listening for messages of " + client.getInetAddress());
+    private void handleMsg(){
+        System.out.println("Listening for messages of " + client.getInetAddress() + ":" + client.getPort());
+        int expectedIndex = 0;
         while(true) {
             ClientMsg clientMsg;
             try {
                 clientMsg = (ClientMsg) input.readObject();
             } catch (ClassNotFoundException e) {
-                System.out.println("Error during the transmission of the message");
-                //todo implement ack failed
-                return;
-            }catch (IOException e) {
-                System.out.println("A problem occurred while reading the message from the server");
+                //This scenario should not occur if a ClientMsg is being sent, as TCP ensures that every message is always received correctly.
+                System.out.println("Error during the transmission of the message. The message was not a ClientMsg object.");
                 e.printStackTrace();
                 return;
-            }
-            new Thread(() -> {
+            }catch (IOException e) { //This will catch a SocketException("Connection reset") when the client disconnects
                 try{
-                    clientMsg.processMsg(this);
-                }catch (Exception e) {
-                    System.out.println("Error during the processing of the message");
-                    //todo ack failed
-                    e.printStackTrace();
+                    this.controller.disconnect();
+                    client.close();
+                }catch (Exception ex){
+                    System.out.println("Error during the disconnection of the client");
+                    ex.printStackTrace();
                 }
-            }).start();
+                return;
+            }
+            if(clientMsg.getIndex() > expectedIndex){
+                recivedMsgs.add(clientMsg);
+            }else if(clientMsg.getIndex()<expectedIndex){
+                throw new IllegalCallerException("The Server received a message with an index lower than the expected one");
+            }else{ //clientMsg.getIndex() == expectedIndex
+                recivedMsgs.add(clientMsg);
+                Queue<ClientMsg> toBeProcessMsgs = continueMessagesWindow(recivedMsgs, expectedIndex);
+                expectedIndex = toBeProcessMsgs.stream().max(Comparator.comparingInt(ClientMsg::getIndex)).get().getIndex() + 1;
+                Thread elaborateMsgThread = new Thread(() -> {
+                    processMsgs(toBeProcessMsgs);
+                });
+                elaborateMsgThread.start();
+            }
+        }
+    }
+
+    private Queue<ClientMsg> continueMessagesWindow(Queue<ClientMsg> queue, int expectedIndex){
+        Queue<ClientMsg> toBeProcessMsgs = new LinkedList<>();
+        boolean continuous = true;
+        while(continuous){
+            ClientMsg nextMsg = queue.peek();
+            if(nextMsg == null){ //the queue is empty, all the already received msgs are continuous and can be process
+                return toBeProcessMsgs;
+            }
+            if(nextMsg.getIndex() == expectedIndex){
+                toBeProcessMsgs.add(queue.poll());
+                expectedIndex++;
+            }else{
+                continuous = false;
+            }
+        }
+        return toBeProcessMsgs;
+    }
+    private void processMsgs(Queue<ClientMsg> queue){
+        while(!queue.isEmpty()){
+            ClientMsg clientMsg = queue.poll();
+            try {
+                clientMsg.processMsg(this);
+            }catch (Exception e) {
+                System.out.println("Error during the processing of the message");
+                e.printStackTrace();
+            }
         }
     }
     public void setOwner(VirtualView owner) {
@@ -105,5 +157,9 @@ public class ClientHandler implements Runnable{
 
     public boolean isReady() {
         return ready;
+    }
+
+    public Queue<ClientMsg> getRecivedMsgs() {
+        return recivedMsgs;
     }
 }

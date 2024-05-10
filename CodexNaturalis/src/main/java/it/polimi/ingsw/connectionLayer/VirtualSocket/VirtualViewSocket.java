@@ -2,11 +2,11 @@ package it.polimi.ingsw.connectionLayer.VirtualSocket;
 
 import it.polimi.ingsw.connectionLayer.PingPongInterface;
 import it.polimi.ingsw.connectionLayer.Socket.ClientHandler;
+import it.polimi.ingsw.connectionLayer.Socket.ServerMsg.LogErrMsg;
 import it.polimi.ingsw.connectionLayer.Socket.ServerMsg.LogMsg;
 import it.polimi.ingsw.connectionLayer.Socket.ServerMsg.TransitionToMsg;
 import it.polimi.ingsw.connectionLayer.VirtualLayer.VirtualView;
 import it.polimi.ingsw.controller2.ControllerInterface;
-import it.polimi.ingsw.controller2.LogsOnClient;
 import it.polimi.ingsw.lightModel.diffs.ModelDiffs;
 import it.polimi.ingsw.lightModel.lightTableRelated.LightGame;
 import it.polimi.ingsw.lightModel.lightTableRelated.LightLobby;
@@ -54,7 +54,7 @@ public class VirtualViewSocket implements VirtualView {
 
     @Override
     public void logErr(String logMsg) throws RemoteException {
-
+        clientHandler.sendServerMessage(new LogErrMsg(logMsg));
     }
 
     @Override

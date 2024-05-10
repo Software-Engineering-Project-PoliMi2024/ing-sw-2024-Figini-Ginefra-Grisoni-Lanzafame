@@ -3,8 +3,6 @@ package it.polimi.ingsw;
 import it.polimi.ingsw.connectionLayer.ConnectionLayerServer;
 import it.polimi.ingsw.connectionLayer.ConnectionServerRMI;
 import it.polimi.ingsw.connectionLayer.Socket.ClientHandler;
-import it.polimi.ingsw.connectionLayer.Socket.ServerMsg.LogMsg;
-import it.polimi.ingsw.connectionLayer.Socket.ServerMsg.TransitionToMsg;
 import it.polimi.ingsw.connectionLayer.VirtualLayer.VirtualView;
 import it.polimi.ingsw.connectionLayer.VirtualSocket.VirtualViewSocket;
 import it.polimi.ingsw.controller2.LogsOnClient;
@@ -60,26 +58,23 @@ public class Server {
             System.out.println("Socket Server started on port " + server.getLocalPort() + "🚔!");
             while (true) {
                 try {
-                    //todo this should be done in a connectionServerSocket but I still don't know how to do it
+                    //todo this should be done in a connectionServerSocket but I don't know if it is the right thing (mental note, pinPong)
                     Socket client = server.accept();
                     ClientHandler clientHandler = new ClientHandler(client);
                     Thread clientHandlerThread = new Thread(clientHandler, "clientHandler of" + client.getInetAddress());
                     clientHandlerThread.start();
-
                     VirtualView virtualView = new VirtualViewSocket(clientHandler);
+                    ServerModelController controller = new ServerModelController(multiGame, virtualView);
+                    virtualView.setController(controller);
                     while(!clientHandler.isReady()) {
                         try {
                             Thread.sleep(10);
                         } catch (InterruptedException e) {
                             e.printStackTrace();
                         }
-                        clientHandler.setOwner(virtualView);
                     }
-
-                    ServerModelController controller = new ServerModelController(multiGame, virtualView);
-                    virtualView.setController(controller);
+                    clientHandler.setOwner(virtualView);
                     clientHandler.setController(controller);
-
                     virtualView.log(LogsOnClient.SERVER_JOINED.getMessage());
                     virtualView.transitionTo(ViewState.LOGIN_FORM);
                 } catch (IOException e) {
