@@ -2,6 +2,7 @@ package it.polimi.ingsw.view.TUI.Renderables;
 
 import it.polimi.ingsw.controller2.ControllerInterface;
 import it.polimi.ingsw.lightModel.lightTableRelated.LightLobby;
+import it.polimi.ingsw.view.ControllerProvider;
 import it.polimi.ingsw.view.TUI.Styles.PromptStyle;
 import it.polimi.ingsw.view.TUI.inputs.CommandPrompt;
 import it.polimi.ingsw.view.TUI.inputs.CommandPromptResult;
@@ -21,10 +22,10 @@ public class LobbyRenderable extends Renderable {
      * @param name The name of the renderable.
      * @param lightLobby The lightLobby to render.
      * @param relatedCommands The commands related to this renderable.
-     * @param controller The controller to interact with.
+     * @param view The controller provider.
      */
-    public LobbyRenderable(String name, LightLobby lightLobby, CommandPrompt[] relatedCommands, ControllerInterface controller) {
-        super(name, relatedCommands, controller);
+    public LobbyRenderable(String name, LightLobby lightLobby, CommandPrompt[] relatedCommands, ControllerProvider view) {
+        super(name, relatedCommands, view);
         this.lightLobby = lightLobby;
     }
 

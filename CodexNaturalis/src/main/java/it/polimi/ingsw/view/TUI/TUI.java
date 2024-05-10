@@ -2,10 +2,12 @@ package it.polimi.ingsw.view.TUI;
 
 import it.polimi.ingsw.Configs;
 import it.polimi.ingsw.connectionLayer.VirtualLayer.VirtualController;
+import it.polimi.ingsw.controller2.ControllerInterface;
 import it.polimi.ingsw.lightModel.diffs.ModelDiffs;
 import it.polimi.ingsw.lightModel.lightTableRelated.LightGame;
 import it.polimi.ingsw.lightModel.lightTableRelated.LightLobby;
 import it.polimi.ingsw.lightModel.lightTableRelated.LightLobbyList;
+import it.polimi.ingsw.view.ActualView;
 import it.polimi.ingsw.view.TUI.Printing.Printer;
 import it.polimi.ingsw.view.TUI.Renderables.*;
 import it.polimi.ingsw.view.TUI.Renderables.CardRelated.*;
@@ -22,66 +24,46 @@ import it.polimi.ingsw.view.TUI.cardDrawing.CardMuseum;
 import it.polimi.ingsw.view.TUI.cardDrawing.CardMuseumFactory;
 import it.polimi.ingsw.view.TUI.inputs.CommandPrompt;
 import it.polimi.ingsw.view.TUI.inputs.InputHandler;
-import it.polimi.ingsw.view.View;
 import it.polimi.ingsw.view.ViewState;
 
+import java.rmi.RemoteException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
-public class TUI extends View{
+public class TUI implements ActualView {
+    //private VirtualController controller;
     private final InputHandler inputHandler = new InputHandler();
     private final CommandDisplayRenderable commandDisplay;
-
     private final List<Renderable> renderables;
-
     private final CardMuseum cardMuseum = new CardMuseumFactory(Configs.CardFolder).getCardMuseum();
-
     private final ConnectFormRenderable connectForm;
-
     private LoginFormRenderable loginForm;
-
     private GameListRenderable gameList;
-
     private LobbyRenderable lobbyRenderable;
-
     private ChooseStartCardRenderable chooseStartCardRenderable;
-
     private ChooseObjectiveCardRenderable chooseObjectiveCardRenderable;
-
     private HandRenderable handRenderable;
-
     private PlaceCardForm placeCardForm;
-
     private CodexRenderable codexRenderable;
-
     private CodexRenderableOthers codexRenderableOthers;
-
     private HandOthersRenderable handOthersRenderable;
-
     private DeckRenderable deckRenderable;
-
     private PostGameStateRenderable postGameStateRenderable;
-
     private DrawCardForm drawCardForm;
-
     private LeaderboardRenderable leaderboardRenderable;
-
     private final LightGame lightGame = new LightGame();
-
     private final LightLobby lightLobby = new LightLobby();
-
     private final LightLobbyList lightLobbyList = new LightLobbyList();
 
-
-    public TUI(VirtualController controller){
-        super(controller);
+    public TUI(){
+        super();
         System.out.println(PromptStyle.Title);
         commandDisplay = new CommandDisplayRenderable("Commands", null, null);
 
         inputHandler.attach(commandDisplay);
 
-        connectForm = new ConnectFormRenderable("Connect form", this, new CommandPrompt[]{CommandPrompt.CONNECT}, controller);
+        connectForm = new ConnectFormRenderable("Connect form", this, new CommandPrompt[]{CommandPrompt.CONNECT}, this);
         StateTUI.SERVER_CONNECTION.attach(connectForm);
 
         renderables = new ArrayList<>();
@@ -218,9 +200,15 @@ public class TUI extends View{
         this.transitionTo(ViewState.SERVER_CONNECTION);
     }
 
+    @Override
     public void run() {
         inputHandler.start();
         commandDisplay.setActive(true);
+    }
+
+    @Override
+    public void setState(ViewState state) throws RemoteException {
+
     }
 
     @Override
@@ -308,9 +296,14 @@ public class TUI extends View{
             }
         }
     }
-    public static void main(String[] args) {
-        TUI tui = new TUI(null);
-        tui.run();
+
+    @Override
+    public VirtualController getController() {
+        return controller;
     }
 
+    @Override
+    public void setController(VirtualController controller) {
+        this.controller = controller;
+    }
 }

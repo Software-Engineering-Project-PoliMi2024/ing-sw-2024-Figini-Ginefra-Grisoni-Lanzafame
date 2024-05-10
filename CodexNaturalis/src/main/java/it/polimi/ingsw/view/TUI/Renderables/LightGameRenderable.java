@@ -2,6 +2,7 @@ package it.polimi.ingsw.view.TUI.Renderables;
 
 import it.polimi.ingsw.controller2.ControllerInterface;
 import it.polimi.ingsw.lightModel.lightTableRelated.LightGame;
+import it.polimi.ingsw.view.ControllerProvider;
 import it.polimi.ingsw.view.TUI.inputs.CommandPrompt;
 
 /**
@@ -15,10 +16,10 @@ public abstract class LightGameRenderable extends Renderable{
      * @param name The name of the renderable.
      * @param relatedCommands The commands related to this renderable.
      * @param lightGame The lightGame to render.
-     * @param controller The controller to interact with.
+     * @param view The controller provider.
      */
-    public LightGameRenderable(String name, CommandPrompt[] relatedCommands, LightGame lightGame, ControllerInterface controller){
-        super(name, relatedCommands, controller);
+    public LightGameRenderable(String name, CommandPrompt[] relatedCommands, LightGame lightGame, ControllerProvider view){
+        super(name, relatedCommands, view);
         this.lightGame = lightGame;
     }
 

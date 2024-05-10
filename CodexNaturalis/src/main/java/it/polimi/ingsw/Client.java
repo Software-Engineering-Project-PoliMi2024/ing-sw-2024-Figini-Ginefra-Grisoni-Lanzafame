@@ -1,59 +1,37 @@
 package it.polimi.ingsw;
 
-import it.polimi.ingsw.connectionLayer.VirtualRMI.VirtualControllerRMI;
 import it.polimi.ingsw.connectionLayer.VirtualLayer.VirtualController;
+import it.polimi.ingsw.view.GUI.ApplicationGUI;
 import it.polimi.ingsw.view.TUI.TUI;
-import it.polimi.ingsw.view.View;
 
 import java.util.Scanner;
 
 public class Client {
     public static void main(String[] args) {
         VirtualController controller;
-        View view;
         System.out.println("Hi there 👋!");
-        System.out.println("Which communication protocol do you fancy today?🎩");
 
-        System.out.println("   [0] Socket");
-        System.out.println("   [1] RMI");
 
         Scanner scanner = new Scanner(System.in);
-        String choice = scanner.nextLine();
-
-        while(!choice.matches("[01]")) {
-            System.out.println("Invalid choice! Please choose again.");
-            choice = scanner.nextLine();
-        }
-        int choiceInt = Integer.parseInt(choice);
-
-        if (choiceInt == 0) {
-            System.out.println("You chose the Socket protocol!");
-            controller = null;
-        } else{
-            System.out.println("You chose the RMI protocol!");
-            controller = new VirtualControllerRMI();
-        }
-
-        System.out.println("Great choice! Let's move on! 🎉");
 
         System.out.println("Which interface would you prefer?");
         System.out.println("   [0] Textual");
         System.out.println("   [1] Graphical");
 
-        choice = scanner.nextLine();
+        String choice = scanner.nextLine();
         while(!choice.matches("[01]")) {
             System.out.println("Invalid choice! Please choose again.");
             choice = scanner.nextLine();
         }
-        choiceInt = Integer.parseInt(choice);
+
+        int choiceInt = Integer.parseInt(choice);
 
         if (choiceInt == 0) {
             System.out.println("You chose the textual interface!");
-            view = new TUI(controller);
+            new TUI().run();
         } else{
             System.out.println("You chose the graphical interface!");
-            view = null;
+            new ApplicationGUI().run();
         }
-        view.run();
     }
 }

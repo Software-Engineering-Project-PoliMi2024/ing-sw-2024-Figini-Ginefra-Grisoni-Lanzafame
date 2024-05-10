@@ -1,6 +1,8 @@
 package it.polimi.ingsw.view.TUI.Renderables;
 
 import it.polimi.ingsw.controller2.ControllerInterface;
+import it.polimi.ingsw.view.ActualView;
+import it.polimi.ingsw.view.ControllerProvider;
 import it.polimi.ingsw.view.TUI.inputs.CommandPrompt;
 import it.polimi.ingsw.view.TUI.inputs.CommandPromptResult;
 import it.polimi.ingsw.view.TUI.observers.CommandObserver;
@@ -14,20 +16,21 @@ import java.io.Serializable;
 public abstract class Renderable implements InputObserver, CommandObserver, Serializable {
     private boolean active = false;
     private final CommandPrompt[] relatedCommands;
-    protected final ControllerInterface controller;
+
+    protected final ControllerProvider view;
     private final String name;
 
     /**
      * Constructor
      * @param name the name of the renderable
      * @param relatedCommands the commands that are related to this renderable
-     * @param controller the controller that will handle the inputs
+     * @param view the controller provider
      */
-    public Renderable(String name, CommandPrompt[] relatedCommands, ControllerInterface controller){
+    public Renderable(String name, CommandPrompt[] relatedCommands, ControllerProvider view){
         this.name = name;
         this.relatedCommands = relatedCommands;
 
-        this.controller = controller;
+        this.view = view;
 
         if(relatedCommands != null) {
             for (CommandPrompt command : relatedCommands) {

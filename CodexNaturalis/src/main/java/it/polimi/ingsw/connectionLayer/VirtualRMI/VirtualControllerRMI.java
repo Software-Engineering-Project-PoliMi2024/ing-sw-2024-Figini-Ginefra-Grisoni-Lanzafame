@@ -222,6 +222,7 @@ public class VirtualControllerRMI implements VirtualController {
                 serverReference.connect(controllerStub, viewStub, controllerStub);
                 return serverReference;
             } catch (Exception e){
+                e.printStackTrace();
                 return null;
             }
 
