@@ -5,6 +5,7 @@ import it.polimi.ingsw.lightModel.lightPlayerRelated.LightCodex;
 import it.polimi.ingsw.lightModel.lightPlayerRelated.LightPlacement;
 import it.polimi.ingsw.lightModel.lightTableRelated.LightGame;
 import it.polimi.ingsw.model.playerReleted.Position;
+import it.polimi.ingsw.view.ControllerProvider;
 import it.polimi.ingsw.view.TUI.Renderables.drawables.Drawable;
 import it.polimi.ingsw.view.TUI.Styles.CardTextStyle;
 import it.polimi.ingsw.view.TUI.cardDrawing.CardMuseum;
@@ -28,10 +29,10 @@ public class CodexRenderable extends CanvasRenderable {
      * @param lightGame The lightGame to render.
      * @param cardMuseum The cardMuseum to use.
      * @param relatedCommands The commands related to this renderable.
-     * @param controller The controller to interact with.
+     * @param view The controller to interact with.
      */
-    public CodexRenderable(String name, LightGame lightGame, CardMuseum cardMuseum, CommandPrompt[] relatedCommands, ControllerInterface controller) {
-        super(name, 0, 0, relatedCommands, controller);
+    public CodexRenderable(String name, LightGame lightGame, CardMuseum cardMuseum, CommandPrompt[] relatedCommands, ControllerProvider view) {
+        super(name, 0, 0, relatedCommands, view);
         this.lightGame = lightGame;
         this.cardMuseum = cardMuseum;
     }

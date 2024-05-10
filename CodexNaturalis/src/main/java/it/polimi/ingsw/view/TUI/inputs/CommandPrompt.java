@@ -20,10 +20,12 @@ public enum CommandPrompt implements Iterator<String>, CommandObserved {
     /** The command to connect to the server */
     CONNECT(new DecoratedString("Connect", StringStyle.YELLOW_FOREGROUND).toString(),
             new String[]{
+                    "Which protocol do you want to use? (0/Socket - 1/RMI)",
                     "What's the server IP?",
                     "What's the server port?",
             },
             new Predicate[]{
+                    s -> s.equals("0") || s.equals("1"),
                     s -> true,
                     s -> {
                         try {

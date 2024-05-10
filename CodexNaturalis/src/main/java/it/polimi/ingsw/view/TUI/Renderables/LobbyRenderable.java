@@ -58,7 +58,7 @@ public class LobbyRenderable extends Renderable {
                 break;
             case CommandPrompt.LEAVE_LOBBY:
                 try {
-                    controller.leaveLobby();
+                    view.getController().leaveLobby();
                 }
                 catch (Exception e) {
                     e.printStackTrace();

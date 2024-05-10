@@ -1,6 +1,7 @@
 package it.polimi.ingsw.view.TUI.Renderables.Forms;
 
 import it.polimi.ingsw.controller2.ControllerInterface;
+import it.polimi.ingsw.view.ControllerProvider;
 import it.polimi.ingsw.view.TUI.Renderables.Renderable;
 import it.polimi.ingsw.view.TUI.inputs.CommandPrompt;
 import it.polimi.ingsw.view.TUI.inputs.CommandPromptResult;
@@ -13,10 +14,10 @@ public class FormRenderable extends Renderable {
      * Creates a new FormRenderable.
      * @param name The name of the renderable.
      * @param commandPrompts The command prompts related to this renderable.
-     * @param controller The controller to interact with.
+     * @param view The controller provider.
      */
-    public FormRenderable(String name, CommandPrompt[] commandPrompts, ControllerInterface controller) {
-        super(name, commandPrompts, controller);
+    public FormRenderable(String name, CommandPrompt[] commandPrompts, ControllerProvider view) {
+        super(name, commandPrompts, view);
 
     }
 

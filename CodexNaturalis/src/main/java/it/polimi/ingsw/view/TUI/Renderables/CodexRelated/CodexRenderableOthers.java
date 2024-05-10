@@ -3,6 +3,8 @@ package it.polimi.ingsw.view.TUI.Renderables.CodexRelated;
 import it.polimi.ingsw.controller2.ControllerInterface;
 import it.polimi.ingsw.lightModel.lightPlayerRelated.LightCodex;
 import it.polimi.ingsw.lightModel.lightTableRelated.LightGame;
+import it.polimi.ingsw.view.ActualView;
+import it.polimi.ingsw.view.ControllerProvider;
 import it.polimi.ingsw.view.TUI.Styles.PromptStyle;
 import it.polimi.ingsw.view.TUI.cardDrawing.CardMuseum;
 import it.polimi.ingsw.view.TUI.inputs.CommandPrompt;
@@ -18,7 +20,7 @@ public class CodexRenderableOthers extends CodexRenderable{
     /** The nickname of the player whose codex is being rendered. */
     private String targetPlayer = null;
 
-    private final ViewInterface view;
+    private final ActualView view;
 
     /**
      * Creates a new CodexRenderableOthers.
@@ -26,10 +28,9 @@ public class CodexRenderableOthers extends CodexRenderable{
      * @param lightGame The lightGame to render.
      * @param cardMuseum The cardMuseum to use.
      * @param relatedCommands The commands related to this renderable.
-     * @param controller The controller to interact with.
      */
-    public CodexRenderableOthers(String name, ViewInterface view, LightGame lightGame, CardMuseum cardMuseum, CommandPrompt[] relatedCommands, ControllerInterface controller) {
-        super(name, lightGame, cardMuseum, relatedCommands, controller);
+    public CodexRenderableOthers(String name, ActualView view, LightGame lightGame, CardMuseum cardMuseum, CommandPrompt[] relatedCommands) {
+        super(name, lightGame, cardMuseum, relatedCommands, view);
         this.view = view;
     }
 

@@ -22,11 +22,9 @@ public class CommandDisplayRenderable extends Renderable{
     /**
      * Creates a new CommandDisplayRenderable.
      * @param name The name of the renderable.
-     * @param relatedCommands The commands related to this renderable.
-     * @param controller The controller to interact with.
      */
-    public CommandDisplayRenderable(String name, CommandPrompt[] relatedCommands, ControllerInterface controller) {
-        super(name, relatedCommands, controller);
+    public CommandDisplayRenderable(String name) {
+        super(name, new CommandPrompt[0], null);
         this.activeLocalPrompts = new LinkedHashMap<>();
         this.activeActionPrompts = new LinkedHashMap<>();
     }

@@ -1,6 +1,10 @@
 package it.polimi.ingsw.view.TUI.Renderables.Forms;
 
 import it.polimi.ingsw.connectionLayer.ConnectionLayerClient;
+import it.polimi.ingsw.connectionLayer.VirtualLayer.VirtualController;
+import it.polimi.ingsw.connectionLayer.VirtualRMI.VirtualControllerRMI;
+import it.polimi.ingsw.connectionLayer.VirtualSocket.VirtualControllerSocket;
+import it.polimi.ingsw.view.ActualView;
 import it.polimi.ingsw.view.ViewInterface;
 import it.polimi.ingsw.view.TUI.inputs.CommandPrompt;
 import it.polimi.ingsw.view.TUI.inputs.CommandPromptResult;
@@ -9,19 +13,16 @@ import it.polimi.ingsw.view.TUI.inputs.CommandPromptResult;
  * This class is a Renderable that represents a connect form.
  */
 public class ConnectFormRenderable extends FormRenderable {
-    private final ConnectionLayerClient controller;
-    private final ViewInterface view;
+    private final ActualView view;
 
     /**
      * Creates a new ConnectFormRenderable.
      * @param name The name of the renderable.
      * @param view The view reference that will be sent to the model.
      * @param relatedCommands The commands related to this renderable.
-     * @param controller The controller to interact with.
      */
-    public ConnectFormRenderable(String name, ViewInterface view, CommandPrompt[] relatedCommands, ConnectionLayerClient controller) {
+    public ConnectFormRenderable(String name, ActualView view, CommandPrompt[] relatedCommands) {
         super(name, relatedCommands, null);
-        this.controller = controller;
         this.view = view;
     }
 
@@ -29,8 +30,12 @@ public class ConnectFormRenderable extends FormRenderable {
      * Renders the connect form.
      */
     public void updateCommand(CommandPromptResult command){
-        String ip = command.getAnswer(0);
-        int port = Integer.parseInt(command.getAnswer(1));
+        int protocol = Integer.parseInt(command.getAnswer(0));
+        VirtualController controller = protocol == 0 ? new VirtualControllerSocket() : new VirtualControllerRMI();
+        view.setController(controller);
+
+        String ip = command.getAnswer(1);
+        int port = Integer.parseInt(command.getAnswer(2));
         try {
             controller.connect(ip, port, view);
         }catch (Exception e) {

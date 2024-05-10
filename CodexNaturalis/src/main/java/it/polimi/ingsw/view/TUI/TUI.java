@@ -60,11 +60,11 @@ public class TUI implements ActualView {
     public TUI(){
         super();
         System.out.println(PromptStyle.Title);
-        commandDisplay = new CommandDisplayRenderable("Commands", null, null);
+        commandDisplay = new CommandDisplayRenderable("Commands");
 
         inputHandler.attach(commandDisplay);
 
-        connectForm = new ConnectFormRenderable("Connect form", this, new CommandPrompt[]{CommandPrompt.CONNECT}, this);
+        connectForm = new ConnectFormRenderable("Connect form", this, new CommandPrompt[]{CommandPrompt.CONNECT});
         StateTUI.SERVER_CONNECTION.attach(connectForm);
 
         renderables = new ArrayList<>();

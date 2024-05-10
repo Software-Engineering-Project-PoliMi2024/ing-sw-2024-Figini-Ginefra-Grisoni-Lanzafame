@@ -1,6 +1,7 @@
 package it.polimi.ingsw.view.TUI.Renderables.CodexRelated;
 
 import it.polimi.ingsw.controller2.ControllerInterface;
+import it.polimi.ingsw.view.ControllerProvider;
 import it.polimi.ingsw.view.TUI.Renderables.Renderable;
 import it.polimi.ingsw.view.TUI.Renderables.drawables.Canvas;
 import it.polimi.ingsw.view.TUI.inputs.CommandPrompt;
@@ -17,10 +18,10 @@ public class CanvasRenderable extends Renderable {
      * @param width The width of the canvas.
      * @param height The height of the canvas.
      * @param relatedCommands The commands related to this renderable.
-     * @param controller The controller to interact with.
+     * @param view The controller provider.
      */
-    public CanvasRenderable(String name, int width, int height, CommandPrompt[] relatedCommands, ControllerInterface controller) {
-        super(name, relatedCommands, controller);
+    public CanvasRenderable(String name, int width, int height, CommandPrompt[] relatedCommands, ControllerProvider view) {
+        super(name, relatedCommands, view);
         canvas = new Canvas(width, height);
     }
 

@@ -7,6 +7,7 @@ import it.polimi.ingsw.lightModel.lightPlayerRelated.LightPlacement;
 import it.polimi.ingsw.lightModel.lightTableRelated.LightGame;
 import it.polimi.ingsw.model.cardReleted.utilityEnums.CardFace;
 import it.polimi.ingsw.model.playerReleted.Position;
+import it.polimi.ingsw.view.ControllerProvider;
 import it.polimi.ingsw.view.TUI.inputs.CommandPrompt;
 import it.polimi.ingsw.view.TUI.inputs.CommandPromptResult;
 
@@ -14,8 +15,8 @@ import java.util.List;
 
 public class PlaceCardForm extends FormRenderable{
     LightGame game;
-    public PlaceCardForm(String name, LightGame game, CommandPrompt[] commandPrompts, ControllerInterface controller){
-        super(name, commandPrompts, controller);
+    public PlaceCardForm(String name, LightGame game, CommandPrompt[] commandPrompts, ControllerProvider view){
+        super(name, commandPrompts, view);
         this.game = game;
     }
 
@@ -33,7 +34,7 @@ public class PlaceCardForm extends FormRenderable{
 
                 if(frontierIndex < frontier.size() && (game.getHand().isPlayble(card) || face == CardFace.BACK)){
                     LightPlacement placement = new LightPlacement(positions.get(frontierIndex), card, face);
-                    this.controller.place(placement);
+                    view.getController().place(placement);
                 }
             } catch (Exception e) {
                 e.printStackTrace();
