@@ -28,8 +28,8 @@ class PeekTest {
         CardMuseum museum = new CardMuseumFactory(Configs.CardFolder).getCardMuseum();
         LightGame lightGame = new LightGame();
 
-        codexRenderable = new CodexRenderableOthers("name", null, lightGame, museum, new CommandPrompt[]{}, null);
-        handRenderable = new HandOthersRenderable("name", null,  museum, lightGame, new CommandPrompt[]{}, null);
+        codexRenderable = new CodexRenderableOthers("name", null, lightGame, museum, new CommandPrompt[]{});
+        handRenderable = new HandOthersRenderable("name", museum, lightGame, new CommandPrompt[]{}, null);
 
 
         GameDiff diff = new GameDiffInitialization(List.of(new String[]{"Player1","Player2"}), new GameDiffGameName("TestGame"), new GameDiffYourName("Player1"));

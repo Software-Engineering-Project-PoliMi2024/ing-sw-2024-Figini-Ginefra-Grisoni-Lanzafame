@@ -43,11 +43,6 @@ public class VirtualViewSocket implements VirtualView {
     }
 
     @Override
-    public void setState(ViewState state) throws RemoteException {
-
-    }
-
-    @Override
     public void transitionTo(ViewState state) throws RemoteException {
         clientHandler.sendServerMessage(new TransitionToMsg(state));
     }

@@ -1,24 +1,54 @@
 package it.polimi.ingsw.view.GUI;
 
 import it.polimi.ingsw.connectionLayer.VirtualLayer.VirtualController;
+import it.polimi.ingsw.connectionLayer.VirtualRMI.VirtualControllerRMI;
 import it.polimi.ingsw.lightModel.diffs.ModelDiffs;
 import it.polimi.ingsw.lightModel.lightTableRelated.LightGame;
 import it.polimi.ingsw.lightModel.lightTableRelated.LightLobby;
 import it.polimi.ingsw.lightModel.lightTableRelated.LightLobbyList;
+import it.polimi.ingsw.view.ActualView;
+import it.polimi.ingsw.view.ViewInterface;
 import it.polimi.ingsw.view.ViewState;
 import javafx.application.Application;
+import javafx.application.Platform;
+import javafx.stage.Stage;
 
 import java.rmi.RemoteException;
 import java.util.Arrays;
 
-public class GUI extends View {
-    private final ApplicationGUI applicationGUI;
-    public GUI(VirtualController controller){
-        super(controller);
+public class GUI extends Application implements ActualView {
+    private Stage primaryStage;
+    private VirtualController controller;
+
+    public void run() {
+        launch();
+    }
+
+    @Override
+    public void start(Stage primaryStage) {
+        System.out.println("Starting GUI: " + this);
+        controller = new VirtualControllerRMI();
         ControllerGUI.setController(controller);
         ControllerGUI.setView(this);
-        this.applicationGUI = new ApplicationGUI();
-        ControllerGUI.setApplicationGUI(applicationGUI);
+        this.primaryStage = primaryStage;
+        transitionTo(StateGUI.SERVER_CONNECTION);
+    }
+
+    public void transitionTo(StateGUI state) {
+        Platform.runLater(() -> {
+                primaryStage.setScene(state.getScene());
+                primaryStage.show();
+        });
+    }
+
+
+    @Override
+    public void transitionTo(ViewState state) throws RemoteException {
+        StateGUI newState = Arrays.stream(StateGUI.values())
+                .filter(s -> s.references(state))
+                .findFirst()
+                .orElseThrow(() -> new RuntimeException("Invalid state: " + state));
+        transitionTo(newState);
     }
 
     @Override
@@ -62,14 +92,12 @@ public class GUI extends View {
     }
 
     @Override
-    public void run() {
-        Application.launch(applicationGUI.getClass());
+    public void setController(VirtualController controller) {
+
     }
 
     @Override
-    public void transitionTo(ViewState state){
-        System.out.println("Transitioning to " + state);
-        StateGUI stateGUI = Arrays.stream(StateGUI.values()).filter(s -> s.references(state)).findFirst().orElseThrow();
-        System.out.println("Transitioning to " + stateGUI);
+    public VirtualController getController() {
+        return null;
     }
 }

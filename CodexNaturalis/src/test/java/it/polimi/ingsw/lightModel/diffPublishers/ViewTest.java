@@ -23,11 +23,6 @@ public class ViewTest implements ViewInterface {
     }
 
     @Override
-    public void setState(ViewState state) throws RemoteException {
-
-    }
-
-    @Override
     public void transitionTo(ViewState state) throws RemoteException {
 
     }

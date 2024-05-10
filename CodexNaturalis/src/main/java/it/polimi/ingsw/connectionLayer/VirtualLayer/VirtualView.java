@@ -20,8 +20,6 @@ public interface VirtualView extends ViewInterface, PingPongInterface {
     @Override
     public void pingPong() throws RemoteException;
 
-    public void setState(ViewState state) throws RemoteException;
-
     @Override
     public void transitionTo(ViewState state) throws RemoteException;
 

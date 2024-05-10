@@ -1,7 +1,7 @@
 package it.polimi.ingsw;
 
 import it.polimi.ingsw.connectionLayer.VirtualLayer.VirtualController;
-import it.polimi.ingsw.view.GUI.ApplicationGUI;
+import it.polimi.ingsw.view.GUI.GUI;
 import it.polimi.ingsw.view.TUI.TUI;
 
 import java.util.Scanner;
@@ -31,7 +31,7 @@ public class Client {
             new TUI().run();
         } else{
             System.out.println("You chose the graphical interface!");
-            new ApplicationGUI().run();
+            new GUI().run();
         }
     }
 }

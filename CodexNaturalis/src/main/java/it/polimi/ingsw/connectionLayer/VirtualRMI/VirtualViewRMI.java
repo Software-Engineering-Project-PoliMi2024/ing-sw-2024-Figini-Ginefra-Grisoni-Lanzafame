@@ -54,23 +54,6 @@ public class VirtualViewRMI implements VirtualView {
     }
 
     @Override
-    public void setState(ViewState state) throws RemoteException {
-        Future<Void> setStateFuture = viewExecutor.submit(()->{
-            try {
-                viewStub.setState(state);
-                return null;
-            } catch (Exception e) {
-                throw new RuntimeException();
-            }
-        });
-        try {
-            setStateFuture.get(Configs.secondsTimeOut, TimeUnit.SECONDS);
-        }catch (Exception e){
-            this.disconnect();
-        }
-    }
-
-    @Override
     public void transitionTo(ViewState state) throws RemoteException {
         Future<Void> trasitionToFuture = viewExecutor.submit(()->{
             try {

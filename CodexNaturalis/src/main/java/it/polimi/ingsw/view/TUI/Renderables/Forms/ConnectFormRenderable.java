@@ -32,7 +32,11 @@ public class ConnectFormRenderable extends FormRenderable {
     public void updateCommand(CommandPromptResult command){
         int protocol = Integer.parseInt(command.getAnswer(0));
         VirtualController controller = protocol == 0 ? new VirtualControllerSocket() : new VirtualControllerRMI();
-        view.setController(controller);
+        try {
+            view.setController(controller);
+        } catch (Exception e) {
+            throw new RuntimeException(e);
+        }
 
         String ip = command.getAnswer(1);
         int port = Integer.parseInt(command.getAnswer(2));
