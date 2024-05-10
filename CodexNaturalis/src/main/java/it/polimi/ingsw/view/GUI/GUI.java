@@ -1,12 +1,12 @@
 package it.polimi.ingsw.view.GUI;
 
 import it.polimi.ingsw.connectionLayer.VirtualLayer.VirtualController;
-import it.polimi.ingsw.connectionLayer.VirtualRMI.VirtualControllerRMI;
 import it.polimi.ingsw.lightModel.diffs.ModelDiffs;
 import it.polimi.ingsw.lightModel.lightTableRelated.LightGame;
 import it.polimi.ingsw.lightModel.lightTableRelated.LightLobby;
 import it.polimi.ingsw.lightModel.lightTableRelated.LightLobbyList;
 import it.polimi.ingsw.view.ActualView;
+import it.polimi.ingsw.view.GUI.Controllers.ConnectionFormControllerGUI;
 import it.polimi.ingsw.view.ViewState;
 import javafx.application.Application;
 import javafx.application.Platform;
@@ -20,6 +20,8 @@ public class GUI extends Application implements ActualView {
     private Stage primaryStage;
     static private VirtualController controller;
 
+    private Root currentRoot;
+
     public void run() {
         launch();
     }
@@ -30,14 +32,20 @@ public class GUI extends Application implements ActualView {
         this.primaryStage = primaryStage;
         primaryStage.setFullScreen(true);
         primaryStage.setTitle("Sagrada");
-        primaryStage.setScene(new Scene(StateGUI.SERVER_CONNECTION.getRoot(), 800, 600));
+        primaryStage.setScene(new Scene(Root.SERVER_CONNECTION_FORM.getRoot(), 800, 600));
         transitionTo(StateGUI.SERVER_CONNECTION);
+    }
+
+    private void setRoot(Root root){
+        currentRoot = root;
+        primaryStage.getScene().setRoot(root.getRoot());
+        primaryStage.show();
     }
 
     public void transitionTo(StateGUI state) {
         Platform.runLater(() -> {
-                primaryStage.getScene().setRoot(state.getRoot());
-                primaryStage.show();
+            if(!state.getRoot().equals(currentRoot))
+                setRoot(state.getRoot());
         });
     }
 

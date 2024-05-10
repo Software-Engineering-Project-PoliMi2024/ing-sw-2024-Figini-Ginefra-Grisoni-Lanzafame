@@ -9,25 +9,19 @@ import java.io.IOException;
 import java.util.Objects;
 
 public enum StateGUI {
-    SERVER_CONNECTION(ViewState.SERVER_CONNECTION, "/GUI/ServerConnection.fxml"),
-    LOGIN_FORM(ViewState.LOGIN_FORM, "/GUI/LoginForm.fxml"),;
+    SERVER_CONNECTION(ViewState.SERVER_CONNECTION, Root.SERVER_CONNECTION_FORM),
+    LOGIN_FORM(ViewState.LOGIN_FORM, Root.LOGIN_FORM),;
 
     private final ViewState referenceState;
-    private final Parent root;
+    private final Root referenceRoot;
 
-    StateGUI(ViewState referenceState, String fxmlPath) {
+    StateGUI(ViewState referenceState, Root referenceRoot) {
         this.referenceState = referenceState;
-
-        try {
-            this.root = FXMLLoader.load(Objects.requireNonNull(getClass().getResource(fxmlPath)));
-        } catch (IOException e) {
-            throw new RuntimeException(e);
-        }
-
+        this.referenceRoot = referenceRoot;
     }
 
-    public Parent getRoot() {
-        return root;
+    public Root getRoot() {
+        return referenceRoot;
     }
 
     public boolean references(ViewState state) {

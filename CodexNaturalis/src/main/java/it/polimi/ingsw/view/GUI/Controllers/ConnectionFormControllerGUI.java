@@ -1,8 +1,9 @@
-package it.polimi.ingsw.view.GUI;
+package it.polimi.ingsw.view.GUI.Controllers;
 
 import it.polimi.ingsw.connectionLayer.VirtualLayer.VirtualController;
 import it.polimi.ingsw.connectionLayer.VirtualRMI.VirtualControllerRMI;
 import it.polimi.ingsw.connectionLayer.VirtualSocket.VirtualControllerSocket;
+import it.polimi.ingsw.view.GUI.GUI;
 import it.polimi.ingsw.view.ViewInterface;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
@@ -45,5 +46,6 @@ public class ConnectionFormControllerGUI implements Initializable {
     public void initialize(URL url, ResourceBundle resourceBundle) {
         protocolChoice.getItems().add("Socket");
         protocolChoice.getItems().add("RMI");
+        protocolChoice.setValue("RMI");
     }
 }

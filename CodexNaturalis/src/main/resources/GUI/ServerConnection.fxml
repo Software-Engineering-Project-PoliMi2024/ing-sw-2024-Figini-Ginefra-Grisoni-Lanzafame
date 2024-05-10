@@ -8,7 +8,7 @@
 <?import javafx.scene.text.Font?>
 <?import javafx.scene.text.Text?>
 
-<AnchorPane prefHeight="464.0" prefWidth="383.0" xmlns="http://javafx.com/javafx/21" xmlns:fx="http://javafx.com/fxml/1" fx:controller="it.polimi.ingsw.view.GUI.ConnectionFormControllerGUI">
+<AnchorPane prefHeight="463.0" prefWidth="384.0" xmlns="http://javafx.com/javafx/21" xmlns:fx="http://javafx.com/fxml/1" fx:controller="it.polimi.ingsw.view.GUI.Controllers.ConnectionFormControllerGUI">
    <children>
       <Button layoutX="162.0" layoutY="342.0" mnemonicParsing="false" onAction="#connect" text="Connect" />
       <ChoiceBox fx:id="protocolChoice" layoutX="116.0" layoutY="86.0" prefWidth="150.0" />
@@ -17,9 +17,9 @@
             <Font size="18.0" />
          </font>
       </Label>
-      <TextField fx:id="ipText" layoutX="116.0" layoutY="169.0" promptText="0.0.0.0" />
+      <TextField fx:id="ipText" layoutX="116.0" layoutY="169.0" promptText="0.0.0.0" text="0.0.0.0" />
       <Text layoutX="111.0" layoutY="165.0" strokeType="OUTSIDE" strokeWidth="0.0" text="IP" />
-      <TextField fx:id="portText" layoutX="117.0" layoutY="250.0" promptText="1234" />
+      <TextField fx:id="portText" layoutX="117.0" layoutY="250.0" promptText="1234" text="1234" />
       <Text layoutX="106.0" layoutY="245.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Port" />
    </children>
 </AnchorPane>
