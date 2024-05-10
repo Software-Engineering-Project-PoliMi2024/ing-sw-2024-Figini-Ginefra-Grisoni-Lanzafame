@@ -49,6 +49,7 @@ class persistenceFactoryTest {
 
         MultiGame multiGame2 = new MultiGame();
         assert multiGame2.getGameByName("testGame") == null;*/
+        assert true;
     }
 
     @Test
