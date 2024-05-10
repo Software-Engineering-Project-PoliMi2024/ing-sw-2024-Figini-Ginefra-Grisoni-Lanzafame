@@ -33,6 +33,7 @@ import java.util.List;
 
 public class TUI implements ActualView {
     //private VirtualController controller;
+    private StateTUI state;
     private final InputHandler inputHandler = new InputHandler();
     private final CommandDisplayRenderable commandDisplay;
     private final List<Renderable> renderables;
@@ -207,13 +208,8 @@ public class TUI implements ActualView {
     }
 
     @Override
-    public void setState(ViewState state) throws RemoteException {
-
-    }
-
-    @Override
     public void transitionTo(ViewState state){
-        this.setState(state);
+        this.state = state;
 
         StateTUI stateTUI = Arrays.stream(StateTUI.values()).reduce((a, b) -> a.references(state) ? a : b).orElse(null);
 
