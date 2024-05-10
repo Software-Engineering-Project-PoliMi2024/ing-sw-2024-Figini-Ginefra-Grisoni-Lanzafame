@@ -3,6 +3,7 @@ package it.polimi.ingsw.view.GUI.Controllers;
 import it.polimi.ingsw.connectionLayer.VirtualLayer.VirtualController;
 import it.polimi.ingsw.connectionLayer.VirtualRMI.VirtualControllerRMI;
 import it.polimi.ingsw.connectionLayer.VirtualSocket.VirtualControllerSocket;
+import it.polimi.ingsw.view.GUI.CardMuseumGUI;
 import it.polimi.ingsw.view.GUI.GUI;
 import it.polimi.ingsw.view.ViewInterface;
 import javafx.event.ActionEvent;
@@ -10,9 +11,14 @@ import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.control.ChoiceBox;
 import javafx.scene.control.TextField;
+import javafx.scene.image.Image;
+import javafx.scene.image.ImageView;
 
 import java.awt.*;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
 import java.net.URL;
+import java.util.Objects;
 import java.util.ResourceBundle;
 
 public class ConnectionFormControllerGUI implements Initializable {
@@ -27,6 +33,9 @@ public class ConnectionFormControllerGUI implements Initializable {
 
     @FXML
     private TextField portText;
+
+    @FXML
+    private ImageView image;
 
     public void connect(ActionEvent actionEvent) {
         VirtualController controller = protocolChoice.getValue().equals("Socket") ? new VirtualControllerSocket() : new VirtualControllerRMI();
@@ -47,5 +56,8 @@ public class ConnectionFormControllerGUI implements Initializable {
         protocolChoice.getItems().add("Socket");
         protocolChoice.getItems().add("RMI");
         protocolChoice.setValue("RMI");
+
+
+        image.setImage(CardMuseumGUI.loadCardFront(100));
     }
 }
