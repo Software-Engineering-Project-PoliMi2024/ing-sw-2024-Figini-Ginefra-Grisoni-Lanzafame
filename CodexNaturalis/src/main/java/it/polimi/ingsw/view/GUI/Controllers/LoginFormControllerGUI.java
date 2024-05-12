@@ -6,7 +6,7 @@ import javafx.fxml.FXML;
 import javafx.scene.control.TextField;
 
 public class LoginFormControllerGUI {
-    public static ActualView view;
+    private static ActualView view;
     @FXML
     private TextField nicknameText;
 
@@ -17,5 +17,9 @@ public class LoginFormControllerGUI {
         } catch (Exception e) {
             throw new RuntimeException(e);
         }
+    }
+
+    public static void setView(ActualView view) {
+        LoginFormControllerGUI.view = view;
     }
 }
