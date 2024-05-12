@@ -56,7 +56,6 @@ public class VirtualViewRMI implements VirtualView {
     @Override
     public void transitionTo(ViewState state) throws RemoteException {
         Future<Void> trasitionToFuture = viewExecutor.submit(()->{
-            System.out.println(viewStub);
             viewStub.transitionTo(state);
             return null;
         });
