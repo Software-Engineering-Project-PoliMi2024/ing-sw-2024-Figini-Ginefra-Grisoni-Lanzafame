@@ -19,7 +19,7 @@ public class VirtualViewRMI implements VirtualView {
     private PingPongInterface pingPongStub;
     private ControllerInterface controller;
     private final ThreadPoolExecutor viewExecutor = new ThreadPoolExecutor(1, 4, 10, TimeUnit.MILLISECONDS, new LinkedBlockingQueue<>());
-    private final ScheduledExecutorService pingPongExecutor = Executors.newSingleThreadScheduledExecutor();
+    private ScheduledExecutorService pingPongExecutor = Executors.newSingleThreadScheduledExecutor();
 
     /**
      * @param viewStub the stub of the view on the client
@@ -30,15 +30,12 @@ public class VirtualViewRMI implements VirtualView {
     }
     public void pingPong(){
         Future<?> pong = pingPongExecutor.scheduleAtFixedRate(() -> {
-            try {
-                pingPongStub.checkEmpty();
-            } catch (Exception e) {
-                pingPongExecutor.shutdownNow();
-                this.disconnect();
                 try {
-                    Thread.sleep(Configs.pingPongFrequency * 1000L);
-                }catch (Exception r){}
-            }
+                    pingPongStub.checkEmpty();
+                } catch (Exception e) {
+                    this.disconnect();
+                    pingPongExecutor.shutdownNow();
+                }
         }, Configs.pingPongFrequency, Configs.pingPongFrequency, TimeUnit.SECONDS);
 
     }
@@ -63,7 +60,7 @@ public class VirtualViewRMI implements VirtualView {
             trasitionToFuture.get(Configs.secondsTimeOut, TimeUnit.SECONDS);
         }catch (Exception e){
             debug(e);
-            this.disconnect();
+            //this.disconnect();
         }
     }
 
@@ -77,7 +74,7 @@ public class VirtualViewRMI implements VirtualView {
             logFuture.get(Configs.secondsTimeOut, TimeUnit.SECONDS);
         }catch (Exception e){
             debug(e);
-            this.disconnect();
+            //this.disconnect();
         }
     }
 
@@ -91,7 +88,7 @@ public class VirtualViewRMI implements VirtualView {
             logErrFuture.get(Configs.secondsTimeOut, TimeUnit.SECONDS);
         }catch (Exception e){
             debug(e);
-            this.disconnect();
+            //this.disconnect();
         }
     }
 
@@ -105,7 +102,7 @@ public class VirtualViewRMI implements VirtualView {
             logFuture.get(Configs.secondsTimeOut, TimeUnit.SECONDS);
         }catch (Exception e){
             debug(e);
-            this.disconnect();
+            //this.disconnect();
         }
     }
 
@@ -119,7 +116,7 @@ public class VirtualViewRMI implements VirtualView {
             logFuture.get(Configs.secondsTimeOut, TimeUnit.SECONDS);
         }catch (Exception e){
             debug(e);
-            this.disconnect();
+            //this.disconnect();
         }
     }
 
@@ -133,7 +130,7 @@ public class VirtualViewRMI implements VirtualView {
             updateFuture.get(Configs.secondsTimeOut, TimeUnit.SECONDS);
         }catch (Exception e){
             debug(e);
-            this.disconnect();
+            //this.disconnect();
         }
     }
 
@@ -147,7 +144,7 @@ public class VirtualViewRMI implements VirtualView {
             updateFuture.get(Configs.secondsTimeOut, TimeUnit.SECONDS);
         }catch (Exception e){
             debug(e);
-            this.disconnect();
+            //this.disconnect();
         }
     }
 
@@ -161,7 +158,7 @@ public class VirtualViewRMI implements VirtualView {
             updateFuture.get(Configs.secondsTimeOut, TimeUnit.SECONDS);
         }catch (Exception e){
             debug(e);
-            this.disconnect();
+            //this.disconnect();
         }
     }
 
@@ -175,7 +172,7 @@ public class VirtualViewRMI implements VirtualView {
             setFinalRankingFuture.get(Configs.secondsTimeOut, TimeUnit.SECONDS);
         }catch (Exception e){
             debug(e);
-            this.disconnect();
+            //this.disconnect();
         }
     }
     private synchronized void disconnect(){
