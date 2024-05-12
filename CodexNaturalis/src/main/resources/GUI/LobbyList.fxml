@@ -16,8 +16,8 @@
       <content>
         <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0">
                <children>
-                  <ListView fx:id="lobbyList" layoutX="15.0" layoutY="15.0" prefHeight="270.0" prefWidth="569.0" />
-                  <Button fx:id="joinButton" layoutX="231.0" layoutY="319.0" mnemonicParsing="false" text="Join" />
+                  <ListView fx:id="lobbyListDisplay" layoutX="15.0" layoutY="15.0" prefHeight="270.0" prefWidth="569.0" />
+                  <Button fx:id="joinButton" layoutX="231.0" layoutY="319.0" mnemonicParsing="false" onAction="#joinLobby" text="Join" />
                   <Label fx:id="lobbyNameToJoin" layoutX="283.0" layoutY="323.0" prefHeight="18.0" prefWidth="210.0" text="Choose a Lobby" />
                </children></AnchorPane>
       </content>
