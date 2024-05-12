@@ -56,12 +56,9 @@ public class VirtualViewRMI implements VirtualView {
     @Override
     public void transitionTo(ViewState state) throws RemoteException {
         Future<Void> trasitionToFuture = viewExecutor.submit(()->{
-            try {
-                viewStub.transitionTo(state);
-                return null;
-            } catch (Exception e) {
-                throw new RuntimeException();
-            }
+            System.out.println(viewStub);
+            viewStub.transitionTo(state);
+            return null;
         });
         try {
             trasitionToFuture.get(Configs.secondsTimeOut, TimeUnit.SECONDS);
@@ -73,12 +70,8 @@ public class VirtualViewRMI implements VirtualView {
     @Override
     public void log(String logMsg) throws RemoteException {
         Future<Void> logFuture = viewExecutor.submit(()->{
-            try {
-                viewStub.log(logMsg);
-                return null;
-            } catch (Exception e) {
-                throw new RuntimeException();
-            }
+            viewStub.log(logMsg);
+            return null;
         });
         try {
             logFuture.get(Configs.secondsTimeOut, TimeUnit.SECONDS);
@@ -90,12 +83,8 @@ public class VirtualViewRMI implements VirtualView {
     @Override
     public void logErr(String logMsg) throws RemoteException {
         Future<Void> logErrFuture = viewExecutor.submit(()->{
-            try {
-                viewStub.logErr(logMsg);
-                return null;
-            } catch (Exception e) {
-                throw new RuntimeException();
-            }
+            viewStub.logErr(logMsg);
+            return null;
         });
         try {
             logErrFuture.get(Configs.secondsTimeOut, TimeUnit.SECONDS);
@@ -107,12 +96,8 @@ public class VirtualViewRMI implements VirtualView {
     @Override
     public void logOthers(String logMsg) throws RemoteException {
         Future<Void> logFuture = viewExecutor.submit(()->{
-            try {
-                viewStub.logOthers(logMsg);
-                return null;
-            } catch (Exception e) {
-                throw new RuntimeException();
-            }
+            viewStub.logOthers(logMsg);
+            return null;
         });
         try {
             logFuture.get(Configs.secondsTimeOut, TimeUnit.SECONDS);
@@ -123,13 +108,9 @@ public class VirtualViewRMI implements VirtualView {
 
     @Override
     public void logGame(String logMsg) throws RemoteException {
-        Future<Void> logFuture = viewExecutor.submit(()->{
-            try {
-                viewStub.logGame(logMsg);
-                return null;
-            } catch (Exception e) {
-                throw new RuntimeException();
-            }
+        Future<Void> logFuture = viewExecutor.submit(()-> {
+            viewStub.logGame(logMsg);
+            return null;
         });
         try {
             logFuture.get(Configs.secondsTimeOut, TimeUnit.SECONDS);
@@ -141,12 +122,8 @@ public class VirtualViewRMI implements VirtualView {
     @Override
     public void updateLobbyList(ModelDiffs<LightLobbyList> diff) throws RemoteException {
         Future<Void> updateFuture = viewExecutor.submit(()->{
-            try {
-                viewStub.updateLobbyList(diff);
-                return null;
-            } catch (Exception e) {
-                throw new RuntimeException();
-            }
+            viewStub.updateLobbyList(diff);
+            return null;
         });
         try {
             updateFuture.get(Configs.secondsTimeOut, TimeUnit.SECONDS);
@@ -158,12 +135,8 @@ public class VirtualViewRMI implements VirtualView {
     @Override
     public void updateLobby(ModelDiffs<LightLobby> diff) throws RemoteException {
         Future<Void> updateFuture = viewExecutor.submit(()->{
-            try {
-                viewStub.updateLobby(diff);
-                return null;
-            } catch (Exception e) {
-                throw new RuntimeException();
-            }
+            viewStub.updateLobby(diff);
+            return null;
         });
         try {
             updateFuture.get(Configs.secondsTimeOut, TimeUnit.SECONDS);
@@ -175,12 +148,8 @@ public class VirtualViewRMI implements VirtualView {
     @Override
     public void updateGame(ModelDiffs<LightGame> diff) throws RemoteException {
         Future<Void> updateFuture = viewExecutor.submit(()->{
-            try {
-                viewStub.updateGame(diff);
-                return null;
-            } catch (Exception e) {
-                throw new RuntimeException();
-            }
+            viewStub.updateGame(diff);
+            return null;
         });
         try {
             updateFuture.get(Configs.secondsTimeOut, TimeUnit.SECONDS);
@@ -192,12 +161,8 @@ public class VirtualViewRMI implements VirtualView {
     @Override
     public void setFinalRanking(String[] nicks, int[] points) throws RemoteException {
         Future<Void> setFinalRankingFuture = viewExecutor.submit(()->{
-            try {
-                viewStub.setFinalRanking(nicks, points);
-                return null;
-            } catch (Exception e) {
-                throw new RuntimeException();
-            }
+            viewStub.setFinalRanking(nicks, points);
+            return null;
         });
         try {
             setFinalRankingFuture.get(Configs.secondsTimeOut, TimeUnit.SECONDS);
@@ -206,7 +171,6 @@ public class VirtualViewRMI implements VirtualView {
         }
     }
     private synchronized void disconnect(){
-
         try {
             //UnicastRemoteObject.unexportObject(controller, true);
             controller.disconnect();
