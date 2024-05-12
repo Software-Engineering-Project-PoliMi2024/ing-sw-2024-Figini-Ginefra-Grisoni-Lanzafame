@@ -14,11 +14,7 @@ import javafx.scene.control.TextField;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 
-import java.awt.*;
-import java.io.FileInputStream;
-import java.io.FileNotFoundException;
 import java.net.URL;
-import java.util.Objects;
 import java.util.ResourceBundle;
 
 public class ConnectionFormControllerGUI implements Initializable {
@@ -58,6 +54,6 @@ public class ConnectionFormControllerGUI implements Initializable {
         protocolChoice.setValue("RMI");
 
 
-        image.setImage(CardMuseumGUI.loadCardFront(100));
+        //image.setImage(CardMuseumGUI.loadCardFront(100));
     }
 }

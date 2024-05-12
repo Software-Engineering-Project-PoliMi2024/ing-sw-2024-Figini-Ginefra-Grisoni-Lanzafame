@@ -7,6 +7,7 @@ import it.polimi.ingsw.lightModel.lightTableRelated.LightLobby;
 import it.polimi.ingsw.lightModel.lightTableRelated.LightLobbyList;
 import it.polimi.ingsw.view.ActualView;
 import it.polimi.ingsw.view.GUI.Controllers.ConnectionFormControllerGUI;
+import it.polimi.ingsw.view.GUI.Controllers.LoginFormControllerGUI;
 import it.polimi.ingsw.view.ViewState;
 import javafx.application.Application;
 import javafx.application.Platform;
@@ -29,9 +30,10 @@ public class GUI extends Application implements ActualView {
     @Override
     public void start(Stage primaryStage) {
         ConnectionFormControllerGUI.view = this;
+        LoginFormControllerGUI.view = this;
         this.primaryStage = primaryStage;
         primaryStage.setFullScreen(true);
-        primaryStage.setTitle("Sagrada");
+        primaryStage.setTitle("Codex In Naturalis");
         primaryStage.setScene(new Scene(Root.SERVER_CONNECTION_FORM.getRoot(), 800, 600));
         transitionTo(StateGUI.SERVER_CONNECTION);
     }
