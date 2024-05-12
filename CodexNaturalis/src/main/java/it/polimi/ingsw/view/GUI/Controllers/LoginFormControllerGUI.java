@@ -12,11 +12,12 @@ public class LoginFormControllerGUI {
 
     public void login() {
         String nickname = nicknameText.getText();
-        try {
-            view.getController().login(nickname);
-        } catch (Exception e) {
-            throw new RuntimeException(e);
-        }
+        if(!nickname.isEmpty())
+            try {
+                view.getController().login(nickname);
+            } catch (Exception e) {
+                throw new RuntimeException(e);
+            }
     }
 
     public static void setView(ActualView view) {
