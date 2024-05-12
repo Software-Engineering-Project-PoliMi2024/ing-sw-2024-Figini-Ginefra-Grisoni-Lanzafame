@@ -317,6 +317,7 @@ public class ServerModelController implements ControllerInterface, DiffSubscribe
             System.out.println("Client disconnected before logging in"); //todo remove this
             return; //The client disconnected before logging in, no action needed
         }else{
+            System.out.println(this.nickname + " has disconnected");
             this.games.removeUser(this.nickname);//Free the nick from the server, so it can be re-used by other people
             if(games.isInGameParty(this.nickname)){ //Handle the removing of the user from a game
                 games.getUserGame(this.nickname).unsubscribe(this);
@@ -367,6 +368,7 @@ public class ServerModelController implements ControllerInterface, DiffSubscribe
         }
     }
     public void updateLobbyList(ModelDiffs<LightLobbyList> diff){
+        System.out.println(nickname + " updated lobbyList");
         try {
             view.updateLobbyList(diff);
         }catch (Exception r){
