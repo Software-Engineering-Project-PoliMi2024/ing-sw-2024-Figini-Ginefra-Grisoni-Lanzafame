@@ -182,6 +182,7 @@ public class VirtualControllerRMI implements VirtualController {
 
 
     public synchronized void disconnect(){
+        pingPongExecutor.shutdownNow();
         pingPongExecutor = Executors.newSingleThreadScheduledExecutor();
         try {
             UnicastRemoteObject.unexportObject(this, true);
