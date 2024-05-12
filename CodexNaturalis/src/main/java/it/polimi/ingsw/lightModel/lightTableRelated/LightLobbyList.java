@@ -48,4 +48,7 @@ public class LightLobbyList implements Differentiable {
         newList.addAll(lobbies);
         this.lobbies = newList;
     }
+    public ObservableList<LightLobby> bind(){
+        return lobbies;
+    }
 }
