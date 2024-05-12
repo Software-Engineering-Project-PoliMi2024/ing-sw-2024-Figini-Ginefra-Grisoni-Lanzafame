@@ -62,6 +62,7 @@ public class VirtualViewRMI implements VirtualView {
         try {
             trasitionToFuture.get(Configs.secondsTimeOut, TimeUnit.SECONDS);
         }catch (Exception e){
+            debug(e);
             this.disconnect();
         }
     }
@@ -75,6 +76,7 @@ public class VirtualViewRMI implements VirtualView {
         try {
             logFuture.get(Configs.secondsTimeOut, TimeUnit.SECONDS);
         }catch (Exception e){
+            debug(e);
             this.disconnect();
         }
     }
@@ -88,6 +90,7 @@ public class VirtualViewRMI implements VirtualView {
         try {
             logErrFuture.get(Configs.secondsTimeOut, TimeUnit.SECONDS);
         }catch (Exception e){
+            debug(e);
             this.disconnect();
         }
     }
@@ -101,6 +104,7 @@ public class VirtualViewRMI implements VirtualView {
         try {
             logFuture.get(Configs.secondsTimeOut, TimeUnit.SECONDS);
         }catch (Exception e){
+            debug(e);
             this.disconnect();
         }
     }
@@ -114,6 +118,7 @@ public class VirtualViewRMI implements VirtualView {
         try {
             logFuture.get(Configs.secondsTimeOut, TimeUnit.SECONDS);
         }catch (Exception e){
+            debug(e);
             this.disconnect();
         }
     }
@@ -127,6 +132,7 @@ public class VirtualViewRMI implements VirtualView {
         try {
             updateFuture.get(Configs.secondsTimeOut, TimeUnit.SECONDS);
         }catch (Exception e){
+            debug(e);
             this.disconnect();
         }
     }
@@ -140,6 +146,7 @@ public class VirtualViewRMI implements VirtualView {
         try {
             updateFuture.get(Configs.secondsTimeOut, TimeUnit.SECONDS);
         }catch (Exception e){
+            debug(e);
             this.disconnect();
         }
     }
@@ -153,6 +160,7 @@ public class VirtualViewRMI implements VirtualView {
         try {
             updateFuture.get(Configs.secondsTimeOut, TimeUnit.SECONDS);
         }catch (Exception e){
+            debug(e);
             this.disconnect();
         }
     }
@@ -166,6 +174,7 @@ public class VirtualViewRMI implements VirtualView {
         try {
             setFinalRankingFuture.get(Configs.secondsTimeOut, TimeUnit.SECONDS);
         }catch (Exception e){
+            debug(e);
             this.disconnect();
         }
     }
@@ -180,6 +189,10 @@ public class VirtualViewRMI implements VirtualView {
 
     public void setController(ControllerInterface controller) {
         this.controller = controller;
+    }
+
+    private void debug(Exception e){
+        e.printStackTrace();
     }
 
 }
