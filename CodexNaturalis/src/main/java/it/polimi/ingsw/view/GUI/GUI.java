@@ -7,6 +7,7 @@ import it.polimi.ingsw.lightModel.lightTableRelated.LightLobby;
 import it.polimi.ingsw.lightModel.lightTableRelated.LightLobbyList;
 import it.polimi.ingsw.view.ActualView;
 import it.polimi.ingsw.view.GUI.Controllers.ConnectionFormControllerGUI;
+import it.polimi.ingsw.view.GUI.Controllers.LobbyListControllerGUI;
 import it.polimi.ingsw.view.GUI.Controllers.LoginFormControllerGUI;
 import it.polimi.ingsw.view.ViewState;
 import javafx.application.Application;
@@ -18,9 +19,10 @@ import java.rmi.RemoteException;
 import java.util.Arrays;
 
 public class GUI extends Application implements ActualView {
-    private Stage primaryStage;
     static private VirtualController controller;
+    private final LightLobbyList lobbyList = new LightLobbyList();
 
+    private Stage primaryStage;
     private Root currentRoot;
 
     public void run() {
@@ -30,7 +32,12 @@ public class GUI extends Application implements ActualView {
     @Override
     public void start(Stage primaryStage) {
         ConnectionFormControllerGUI.view = this;
-        LoginFormControllerGUI.view = this;
+
+        LoginFormControllerGUI.setView(this);
+
+        LobbyListControllerGUI.setView(this);
+        LobbyListControllerGUI.setLobbyList(lobbyList);
+
         this.primaryStage = primaryStage;
         primaryStage.setFullScreen(true);
         primaryStage.setTitle("Codex In Naturalis");
