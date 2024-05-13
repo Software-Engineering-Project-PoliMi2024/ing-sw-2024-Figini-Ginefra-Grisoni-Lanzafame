@@ -73,4 +73,5 @@ public class LobbyListControllerGUI implements Initializable {
         });
         lobbyListDisplay.setItems(GUI.getLobbyList().bind());
     }
+
 }

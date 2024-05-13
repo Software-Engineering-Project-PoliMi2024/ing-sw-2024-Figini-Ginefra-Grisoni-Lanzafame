@@ -1,7 +1,9 @@
 package it.polimi.ingsw.view.GUI;
 
 import it.polimi.ingsw.connectionLayer.VirtualLayer.VirtualController;
+import it.polimi.ingsw.lightModel.LightCard;
 import it.polimi.ingsw.lightModel.diffs.ModelDiffs;
+import it.polimi.ingsw.lightModel.diffs.game.HandDiffAdd;
 import it.polimi.ingsw.lightModel.lightTableRelated.LightGame;
 import it.polimi.ingsw.lightModel.lightTableRelated.LightLobby;
 import it.polimi.ingsw.lightModel.lightTableRelated.LightLobbyList;
@@ -20,7 +22,9 @@ import java.util.Arrays;
 
 public class GUI extends Application implements ActualView {
     static private VirtualController controller;
-    static private final LightLobbyList lobbyList = new LightLobbyList();
+    private final LightLobbyList lobbyList = new LightLobbyList();
+
+    private static LightGame lightGame = new LightGame();
 
     private Stage primaryStage;
     private Root currentRoot;
@@ -31,6 +35,16 @@ public class GUI extends Application implements ActualView {
 
     @Override
     public void start(Stage primaryStage) {
+        ModelDiffs<LightGame> diff = new HandDiffAdd(new LightCard(1), true);
+        diff.apply(lightGame);
+
+        diff = new HandDiffAdd(new LightCard(2), true);
+        diff.apply(lightGame);
+
+        diff = new HandDiffAdd(new LightCard(3), true);
+        diff.apply(lightGame);
+
+
         ConnectionFormControllerGUI.view = this;
 
         LoginFormControllerGUI.setView(this);
@@ -39,7 +53,7 @@ public class GUI extends Application implements ActualView {
         primaryStage.setFullScreen(true);
         primaryStage.setTitle("Codex In Naturalis");
         primaryStage.setScene(new Scene(Root.SERVER_CONNECTION_FORM.getRoot(), 800, 600));
-        transitionTo(StateGUI.SERVER_CONNECTION);
+        transitionTo(StateGUI.IDLE);
     }
 
     private void setRoot(Root root){
@@ -87,7 +101,7 @@ public class GUI extends Application implements ActualView {
 
     @Override
     public void updateLobbyList(ModelDiffs<LightLobbyList> diff) throws RemoteException {
-        diff.apply(lobbyList);
+
     }
 
     @Override
@@ -123,7 +137,15 @@ public class GUI extends Application implements ActualView {
         GUI.controller = controller;
     }
 
-    public static LightLobbyList getLobbyList() {
-        return lobbyList;
+    public static LightGame getLightGame(){
+        return lightGame;
+    }
+
+    public static LightLobbyList getLobbyList(){
+        return new LightLobbyList();
+    }
+
+    public static void main(String[] args) {
+        launch(args);
     }
 }
