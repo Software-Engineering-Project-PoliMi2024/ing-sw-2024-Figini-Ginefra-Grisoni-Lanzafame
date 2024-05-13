@@ -20,7 +20,7 @@ import java.util.Arrays;
 
 public class GUI extends Application implements ActualView {
     static private VirtualController controller;
-    private final LightLobbyList lobbyList = new LightLobbyList();
+    static private final LightLobbyList lobbyList = new LightLobbyList();
 
     private Stage primaryStage;
     private Root currentRoot;
@@ -34,9 +34,6 @@ public class GUI extends Application implements ActualView {
         ConnectionFormControllerGUI.view = this;
 
         LoginFormControllerGUI.setView(this);
-
-        LobbyListControllerGUI.setView(this);
-        LobbyListControllerGUI.setLobbyList(lobbyList);
 
         this.primaryStage = primaryStage;
         primaryStage.setFullScreen(true);
@@ -126,5 +123,7 @@ public class GUI extends Application implements ActualView {
         GUI.controller = controller;
     }
 
-
+    public static LightLobbyList getLobbyList() {
+        return lobbyList;
+    }
 }
