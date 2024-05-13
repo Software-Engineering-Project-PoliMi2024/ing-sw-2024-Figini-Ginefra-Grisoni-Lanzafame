@@ -1,4 +1,4 @@
-package it.polimi.ingsw.view.GUI.Components;
+package it.polimi.ingsw.lightModel;
 
 import it.polimi.ingsw.designPatterns.Observed;
 import it.polimi.ingsw.designPatterns.Observer;
@@ -15,7 +15,7 @@ public class LogMemory implements Observed {
         notifyObservers();
     }
 
-    public LinkedList<String> getLogMemory() {
+    public LinkedList<String> getLogs() {
         return new LinkedList<>(logMemory);
     }
 
