@@ -1,4 +1,4 @@
-package it.polimi.ingsw.view.GUI.Components;
+package it.polimi.ingsw.view.GUI.Components.CardRelated;
 
 import it.polimi.ingsw.lightModel.LightCard;
 import it.polimi.ingsw.model.cardReleted.utilityEnums.CardFace;
@@ -8,13 +8,11 @@ import javafx.scene.image.ImageView;
 
 public class CardGUI {
     private LightCard target;
-    private CardFace face;
+    protected CardFace face;
     private final ImageView imageView = new ImageView();
-
     private Image image;
 
     public CardGUI(LightCard target, CardFace face) {
-        imageView.setOnMouseClicked(e -> this.switchSide());
         this.target = target;
         this.face = face;
         this.update();
@@ -23,7 +21,7 @@ public class CardGUI {
         imageView.setFitHeight(image.getHeight() * 0.3);
     }
 
-    private void update(){
+    public void update(){
         if(target == null) {
             imageView.setImage(null);
             return;
@@ -42,19 +40,6 @@ public class CardGUI {
 
     public void setTarget(LightCard target) {
         this.target = target;
-        this.update();
-    }
-
-    public void setFace(CardFace face) {
-        this.face = face;
-        this.update();
-    }
-
-    public void switchSide(){
-        if(face == CardFace.FRONT)
-            face = CardFace.BACK;
-        else
-            face = CardFace.FRONT;
         this.update();
     }
 
