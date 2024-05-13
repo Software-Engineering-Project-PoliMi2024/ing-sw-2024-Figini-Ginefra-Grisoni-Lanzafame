@@ -24,6 +24,11 @@ public class CardGUI {
     }
 
     private void update(){
+        if(target == null) {
+            imageView.setImage(null);
+            return;
+        }
+
         if(face == CardFace.FRONT) {
             image = CardMuseumGUI.loadCardFront(target.id());
             imageView.setImage(image);
@@ -60,6 +65,10 @@ public class CardGUI {
 
     public ImageView getImageView() {
         return imageView;
+    }
+
+    public LightCard getTarget() {
+        return target;
     }
 
 }

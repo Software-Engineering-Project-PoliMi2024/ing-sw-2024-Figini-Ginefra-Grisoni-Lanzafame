@@ -1,13 +1,18 @@
 package it.polimi.ingsw.lightModel.lightPlayerRelated;
 
+import it.polimi.ingsw.designPatterns.Observed;
+import it.polimi.ingsw.designPatterns.Observer;
 import it.polimi.ingsw.lightModel.Differentiable;
 import it.polimi.ingsw.lightModel.LightCard;
 import it.polimi.ingsw.model.cardReleted.utilityEnums.Resource;
 
 import java.util.HashMap;
+import java.util.LinkedList;
+import java.util.List;
 import java.util.Map;
 
-public class LightHand implements Differentiable {
+public class LightHand implements Differentiable, Observed {
+    private final List<Observer> observers = new LinkedList<>();
     private LightCard secretObjective;
     private final Map<LightCard, Boolean> cardPlayability;
     private final LightCard[] cards;
@@ -40,7 +45,10 @@ public class LightHand implements Differentiable {
      * @param secretObjective the secret objective of the player
      */
     public void setSecretObjective(LightCard secretObjective) {
+
         this.secretObjective = secretObjective;
+        this.notifyObservers();
+
     }
     /**
      * @return the secret objective of the player
@@ -85,6 +93,8 @@ public class LightHand implements Differentiable {
                 }
             }
         }
+        this.notifyObservers();
+
     }
     private int length(LightCard[] arr){
         int i=0;
@@ -111,6 +121,7 @@ public class LightHand implements Differentiable {
         if(!found){
             throw new IllegalArgumentException();
         }
+        this.notifyObservers();
     }
 
     /**
@@ -126,6 +137,8 @@ public class LightHand implements Differentiable {
         }else{
             throw new IllegalCallerException("The secret objective options are already full");
         }
+        this.notifyObservers();
+
     }
 
     /**
@@ -133,5 +146,20 @@ public class LightHand implements Differentiable {
      */
     public LightCard[] getSecretObjectiveOptions() {
         return new LightCard[]{secretObjectiveOptions[0], secretObjectiveOptions[1]};
+    }
+
+    @Override
+    public void attach(Observer observer) {
+        observers.add(observer);
+    }
+
+    @Override
+    public void detach(Observer observer) {
+        observers.remove(observer);
+    }
+
+    @Override
+    public void notifyObservers() {
+        observers.forEach(Observer::update);
     }
 }
