@@ -10,4 +10,11 @@ public class CardMuseumGUI {
         idString = "000".substring(idString.length()) + idString;
         return new Image(Objects.requireNonNull(GUI.class.getResourceAsStream("/GUI/images/CODEX_cards_gold_front/"+idString+".png")));
     }
+    
+    public static Image loadCardBack(int id) {
+        String idString = String.valueOf(id);
+        idString = "000".substring(idString.length()) + idString;
+        return new Image(Objects.requireNonNull(GUI.class.getResourceAsStream("/GUI/images/CODEX_cards_gold_back/" + idString + ".png")));
+    }
+                
 }
