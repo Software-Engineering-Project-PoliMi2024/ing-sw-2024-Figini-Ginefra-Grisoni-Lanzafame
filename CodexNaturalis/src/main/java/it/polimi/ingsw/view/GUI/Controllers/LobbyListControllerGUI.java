@@ -4,6 +4,8 @@ import it.polimi.ingsw.lightModel.lightTableRelated.LightLobby;
 import it.polimi.ingsw.lightModel.lightTableRelated.LightLobbyList;
 import it.polimi.ingsw.view.ActualView;
 import it.polimi.ingsw.view.GUI.GUI;
+import javafx.beans.value.ChangeListener;
+import javafx.beans.value.ObservableValue;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
@@ -37,7 +39,14 @@ public class LobbyListControllerGUI implements Initializable {
     }
 
     public void joinLobby(){
-
+        LightLobby selectedLobby = lobbyListDisplay.getSelectionModel().getSelectedItem();
+        if(selectedLobby != null){
+            try {
+                GUI.getControllerStatic().joinLobby(selectedLobby.name());
+            }catch (Exception e){
+                throw new RuntimeException(e);
+            }
+        }
     }
 
     @Override
@@ -52,6 +61,14 @@ public class LobbyListControllerGUI implements Initializable {
                 } else {
                     setText(lobby.name());
                 }
+            }
+        });
+
+        lobbyListDisplay.getSelectionModel().selectedItemProperty().addListener(new ChangeListener<LightLobby>() {
+            @Override
+            public void changed(ObservableValue<? extends LightLobby> observableValue, LightLobby lobby, LightLobby t1) {
+                LightLobby selectedLobby = lobbyListDisplay.getSelectionModel().getSelectedItem();
+                lobbyNameToJoin.setText(selectedLobby.name());
             }
         });
         lobbyListDisplay.setItems(GUI.getLobbyList().bind());
