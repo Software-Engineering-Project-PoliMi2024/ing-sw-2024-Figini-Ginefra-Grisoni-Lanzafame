@@ -5,6 +5,10 @@ import javafx.scene.image.Image;
 import java.util.Objects;
 
 public class CardMuseumGUI {
+
+    public static Image logoCenter = new Image(Objects.requireNonNull(GUI.class.getResourceAsStream("/GUI/images/Logo/Center.png")));
+    public static Image logoCircle = new Image(Objects.requireNonNull(GUI.class.getResourceAsStream("/GUI/images/Logo/Circle.png")));
+    public static Image logoBackground = new Image(Objects.requireNonNull(GUI.class.getResourceAsStream("/GUI/images/Logo/Background.png")));
     public static Image loadCardFront(int id){
         String idString = String.valueOf(id);
         idString = "000".substring(idString.length()) + idString;
