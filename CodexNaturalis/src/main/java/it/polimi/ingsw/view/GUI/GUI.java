@@ -61,8 +61,8 @@ public class GUI extends Application implements ActualView {
         primaryStage.setFullScreen(true);
         primaryStage.setTitle("Codex In Naturalis");
         primaryStage.setScene(new Scene(Root.SERVER_CONNECTION_FORM.getRoot(), 800, 600));
-        transitionTo(StateGUI.SERVER_CONNECTION);
-        //transitionTo(StateGUI.IDLE);
+        //transitionTo(StateGUI.SERVER_CONNECTION);
+        transitionTo(StateGUI.IDLE);
     }
 
     private void setRoot(Root root){

@@ -21,6 +21,8 @@ public class GameControllerGUI implements Initializable {
     public void initialize(URL url, ResourceBundle resourceBundle) {
 //        cardsBox.alignmentProperty().setValue(Pos.CENTER);
 //        cardsBox.setSpacing(10);
+        hand.setCodex(codex);
+
         main.getChildren().add(codex.getCodex());
 
         main.getChildren().add(hand.getHand());

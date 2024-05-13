@@ -59,6 +59,8 @@ public class CodexGUI implements Observer {
 
         List<Position> positions = List.of(new Position[]{
                 new Position(1, 1),
+                new Position(2, 2),
+
         });
 
 
@@ -104,7 +106,15 @@ public class CodexGUI implements Observer {
         CardGUI card = new CardGUI(new LightCard(6), CardFace.FRONT);
         return new Pair<>(
                 center_x + position.getX() * card.getImageView().getImage().getWidth() * 0.3 * 0.75,
-                center_y + position.getY() * card.getImageView().getImage().getHeight() * 0.3 * 0.6);
+                center_y - position.getY() * card.getImageView().getImage().getHeight() * 0.3 * 0.6);
+    }
+
+    private Pair<Double, Double> getGridPosition(Double sceneX, Double sceneY) {
+        CardGUI card = new CardGUI(new LightCard(6), CardFace.FRONT);
+        return new Pair<>(
+                (sceneX - center_x) / (card.getImageView().getImage().getWidth() * 0.3 * 0.75),
+                -(sceneY - center_y) / (card.getImageView().getImage().getHeight() * 0.3 * 0.6)
+        );
     }
 
 
@@ -147,5 +157,19 @@ public class CodexGUI implements Observer {
                 this.addCard(new CardGUI(target.card(), target.face()), target.position());
             }
         }
+    }
+
+    public Pair<Double, Double> snapToFrontier(double x, double y){
+        //Find the closest frontier position
+        Pair<Double, Double> gridPos = this.getGridPosition(x, y);
+        System.out.println(gridPos.first() + ", " +  gridPos.second());
+        Position closest = GUI.getLightGame().getMyCodex().getFrontier().frontier().stream().min(
+                (a, b) -> {
+                    double distA = Math.sqrt(Math.pow(a.getX() - gridPos.first(), 2) + Math.pow(a.getY() - gridPos.second(), 2));
+                    double distB = Math.sqrt(Math.pow(b.getX() - gridPos.first(), 2) + Math.pow(b.getY() - gridPos.second(), 2));
+                    return Double.compare(distA, distB);
+                }
+        ).get();
+        return this.getCardPosition(closest);
     }
 }
