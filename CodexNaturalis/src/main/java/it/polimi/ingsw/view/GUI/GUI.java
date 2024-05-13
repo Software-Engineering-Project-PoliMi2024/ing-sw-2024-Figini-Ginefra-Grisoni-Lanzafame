@@ -84,7 +84,6 @@ public class GUI extends Application implements ActualView {
 
     @Override
     public void log(String logMsg) throws RemoteException {
-        logMemory.addLog(logMsg);
     }
 
     @Override
@@ -99,7 +98,6 @@ public class GUI extends Application implements ActualView {
 
     @Override
     public void logGame(String logMsg) throws RemoteException {
-        logMemory.addLog(logMsg);
     }
 
     @Override
