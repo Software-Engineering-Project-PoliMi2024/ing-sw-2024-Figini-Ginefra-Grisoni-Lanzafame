@@ -11,7 +11,8 @@ import it.polimi.ingsw.lightModel.lightTableRelated.LightLobbyList;
 import it.polimi.ingsw.model.cardReleted.utilityEnums.CardFace;
 import it.polimi.ingsw.model.playerReleted.Position;
 import it.polimi.ingsw.view.ActualView;
-import it.polimi.ingsw.view.GUI.Components.LogMemory;
+import it.polimi.ingsw.lightModel.LogMemory;
+import it.polimi.ingsw.view.GUI.Components.LogErr;
 import it.polimi.ingsw.view.GUI.Controllers.ConnectionFormControllerGUI;
 import it.polimi.ingsw.view.GUI.Controllers.LoginFormControllerGUI;
 import it.polimi.ingsw.view.ViewState;
@@ -63,8 +64,8 @@ public class GUI extends Application implements ActualView {
         primaryStage.setFullScreen(true);
         primaryStage.setTitle("Codex In Naturalis");
         primaryStage.setScene(new Scene(Root.SERVER_CONNECTION_FORM.getRoot(), 800, 600));
-        //transitionTo(StateGUI.SERVER_CONNECTION);
-        transitionTo(StateGUI.IDLE);
+        transitionTo(StateGUI.SERVER_CONNECTION);
+        //transitionTo(StateGUI.IDLE);
     }
 
     private void setRoot(Root root){
@@ -96,7 +97,7 @@ public class GUI extends Application implements ActualView {
 
     @Override
     public void logErr(String logMsg) throws RemoteException {
-
+        LogErr.display(logMsg);
     }
 
     @Override
@@ -152,6 +153,10 @@ public class GUI extends Application implements ActualView {
 
     public static LightLobbyList getLobbyList(){
         return lobbyList;
+    }
+
+    public static LogMemory getLogMemory() {
+        return logMemory;
     }
 
     public static void main(String[] args) {
