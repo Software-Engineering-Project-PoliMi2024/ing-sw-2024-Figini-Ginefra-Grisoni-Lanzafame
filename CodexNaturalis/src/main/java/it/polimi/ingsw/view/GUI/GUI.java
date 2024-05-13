@@ -90,7 +90,7 @@ public class GUI extends Application implements ActualView {
 
     @Override
     public void updateLobbyList(ModelDiffs<LightLobbyList> diff) throws RemoteException {
-
+        diff.apply(lobbyList);
     }
 
     @Override
