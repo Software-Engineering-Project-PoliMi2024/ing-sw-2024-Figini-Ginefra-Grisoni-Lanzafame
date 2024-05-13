@@ -8,8 +8,8 @@ import it.polimi.ingsw.lightModel.lightTableRelated.LightGame;
 import it.polimi.ingsw.lightModel.lightTableRelated.LightLobby;
 import it.polimi.ingsw.lightModel.lightTableRelated.LightLobbyList;
 import it.polimi.ingsw.view.ActualView;
+import it.polimi.ingsw.view.GUI.Components.LogMemory;
 import it.polimi.ingsw.view.GUI.Controllers.ConnectionFormControllerGUI;
-import it.polimi.ingsw.view.GUI.Controllers.LobbyListControllerGUI;
 import it.polimi.ingsw.view.GUI.Controllers.LoginFormControllerGUI;
 import it.polimi.ingsw.view.ViewState;
 import javafx.application.Application;
@@ -25,6 +25,8 @@ public class GUI extends Application implements ActualView {
     private static final LightLobbyList lobbyList = new LightLobbyList();
 
     private static LightGame lightGame = new LightGame();
+
+    private static LogMemory logMemory = new LogMemory();
 
     private Stage primaryStage;
     private Root currentRoot;
@@ -82,7 +84,7 @@ public class GUI extends Application implements ActualView {
 
     @Override
     public void log(String logMsg) throws RemoteException {
-
+        logMemory.addLog(logMsg);
     }
 
     @Override
@@ -92,12 +94,12 @@ public class GUI extends Application implements ActualView {
 
     @Override
     public void logOthers(String logMsg) throws RemoteException {
-
+        logMemory.addLog(logMsg);
     }
 
     @Override
     public void logGame(String logMsg) throws RemoteException {
-
+        logMemory.addLog(logMsg);
     }
 
     @Override
