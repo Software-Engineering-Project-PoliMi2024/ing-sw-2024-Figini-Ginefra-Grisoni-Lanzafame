@@ -1,5 +1,7 @@
 package it.polimi.ingsw.lightModel.lightPlayerRelated;
 
+import it.polimi.ingsw.designPatterns.Observed;
+import it.polimi.ingsw.designPatterns.Observer;
 import it.polimi.ingsw.lightModel.Differentiable;
 import it.polimi.ingsw.lightModel.diffs.game.FrontierDiff;
 import it.polimi.ingsw.model.cardReleted.utilityEnums.Collectable;
@@ -10,7 +12,8 @@ import it.polimi.ingsw.model.playerReleted.Position;
 import java.util.*;
 
 //a
-public class LightCodex implements Differentiable {
+public class LightCodex implements Differentiable, Observed{
+    private final List<Observer> observers = new LinkedList<>();
     private int points;
     private Map<Collectable, Integer> collectables;
     private final Map<Position, LightPlacement> placementHistory;
@@ -75,6 +78,7 @@ public class LightCodex implements Differentiable {
             p = new LightPlacement(p);
             this.placementHistory.put(p.position(), p);
         }
+        this.notifyObservers();
     }
 
     /**
@@ -97,14 +101,35 @@ public class LightCodex implements Differentiable {
     }
 
     public void setPoints(int points) {
+
         this.points = points;
+        this.notifyObservers();
+
     }
 
     public void setFrontier(LightFrontier frontier) {
         this.frontier = new LightFrontier(frontier);
+        this.notifyObservers();
     }
 
     public void setCollectables(Map<Collectable, Integer> collectables) {
         this.collectables = new HashMap<>(collectables);
+        this.notifyObservers();
+    }
+
+    @Override
+    public void attach(Observer observer) {
+        this.observers.add(observer);
+    }
+
+    @Override
+    public void detach(Observer observer) {
+        this.observers.remove(observer);
+    }
+
+    @Override
+    public void notifyObservers() {
+        for (Observer o : this.observers)
+            o.update();
     }
 }

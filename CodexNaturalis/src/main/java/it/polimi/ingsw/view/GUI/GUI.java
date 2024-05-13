@@ -3,10 +3,13 @@ package it.polimi.ingsw.view.GUI;
 import it.polimi.ingsw.connectionLayer.VirtualLayer.VirtualController;
 import it.polimi.ingsw.lightModel.LightCard;
 import it.polimi.ingsw.lightModel.diffs.ModelDiffs;
-import it.polimi.ingsw.lightModel.diffs.game.HandDiffAdd;
+import it.polimi.ingsw.lightModel.diffs.game.*;
+import it.polimi.ingsw.lightModel.lightPlayerRelated.LightPlacement;
 import it.polimi.ingsw.lightModel.lightTableRelated.LightGame;
 import it.polimi.ingsw.lightModel.lightTableRelated.LightLobby;
 import it.polimi.ingsw.lightModel.lightTableRelated.LightLobbyList;
+import it.polimi.ingsw.model.cardReleted.utilityEnums.CardFace;
+import it.polimi.ingsw.model.playerReleted.Position;
 import it.polimi.ingsw.view.ActualView;
 import it.polimi.ingsw.view.GUI.Components.LogMemory;
 import it.polimi.ingsw.view.GUI.Controllers.ConnectionFormControllerGUI;
@@ -18,7 +21,10 @@ import javafx.scene.Scene;
 import javafx.stage.Stage;
 
 import java.rmi.RemoteException;
+import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.HashMap;
+import java.util.List;
 
 public class GUI extends Application implements ActualView {
     static private VirtualController controller;
@@ -47,6 +53,8 @@ public class GUI extends Application implements ActualView {
         diff.apply(lightGame);
 
 
+
+
         ConnectionFormControllerGUI.view = this;
 
         LoginFormControllerGUI.setView(this);
@@ -55,8 +63,8 @@ public class GUI extends Application implements ActualView {
         primaryStage.setFullScreen(true);
         primaryStage.setTitle("Codex In Naturalis");
         primaryStage.setScene(new Scene(Root.SERVER_CONNECTION_FORM.getRoot(), 800, 600));
-        transitionTo(StateGUI.SERVER_CONNECTION);
-        //transitionTo(StateGUI.IDLE);
+        //transitionTo(StateGUI.SERVER_CONNECTION);
+        transitionTo(StateGUI.IDLE);
     }
 
     private void setRoot(Root root){
