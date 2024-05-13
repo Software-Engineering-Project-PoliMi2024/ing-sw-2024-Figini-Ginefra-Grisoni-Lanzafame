@@ -10,29 +10,25 @@
 <?import javafx.scene.layout.AnchorPane?>
 <?import javafx.scene.text.Text?>
 
-<TabPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="400.0" prefWidth="600.0" tabClosingPolicy="UNAVAILABLE" xmlns="http://javafx.com/javafx/21" xmlns:fx="http://javafx.com/fxml/1" fx:controller="it.polimi.ingsw.view.GUI.Controllers.LobbyListControllerGUI">
-  <tabs>
+<TabPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="400.0"
+         prefWidth="600.0" tabClosingPolicy="UNAVAILABLE" xmlns="http://javafx.com/javafx/21"
+         xmlns:fx="http://javafx.com/fxml/1"
+         fx:controller="it.polimi.ingsw.view.GUI.Controllers.LobbyListControllerGUI">
     <Tab text="JoinGame">
-      <content>
-        <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0">
-               <children>
-                  <ListView fx:id="lobbyListDisplay" layoutX="15.0" layoutY="15.0" prefHeight="270.0" prefWidth="569.0" />
-                  <Button fx:id="joinButton" layoutX="231.0" layoutY="319.0" mnemonicParsing="false" onAction="#joinLobby" text="Join" />
-                  <Label fx:id="lobbyNameToJoin" layoutX="283.0" layoutY="323.0" prefHeight="18.0" prefWidth="210.0" text="Choose a Lobby" />
-               </children></AnchorPane>
-      </content>
+        <AnchorPane fx:id="joinGame" minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0">
+        </AnchorPane>
     </Tab>
     <Tab text="CreateGame">
-      <content>
         <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0">
-               <children>
-                  <Slider fx:id="playerNumber" blockIncrement="1.0" layoutX="93.0" layoutY="139.0" majorTickUnit="1.0" max="4.0" min="2.0" minorTickCount="0" showTickLabels="true" showTickMarks="true" snapToTicks="true" value="2.0" />
-                  <Text layoutX="106.0" layoutY="130.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Number of Players" />
-                  <Text layoutX="381.0" layoutY="106.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Game Name" />
-                  <TextField fx:id="lobbyToCreateName" layoutX="346.0" layoutY="134.0" />
-                  <Button fx:id="createLobby" layoutX="271.0" layoutY="273.0" mnemonicParsing="false" onAction="#createLobby" text="Create" />
-               </children></AnchorPane>
-      </content>
+            <Slider fx:id="playerNumber" blockIncrement="1.0" layoutX="93.0" layoutY="139.0" majorTickUnit="1.0"
+                    max="4.0" min="2.0" minorTickCount="0" showTickLabels="true" showTickMarks="true"
+                    snapToTicks="true" value="2.0"/>
+            <Text layoutX="106.0" layoutY="130.0" strokeType="OUTSIDE" strokeWidth="0.0"
+                  text="Number of Players"/>
+            <Text layoutX="381.0" layoutY="106.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Game Name"/>
+            <TextField fx:id="lobbyToCreateName" layoutX="346.0" layoutY="134.0"/>
+            <Button fx:id="createLobby" layoutX="271.0" layoutY="273.0" mnemonicParsing="false"
+                    onAction="#createLobby" text="Create"/>
+        </AnchorPane>
     </Tab>
-  </tabs>
 </TabPane>
