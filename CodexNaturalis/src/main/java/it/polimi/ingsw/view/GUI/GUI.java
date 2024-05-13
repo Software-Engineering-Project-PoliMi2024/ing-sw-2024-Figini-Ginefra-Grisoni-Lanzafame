@@ -28,7 +28,7 @@ import java.util.List;
 
 public class GUI extends Application implements ActualView {
     static private VirtualController controller;
-    private final LightLobbyList lobbyList = new LightLobbyList();
+    private static final LightLobbyList lobbyList = new LightLobbyList();
 
     private static LightGame lightGame = new LightGame();
 
@@ -61,7 +61,8 @@ public class GUI extends Application implements ActualView {
         primaryStage.setFullScreen(true);
         primaryStage.setTitle("Codex In Naturalis");
         primaryStage.setScene(new Scene(Root.SERVER_CONNECTION_FORM.getRoot(), 800, 600));
-        transitionTo(StateGUI.IDLE);
+        transitionTo(StateGUI.SERVER_CONNECTION);
+        //transitionTo(StateGUI.IDLE);
     }
 
     private void setRoot(Root root){
@@ -109,7 +110,7 @@ public class GUI extends Application implements ActualView {
 
     @Override
     public void updateLobbyList(ModelDiffs<LightLobbyList> diff) throws RemoteException {
-
+        diff.apply(lobbyList);
     }
 
     @Override
@@ -150,7 +151,7 @@ public class GUI extends Application implements ActualView {
     }
 
     public static LightLobbyList getLobbyList(){
-        return new LightLobbyList();
+        return lobbyList;
     }
 
     public static void main(String[] args) {

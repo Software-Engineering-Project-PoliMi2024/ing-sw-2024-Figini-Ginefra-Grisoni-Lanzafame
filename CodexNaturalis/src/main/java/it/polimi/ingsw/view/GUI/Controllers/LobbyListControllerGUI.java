@@ -1,5 +1,6 @@
 package it.polimi.ingsw.view.GUI.Controllers;
 
+import it.polimi.ingsw.designPatterns.Observer;
 import it.polimi.ingsw.lightModel.lightTableRelated.LightLobby;
 import it.polimi.ingsw.lightModel.lightTableRelated.LightLobbyList;
 import it.polimi.ingsw.view.ActualView;
@@ -17,7 +18,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.ResourceBundle;
 
-public class LobbyListControllerGUI implements Initializable {
+public class LobbyListControllerGUI implements Initializable, Observer {
 
     @FXML
     private TextField lobbyToCreateName;
@@ -51,7 +52,8 @@ public class LobbyListControllerGUI implements Initializable {
 
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle) {
-        lobbyListDisplay.setCellFactory(param -> new ListCell<LightLobby>(){
+        lobbyListDisplay.setCellFactory(param -> new ListCell<LightLobby>()
+        {
             @Override
             protected void updateItem(LightLobby lobby, boolean empty) {
                 super.updateItem(lobby, empty);
@@ -71,7 +73,16 @@ public class LobbyListControllerGUI implements Initializable {
                 lobbyNameToJoin.setText(selectedLobby.name());
             }
         });
-        lobbyListDisplay.setItems(GUI.getLobbyList().bind());
+        GUI.getLobbyList().attach(this);
     }
 
+    @Override
+    public void update() {
+        for(LightLobby lobby : GUI.getLobbyList().getLobbies()){System.out.println(lobby.name());
+            if(!lobbyListDisplay.getItems().contains(lobby)){
+                lobbyListDisplay.getItems().add(lobby);
+            }
+        }
+        lobbyListDisplay.getItems().removeIf(lobby -> !GUI.getLobbyList().getLobbies().contains(lobby));
+    }
 }
