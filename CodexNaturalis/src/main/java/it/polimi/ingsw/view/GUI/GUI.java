@@ -32,7 +32,7 @@ import java.util.Arrays;
 public class GUI extends Application implements ActualView {
     static private VirtualController controller;
     private static final LightLobbyList lobbyList = new LightLobbyList();
-
+    private static final LightLobby lobby = new LightLobby();
     private static final LightGame lightGame = new LightGame();
 
     private static LogMemory logMemory = new LogMemory();
@@ -271,12 +271,12 @@ public class GUI extends Application implements ActualView {
 
     @Override
     public void updateLobby(ModelDiffs<LightLobby> diff) throws RemoteException {
-
+        diff.apply(lobby);
     }
 
     @Override
     public void updateGame(ModelDiffs<LightGame> diff) throws RemoteException {
-
+        diff.apply(lightGame);
     }
 
     @Override
@@ -304,6 +304,10 @@ public class GUI extends Application implements ActualView {
 
     public static LightGame getLightGame(){
         return lightGame;
+    }
+
+    public static LightLobby getLobby(){
+        return lobby;
     }
 
     public static LightLobbyList getLobbyList(){
