@@ -25,10 +25,10 @@ public class GameControllerGUI implements Initializable {
 //        cardsBox.setSpacing(10);
         hand.setCodex(codex);
 
-        main.getChildren().add(logs.getLogsDisplay());
-
         main.getChildren().add(codex.getCodex());
 
         main.getChildren().add(hand.getHand());
+
+        main.getChildren().add(logs.getLogsDisplay());
     }
 }
