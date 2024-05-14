@@ -1,5 +1,6 @@
 package it.polimi.ingsw.connectionLayer.Socket;
 
+import it.polimi.ingsw.Configs;
 import it.polimi.ingsw.connectionLayer.Socket.ClientMsg.ClientMsg;
 import it.polimi.ingsw.connectionLayer.Socket.ServerMsg.ServerMsg;
 import it.polimi.ingsw.connectionLayer.VirtualLayer.VirtualController;
@@ -10,13 +11,16 @@ import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.net.Socket;
+import java.rmi.RemoteException;
 import java.util.Comparator;
 import java.util.LinkedList;
 import java.util.PriorityQueue;
 import java.util.Queue;
+import java.util.concurrent.*;
+import java.util.concurrent.TimeUnit;
 
 public class ServerHandler implements Runnable{
-    private Socket server;
+    private final Socket server;
     private ObjectOutputStream output;
     private ObjectInputStream input;
     private VirtualController owner;
@@ -36,18 +40,50 @@ public class ServerHandler implements Runnable{
     /**
      * Initialized the input and output streams and starts the listening thread
      */
+    //todo remove print used for debugging
     @Override
-    public void run() {
-        try {
-            output = new ObjectOutputStream(server.getOutputStream());
-            input = new ObjectInputStream(server.getInputStream());
-        } catch (Exception e) {
-            System.out.println("could not open connection to " + server.getInetAddress());
-            return;
+    public void run(){
+        ExecutorService executor = Executors.newSingleThreadExecutor();
+        try{
+            Future<?> future = executor.submit(() -> {
+                try {
+                    output = new ObjectOutputStream(server.getOutputStream());
+                    input = new ObjectInputStream(server.getInputStream());
+                    System.out.println("Connected to " + server.getInetAddress());
+                    this.waitForOwnerAndView();
+                    Thread listeningThread = new Thread(this::handleMsg, "Listening Thread");
+                    listeningThread.start();
+                }catch (IOException e) {
+                    //wait for the view to be set so that the error can be logged
+                    this.waitForOwnerAndView();
+                    try {
+                        System.out.println("Error while creating the input and output streams");
+                        view.logErr(LogsOnClient.CONNECTION_ERROR.getMessage());
+                    } catch (RemoteException ex) {
+                        //This is socket, RemoteException should not be thrown
+                        throw new RuntimeException(ex);
+                    }
+                }
+            });
+            future.get(Configs.secondsTimeOut, TimeUnit.SECONDS);
+        }catch (TimeoutException | InterruptedException | ExecutionException e) {
+            //wait for the view to be set so that the error can be logged
+            this.waitForOwnerAndView();
+            try {
+                System.out.println("Error while connecting to the server, the server exists but did not expect this protocol");
+                view.logErr(LogsOnClient.CONNECTION_ERROR.getMessage());
+            } catch (RemoteException ex) {
+                //This is socket, RemoteException should not be thrown
+                throw new RuntimeException(ex);
+            }
         }
-        System.out.println("Connected to " + server.getInetAddress());
-        //inform the VirtualController that the connection streams are ready, wait for the view and the virtualController to be set
-        ready = true;
+    }
+
+    /**
+     * Set the serverHandler has ready, wait for the controller to set the owner and the view
+     */
+    private void waitForOwnerAndView(){
+        this.ready = true;
         while(this.owner == null || this.view == null){
             try {
                 Thread.sleep(10);
@@ -55,8 +91,6 @@ public class ServerHandler implements Runnable{
                 e.printStackTrace();
             }
         }
-        Thread listeningThread = new Thread(this::handleMsg, "Listening Thread");
-        listeningThread.start();
     }
     /**
      * Sends a message to the server
