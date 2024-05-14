@@ -13,13 +13,9 @@ public class CardGUI {
     protected CardFace face;
     private final ImageView imageView = new ImageView();
     private Image image;
-
     private double tx, ty;
-
     private final Object lock = new Object();
-
     private final AtomicBoolean farFromTarget = new AtomicBoolean(true);
-
     private Thread translationThread;
 
 

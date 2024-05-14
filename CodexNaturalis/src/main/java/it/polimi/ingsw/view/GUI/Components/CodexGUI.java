@@ -9,6 +9,7 @@ import it.polimi.ingsw.model.playerReleted.Position;
 import it.polimi.ingsw.model.utilities.Pair;
 import it.polimi.ingsw.view.GUI.Components.CardRelated.CardGUI;
 import it.polimi.ingsw.view.GUI.GUI;
+import it.polimi.ingsw.view.GUI.GUIConfigs;
 import javafx.geometry.Pos;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.Pane;
@@ -107,15 +108,15 @@ public class CodexGUI implements Observer {
     private Pair<Double, Double> getCardPosition(Position position) {
         CardGUI card = new CardGUI(new LightCard(6), CardFace.FRONT);
         return new Pair<>(
-                center_x + position.getX() * card.getImageView().getImage().getWidth() * 0.3 * 0.75,
-                center_y - position.getY() * card.getImageView().getImage().getHeight() * 0.3 * 0.6);
+                center_x + position.getX() * GUIConfigs.codexGridWith,
+                center_y - position.getY() * GUIConfigs.codexGridHeight);
     }
 
     private Pair<Double, Double> getGridPosition(Double sceneX, Double sceneY) {
         CardGUI card = new CardGUI(new LightCard(6), CardFace.FRONT);
         return new Pair<>(
-                (sceneX - center_x) / (card.getImageView().getImage().getWidth() * 0.3 * 0.75),
-                -(sceneY - center_y) / (card.getImageView().getImage().getHeight() * 0.3 * 0.6)
+                (sceneX - center_x) / (GUIConfigs.codexGridWith),
+                -(sceneY - center_y) / (GUIConfigs.codexGridHeight)
         );
     }
 
@@ -134,16 +135,7 @@ public class CodexGUI implements Observer {
 
         card.getImageView().setOnMouseDragged(
                 e -> {
-                    //Discretize using the card size
-//                    double width = card.getImageView().getImage().getWidth() * 0.3 * 0.75;
-//                    double height = card.getImageView().getImage().getHeight() * 0.3 * 0.6;
-//                    card.getImageView().setTranslateX(Math.round((e.getSceneX()) / width - 0.5) * width);
-//                    card.getImageView().setTranslateY(Math.round(e.getSceneY() / height - 0.5) * height);
-
                     card.setTargetTranslation(e.getSceneX() - codex.getScene().getWidth()/2, e.getSceneY() - codex.getScene().getHeight()/2);
-
-//                    card.getImageView().setTranslateX(e.getSceneX() - codex.getScene().getWidth()/2);
-//                    card.getImageView().setTranslateY(e.getSceneY() - codex.getScene().getHeight()/2);
                     e.consume();
                 }
         );
@@ -168,9 +160,7 @@ public class CodexGUI implements Observer {
         frontier.clear();
         for(Position p : GUI.getLightGame().getMyCodex().getFrontier().frontier()){
             Pair<Double, Double> pos = this.getCardPosition(p);
-            double cardWidth = new CardGUI(new LightCard(6), CardFace.FRONT).getImageView().getImage().getWidth() * 0.3;
-            double cardHeight = new CardGUI(new LightCard(6), CardFace.FRONT).getImageView().getImage().getHeight() * 0.3;
-            Rectangle r = new Rectangle(0, 0, cardWidth, cardHeight);
+            Rectangle r = new Rectangle(0, 0, GUIConfigs.cardWidth, GUIConfigs.cardHeight);
             r.setStyle("-fx-fill: transparent; -fx-stroke: red; -fx-stroke-width: 2;");
             frontier.add(r);
             r.setTranslateX(pos.first());

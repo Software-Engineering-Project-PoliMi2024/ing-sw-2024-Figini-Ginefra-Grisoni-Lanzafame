@@ -6,7 +6,7 @@ import it.polimi.ingsw.model.cardReleted.utilityEnums.CardFace;
 public class FlippableCardGUI extends CardGUI{
     public FlippableCardGUI(LightCard target) {
         super(target, CardFace.FRONT);
-        this.getImageView().setOnMouseClicked(e -> this.switchSide());
+        this.getImageView().setOnMouseClicked(e -> this.flip());
     }
 
     public void setFace(CardFace face) {
@@ -14,7 +14,7 @@ public class FlippableCardGUI extends CardGUI{
         this.update();
     }
 
-    public void switchSide(){
+    public void flip(){
         if(face == CardFace.FRONT)
             face = CardFace.BACK;
         else

@@ -4,6 +4,7 @@ import it.polimi.ingsw.designPatterns.Observer;
 import it.polimi.ingsw.model.utilities.Pair;
 import it.polimi.ingsw.view.GUI.Components.CardRelated.FlippableCardGUI;
 import it.polimi.ingsw.view.GUI.GUI;
+import it.polimi.ingsw.view.GUI.GUIConfigs;
 import javafx.geometry.Pos;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.HBox;
@@ -63,10 +64,9 @@ public class HandGUI implements Observer {
 
                         Double mouseX = e.getSceneX() - codex.getCodex().getWidth()/2;
                         Double mouseY = e.getSceneY() - codex.getCodex().getHeight()/2;
-                        double width = card.getImageView().getImage().getWidth() * 0.3;
-                        double height = card.getImageView().getImage().getHeight() * 0.3;
+
                         //Check if pos is close enough to the mouse position
-                        if (Math.abs(pos.first() - mouseX) < width/2 && Math.abs(pos.second() - mouseY) < height/2){
+                        if (Math.abs(pos.first() - mouseX) < GUIConfigs.cardWidth/2 && Math.abs(pos.second() - mouseY) < GUIConfigs.cardHeight/2){
                             card.setTargetTranslation(pos.first(), pos.second());
                         }
                         else{
