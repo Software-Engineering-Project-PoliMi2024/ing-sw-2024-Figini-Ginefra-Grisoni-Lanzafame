@@ -17,10 +17,12 @@ import it.polimi.ingsw.view.ViewState;
 import javafx.animation.*;
 import javafx.application.Application;
 import javafx.application.Platform;
+import javafx.geometry.Rectangle2D;
 import javafx.scene.Scene;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.StackPane;
+import javafx.stage.Screen;
 import javafx.stage.Stage;
 import javafx.util.Duration;
 
@@ -51,16 +53,16 @@ public class GUI extends Application implements ActualView {
     }
 
     private void updateLogoSize(){
-        double logoSize = Math.max(stackRoot.getWidth(), stackRoot.getHeight());
+        double logoSize = Math.max(primaryStage.getWidth(), primaryStage.getHeight());
 
         logoCenter.setFitWidth(logoSize);
-        logoCenter.setFitHeight(logoSize);
+        logoCenter.setPreserveRatio(true);
 
         logoCircle.setFitWidth(logoSize);
-        logoCircle.setFitHeight(logoSize);
+        logoCircle.setPreserveRatio(true);
 
         logoBackground.setFitWidth(logoSize);
-        logoBackground.setFitHeight(logoSize);
+        logoBackground.setPreserveRatio(true);
     }
 
     @Override
@@ -84,6 +86,8 @@ public class GUI extends Application implements ActualView {
 
         //Update width by listening to the stage height
         primaryStage.heightProperty().addListener((obs, oldVal, newVal) -> this.updateLogoSize());
+
+        primaryStage.fullScreenProperty().addListener((obs, oldVal, newVal) -> this.updateLogoSize());
 
 
         ModelDiffs<LightGame> diff = new HandDiffAdd(new LightCard(1), true);
@@ -113,9 +117,9 @@ public class GUI extends Application implements ActualView {
 
         //set stackRoot background and style
         //stackRoot.setStyle("-fx-background-color: #1e1f22;");
-        transitionTo(StateGUI.SERVER_CONNECTION);
+        //transitionTo(StateGUI.SERVER_CONNECTION);
         //transitionTo(StateGUI.JOIN_LOBBY);
-        //transitionTo(StateGUI.IDLE);
+        transitionTo(StateGUI.IDLE);
     }
 
     private void setRoot(Root root){
@@ -172,44 +176,44 @@ public class GUI extends Application implements ActualView {
 
         timeline.getKeyFrames().addAll(
                 new KeyFrame(Duration.millis(0), centerStartX),
-                new KeyFrame(Duration.millis(Configs.swapAnimationDuration), centerGoalX),
-                new KeyFrame(Duration.millis(Configs.swapAnimationDuration + 4 * Configs.swapAnimationDelay + Configs.swapAnimationPause), centerGoalX),
-                new KeyFrame(Duration.millis(2*Configs.swapAnimationDuration + 4 * Configs.swapAnimationDelay+ Configs.swapAnimationPause), centerStartX),
+                new KeyFrame(Duration.millis(GUIConfigs.swapAnimationDuration), centerGoalX),
+                new KeyFrame(Duration.millis(GUIConfigs.swapAnimationDuration + 4 * GUIConfigs.swapAnimationDelay + GUIConfigs.swapAnimationPause), centerGoalX),
+                new KeyFrame(Duration.millis(2*GUIConfigs.swapAnimationDuration + 4 * GUIConfigs.swapAnimationDelay+ GUIConfigs.swapAnimationPause), centerStartX),
 
                 new KeyFrame(Duration.millis(0), centerStartY),
-                new KeyFrame(Duration.millis(Configs.swapAnimationDuration), centerGoalY),
-                new KeyFrame(Duration.millis(Configs.swapAnimationDuration + 4 * Configs.swapAnimationDelay + Configs.swapAnimationPause), centerGoalY),
-                new KeyFrame(Duration.millis(2*Configs.swapAnimationDuration + 4 * Configs.swapAnimationDelay+ Configs.swapAnimationPause), centerStartY),
+                new KeyFrame(Duration.millis(GUIConfigs.swapAnimationDuration), centerGoalY),
+                new KeyFrame(Duration.millis(GUIConfigs.swapAnimationDuration + 4 * GUIConfigs.swapAnimationDelay + GUIConfigs.swapAnimationPause), centerGoalY),
+                new KeyFrame(Duration.millis(2*GUIConfigs.swapAnimationDuration + 4 * GUIConfigs.swapAnimationDelay+ GUIConfigs.swapAnimationPause), centerStartY),
 
 
-                new KeyFrame(Duration.millis(Configs.swapAnimationDelay), circleStartX),
-                new KeyFrame(Duration.millis(Configs.swapAnimationDuration + Configs.swapAnimationDelay), circleGoalX),
-                new KeyFrame(Duration.millis(Configs.swapAnimationDuration + 3 * Configs.swapAnimationDelay+ Configs.swapAnimationPause), circleGoalX),
-                new KeyFrame(Duration.millis(2 * Configs.swapAnimationDuration + 3 * Configs.swapAnimationDelay+ Configs.swapAnimationPause), circleStartX),
+                new KeyFrame(Duration.millis(GUIConfigs.swapAnimationDelay), circleStartX),
+                new KeyFrame(Duration.millis(GUIConfigs.swapAnimationDuration + GUIConfigs.swapAnimationDelay), circleGoalX),
+                new KeyFrame(Duration.millis(GUIConfigs.swapAnimationDuration + 3 * GUIConfigs.swapAnimationDelay+ GUIConfigs.swapAnimationPause), circleGoalX),
+                new KeyFrame(Duration.millis(2 * GUIConfigs.swapAnimationDuration + 3 * GUIConfigs.swapAnimationDelay+ GUIConfigs.swapAnimationPause), circleStartX),
 
-                new KeyFrame(Duration.millis(Configs.swapAnimationDelay), circleStartY),
-                new KeyFrame(Duration.millis(Configs.swapAnimationDuration + Configs.swapAnimationDelay), circleGoalY),
-                new KeyFrame(Duration.millis(Configs.swapAnimationDuration + 2 * Configs.swapAnimationDelay+ Configs.swapAnimationPause), circleGoalY),
-                new KeyFrame(Duration.millis(2 * Configs.swapAnimationDuration + 2 * Configs.swapAnimationDelay+ Configs.swapAnimationPause), circleStartY),
-
-
-                new KeyFrame(Duration.millis( 2 * Configs.swapAnimationDelay), backgroundStartX),
-                new KeyFrame(Duration.millis(Configs.swapAnimationDuration + 2 * Configs.swapAnimationDelay), backgroundGoalX),
-                new KeyFrame(Duration.millis(Configs.swapAnimationDuration + 2 * Configs.swapAnimationDelay+ Configs.swapAnimationPause), backgroundGoalX),
-                new KeyFrame(Duration.millis(2 * Configs.swapAnimationDuration + 2 * Configs.swapAnimationDelay+ Configs.swapAnimationPause), backgroundStartX),
+                new KeyFrame(Duration.millis(GUIConfigs.swapAnimationDelay), circleStartY),
+                new KeyFrame(Duration.millis(GUIConfigs.swapAnimationDuration + GUIConfigs.swapAnimationDelay), circleGoalY),
+                new KeyFrame(Duration.millis(GUIConfigs.swapAnimationDuration + 2 * GUIConfigs.swapAnimationDelay+ GUIConfigs.swapAnimationPause), circleGoalY),
+                new KeyFrame(Duration.millis(2 * GUIConfigs.swapAnimationDuration + 2 * GUIConfigs.swapAnimationDelay+ GUIConfigs.swapAnimationPause), circleStartY),
 
 
-                new KeyFrame(Duration.millis( 2 * Configs.swapAnimationDelay), backgroundStartY),
-                new KeyFrame(Duration.millis(Configs.swapAnimationDuration + 2 * Configs.swapAnimationDelay), backgroundGoalY),
-                new KeyFrame(Duration.millis(Configs.swapAnimationDuration + 2 * Configs.swapAnimationDelay+ Configs.swapAnimationPause), backgroundGoalY),
-                new KeyFrame(Duration.millis(2 * Configs.swapAnimationDuration + 2 * Configs.swapAnimationDelay+ Configs.swapAnimationPause), backgroundStartY),
+                new KeyFrame(Duration.millis( 2 * GUIConfigs.swapAnimationDelay), backgroundStartX),
+                new KeyFrame(Duration.millis(GUIConfigs.swapAnimationDuration + 2 * GUIConfigs.swapAnimationDelay), backgroundGoalX),
+                new KeyFrame(Duration.millis(GUIConfigs.swapAnimationDuration + 2 * GUIConfigs.swapAnimationDelay+ GUIConfigs.swapAnimationPause), backgroundGoalX),
+                new KeyFrame(Duration.millis(2 * GUIConfigs.swapAnimationDuration + 2 * GUIConfigs.swapAnimationDelay+ GUIConfigs.swapAnimationPause), backgroundStartX),
+
+
+                new KeyFrame(Duration.millis( 2 * GUIConfigs.swapAnimationDelay), backgroundStartY),
+                new KeyFrame(Duration.millis(GUIConfigs.swapAnimationDuration + 2 * GUIConfigs.swapAnimationDelay), backgroundGoalY),
+                new KeyFrame(Duration.millis(GUIConfigs.swapAnimationDuration + 2 * GUIConfigs.swapAnimationDelay+ GUIConfigs.swapAnimationPause), backgroundGoalY),
+                new KeyFrame(Duration.millis(2 * GUIConfigs.swapAnimationDuration + 2 * GUIConfigs.swapAnimationDelay+ GUIConfigs.swapAnimationPause), backgroundStartY),
 
                 new KeyFrame(Duration.millis(0), newRootOpacityStart),
-                new KeyFrame(Duration.millis(Configs.swapAnimationDuration + 2 * Configs.swapAnimationDelay - 1), newRootOpacityStart),
-                new KeyFrame(Duration.millis(Configs.swapAnimationDuration + 2 * Configs.swapAnimationDelay), newRootOpacityGoal),
+                new KeyFrame(Duration.millis(GUIConfigs.swapAnimationDuration + 2 * GUIConfigs.swapAnimationDelay - 1), newRootOpacityStart),
+                new KeyFrame(Duration.millis(GUIConfigs.swapAnimationDuration + 2 * GUIConfigs.swapAnimationDelay), newRootOpacityGoal),
 
-                new KeyFrame(Duration.millis(Configs.swapAnimationDuration + 2 * Configs.swapAnimationDelay - 1), oldRootOpacityStart),
-                new KeyFrame(Duration.millis(Configs.swapAnimationDuration + 2 * Configs.swapAnimationDelay), oldRootOpacityGoal)
+                new KeyFrame(Duration.millis(GUIConfigs.swapAnimationDuration + 2 * GUIConfigs.swapAnimationDelay - 1), oldRootOpacityStart),
+                new KeyFrame(Duration.millis(GUIConfigs.swapAnimationDuration + 2 * GUIConfigs.swapAnimationDelay), oldRootOpacityGoal)
         );
 
 
