@@ -4,6 +4,9 @@ import it.polimi.ingsw.Configs;
 import it.polimi.ingsw.model.tableReleted.Game;
 
 import java.io.*;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.time.Duration;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
@@ -17,6 +20,7 @@ public class PersistenceFactory {
      * @param game the game to save to file
      */
     public static void save(Game game){
+        gameSaveDirectoryCheckAndCreate();
         try{
         FileOutputStream fileOut = new FileOutputStream(
                 Configs.gameSavesDir + LocalDateTime.now().format(DateTimeFormatter.ISO_DATE_TIME) + dateGameNameSeparator + game.getName() + _ser);
@@ -27,6 +31,16 @@ public class PersistenceFactory {
         }catch (Exception e) {
             e.printStackTrace();
         }
+    }
+
+    public static void gameSaveDirectoryCheckAndCreate(){
+        Path folderPath = Paths.get(Configs.gameSavesDir);
+        if(!folderPath.toFile().exists())
+            try {
+                Files.createDirectories(folderPath);
+            }catch (IOException e){
+                e.printStackTrace();
+            }
     }
 
     /**
@@ -59,6 +73,7 @@ public class PersistenceFactory {
      * @return a set of all the games saved in the gameSaves directory
      */
     public static HashSet<Game> load() {
+        gameSaveDirectoryCheckAndCreate();
         HashSet<Game> gameList = new HashSet<>();
         File folder = new File(Configs.gameSavesDir);
 
@@ -89,6 +104,7 @@ public class PersistenceFactory {
      * @return true if the game was deleted, false otherwise
      */
     public static boolean deleteGameSave(Game game){
+        gameSaveDirectoryCheckAndCreate();
         File folder = new File(Configs.gameSavesDir);
         File[] saves = folder.listFiles();
         for(File gameSave : saves) {
