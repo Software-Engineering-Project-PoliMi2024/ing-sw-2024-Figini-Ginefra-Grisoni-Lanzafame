@@ -2,6 +2,7 @@ package it.polimi.ingsw.model;
 
 import it.polimi.ingsw.Configs;
 import it.polimi.ingsw.controller2.ServerModelController;
+import it.polimi.ingsw.controller2.persistence.PersistenceFactory;
 import it.polimi.ingsw.lightModel.diffPublishers.DiffSubscriber;
 import it.polimi.ingsw.lightModel.diffs.lobby_lobbyList.LobbyListDiffEdit;
 import it.polimi.ingsw.model.cardReleted.cardFactories.GoldCardFactory;
@@ -26,7 +27,7 @@ public class MultiGame implements Serializable {
     private final CardLookUp<ResourceCard> cardLookUpResourceCard;
     private final CardLookUp<GoldCard> cardLookUpGoldCard;
     public MultiGame() {
-        this.games = new HashSet<>();
+        this.games = PersistenceFactory.load();
         this.usernames = new ArrayList<>(); //users that are currently connected to the server
         lobbies = new LobbyList();
         String filePath = Configs.CardFolder;
