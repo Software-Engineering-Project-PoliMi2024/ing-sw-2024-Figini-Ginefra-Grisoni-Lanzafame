@@ -53,8 +53,7 @@ public class GUI extends Application implements ActualView {
     }
 
     private void updateLogoSize(){
-        Rectangle2D primaryScreenBounds = Screen.getPrimary().getVisualBounds();
-        double logoSize = Math.max(primaryScreenBounds.getWidth(), primaryScreenBounds.getHeight());
+        double logoSize = Math.max(primaryStage.getWidth(), primaryStage.getHeight());
 
         logoCenter.setFitWidth(logoSize);
         logoCenter.setPreserveRatio(true);
@@ -87,6 +86,8 @@ public class GUI extends Application implements ActualView {
 
         //Update width by listening to the stage height
         primaryStage.heightProperty().addListener((obs, oldVal, newVal) -> this.updateLogoSize());
+
+        primaryStage.fullScreenProperty().addListener((obs, oldVal, newVal) -> this.updateLogoSize());
 
 
         ModelDiffs<LightGame> diff = new HandDiffAdd(new LightCard(1), true);
