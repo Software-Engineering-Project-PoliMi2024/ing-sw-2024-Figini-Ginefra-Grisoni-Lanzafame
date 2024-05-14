@@ -2,9 +2,7 @@ package it.polimi.ingsw.connectionLayer.VirtualSocket;
 
 import it.polimi.ingsw.connectionLayer.PingPongInterface;
 import it.polimi.ingsw.connectionLayer.Socket.ClientHandler;
-import it.polimi.ingsw.connectionLayer.Socket.ServerMsg.LogErrMsg;
-import it.polimi.ingsw.connectionLayer.Socket.ServerMsg.LogMsg;
-import it.polimi.ingsw.connectionLayer.Socket.ServerMsg.TransitionToMsg;
+import it.polimi.ingsw.connectionLayer.Socket.ServerMsg.*;
 import it.polimi.ingsw.connectionLayer.VirtualLayer.VirtualView;
 import it.polimi.ingsw.controller2.ControllerInterface;
 import it.polimi.ingsw.lightModel.diffs.ModelDiffs;
@@ -59,32 +57,32 @@ public class VirtualViewSocket implements VirtualView {
 
     @Override
     public void logOthers(String logMsg) throws RemoteException {
-
+        clientHandler.sendServerMessage(new LogOthersMsg(logMsg));
     }
 
     @Override
     public void logGame(String logMsg) throws RemoteException {
-
+        clientHandler.sendServerMessage(new LogGameMsg(logMsg));
     }
 
     @Override
     public void updateLobbyList(ModelDiffs<LightLobbyList> diff) throws RemoteException {
-
+        clientHandler.sendServerMessage(new UpdateLobbyListMsg(diff));
     }
 
     @Override
     public void updateLobby(ModelDiffs<LightLobby> diff) throws RemoteException {
-
+        clientHandler.sendServerMessage(new UpdateLobbyMsg(diff));
     }
 
     @Override
     public void updateGame(ModelDiffs<LightGame> diff) throws RemoteException {
-
+        clientHandler.sendServerMessage(new UpdateGameMsg(diff));
     }
 
     @Override
     public void setFinalRanking(String[] nicks, int[] points) throws RemoteException {
-
+        clientHandler.sendServerMessage(new SetFinalRankingMsg(nicks, points));
     }
 
     public ControllerInterface getController() {

@@ -13,15 +13,13 @@ import javafx.geometry.Pos;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.Pane;
 import javafx.scene.layout.StackPane;
+import javafx.scene.shape.Rectangle;
 
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 
 public class CodexGUI implements Observer {
-    static private final int cardWidth = 100;
-    static private final int cardHeight = 150;
-
     private final StackPane codex = new StackPane();
 
     private double center_x = 0;
@@ -29,6 +27,10 @@ public class CodexGUI implements Observer {
 
     private double pastX = 0;
     private double pastY = 0;
+
+    private final List<Rectangle> frontier = new ArrayList<>();
+
+    private boolean isFrontierVisible = false;
 
 
     public CodexGUI() {
@@ -125,8 +127,9 @@ public class CodexGUI implements Observer {
         codex.setAlignment(Pos.CENTER);
 
         Pair<Double, Double> cardPosition = getCardPosition(position);
-        card.getImageView().setTranslateX(cardPosition.first());
-        card.getImageView().setTranslateY(cardPosition.second());
+        card.setTargetTranslation(cardPosition.first(), cardPosition.second());
+//        card.getImageView().setTranslateX(cardPosition.first());
+//        card.getImageView().setTranslateY(cardPosition.second());
 
 
         card.getImageView().setOnMouseDragged(
@@ -136,8 +139,11 @@ public class CodexGUI implements Observer {
 //                    double height = card.getImageView().getImage().getHeight() * 0.3 * 0.6;
 //                    card.getImageView().setTranslateX(Math.round((e.getSceneX()) / width - 0.5) * width);
 //                    card.getImageView().setTranslateY(Math.round(e.getSceneY() / height - 0.5) * height);
-                    card.getImageView().setTranslateX(e.getSceneX() - codex.getScene().getWidth()/2);
-                    card.getImageView().setTranslateY(e.getSceneY() - codex.getScene().getHeight()/2);
+
+                    card.setTargetTranslation(e.getSceneX() - codex.getScene().getWidth()/2, e.getSceneY() - codex.getScene().getHeight()/2);
+
+//                    card.getImageView().setTranslateX(e.getSceneX() - codex.getScene().getWidth()/2);
+//                    card.getImageView().setTranslateY(e.getSceneY() - codex.getScene().getHeight()/2);
                     e.consume();
                 }
         );
@@ -157,12 +163,26 @@ public class CodexGUI implements Observer {
                 this.addCard(new CardGUI(target.card(), target.face()), target.position());
             }
         }
+
+        codex.getChildren().removeAll(frontier);
+        frontier.clear();
+        for(Position p : GUI.getLightGame().getMyCodex().getFrontier().frontier()){
+            Pair<Double, Double> pos = this.getCardPosition(p);
+            double cardWidth = new CardGUI(new LightCard(6), CardFace.FRONT).getImageView().getImage().getWidth() * 0.3;
+            double cardHeight = new CardGUI(new LightCard(6), CardFace.FRONT).getImageView().getImage().getHeight() * 0.3;
+            Rectangle r = new Rectangle(0, 0, cardWidth, cardHeight);
+            r.setStyle("-fx-fill: transparent; -fx-stroke: red; -fx-stroke-width: 2;");
+            frontier.add(r);
+            r.setTranslateX(pos.first());
+            r.setTranslateY(pos.second());
+            r.setVisible(isFrontierVisible);
+            codex.getChildren().add(r);
+        }
     }
 
     public Pair<Double, Double> snapToFrontier(double x, double y){
         //Find the closest frontier position
         Pair<Double, Double> gridPos = this.getGridPosition(x, y);
-        System.out.println(gridPos.first() + ", " +  gridPos.second());
         Position closest = GUI.getLightGame().getMyCodex().getFrontier().frontier().stream().min(
                 (a, b) -> {
                     double distA = Math.sqrt(Math.pow(a.getX() - gridPos.first(), 2) + Math.pow(a.getY() - gridPos.second(), 2));
@@ -171,5 +191,12 @@ public class CodexGUI implements Observer {
                 }
         ).get();
         return this.getCardPosition(closest);
+    }
+
+    public void toggleFrontier(){
+        isFrontierVisible = !isFrontierVisible;
+        for(Rectangle r : frontier){
+            r.setVisible(isFrontierVisible);
+        }
     }
 }
