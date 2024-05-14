@@ -1,7 +1,7 @@
 package it.polimi.ingsw.connectionLayer.VirtualSocket;
 
 import it.polimi.ingsw.connectionLayer.PingPongInterface;
-import it.polimi.ingsw.connectionLayer.Socket.ClientMsg.LoginMsg;
+import it.polimi.ingsw.connectionLayer.Socket.ClientMsg.*;
 import it.polimi.ingsw.connectionLayer.Socket.ServerHandler;
 import it.polimi.ingsw.connectionLayer.VirtualLayer.VirtualController;
 import it.polimi.ingsw.controller2.ControllerInterface;
@@ -80,17 +80,17 @@ public class VirtualControllerSocket implements VirtualController {
 
     @Override
     public void createLobby(String gameName, int maxPlayerCount) throws Exception {
-
+        serverHandler.sendServerMessage(new CreateLobbyMsg(gameName, maxPlayerCount));
     }
 
     @Override
     public void joinLobby(String lobbyName) throws Exception {
-
+        serverHandler.sendServerMessage(new JoinLobbyMsg(lobbyName));
     }
 
     @Override
     public void disconnect() throws Exception {
-
+        serverHandler.sendServerMessage(new DisconnectMsg());
     }
 
     @Override
@@ -100,22 +100,22 @@ public class VirtualControllerSocket implements VirtualController {
 
     @Override
     public void selectStartCardFace(CardFace cardFace) throws Exception {
-
+        serverHandler.sendServerMessage(new SelectStartCardFaceMsg(cardFace));
     }
 
     @Override
     public void choseSecretObjective(LightCard objectiveCard) throws Exception {
-
+        serverHandler.sendServerMessage(new ChoseSecretObjectiveMsg(objectiveCard));
     }
 
     @Override
     public void place(LightPlacement placement) throws Exception {
-
+        serverHandler.sendServerMessage(new PlaceMsg(placement));
     }
 
     @Override
     public void draw(DrawableCard deckID, int cardID) throws Exception {
-
+        serverHandler.sendServerMessage(new DrawMsg(deckID, cardID));
     }
 
     public ViewInterface getView() {
