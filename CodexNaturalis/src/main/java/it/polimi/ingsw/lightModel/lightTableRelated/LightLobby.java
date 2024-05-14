@@ -1,14 +1,18 @@
 package it.polimi.ingsw.lightModel.lightTableRelated;
 
+import it.polimi.ingsw.designPatterns.Observed;
+import it.polimi.ingsw.designPatterns.Observer;
 import it.polimi.ingsw.lightModel.Differentiable;
 
 import java.util.ArrayList;
+import java.util.LinkedList;
 import java.util.List;
 
 /**
  * This class is a container for the list of lobbies.
  */
-public class LightLobby implements Differentiable {
+public class LightLobby implements Differentiable, Observed {
+    private final List<Observer> observers = new LinkedList<>();
     private int numberMaxPlayer = 0;
     private List<String> nicknames;
     private String name;
@@ -87,5 +91,22 @@ public class LightLobby implements Differentiable {
         this.setName(null);
         this.setNicknames(new ArrayList<>());
         this.setNumberMaxPlayer(0);
+    }
+
+    @Override
+    public void attach(Observer observer) {
+        observers.add(observer);
+    }
+
+    @Override
+    public void detach(Observer observer) {
+        observers.remove(observer);
+    }
+
+    @Override
+    public void notifyObservers() {
+        for(Observer observer : observers){
+            observer.update();
+        }
     }
 }
