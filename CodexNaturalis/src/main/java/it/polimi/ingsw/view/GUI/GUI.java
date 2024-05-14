@@ -17,10 +17,12 @@ import it.polimi.ingsw.view.ViewState;
 import javafx.animation.*;
 import javafx.application.Application;
 import javafx.application.Platform;
+import javafx.geometry.Rectangle2D;
 import javafx.scene.Scene;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.StackPane;
+import javafx.stage.Screen;
 import javafx.stage.Stage;
 import javafx.util.Duration;
 
@@ -51,16 +53,17 @@ public class GUI extends Application implements ActualView {
     }
 
     private void updateLogoSize(){
-        double logoSize = Math.max(stackRoot.getWidth(), stackRoot.getHeight());
+        Rectangle2D primaryScreenBounds = Screen.getPrimary().getVisualBounds();
+        double logoSize = Math.max(primaryScreenBounds.getWidth(), primaryScreenBounds.getHeight());
 
         logoCenter.setFitWidth(logoSize);
-        logoCenter.setFitHeight(logoSize);
+        logoCenter.setPreserveRatio(true);
 
         logoCircle.setFitWidth(logoSize);
-        logoCircle.setFitHeight(logoSize);
+        logoCircle.setPreserveRatio(true);
 
         logoBackground.setFitWidth(logoSize);
-        logoBackground.setFitHeight(logoSize);
+        logoBackground.setPreserveRatio(true);
     }
 
     @Override
