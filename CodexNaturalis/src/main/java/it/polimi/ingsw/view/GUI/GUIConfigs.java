@@ -11,6 +11,6 @@ public class GUIConfigs {
     public static double cardWidth = cardImageWidth * 0.3;
     public static double cardHeight = cardImageHeight * 0.3;
 
-    public static double codexGridWith = cardWidth * 0.75;
+    public static double codexGridWith = cardWidth * 0.745;
     public static double codexGridHeight = cardHeight * 0.55;
 }
