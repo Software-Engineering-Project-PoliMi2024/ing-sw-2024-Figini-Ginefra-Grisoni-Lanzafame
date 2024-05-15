@@ -37,13 +37,9 @@ public class LobbyGUI implements Observer {
 
     @Override
     public void update() {
-        System.out.println("LobbyGUI update");
-        for(String user : GUI.getLobby().nicknames()){
-            if(!userInLobby.getItems().contains(user)){
-                userInLobby.getItems().add(user);
-            }
-        }
-        userInLobby.getItems().removeIf(user -> !GUI.getLobby().nicknames().contains(user));
+        System.out.println(GUI.getLobby().nicknames());
+        userInLobby.getItems().clear();
+        userInLobby.getItems().addAll(GUI.getLobby().nicknames());
     }
 
     public void leaveLobby() {

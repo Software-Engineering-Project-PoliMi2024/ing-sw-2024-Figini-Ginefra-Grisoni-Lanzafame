@@ -72,6 +72,7 @@ public class LightLobby implements Differentiable, Observed {
      * @param nicknames List containing all users' nickname in the lobby
      */
     public void setNicknames(List<String> nicknames) {
+        notifyObservers();
         this.nicknames = nicknames;
     }
 
@@ -98,7 +99,6 @@ public class LightLobby implements Differentiable, Observed {
 
     @Override
     public void attach(Observer observer) {
-        System.out.println("Observer attached");
         observers.add(observer);
     }
 
