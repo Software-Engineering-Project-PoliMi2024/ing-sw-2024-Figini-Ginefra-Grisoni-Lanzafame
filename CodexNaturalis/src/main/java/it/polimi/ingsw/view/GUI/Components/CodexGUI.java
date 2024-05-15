@@ -8,6 +8,7 @@ import it.polimi.ingsw.model.cardReleted.utilityEnums.CardFace;
 import it.polimi.ingsw.model.playerReleted.Position;
 import it.polimi.ingsw.model.utilities.Pair;
 import it.polimi.ingsw.view.GUI.Components.CardRelated.CardGUI;
+import it.polimi.ingsw.view.GUI.Components.CardRelated.FrontierCardGUI;
 import it.polimi.ingsw.view.GUI.GUI;
 import it.polimi.ingsw.view.GUI.GUIConfigs;
 import javafx.geometry.Pos;
@@ -29,7 +30,7 @@ public class CodexGUI implements Observer {
     private double pastX = 0;
     private double pastY = 0;
 
-    private final List<Rectangle> frontier = new ArrayList<>();
+    private final List<FrontierCardGUI> frontier = new ArrayList<>();
 
     private boolean isFrontierVisible = false;
 
@@ -162,17 +163,14 @@ public class CodexGUI implements Observer {
             }
         }
 
-        codex.getChildren().removeAll(frontier);
+        codex.getChildren().removeAll(frontier.stream().map(FrontierCardGUI::getCard).toList());
         frontier.clear();
         for(Position p : GUI.getLightGame().getMyCodex().getFrontier().frontier()){
             Pair<Double, Double> pos = this.getCardPosition(p);
-            Rectangle r = new Rectangle(0, 0, GUIConfigs.cardWidth, GUIConfigs.cardHeight);
-            r.setStyle("-fx-fill: transparent; -fx-stroke: gray; -fx-stroke-width: 2; -fx-border-radius: 40; -fx-arc-width: 40; -fx-arc-height: 40;");
-            frontier.add(r);
-            r.setTranslateX(pos.first());
-            r.setTranslateY(pos.second());
-            r.setVisible(isFrontierVisible);
-            codex.getChildren().add(r);
+            FrontierCardGUI fc = new FrontierCardGUI(p, pos.first(), pos.second());
+            fc.setVisibility(isFrontierVisible);
+            frontier.add(fc);
+            codex.getChildren().add(fc.getCard());
         }
     }
 
@@ -191,8 +189,8 @@ public class CodexGUI implements Observer {
 
     public void toggleFrontier(){
         isFrontierVisible = !isFrontierVisible;
-        for(Rectangle r : frontier){
-            r.setVisible(isFrontierVisible);
+        for(FrontierCardGUI r : frontier){
+            r.setVisibility(isFrontierVisible);
         }
     }
 }
