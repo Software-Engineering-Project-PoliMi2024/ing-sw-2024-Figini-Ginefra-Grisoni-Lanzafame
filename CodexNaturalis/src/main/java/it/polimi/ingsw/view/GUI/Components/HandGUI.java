@@ -42,6 +42,8 @@ public class HandGUI implements Observer {
                     e -> {
                         card.getImageView().setStyle("-fx-effect: dropshadow(three-pass-box, rgba(0,0,0,0.8), 10, 0, 0, 0);");
 
+                        card.setScale(codex.getScale());
+
                         hand.getChildren().remove(card.getImageView());
                         codex.getCodex().getChildren().add(card.getImageView());
 
@@ -66,7 +68,7 @@ public class HandGUI implements Observer {
                         Pair<Double, Double> pos = codex.snapToFrontier(mouseX, mouseY);
 
                         //Check if pos is close enough to the mouse position
-                        if (Math.abs(pos.first() - mouseX) < GUIConfigs.cardWidth/2 && Math.abs(pos.second() - mouseY) < GUIConfigs.cardHeight/2){
+                        if (Math.abs(pos.first() - mouseX) < GUIConfigs.cardWidth/2 * codex.getScale() && Math.abs(pos.second() - mouseY) < GUIConfigs.cardHeight/2 * codex.getScale()){
                             card.setTranslation(pos.first(), pos.second());
                         }
                         else{
@@ -78,6 +80,7 @@ public class HandGUI implements Observer {
             );
             cards[i].getImageView().setOnMouseReleased(
                     e -> {
+                        card.setScale(1);
                         card.getImageView().setStyle("");
                         codex.getCodex().getChildren().remove(card.getImageView());
                         hand.getChildren().add(card.getImageView());

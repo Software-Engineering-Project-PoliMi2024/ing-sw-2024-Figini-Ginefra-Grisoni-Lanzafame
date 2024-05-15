@@ -13,6 +13,7 @@ import it.polimi.ingsw.view.GUI.Components.CardRelated.FrontierCardGUI;
 import it.polimi.ingsw.view.GUI.GUI;
 import it.polimi.ingsw.view.GUI.GUIConfigs;
 import javafx.geometry.Pos;
+import javafx.scene.Node;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.Pane;
 import javafx.scene.layout.StackPane;
@@ -198,14 +199,23 @@ public class CodexGUI implements Observer {
     public Pair<Double, Double> snapToFrontier(double x, double y){
         //Find the closest frontier position
         Pair<Double, Double> gridPos = this.getGridPosition(x, y);
-        Position closest = GUI.getLightGame().getMyCodex().getFrontier().frontier().stream().min(
+//        Position closest = GUI.getLightGame().getMyCodex().getFrontier().frontier().stream().min(
+//                (a, b) -> {
+//                    double distA = Math.sqrt(Math.pow(a.getX() - gridPos.first(), 2) + Math.pow(a.getY() - gridPos.second(), 2));
+//                    double distB = Math.sqrt(Math.pow(b.getX() - gridPos.first(), 2) + Math.pow(b.getY() - gridPos.second(), 2));
+//                    return Double.compare(distA, distB);
+//                }
+//        ).get();
+
+        Node closestCard = this.frontier.stream().min(
                 (a, b) -> {
-                    double distA = Math.sqrt(Math.pow(a.getX() - gridPos.first(), 2) + Math.pow(a.getY() - gridPos.second(), 2));
-                    double distB = Math.sqrt(Math.pow(b.getX() - gridPos.first(), 2) + Math.pow(b.getY() - gridPos.second(), 2));
+                    double distA = Math.sqrt(Math.pow(a.getCard().getTranslateX() - x, 2) + Math.pow(a.getCard().getTranslateY() - y, 2));
+                    double distB = Math.sqrt(Math.pow(b.getCard().getTranslateX() - x, 2) + Math.pow(b.getCard().getTranslateY() - y, 2));
                     return Double.compare(distA, distB);
                 }
-        ).get();
-        return this.getCardPosition(closest);
+        ).get().getCard();
+
+        return new Pair<>(closestCard.getTranslateX(), closestCard.getTranslateY());
     }
 
     public void toggleFrontier(){
@@ -213,5 +223,9 @@ public class CodexGUI implements Observer {
         for(FrontierCardGUI r : frontier){
             r.setVisibility(isFrontierVisible);
         }
+    }
+
+    public double getScale() {
+        return scale * scale;
     }
 }
