@@ -3,8 +3,10 @@ package it.polimi.ingsw.view.GUI.Controllers;
 import it.polimi.ingsw.view.GUI.Components.CodexRelated.CodexGUI;
 import it.polimi.ingsw.view.GUI.Components.HandGUI;
 import it.polimi.ingsw.view.GUI.Components.LogsGUI;
+import it.polimi.ingsw.view.GUI.Components.PopUp;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
+import javafx.scene.control.Button;
 import javafx.scene.layout.AnchorPane;
 
 import java.net.URL;
@@ -30,5 +32,11 @@ public class GameControllerGUI implements Initializable {
         main.getChildren().add(hand.getHand());
 
         main.getChildren().add(logs.getLogsDisplay());
+
+        PopUp popUp = new PopUp(main);
+        Button button = new Button("Open PopUp");
+        button.setOnAction(e -> popUp.open());
+
+        main.getChildren().add(button);
     }
 }
