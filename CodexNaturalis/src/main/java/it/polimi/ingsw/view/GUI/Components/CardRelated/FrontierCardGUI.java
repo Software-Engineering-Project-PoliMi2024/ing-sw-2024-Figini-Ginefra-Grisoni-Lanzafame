@@ -12,7 +12,10 @@ public class FrontierCardGUI {
 
     public FrontierCardGUI(Position gridPosition, double x, double y) {
         this.gridPosition = gridPosition;
-        this.rectangle.setStyle("-fx-fill: transparent; -fx-stroke: gray; -fx-stroke-width: 2; -fx-border-radius: 40; -fx-arc-width: 40; -fx-arc-height: 40;");
+        this.rectangle.setStyle(
+                String.format(
+                        "-fx-fill: transparent; -fx-stroke: gray; -fx-stroke-width: 2; -fx-border-radius: %d; -fx-arc-width: %d; -fx-arc-height: %d;",
+                        GUIConfigs.cardBorderRadius, GUIConfigs.cardBorderRadius, GUIConfigs.cardBorderRadius));
         this.rectangle.setTranslateX(x);
         this.rectangle.setTranslateY(y);
     }

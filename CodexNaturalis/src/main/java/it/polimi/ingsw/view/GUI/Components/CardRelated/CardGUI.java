@@ -16,8 +16,8 @@ public class CardGUI {
 
     public CardGUI(LightCard target, CardFace face) {
         Rectangle clip = new Rectangle(GUIConfigs.cardWidth, GUIConfigs.cardHeight);
-        clip.setArcWidth(40); // Set the horizontal radius of the arc
-        clip.setArcHeight(40); // Set the vertical radius of the arc
+        clip.setArcWidth(GUIConfigs.cardBorderRadius); // Set the horizontal radius of the arc
+        clip.setArcHeight(GUIConfigs.cardBorderRadius); // Set the vertical radius of the arc
 
         imageView.setClip(clip);
 
