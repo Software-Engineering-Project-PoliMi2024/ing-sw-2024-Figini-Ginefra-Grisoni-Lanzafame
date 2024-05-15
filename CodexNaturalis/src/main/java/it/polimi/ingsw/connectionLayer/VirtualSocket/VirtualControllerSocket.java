@@ -14,7 +14,6 @@ import it.polimi.ingsw.view.ViewInterface;
 
 import java.io.IOException;
 import java.net.Socket;
-import java.rmi.RemoteException;
 
 public class VirtualControllerSocket implements VirtualController {
 
@@ -35,6 +34,7 @@ public class VirtualControllerSocket implements VirtualController {
         try {
             server = new Socket(ip, port);
         } catch (IOException e) { //catch a "UnknownHostException" or a "ConnectException"
+            System.out.println("Server unreachable, check the port and the ip address");
             view.logErr(LogsOnClient.CONNECTION_ERROR.getMessage());
             return;
         }
@@ -54,67 +54,67 @@ public class VirtualControllerSocket implements VirtualController {
     }
 
     @Override
-    public void pingPong() throws Exception {
+    public void pingPong(){
 
     }
 
     @Override
-    public void checkEmpty() throws RemoteException {
+    public void checkEmpty(){
 
     }
 
     @Override
-    public void setPingPongStub(PingPongInterface pingPongStub) throws RemoteException {
+    public void setPingPongStub(PingPongInterface pingPongStub){
 
     }
 
     @Override
-    public void setControllerStub(ControllerInterface controllerStub) throws RemoteException {
+    public void setControllerStub(ControllerInterface controllerStub){
 
     }
 
     @Override
-    public void login(String nickname) throws Exception {
+    public void login(String nickname){
         serverHandler.sendServerMessage(new LoginMsg(nickname));
     }
 
     @Override
-    public void createLobby(String gameName, int maxPlayerCount) throws Exception {
+    public void createLobby(String gameName, int maxPlayerCount){
         serverHandler.sendServerMessage(new CreateLobbyMsg(gameName, maxPlayerCount));
     }
 
     @Override
-    public void joinLobby(String lobbyName) throws Exception {
+    public void joinLobby(String lobbyName){
         serverHandler.sendServerMessage(new JoinLobbyMsg(lobbyName));
     }
 
     @Override
-    public void disconnect() throws Exception {
+    public void disconnect(){
         serverHandler.sendServerMessage(new DisconnectMsg());
     }
 
     @Override
-    public void leaveLobby() throws Exception {
-
+    public void leaveLobby(){
+        serverHandler.sendServerMessage(new LeaveLobbyMsg());
     }
 
     @Override
-    public void selectStartCardFace(CardFace cardFace) throws Exception {
+    public void selectStartCardFace(CardFace cardFace){
         serverHandler.sendServerMessage(new SelectStartCardFaceMsg(cardFace));
     }
 
     @Override
-    public void choseSecretObjective(LightCard objectiveCard) throws Exception {
+    public void choseSecretObjective(LightCard objectiveCard){
         serverHandler.sendServerMessage(new ChoseSecretObjectiveMsg(objectiveCard));
     }
 
     @Override
-    public void place(LightPlacement placement) throws Exception {
+    public void place(LightPlacement placement){
         serverHandler.sendServerMessage(new PlaceMsg(placement));
     }
 
     @Override
-    public void draw(DrawableCard deckID, int cardID) throws Exception {
+    public void draw(DrawableCard deckID, int cardID){
         serverHandler.sendServerMessage(new DrawMsg(deckID, cardID));
     }
 

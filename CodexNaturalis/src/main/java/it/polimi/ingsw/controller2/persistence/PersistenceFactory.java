@@ -4,18 +4,26 @@ import it.polimi.ingsw.Configs;
 import it.polimi.ingsw.model.tableReleted.Game;
 
 import java.io.*;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
+import java.time.Duration;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.HashSet;
 
 public class PersistenceFactory {
     private final static String _ser = ".ser";
+    private final static String dateGameNameSeparator = "--";
 
     /**
      * @param game the game to save to file
      */
     public static void save(Game game){
+        gameSaveDirectoryCheckAndCreate();
         try{
         FileOutputStream fileOut = new FileOutputStream(
-                Configs.gameSavesDir + game.getName()+ _ser);
+                Configs.gameSavesDir + LocalDateTime.now().format(DateTimeFormatter.ISO_DATE_TIME) + dateGameNameSeparator + game.getName() + _ser);
         ObjectOutputStream outStream = new ObjectOutputStream(fileOut);
         outStream.writeObject(game);
         outStream.close();
@@ -23,6 +31,16 @@ public class PersistenceFactory {
         }catch (Exception e) {
             e.printStackTrace();
         }
+    }
+
+    public static void gameSaveDirectoryCheckAndCreate(){
+        Path folderPath = Paths.get(Configs.gameSavesDir);
+        if(!folderPath.toFile().exists())
+            try {
+                Files.createDirectories(folderPath);
+            }catch (IOException e){
+                e.printStackTrace();
+            }
     }
 
     /**
@@ -52,20 +70,33 @@ public class PersistenceFactory {
     }
 
     /**
-     * @return a list of all the games saved in the gameSaves directory
+     * @return a set of all the games saved in the gameSaves directory
      */
     public static HashSet<Game> load() {
+        gameSaveDirectoryCheckAndCreate();
         HashSet<Game> gameList = new HashSet<>();
         File folder = new File(Configs.gameSavesDir);
 
         File[] saves = folder.listFiles();
 
-        for(File gameSave : saves){
-            Game game = getGameFromFile(gameSave, Configs.gameSavesDir);
-            if(game != null)
-                gameList.add(game);
+        for(File gameSave : saves) {
+            if (checkTimeIsToDelete(gameSave.getName())) {
+                gameSave.delete();
+            } else {
+                Game game = getGameFromFile(gameSave, Configs.gameSavesDir);
+                if (game != null)
+                    gameList.add(game);
+            }
         }
         return gameList;
+    }
+
+    public static boolean checkTimeIsToDelete(String saveName){
+        String date = saveName.substring(0, saveName.indexOf(dateGameNameSeparator));
+        LocalDateTime saveDate = LocalDateTime.parse(date, DateTimeFormatter.ISO_DATE_TIME);
+
+        Duration timeDifference = Duration.between(saveDate, LocalDateTime.now());
+        return timeDifference.toMinutes() > Configs.gameSaveExpirationTimeMinutes;
     }
 
     /**
@@ -73,7 +104,14 @@ public class PersistenceFactory {
      * @return true if the game was deleted, false otherwise
      */
     public static boolean deleteGameSave(Game game){
-        File saveToDelete = new File(Configs.gameSavesDir + game.getName() + _ser);
-        return saveToDelete.delete();
+        gameSaveDirectoryCheckAndCreate();
+        File folder = new File(Configs.gameSavesDir);
+        File[] saves = folder.listFiles();
+        for(File gameSave : saves) {
+            if (gameSave.getName().contains(game.getName())) {
+                return gameSave.delete();
+            }
+        }
+        return false;
     }
 }
