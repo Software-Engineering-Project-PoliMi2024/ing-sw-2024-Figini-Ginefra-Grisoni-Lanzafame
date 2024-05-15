@@ -117,9 +117,10 @@ public class GUI extends Application implements ActualView {
 
         //set stackRoot background and style
         //stackRoot.setStyle("-fx-background-color: #1e1f22;");
-        //transitionTo(StateGUI.SERVER_CONNECTION);
+        transitionTo(StateGUI.SERVER_CONNECTION);
         //transitionTo(StateGUI.JOIN_LOBBY);
-        transitionTo(StateGUI.IDLE);
+        //transitionTo(StateGUI.LOBBY);
+        //transitionTo(StateGUI.IDLE);
     }
 
     private void setRoot(Root root){
@@ -266,18 +267,23 @@ public class GUI extends Application implements ActualView {
 
     @Override
     public void updateLobbyList(ModelDiffs<LightLobbyList> diff) throws RemoteException {
-        diff.apply(lobbyList);
+        Platform.runLater(() -> {
+            diff.apply(lobbyList);
+        });
     }
 
     @Override
     public void updateLobby(ModelDiffs<LightLobby> diff) throws RemoteException {
-        diff.apply(lobby);
+        Platform.runLater(() -> {
+            diff.apply(lobby);
+        });
     }
 
     @Override
     public void updateGame(ModelDiffs<LightGame> diff) throws RemoteException {
-        diff.apply(lightGame);
-    }
+        Platform.runLater(() -> {
+            diff.apply(lightGame);
+        });    }
 
     @Override
     public void setFinalRanking(String[] nicks, int[] points) throws RemoteException {
