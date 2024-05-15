@@ -1,10 +1,11 @@
 package it.polimi.ingsw.view.GUI.Components;
 
 import it.polimi.ingsw.designPatterns.Observer;
-import it.polimi.ingsw.model.utilities.Pair;
 import it.polimi.ingsw.view.GUI.Components.CardRelated.FlippableCardGUI;
+import it.polimi.ingsw.view.GUI.Components.CodexRelated.CodexGUI;
 import it.polimi.ingsw.view.GUI.GUI;
 import it.polimi.ingsw.view.GUI.GUIConfigs;
+import javafx.geometry.Point2D;
 import javafx.geometry.Pos;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.HBox;
@@ -42,13 +43,15 @@ public class HandGUI implements Observer {
                     e -> {
                         card.getImageView().setStyle("-fx-effect: dropshadow(three-pass-box, rgba(0,0,0,0.8), 10, 0, 0, 0);");
 
+                        card.setScale(codex.getScale());
+
                         hand.getChildren().remove(card.getImageView());
                         codex.getCodex().getChildren().add(card.getImageView());
 
                         double mouseX = e.getSceneX() - codex.getCodex().getWidth()/2;
                         double mouseY = e.getSceneY() - codex.getCodex().getHeight()/2;
 
-                        card.setTargetTranslation(mouseX, mouseY);
+                        card.setTranslation(mouseX, mouseY);
                         card.getImageView().setTranslateX(mouseX);
                         card.getImageView().setTranslateY(mouseY);
 
@@ -60,17 +63,16 @@ public class HandGUI implements Observer {
                     e -> {
                         card.getImageView().setStyle("-fx-effect: dropshadow(three-pass-box, rgba(0,0,0,0.8), 10, 0, 0, 0);");
 
-                        Pair<Double, Double> pos = codex.snapToFrontier(e.getSceneX(), e.getSceneY());
+                        Point2D mousePos = new Point2D(e.getSceneX() - codex.getCodex().getWidth()/2, e.getSceneY() - codex.getCodex().getHeight()/2);
 
-                        Double mouseX = e.getSceneX() - codex.getCodex().getWidth()/2;
-                        Double mouseY = e.getSceneY() - codex.getCodex().getHeight()/2;
+                        Point2D pos = codex.snapToFrontier(mousePos);
 
                         //Check if pos is close enough to the mouse position
-                        if (Math.abs(pos.first() - mouseX) < GUIConfigs.cardWidth/2 && Math.abs(pos.second() - mouseY) < GUIConfigs.cardHeight/2){
-                            card.setTargetTranslation(pos.first(), pos.second());
+                        if (Math.abs(pos.getX() - mousePos.getX()) < GUIConfigs.cardWidth/2 * codex.getScale() && Math.abs(pos.getY() - mousePos.getY()) < GUIConfigs.cardHeight/2 * codex.getScale()){
+                            card.setTranslation(pos.getX(), pos.getY());
                         }
                         else{
-                            card.setTargetTranslation(mouseX, mouseY);
+                            card.setTranslation(mousePos.getX(), mousePos.getY());
                         }
 
                         e.consume();
@@ -78,11 +80,12 @@ public class HandGUI implements Observer {
             );
             cards[i].getImageView().setOnMouseReleased(
                     e -> {
+                        card.setScale(1);
                         card.getImageView().setStyle("");
                         codex.getCodex().getChildren().remove(card.getImageView());
                         hand.getChildren().add(card.getImageView());
                         //Reset position
-                        card.setTargetTranslation(0, 0);
+                        card.setTranslation(0, 0);
                         codex.toggleFrontier();
                         e.consume();
                     }

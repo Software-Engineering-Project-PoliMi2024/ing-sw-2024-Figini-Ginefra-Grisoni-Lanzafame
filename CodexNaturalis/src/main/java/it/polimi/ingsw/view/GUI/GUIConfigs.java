@@ -13,4 +13,9 @@ public class GUIConfigs {
 
     public static double codexGridWith = cardWidth * 0.75;
     public static double codexGridHeight = cardHeight * 0.55;
+
+    public static double codexMinScale = 0.4;
+    public static double codexMaxScale = 1.5;
+
+    public static int cardBorderRadius = 40;
 }
