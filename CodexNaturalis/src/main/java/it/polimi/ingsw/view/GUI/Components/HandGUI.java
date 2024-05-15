@@ -48,7 +48,7 @@ public class HandGUI implements Observer {
                         double mouseX = e.getSceneX() - codex.getCodex().getWidth()/2;
                         double mouseY = e.getSceneY() - codex.getCodex().getHeight()/2;
 
-                        card.setTargetTranslation(mouseX, mouseY);
+                        card.setTranslation(mouseX, mouseY);
                         card.getImageView().setTranslateX(mouseX);
                         card.getImageView().setTranslateY(mouseY);
 
@@ -60,17 +60,17 @@ public class HandGUI implements Observer {
                     e -> {
                         card.getImageView().setStyle("-fx-effect: dropshadow(three-pass-box, rgba(0,0,0,0.8), 10, 0, 0, 0);");
 
-                        Pair<Double, Double> pos = codex.snapToFrontier(e.getSceneX(), e.getSceneY());
-
                         Double mouseX = e.getSceneX() - codex.getCodex().getWidth()/2;
                         Double mouseY = e.getSceneY() - codex.getCodex().getHeight()/2;
 
+                        Pair<Double, Double> pos = codex.snapToFrontier(mouseX, mouseY);
+
                         //Check if pos is close enough to the mouse position
                         if (Math.abs(pos.first() - mouseX) < GUIConfigs.cardWidth/2 && Math.abs(pos.second() - mouseY) < GUIConfigs.cardHeight/2){
-                            card.setTargetTranslation(pos.first(), pos.second());
+                            card.setTranslation(pos.first(), pos.second());
                         }
                         else{
-                            card.setTargetTranslation(mouseX, mouseY);
+                            card.setTranslation(mouseX, mouseY);
                         }
 
                         e.consume();
@@ -82,7 +82,7 @@ public class HandGUI implements Observer {
                         codex.getCodex().getChildren().remove(card.getImageView());
                         hand.getChildren().add(card.getImageView());
                         //Reset position
-                        card.setTargetTranslation(0, 0);
+                        card.setTranslation(0, 0);
                         codex.toggleFrontier();
                         e.consume();
                     }
