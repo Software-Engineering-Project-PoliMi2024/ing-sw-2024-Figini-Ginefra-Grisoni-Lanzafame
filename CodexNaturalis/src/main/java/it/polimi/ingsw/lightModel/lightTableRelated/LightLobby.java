@@ -68,14 +68,6 @@ public class LightLobby implements Differentiable, Observed {
         this.name = name;
     }
 
-    /**
-     * @param nicknames List containing all users' nickname in the lobby
-     */
-    public void setNicknames(List<String> nicknames) {
-        notifyObservers();
-        this.nicknames = nicknames;
-    }
-
     @Override
     public boolean equals(Object obj) {
         if(obj instanceof LightLobby lightLobby){
@@ -93,7 +85,7 @@ public class LightLobby implements Differentiable, Observed {
     }
     public void reset(){
         this.setName(null);
-        this.setNicknames(new ArrayList<>());
+        this.nicknames = new ArrayList<>();
         this.setNumberMaxPlayer(0);
     }
 
