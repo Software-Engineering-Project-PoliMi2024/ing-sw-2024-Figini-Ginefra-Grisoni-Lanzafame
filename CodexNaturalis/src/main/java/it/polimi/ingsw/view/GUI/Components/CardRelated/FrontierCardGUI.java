@@ -24,4 +24,12 @@ public class FrontierCardGUI {
     public void setVisibility(boolean visible) {
         rectangle.setVisible(visible);
     }
+
+    public void setScale(double scale) {
+        rectangle.setTranslateX(rectangle.getTranslateX() * scale / rectangle.getScaleX());
+        rectangle.setTranslateY(rectangle.getTranslateY() * scale / rectangle.getScaleY());
+
+        rectangle.setScaleX(scale);
+        rectangle.setScaleY(scale);
+    }
 }

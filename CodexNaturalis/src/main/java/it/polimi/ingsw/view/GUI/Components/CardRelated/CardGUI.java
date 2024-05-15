@@ -70,4 +70,13 @@ public class CardGUI {
         return target;
     }
 
+    public void setScale(double scale){
+        imageView.setTranslateX(imageView.getTranslateX() * scale / imageView.getScaleX());
+        imageView.setTranslateY(imageView.getTranslateY() * scale / imageView.getScaleY());
+
+        imageView.setScaleX(scale);
+        imageView.setScaleY(scale);
+
+    }
+
 }

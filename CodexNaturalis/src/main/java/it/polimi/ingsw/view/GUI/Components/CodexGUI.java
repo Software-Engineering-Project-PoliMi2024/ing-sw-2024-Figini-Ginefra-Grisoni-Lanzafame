@@ -4,6 +4,7 @@ import it.polimi.ingsw.designPatterns.Observer;
 import it.polimi.ingsw.lightModel.LightCard;
 import it.polimi.ingsw.lightModel.diffs.game.*;
 import it.polimi.ingsw.lightModel.lightPlayerRelated.LightPlacement;
+import it.polimi.ingsw.model.cardReleted.cards.Card;
 import it.polimi.ingsw.model.cardReleted.utilityEnums.CardFace;
 import it.polimi.ingsw.model.playerReleted.Position;
 import it.polimi.ingsw.model.utilities.Pair;
@@ -27,9 +28,12 @@ public class CodexGUI implements Observer {
     private double center_x = 0;
     private double center_y = 0;
 
+    private double scale = 1;
+
     private double pastX = 0;
     private double pastY = 0;
 
+    private final List<CardGUI> cards = new ArrayList<>();
     private final List<FrontierCardGUI> frontier = new ArrayList<>();
 
     private boolean isFrontierVisible = false;
@@ -106,6 +110,21 @@ public class CodexGUI implements Observer {
                     pastY = e.getSceneY();
                 }
         );
+
+        codex.setOnScroll(
+                e -> {
+                    double deltaY = e.getDeltaY();
+
+                    double newScale = scale + deltaY / 1000;
+
+                    if(newScale < Math.sqrt(GUIConfigs.codexMinScale) || newScale > Math.sqrt(GUIConfigs.codexMaxScale)){
+                        return;
+                    }
+                    scale += deltaY / 1000;
+                    this.cards.forEach(card -> card.setScale(scale * scale));
+                    this.frontier.forEach(card -> card.setScale(scale * scale));
+                }
+        );
     }
 
     public Pane getCodex() {
@@ -115,20 +134,22 @@ public class CodexGUI implements Observer {
     private Pair<Double, Double> getCardPosition(Position position) {
         CardGUI card = new CardGUI(new LightCard(6), CardFace.FRONT);
         return new Pair<>(
-                center_x + position.getX() * GUIConfigs.codexGridWith,
-                center_y - position.getY() * GUIConfigs.codexGridHeight);
+                center_x + position.getX() * GUIConfigs.codexGridWith * scale,
+                center_y - position.getY() * GUIConfigs.codexGridHeight * scale
+        );
     }
 
     private Pair<Double, Double> getGridPosition(Double sceneX, Double sceneY) {
         CardGUI card = new CardGUI(new LightCard(6), CardFace.FRONT);
         return new Pair<>(
-                (sceneX - center_x) / (GUIConfigs.codexGridWith),
-                -(sceneY - center_y) / (GUIConfigs.codexGridHeight)
+                (sceneX - center_x) / (GUIConfigs.codexGridWith) / scale,
+                -(sceneY - center_y) / (GUIConfigs.codexGridHeight) / scale
         );
     }
 
 
     public void addCard(CardGUI card, Position position) {
+        cards.add(card);
         codex.getChildren().add(card.getImageView());
 
         //Anchor the card to the center
