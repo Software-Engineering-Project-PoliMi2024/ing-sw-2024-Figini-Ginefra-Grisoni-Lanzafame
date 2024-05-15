@@ -55,6 +55,7 @@ public class LightLobby implements Differentiable, Observed {
      * @param add the nicknames to add
      */
     public void nickDiff(List<String> add, List<String> rmv){
+        notifyObservers();
         nicknames.removeAll(rmv);
         nicknames.addAll(add);
     }
@@ -63,6 +64,7 @@ public class LightLobby implements Differentiable, Observed {
      * @param name of the Lobby
      */
     public void setName(String name) {
+        notifyObservers();
         this.name = name;
     }
 
@@ -81,6 +83,7 @@ public class LightLobby implements Differentiable, Observed {
         return false;
     }
     public void setNumberMaxPlayer(int numberMaxPlayer) {
+        notifyObservers();
         this.numberMaxPlayer = numberMaxPlayer;
     }
 
@@ -95,6 +98,7 @@ public class LightLobby implements Differentiable, Observed {
 
     @Override
     public void attach(Observer observer) {
+        System.out.println("Observer attached");
         observers.add(observer);
     }
 
