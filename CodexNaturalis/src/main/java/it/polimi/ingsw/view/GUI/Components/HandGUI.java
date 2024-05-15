@@ -1,8 +1,8 @@
 package it.polimi.ingsw.view.GUI.Components;
 
 import it.polimi.ingsw.designPatterns.Observer;
-import it.polimi.ingsw.model.utilities.Pair;
 import it.polimi.ingsw.view.GUI.Components.CardRelated.FlippableCardGUI;
+import it.polimi.ingsw.view.GUI.Components.CodexRelated.CodexGUI;
 import it.polimi.ingsw.view.GUI.GUI;
 import it.polimi.ingsw.view.GUI.GUIConfigs;
 import javafx.geometry.Point2D;

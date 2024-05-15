@@ -1,4 +1,4 @@
-package it.polimi.ingsw.view.GUI.Components.CardRelated;
+package it.polimi.ingsw.view.GUI.Components.CodexRelated;
 
 import it.polimi.ingsw.model.playerReleted.Position;
 import it.polimi.ingsw.view.GUI.GUIConfigs;

@@ -1,6 +1,6 @@
 package it.polimi.ingsw.view.GUI.Controllers;
 
-import it.polimi.ingsw.view.GUI.Components.CodexGUI;
+import it.polimi.ingsw.view.GUI.Components.CodexRelated.CodexGUI;
 import it.polimi.ingsw.view.GUI.Components.HandGUI;
 import it.polimi.ingsw.view.GUI.Components.LogsGUI;
 import javafx.fxml.FXML;
