@@ -62,7 +62,13 @@ public class CodexGUI implements Observer {
 
         List<Position> positions = List.of(new Position[]{
                 new Position(1, 1),
-                new Position(2, 2),
+                new Position(0, 2),
+                new Position(-2, 2),
+                new Position(-2, 0),
+                new Position(-2, -2),
+                new Position(0, -2),
+                new Position(2, -2),
+                new Position(2, 0),
 
         });
 
@@ -128,14 +134,14 @@ public class CodexGUI implements Observer {
         codex.setAlignment(Pos.CENTER);
 
         Pair<Double, Double> cardPosition = getCardPosition(position);
-        card.setTargetTranslation(cardPosition.first(), cardPosition.second());
+        card.setTranslation(cardPosition.first(), cardPosition.second());
 //        card.getImageView().setTranslateX(cardPosition.first());
 //        card.getImageView().setTranslateY(cardPosition.second());
 
 
         card.getImageView().setOnMouseDragged(
                 e -> {
-                    card.setTargetTranslation(e.getSceneX() - codex.getScene().getWidth()/2, e.getSceneY() - codex.getScene().getHeight()/2);
+                    card.setTranslation(e.getSceneX() - codex.getScene().getWidth()/2, e.getSceneY() - codex.getScene().getHeight()/2);
                     e.consume();
                 }
         );
@@ -161,7 +167,7 @@ public class CodexGUI implements Observer {
         for(Position p : GUI.getLightGame().getMyCodex().getFrontier().frontier()){
             Pair<Double, Double> pos = this.getCardPosition(p);
             Rectangle r = new Rectangle(0, 0, GUIConfigs.cardWidth, GUIConfigs.cardHeight);
-            r.setStyle("-fx-fill: transparent; -fx-stroke: red; -fx-stroke-width: 2;");
+            r.setStyle("-fx-fill: transparent; -fx-stroke: gray; -fx-stroke-width: 2; -fx-border-radius: 40; -fx-arc-width: 40; -fx-arc-height: 40;");
             frontier.add(r);
             r.setTranslateX(pos.first());
             r.setTranslateY(pos.second());
