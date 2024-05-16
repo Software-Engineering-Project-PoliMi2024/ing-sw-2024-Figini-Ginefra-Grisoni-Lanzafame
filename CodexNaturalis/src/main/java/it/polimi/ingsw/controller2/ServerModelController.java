@@ -60,8 +60,6 @@ public class ServerModelController implements ControllerInterface, DiffSubscribe
         }else{
             //Client is now logged-In. If he disconnects we have to update the model
             this.nickname = nickname;
-            //TODO: disconnect heartbeatThread.start();
-            //at the moment there is a function called heartbeatThread.stop() who kill the thread. But we can improve on that
             System.out.println(this.nickname + " has connected");
             if(games.isInGameParty(nickname)){
                 //The player must join a game
@@ -125,7 +123,6 @@ public class ServerModelController implements ControllerInterface, DiffSubscribe
                 games.unsubscribe(this);
                 logYou(LogsOnClient.LOBBY_JOINED);
                 transitionTo(ViewState.LOBBY);
-                //TODO log other controller about the player who just joined
                 if(lobbyToJoin.getLobbyPlayerList().size() == lobbyToJoin.getNumberOfMaxPlayer()) {
                     //Handle the creation of a new game from the lobbyToJoin
                     Game newGame = games.createGame(lobbyToJoin);
@@ -149,7 +146,7 @@ public class ServerModelController implements ControllerInterface, DiffSubscribe
     }
 
     @Override
-    public void leaveLobby() throws RemoteException{
+    public void leaveLobby(){
         Lobby lobbyToLeave = games.getUserLobby(this.nickname);
         if(lobbyToLeave==null){
             throw new IllegalCallerException();
@@ -157,12 +154,15 @@ public class ServerModelController implements ControllerInterface, DiffSubscribe
             lobbyToLeave.removeUserName(this.nickname);
             if(lobbyToLeave.getLobbyPlayerList().isEmpty()){
                 this.games.removeLobby(lobbyToLeave);
-                games.subscribe(getRemoveLobbyDiff(lobbyToLeave));
+                try {
+                    games.subscribe(getRemoveLobbyDiff(lobbyToLeave));
+                } catch (RemoteException e) {
+                    e.printStackTrace();
+                }
             }
 
             lobbyToLeave.unsubscribe(this);
             games.subscribe(this);
-            //todo notify other about the player who left
             logYou(LogsOnClient.LOBBY_LEFT);
             transitionTo(ViewState.JOIN_LOBBY);
         }
@@ -213,10 +213,7 @@ public class ServerModelController implements ControllerInterface, DiffSubscribe
         userToEdit.setSecretObject(Heavifier.heavifyObjectCard(card, games));
         userToEdit.getUserHand().setSecretObjectiveChoice(null);
         this.updateGame(new HandDiffSetObj(card));
-
-        logYou(LogsOnClient.SECRET_OBJECTIVE_CHOSE);
         userGame.getGameLoopController().secretObjectiveChose(this);
-
     }
 
     /**
@@ -314,7 +311,7 @@ public class ServerModelController implements ControllerInterface, DiffSubscribe
     @Override
     public void disconnect(){
         if(this.nickname == null){
-            System.out.println("Client disconnected before logging in"); //todo remove this
+            System.out.println("Client disconnected before logging in");
             return; //The client disconnected before logging in, no action needed
         }else{
             System.out.println(this.nickname + " has disconnected");
@@ -323,6 +320,7 @@ public class ServerModelController implements ControllerInterface, DiffSubscribe
                 games.getUserGame(this.nickname).unsubscribe(this);
                 this.games.getUserGame(nickname).getGameLoopController().leaveGame(this, this.nickname);
             } else if (games.getUserLobby(this.nickname)!=null) { //Handle the removing of the user from a lobby
+                this.leaveLobby();
                 games.getUserLobby(this.nickname).unsubscribe(this);
             }else{//Remove the user from the lobbyDiffPublisher list
                 games.unsubscribe(this);
