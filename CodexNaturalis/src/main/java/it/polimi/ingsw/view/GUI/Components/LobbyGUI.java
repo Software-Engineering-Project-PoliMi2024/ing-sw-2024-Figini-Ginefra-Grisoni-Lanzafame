@@ -37,7 +37,6 @@ public class LobbyGUI implements Observer {
 
     @Override
     public void update() {
-        System.out.println(GUI.getLobby().nicknames());
         userInLobby.getItems().clear();
         userInLobby.getItems().addAll(GUI.getLobby().nicknames());
     }
