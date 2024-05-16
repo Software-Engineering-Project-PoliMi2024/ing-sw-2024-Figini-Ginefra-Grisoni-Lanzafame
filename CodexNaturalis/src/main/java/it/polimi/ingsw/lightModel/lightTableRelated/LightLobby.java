@@ -84,7 +84,7 @@ public class LightLobby implements Differentiable, Observed {
         return this.numberMaxPlayer;
     }
     public void reset(){
-        this.setName(null);
+        this.setName("");
         this.nicknames = new ArrayList<>();
         this.setNumberMaxPlayer(0);
         notifyObservers();
