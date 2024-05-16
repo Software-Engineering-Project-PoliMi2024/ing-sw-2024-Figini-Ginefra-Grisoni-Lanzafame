@@ -88,6 +88,7 @@ public class GUI extends Application implements ActualView {
 
     private void setRoot(Root root){
         if(currentRoot == null){
+            stackRoot.getChildren().clear();
             stackRoot.getChildren().add(root.getRoot());
             currentRoot = root;
             primaryStage.show();
