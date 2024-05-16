@@ -422,37 +422,6 @@ public class GameLoopController implements Serializable {
                 game.getCommonObjective().stream().mapToInt(objectiveCard -> objectiveCard.getPoints(user.getUserCodex())).sum()
                 + game.getUserFromNick(nick).getUserHand().getSecretObjective().getPoints(user.getUserCodex());
     }
-    /**
-     * @param controller the player on which the check is being done
-     * @return true if the controller is the last one left to place the startCard
-     */
-    private boolean isLastToPlace(ServerModelController controller){
-        boolean lastToPlace = true;
-        for(ServerModelController othersController : activePlayers.values()){
-            User user = game.getUserFromNick(othersController.getNickname());
-            if(user.getUserHand().getStartCard() != null && !controller.equals(othersController)){
-                lastToPlace = false;
-                break;
-            }
-        }
-        return lastToPlace;
-    }
-
-    /**
-     * @param controller the player on which the check is being done
-     * @return true if the controller is the last one left to choose the secretObjective
-     */
-    private boolean isLastToChose(ServerModelController controller){
-        boolean lastToChose = true;
-        for(ServerModelController othersController : activePlayers.values()){
-            User user = game.getUserFromNick(othersController.getNickname());
-            if(user.getUserHand().getSecretObjectiveChoices() != null && !controller.equals(othersController)){
-                lastToChose = false;
-                break;
-            }
-        }
-        return lastToChose;
-    }
 
 
     /**
