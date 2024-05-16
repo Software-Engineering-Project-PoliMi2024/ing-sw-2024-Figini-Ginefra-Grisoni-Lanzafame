@@ -93,4 +93,8 @@ public class Hand implements Serializable {
         }
         secretObjectiveChoices.add(objectiveCard);
     }
+
+    public int getHandSize(){
+        return playableHand.size();
+    }
 }
