@@ -149,7 +149,7 @@ public class ServerModelController implements ControllerInterface, DiffSubscribe
     }
 
     @Override
-    public void leaveLobby() throws RemoteException{
+    public void leaveLobby(){
         Lobby lobbyToLeave = games.getUserLobby(this.nickname);
         if(lobbyToLeave==null){
             throw new IllegalCallerException();
@@ -157,7 +157,11 @@ public class ServerModelController implements ControllerInterface, DiffSubscribe
             lobbyToLeave.removeUserName(this.nickname);
             if(lobbyToLeave.getLobbyPlayerList().isEmpty()){
                 this.games.removeLobby(lobbyToLeave);
-                games.subscribe(getRemoveLobbyDiff(lobbyToLeave));
+                try {
+                    games.subscribe(getRemoveLobbyDiff(lobbyToLeave));
+                } catch (RemoteException e) {
+                    e.printStackTrace();
+                }
             }
 
             lobbyToLeave.unsubscribe(this);
@@ -323,6 +327,7 @@ public class ServerModelController implements ControllerInterface, DiffSubscribe
                 games.getUserGame(this.nickname).unsubscribe(this);
                 this.games.getUserGame(nickname).getGameLoopController().leaveGame(this, this.nickname);
             } else if (games.getUserLobby(this.nickname)!=null) { //Handle the removing of the user from a lobby
+                this.leaveLobby();
                 games.getUserLobby(this.nickname).unsubscribe(this);
             }else{//Remove the user from the lobbyDiffPublisher list
                 games.unsubscribe(this);
