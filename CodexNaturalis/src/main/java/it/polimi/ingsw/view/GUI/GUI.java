@@ -123,12 +123,12 @@ public class GUI extends Application implements ActualView {
 
     @Override
     public void logErr(String logMsg) throws RemoteException {
-        LogErr.display(logMsg);
+        Platform.runLater(()->LogErr.display(logMsg));
     }
 
     @Override
     public void logOthers(String logMsg) throws RemoteException {
-        logMemory.addLog(logMsg);
+        Platform.runLater(()->logMemory.addLog(logMsg));
     }
 
     @Override
