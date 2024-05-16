@@ -67,7 +67,7 @@ public class Deck<Element> implements Serializable {
     }
 
     /**
-     * Draw an element from the buffer given is index then it repopulate the Deck with another card
+     * Draw an element from the buffer given is index then it repopulates the Deck with another card
      * @param indexElement the index of the element to draw
      * @return the element drawn
      */

@@ -55,7 +55,6 @@ public class LobbyListJoinGUI implements Observer {
 
     @Override
     public void update() {
-        System.out.println("LobbyListJoinGUI update");
         for(LightLobby lobby : GUI.getLobbyList().getLobbies()){
             if(!lobbyListDisplay.getItems().contains(lobby)){
                 lobbyListDisplay.getItems().add(lobby);
@@ -85,7 +84,10 @@ public class LobbyListJoinGUI implements Observer {
             @Override
             public void changed(ObservableValue<? extends LightLobby> observableValue, LightLobby lobby, LightLobby t1) {
                 LightLobby selectedLobby = lobbyListDisplay.getSelectionModel().getSelectedItem();
-                lobbyNameToJoin.setText(selectedLobby.name());
+                if(selectedLobby != null)
+                    lobbyNameToJoin.setText(selectedLobby.name());
+                else
+                    lobbyNameToJoin.setText("Select a lobby to join");
             }
         };
     }

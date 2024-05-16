@@ -1,14 +1,18 @@
 package it.polimi.ingsw.lightModel.lightTableRelated;
 
+import it.polimi.ingsw.designPatterns.Observed;
+import it.polimi.ingsw.designPatterns.Observer;
 import it.polimi.ingsw.lightModel.Differentiable;
 
 import java.util.ArrayList;
+import java.util.LinkedList;
 import java.util.List;
 
 /**
  * This class is a container for the list of lobbies.
  */
-public class LightLobby implements Differentiable {
+public class LightLobby implements Differentiable, Observed {
+    private final List<Observer> observers = new LinkedList<>();
     private int numberMaxPlayer = 0;
     private List<String> nicknames;
     private String name;
@@ -53,6 +57,7 @@ public class LightLobby implements Differentiable {
     public void nickDiff(List<String> add, List<String> rmv){
         nicknames.removeAll(rmv);
         nicknames.addAll(add);
+        notifyObservers();
     }
 
     /**
@@ -60,13 +65,7 @@ public class LightLobby implements Differentiable {
      */
     public void setName(String name) {
         this.name = name;
-    }
-
-    /**
-     * @param nicknames List containing all users' nickname in the lobby
-     */
-    public void setNicknames(List<String> nicknames) {
-        this.nicknames = nicknames;
+        notifyObservers();
     }
 
     @Override
@@ -78,14 +77,33 @@ public class LightLobby implements Differentiable {
     }
     public void setNumberMaxPlayer(int numberMaxPlayer) {
         this.numberMaxPlayer = numberMaxPlayer;
+        notifyObservers();
     }
 
     public int numberMaxPlayer(){
         return this.numberMaxPlayer;
     }
     public void reset(){
-        this.setName(null);
-        this.setNicknames(new ArrayList<>());
+        this.setName("");
+        this.nicknames = new ArrayList<>();
         this.setNumberMaxPlayer(0);
+        notifyObservers();
+    }
+
+    @Override
+    public void attach(Observer observer) {
+        observers.add(observer);
+    }
+
+    @Override
+    public void detach(Observer observer) {
+        observers.remove(observer);
+    }
+
+    @Override
+    public void notifyObservers() {
+        for(Observer observer : observers){
+            observer.update();
+        }
     }
 }

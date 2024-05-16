@@ -21,6 +21,7 @@ public class PersistenceFactory {
      */
     public static void save(Game game){
         gameSaveDirectoryCheckAndCreate();
+        PersistenceFactory.deleteGameSave(game);
         try{
         FileOutputStream fileOut = new FileOutputStream(
                 Configs.gameSavesDir + LocalDateTime.now().format(DateTimeFormatter.ISO_DATE_TIME) + dateGameNameSeparator + game.getName() + _ser);
