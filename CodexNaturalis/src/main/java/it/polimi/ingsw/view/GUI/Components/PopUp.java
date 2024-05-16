@@ -72,6 +72,8 @@ public class PopUp {
         AnchorPane.setBottomAnchor(content, 50.0);
         AnchorPane.setLeftAnchor(content, 50.0);
 
+        bg.setOnMouseClicked(e -> close());
+
 
         // Make clip as big as the content
         Rectangle clip = new Rectangle();
@@ -83,13 +85,6 @@ public class PopUp {
 
         content.setClip(clip);
 
-        Button closeButton = new Button("X");
-        content.getChildren().add(closeButton);
-
-        AnchorPane.setTopAnchor(closeButton, 0.0);
-        AnchorPane.setRightAnchor(closeButton, 0.0);
-
-        closeButton.setOnAction(e -> close());
 
         this.setUpOpeningAnimation();
         this.setUpClosingAnimation();
