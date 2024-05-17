@@ -151,11 +151,11 @@ class ServerModelControllerTest {
 
         assert view3.lightLobby.numberMaxPlayer() == 0;
         assert view3.lightLobby.nicknames().isEmpty();
-        assert view3.lightLobby.name() == null;
+        assert view3.lightLobby.name() == "";
 
         assert view5.lightLobby.numberMaxPlayer() == 0;
         assert view5.lightLobby.nicknames().isEmpty();
-        assert view5.lightLobby.name() == null;
+        assert view5.lightLobby.name() == "";
 
         assert multiGame.getLobbyByName(lobbyName1) != null;
         assert multiGame.getLobbyByName(lobbyName2) == null;
@@ -234,11 +234,11 @@ class ServerModelControllerTest {
 
         assert view2.lightLobby.nicknames().isEmpty();
         assert view2.lightLobby.numberMaxPlayer() == 0;
-        assert view2.lightLobby.name() == null;
+        assert view2.lightLobby.name() == "";
 
         assert view4.lightLobby.nicknames().isEmpty();
         assert view4.lightLobby.numberMaxPlayer() == 0;
-        assert view4.lightLobby.name() == null;
+        assert view4.lightLobby.name() == "";
 
         assert multiGame.getLobbyByName(lobbyName1).getLobbyPlayerList().contains(view1.name);
         assert multiGame.getLobbyByName(lobbyName1).getLobbyPlayerList().contains(view3.name);
