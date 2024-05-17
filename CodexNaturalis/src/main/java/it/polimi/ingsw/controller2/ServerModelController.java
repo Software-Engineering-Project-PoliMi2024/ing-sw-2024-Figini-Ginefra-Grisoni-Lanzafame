@@ -6,8 +6,11 @@ import it.polimi.ingsw.lightModel.LightCard;
 import it.polimi.ingsw.lightModel.Lightifier;
 import it.polimi.ingsw.lightModel.diffs.*;
 import it.polimi.ingsw.lightModel.diffs.game.*;
+import it.polimi.ingsw.lightModel.diffs.lobby_lobbyList.LobbyDiffEdit;
+import it.polimi.ingsw.lightModel.diffs.lobby_lobbyList.LobbyDiffEditLogin;
 import it.polimi.ingsw.lightModel.diffs.lobby_lobbyList.LobbyListDiffEdit;
 import it.polimi.ingsw.lightModel.diffs.nuclearDiffs.FatManLobbyList;
+import it.polimi.ingsw.lightModel.diffs.nuclearDiffs.LittleBoyLobby;
 import it.polimi.ingsw.lightModel.lightPlayerRelated.LightPlacement;
 import it.polimi.ingsw.lightModel.diffPublishers.DiffSubscriber;
 import it.polimi.ingsw.lightModel.lightTableRelated.LightGame;
@@ -95,7 +98,7 @@ public class ServerModelController implements ControllerInterface, DiffSubscribe
             this.games.addLobby(newLobby);
             unsubscribeLobbyList();
             //Create a new LobbyDiffEditLogin
-            newLobby.subscribe(this, this.nickname, gameName, newLobby.getNumberOfMaxPlayer());
+            subscribeLobby(newLobby);
             newLobby.setPlayerControllers(this, this.nickname);
             logGame(LogsOnClient.LOBBY_CREATED);
             logYou(LogsOnClient.LOBBY_JOINED);
@@ -108,6 +111,13 @@ public class ServerModelController implements ControllerInterface, DiffSubscribe
         this.updateLobbyList(new FatManLobbyList());
     }
 
+    private void subscribeLobby(Lobby lobbyToJoin){
+        lobbyToJoin.subscribe(this,this.nickname);
+        ArrayList<String> addNicknames = new ArrayList<>(lobbyToJoin.getLobbyPlayerList());
+        this.updateLobby(new LobbyDiffEditLogin(addNicknames, new ArrayList<>(), lobbyToJoin.getLobbyName(), lobbyToJoin.getNumberOfMaxPlayer()));
+
+    }
+
     @Override
     public void joinLobby(String lobbyName) throws RemoteException{
         Lobby lobbyToJoin = this.games.getLobbyByName(lobbyName);
@@ -115,7 +125,7 @@ public class ServerModelController implements ControllerInterface, DiffSubscribe
             Boolean result = this.games.addPlayerToLobby(lobbyName, this.nickname);
             if(result){
                 //create a new lobbyDiffEditLogin
-                lobbyToJoin.subscribe(this, this.nickname, lobbyToJoin.getLobbyName(), lobbyToJoin.getNumberOfMaxPlayer());
+                subscribeLobby(lobbyToJoin);
                 lobbyToJoin.setPlayerControllers(this, this.nickname);
                 unsubscribeLobbyList();
                 if(!(lobbyToJoin.getLobbyPlayerList().size() == lobbyToJoin.getNumberOfMaxPlayer())) {
@@ -153,12 +163,16 @@ public class ServerModelController implements ControllerInterface, DiffSubscribe
             if(lobbyToLeave.getLobbyPlayerList().isEmpty()){
                 this.games.removeLobby(lobbyToLeave);
             }
-
-            lobbyToLeave.unsubscribe(this);
-            this.subscribeLobbyList();
+            unsubscribeLobby(lobbyToLeave);
+            subscribeLobbyList();
             logYou(LogsOnClient.LOBBY_LEFT);
             transitionTo(ViewState.JOIN_LOBBY);
         }
+    }
+
+    private void unsubscribeLobby(Lobby lobbyToLeave){
+        lobbyToLeave.unsubscribe(this);
+        updateLobby(new LittleBoyLobby());
     }
 
     private void leaveGame(){
