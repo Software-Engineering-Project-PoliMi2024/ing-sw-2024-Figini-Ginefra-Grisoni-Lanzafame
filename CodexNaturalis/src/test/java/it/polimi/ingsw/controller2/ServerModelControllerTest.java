@@ -39,7 +39,6 @@ class ServerModelControllerTest {
         multiGame.addLobby(lobby2);
         ArrayList<LightLobby> lobbies = new ArrayList<>();
         lobbies.add(Lightifier.lightify(lobby2));
-        multiGame.subscribe(new LobbyListDiffEdit(lobbies, new ArrayList<>()));
         try {
             serverModelController2.login(view2.name);
         } catch (RemoteException e) {
