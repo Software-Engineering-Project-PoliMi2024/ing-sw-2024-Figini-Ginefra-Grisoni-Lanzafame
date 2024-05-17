@@ -121,9 +121,10 @@ public class ServerModelController implements ControllerInterface, DiffSubscribe
                 lobbyToJoin.subscribe(this, this.nickname, lobbyToJoin.getLobbyName(), lobbyToJoin.getNumberOfMaxPlayer());
                 lobbyToJoin.setPlayerControllers(this, this.nickname);
                 games.unsubscribe(this);
-                logYou(LogsOnClient.LOBBY_JOINED);
-                transitionTo(ViewState.LOBBY);
-                if(lobbyToJoin.getLobbyPlayerList().size() == lobbyToJoin.getNumberOfMaxPlayer()) {
+                if(!(lobbyToJoin.getLobbyPlayerList().size() == lobbyToJoin.getNumberOfMaxPlayer())) {
+                    logYou(LogsOnClient.LOBBY_JOINED);
+                    transitionTo(ViewState.LOBBY);
+                }else{
                     //Handle the creation of a new game from the lobbyToJoin
                     Game newGame = games.createGame(lobbyToJoin);
                     games.addGame(newGame);
@@ -137,6 +138,7 @@ public class ServerModelController implements ControllerInterface, DiffSubscribe
                     games.subscribe(getRemoveLobbyDiff(lobbyToJoin));
                     newGame.getGameLoopController().joinGame();
                 }
+
             }else{
                 logErr(LogsOnClient.LOBBY_IS_FULL);
             }
