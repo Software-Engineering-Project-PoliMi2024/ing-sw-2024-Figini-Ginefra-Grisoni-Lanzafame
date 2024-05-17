@@ -45,7 +45,7 @@ public enum LogsOnClient {
     GAME_LEFT("Game left"),
     PLAYER_GAME_LEFT(" left the game"),
     LAST_PLAYER("You are the last player in the game"),
-    COUNTDOWN_START("A CountDown of " + String.valueOf(Configs.timerDurationSeconds) + " seconds is starting now"),
+    COUNTDOWN_START("A CountDown of " + Configs.timerDurationSeconds + " seconds is starting now"),
     COUNTDOWN_INTERRUPTED("The CountDown has been stopped");
     private final String message;
 

@@ -204,11 +204,18 @@ public class GameLoopController implements Serializable {
         }
     }
 
+    /**
+     * @param notActiveUser a User not present in the activePlayers map
+     * @return True if every activePlayer has placed their startCard and chosen their secretObjective along with the notActiveUser
+     */
     private boolean hasEveryPlayerHasPlacedAndChosen(User notActiveUser) {
         return everyoneActiveHasPlaced() && everyoneActiveHasChosen() &&
                 this.startCardIsPlaced(notActiveUser) && this.secretObjectiveIsChose(notActiveUser);
     }
 
+    /**
+     * If only one player is left in the game, start a countdown to end the game
+     */
     private void onePlayerLeft() {
         ServerModelController lastController = activePlayers.values().iterator().next();
         lastController.logGame(LogsOnClient.LAST_PLAYER);
@@ -494,6 +501,12 @@ public class GameLoopController implements Serializable {
         return activePlayers;
     }
 
+    /**
+     * Send the log to all the activePlayers, about a specific player move. The log is different for the player who made the move
+     * @param controller of the player who made the move
+     * @param youLog the log for the player who made the move
+     * @param theirLog the log for the other activePlayers
+     */
     private void logYouAndOther(ServerModelController controller, LogsOnClient youLog, LogsOnClient theirLog){
         for(ServerModelController allControllers : activePlayers.values()){
             if(!allControllers.equals(controller)){
@@ -504,6 +517,10 @@ public class GameLoopController implements Serializable {
         }
     }
 
+    /**
+     * Send the log to all the activePlayers about a Game event
+     * @param logsOnClient the log to send
+     */
     private void logAll(LogsOnClient logsOnClient) {
         for(ServerModelController allController : activePlayers.values()){
             allController.logGame(logsOnClient);
