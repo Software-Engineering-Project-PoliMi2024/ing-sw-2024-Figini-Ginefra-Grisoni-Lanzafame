@@ -114,8 +114,7 @@ public class ServerModelController implements ControllerInterface, DiffSubscribe
     private void subscribeLobby(Lobby lobbyToJoin){
         lobbyToJoin.subscribe(this,this.nickname);
         ArrayList<String> addNicknames = new ArrayList<>(lobbyToJoin.getLobbyPlayerList());
-        this.updateLobby(new LobbyDiffEditLogin(addNicknames, new ArrayList<>(), lobbyToJoin.getLobbyName(), lobbyToJoin.getNumberOfMaxPlayer()));
-
+        this.updateLobbyYou(new LobbyDiffEditLogin(addNicknames, new ArrayList<>(), lobbyToJoin.getLobbyName(), lobbyToJoin.getNumberOfMaxPlayer()));
     }
 
     @Override
@@ -125,10 +124,10 @@ public class ServerModelController implements ControllerInterface, DiffSubscribe
             Boolean result = this.games.addPlayerToLobby(lobbyName, this.nickname);
             if(result){
                 //create a new lobbyDiffEditLogin
-                subscribeLobby(lobbyToJoin);
                 lobbyToJoin.setPlayerControllers(this, this.nickname);
                 unsubscribeLobbyList();
                 if(!(lobbyToJoin.getLobbyPlayerList().size() == lobbyToJoin.getNumberOfMaxPlayer())) {
+                    subscribeLobby(lobbyToJoin);
                     logYou(LogsOnClient.LOBBY_JOINED);
                     transitionTo(ViewState.LOBBY);
                 }else{
@@ -172,7 +171,7 @@ public class ServerModelController implements ControllerInterface, DiffSubscribe
 
     private void unsubscribeLobby(Lobby lobbyToLeave){
         lobbyToLeave.unsubscribe(this);
-        updateLobby(new LittleBoyLobby());
+        updateLobbyYou(new LittleBoyLobby());
     }
 
     private void leaveGame(){
@@ -360,8 +359,16 @@ public class ServerModelController implements ControllerInterface, DiffSubscribe
             r.printStackTrace();
         }
     }
+    public void updateLobbyYou(ModelDiffs<LightLobby> diff){
+        try {
+            view.updateLobby(diff);
+        }catch (Exception r){
+            r.printStackTrace();
+        }
+    }
     public void updateLobby(ModelDiffs<LightLobby> diff){
         try {
+            view.logOthers(this.nickname + LogsOnClient.PLAYER_JOIN_LOBBY.getMessage());
             view.updateLobby(diff);
         }catch (Exception r){
             r.printStackTrace();
