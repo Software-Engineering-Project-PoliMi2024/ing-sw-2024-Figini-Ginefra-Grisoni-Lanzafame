@@ -155,7 +155,7 @@ public class ServerModelController implements ControllerInterface, DiffSubscribe
             }
 
             lobbyToLeave.unsubscribe(this);
-            games.subscribe(this);
+            this.subscribeLobbyList();
             logYou(LogsOnClient.LOBBY_LEFT);
             transitionTo(ViewState.JOIN_LOBBY);
         }
