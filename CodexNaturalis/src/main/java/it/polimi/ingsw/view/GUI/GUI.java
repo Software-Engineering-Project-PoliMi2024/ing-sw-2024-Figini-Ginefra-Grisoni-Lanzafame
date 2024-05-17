@@ -88,7 +88,6 @@ public class GUI extends Application implements ActualView {
 
     private void setRoot(Root root){
         if(currentRoot == null){
-            stackRoot.getChildren().clear();
             stackRoot.getChildren().add(root.getRoot());
             currentRoot = root;
             primaryStage.show();
@@ -137,23 +136,18 @@ public class GUI extends Application implements ActualView {
 
     @Override
     public void updateLobbyList(ModelDiffs<LightLobbyList> diff) throws RemoteException {
-        Platform.runLater(() -> {
-            diff.apply(lobbyList);
-        });
+        Platform.runLater(() -> diff.apply(lobbyList));
     }
 
     @Override
     public void updateLobby(ModelDiffs<LightLobby> diff) throws RemoteException {
-        Platform.runLater(() -> {
-            diff.apply(lobby);
-        });
+        Platform.runLater(() -> diff.apply(lobby));
     }
 
     @Override
     public void updateGame(ModelDiffs<LightGame> diff) throws RemoteException {
-        Platform.runLater(() -> {
-            diff.apply(lightGame);
-        });    }
+        Platform.runLater(() -> diff.apply(lightGame));
+    }
 
     @Override
     public void setFinalRanking(String[] nicks, int[] points) throws RemoteException {
