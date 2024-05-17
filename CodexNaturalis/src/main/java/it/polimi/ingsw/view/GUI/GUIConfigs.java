@@ -18,4 +18,6 @@ public class GUIConfigs {
     public static double codexMaxScale = 1.5;
 
     public static int cardBorderRadius = 40;
+
+    public static int holdDuration = 200; //in milliseconds
 }

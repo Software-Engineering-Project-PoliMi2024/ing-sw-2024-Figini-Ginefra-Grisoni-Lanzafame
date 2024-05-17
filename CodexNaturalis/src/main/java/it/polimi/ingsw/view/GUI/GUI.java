@@ -53,14 +53,7 @@ public class GUI extends Application implements ActualView {
         transitionAnimation = new logoSwapAnimation(primaryStage);
 
 
-        ModelDiffs<LightGame> diff = new HandDiffAdd(new LightCard(1), true);
-        diff.apply(lightGame);
 
-        diff = new HandDiffAdd(new LightCard(2), true);
-        diff.apply(lightGame);
-
-        diff = new HandDiffAdd(new LightCard(3), true);
-        diff.apply(lightGame);
 
         ConnectionFormControllerGUI.view = this;
 
@@ -80,10 +73,10 @@ public class GUI extends Application implements ActualView {
 
         //set stackRoot background and style
         //stackRoot.setStyle("-fx-background-color: #1e1f22;");
-        transitionTo(StateGUI.SERVER_CONNECTION);
+        //transitionTo(StateGUI.SERVER_CONNECTION);
         //transitionTo(StateGUI.JOIN_LOBBY);
         //transitionTo(StateGUI.LOBBY);
-        //transitionTo(StateGUI.IDLE);
+        transitionTo(StateGUI.IDLE);
     }
 
     private void setRoot(Root root){

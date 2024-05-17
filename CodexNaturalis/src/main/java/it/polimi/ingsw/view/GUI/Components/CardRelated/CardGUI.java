@@ -1,12 +1,21 @@
 package it.polimi.ingsw.view.GUI.Components.CardRelated;
 
+import it.polimi.ingsw.Configs;
 import it.polimi.ingsw.lightModel.LightCard;
 import it.polimi.ingsw.model.cardReleted.utilityEnums.CardFace;
 import it.polimi.ingsw.view.GUI.CardMuseumGUI;
 import it.polimi.ingsw.view.GUI.GUIConfigs;
+import javafx.animation.KeyFrame;
+import javafx.animation.KeyValue;
+import javafx.animation.Timeline;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
+import javafx.scene.input.MouseEvent;
 import javafx.scene.shape.Rectangle;
+import javafx.util.Duration;
+
+import java.util.function.Consumer;
+import java.util.function.Function;
 
 public class CardGUI {
     private LightCard target;
@@ -14,10 +23,25 @@ public class CardGUI {
     private final ImageView imageView = new ImageView();
     private Image image;
 
+    private Consumer<MouseEvent> onTap = null;
+    private Consumer<MouseEvent> onHold = null;
+
+    private Consumer<MouseEvent> onHoldRelease = null;
+
+    private Timeline holdTimer = null;
+
+    private boolean holdDetected = false;
+
+
     public CardGUI(LightCard target, CardFace face) {
         Rectangle clip = new Rectangle(GUIConfigs.cardWidth, GUIConfigs.cardHeight);
         clip.setArcWidth(GUIConfigs.cardBorderRadius); // Set the horizontal radius of the arc
         clip.setArcHeight(GUIConfigs.cardBorderRadius); // Set the vertical radius of the arc
+
+        clip.widthProperty().bind(imageView.fitWidthProperty());
+        clip.heightProperty().bind(imageView.fitHeightProperty());
+        clip.arcWidthProperty().bindBidirectional(clip.arcHeightProperty());
+        clip.arcWidthProperty().bind(imageView.fitWidthProperty().multiply(GUIConfigs.cardBorderRadius / GUIConfigs.cardWidth));
 
         imageView.setClip(clip);
 
@@ -27,6 +51,35 @@ public class CardGUI {
 
         imageView.setFitWidth(image.getWidth() * 0.3);
         imageView.setFitHeight(image.getHeight() * 0.3);
+
+        holdTimer = new Timeline();
+        //Make an empty keyframe at holdDuration
+        holdTimer.getKeyFrames().add(new KeyFrame(Duration.millis(GUIConfigs.holdDuration)));
+
+        //set hold detected to false
+        holdTimer.setOnFinished(t -> {
+            if(onHold != null && !holdDetected)
+                onHold.accept(null);
+            holdDetected = true;
+        });
+
+
+        imageView.setOnMousePressed(e -> {
+            holdDetected = false;
+            holdTimer.playFromStart();
+        });
+
+        imageView.setOnMouseReleased(e -> {
+            if(holdDetected) {
+                if(onHoldRelease != null) {
+                    onHoldRelease.accept(e);
+                }
+            } else if (onTap != null) {
+                onTap.accept(e);
+            }
+            holdTimer.stop();
+            holdDetected = false;
+        });
 
     }
 
@@ -79,4 +132,15 @@ public class CardGUI {
 
     }
 
+    public void setOnTap(Consumer<MouseEvent> onTap) {
+        this.onTap = onTap;
+    }
+
+    public void setOnHold(Consumer<MouseEvent> onHold) {
+        this.onHold = onHold;
+    }
+
+    public void setOnHoldRelease(Consumer<MouseEvent> onHoldRelease) {
+        this.onHoldRelease = onHoldRelease;
+    }
 }
