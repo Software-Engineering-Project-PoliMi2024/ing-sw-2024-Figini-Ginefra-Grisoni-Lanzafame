@@ -6,7 +6,7 @@ import it.polimi.ingsw.model.cardReleted.utilityEnums.CardFace;
 public class FlippableCardGUI extends CardGUI{
     public FlippableCardGUI(LightCard target) {
         super(target, CardFace.FRONT);
-        this.getImageView().setOnMouseClicked(e -> this.flip());
+        this.setOnTap(e -> this.flip());
     }
 
     public void setFace(CardFace face) {
