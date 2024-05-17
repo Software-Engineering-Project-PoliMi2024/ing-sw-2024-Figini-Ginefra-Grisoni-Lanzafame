@@ -28,7 +28,8 @@ public class LobbyDiffPublisher {
     public synchronized void subscribe(DiffSubscriber diffSubscriber, String nickname) {
         LobbyDiffEdit others = createDiffSubscribed(nickname);
         for(DiffSubscriber subscriber : subscribers.keySet()){
-            notifySubscriber(subscriber, others);
+            if(!subscribers.get(subscriber).equals(nickname))
+                notifySubscriber(subscriber, others);
         }
         subscribers.put(diffSubscriber, nickname);
     }
