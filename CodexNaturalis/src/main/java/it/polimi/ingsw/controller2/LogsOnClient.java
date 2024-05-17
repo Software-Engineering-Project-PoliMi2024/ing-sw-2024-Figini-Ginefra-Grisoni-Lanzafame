@@ -1,5 +1,7 @@
 package it.polimi.ingsw.controller2;
 
+import it.polimi.ingsw.Configs;
+
 public enum LogsOnClient {
     CONNECTION_ERROR("Failed to connect to the server."),
     CONNECTION_SUCCESS("Connected to the server successfully."),
@@ -41,7 +43,10 @@ public enum LogsOnClient {
     YOU_DRAW("Successfully drew a card to your Hand."),
     DECK_SHUFFLE("The Resource and Gold card decks have been shuffled."),
     GAME_LEFT("Game left"),
-    PLAYER_GAME_LEFT(" left the game");
+    PLAYER_GAME_LEFT(" left the game"),
+    LAST_PLAYER("You are the last player in the game"),
+    COUNTDOWN_START("A CountDown of " + String.valueOf(Configs.timerDurationSeconds) + " seconds is starting now"),
+    COUNTDOWN_INTERRUPTED("The CountDown has been stopped");
     private final String message;
 
     LogsOnClient(String message) {

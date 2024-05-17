@@ -10,4 +10,5 @@ public class Configs {
     public static int socketPort = 12345;
     public static int secondsTimeOut = 3;
     public static int pingPongFrequency = 10;
+    public static int timerDurationSeconds = 60;
 }
