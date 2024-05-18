@@ -134,13 +134,7 @@ public class ServerModelController implements ControllerInterface, DiffSubscribe
                     //Handle the creation of a new game from the lobbyToJoin
                     Game newGame = games.createGame(lobbyToJoin);
                     games.addGame(newGame);
-
-                    //TODO: REMOVE
-                    for(ServerModelController controller : lobbyToJoin.getPlayerController().values()){
-                        controller.logGame(LogsOnClient.GAME_CREATED);
-                    }
-                    lobbyToJoin.clearPublisher();
-                    //TODO: REMOVE
+                    lobbyToJoin.notifyStartGame();
                     games.removeLobby(lobbyToJoin);
                     newGame.getGameLoopController().joinGame();
                 }
@@ -152,10 +146,9 @@ public class ServerModelController implements ControllerInterface, DiffSubscribe
         }
     }
 
-    private void joinGame(){
+    public void gameStarted(){
         this.updateLobbyYou(new LittleBoyLobby());
         this.logGame(LogsOnClient.GAME_CREATED);
-
     }
 
     @Override

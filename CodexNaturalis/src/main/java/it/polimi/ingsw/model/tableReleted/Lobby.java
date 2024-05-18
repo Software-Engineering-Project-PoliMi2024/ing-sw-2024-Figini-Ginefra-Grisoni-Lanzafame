@@ -95,8 +95,8 @@ public class Lobby implements Serializable {
     public void setPlayerControllers(ServerModelController controller, String nickname){
         playerControllers.put(nickname, controller);
     }
-    public void clearPublisher(){
-        lobbyDiffPublisher.clear();
+    public void notifyStartGame(){
+        lobbyDiffPublisher.notifyStartGame();
     }
 
     public Map<String, ServerModelController> getPlayerController(){
