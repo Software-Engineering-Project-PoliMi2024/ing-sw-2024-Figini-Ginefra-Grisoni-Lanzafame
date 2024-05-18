@@ -45,10 +45,8 @@ public class LightHand implements Differentiable, Observed {
      * @param secretObjective the secret objective of the player
      */
     public void setSecretObjective(LightCard secretObjective) {
-
         this.secretObjective = secretObjective;
         this.notifyObservers();
-
     }
     /**
      * @return the secret objective of the player

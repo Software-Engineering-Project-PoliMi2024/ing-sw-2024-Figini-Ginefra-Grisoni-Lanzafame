@@ -110,5 +110,8 @@ public class GameScene extends SceneGUI{
         diff = new HandDiffAdd(new LightCard(3), true);
         diff.apply(GUI.getLightGame());
 
+        diff = new HandDiffSetObj(new LightCard(100));
+        diff.apply(GUI.getLightGame());
+
     }
 }
