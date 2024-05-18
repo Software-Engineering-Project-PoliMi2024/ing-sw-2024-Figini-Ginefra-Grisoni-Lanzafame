@@ -1,9 +1,7 @@
 package it.polimi.ingsw.view.GUI.Components;
 
-import it.polimi.ingsw.Configs;
-import it.polimi.ingsw.view.GUI.CardMuseumGUI;
+import it.polimi.ingsw.view.GUI.AssetsGUI;
 import it.polimi.ingsw.view.GUI.GUIConfigs;
-import it.polimi.ingsw.view.GUI.Root;
 import javafx.animation.Interpolator;
 import javafx.animation.KeyFrame;
 import javafx.animation.KeyValue;
@@ -18,9 +16,9 @@ import javafx.util.Duration;
 import java.util.List;
 
 public class logoSwapAnimation {
-    private final ImageView logoCenter = new ImageView(CardMuseumGUI.logoCenter);
-    private final ImageView logoCircle = new ImageView(CardMuseumGUI.logoCircle);
-    private final ImageView logoBackground = new ImageView(CardMuseumGUI.logoBackground);
+    private final ImageView logoCenter = new ImageView(AssetsGUI.logoCenter);
+    private final ImageView logoCircle = new ImageView(AssetsGUI.logoCircle);
+    private final ImageView logoBackground = new ImageView(AssetsGUI.logoBackground);
     private final StackPane logoStack = new StackPane(logoBackground, logoCircle, logoCenter);
     private final Timeline timeline = new Timeline();
 

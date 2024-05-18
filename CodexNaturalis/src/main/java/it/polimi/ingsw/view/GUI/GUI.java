@@ -1,10 +1,7 @@
 package it.polimi.ingsw.view.GUI;
 
-import it.polimi.ingsw.Configs;
 import it.polimi.ingsw.connectionLayer.VirtualLayer.VirtualController;
-import it.polimi.ingsw.lightModel.LightCard;
 import it.polimi.ingsw.lightModel.diffs.ModelDiffs;
-import it.polimi.ingsw.lightModel.diffs.game.*;
 import it.polimi.ingsw.lightModel.lightTableRelated.LightGame;
 import it.polimi.ingsw.lightModel.lightTableRelated.LightLobby;
 import it.polimi.ingsw.lightModel.lightTableRelated.LightLobbyList;
@@ -16,18 +13,12 @@ import it.polimi.ingsw.view.GUI.Components.logoSwapAnimation;
 import it.polimi.ingsw.view.GUI.Controllers.ConnectionFormControllerGUI;
 import it.polimi.ingsw.view.GUI.Controllers.LoginFormControllerGUI;
 import it.polimi.ingsw.view.ViewState;
-import javafx.animation.*;
 import javafx.application.Application;
 import javafx.application.Platform;
-import javafx.geometry.Rectangle2D;
 import javafx.scene.Node;
 import javafx.scene.Scene;
-import javafx.scene.image.ImageView;
 import javafx.scene.layout.AnchorPane;
-import javafx.scene.layout.StackPane;
-import javafx.stage.Screen;
 import javafx.stage.Stage;
-import javafx.util.Duration;
 
 import java.rmi.RemoteException;
 import java.util.Arrays;
@@ -64,7 +55,7 @@ public class GUI extends Application implements ActualView {
         this.primaryStage = primaryStage;
         primaryStage.setFullScreen(true);
         primaryStage.setTitle("Codex In Naturalis");
-        primaryStage.getIcons().add(CardMuseumGUI.logo);
+        primaryStage.getIcons().add(AssetsGUI.logo);
         primaryStage.setScene(new Scene(stackRoot, 800, 600));
 
         AnchorPane.setTopAnchor(stackRoot, 0.0);
@@ -76,10 +67,10 @@ public class GUI extends Application implements ActualView {
 
         //set stackRoot background and style
         //stackRoot.setStyle("-fx-background-color: #1e1f22;");
-        transitionTo(StateGUI.SERVER_CONNECTION);
+        //transitionTo(StateGUI.SERVER_CONNECTION);
         //transitionTo(StateGUI.JOIN_LOBBY);
         //transitionTo(StateGUI.LOBBY);
-        //transitionTo(StateGUI.IDLE);
+        transitionTo(StateGUI.PLACE_CARD);
     }
 
     private void setRoot(Node root){

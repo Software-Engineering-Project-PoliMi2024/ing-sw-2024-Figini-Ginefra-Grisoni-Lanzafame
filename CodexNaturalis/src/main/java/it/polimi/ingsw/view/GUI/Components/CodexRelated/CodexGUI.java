@@ -40,17 +40,19 @@ public class CodexGUI implements Observer {
 
 
     public CodexGUI() {
-//        GameDiff diff = new GameDiffInitialization(List.of(new String[]{"Player1"}), new GameDiffGameName("TestGame"), new GameDiffYourName("Player1"));
-//        diff.apply(GUI.getLightGame());
-//
-//        diff = new GameDiffPlayerActivity(List.of(new String[]{"Player1"}), new ArrayList<>());
-//        diff.apply(GUI.getLightGame());
-//
-//        diff = new GameDiffGameName("TestGame");
-//        diff.apply(GUI.getLightGame());
-//
-//        diff = new GameDiffYourName("Player1");
-//        diff.apply(GUI.getLightGame());
+        GameDiff diff = new GameDiffInitialization(List.of(new String[]{"Player1", "Player2"}), new GameDiffGameName("TestGame"), new GameDiffYourName("Player1"));
+        diff.apply(GUI.getLightGame());
+
+        diff = new GameDiffPlayerActivity(List.of(new String[]{"Player1"}), new ArrayList<>());
+        diff.apply(GUI.getLightGame());
+
+        diff = new GameDiffGameName("TestGame");
+        diff.apply(GUI.getLightGame());
+
+        diff = new GameDiffYourName("Player1");
+        diff.apply(GUI.getLightGame());
+
+        GUI.getLightGame().getMyCodex().attach(this);
 
         GUI.getStateProperty().addListener((obs, oldState, newState) -> {
             if(attached)
@@ -85,8 +87,8 @@ public class CodexGUI implements Observer {
         });
 
 
-//        diff = new CodexDiff("Player1", 0, new HashMap<>(), placements, positions);
-//        diff.apply(GUI.getLightGame());
+        diff = new CodexDiff("Player1", 0, new HashMap<>(), placements, positions);
+        diff.apply(GUI.getLightGame());
 
 
 
