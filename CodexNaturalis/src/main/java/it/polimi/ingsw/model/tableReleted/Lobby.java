@@ -80,10 +80,9 @@ public class Lobby implements Serializable {
 
     /**
      * @param diffSubscriber who is joining the lobby
-     * @param nickname of the diffSubscriber joining the lobby
      */
-    public void subscribe(DiffSubscriber diffSubscriber, String nickname){
-        lobbyDiffPublisher.subscribe(diffSubscriber, nickname);
+    public void subscribe(DiffSubscriber diffSubscriber){
+        lobbyDiffPublisher.subscribe(diffSubscriber);
     }
 
     /**

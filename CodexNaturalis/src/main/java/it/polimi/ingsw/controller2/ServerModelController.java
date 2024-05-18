@@ -112,7 +112,7 @@ public class ServerModelController implements ControllerInterface, DiffSubscribe
     }
 
     private void subscribeLobby(Lobby lobbyToJoin){
-        lobbyToJoin.subscribe(this,this.nickname);
+        lobbyToJoin.subscribe(this);
         ArrayList<String> addNicknames = new ArrayList<>(lobbyToJoin.getLobbyPlayerList());
         this.updateLobbyYou(new LobbyDiffEditLogin(addNicknames, new ArrayList<>(), lobbyToJoin.getLobbyName(), lobbyToJoin.getNumberOfMaxPlayer()));
     }
@@ -135,21 +135,27 @@ public class ServerModelController implements ControllerInterface, DiffSubscribe
                     Game newGame = games.createGame(lobbyToJoin);
                     games.addGame(newGame);
 
+                    //TODO: REMOVE
                     for(ServerModelController controller : lobbyToJoin.getPlayerController().values()){
                         controller.logGame(LogsOnClient.GAME_CREATED);
                     }
-
                     lobbyToJoin.clearPublisher();
+                    //TODO: REMOVE
                     games.removeLobby(lobbyToJoin);
                     newGame.getGameLoopController().joinGame();
                 }
-
             }else{
                 logErr(LogsOnClient.LOBBY_IS_FULL);
             }
         }else{
             logErr(LogsOnClient.LOBBY_NONEXISTENT);
         }
+    }
+
+    private void joinGame(){
+        this.updateLobbyYou(new LittleBoyLobby());
+        this.logGame(LogsOnClient.GAME_CREATED);
+
     }
 
     @Override
