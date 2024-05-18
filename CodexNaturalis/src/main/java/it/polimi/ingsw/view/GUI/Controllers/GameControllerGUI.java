@@ -24,51 +24,9 @@ public class GameControllerGUI implements Initializable {
     @FXML
     private AnchorPane main;
 
-    private HandGUI hand;
-    private CodexGUI codex;
-    private CollectedCollectablesGUI collectedCollectables;
-    private final LogsGUI logs = new LogsGUI();
-
 
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle) {
-        codex = new CodexGUI();
 
-//        cardsBox.alignmentProperty().setValue(Pos.CENTER);
-//        cardsBox.setSpacing(10);
-        hand = new HandGUI();
-        hand.setCodex(codex);
-
-        main.getChildren().add(codex.getCodex());
-
-        //main.getChildren().add(hand.getHand());
-
-        main.getChildren().add(logs.getLogsDisplay());
-
-        PopUp popUp = new PopUp(main);
-        Button button = new Button("Open PopUp");
-        button.setOnAction(e -> popUp.open());
-
-
-        main.getChildren().add(button);
-
-        new AnchoredPopUp(main, 0.2f, 0.6f, Pos.CENTER_RIGHT, 0.25f);
-        new AnchoredPopUp(main, 0.2f, 0.6f, Pos.CENTER_LEFT, 0.25f);
-
-        hand.addHandTo(main);
-
-
-        collectedCollectables = new CollectedCollectablesGUI();
-        collectedCollectables.addThisTo(main);
-
-
-        ModelDiffs<LightGame> diff = new HandDiffAdd(new LightCard(1), true);
-        diff.apply(GUI.getLightGame());
-
-        diff = new HandDiffAdd(new LightCard(2), true);
-        diff.apply(GUI.getLightGame());
-
-        diff = new HandDiffAdd(new LightCard(3), true);
-        diff.apply(GUI.getLightGame());
     }
 }

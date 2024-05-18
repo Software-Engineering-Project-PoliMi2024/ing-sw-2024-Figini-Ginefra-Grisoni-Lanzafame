@@ -3,6 +3,7 @@ package it.polimi.ingsw.view.GUI.Components.CodexRelated;
 import it.polimi.ingsw.designPatterns.Observer;
 import it.polimi.ingsw.lightModel.LightCard;
 import it.polimi.ingsw.lightModel.diffs.game.*;
+import it.polimi.ingsw.lightModel.lightPlayerRelated.LightCodex;
 import it.polimi.ingsw.lightModel.lightPlayerRelated.LightPlacement;
 import it.polimi.ingsw.model.cardReleted.utilityEnums.CardFace;
 import it.polimi.ingsw.model.playerReleted.Position;
@@ -40,57 +41,7 @@ public class CodexGUI implements Observer {
 
 
     public CodexGUI() {
-        GameDiff diff = new GameDiffInitialization(List.of(new String[]{"Player1", "Player2"}), new GameDiffGameName("TestGame"), new GameDiffYourName("Player1"));
-        diff.apply(GUI.getLightGame());
-
-        diff = new GameDiffPlayerActivity(List.of(new String[]{"Player1"}), new ArrayList<>());
-        diff.apply(GUI.getLightGame());
-
-        diff = new GameDiffGameName("TestGame");
-        diff.apply(GUI.getLightGame());
-
-        diff = new GameDiffYourName("Player1");
-        diff.apply(GUI.getLightGame());
-
-        GUI.getLightGame().getMyCodex().attach(this);
-
-        GUI.getStateProperty().addListener((obs, oldState, newState) -> {
-            if(attached)
-                return;
-
-            attached = newState == StateGUI.IDLE;
-
-            if(attached)
-                GUI.getLightGame().getMyCodex().attach(this);
-        });
-
-
-
-        List<LightPlacement> placements = List.of(new LightPlacement[]{
-                new LightPlacement(new Position(0, 0), new LightCard(81), CardFace.FRONT),
-                new LightPlacement(new Position(-1, -1), new LightCard(4), CardFace.BACK),
-                new LightPlacement(new Position(1, -1), new LightCard(20), CardFace.FRONT),
-                new LightPlacement(new Position(-1, 1), new LightCard(16), CardFace.BACK),
-
-        });
-
-        List<Position> positions = List.of(new Position[]{
-                new Position(1, 1),
-                new Position(0, 2),
-                new Position(-2, 2),
-                new Position(-2, 0),
-                new Position(-2, -2),
-                new Position(0, -2),
-                new Position(2, -2),
-                new Position(2, 0),
-
-        });
-
-
-        diff = new CodexDiff("Player1", 0, new HashMap<>(), placements, positions);
-        diff.apply(GUI.getLightGame());
-
-
+        this.getLightCodex().attach(this);
 
         AnchorPane.setBottomAnchor(codex, 0.0);
         AnchorPane.setLeftAnchor(codex, 0.0);
@@ -134,6 +85,10 @@ public class CodexGUI implements Observer {
                     this.frontier.forEach(card -> card.setScale(this.getScale(), this.center));
                 }
         );
+    }
+
+    private LightCodex getLightCodex(){
+        return GUI.getLightGame().getMyCodex();
     }
 
     public Pane getCodex() {
@@ -184,18 +139,18 @@ public class CodexGUI implements Observer {
     }
 
     public void update(){
-        int n = GUI.getLightGame().getMyCodex().getPlacementHistory().size();
+        int n = this.getLightCodex().getPlacementHistory().size();
 
         if(n > this.codex.getChildren().size()){
             for(int i = this.codex.getChildren().size(); i < n; i++){
-                LightPlacement target = GUI.getLightGame().getMyCodex().getPlacementHistory().values().toArray(new LightPlacement[0])[i];
+                LightPlacement target = this.getLightCodex().getPlacementHistory().values().toArray(new LightPlacement[0])[i];
                 this.addCard(new CardGUI(target.card(), target.face()), target.position());
             }
         }
 
         codex.getChildren().removeAll(frontier.stream().map(FrontierCardGUI::getCard).toList());
         frontier.clear();
-        for(Position p : GUI.getLightGame().getMyCodex().getFrontier().frontier()){
+        for(Position p : this.getLightCodex().getFrontier().frontier()){
             Point2D pos = this.getCardPosition(p);
             FrontierCardGUI fc = new FrontierCardGUI(p, pos.getX(), pos.getY());
             fc.setVisibility(isFrontierVisible);
