@@ -10,6 +10,7 @@ import it.polimi.ingsw.model.playerReleted.Position;
 import it.polimi.ingsw.view.GUI.Components.AnchoredPopUp;
 import it.polimi.ingsw.view.GUI.Components.CodexRelated.CodexGUI;
 import it.polimi.ingsw.view.GUI.Components.CodexRelated.CollectedCollectablesGUI;
+import it.polimi.ingsw.view.GUI.Components.CodexRelated.Peeker;
 import it.polimi.ingsw.view.GUI.Components.HandGUI;
 import it.polimi.ingsw.view.GUI.Components.LogsGUI;
 import it.polimi.ingsw.view.GUI.Components.PopUp;
@@ -35,18 +36,14 @@ public class GameScene extends SceneGUI{
         ModelDiffs<LightGame> diff = new GameDiffInitialization(List.of(new String[]{"Player1", "Player2"}), new GameDiffGameName("TestGame"), new GameDiffYourName("Player1"));
         diff.apply(GUI.getLightGame());
 
-        diff = new GameDiffPlayerActivity(List.of(new String[]{"Player1"}), new ArrayList<>());
+        diff = new GameDiffPlayerActivity(List.of(new String[]{"Player1", "Player2"}), new ArrayList<>());
         diff.apply(GUI.getLightGame());
 
-        diff = new GameDiffGameName("TestGame");
-        diff.apply(GUI.getLightGame());
-
-        diff = new GameDiffYourName("Player1");
-        diff.apply(GUI.getLightGame());
 
         content.getChildren().add(Root.GAME.getRoot());
 
         codex = new CodexGUI();
+        codex.attachToCodex();
 
 //        cardsBox.alignmentProperty().setValue(Pos.CENTER);
 //        cardsBox.setSpacing(10);
@@ -59,9 +56,9 @@ public class GameScene extends SceneGUI{
 
         this.add(logs.getLogsDisplay());
 
-        PopUp popUp = new PopUp(getContent());
-        Button button = new Button("Open PopUp");
-        button.setOnAction(e -> popUp.open());
+        Peeker peeker = new Peeker(getContent(), "Player2");
+        Button button = new Button("Open Codex Others");
+        button.setOnAction(e -> peeker.open());
 
 
         this.add(button);
@@ -98,6 +95,9 @@ public class GameScene extends SceneGUI{
 
 
         diff = new CodexDiff("Player1", 0, new HashMap<>(), placements, positions);
+        diff.apply(GUI.getLightGame());
+
+        diff = new CodexDiff("Player2", 0, new HashMap<>(), placements, positions);
         diff.apply(GUI.getLightGame());
 
         diff = new HandDiffAdd(new LightCard(1), true);

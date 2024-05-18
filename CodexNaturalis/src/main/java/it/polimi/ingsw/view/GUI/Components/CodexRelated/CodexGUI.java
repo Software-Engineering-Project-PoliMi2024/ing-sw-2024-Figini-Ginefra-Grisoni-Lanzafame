@@ -41,8 +41,6 @@ public class CodexGUI implements Observer {
 
 
     public CodexGUI() {
-        this.getLightCodex().attach(this);
-
         AnchorPane.setBottomAnchor(codex, 0.0);
         AnchorPane.setLeftAnchor(codex, 0.0);
         AnchorPane.setRightAnchor(codex, 0.0);
@@ -87,7 +85,11 @@ public class CodexGUI implements Observer {
         );
     }
 
-    private LightCodex getLightCodex(){
+    public void attachToCodex(){
+        this.getLightCodex().attach(this);
+    }
+
+    protected LightCodex getLightCodex(){
         return GUI.getLightGame().getMyCodex();
     }
 
