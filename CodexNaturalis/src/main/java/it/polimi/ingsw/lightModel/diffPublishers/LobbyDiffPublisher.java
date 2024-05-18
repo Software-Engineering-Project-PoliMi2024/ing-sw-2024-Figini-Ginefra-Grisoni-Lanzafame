@@ -69,14 +69,11 @@ public class LobbyDiffPublisher implements DiffPublisher<LightLobby, DiffSubscri
         }
     }
 
-
-    public synchronized void clear(){
+    public void notifyStartGame(){
         for(DiffSubscriberLobby diffSubscriber : subscribers){
-            diffSubscriber.updateLobby(new LittleBoyLobby());
+            diffSubscriber.gameStarted();
         }
-        subscribers.clear();
     }
-
 
 }
 
