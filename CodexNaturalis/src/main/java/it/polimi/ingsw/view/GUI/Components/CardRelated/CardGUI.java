@@ -63,7 +63,6 @@ public class CardGUI {
             holdDetected = true;
         });
 
-
         imageView.setOnMousePressed(e -> {
             holdDetected = false;
             holdTimer.playFromStart();
@@ -132,6 +131,9 @@ public class CardGUI {
 
     }
 
+    public CardFace getFace() {
+        return face;
+    }
     public void setOnTap(Consumer<MouseEvent> onTap) {
         this.onTap = onTap;
     }
