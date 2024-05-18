@@ -29,7 +29,6 @@ public class GameControllerGUI implements Initializable {
     private final CodexGUI codex = new CodexGUI();
     private final LogsGUI logs = new LogsGUI();
 
-    private AnchoredPopUp handPopUp;
 
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle) {
@@ -54,9 +53,8 @@ public class GameControllerGUI implements Initializable {
         new AnchoredPopUp(main, 0.2f, 0.6f, Pos.CENTER_RIGHT, 0.25f);
         new AnchoredPopUp(main, 0.2f, 0.6f, Pos.CENTER_LEFT, 0.25f);
         new AnchoredPopUp(main, 0.6f, 0.2f, Pos.TOP_CENTER, 0.25f);
-        handPopUp = new AnchoredPopUp(main, 0.6f, 0.2f, Pos.BOTTOM_CENTER, 0.25f);
 
-        hand.addHand(handPopUp.getContent());
+        hand.addHandTo(main);
 
 
 

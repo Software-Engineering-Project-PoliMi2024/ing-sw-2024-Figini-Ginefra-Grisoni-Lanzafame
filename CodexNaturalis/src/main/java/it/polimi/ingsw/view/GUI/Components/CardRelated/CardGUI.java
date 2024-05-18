@@ -8,6 +8,7 @@ import it.polimi.ingsw.view.GUI.GUIConfigs;
 import javafx.animation.KeyFrame;
 import javafx.animation.KeyValue;
 import javafx.animation.Timeline;
+import javafx.geometry.Point2D;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.input.MouseEvent;
@@ -31,6 +32,8 @@ public class CardGUI {
     private Timeline holdTimer = null;
 
     private boolean holdDetected = false;
+
+    private MouseEvent lastEvent = null;
 
 
     public CardGUI(LightCard target, CardFace face) {
@@ -59,13 +62,14 @@ public class CardGUI {
         //set hold detected to false
         holdTimer.setOnFinished(t -> {
             if(onHold != null && !holdDetected)
-                onHold.accept(null);
+                onHold.accept(lastEvent);
             holdDetected = true;
         });
 
         imageView.setOnMousePressed(e -> {
             holdDetected = false;
             holdTimer.playFromStart();
+            lastEvent = e;
         });
 
         imageView.setOnMouseReleased(e -> {
@@ -80,6 +84,10 @@ public class CardGUI {
             holdDetected = false;
         });
 
+    }
+
+    public CardGUI(CardGUI other){
+        this(other.target, other.face);
     }
 
     public void update(){
@@ -123,9 +131,6 @@ public class CardGUI {
     }
 
     public void setScale(double scale){
-        imageView.setTranslateX(imageView.getTranslateX() * scale / imageView.getScaleX());
-        imageView.setTranslateY(imageView.getTranslateY() * scale / imageView.getScaleY());
-
         imageView.setScaleX(scale);
         imageView.setScaleY(scale);
 
@@ -134,6 +139,13 @@ public class CardGUI {
     public CardFace getFace() {
         return face;
     }
+    public void setScaleAndUpdateTranslation(double scale, Point2D center){
+        imageView.setTranslateX((imageView.getTranslateX() - center.getX()) * scale / imageView.getScaleX() + center.getX());
+        imageView.setTranslateY((imageView.getTranslateY() - center.getY()) * scale / imageView.getScaleY() + center.getY());
+
+        this.setScale(scale);
+    }
+
     public void setOnTap(Consumer<MouseEvent> onTap) {
         this.onTap = onTap;
     }
@@ -144,5 +156,19 @@ public class CardGUI {
 
     public void setOnHoldRelease(Consumer<MouseEvent> onHoldRelease) {
         this.onHoldRelease = onHoldRelease;
+    }
+
+    public void disable(){
+        imageView.setDisable(true);
+
+        //set the opacity to 0.5
+        imageView.setOpacity(0.5);
+    }
+
+    public void enable(){
+        imageView.setDisable(false);
+
+        //set the opacity to 1
+        imageView.setOpacity(1);
     }
 }

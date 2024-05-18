@@ -118,8 +118,8 @@ public class CodexGUI implements Observer {
                         return;
                     }
                     scale += deltaY / 1000;
-                    this.cards.forEach(card -> card.setScale(scale * scale));
-                    this.frontier.forEach(card -> card.setScale(scale * scale));
+                    this.cards.forEach(card -> card.setScaleAndUpdateTranslation(this.getScale(), this.center));
+                    this.frontier.forEach(card -> card.setScale(this.getScale(), this.center));
                 }
         );
     }
@@ -128,17 +128,22 @@ public class CodexGUI implements Observer {
         return codex;
     }
 
+    /**
+     * Get the position of a card in the codex.
+     * @param position The position of the card in Grid space
+     * @return The position of the card in the codex
+     */
     private Point2D getCardPosition(Position position) {
         return new Point2D(
-                center.getX() + position.getX() * GUIConfigs.codexGridWith * scale,
-                center.getY() - position.getY() * GUIConfigs.codexGridHeight * scale
+                center.getX() + position.getX() * GUIConfigs.codexGridWith * this.getScale(),
+                center.getY() - position.getY() * GUIConfigs.codexGridHeight * this.getScale()
         );
     }
 
-    private Point2D getGridPosition(Point2D point) {
+    public Point2D getGridPosition(Point2D point) {
         return new Point2D(
-                (point.getX() - center.getX()) / (GUIConfigs.codexGridWith) / scale,
-                -(point.getY() - center.getY()) / (GUIConfigs.codexGridHeight) / scale
+                (point.getX() - center.getX()) / (GUIConfigs.codexGridWith) / this.getScale(),
+                -(point.getY() - center.getY()) / (GUIConfigs.codexGridHeight) / this.getScale()
         );
     }
 
@@ -152,16 +157,10 @@ public class CodexGUI implements Observer {
 
         Point2D cardPosition = getCardPosition(position);
         card.setTranslation(cardPosition.getX(), cardPosition.getY());
+        card.setScale(this.getScale());
 //        card.getImageView().setTranslateX(cardPosition.first());
 //        card.getImageView().setTranslateY(cardPosition.second());
 
-
-        card.getImageView().setOnMouseDragged(
-                e -> {
-                    card.setTranslation(e.getSceneX() - codex.getScene().getWidth()/2, e.getSceneY() - codex.getScene().getHeight()/2);
-                    e.consume();
-                }
-        );
     }
 
     public void setCenter(double x, double y) {
@@ -193,24 +192,19 @@ public class CodexGUI implements Observer {
         }
     }
 
-    public Point2D snapToFrontier(Point2D point){
+    public FrontierCardGUI snapToFrontier(Point2D point){
         //Find the closest frontier position
-        Point2D gridPos = this.getGridPosition(point);
-
-
-        Node closestCard = this.frontier.stream().min(
+        return this.frontier.stream().min(
                 (a, b) -> {
                     double distA = Math.pow(a.getCard().getTranslateX() - point.getX(), 2) + Math.pow(a.getCard().getTranslateY() - point.getY(), 2);
                     double distB = Math.pow(b.getCard().getTranslateX() - point.getX(), 2) + Math.pow(b.getCard().getTranslateY() - point.getY(), 2);
                     return Double.compare(distA, distB);
                 }
-        ).get().getCard();
-
-        return new Point2D(closestCard.getTranslateX(), closestCard.getTranslateY());
+        ).get();
     }
 
-    public void toggleFrontier(){
-        isFrontierVisible = !isFrontierVisible;
+    public void toggleFrontier(boolean isFrontierVisible){
+        this.isFrontierVisible = isFrontierVisible;
         for(FrontierCardGUI r : frontier){
             r.setVisibility(isFrontierVisible);
         }
@@ -218,5 +212,10 @@ public class CodexGUI implements Observer {
 
     public double getScale() {
         return scale * scale;
+    }
+
+    public void removeCard(CardGUI card){
+        codex.getChildren().remove(card.getImageView());
+        cards.remove(card);
     }
 }
