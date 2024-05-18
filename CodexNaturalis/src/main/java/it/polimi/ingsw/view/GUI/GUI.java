@@ -53,8 +53,6 @@ public class GUI extends Application implements ActualView {
         transitionAnimation = new logoSwapAnimation(primaryStage);
 
 
-
-
         ConnectionFormControllerGUI.view = this;
 
         LoginFormControllerGUI.setView(this);
@@ -62,6 +60,7 @@ public class GUI extends Application implements ActualView {
         this.primaryStage = primaryStage;
         primaryStage.setFullScreen(true);
         primaryStage.setTitle("Codex In Naturalis");
+        primaryStage.getIcons().add(CardMuseumGUI.logo);
         primaryStage.setScene(new Scene(stackRoot, 800, 600));
 
         AnchorPane.setTopAnchor(stackRoot, 0.0);
