@@ -127,8 +127,8 @@ public class ServerModelController implements ControllerInterface, DiffSubscribe
                 //create a new lobbyDiffEditLogin
                 lobbyToJoin.setPlayerControllers(this, this.nickname);
                 unsubscribeLobbyList();
+                subscribeLobby(lobbyToJoin);
                 if(!(lobbyToJoin.getLobbyPlayerList().size() == lobbyToJoin.getNumberOfMaxPlayer())) {
-                    subscribeLobby(lobbyToJoin);
                     logYou(LogsOnClient.LOBBY_JOINED);
                     transitionTo(ViewState.LOBBY);
                 }else{
@@ -152,6 +152,11 @@ public class ServerModelController implements ControllerInterface, DiffSubscribe
     public void gameStarted(){
         this.updateLobbyYou(new LittleBoyLobby());
         this.logGame(LogsOnClient.GAME_CREATED);
+        Game newGame = games.getUserGame(this.nickname);
+        if(newGame != null)
+            newGame.getGameLoopController().addActivePlayer(this.nickname, this);
+        else
+            throw new IllegalCallerException("The game has not been created");
     }
 
     @Override
