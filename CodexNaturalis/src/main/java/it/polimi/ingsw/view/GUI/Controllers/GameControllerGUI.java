@@ -5,8 +5,8 @@ import it.polimi.ingsw.lightModel.diffs.ModelDiffs;
 import it.polimi.ingsw.lightModel.diffs.game.HandDiffAdd;
 import it.polimi.ingsw.lightModel.lightTableRelated.LightGame;
 import it.polimi.ingsw.view.GUI.Components.AnchoredPopUp;
-import it.polimi.ingsw.model.cardReleted.cards.StartCard;
 import it.polimi.ingsw.view.GUI.Components.CodexRelated.CodexGUI;
+import it.polimi.ingsw.view.GUI.Components.CodexRelated.CollectedCollectablesGUI;
 import it.polimi.ingsw.view.GUI.Components.HandGUI;
 import it.polimi.ingsw.view.GUI.Components.LogsGUI;
 import it.polimi.ingsw.view.GUI.Components.PopUp;
@@ -25,8 +25,8 @@ public class GameControllerGUI implements Initializable {
     private AnchorPane main;
 
     private HandGUI hand;
-
     private CodexGUI codex;
+    private CollectedCollectablesGUI collectedCollectables;
     private final LogsGUI logs = new LogsGUI();
 
 
@@ -59,14 +59,17 @@ public class GameControllerGUI implements Initializable {
         hand.addHandTo(main);
 
 
+        collectedCollectables = new CollectedCollectablesGUI();
+        collectedCollectables.addThisTo(main);
 
-//        ModelDiffs<LightGame> diff = new HandDiffAdd(new LightCard(1), true);
-//        diff.apply(GUI.getLightGame());
-//
-//        diff = new HandDiffAdd(new LightCard(2), true);
-//        diff.apply(GUI.getLightGame());
-//
-//        diff = new HandDiffAdd(new LightCard(3), true);
-//        diff.apply(GUI.getLightGame());
+
+        ModelDiffs<LightGame> diff = new HandDiffAdd(new LightCard(1), true);
+        diff.apply(GUI.getLightGame());
+
+        diff = new HandDiffAdd(new LightCard(2), true);
+        diff.apply(GUI.getLightGame());
+
+        diff = new HandDiffAdd(new LightCard(3), true);
+        diff.apply(GUI.getLightGame());
     }
 }
