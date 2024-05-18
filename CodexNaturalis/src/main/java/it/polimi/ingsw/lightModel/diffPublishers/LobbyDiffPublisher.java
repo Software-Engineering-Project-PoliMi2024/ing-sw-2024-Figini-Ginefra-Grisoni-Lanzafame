@@ -44,17 +44,6 @@ public class LobbyDiffPublisher {
     }
 
     /**
-     * @param gameName name of the lobby being logged
-     * @param numberOfMaxPlayer required to start the game from the lobby
-     * @return a LobbyDiffEditLogin for the new subscriber containing the information of the lobby
-     */
-    private LobbyDiffEditLogin createDiffSubscriber(String gameName, int numberOfMaxPlayer){
-        // create a list of the nickname already in the lobby
-        ArrayList<String> addNicknames = new ArrayList<>(subscribers.values());
-        return new LobbyDiffEditLogin(addNicknames, new ArrayList<>(), gameName, numberOfMaxPlayer);
-    }
-
-    /**
      * remove the subscriber from the lobbyPublisher
      * notifies the other subscribers of the leaving of the unsubscriber
      * @param diffUnsubscriber the subscriber being removed
