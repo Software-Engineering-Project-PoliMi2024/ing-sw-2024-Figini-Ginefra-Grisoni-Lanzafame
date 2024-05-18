@@ -39,6 +39,7 @@ public class ServerModelController implements ControllerInterface, DiffSubscribe
     private final MultiGame games;
     private final ViewInterface view;
     private String nickname;
+    private final Object freezeDisconnect = new Object();
     /**
      * The constructor of the class
      * @param games the reference to the Multi-game on the server
@@ -132,11 +133,13 @@ public class ServerModelController implements ControllerInterface, DiffSubscribe
                     transitionTo(ViewState.LOBBY);
                 }else{
                     //Handle the creation of a new game from the lobbyToJoin
-                    Game newGame = games.createGame(lobbyToJoin);
-                    games.addGame(newGame);
-                    lobbyToJoin.notifyStartGame();
-                    games.removeLobby(lobbyToJoin);
-                    newGame.getGameLoopController().joinGame();
+                    synchronized (freezeDisconnect) {
+                        Game newGame = games.createGame(lobbyToJoin);
+                        games.addGame(newGame);
+                        lobbyToJoin.notifyStartGame();
+                        games.removeLobby(lobbyToJoin);
+                        newGame.getGameLoopController().joinGame();
+                    }
                 }
             }else{
                 logErr(LogsOnClient.LOBBY_IS_FULL);
@@ -310,20 +313,22 @@ public class ServerModelController implements ControllerInterface, DiffSubscribe
      */
     @Override
     public void disconnect(){
-        if(this.nickname == null){
-            System.out.println("Client disconnected before logging in");
-            return; //The client disconnected before logging in, no action needed
-        }else{
-            System.out.println(this.nickname + " has disconnected");
-            this.games.removeUser(this.nickname);//Free the nick from the server, so it can be re-used by other people
-            if(games.isInGameParty(this.nickname)){ //Handle the removing of the user from a game
-                games.getUserGame(this.nickname).unsubscribe(this);
-                this.games.getUserGame(nickname).getGameLoopController().leaveGame(this, this.nickname);
-            } else if (games.getUserLobby(this.nickname)!=null) { //Handle the removing of the user from a lobby
-                this.leaveLobby();
-                games.getUserLobby(this.nickname).unsubscribe(this);
-            }else{//Remove the user from the lobbyDiffPublisher list
-                games.unsubscribe(this);
+        synchronized (freezeDisconnect) {
+            if (this.nickname == null) {
+                System.out.println("Client disconnected before logging in");
+                return; //The client disconnected before logging in, no action needed
+            } else {
+                System.out.println(this.nickname + " has disconnected");
+                this.games.removeUser(this.nickname);//Free the nick from the server, so it can be re-used by other people
+                if (games.isInGameParty(this.nickname)) { //Handle the removing of the user from a game
+                    games.getUserGame(this.nickname).unsubscribe(this);
+                    this.games.getUserGame(nickname).getGameLoopController().leaveGame(this, this.nickname);
+                } else if (games.getUserLobby(this.nickname) != null) { //Handle the removing of the user from a lobby
+                    this.leaveLobby();
+                    games.getUserLobby(this.nickname).unsubscribe(this);
+                } else {//Remove the user from the lobbyDiffPublisher list
+                    games.unsubscribe(this);
+                }
             }
         }
     }
