@@ -1,8 +1,12 @@
 package it.polimi.ingsw.view.GUI.Components;
 
 import it.polimi.ingsw.designPatterns.Observer;
+import it.polimi.ingsw.model.playerReleted.Position;
+import it.polimi.ingsw.view.GUI.Components.CardRelated.CardGUI;
+import it.polimi.ingsw.view.GUI.Components.CardRelated.DraggableCard;
 import it.polimi.ingsw.view.GUI.Components.CardRelated.FlippableCardGUI;
 import it.polimi.ingsw.view.GUI.Components.CodexRelated.CodexGUI;
+import it.polimi.ingsw.view.GUI.Components.CodexRelated.FrontierCardGUI;
 import it.polimi.ingsw.view.GUI.GUI;
 import it.polimi.ingsw.view.GUI.GUIConfigs;
 import javafx.geometry.Point2D;
@@ -21,6 +25,11 @@ public class HandGUI implements Observer {
 
     private final FlippableCardGUI[] cards = new FlippableCardGUI[3];
 
+    private FlippableCardGUI positioningCard = null;
+    private DraggableCard stubCard = null;
+    private AnchoredPopUp handPopUp;
+    private FrontierCardGUI closestFrontier;
+
     public HandGUI() {
         GUI.getLightGame().getHand().attach(this);
 
@@ -37,11 +46,13 @@ public class HandGUI implements Observer {
         return hand;
     }
 
-    public void addHand(AnchorPane parent){
-        parent.getChildren().add(hand);
+    public void addHandTo(AnchorPane parent){
+        handPopUp = new AnchoredPopUp(parent, 0.6f, 0.2f, Pos.BOTTOM_CENTER, 0.25f);
 
-        hand.prefWidthProperty().bind(parent.widthProperty().multiply(0.9));
-        hand.prefHeightProperty().bind(parent.heightProperty(). multiply(0.9));
+        handPopUp.getContent().getChildren().add(hand);
+
+        hand.prefWidthProperty().bind(handPopUp.getContent().widthProperty().multiply(0.9));
+        hand.prefHeightProperty().bind(handPopUp.getContent().heightProperty(). multiply(0.9));
     }
 
     public void addCard(FlippableCardGUI card){
@@ -71,69 +82,68 @@ public class HandGUI implements Observer {
                 card.setOnHold(
                         e -> {
                             System.out.println("Holding card");
+                            codex.toggleFrontier(true);
+
+                            positioningCard = card;
+                            positioningCard.disable();
+
+                            stubCard = new DraggableCard(card);
+
+                            Point2D mousePos2 = new Point2D(e.getSceneX() - codex.getCodex().getWidth()/2, e.getSceneY() - codex.getCodex().getHeight()/2);
+                            Point2D pos2 = codex.getGridPosition(mousePos2).multiply(1/codex.getScale());
+                            Position position = new Position((int) pos2.getX(), (int) pos2.getY());
+
+                            codex.addCard(stubCard, position);
+                        }
+                );
+
+                card.getImageView().setOnDragDetected(
+                        e -> {
+                            handPopUp.close();
+                            handPopUp.setLocked(true);
+                            e.consume();
+                        }
+                );
+
+                card.getImageView().setOnMouseDragged(
+                        e -> {
+                            if(stubCard == null)
+                                return;
+
+                            Point2D mousePos = new Point2D(e.getSceneX() - codex.getCodex().getWidth()/2, e.getSceneY() - codex.getCodex().getHeight()/2);
+                            FrontierCardGUI closestFrontier = codex.snapToFrontier(mousePos);
+                            Point2D pos = new Point2D(closestFrontier.getCard().getTranslateX(), closestFrontier.getCard().getTranslateY());
+
+                            if (Math.abs(pos.getX() - mousePos.getX()) < GUIConfigs.cardWidth/2 * codex.getScale() && Math.abs(pos.getY() - mousePos.getY()) < GUIConfigs.cardHeight/2 * codex.getScale()){
+                                stubCard.setTranslation(pos.getX(), pos.getY());
+                                this.closestFrontier = closestFrontier;
+                            }
+                            else{
+                                stubCard.setTranslation(mousePos.getX(), mousePos.getY());
+                                this.closestFrontier = null;
+                            }
+
+                            e.consume();
                         }
                 );
 
                 card.setOnHoldRelease(
                         e -> {
-                            System.out.println("Releasing card");
-                            e.consume();
+                            handPopUp.setLocked(false);
+                            handPopUp.open();
+                            codex.toggleFrontier(false);
+                            codex.removeCard(stubCard);
+
+                            if(closestFrontier == null)
+                                positioningCard.enable();
+                            else{
+                                System.out.println("Controller.placeCard");
+                                codex.addCard(new CardGUI(positioningCard), closestFrontier.getGridPosition());
+                                this.removeCard(positioningCard);
+                                positioningCard = null;
+                            }
                         }
                 );
-
-//                card.getImageView().setOnMousePressed(
-//                        e -> {
-//                            card.getImageView().setStyle("-fx-effect: dropshadow(three-pass-box, rgba(0,0,0,0.8), 10, 0, 0, 0);");
-//
-//                            card.setScale(codex.getScale());
-//
-//                            hand.getChildren().remove(card.getImageView());
-//                            codex.getCodex().getChildren().add(card.getImageView());
-//
-//                            double mouseX = e.getSceneX() - codex.getCodex().getWidth()/2;
-//                            double mouseY = e.getSceneY() - codex.getCodex().getHeight()/2;
-//
-//                            card.setTranslation(mouseX, mouseY);
-//                            card.getImageView().setTranslateX(mouseX);
-//                            card.getImageView().setTranslateY(mouseY);
-//
-//                            codex.toggleFrontier();
-//                            e.consume();
-//                        }
-//                );
-//                card.getImageView().setOnMouseDragged(
-//                        e -> {
-//                            card.getImageView().setStyle("-fx-effect: dropshadow(three-pass-box, rgba(0,0,0,0.8), 10, 0, 0, 0);");
-//
-//                            Point2D mousePos = new Point2D(e.getSceneX() - codex.getCodex().getWidth()/2, e.getSceneY() - codex.getCodex().getHeight()/2);
-//
-//                            Point2D pos = codex.snapToFrontier(mousePos);
-//
-//                            //Check if pos is close enough to the mouse position
-//                            if (Math.abs(pos.getX() - mousePos.getX()) < GUIConfigs.cardWidth/2 * codex.getScale() && Math.abs(pos.getY() - mousePos.getY()) < GUIConfigs.cardHeight/2 * codex.getScale()){
-//                                card.setTranslation(pos.getX(), pos.getY());
-//                            }
-//                            else{
-//                                card.setTranslation(mousePos.getX(), mousePos.getY());
-//                            }
-//
-//                            e.consume();
-//                        }
-//                );
-
-//                card.getImageView().setOnMouseReleased(
-//                        e -> {
-//                            card.setScale(1);
-//                            card.getImageView().setStyle("");
-//                            codex.getCodex().getChildren().remove(card.getImageView());
-//                            hand.getChildren().add(card.getImageView());
-//                            //Reset position
-//                            card.setTranslation(0, 0);
-//                            codex.toggleFrontier();
-//                            e.consume();
-//                        }
-//                );
-
 
                 return;
             }

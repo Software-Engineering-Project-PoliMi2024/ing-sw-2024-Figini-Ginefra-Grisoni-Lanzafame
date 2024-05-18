@@ -22,6 +22,10 @@ public class DraggableCard extends CardGUI{
         });
     }
 
+    public DraggableCard(CardGUI card) {
+        this(card.getTarget(), card.getFace());
+    }
+
     public void setOnDrag(Consumer<MouseEvent> onDrag) {
         this.onDrag = onDrag;
     }

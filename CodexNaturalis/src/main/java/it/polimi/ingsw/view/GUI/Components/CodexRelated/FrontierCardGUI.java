@@ -2,6 +2,7 @@ package it.polimi.ingsw.view.GUI.Components.CodexRelated;
 
 import it.polimi.ingsw.model.playerReleted.Position;
 import it.polimi.ingsw.view.GUI.GUIConfigs;
+import javafx.geometry.Point2D;
 import javafx.scene.Node;
 import javafx.scene.shape.Rectangle;
 
@@ -28,11 +29,15 @@ public class FrontierCardGUI {
         rectangle.setVisible(visible);
     }
 
-    public void setScale(double scale) {
-        rectangle.setTranslateX(rectangle.getTranslateX() * scale / rectangle.getScaleX());
-        rectangle.setTranslateY(rectangle.getTranslateY() * scale / rectangle.getScaleY());
+    public void setScale(double scale, Point2D center) {
+        rectangle.setTranslateX((rectangle.getTranslateX() - center.getX()) * scale / rectangle.getScaleX() + center.getX());
+        rectangle.setTranslateY((rectangle.getTranslateY() - center.getY()) * scale / rectangle.getScaleY() + center.getY());
 
         rectangle.setScaleX(scale);
         rectangle.setScaleY(scale);
+    }
+
+    public Position getGridPosition() {
+        return gridPosition;
     }
 }
