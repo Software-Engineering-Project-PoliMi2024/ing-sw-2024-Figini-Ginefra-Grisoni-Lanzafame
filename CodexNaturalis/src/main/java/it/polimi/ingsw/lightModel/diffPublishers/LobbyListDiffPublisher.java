@@ -33,17 +33,17 @@ public class LobbyListDiffPublisher implements DiffPublisher<LightLobbyList>{
     }
 
     @Override
-    public void subscribe(DiffSubscriber diffSubscriber) {
+    public synchronized void subscribe(DiffSubscriber diffSubscriber) {
         diffSubscribers.add(diffSubscriber);
     }
 
     @Override
-    public void unsubscribe(DiffSubscriber diffSubscriber) {
+    public synchronized void unsubscribe(DiffSubscriber diffSubscriber) {
         diffSubscribers.remove(diffSubscriber);
     }
 
     @Override
-    public void notifySubscribers(ModelDiffs<LightLobbyList> diff) {
+    public synchronized void notifySubscribers(ModelDiffs<LightLobbyList> diff) {
         for(DiffSubscriber diffSubscriber : diffSubscribers){
             diffSubscriber.updateLobbyList(diff);
         }
