@@ -43,7 +43,7 @@ public class Game implements Serializable {
         goldCardDeck = new Deck<>(2, goldCardCardLookUp.getQueue());
         this.commonObjective = new ArrayList<>();
         this.populateCommonObjective();
-        this.gameLoopController = new GameLoopController(this, lobby.getPlayerController());
+        this.gameLoopController = new GameLoopController(this);
     }
 
     /** @return the Objective Card Deck*/
