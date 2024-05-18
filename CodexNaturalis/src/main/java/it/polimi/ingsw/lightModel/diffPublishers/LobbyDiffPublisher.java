@@ -20,23 +20,18 @@ public class LobbyDiffPublisher {
         this.subscribers = new HashMap<>();
     }
     /**
-     * the subscriber will receive the current state of the lobby: its name, the number of max players
-     * and the list of the players already in the lobby
      * the players already in the lobby will receive the new subscriber nickname
      * Send the appropriated log to everyone
      * @param diffSubscriber The subscriber of the user that joins the lobby.
      * @param nickname The nickname of the user joining the lobby.
-     * @param gameName The name of the lobby's game.
-     * @param numberOfMaxPlayer The maximum number of players allowed in the lobby.
      */
-    public synchronized void subscribe(DiffSubscriber diffSubscriber, String nickname, String gameName, int numberOfMaxPlayer) {
+    public synchronized void subscribe(DiffSubscriber diffSubscriber, String nickname) {
         LobbyDiffEdit others = createDiffSubscribed(nickname);
         for(DiffSubscriber subscriber : subscribers.keySet()){
-            notifySubscriber(subscriber, others);
+            if(!subscribers.get(subscriber).equals(nickname))
+                notifySubscriber(subscriber, others);
         }
         subscribers.put(diffSubscriber, nickname);
-        LobbyDiffEditLogin yours = createDiffSubscriber(gameName, numberOfMaxPlayer);
-        notifySubscriber(diffSubscriber, yours);
     }
     /**
      * @return the diff for the "others" people already in the lobby about the new player "nickname"
@@ -61,12 +56,11 @@ public class LobbyDiffPublisher {
 
     /**
      * remove the subscriber from the lobbyPublisher
-     * resets the LightLobby stored local on the subscriber
      * notifies the other subscribers of the leaving of the unsubscriber
      * @param diffUnsubscriber the subscriber being removed
      */
     public void unsubscribe(DiffSubscriber diffUnsubscriber) {
-        notifySubscriber(diffUnsubscriber, new LittleBoyLobby());
+
         String unsubscriberNick = subscribers.get(diffUnsubscriber);
         subscribers.remove(diffUnsubscriber);
         LobbyDiffEdit others = createDiffUnsubscriber(unsubscriberNick);
@@ -102,8 +96,6 @@ public class LobbyDiffPublisher {
         subscribers.clear();
     }
 
-    public synchronized void notifyStateDiff(DiffSubscriber diffSubscriber){
 
-    }
 }
 

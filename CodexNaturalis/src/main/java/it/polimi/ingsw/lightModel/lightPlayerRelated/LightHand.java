@@ -83,7 +83,7 @@ public class LightHand implements Differentiable, Observed {
      */
     public void addCard(LightCard card, Boolean playability){
         if(length(cards) == 3){
-            throw new IllegalCallerException();
+            throw new IllegalCallerException("hand is full");
         }else{
             for(int i=0; i<cards.length; i++){
                 if(cards[i]==null){

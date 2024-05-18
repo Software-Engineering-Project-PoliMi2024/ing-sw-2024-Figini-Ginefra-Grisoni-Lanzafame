@@ -77,8 +77,10 @@ public class MultiGame implements Serializable {
     public synchronized Boolean addLobby(Lobby lobby) {
         if (getGameByName(lobby.getLobbyName()) != null) {
             return false;
-        } else
-            return lobbies.addLobby(lobby);
+        } else {
+            lobbies.addLobby(lobby);
+            return true;
+        }
     }
     public synchronized void removeLobby(Lobby lobby) {
         lobbies.remove(lobby);
@@ -111,9 +113,7 @@ public class MultiGame implements Serializable {
     public void unsubscribe(DiffSubscriber diffSubscriber) {
         lobbies.unsubscribe(diffSubscriber);
     }
-    public void subscribe(LobbyListDiffEdit lightLobbyDiff){
-        lobbies.subscribe(lightLobbyDiff);
-    }
+
     /**
      * @param nickname of the player
      * @return True if the nickname is Unique, false otherwise

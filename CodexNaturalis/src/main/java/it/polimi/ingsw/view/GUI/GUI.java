@@ -115,12 +115,12 @@ public class GUI extends Application implements ActualView {
 
     @Override
     public void logErr(String logMsg) throws RemoteException {
-        LogErr.display(logMsg);
+        Platform.runLater(()->LogErr.display(logMsg));
     }
 
     @Override
     public void logOthers(String logMsg) throws RemoteException {
-        logMemory.addLog(logMsg);
+        Platform.runLater(()->logMemory.addLog(logMsg));
     }
 
     @Override
@@ -129,23 +129,18 @@ public class GUI extends Application implements ActualView {
 
     @Override
     public void updateLobbyList(ModelDiffs<LightLobbyList> diff) throws RemoteException {
-        Platform.runLater(() -> {
-            diff.apply(lobbyList);
-        });
+        Platform.runLater(() -> diff.apply(lobbyList));
     }
 
     @Override
     public void updateLobby(ModelDiffs<LightLobby> diff) throws RemoteException {
-        Platform.runLater(() -> {
-            diff.apply(lobby);
-        });
+        Platform.runLater(() -> diff.apply(lobby));
     }
 
     @Override
     public void updateGame(ModelDiffs<LightGame> diff) throws RemoteException {
-        Platform.runLater(() -> {
-            diff.apply(lightGame);
-        });    }
+        Platform.runLater(() -> diff.apply(lightGame));
+    }
 
     @Override
     public void setFinalRanking(String[] nicks, int[] points) throws RemoteException {

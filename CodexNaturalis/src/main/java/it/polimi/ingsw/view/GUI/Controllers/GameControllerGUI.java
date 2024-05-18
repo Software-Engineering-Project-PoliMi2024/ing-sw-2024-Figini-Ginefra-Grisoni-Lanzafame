@@ -5,11 +5,13 @@ import it.polimi.ingsw.lightModel.diffs.ModelDiffs;
 import it.polimi.ingsw.lightModel.diffs.game.HandDiffAdd;
 import it.polimi.ingsw.lightModel.lightTableRelated.LightGame;
 import it.polimi.ingsw.view.GUI.Components.AnchoredPopUp;
+import it.polimi.ingsw.model.cardReleted.cards.StartCard;
 import it.polimi.ingsw.view.GUI.Components.CodexRelated.CodexGUI;
 import it.polimi.ingsw.view.GUI.Components.HandGUI;
 import it.polimi.ingsw.view.GUI.Components.LogsGUI;
 import it.polimi.ingsw.view.GUI.Components.PopUp;
 import it.polimi.ingsw.view.GUI.GUI;
+import it.polimi.ingsw.view.GUI.Components.StartCardGUI;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.geometry.Pos;
@@ -46,6 +48,8 @@ public class GameControllerGUI implements Initializable {
         PopUp popUp = new PopUp(main);
         Button button = new Button("Open PopUp");
         button.setOnAction(e -> popUp.open());
+
+        StartCardGUI startCardGUI = new StartCardGUI(main);
 
         main.getChildren().add(button);
 
