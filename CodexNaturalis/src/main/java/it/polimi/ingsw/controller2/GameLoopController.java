@@ -23,13 +23,15 @@ public class GameLoopController implements Serializable {
     /**
      * The constructor of the class
      * @param game being directed by the GameLoopController
-     * @param activePlayers a map of nickname and control for each player
      */
-    public GameLoopController(Game game, Map<String, ServerModelController> activePlayers){
-        this.activePlayers = activePlayers;
+    public GameLoopController(Game game){
+        this.activePlayers = new HashMap<>();
         this.game = game;
     }
 
+    public void addActivePlayer(String nickname, ServerModelController controller){
+        activePlayers.put(nickname, controller);
+    }
     /**
      * Join a user back into the game after he left. Add his controller back to the activePlayer map
      * @param nickname of the user who is joining
