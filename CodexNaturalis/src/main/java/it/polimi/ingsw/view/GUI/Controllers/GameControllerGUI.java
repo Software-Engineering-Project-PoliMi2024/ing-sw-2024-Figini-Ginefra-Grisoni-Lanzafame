@@ -54,7 +54,6 @@ public class GameControllerGUI implements Initializable {
 
         new AnchoredPopUp(main, 0.2f, 0.6f, Pos.CENTER_RIGHT, 0.25f);
         new AnchoredPopUp(main, 0.2f, 0.6f, Pos.CENTER_LEFT, 0.25f);
-        new AnchoredPopUp(main, 0.6f, 0.2f, Pos.TOP_CENTER, 0.25f);
 
         hand.addHandTo(main);
 

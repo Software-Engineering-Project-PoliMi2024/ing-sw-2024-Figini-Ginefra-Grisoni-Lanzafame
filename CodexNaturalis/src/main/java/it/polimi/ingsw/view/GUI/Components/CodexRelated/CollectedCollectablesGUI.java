@@ -61,7 +61,7 @@ public class CollectedCollectablesGUI implements Observer {
     }
 
     public void addThisTo(AnchorPane parent){
-        popUp = new AnchoredPopUp(parent, 0.6f, 0.1f, Pos.TOP_CENTER, 0.25f);
+        popUp = new AnchoredPopUp(parent, 0.4f, 0.08f, Pos.TOP_CENTER, 0.25f);
         popUp.setLocked(true);
         popUp.open();
         popUp.getContent().getChildren().add(container);
