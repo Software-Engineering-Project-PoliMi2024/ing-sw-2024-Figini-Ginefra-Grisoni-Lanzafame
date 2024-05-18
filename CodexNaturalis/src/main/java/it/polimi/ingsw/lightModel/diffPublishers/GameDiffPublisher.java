@@ -19,7 +19,7 @@ import java.io.Serializable;
 import java.util.*;
 
 public class GameDiffPublisher implements Serializable {
-    private final Map<DiffSubscriber, String> activeSubscribers;
+    private final Map<DiffSubscriberGame, String> activeSubscribers;
     private final Game game;
     public GameDiffPublisher(Game game) {
         this.activeSubscribers = new HashMap<>();
@@ -35,7 +35,7 @@ public class GameDiffPublisher implements Serializable {
      */
     public synchronized void subscribe(DiffSubscriber diffSubscriber, String nickname) {
         GameDiffPlayerActivity communicateJoin = new GameDiffPlayerActivity(List.of(nickname), new ArrayList<>());
-        for(DiffSubscriber subscriber : activeSubscribers.keySet()){
+        for(DiffSubscriberGame subscriber : activeSubscribers.keySet()){
             notifySubscriber(subscriber, communicateJoin);
         }
         activeSubscribers.put(diffSubscriber, nickname);
@@ -52,19 +52,19 @@ public class GameDiffPublisher implements Serializable {
     public synchronized void unsubscribe(DiffSubscriber diffSubscriber) {
         GameDiffPlayerActivity communicateLeave = new GameDiffPlayerActivity(new ArrayList<>(), List.of(activeSubscribers.get(diffSubscriber)));
         activeSubscribers.remove(diffSubscriber);
-        for(DiffSubscriber subscriber : activeSubscribers.keySet()){
+        for(DiffSubscriberGame subscriber : activeSubscribers.keySet()){
             notifySubscriber(subscriber, communicateLeave);
         }
 
-        notifySubscriber(diffSubscriber, new GadgetGame());
+
     }
 
     /**
-     * sends a diff to all the subscribers of the gamePublisher
+     * sends a diff to all the subscrnotifySubscriber(diffSubscriber, new GadgetGame());ibers of the gamePublisher
      * @param diff the diff to send
      */
     public synchronized void subscribe(GameDiff diff) {
-        for(DiffSubscriber diffSubscriber : activeSubscribers.keySet()){
+        for(DiffSubscriberGame diffSubscriber : activeSubscribers.keySet()){
             notifySubscriber(diffSubscriber, diff);
         }
     }
@@ -77,7 +77,7 @@ public class GameDiffPublisher implements Serializable {
      * @param otherGameDiff the diff to send to the other subscribers
      */
     public synchronized void subscribe(DiffSubscriber diffSubscriber, GameDiff playerGameDiff, GameDiff otherGameDiff){
-        for(DiffSubscriber subscriber : activeSubscribers.keySet()) {
+        for(DiffSubscriberGame subscriber : activeSubscribers.keySet()) {
             if (activeSubscribers.get(diffSubscriber).equals(activeSubscribers.get(subscriber))) {
                  notifySubscriber(subscriber, playerGameDiff);
             } else {
@@ -91,7 +91,7 @@ public class GameDiffPublisher implements Serializable {
      * @param diffSubscriber the subscriber to send the diff
      * @param gameDiff the diff to send
      */
-    public synchronized void notifySubscriber(DiffSubscriber diffSubscriber, GameDiff gameDiff){
+    public synchronized void notifySubscriber(DiffSubscriberGame diffSubscriber, GameDiff gameDiff){
         diffSubscriber.updateGame(gameDiff);
     }
 
