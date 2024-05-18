@@ -3,6 +3,7 @@ package it.polimi.ingsw.view.GUI.Components.CodexRelated;
 import it.polimi.ingsw.designPatterns.Observer;
 import it.polimi.ingsw.lightModel.diffs.ModelDiffs;
 import it.polimi.ingsw.lightModel.diffs.game.CodexDiff;
+import it.polimi.ingsw.lightModel.lightPlayerRelated.LightCodex;
 import it.polimi.ingsw.lightModel.lightTableRelated.LightGame;
 import it.polimi.ingsw.model.cardReleted.utilityEnums.Collectable;
 import it.polimi.ingsw.model.cardReleted.utilityEnums.Resource;
@@ -24,9 +25,6 @@ public class CollectedCollectablesGUI implements Observer {
 
     public CollectedCollectablesGUI() {
         Arrays.stream(Resource.values()).forEach(resource -> counters.put(resource, new ImageCounter(AssetsGUI.loadResource(resource))));
-
-
-        GUI.getLightGame().getMyCodex().attach(this);
 
         ModelDiffs<LightGame> diffs = new CodexDiff("Player1", 0, Map.of(
                 Resource.PLANT, 2,
@@ -52,6 +50,10 @@ public class CollectedCollectablesGUI implements Observer {
         counters.values().forEach(imageCounter -> container.getChildren().add(imageCounter.getContent()));
     }
 
+    public void attachToCodex(){
+        this.getLightCodex().attach(this);
+    }
+
     public void setCounter(Collectable collectable, int counter) {
         counters.get(collectable).setCounter(counter);
     }
@@ -69,9 +71,13 @@ public class CollectedCollectablesGUI implements Observer {
 
     @Override
     public void update() {
-        GUI.getLightGame().getMyCodex().getEarnedCollectables().forEach((collectable, integer) -> {
+        this.getLightCodex().getEarnedCollectables().forEach((collectable, integer) -> {
                 if(counters.containsKey(collectable))
                     setCounter(collectable, integer);
         });
+    }
+
+    protected LightCodex getLightCodex(){
+        return GUI.getLightGame().getMyCodex();
     }
 }

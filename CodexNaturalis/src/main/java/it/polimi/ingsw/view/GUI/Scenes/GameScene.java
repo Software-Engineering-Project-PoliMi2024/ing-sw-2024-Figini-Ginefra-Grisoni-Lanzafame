@@ -70,6 +70,7 @@ public class GameScene extends SceneGUI{
 
 
         collectedCollectables = new CollectedCollectablesGUI();
+        collectedCollectables.attachToCodex();
         collectedCollectables.addThisTo(getContent());
 
 
