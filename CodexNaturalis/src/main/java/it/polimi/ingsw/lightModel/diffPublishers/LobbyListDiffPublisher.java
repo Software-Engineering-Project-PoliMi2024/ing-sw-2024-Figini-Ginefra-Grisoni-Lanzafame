@@ -10,8 +10,8 @@ import it.polimi.ingsw.model.tableReleted.Lobby;
 import java.util.ArrayList;
 import java.util.List;
 
-public class LobbyListDiffPublisher implements DiffPublisher<LightLobbyList>{
-    private final List<DiffSubscriber> diffSubscribers = new ArrayList<>();
+public class LobbyListDiffPublisher implements DiffPublisher<LightLobbyList, DiffSubscriberLobbyList>{
+    private final List<DiffSubscriberLobbyList> diffSubscribers = new ArrayList<>();
 
     public void addLobbyNotification(Lobby lobby){
         notifySubscribers(addLobbyDiffCalc(lobby));
@@ -33,18 +33,18 @@ public class LobbyListDiffPublisher implements DiffPublisher<LightLobbyList>{
     }
 
     @Override
-    public synchronized void subscribe(DiffSubscriber diffSubscriber) {
+    public synchronized void subscribe(DiffSubscriberLobbyList diffSubscriber) {
         diffSubscribers.add(diffSubscriber);
     }
 
     @Override
-    public synchronized void unsubscribe(DiffSubscriber diffSubscriber) {
+    public synchronized void unsubscribe(DiffSubscriberLobbyList diffSubscriber) {
         diffSubscribers.remove(diffSubscriber);
     }
 
     @Override
     public synchronized void notifySubscribers(ModelDiffs<LightLobbyList> diff) {
-        for(DiffSubscriber diffSubscriber : diffSubscribers){
+        for(DiffSubscriberLobbyList diffSubscriber : diffSubscribers){
             diffSubscriber.updateLobbyList(diff);
         }
     }
