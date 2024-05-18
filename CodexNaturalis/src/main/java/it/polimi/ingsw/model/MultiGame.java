@@ -126,7 +126,7 @@ public class MultiGame implements Serializable {
      * @param nickname of the user
      * @return true if the nick is already present in a game (e.g. the user disconnected while still playing a match)
      */
-    public Boolean isInGameParty(String nickname){
+    public synchronized Boolean isInGameParty(String nickname){
         if(getUserGame(nickname)==null){
             return false;
         }else{
@@ -138,7 +138,7 @@ public class MultiGame implements Serializable {
      * @param nickName of the player
      * @return Game if the player is in a Game, null otherwise
      */
-    public Game getUserGame(String nickName){
+    public synchronized Game getUserGame(String nickName){
         for(Game game : this.getGames()){
             if(game.getGameParty().getUsersList().stream().map(User::getNickname).toList().contains(nickName)){
                 return game;
@@ -151,7 +151,7 @@ public class MultiGame implements Serializable {
      * @param nickname of the user
      * @return the Lobby if the user is in a lobby, null otherwise
      */
-    public Lobby getUserLobby(String nickname){
+    public synchronized Lobby getUserLobby(String nickname){
         for(Lobby lobby: lobbies.getLobbies()){
             for(String name : lobby.getLobbyPlayerList())
                 if(name.equals(nickname))
@@ -202,7 +202,7 @@ public class MultiGame implements Serializable {
         return cardLookUpGoldCard;
     }
 
-    public User getUserFromNick(String nickname){
+    public synchronized User getUserFromNick(String nickname){
         User returnUser = null;
         List<User> userList = this.getGames().stream()
                 .map(Game::getGameParty)
