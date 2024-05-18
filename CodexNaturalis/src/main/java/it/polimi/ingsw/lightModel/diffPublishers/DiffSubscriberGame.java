@@ -4,6 +4,6 @@ import it.polimi.ingsw.lightModel.diffs.ModelDiffs;
 import it.polimi.ingsw.lightModel.lightTableRelated.LightGame;
 
 public interface DiffSubscriberGame {
-    public void updateGame(ModelDiffs<LightGame> diff);
+    void updateGame(ModelDiffs<LightGame> diff);
 
 }
