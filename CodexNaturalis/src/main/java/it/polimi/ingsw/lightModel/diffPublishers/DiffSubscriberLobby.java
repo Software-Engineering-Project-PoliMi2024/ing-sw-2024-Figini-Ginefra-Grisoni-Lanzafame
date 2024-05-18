@@ -6,4 +6,5 @@ import it.polimi.ingsw.lightModel.lightTableRelated.LightLobby;
 public interface DiffSubscriberLobby {
     void updateLobby(ModelDiffs<LightLobby> diff);
     String getNickname();
+    void gameStarted();
 }
