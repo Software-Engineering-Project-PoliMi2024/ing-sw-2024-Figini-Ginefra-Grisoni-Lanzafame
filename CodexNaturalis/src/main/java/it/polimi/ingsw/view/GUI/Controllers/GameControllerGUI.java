@@ -26,12 +26,14 @@ public class GameControllerGUI implements Initializable {
 
     private HandGUI hand;
 
-    private final CodexGUI codex = new CodexGUI();
+    private CodexGUI codex;
     private final LogsGUI logs = new LogsGUI();
 
 
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle) {
+        codex = new CodexGUI();
+
 //        cardsBox.alignmentProperty().setValue(Pos.CENTER);
 //        cardsBox.setSpacing(10);
         hand = new HandGUI();
@@ -58,13 +60,13 @@ public class GameControllerGUI implements Initializable {
 
 
 
-        ModelDiffs<LightGame> diff = new HandDiffAdd(new LightCard(1), true);
-        diff.apply(GUI.getLightGame());
-
-        diff = new HandDiffAdd(new LightCard(2), true);
-        diff.apply(GUI.getLightGame());
-
-        diff = new HandDiffAdd(new LightCard(3), true);
-        diff.apply(GUI.getLightGame());
+//        ModelDiffs<LightGame> diff = new HandDiffAdd(new LightCard(1), true);
+//        diff.apply(GUI.getLightGame());
+//
+//        diff = new HandDiffAdd(new LightCard(2), true);
+//        diff.apply(GUI.getLightGame());
+//
+//        diff = new HandDiffAdd(new LightCard(3), true);
+//        diff.apply(GUI.getLightGame());
     }
 }

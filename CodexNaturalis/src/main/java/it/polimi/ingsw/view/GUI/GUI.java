@@ -11,6 +11,7 @@ import it.polimi.ingsw.lightModel.lightTableRelated.LightLobbyList;
 import it.polimi.ingsw.view.ActualView;
 import it.polimi.ingsw.lightModel.LogMemory;
 import it.polimi.ingsw.view.GUI.Components.LogErr;
+import it.polimi.ingsw.view.GUI.Components.Utils.EnumProperty;
 import it.polimi.ingsw.view.GUI.Components.logoSwapAnimation;
 import it.polimi.ingsw.view.GUI.Controllers.ConnectionFormControllerGUI;
 import it.polimi.ingsw.view.GUI.Controllers.LoginFormControllerGUI;
@@ -19,6 +20,7 @@ import javafx.animation.*;
 import javafx.application.Application;
 import javafx.application.Platform;
 import javafx.geometry.Rectangle2D;
+import javafx.scene.Node;
 import javafx.scene.Scene;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.AnchorPane;
@@ -39,10 +41,12 @@ public class GUI extends Application implements ActualView {
     private static LogMemory logMemory = new LogMemory();
 
     private Stage primaryStage;
-    private Root currentRoot;
+    private Node currentRoot;
     private final AnchorPane stackRoot = new AnchorPane();
 
     private logoSwapAnimation transitionAnimation;
+
+    private static final EnumProperty<StateGUI> stateProperty = new EnumProperty<>();
 
     public void run() {
         launch();
@@ -72,15 +76,15 @@ public class GUI extends Application implements ActualView {
 
         //set stackRoot background and style
         //stackRoot.setStyle("-fx-background-color: #1e1f22;");
-        //transitionTo(StateGUI.SERVER_CONNECTION);
+        transitionTo(StateGUI.SERVER_CONNECTION);
         //transitionTo(StateGUI.JOIN_LOBBY);
         //transitionTo(StateGUI.LOBBY);
-        transitionTo(StateGUI.IDLE);
+        //transitionTo(StateGUI.IDLE);
     }
 
-    private void setRoot(Root root){
+    private void setRoot(Node root){
         if(currentRoot == null){
-            stackRoot.getChildren().add(root.getRoot());
+            stackRoot.getChildren().add(root);
             currentRoot = root;
             primaryStage.show();
             return;
@@ -92,10 +96,15 @@ public class GUI extends Application implements ActualView {
     }
 
     public void transitionTo(StateGUI state) {
+        if(state.equals(stateProperty.get()))
+            return;
+
         Platform.runLater(() -> {
-            if(!state.getRoot().equals(currentRoot))
-                setRoot(state.getRoot());
+            setRoot(state.getScene().getContent());
         });
+
+        stateProperty.set(state);
+
     }
 
 
@@ -178,6 +187,10 @@ public class GUI extends Application implements ActualView {
 
     public static LogMemory getLogMemory() {
         return logMemory;
+    }
+
+    public static EnumProperty<StateGUI> getStateProperty() {
+        return stateProperty;
     }
 
     public static void main(String[] args) {

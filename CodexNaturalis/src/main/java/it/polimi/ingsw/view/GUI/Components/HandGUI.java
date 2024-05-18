@@ -9,6 +9,7 @@ import it.polimi.ingsw.view.GUI.Components.CodexRelated.CodexGUI;
 import it.polimi.ingsw.view.GUI.Components.CodexRelated.FrontierCardGUI;
 import it.polimi.ingsw.view.GUI.GUI;
 import it.polimi.ingsw.view.GUI.GUIConfigs;
+import it.polimi.ingsw.view.GUI.StateGUI;
 import javafx.geometry.Point2D;
 import javafx.geometry.Pos;
 import javafx.scene.Node;
@@ -40,6 +41,17 @@ public class HandGUI implements Observer {
         AnchorPane.setBottomAnchor(hand, 0.0);
         AnchorPane.setLeftAnchor(hand, 0.0);
         AnchorPane.setRightAnchor(hand, 0.0);
+
+        GUI.getStateProperty().addListener((obs, oldState, newState) -> {
+            if(newState == StateGUI.PLACE_CARD){
+                handPopUp.open();
+                handPopUp.setLocked(true);
+            }
+            else{
+                handPopUp.close();
+                handPopUp.setLocked(false);
+            }
+        });
     }
 
     public HBox getHand() {
@@ -81,6 +93,8 @@ public class HandGUI implements Observer {
 
                 card.setOnHold(
                         e -> {
+                            if(GUI.getStateProperty().get() != StateGUI.PLACE_CARD)
+                                return;
                             System.out.println("Holding card");
                             codex.toggleFrontier(true);
 
@@ -99,6 +113,9 @@ public class HandGUI implements Observer {
 
                 card.getImageView().setOnDragDetected(
                         e -> {
+                            if(GUI.getStateProperty().get() != StateGUI.PLACE_CARD)
+                                return;
+
                             handPopUp.close();
                             handPopUp.setLocked(true);
                             e.consume();
@@ -107,6 +124,9 @@ public class HandGUI implements Observer {
 
                 card.getImageView().setOnMouseDragged(
                         e -> {
+                            if(GUI.getStateProperty().get() != StateGUI.PLACE_CARD)
+                                return;
+
                             if(stubCard == null)
                                 return;
 
@@ -129,7 +149,10 @@ public class HandGUI implements Observer {
 
                 card.setOnHoldRelease(
                         e -> {
-                            handPopUp.setLocked(false);
+                            if(GUI.getStateProperty().get() != StateGUI.PLACE_CARD)
+                                return;
+
+
                             handPopUp.open();
                             codex.toggleFrontier(false);
                             codex.removeCard(stubCard);

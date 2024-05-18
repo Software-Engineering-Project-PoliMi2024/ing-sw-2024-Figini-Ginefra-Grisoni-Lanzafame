@@ -9,6 +9,7 @@ import it.polimi.ingsw.model.playerReleted.Position;
 import it.polimi.ingsw.view.GUI.Components.CardRelated.CardGUI;
 import it.polimi.ingsw.view.GUI.GUI;
 import it.polimi.ingsw.view.GUI.GUIConfigs;
+import it.polimi.ingsw.view.GUI.StateGUI;
 import javafx.geometry.Point2D;
 import javafx.geometry.Pos;
 import javafx.scene.Node;
@@ -35,22 +36,31 @@ public class CodexGUI implements Observer {
 
     private boolean isFrontierVisible = false;
 
+    private boolean attached = false;
+
 
     public CodexGUI() {
-        GameDiff diff = new GameDiffInitialization(List.of(new String[]{"Player1"}), new GameDiffGameName("TestGame"), new GameDiffYourName("Player1"));
-        diff.apply(GUI.getLightGame());
+//        GameDiff diff = new GameDiffInitialization(List.of(new String[]{"Player1"}), new GameDiffGameName("TestGame"), new GameDiffYourName("Player1"));
+//        diff.apply(GUI.getLightGame());
+//
+//        diff = new GameDiffPlayerActivity(List.of(new String[]{"Player1"}), new ArrayList<>());
+//        diff.apply(GUI.getLightGame());
+//
+//        diff = new GameDiffGameName("TestGame");
+//        diff.apply(GUI.getLightGame());
+//
+//        diff = new GameDiffYourName("Player1");
+//        diff.apply(GUI.getLightGame());
 
-        diff = new GameDiffPlayerActivity(List.of(new String[]{"Player1"}), new ArrayList<>());
-        diff.apply(GUI.getLightGame());
+        GUI.getStateProperty().addListener((obs, oldState, newState) -> {
+            if(attached)
+                return;
 
-        diff = new GameDiffGameName("TestGame");
-        diff.apply(GUI.getLightGame());
+            attached = newState == StateGUI.IDLE;
 
-        diff = new GameDiffYourName("Player1");
-        diff.apply(GUI.getLightGame());
-
-
-        GUI.getLightGame().getMyCodex().attach(this);
+            if(attached)
+                GUI.getLightGame().getMyCodex().attach(this);
+        });
 
 
 
@@ -75,8 +85,8 @@ public class CodexGUI implements Observer {
         });
 
 
-        diff = new CodexDiff("Player1", 0, new HashMap<>(), placements, positions);
-        diff.apply(GUI.getLightGame());
+//        diff = new CodexDiff("Player1", 0, new HashMap<>(), placements, positions);
+//        diff.apply(GUI.getLightGame());
 
 
 

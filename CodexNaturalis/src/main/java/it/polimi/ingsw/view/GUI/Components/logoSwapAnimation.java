@@ -104,21 +104,21 @@ public class logoSwapAnimation {
         timeline.getKeyFrames().addAll(scaleCycle(logoBackground, 0, 1, 2 * GUIConfigs.swapAnimationDelay, GUIConfigs.swapAnimationDuration, GUIConfigs.swapAnimationPause));
     }
 
-    public void playTransitionAnimation(AnchorPane mainRoot, Root oldRoot, Root newRoot){
+    public void playTransitionAnimation(AnchorPane mainRoot, Node oldRoot, Node newRoot){
         // Add the old root to the main root
-        mainRoot.getChildren().add(newRoot.getRoot());
+        mainRoot.getChildren().add(newRoot);
 
         // Add the logo to the main root
         mainRoot.getChildren().add(logoStack);
 
         this.animationSetup();
 
-        this.timeline.getKeyFrames().addAll(opacitySwitch(oldRoot.getRoot(), 1, 0, GUIConfigs.swapAnimationDuration + 2 * GUIConfigs.swapAnimationDelay + (double) GUIConfigs.swapAnimationPause / 2));
-        this.timeline.getKeyFrames().addAll(opacitySwitch(newRoot.getRoot(), 0, 1, GUIConfigs.swapAnimationDuration + 2 * GUIConfigs.swapAnimationDelay + (double) GUIConfigs.swapAnimationPause / 2));
+        this.timeline.getKeyFrames().addAll(opacitySwitch(oldRoot, 1, 0, GUIConfigs.swapAnimationDuration + 2 * GUIConfigs.swapAnimationDelay + (double) GUIConfigs.swapAnimationPause / 2));
+        this.timeline.getKeyFrames().addAll(opacitySwitch(newRoot, 0, 1, GUIConfigs.swapAnimationDuration + 2 * GUIConfigs.swapAnimationDelay + (double) GUIConfigs.swapAnimationPause / 2));
 
         timeline.setOnFinished(e -> {
             mainRoot.getChildren().remove(logoStack);
-            mainRoot.getChildren().remove(oldRoot.getRoot());
+            mainRoot.getChildren().remove(oldRoot);
         });
 
         timeline.play();
