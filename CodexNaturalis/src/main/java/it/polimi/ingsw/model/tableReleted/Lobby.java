@@ -8,7 +8,6 @@ import java.io.Serializable;
 import java.util.*;
 
 public class Lobby implements Serializable {
-    private final Map<String, ServerModelController> playerControllers;
     private final LobbyDiffPublisher lobbyDiffPublisher;
     private final String lobbyName;
     final private List<String> lobbyPlayerList;
@@ -28,7 +27,6 @@ public class Lobby implements Serializable {
         this.lobbyName = lobbyName;
         lobbyPlayerList.add(creatorNickname);
         lobbyDiffPublisher = new LobbyDiffPublisher();
-        this.playerControllers = new HashMap<>();
     }
     /**
      * Handles the adding of a user to the current lobby.
@@ -92,14 +90,8 @@ public class Lobby implements Serializable {
         lobbyDiffPublisher.unsubscribe(unsubscriber);
     }
 
-    public void setPlayerControllers(ServerModelController controller, String nickname){
-        playerControllers.put(nickname, controller);
-    }
     public void notifyStartGame(){
         lobbyDiffPublisher.notifyStartGame();
     }
 
-    public Map<String, ServerModelController> getPlayerController(){
-        return playerControllers;
-    }
 }
