@@ -65,7 +65,7 @@ public class HandGUI implements Observer {
     }
 
     public void addHandTo(AnchorPane parent){
-        handPopUp = new AnchoredPopUp(parent, 0.6f, 0.2f, Pos.BOTTOM_CENTER, 0.25f);
+        handPopUp = new AnchoredPopUp(parent, 0.8f, 0.2f, Pos.BOTTOM_CENTER, 0.25f);
 
         handPopUp.getContent().getChildren().add(hand);
 

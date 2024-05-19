@@ -22,6 +22,7 @@ import javafx.scene.control.Button;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Random;
 
 public class GameScene extends SceneGUI{
     private HandGUI hand;
@@ -101,16 +102,18 @@ public class GameScene extends SceneGUI{
         diff = new CodexDiff("Player2", 0, new HashMap<>(), placements, positions);
         diff.apply(GUI.getLightGame());
 
-        diff = new HandDiffAdd(new LightCard(1), true);
+        //get random card
+        Random random = new Random();
+        diff = new HandDiffAdd(new LightCard(random.nextInt(1, 81)), true);
         diff.apply(GUI.getLightGame());
 
-        diff = new HandDiffAdd(new LightCard(2), true);
+        diff = new HandDiffAdd(new LightCard(random.nextInt(1, 81)), true);
         diff.apply(GUI.getLightGame());
 
-        diff = new HandDiffAdd(new LightCard(3), true);
+        diff = new HandDiffAdd(new LightCard(random.nextInt(1, 81)), true);
         diff.apply(GUI.getLightGame());
 
-        diff = new HandDiffSetObj(new LightCard(100));
+        diff = new HandDiffSetObj(new LightCard(random.nextInt(87, 103)));
         diff.apply(GUI.getLightGame());
 
     }
