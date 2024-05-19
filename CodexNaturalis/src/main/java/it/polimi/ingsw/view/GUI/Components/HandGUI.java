@@ -4,7 +4,6 @@ import it.polimi.ingsw.designPatterns.Observer;
 import it.polimi.ingsw.lightModel.LightCard;
 import it.polimi.ingsw.model.playerReleted.Position;
 import it.polimi.ingsw.view.GUI.Components.CardRelated.CardGUI;
-import it.polimi.ingsw.view.GUI.Components.CardRelated.DraggableCard;
 import it.polimi.ingsw.view.GUI.Components.CardRelated.FlippableCardGUI;
 import it.polimi.ingsw.view.GUI.Components.CodexRelated.CodexGUI;
 import it.polimi.ingsw.view.GUI.Components.CodexRelated.FrontierCardGUI;
@@ -13,10 +12,8 @@ import it.polimi.ingsw.view.GUI.GUIConfigs;
 import it.polimi.ingsw.view.GUI.StateGUI;
 import javafx.geometry.Point2D;
 import javafx.geometry.Pos;
-import javafx.scene.Node;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.HBox;
-import javafx.scene.layout.Priority;
 
 import java.util.Arrays;
 import java.util.Objects;
@@ -30,7 +27,7 @@ public class HandGUI implements Observer {
 
     private final FlippableCardGUI secretObjective;
     private FlippableCardGUI positioningCard = null;
-    private DraggableCard stubCard = null;
+    private CardGUI stubCard = null;
     private AnchoredPopUp handPopUp;
     private FrontierCardGUI closestFrontier;
 
@@ -113,7 +110,7 @@ public class HandGUI implements Observer {
                                 positioningCard = card;
                                 positioningCard.disable();
 
-                                stubCard = new DraggableCard(card);
+                                stubCard = new CardGUI(card);
 
                                 Point2D mousePos2 = new Point2D(e.getSceneX() - codex.getCodex().getWidth()/2, e.getSceneY() - codex.getCodex().getHeight()/2);
                                 Point2D pos2 = codex.getGridPosition(mousePos2).multiply(1/codex.getScale());
