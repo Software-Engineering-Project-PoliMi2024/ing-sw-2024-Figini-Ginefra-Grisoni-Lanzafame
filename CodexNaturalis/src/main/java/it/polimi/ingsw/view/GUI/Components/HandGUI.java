@@ -16,6 +16,7 @@ import javafx.geometry.Pos;
 import javafx.scene.Node;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.HBox;
+import javafx.scene.layout.Priority;
 
 import java.util.Arrays;
 import java.util.Objects;
@@ -42,6 +43,7 @@ public class HandGUI implements Observer {
         AnchorPane.setBottomAnchor(hand, 0.0);
         AnchorPane.setLeftAnchor(hand, 0.0);
         AnchorPane.setRightAnchor(hand, 0.0);
+        AnchorPane.setTopAnchor(hand, 0.0);
 
         GUI.getStateProperty().addListener((obs, oldState, newState) -> {
             if(newState == StateGUI.PLACE_CARD){
@@ -67,8 +69,8 @@ public class HandGUI implements Observer {
 
         handPopUp.getContent().getChildren().add(hand);
 
-        hand.prefWidthProperty().bind(handPopUp.getContent().widthProperty().multiply(0.9));
-        hand.prefHeightProperty().bind(handPopUp.getContent().heightProperty(). multiply(0.9));
+        hand.prefWidthProperty().bind(handPopUp.getContent().prefWidthProperty());
+        hand.prefHeightProperty().bind(handPopUp.getContent().prefHeightProperty());
     }
 
     public void addCard(FlippableCardGUI card, boolean draggable){
@@ -76,10 +78,15 @@ public class HandGUI implements Observer {
         for (int i = 0; i < cards.length; i++) {
             if(cards[i] == null){
                 cards[i] = card;
+
+//                card.getImageView().fitWidthProperty().bind(hand.prefWidthProperty().divide(cards.length));
+//                card.getImageView().fitHeightProperty().bind(card.getImageView().fitWidthProperty().multiply(card.getImageView().getImage().getHeight()/card.getImageView().getImage().getWidth()));
+
+                card.getImageView().setFitWidth(hand.prefWidthProperty().getValue()/ cards.length - hand.spacingProperty().getValue());
+                card.getImageView().fitWidthProperty().bind(hand.prefWidthProperty().divide(cards.length).subtract(hand.spacingProperty().getValue()));
+
                 hand.getChildren().add(card.getImageView());
 
-                card.getImageView().fitWidthProperty().bind(hand.prefWidthProperty().divide(cards.length));
-                card.getImageView().fitHeightProperty().bind(card.getImageView().fitWidthProperty().multiply(card.getImageView().getImage().getHeight()/card.getImageView().getImage().getWidth()));
 
                 if(draggable){
                     card.getImageView().setOnMouseEntered(
@@ -184,7 +191,7 @@ public class HandGUI implements Observer {
     }
 
     public void removeCard(FlippableCardGUI card){
-        for (int i = 1; i < 4; i++) {
+        for (int i = 0; i < 4; i++) {
             if(cards[i] == card){
                 hand.getChildren().remove(card.getImageView());
                 cards[i] = null;

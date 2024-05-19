@@ -19,7 +19,6 @@ public class CardGUI {
     private LightCard target;
     protected CardFace face;
     private final ImageView imageView = new ImageView();
-    private Image image;
 
     private Consumer<MouseEvent> onTap = null;
     private Consumer<MouseEvent> onHold = null;
@@ -49,8 +48,8 @@ public class CardGUI {
         this.face = face;
         this.update();
 
-        imageView.setFitWidth(image.getWidth() * 0.3);
-        imageView.setFitHeight(image.getHeight() * 0.3);
+        imageView.setFitWidth(GUIConfigs.cardWidth);
+        imageView.fitHeightProperty().bind(imageView.fitWidthProperty().multiply(imageView.getImage().getHeight() / imageView.getImage().getWidth()));
 
         holdTimer = new Timeline();
         //Make an empty keyframe at holdDuration
@@ -94,12 +93,10 @@ public class CardGUI {
         }
 
         if(face == CardFace.FRONT) {
-            image = AssetsGUI.loadCardFront(target.id());
-            imageView.setImage(image);
+            imageView.setImage(AssetsGUI.loadCardFront(target.id()));
         }
         else {
-            image = AssetsGUI.loadCardBack(target.id());
-            imageView.setImage(image);
+            imageView.setImage(AssetsGUI.loadCardBack(target.id()));
         }
 
     }
