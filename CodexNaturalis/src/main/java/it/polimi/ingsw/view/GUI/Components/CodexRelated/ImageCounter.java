@@ -29,7 +29,7 @@ public class ImageCounter {
         this.image.setFitWidth(GUIConfigs.collectablesWidth);
 
 
-        this.counterLabel = new Text("x 0");
+        this.counterLabel = new Text("0");
         //Remove space inter line
         this.counterLabel.setLineSpacing(0);
 

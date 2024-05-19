@@ -1,6 +1,7 @@
 package it.polimi.ingsw.view.GUI;
 
 import it.polimi.ingsw.model.cardReleted.utilityEnums.Resource;
+import it.polimi.ingsw.model.cardReleted.utilityEnums.WritingMaterial;
 import javafx.scene.image.Image;
 
 import java.util.Objects;
@@ -24,7 +25,10 @@ public class AssetsGUI {
     }
 
     public static Image loadResource(Resource resource) {
-        System.out.println("Resource: " + resource.toString());
-        return new Image(Objects.requireNonNull(GUI.class.getResourceAsStream("/GUI/images/Collectables/" + resource.toString() + ".png")));
+        return new Image(Objects.requireNonNull(GUI.class.getResourceAsStream("/GUI/images/Collectables/" + resource + ".png")));
+    }
+
+    public static Image loadWritingMaterial(WritingMaterial writingMaterial) {
+        return new Image(Objects.requireNonNull(GUI.class.getResourceAsStream("/GUI/images/Collectables/" + writingMaterial.toString() + ".png")));
     }
 }

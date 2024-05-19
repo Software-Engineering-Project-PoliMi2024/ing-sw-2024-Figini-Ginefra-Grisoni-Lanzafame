@@ -7,6 +7,7 @@ import it.polimi.ingsw.lightModel.lightPlayerRelated.LightCodex;
 import it.polimi.ingsw.lightModel.lightTableRelated.LightGame;
 import it.polimi.ingsw.model.cardReleted.utilityEnums.Collectable;
 import it.polimi.ingsw.model.cardReleted.utilityEnums.Resource;
+import it.polimi.ingsw.model.cardReleted.utilityEnums.WritingMaterial;
 import it.polimi.ingsw.view.GUI.AssetsGUI;
 import it.polimi.ingsw.view.GUI.Components.AnchoredPopUp;
 import it.polimi.ingsw.view.GUI.GUI;
@@ -17,7 +18,7 @@ import javafx.scene.layout.HBox;
 import java.util.*;
 
 public class CollectedCollectablesGUI implements Observer {
-    private final Map<Collectable, ImageCounter> counters = new HashMap<>();
+    private final Map<Collectable, ImageCounter> counters = new LinkedHashMap<>();
     private final HBox container = new HBox();
 
     private AnchoredPopUp popUp;
@@ -26,11 +27,16 @@ public class CollectedCollectablesGUI implements Observer {
     public CollectedCollectablesGUI() {
         Arrays.stream(Resource.values()).forEach(resource -> counters.put(resource, new ImageCounter(AssetsGUI.loadResource(resource))));
 
+        Arrays.stream(WritingMaterial.values()).forEach(writingMaterial -> counters.put(writingMaterial, new ImageCounter(AssetsGUI.loadWritingMaterial(writingMaterial))));
+
         ModelDiffs<LightGame> diffs = new CodexDiff("Player1", 0, Map.of(
                 Resource.PLANT, 2,
                 Resource.ANIMAL, 3,
                 Resource.INSECT, 4,
-                Resource.FUNGI, 5
+                Resource.FUNGI, 5,
+                WritingMaterial.INKWELL, 6,
+                WritingMaterial.MANUSCRIPT, 7,
+                WritingMaterial.QUILL, 8
         ), new LinkedList<>(), GUI.getLightGame().getMyCodex().getFrontier().frontier());
 
         diffs.apply(GUI.getLightGame());
