@@ -107,7 +107,7 @@ public class GameScene extends SceneGUI{
         diff = new HandDiffAdd(new LightCard(random.nextInt(1, 81)), true);
         diff.apply(GUI.getLightGame());
 
-        diff = new HandDiffAdd(new LightCard(random.nextInt(1, 81)), true);
+        diff = new HandDiffAdd(new LightCard(random.nextInt(1, 81)), false);
         diff.apply(GUI.getLightGame());
 
         diff = new HandDiffAdd(new LightCard(random.nextInt(1, 81)), true);

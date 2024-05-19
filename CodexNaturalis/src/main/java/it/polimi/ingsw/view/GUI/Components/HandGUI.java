@@ -2,9 +2,11 @@ package it.polimi.ingsw.view.GUI.Components;
 
 import it.polimi.ingsw.designPatterns.Observer;
 import it.polimi.ingsw.lightModel.LightCard;
+import it.polimi.ingsw.model.cardReleted.utilityEnums.CardFace;
 import it.polimi.ingsw.model.playerReleted.Position;
 import it.polimi.ingsw.view.GUI.Components.CardRelated.CardGUI;
 import it.polimi.ingsw.view.GUI.Components.CardRelated.FlippableCardGUI;
+import it.polimi.ingsw.view.GUI.Components.CardRelated.FlippablePlayableCard;
 import it.polimi.ingsw.view.GUI.Components.CodexRelated.CodexGUI;
 import it.polimi.ingsw.view.GUI.Components.CodexRelated.FrontierCardGUI;
 import it.polimi.ingsw.view.GUI.GUI;
@@ -23,10 +25,10 @@ public class HandGUI implements Observer {
 
     private CodexGUI codex;
 
-    private final FlippableCardGUI[] cards = new FlippableCardGUI[4];
+    private final FlippablePlayableCard[] handCards = new FlippablePlayableCard[3];
 
     private final FlippableCardGUI secretObjective;
-    private FlippableCardGUI positioningCard = null;
+    private FlippablePlayableCard positioningCard = null;
     private CardGUI stubCard = null;
     private AnchoredPopUp handPopUp;
     private FrontierCardGUI closestFrontier;
@@ -54,7 +56,8 @@ public class HandGUI implements Observer {
         });
 
         secretObjective = new FlippableCardGUI(new LightCard(1));
-        this.addCard(secretObjective, false);
+        setSizeBindings(secretObjective);
+        hand.getChildren().add(secretObjective.getImageView());
     }
 
     public HBox getHand() {
@@ -70,39 +73,28 @@ public class HandGUI implements Observer {
         hand.prefHeightProperty().bind(handPopUp.getContent().prefHeightProperty());
     }
 
-    public void addCard(FlippableCardGUI card, boolean draggable){
+    private void setSizeBindings(CardGUI card){
+        card.getImageView().setFitWidth(hand.prefWidthProperty().getValue()/ (handCards.length + 1) - hand.spacingProperty().getValue());
+        card.getImageView().fitWidthProperty().bind(hand.prefWidthProperty().divide(handCards.length + 1).subtract(hand.spacingProperty().getValue()));
+    }
+
+    public void addCardToHand(FlippablePlayableCard card, boolean draggable){
         //find first null spot
-        for (int i = 0; i < cards.length; i++) {
-            if(cards[i] == null){
-                cards[i] = card;
+        for (int i = 0; i < handCards.length; i++) {
+            if(handCards[i] == null){
+                handCards[i] = card;
 
 //                card.getImageView().fitWidthProperty().bind(hand.prefWidthProperty().divide(cards.length));
 //                card.getImageView().fitHeightProperty().bind(card.getImageView().fitWidthProperty().multiply(card.getImageView().getImage().getHeight()/card.getImageView().getImage().getWidth()));
 
-                card.getImageView().setFitWidth(hand.prefWidthProperty().getValue()/ cards.length - hand.spacingProperty().getValue());
-                card.getImageView().fitWidthProperty().bind(hand.prefWidthProperty().divide(cards.length).subtract(hand.spacingProperty().getValue()));
-
+                setSizeBindings(card);
                 hand.getChildren().add(card.getImageView());
 
 
                 if(draggable){
-                    card.getImageView().setOnMouseEntered(
-                            e -> {
-                                card.getImageView().setStyle("-fx-effect: dropshadow(three-pass-box, rgba(0,0,0,0.8), 10, 0, 0, 0);");
-                                e.consume();
-                            }
-                    );
-
-                    card.getImageView().setOnMouseExited(
-                            e -> {
-                                card.getImageView().setStyle("");
-                                e.consume();
-                            }
-                    );
-
                     card.setOnHold(
                             e -> {
-                                if(GUI.getStateProperty().get() != StateGUI.PLACE_CARD)
+                                if(GUI.getStateProperty().get() != StateGUI.PLACE_CARD || card.getFace() == CardFace.FRONT && !card.isPlayable())
                                     return;
                                 System.out.println("Holding card");
                                 codex.toggleFrontier(true);
@@ -122,7 +114,7 @@ public class HandGUI implements Observer {
 
                     card.getImageView().setOnDragDetected(
                             e -> {
-                                if(GUI.getStateProperty().get() != StateGUI.PLACE_CARD)
+                                if(GUI.getStateProperty().get() != StateGUI.PLACE_CARD || card.getFace() == CardFace.FRONT && !card.isPlayable())
                                     return;
 
                                 handPopUp.close();
@@ -133,7 +125,7 @@ public class HandGUI implements Observer {
 
                     card.getImageView().setOnMouseDragged(
                             e -> {
-                                if(GUI.getStateProperty().get() != StateGUI.PLACE_CARD)
+                                if(GUI.getStateProperty().get() != StateGUI.PLACE_CARD || card.getFace() == CardFace.FRONT && !card.isPlayable())
                                     return;
 
                                 if(stubCard == null)
@@ -158,7 +150,7 @@ public class HandGUI implements Observer {
 
                     card.setOnHoldRelease(
                             e -> {
-                                if(GUI.getStateProperty().get() != StateGUI.PLACE_CARD)
+                                if(GUI.getStateProperty().get() != StateGUI.PLACE_CARD || card.getFace() == CardFace.FRONT && !card.isPlayable())
                                     return;
 
 
@@ -171,7 +163,7 @@ public class HandGUI implements Observer {
                                 else{
                                     System.out.println("Controller.placeCard");
                                     codex.addCard(new CardGUI(positioningCard), closestFrontier.getGridPosition());
-                                    this.removeCard(positioningCard);
+                                    this.removeCardFromHand(positioningCard);
                                     positioningCard = null;
                                     this.closestFrontier = null;
                                 }
@@ -187,11 +179,11 @@ public class HandGUI implements Observer {
         throw new IllegalStateException("Hand is full");
     }
 
-    public void removeCard(FlippableCardGUI card){
-        for (int i = 0; i < 4; i++) {
-            if(cards[i] == card){
+    public void removeCardFromHand(FlippablePlayableCard card){
+        for (int i = 0; i < handCards.length; i++) {
+            if(handCards[i] == card){
                 hand.getChildren().remove(card.getImageView());
-                cards[i] = null;
+                handCards[i] = null;
                 return;
             }
         }
@@ -205,17 +197,19 @@ public class HandGUI implements Observer {
 
         int freeSpots = Arrays.stream(GUI.getLightGame().getHand().getCards()).filter(Objects::isNull).toArray().length;
 
-        if(freeSpots == Arrays.stream(cards).filter(Objects::isNull).toArray().length){
+        if(freeSpots == Arrays.stream(handCards).filter(Objects::isNull).toArray().length){
             return;
         }
 
-        for (int i = 1; i < 4; i++) {
-            if(cards[i] == null && GUI.getLightGame().getHand().getCards()[i-1] != null){
-                addCard(new FlippableCardGUI(GUI.getLightGame().getHand().getCards()[i-1]), true);
+        for (int i = 0; i < handCards.length; i++) {
+            if(handCards[i] == null && GUI.getLightGame().getHand().getCards()[i] != null){
+                LightCard target = GUI.getLightGame().getHand().getCards()[i];
+                boolean playability = GUI.getLightGame().getHand().getCardPlayability().get(target);
+                addCardToHand(new FlippablePlayableCard(target, playability), true);
             }
-            else if (cards[i] != null && GUI.getLightGame().getHand().getCards()[i-1] == null){
-                hand.getChildren().remove(cards[i].getImageView());
-                cards[i] = null;
+            else if (handCards[i] != null && GUI.getLightGame().getHand().getCards()[i] == null){
+                hand.getChildren().remove(handCards[i].getImageView());
+                handCards[i] = null;
             }
         }
 
