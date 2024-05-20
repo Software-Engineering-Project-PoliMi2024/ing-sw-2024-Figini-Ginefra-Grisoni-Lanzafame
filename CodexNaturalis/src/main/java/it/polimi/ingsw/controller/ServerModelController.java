@@ -92,7 +92,7 @@ public class ServerModelController implements ControllerInterface, DiffSubscribe
      */
     @Override
     public void createLobby(String gameName, int maxPlayerCount) throws RemoteException {
-        if(games.getLobbyByName(gameName)!=null){
+        if(games.getLobbyByName(gameName)!=null || games.getGameByName(gameName)!=null  || gameName.isEmpty()) {
             logErr(LogsOnClient.LOBBY_NAME_TAKEN);
         }else {
             Lobby newLobby = new Lobby(maxPlayerCount, this.nickname, gameName);
