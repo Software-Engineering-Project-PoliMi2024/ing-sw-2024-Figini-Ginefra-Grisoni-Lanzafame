@@ -49,6 +49,11 @@ public class GameLoopController implements Serializable {
             activePlayers.put(nickname, controller);
             this.logYouAndOther(controller, LogsOnClient.MID_GAME_JOINED, LogsOnClient.PLAYER_REJOINED);
             lastController.logGame(LogsOnClient.COUNTDOWN_INTERRUPTED);
+            //If the player rejoined a single-player game after the setup phase,
+            //to avoid both players to be "idle" (e.g., the leavingPlayer was the currentPlayer) the gameLoop is recalculated
+            if(everyoneActiveHasPlaced() && everyoneActiveHasChosen()) {
+                this.gameLoop();
+            }
         }else {
             activePlayers.put(nickname, controller);
             this.logYouAndOther(controller, LogsOnClient.MID_GAME_JOINED, LogsOnClient.PLAYER_REJOINED);
@@ -60,7 +65,7 @@ public class GameLoopController implements Serializable {
         }else{
             activePlayers.remove(nickname);
             //The player rejoined a single-player game, so he matches the same view as the one-player-left.
-            // OR the game is in the setup phase
+            // OR the game, with multiple people connected, is still in the setup phase
             if((everyoneActiveHasPlaced() && !startCardIsPlaced(joiningUser)) || !everyoneActiveHasPlaced()){ //The joining player need to place his startCard
                 activePlayers.put(nickname, controller);
                 controller.transitionTo(ViewState.CHOOSE_START_CARD);
