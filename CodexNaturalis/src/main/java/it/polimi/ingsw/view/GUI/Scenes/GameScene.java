@@ -34,11 +34,11 @@ public class GameScene extends SceneGUI{
         super();
 
         //Game setup
-        ModelDiffs<LightGame> diff = new GameDiffInitialization(List.of(new String[]{"Player1", "Player2"}), new GameDiffGameName("TestGame"), new GameDiffYourName("Player1"));
-        diff.apply(GUI.getLightGame());
-
-        diff = new GameDiffPlayerActivity(List.of(new String[]{"Player1", "Player2"}), new ArrayList<>());
-        diff.apply(GUI.getLightGame());
+//        ModelDiffs<LightGame> diff = new GameDiffInitialization(List.of(new String[]{"Player1", "Player2"}), new GameDiffGameName("TestGame"), new GameDiffYourName("Player1"));
+//        diff.apply(GUI.getLightGame());
+//
+//        diff = new GameDiffPlayerActivity(List.of(new String[]{"Player1", "Player2"}), new ArrayList<>());
+//        diff.apply(GUI.getLightGame());
 
 
         content.getChildren().add(Root.GAME.getRoot());
@@ -57,12 +57,12 @@ public class GameScene extends SceneGUI{
 
         this.add(logs.getLogsDisplay());
 
-        Peeker peeker = new Peeker(getContent(), "Player2");
-        Button button = new Button("Open Codex Others");
-        button.setOnAction(e -> peeker.open());
-
-
-        this.add(button);
+//        Peeker peeker = new Peeker(getContent(), "Player2");
+//        Button button = new Button("Open Codex Others");
+//        button.setOnAction(e -> peeker.open());
+//
+//
+//        this.add(button);
 
         new AnchoredPopUp(getContent(), 0.2f, 0.6f, Pos.CENTER_RIGHT, 0.25f);
         new AnchoredPopUp(getContent(), 0.2f, 0.6f, Pos.CENTER_LEFT, 0.25f);
@@ -96,34 +96,34 @@ public class GameScene extends SceneGUI{
         });
 
 
-        diff = new CodexDiff("Player1", 0, new HashMap<>(), placements, positions);
-        diff.apply(GUI.getLightGame());
-
-        diff = new CodexDiff("Player2", 0, new HashMap<>(), placements, positions);
-        diff.apply(GUI.getLightGame());
-
-        //get random card
-        Random random = new Random();
-        diff = new HandDiffAdd(new LightCard(random.nextInt(1, 81), 1), true);
-        diff.apply(GUI.getLightGame());
-
-        diff = new HandDiffAdd(new LightCard(random.nextInt(1, 81),1 ), false);
-        diff.apply(GUI.getLightGame());
-
-        diff = new HandDiffAdd(new LightCard(random.nextInt(1, 81),1), true);
-        diff.apply(GUI.getLightGame());
-
-        diff = new HandOtherDiffAdd(new LightBack(11), "Player2");
-        diff.apply(GUI.getLightGame());
-
-        diff = new HandOtherDiffAdd(new LightBack(11), "Player2");
-        diff.apply(GUI.getLightGame());
-
-        diff = new HandOtherDiffAdd(new LightBack(11), "Player2");
-        diff.apply(GUI.getLightGame());
-
-        diff = new HandDiffSetObj(new LightCard(random.nextInt(87, 103),1));
-        diff.apply(GUI.getLightGame());
+//        diff = new CodexDiff("Player1", 0, new HashMap<>(), placements, positions);
+//        diff.apply(GUI.getLightGame());
+//
+//        diff = new CodexDiff("Player2", 0, new HashMap<>(), placements, positions);
+//        diff.apply(GUI.getLightGame());
+//
+//        //get random card
+//        Random random = new Random();
+//        diff = new HandDiffAdd(new LightCard(random.nextInt(1, 81), 1), true);
+//        diff.apply(GUI.getLightGame());
+//
+//        diff = new HandDiffAdd(new LightCard(random.nextInt(1, 81),1 ), false);
+//        diff.apply(GUI.getLightGame());
+//
+//        diff = new HandDiffAdd(new LightCard(random.nextInt(1, 81),1), true);
+//        diff.apply(GUI.getLightGame());
+//
+//        diff = new HandOtherDiffAdd(new LightBack(11), "Player2");
+//        diff.apply(GUI.getLightGame());
+//
+//        diff = new HandOtherDiffAdd(new LightBack(11), "Player2");
+//        diff.apply(GUI.getLightGame());
+//
+//        diff = new HandOtherDiffAdd(new LightBack(11), "Player2");
+//        diff.apply(GUI.getLightGame());
+//
+//        diff = new HandDiffSetObj(new LightCard(random.nextInt(87, 103),1));
+//        diff.apply(GUI.getLightGame());
         */
     }
 }
