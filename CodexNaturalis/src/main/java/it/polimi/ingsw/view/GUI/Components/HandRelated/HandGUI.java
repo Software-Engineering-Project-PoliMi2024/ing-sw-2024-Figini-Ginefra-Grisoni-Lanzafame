@@ -165,17 +165,10 @@ public class HandGUI implements Observer {
                                     positioningCard.enable();
                                 else{
                                     System.out.println("Controller.placeCard");
-                                    if(GUI.getStateProperty().get() == StateGUI.PLACE_CARD) {
+                                    if(GUI.getStateProperty().get() == StateGUI.PLACE_CARD || GUI.getStateProperty().get() == StateGUI.CHOOSE_START_CARD){
                                         try {
                                             GUI.getControllerStatic().place(new LightPlacement(closestFrontier.getGridPosition(), positioningCard.getTarget(), positioningCard.getFace()));
                                             codex.addCard(new CardGUI(positioningCard), closestFrontier.getGridPosition());
-                                        } catch (Exception ex) {
-                                            throw new RuntimeException(ex);
-                                        }
-                                    }
-                                    else if(GUI.getStateProperty().get() == StateGUI.CHOOSE_START_CARD) {
-                                        try {
-                                            GUI.getControllerStatic().selectStartCardFace(positioningCard.getFace());
                                         } catch (Exception ex) {
                                             throw new RuntimeException(ex);
                                         }

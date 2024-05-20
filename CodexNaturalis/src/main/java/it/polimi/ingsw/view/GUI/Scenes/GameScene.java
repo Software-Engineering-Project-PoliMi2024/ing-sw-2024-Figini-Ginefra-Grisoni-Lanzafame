@@ -74,7 +74,7 @@ public class GameScene extends SceneGUI{
         collectedCollectables.attachToCodex();
         collectedCollectables.addThisTo(getContent());
 
-
+        /*
         List<LightPlacement> placements = List.of(new LightPlacement[]{
                 new LightPlacement(new Position(0, 0), new LightCard(81, 81), CardFace.FRONT),
                 new LightPlacement(new Position(-1, -1), new LightCard(4, 1), CardFace.BACK),
@@ -124,6 +124,6 @@ public class GameScene extends SceneGUI{
 
         diff = new HandDiffSetObj(new LightCard(random.nextInt(87, 103),1));
         diff.apply(GUI.getLightGame());
-
+        */
     }
 }
