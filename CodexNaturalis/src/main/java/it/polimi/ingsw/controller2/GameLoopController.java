@@ -179,8 +179,11 @@ public class GameLoopController implements Serializable {
         String leavingPlayerNick = leavingController.getNickname();
         User leavingUser = game.getUserFromNick(leavingPlayerNick);
 
-        activePlayers.remove(leavingPlayerNick, leavingController);
+        /*if(activePlayers.containsKey(leavingPlayerNick)){
+            activePlayers.remove(leavingPlayerNick, leavingController);
+        } fix to issue #10 on gitHub? */
 
+        activePlayers.remove(leavingPlayerNick, leavingController);
         if(activePlayers.size() == 1){
             this.onePlayerLeft(leavingController);
         }else{

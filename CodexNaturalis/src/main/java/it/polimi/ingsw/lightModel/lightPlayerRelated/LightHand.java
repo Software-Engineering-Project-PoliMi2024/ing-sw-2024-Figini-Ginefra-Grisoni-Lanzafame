@@ -4,7 +4,6 @@ import it.polimi.ingsw.designPatterns.Observed;
 import it.polimi.ingsw.designPatterns.Observer;
 import it.polimi.ingsw.lightModel.Differentiable;
 import it.polimi.ingsw.lightModel.LightCard;
-import it.polimi.ingsw.model.cardReleted.utilityEnums.Resource;
 
 import java.util.HashMap;
 import java.util.LinkedList;
