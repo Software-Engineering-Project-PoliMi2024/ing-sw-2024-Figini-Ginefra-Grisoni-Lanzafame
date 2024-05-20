@@ -1,14 +1,18 @@
 package it.polimi.ingsw.view.TUI.Renderables.CardRelated;
 
 import it.polimi.ingsw.lightModel.lightPlayerRelated.LightCard;
+import it.polimi.ingsw.lightModel.lightPlayerRelated.LightPlacement;
 import it.polimi.ingsw.lightModel.lightTableRelated.LightGame;
 import it.polimi.ingsw.model.cardReleted.utilityEnums.CardFace;
+import it.polimi.ingsw.model.playerReleted.Position;
 import it.polimi.ingsw.view.ControllerProvider;
 import it.polimi.ingsw.view.TUI.Printing.Printer;
 import it.polimi.ingsw.view.TUI.Styles.PromptStyle;
 import it.polimi.ingsw.view.TUI.cardDrawing.CardMuseum;
 import it.polimi.ingsw.view.TUI.inputs.CommandPrompt;
 import it.polimi.ingsw.view.TUI.inputs.CommandPromptResult;
+
+import java.util.Arrays;
 
 /**
  * This class is a Renderable that can render a card and prompt the player to choose the face of the start card.
@@ -57,7 +61,7 @@ public class ChooseStartCardRenderable extends CardRenderable {
             case CommandPrompt.CHOOSE_START_SIDE:
                 try {
                     CardFace face = answer.getAnswer(0).equals("front") ? CardFace.FRONT : CardFace.BACK;
-                    view.getController().selectStartCardFace(face);
+                    view.getController().place(new LightPlacement(new Position(0,0), Arrays.stream(getLightGame().getHand().getCards()).toList().getFirst(),face));
                 }
                 catch (Exception e) {
                     e.printStackTrace();

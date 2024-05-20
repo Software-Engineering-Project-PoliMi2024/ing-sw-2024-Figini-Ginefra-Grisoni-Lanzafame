@@ -98,23 +98,6 @@ public class VirtualControllerRMI implements VirtualController {
     }
 
     @Override
-    public void selectStartCardFace(CardFace cardFace) {
-        Future<Void> selectStartCardFaceFuture = controllerExecutor.submit(()->{
-            try {
-                controllerStub.selectStartCardFace(cardFace);
-                return null;
-            } catch (Exception e) {
-                throw new RuntimeException();
-            }
-        });
-        try {
-            selectStartCardFaceFuture.get(Configs.secondsTimeOut, TimeUnit.SECONDS);
-        }catch (Exception e){
-            this.disconnect();
-        }
-    }
-
-    @Override
     public void choseSecretObjective(LightCard objectiveCard) {
         Future<Void> choseSecretObjectiveFuture = controllerExecutor.submit(()->{
             try {
@@ -144,6 +127,7 @@ public class VirtualControllerRMI implements VirtualController {
         try {
             placeFuture.get(Configs.secondsTimeOut, TimeUnit.SECONDS);
         }catch (Exception e){
+            e.printStackTrace();
             this.disconnect();
         }
     }

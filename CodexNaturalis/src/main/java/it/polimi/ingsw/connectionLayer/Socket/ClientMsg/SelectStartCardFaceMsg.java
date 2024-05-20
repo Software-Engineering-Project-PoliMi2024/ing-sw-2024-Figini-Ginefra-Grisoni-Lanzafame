@@ -16,6 +16,6 @@ public class SelectStartCardFaceMsg extends ClientMsg {
 
     @Override
     public void processMsg(ClientHandler clientHandler) throws Exception {
-        clientHandler.getController().selectStartCardFace(cardFace);
+        //clientHandler.getController().selectStartCardFace(cardFace);
     }
 }

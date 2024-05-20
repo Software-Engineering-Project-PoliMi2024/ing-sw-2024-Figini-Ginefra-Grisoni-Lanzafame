@@ -14,7 +14,6 @@ public interface ControllerInterface extends Serializable, Remote {
     void joinLobby(String lobbyName) throws Exception;
     void disconnect() throws Exception;
     void leaveLobby() throws Exception;
-    void selectStartCardFace(CardFace cardFace) throws Exception;
     void choseSecretObjective(LightCard objectiveCard) throws Exception;
     void place(LightPlacement placement) throws Exception;
     void draw(DrawableCard deckID, int cardID) throws Exception;

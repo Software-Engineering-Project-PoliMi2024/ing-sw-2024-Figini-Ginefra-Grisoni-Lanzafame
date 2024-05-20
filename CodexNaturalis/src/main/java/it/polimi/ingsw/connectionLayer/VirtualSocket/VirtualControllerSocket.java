@@ -99,11 +99,6 @@ public class VirtualControllerSocket implements VirtualController {
     }
 
     @Override
-    public void selectStartCardFace(CardFace cardFace){
-        serverHandler.sendServerMessage(new SelectStartCardFaceMsg(cardFace));
-    }
-
-    @Override
     public void choseSecretObjective(LightCard objectiveCard){
         serverHandler.sendServerMessage(new ChoseSecretObjectiveMsg(objectiveCard));
     }
