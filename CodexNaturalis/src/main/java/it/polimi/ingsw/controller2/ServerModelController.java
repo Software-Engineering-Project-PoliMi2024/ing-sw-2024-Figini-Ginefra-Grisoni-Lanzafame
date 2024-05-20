@@ -6,7 +6,6 @@ import it.polimi.ingsw.lightModel.LightCard;
 import it.polimi.ingsw.lightModel.Lightifier;
 import it.polimi.ingsw.lightModel.diffs.*;
 import it.polimi.ingsw.lightModel.diffs.game.*;
-import it.polimi.ingsw.lightModel.diffs.lobby_lobbyList.LobbyDiffEdit;
 import it.polimi.ingsw.lightModel.diffs.lobby_lobbyList.LobbyDiffEditLogin;
 import it.polimi.ingsw.lightModel.diffs.lobby_lobbyList.LobbyListDiffEdit;
 import it.polimi.ingsw.lightModel.diffs.nuclearDiffs.FatManLobbyList;
@@ -324,8 +323,13 @@ public class ServerModelController implements ControllerInterface, DiffSubscribe
                 System.out.println(this.nickname + " has disconnected");
                 this.games.removeUser(this.nickname);//Free the nick from the server, so it can be re-used by other people
                 if (games.isInGameParty(this.nickname)) { //Handle the removing of the user from a game
-                    games.getUserGame(this.nickname).unsubscribe(this);
-                    this.games.getUserGame(nickname).getGameLoopController().leaveGame(this, this.nickname);
+                    Game userGame = games.getUserGame(this.nickname);
+                    userGame.unsubscribe(this);
+                    userGame.getGameLoopController().leaveGame(this);
+                    //If the game is empty, remove it from the MultiGame
+                    if(userGame.getGameLoopController().getActivePlayers().isEmpty()){
+                        games.removeGame(userGame);
+                    }
                 } else if (games.getUserLobby(this.nickname) != null) { //Handle the removing of the user from a lobby
                     this.leaveLobby();
                     games.getUserLobby(this.nickname).unsubscribe(this);

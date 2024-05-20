@@ -3,7 +3,6 @@ package it.polimi.ingsw.lightModel.diffPublishers;
 import it.polimi.ingsw.lightModel.LightCard;
 import it.polimi.ingsw.lightModel.Lightifier;
 import it.polimi.ingsw.lightModel.diffs.game.*;
-import it.polimi.ingsw.lightModel.diffs.nuclearDiffs.GadgetGame;
 import it.polimi.ingsw.lightModel.lightPlayerRelated.LightCodex;
 import it.polimi.ingsw.lightModel.lightPlayerRelated.LightHand;
 import it.polimi.ingsw.lightModel.lightPlayerRelated.LightHandOthers;
@@ -162,7 +161,7 @@ public class GameDiffPublisher implements Serializable {
     }
 
     /**
-     * @param diffSubscriber the subscriber to which send the hand of the other players
+     * @param diffSubscriber the subscriber to which sends the hand of the other players
      * @return a list of diffs containing the current state of the hand of the other players
      */
     private List<HandOtherDiff> getHandOtherCurrentState(DiffSubscriber diffSubscriber){
