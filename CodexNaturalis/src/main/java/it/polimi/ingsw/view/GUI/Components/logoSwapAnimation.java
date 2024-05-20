@@ -1,9 +1,7 @@
 package it.polimi.ingsw.view.GUI.Components;
 
-import it.polimi.ingsw.Configs;
-import it.polimi.ingsw.view.GUI.CardMuseumGUI;
+import it.polimi.ingsw.view.GUI.AssetsGUI;
 import it.polimi.ingsw.view.GUI.GUIConfigs;
-import it.polimi.ingsw.view.GUI.Root;
 import javafx.animation.Interpolator;
 import javafx.animation.KeyFrame;
 import javafx.animation.KeyValue;
@@ -18,9 +16,9 @@ import javafx.util.Duration;
 import java.util.List;
 
 public class logoSwapAnimation {
-    private final ImageView logoCenter = new ImageView(CardMuseumGUI.logoCenter);
-    private final ImageView logoCircle = new ImageView(CardMuseumGUI.logoCircle);
-    private final ImageView logoBackground = new ImageView(CardMuseumGUI.logoBackground);
+    private final ImageView logoCenter = new ImageView(AssetsGUI.logoCenter);
+    private final ImageView logoCircle = new ImageView(AssetsGUI.logoCircle);
+    private final ImageView logoBackground = new ImageView(AssetsGUI.logoBackground);
     private final StackPane logoStack = new StackPane(logoBackground, logoCircle, logoCenter);
     private final Timeline timeline = new Timeline();
 
@@ -104,21 +102,21 @@ public class logoSwapAnimation {
         timeline.getKeyFrames().addAll(scaleCycle(logoBackground, 0, 1, 2 * GUIConfigs.swapAnimationDelay, GUIConfigs.swapAnimationDuration, GUIConfigs.swapAnimationPause));
     }
 
-    public void playTransitionAnimation(AnchorPane mainRoot, Root oldRoot, Root newRoot){
+    public void playTransitionAnimation(AnchorPane mainRoot, Node oldRoot, Node newRoot){
         // Add the old root to the main root
-        mainRoot.getChildren().add(newRoot.getRoot());
+        mainRoot.getChildren().add(newRoot);
 
         // Add the logo to the main root
         mainRoot.getChildren().add(logoStack);
 
         this.animationSetup();
 
-        this.timeline.getKeyFrames().addAll(opacitySwitch(oldRoot.getRoot(), 1, 0, GUIConfigs.swapAnimationDuration + 2 * GUIConfigs.swapAnimationDelay + (double) GUIConfigs.swapAnimationPause / 2));
-        this.timeline.getKeyFrames().addAll(opacitySwitch(newRoot.getRoot(), 0, 1, GUIConfigs.swapAnimationDuration + 2 * GUIConfigs.swapAnimationDelay + (double) GUIConfigs.swapAnimationPause / 2));
+        this.timeline.getKeyFrames().addAll(opacitySwitch(oldRoot, 1, 0, GUIConfigs.swapAnimationDuration + 2 * GUIConfigs.swapAnimationDelay + (double) GUIConfigs.swapAnimationPause / 2));
+        this.timeline.getKeyFrames().addAll(opacitySwitch(newRoot, 0, 1, GUIConfigs.swapAnimationDuration + 2 * GUIConfigs.swapAnimationDelay + (double) GUIConfigs.swapAnimationPause / 2));
 
         timeline.setOnFinished(e -> {
             mainRoot.getChildren().remove(logoStack);
-            mainRoot.getChildren().remove(oldRoot.getRoot());
+            mainRoot.getChildren().remove(oldRoot);
         });
 
         timeline.play();

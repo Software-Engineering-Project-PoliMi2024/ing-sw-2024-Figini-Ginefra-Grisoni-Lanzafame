@@ -24,6 +24,7 @@ public class AnchoredPopUp {
      * @param heightPercentage the height of the popup as a percentage of the parent's height
      * @param alignment the alignment of the popup. The available options are Pos.TOP_CENTER, Pos.BOTTOM_CENTER, Pos.CENTER_RIGHT, Pos.CENTER_LEFT
      * @param closedPercentage the percentage of the respective side that the popup will be once closed
+     * @param closedPercentage the percentage of the respective side that the popup will be once closed
      */
     public AnchoredPopUp(AnchorPane parent, float widthPercentage, float heightPercentage, Pos alignment, float closedPercentage) {
         final float backedPercentage = 1 - closedPercentage;

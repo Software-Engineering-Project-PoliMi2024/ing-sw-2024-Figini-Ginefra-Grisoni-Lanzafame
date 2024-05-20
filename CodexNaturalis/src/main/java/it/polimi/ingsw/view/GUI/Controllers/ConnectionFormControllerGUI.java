@@ -3,7 +3,6 @@ package it.polimi.ingsw.view.GUI.Controllers;
 import it.polimi.ingsw.connectionLayer.VirtualLayer.VirtualController;
 import it.polimi.ingsw.connectionLayer.VirtualRMI.VirtualControllerRMI;
 import it.polimi.ingsw.connectionLayer.VirtualSocket.VirtualControllerSocket;
-import it.polimi.ingsw.view.GUI.CardMuseumGUI;
 import it.polimi.ingsw.view.GUI.GUI;
 import it.polimi.ingsw.view.ViewInterface;
 import javafx.event.ActionEvent;
@@ -11,7 +10,6 @@ import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.control.ChoiceBox;
 import javafx.scene.control.TextField;
-import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 
 import java.net.URL;

@@ -19,6 +19,11 @@ public class LogMemory implements Observed {
         return new LinkedList<>(logMemory);
     }
 
+    public void clear(){
+        logMemory.clear();
+        notifyObservers();
+    }
+
     @Override
     public void attach(Observer observer) {
         observers.add(observer);

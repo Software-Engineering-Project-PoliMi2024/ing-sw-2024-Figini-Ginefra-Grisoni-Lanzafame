@@ -6,7 +6,11 @@ import it.polimi.ingsw.lightModel.LightCard;
 import it.polimi.ingsw.lightModel.Lightifier;
 import it.polimi.ingsw.lightModel.diffs.*;
 import it.polimi.ingsw.lightModel.diffs.game.*;
+import it.polimi.ingsw.lightModel.diffs.lobby_lobbyList.LobbyDiffEdit;
+import it.polimi.ingsw.lightModel.diffs.lobby_lobbyList.LobbyDiffEditLogin;
 import it.polimi.ingsw.lightModel.diffs.lobby_lobbyList.LobbyListDiffEdit;
+import it.polimi.ingsw.lightModel.diffs.nuclearDiffs.FatManLobbyList;
+import it.polimi.ingsw.lightModel.diffs.nuclearDiffs.LittleBoyLobby;
 import it.polimi.ingsw.lightModel.lightPlayerRelated.LightPlacement;
 import it.polimi.ingsw.lightModel.diffPublishers.DiffSubscriber;
 import it.polimi.ingsw.lightModel.lightTableRelated.LightGame;
@@ -35,6 +39,7 @@ public class ServerModelController implements ControllerInterface, DiffSubscribe
     private final MultiGame games;
     private final ViewInterface view;
     private String nickname;
+    private final Object freezeDisconnect = new Object();
     /**
      * The constructor of the class
      * @param games the reference to the Multi-game on the server
@@ -66,18 +71,16 @@ public class ServerModelController implements ControllerInterface, DiffSubscribe
                 this.games.getUserGame(nickname).getGameLoopController().joinGame(nickname, this);
             }else{
                 this.games.addUser(this, nickname);
-                getActiveLobbyList();
+                subscribeLobbyList();
                 logYou(LogsOnClient.SERVER_JOINED);
                 transitionTo(ViewState.JOIN_LOBBY);
             }
         }
     }
-    /**
-     * Subscribes the client's view (diffSubscriber) to the gamesPublisher, enabling
-     * the reception of all current and future lobbies.
-     */
-    private void getActiveLobbyList() {
+
+    private void subscribeLobbyList() {
         games.subscribe(this);
+        this.updateLobbyList(new LobbyListDiffEdit(new ArrayList<>(games.getLobbies().stream().map(Lightifier::lightify).toList()),new ArrayList<>()));
     }
 
     /**
@@ -94,21 +97,24 @@ public class ServerModelController implements ControllerInterface, DiffSubscribe
         }else {
             Lobby newLobby = new Lobby(maxPlayerCount, this.nickname, gameName);
             this.games.addLobby(newLobby);
-            games.unsubscribe(this);
+            unsubscribeLobbyList();
             //Create a new LobbyDiffEditLogin
-            newLobby.subscribe(this, this.nickname, gameName, newLobby.getNumberOfMaxPlayer());
-            newLobby.setPlayerControllers(this, this.nickname);
-            games.subscribe(getAddLobbyDiff(newLobby));
+            subscribeLobby(newLobby);
             logGame(LogsOnClient.LOBBY_CREATED);
             logYou(LogsOnClient.LOBBY_JOINED);
             transitionTo(ViewState.LOBBY);
         }
     }
 
-    private LobbyListDiffEdit getAddLobbyDiff(Lobby lobby) throws RemoteException{
-        ArrayList<LightLobby> listDiffAdd = new ArrayList<>();
-        listDiffAdd.add(Lightifier.lightify(lobby));
-        return new LobbyListDiffEdit(listDiffAdd, new ArrayList<>());
+    private void unsubscribeLobbyList(){
+        games.unsubscribe(this);
+        this.updateLobbyList(new FatManLobbyList());
+    }
+
+    private void subscribeLobby(Lobby lobbyToJoin){
+        lobbyToJoin.subscribe(this);
+        ArrayList<String> addNicknames = new ArrayList<>(lobbyToJoin.getLobbyPlayerList());
+        this.updateLobbyYou(new LobbyDiffEditLogin(addNicknames, new ArrayList<>(), lobbyToJoin.getLobbyName(), lobbyToJoin.getNumberOfMaxPlayer()));
     }
 
     @Override
@@ -118,24 +124,20 @@ public class ServerModelController implements ControllerInterface, DiffSubscribe
             Boolean result = this.games.addPlayerToLobby(lobbyName, this.nickname);
             if(result){
                 //create a new lobbyDiffEditLogin
-                lobbyToJoin.subscribe(this, this.nickname, lobbyToJoin.getLobbyName(), lobbyToJoin.getNumberOfMaxPlayer());
-                lobbyToJoin.setPlayerControllers(this, this.nickname);
-                games.unsubscribe(this);
-                logYou(LogsOnClient.LOBBY_JOINED);
-                transitionTo(ViewState.LOBBY);
-                if(lobbyToJoin.getLobbyPlayerList().size() == lobbyToJoin.getNumberOfMaxPlayer()) {
+                unsubscribeLobbyList();
+                subscribeLobby(lobbyToJoin);
+                if(!(lobbyToJoin.getLobbyPlayerList().size() == lobbyToJoin.getNumberOfMaxPlayer())) {
+                    logYou(LogsOnClient.LOBBY_JOINED);
+                    transitionTo(ViewState.LOBBY);
+                }else{
                     //Handle the creation of a new game from the lobbyToJoin
-                    Game newGame = games.createGame(lobbyToJoin);
-                    games.addGame(newGame);
-
-                    for(ServerModelController controller : lobbyToJoin.getPlayerController().values()){
-                        controller.logGame(LogsOnClient.GAME_CREATED);
+                    synchronized (freezeDisconnect) {
+                        Game newGame = games.createGame(lobbyToJoin);
+                        games.addGame(newGame);
+                        lobbyToJoin.notifyStartGame();
+                        games.removeLobby(lobbyToJoin);
+                        newGame.getGameLoopController().joinGame();
                     }
-
-                    lobbyToJoin.clearPublisher();
-                    games.removeLobby(lobbyToJoin);
-                    games.subscribe(getRemoveLobbyDiff(lobbyToJoin));
-                    newGame.getGameLoopController().joinGame();
                 }
             }else{
                 logErr(LogsOnClient.LOBBY_IS_FULL);
@@ -143,6 +145,16 @@ public class ServerModelController implements ControllerInterface, DiffSubscribe
         }else{
             logErr(LogsOnClient.LOBBY_NONEXISTENT);
         }
+    }
+
+    public void gameStarted(){
+        this.updateLobbyYou(new LittleBoyLobby());
+        this.logGame(LogsOnClient.GAME_CREATED);
+        Game newGame = games.getUserGame(this.nickname);
+        if(newGame != null)
+            newGame.getGameLoopController().addActivePlayer(this.nickname, this);
+        else
+            throw new IllegalCallerException("The game has not been created");
     }
 
     @Override
@@ -154,23 +166,17 @@ public class ServerModelController implements ControllerInterface, DiffSubscribe
             lobbyToLeave.removeUserName(this.nickname);
             if(lobbyToLeave.getLobbyPlayerList().isEmpty()){
                 this.games.removeLobby(lobbyToLeave);
-                try {
-                    games.subscribe(getRemoveLobbyDiff(lobbyToLeave));
-                } catch (RemoteException e) {
-                    e.printStackTrace();
-                }
             }
-
-            lobbyToLeave.unsubscribe(this);
-            games.subscribe(this);
+            unsubscribeLobby(lobbyToLeave);
+            subscribeLobbyList();
             logYou(LogsOnClient.LOBBY_LEFT);
             transitionTo(ViewState.JOIN_LOBBY);
         }
     }
-    private LobbyListDiffEdit getRemoveLobbyDiff(Lobby lobby) throws RemoteException{
-        ArrayList<LightLobby> listDiffRmv = new ArrayList<>();
-        listDiffRmv.add(Lightifier.lightify(lobby));
-        return new LobbyListDiffEdit(new ArrayList<>(), listDiffRmv);
+
+    private void unsubscribeLobby(Lobby lobbyToLeave){
+        lobbyToLeave.unsubscribe(this);
+        updateLobbyYou(new LittleBoyLobby());
     }
 
     private void leaveGame(){
@@ -310,20 +316,22 @@ public class ServerModelController implements ControllerInterface, DiffSubscribe
      */
     @Override
     public void disconnect(){
-        if(this.nickname == null){
-            System.out.println("Client disconnected before logging in");
-            return; //The client disconnected before logging in, no action needed
-        }else{
-            System.out.println(this.nickname + " has disconnected");
-            this.games.removeUser(this.nickname);//Free the nick from the server, so it can be re-used by other people
-            if(games.isInGameParty(this.nickname)){ //Handle the removing of the user from a game
-                games.getUserGame(this.nickname).unsubscribe(this);
-                this.games.getUserGame(nickname).getGameLoopController().leaveGame(this);
-            } else if (games.getUserLobby(this.nickname)!=null) { //Handle the removing of the user from a lobby
-                this.leaveLobby();
-                games.getUserLobby(this.nickname).unsubscribe(this);
-            }else{//Remove the user from the lobbyDiffPublisher list
-                games.unsubscribe(this);
+        synchronized (freezeDisconnect) {
+            if (this.nickname == null) {
+                System.out.println("Client disconnected before logging in");
+                return; //The client disconnected before logging in, no action needed
+            } else {
+                System.out.println(this.nickname + " has disconnected");
+                this.games.removeUser(this.nickname);//Free the nick from the server, so it can be re-used by other people
+                if (games.isInGameParty(this.nickname)) { //Handle the removing of the user from a game
+                    games.getUserGame(this.nickname).unsubscribe(this);
+                    this.games.getUserGame(nickname).getGameLoopController().leaveGame(this, this.nickname);
+                } else if (games.getUserLobby(this.nickname) != null) { //Handle the removing of the user from a lobby
+                    this.leaveLobby();
+                    games.getUserLobby(this.nickname).unsubscribe(this);
+                } else {//Remove the user from the lobbyDiffPublisher list
+                    games.unsubscribe(this);
+                }
             }
         }
     }
@@ -358,8 +366,16 @@ public class ServerModelController implements ControllerInterface, DiffSubscribe
             r.printStackTrace();
         }
     }
+    public void updateLobbyYou(ModelDiffs<LightLobby> diff){
+        try {
+            view.updateLobby(diff);
+        }catch (Exception r){
+            r.printStackTrace();
+        }
+    }
     public void updateLobby(ModelDiffs<LightLobby> diff){
         try {
+            view.logOthers(this.nickname + LogsOnClient.PLAYER_JOIN_LOBBY.getMessage());
             view.updateLobby(diff);
         }catch (Exception r){
             r.printStackTrace();

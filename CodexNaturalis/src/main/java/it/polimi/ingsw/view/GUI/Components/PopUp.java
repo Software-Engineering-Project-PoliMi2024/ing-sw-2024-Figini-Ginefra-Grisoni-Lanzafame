@@ -16,7 +16,7 @@ public class PopUp {
     private final AnchorPane content = new AnchorPane();
     private final Timeline openingAnimation = new Timeline();
     private final Timeline closingAnimation = new Timeline();
-    private AnchorPane parent;
+    private final AnchorPane parent;
 
     private static KeyValue createOpacityKeyValue(Node target, double value) {
         return new KeyValue(target.opacityProperty(), value, Interpolator.EASE_BOTH);

@@ -3,12 +3,14 @@ package it.polimi.ingsw.view.GUI.Components.CodexRelated;
 import it.polimi.ingsw.designPatterns.Observer;
 import it.polimi.ingsw.lightModel.LightCard;
 import it.polimi.ingsw.lightModel.diffs.game.*;
+import it.polimi.ingsw.lightModel.lightPlayerRelated.LightCodex;
 import it.polimi.ingsw.lightModel.lightPlayerRelated.LightPlacement;
 import it.polimi.ingsw.model.cardReleted.utilityEnums.CardFace;
 import it.polimi.ingsw.model.playerReleted.Position;
 import it.polimi.ingsw.view.GUI.Components.CardRelated.CardGUI;
 import it.polimi.ingsw.view.GUI.GUI;
 import it.polimi.ingsw.view.GUI.GUIConfigs;
+import it.polimi.ingsw.view.GUI.StateGUI;
 import javafx.geometry.Point2D;
 import javafx.geometry.Pos;
 import javafx.scene.Node;
@@ -35,51 +37,10 @@ public class CodexGUI implements Observer {
 
     private boolean isFrontierVisible = false;
 
+    private boolean attached = false;
+
 
     public CodexGUI() {
-        GameDiff diff = new GameDiffInitialization(List.of(new String[]{"Player1"}), new GameDiffGameName("TestGame"), new GameDiffYourName("Player1"));
-        diff.apply(GUI.getLightGame());
-
-        diff = new GameDiffPlayerActivity(List.of(new String[]{"Player1"}), new ArrayList<>());
-        diff.apply(GUI.getLightGame());
-
-        diff = new GameDiffGameName("TestGame");
-        diff.apply(GUI.getLightGame());
-
-        diff = new GameDiffYourName("Player1");
-        diff.apply(GUI.getLightGame());
-
-
-        GUI.getLightGame().getMyCodex().attach(this);
-
-
-
-        List<LightPlacement> placements = List.of(new LightPlacement[]{
-                new LightPlacement(new Position(0, 0), new LightCard(81), CardFace.FRONT),
-                new LightPlacement(new Position(-1, -1), new LightCard(4), CardFace.BACK),
-                new LightPlacement(new Position(1, -1), new LightCard(20), CardFace.FRONT),
-                new LightPlacement(new Position(-1, 1), new LightCard(16), CardFace.BACK),
-
-        });
-
-        List<Position> positions = List.of(new Position[]{
-                new Position(1, 1),
-                new Position(0, 2),
-                new Position(-2, 2),
-                new Position(-2, 0),
-                new Position(-2, -2),
-                new Position(0, -2),
-                new Position(2, -2),
-                new Position(2, 0),
-
-        });
-
-
-        diff = new CodexDiff("Player1", 0, new HashMap<>(), placements, positions);
-        diff.apply(GUI.getLightGame());
-
-
-
         AnchorPane.setBottomAnchor(codex, 0.0);
         AnchorPane.setLeftAnchor(codex, 0.0);
         AnchorPane.setRightAnchor(codex, 0.0);
@@ -118,27 +79,40 @@ public class CodexGUI implements Observer {
                         return;
                     }
                     scale += deltaY / 1000;
-                    this.cards.forEach(card -> card.setScale(scale * scale));
-                    this.frontier.forEach(card -> card.setScale(scale * scale));
+                    this.cards.forEach(card -> card.setScaleAndUpdateTranslation(this.getScale(), this.center));
+                    this.frontier.forEach(card -> card.setScale(this.getScale(), this.center));
                 }
         );
+    }
+
+    public void attachToCodex(){
+        this.getLightCodex().attach(this);
+    }
+
+    protected LightCodex getLightCodex(){
+        return GUI.getLightGame().getMyCodex();
     }
 
     public Pane getCodex() {
         return codex;
     }
 
+    /**
+     * Get the position of a card in the codex.
+     * @param position The position of the card in Grid space
+     * @return The position of the card in the codex
+     */
     private Point2D getCardPosition(Position position) {
         return new Point2D(
-                center.getX() + position.getX() * GUIConfigs.codexGridWith * scale,
-                center.getY() - position.getY() * GUIConfigs.codexGridHeight * scale
+                center.getX() + position.getX() * GUIConfigs.codexGridWith * this.getScale(),
+                center.getY() - position.getY() * GUIConfigs.codexGridHeight * this.getScale()
         );
     }
 
-    private Point2D getGridPosition(Point2D point) {
+    public Point2D getGridPosition(Point2D point) {
         return new Point2D(
-                (point.getX() - center.getX()) / (GUIConfigs.codexGridWith) / scale,
-                -(point.getY() - center.getY()) / (GUIConfigs.codexGridHeight) / scale
+                (point.getX() - center.getX()) / (GUIConfigs.codexGridWith) / this.getScale(),
+                -(point.getY() - center.getY()) / (GUIConfigs.codexGridHeight) / this.getScale()
         );
     }
 
@@ -152,16 +126,10 @@ public class CodexGUI implements Observer {
 
         Point2D cardPosition = getCardPosition(position);
         card.setTranslation(cardPosition.getX(), cardPosition.getY());
+        card.setScale(this.getScale());
 //        card.getImageView().setTranslateX(cardPosition.first());
 //        card.getImageView().setTranslateY(cardPosition.second());
 
-
-        card.getImageView().setOnMouseDragged(
-                e -> {
-                    card.setTranslation(e.getSceneX() - codex.getScene().getWidth()/2, e.getSceneY() - codex.getScene().getHeight()/2);
-                    e.consume();
-                }
-        );
     }
 
     public void setCenter(double x, double y) {
@@ -173,18 +141,18 @@ public class CodexGUI implements Observer {
     }
 
     public void update(){
-        int n = GUI.getLightGame().getMyCodex().getPlacementHistory().size();
+        int n = this.getLightCodex().getPlacementHistory().size();
 
         if(n > this.codex.getChildren().size()){
             for(int i = this.codex.getChildren().size(); i < n; i++){
-                LightPlacement target = GUI.getLightGame().getMyCodex().getPlacementHistory().values().toArray(new LightPlacement[0])[i];
+                LightPlacement target = this.getLightCodex().getPlacementHistory().values().toArray(new LightPlacement[0])[i];
                 this.addCard(new CardGUI(target.card(), target.face()), target.position());
             }
         }
 
         codex.getChildren().removeAll(frontier.stream().map(FrontierCardGUI::getCard).toList());
         frontier.clear();
-        for(Position p : GUI.getLightGame().getMyCodex().getFrontier().frontier()){
+        for(Position p : this.getLightCodex().getFrontier().frontier()){
             Point2D pos = this.getCardPosition(p);
             FrontierCardGUI fc = new FrontierCardGUI(p, pos.getX(), pos.getY());
             fc.setVisibility(isFrontierVisible);
@@ -193,24 +161,19 @@ public class CodexGUI implements Observer {
         }
     }
 
-    public Point2D snapToFrontier(Point2D point){
+    public FrontierCardGUI snapToFrontier(Point2D point){
         //Find the closest frontier position
-        Point2D gridPos = this.getGridPosition(point);
-
-
-        Node closestCard = this.frontier.stream().min(
+        return this.frontier.stream().min(
                 (a, b) -> {
                     double distA = Math.pow(a.getCard().getTranslateX() - point.getX(), 2) + Math.pow(a.getCard().getTranslateY() - point.getY(), 2);
                     double distB = Math.pow(b.getCard().getTranslateX() - point.getX(), 2) + Math.pow(b.getCard().getTranslateY() - point.getY(), 2);
                     return Double.compare(distA, distB);
                 }
-        ).get().getCard();
-
-        return new Point2D(closestCard.getTranslateX(), closestCard.getTranslateY());
+        ).get();
     }
 
-    public void toggleFrontier(){
-        isFrontierVisible = !isFrontierVisible;
+    public void toggleFrontier(boolean isFrontierVisible){
+        this.isFrontierVisible = isFrontierVisible;
         for(FrontierCardGUI r : frontier){
             r.setVisibility(isFrontierVisible);
         }
@@ -218,5 +181,10 @@ public class CodexGUI implements Observer {
 
     public double getScale() {
         return scale * scale;
+    }
+
+    public void removeCard(CardGUI card){
+        codex.getChildren().remove(card.getImageView());
+        cards.remove(card);
     }
 }

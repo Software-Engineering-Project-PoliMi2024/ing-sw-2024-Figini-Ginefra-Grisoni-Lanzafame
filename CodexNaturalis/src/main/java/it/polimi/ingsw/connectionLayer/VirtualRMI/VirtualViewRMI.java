@@ -20,7 +20,7 @@ public class VirtualViewRMI implements VirtualView {
     private ControllerInterface controller;
     private final ThreadPoolExecutor viewExecutor = new ThreadPoolExecutor(1, 4, 10, TimeUnit.MILLISECONDS, new LinkedBlockingQueue<>());
     private ScheduledExecutorService pingPongExecutor = Executors.newSingleThreadScheduledExecutor();
-
+    private boolean notAlreadyDisconnected = false;
     /**
      * @param viewStub the stub of the view on the client
      * @throws RemoteException if a communication-related exception occurs during the execution of this method.
@@ -177,14 +177,18 @@ public class VirtualViewRMI implements VirtualView {
     }
     private synchronized void disconnect(){
         try {
+            if(!notAlreadyDisconnected){
+                notAlreadyDisconnected = true;
+                controller.disconnect();
+            }
             //UnicastRemoteObject.unexportObject(controller, true);
-            controller.disconnect();
         }catch (Exception e){
             e.printStackTrace();
         }
     }
 
     public void setController(ControllerInterface controller) {
+        notAlreadyDisconnected = false;
         this.controller = controller;
     }
 

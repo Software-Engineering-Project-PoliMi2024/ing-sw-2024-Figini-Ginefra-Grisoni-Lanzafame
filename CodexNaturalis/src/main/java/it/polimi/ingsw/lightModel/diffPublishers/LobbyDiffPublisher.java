@@ -1,42 +1,34 @@
 package it.polimi.ingsw.lightModel.diffPublishers;
 
+import it.polimi.ingsw.lightModel.diffs.ModelDiffs;
 import it.polimi.ingsw.lightModel.diffs.lobby_lobbyList.LobbyDiff;
 import it.polimi.ingsw.lightModel.diffs.lobby_lobbyList.LobbyDiffEdit;
 import it.polimi.ingsw.lightModel.diffs.lobby_lobbyList.LobbyDiffEditLogin;
 import it.polimi.ingsw.lightModel.diffs.nuclearDiffs.LittleBoyLobby;
+import it.polimi.ingsw.lightModel.lightTableRelated.LightLobby;
+import it.polimi.ingsw.model.tableReleted.Lobby;
 
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
-public class LobbyDiffPublisher {
-    private final Map<DiffSubscriber, String> subscribers;
+public class LobbyDiffPublisher implements DiffPublisher<LightLobby, DiffSubscriberLobby> {
+    private final List<DiffSubscriberLobby> subscribers;
 
     /**
      * Constructor for the LobbyDiffPublisher
      */
     public LobbyDiffPublisher() {
-        this.subscribers = new HashMap<>();
+        this.subscribers = new ArrayList<>();
     }
-    /**
-     * the subscriber will receive the current state of the lobby: its name, the number of max players
-     * and the list of the players already in the lobby
-     * the players already in the lobby will receive the new subscriber nickname
-     * Send the appropriated log to everyone
-     * @param diffSubscriber The subscriber of the user that joins the lobby.
-     * @param nickname The nickname of the user joining the lobby.
-     * @param gameName The name of the lobby's game.
-     * @param numberOfMaxPlayer The maximum number of players allowed in the lobby.
-     */
-    public synchronized void subscribe(DiffSubscriber diffSubscriber, String nickname, String gameName, int numberOfMaxPlayer) {
-        LobbyDiffEdit others = createDiffSubscribed(nickname);
-        for(DiffSubscriber subscriber : subscribers.keySet()){
-            notifySubscriber(subscriber, others);
-        }
-        subscribers.put(diffSubscriber, nickname);
-        LobbyDiffEditLogin yours = createDiffSubscriber(gameName, numberOfMaxPlayer);
-        notifySubscriber(diffSubscriber, yours);
+
+    @Override
+    public void subscribe(DiffSubscriberLobby diffSubscriber) {
+        LobbyDiffEdit others = createDiffSubscribed(diffSubscriber.getNickname());
+        notifySubscribers(others);
+        subscribers.add(diffSubscriber);
     }
     /**
      * @return the diff for the "others" people already in the lobby about the new player "nickname"
@@ -49,31 +41,14 @@ public class LobbyDiffPublisher {
     }
 
     /**
-     * @param gameName name of the lobby being logged
-     * @param numberOfMaxPlayer required to start the game from the lobby
-     * @return a LobbyDiffEditLogin for the new subscriber containing the information of the lobby
-     */
-    private LobbyDiffEditLogin createDiffSubscriber(String gameName, int numberOfMaxPlayer){
-        // create a list of the nickname already in the lobby
-        ArrayList<String> addNicknames = new ArrayList<>(subscribers.values());
-        return new LobbyDiffEditLogin(addNicknames, new ArrayList<>(), gameName, numberOfMaxPlayer);
-    }
-
-    /**
      * remove the subscriber from the lobbyPublisher
-     * resets the LightLobby stored local on the subscriber
      * notifies the other subscribers of the leaving of the unsubscriber
      * @param diffUnsubscriber the subscriber being removed
      */
-    public void unsubscribe(DiffSubscriber diffUnsubscriber) {
-        notifySubscriber(diffUnsubscriber, new LittleBoyLobby());
-        String unsubscriberNick = subscribers.get(diffUnsubscriber);
+    public void unsubscribe(DiffSubscriberLobby diffUnsubscriber) {
         subscribers.remove(diffUnsubscriber);
-        LobbyDiffEdit others = createDiffUnsubscriber(unsubscriberNick);
-        for (DiffSubscriber subscriber : subscribers.keySet()) {
-            notifySubscriber(subscriber, others);
-        }
-
+        LobbyDiffEdit others = createDiffUnsubscriber(diffUnsubscriber.getNickname());
+        notifySubscribers(others);
     }
 
     /**
@@ -87,23 +62,18 @@ public class LobbyDiffPublisher {
         return new LobbyDiffEdit(addNicknames, rmvNicknames);
     }
 
-    /**
-     * @param diffSubscriber being notified
-     * @param diff to be notified to the diffSubscriber
-     */
-    public synchronized void notifySubscriber(DiffSubscriber diffSubscriber, LobbyDiff diff){
-        diffSubscriber.updateLobby(diff);
-    }
-
-    public synchronized void clear(){
-        for(DiffSubscriber diffSubscriber : subscribers.keySet()){
-            diffSubscriber.updateLobby(new LittleBoyLobby());
+    @Override
+    public void notifySubscribers(ModelDiffs<LightLobby> diff) {
+        for(DiffSubscriberLobby diffSubscriber : subscribers){
+            diffSubscriber.updateLobby(diff);
         }
-        subscribers.clear();
     }
 
-    public synchronized void notifyStateDiff(DiffSubscriber diffSubscriber){
-
+    public void notifyStartGame(){
+        for(DiffSubscriberLobby diffSubscriber : subscribers){
+            diffSubscriber.gameStarted();
+        }
     }
+
 }
 

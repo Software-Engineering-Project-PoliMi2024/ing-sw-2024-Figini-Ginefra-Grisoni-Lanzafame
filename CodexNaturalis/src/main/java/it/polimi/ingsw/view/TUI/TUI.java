@@ -196,6 +196,15 @@ public class TUI implements ActualView {
         StateTUI.GAME_ENDING.attach(leaderboardRenderable);
         renderables.add(leaderboardRenderable);
 
+        postGameStateRenderable = new PostGameStateRenderable(
+                "Post Game",
+                lightGame,
+                new CommandPrompt[]{CommandPrompt.DISPLAY_POSTGAME},
+                this);
+
+        StateTUI.GAME_ENDING.attach(postGameStateRenderable);
+        renderables.add(postGameStateRenderable);
+
         this.transitionTo(ViewState.SERVER_CONNECTION);
     }
 

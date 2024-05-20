@@ -1,31 +1,24 @@
 package it.polimi.ingsw.view.GUI;
 
-import it.polimi.ingsw.Configs;
 import it.polimi.ingsw.connectionLayer.VirtualLayer.VirtualController;
-import it.polimi.ingsw.lightModel.LightCard;
 import it.polimi.ingsw.lightModel.diffs.ModelDiffs;
-import it.polimi.ingsw.lightModel.diffs.game.*;
 import it.polimi.ingsw.lightModel.lightTableRelated.LightGame;
 import it.polimi.ingsw.lightModel.lightTableRelated.LightLobby;
 import it.polimi.ingsw.lightModel.lightTableRelated.LightLobbyList;
 import it.polimi.ingsw.view.ActualView;
 import it.polimi.ingsw.lightModel.LogMemory;
 import it.polimi.ingsw.view.GUI.Components.LogErr;
+import it.polimi.ingsw.view.GUI.Components.Utils.EnumProperty;
 import it.polimi.ingsw.view.GUI.Components.logoSwapAnimation;
 import it.polimi.ingsw.view.GUI.Controllers.ConnectionFormControllerGUI;
 import it.polimi.ingsw.view.GUI.Controllers.LoginFormControllerGUI;
 import it.polimi.ingsw.view.ViewState;
-import javafx.animation.*;
 import javafx.application.Application;
 import javafx.application.Platform;
-import javafx.geometry.Rectangle2D;
+import javafx.scene.Node;
 import javafx.scene.Scene;
-import javafx.scene.image.ImageView;
 import javafx.scene.layout.AnchorPane;
-import javafx.scene.layout.StackPane;
-import javafx.stage.Screen;
 import javafx.stage.Stage;
-import javafx.util.Duration;
 
 import java.rmi.RemoteException;
 import java.util.Arrays;
@@ -39,10 +32,12 @@ public class GUI extends Application implements ActualView {
     private static LogMemory logMemory = new LogMemory();
 
     private Stage primaryStage;
-    private Root currentRoot;
+    private Node currentRoot;
     private final AnchorPane stackRoot = new AnchorPane();
 
     private logoSwapAnimation transitionAnimation;
+
+    private static final EnumProperty<StateGUI> stateProperty = new EnumProperty<>();
 
     public void run() {
         launch();
@@ -53,15 +48,6 @@ public class GUI extends Application implements ActualView {
         transitionAnimation = new logoSwapAnimation(primaryStage);
 
 
-        ModelDiffs<LightGame> diff = new HandDiffAdd(new LightCard(1), true);
-        diff.apply(lightGame);
-
-        diff = new HandDiffAdd(new LightCard(2), true);
-        diff.apply(lightGame);
-
-        diff = new HandDiffAdd(new LightCard(3), true);
-        diff.apply(lightGame);
-
         ConnectionFormControllerGUI.view = this;
 
         LoginFormControllerGUI.setView(this);
@@ -69,6 +55,7 @@ public class GUI extends Application implements ActualView {
         this.primaryStage = primaryStage;
         primaryStage.setFullScreen(true);
         primaryStage.setTitle("Codex In Naturalis");
+        primaryStage.getIcons().add(AssetsGUI.logo);
         primaryStage.setScene(new Scene(stackRoot, 800, 600));
 
         AnchorPane.setTopAnchor(stackRoot, 0.0);
@@ -80,15 +67,15 @@ public class GUI extends Application implements ActualView {
 
         //set stackRoot background and style
         //stackRoot.setStyle("-fx-background-color: #1e1f22;");
-        transitionTo(StateGUI.SERVER_CONNECTION);
+        //transitionTo(StateGUI.SERVER_CONNECTION);
         //transitionTo(StateGUI.JOIN_LOBBY);
         //transitionTo(StateGUI.LOBBY);
-        //transitionTo(StateGUI.IDLE);
+        transitionTo(StateGUI.PLACE_CARD);
     }
 
-    private void setRoot(Root root){
+    private void setRoot(Node root){
         if(currentRoot == null){
-            stackRoot.getChildren().add(root.getRoot());
+            stackRoot.getChildren().add(root);
             currentRoot = root;
             primaryStage.show();
             return;
@@ -100,10 +87,15 @@ public class GUI extends Application implements ActualView {
     }
 
     public void transitionTo(StateGUI state) {
+        if(state.equals(stateProperty.get()))
+            return;
+
         Platform.runLater(() -> {
-            if(!state.getRoot().equals(currentRoot))
-                setRoot(state.getRoot());
+            setRoot(state.getScene().getContent());
         });
+
+        stateProperty.set(state);
+
     }
 
 
@@ -122,12 +114,12 @@ public class GUI extends Application implements ActualView {
 
     @Override
     public void logErr(String logMsg) throws RemoteException {
-        LogErr.display(logMsg);
+        Platform.runLater(()->LogErr.display(logMsg));
     }
 
     @Override
     public void logOthers(String logMsg) throws RemoteException {
-        logMemory.addLog(logMsg);
+        Platform.runLater(()->logMemory.addLog(logMsg));
     }
 
     @Override
@@ -136,23 +128,18 @@ public class GUI extends Application implements ActualView {
 
     @Override
     public void updateLobbyList(ModelDiffs<LightLobbyList> diff) throws RemoteException {
-        Platform.runLater(() -> {
-            diff.apply(lobbyList);
-        });
+        Platform.runLater(() -> diff.apply(lobbyList));
     }
 
     @Override
     public void updateLobby(ModelDiffs<LightLobby> diff) throws RemoteException {
-        Platform.runLater(() -> {
-            diff.apply(lobby);
-        });
+        Platform.runLater(() -> diff.apply(lobby));
     }
 
     @Override
     public void updateGame(ModelDiffs<LightGame> diff) throws RemoteException {
-        Platform.runLater(() -> {
-            diff.apply(lightGame);
-        });    }
+        Platform.runLater(() -> diff.apply(lightGame));
+    }
 
     @Override
     public void setFinalRanking(String[] nicks, int[] points) throws RemoteException {
@@ -191,6 +178,10 @@ public class GUI extends Application implements ActualView {
 
     public static LogMemory getLogMemory() {
         return logMemory;
+    }
+
+    public static EnumProperty<StateGUI> getStateProperty() {
+        return stateProperty;
     }
 
     public static void main(String[] args) {

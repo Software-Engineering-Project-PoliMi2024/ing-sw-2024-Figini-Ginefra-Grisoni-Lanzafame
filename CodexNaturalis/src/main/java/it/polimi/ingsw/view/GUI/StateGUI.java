@@ -1,5 +1,6 @@
 package it.polimi.ingsw.view.GUI;
 
+import it.polimi.ingsw.view.GUI.Scenes.*;
 import it.polimi.ingsw.view.ViewState;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
@@ -7,42 +8,45 @@ import javafx.scene.Scene;
 
 import java.io.IOException;
 import java.util.Objects;
+import java.util.function.Supplier;
 
 public enum StateGUI {
-    SERVER_CONNECTION(ViewState.SERVER_CONNECTION, Root.SERVER_CONNECTION_FORM),
-    LOGIN_FORM(ViewState.LOGIN_FORM, Root.LOGIN_FORM),
-    JOIN_LOBBY(ViewState.JOIN_LOBBY, Root.LOBBY_LIST),
-    LOBBY(ViewState.LOBBY, Root.LOBBY),
+    SERVER_CONNECTION(ViewState.SERVER_CONNECTION, ServerConnectionScene::new),
+    LOGIN_FORM(ViewState.LOGIN_FORM, LoginFormScene::new),
+    JOIN_LOBBY(ViewState.JOIN_LOBBY, LobbyListScene::new),
+    LOBBY(ViewState.LOBBY, LobbyScene::new),
+    CHOOSE_START_CARD(ViewState.CHOOSE_START_CARD, GameScene::new),
+    SELECT_OBJECTIVE(ViewState.SELECT_OBJECTIVE, GameScene::new),
+    WAITING_STATE(ViewState.WAITING_STATE, GameScene::new),
+    IDLE(ViewState.IDLE, GameScene::new),
 
-    CHOOSE_START_CARD(ViewState.CHOOSE_START_CARD, Root.GAME),
+    DRAW_CARD(ViewState.DRAW_CARD, GameScene::new),
 
-    SELECT_OBJECTIVE(ViewState.SELECT_OBJECTIVE, Root.GAME),
+    PLACE_CARD(ViewState.PLACE_CARD, GameScene::new),
 
-    WAITING_STATE(ViewState.WAITING_STATE, Root.GAME),
+    GAME_WAITING(ViewState.GAME_WAITING, GameScene::new),
 
-    IDLE(ViewState.IDLE, Root.GAME),
-
-    DRAW_CARD(ViewState.DRAW_CARD, Root.GAME),
-
-    PLACE_CARD(ViewState.PLACE_CARD, Root.GAME),
-
-    GAME_WAITING(ViewState.GAME_WAITING, Root.GAME),
-
-    GAME_ENDING(ViewState.GAME_ENDING, Root.GAME),;
+    GAME_ENDING(ViewState.GAME_ENDING, GameScene::new),;
 
     private final ViewState referenceState;
-    private final Root referenceRoot;
 
-    StateGUI(ViewState referenceState, Root referenceRoot) {
+    private final Supplier<SceneGUI> sceneConstruvtor;
+
+
+    StateGUI(ViewState referenceState, Supplier<SceneGUI> sceneConstruvtor) {
         this.referenceState = referenceState;
-        this.referenceRoot = referenceRoot;
-    }
-
-    public Root getRoot() {
-        return referenceRoot;
+        this.sceneConstruvtor = sceneConstruvtor;
     }
 
     public boolean references(ViewState state) {
         return referenceState == state;
+    }
+
+    public SceneGUI getScene() {
+        return sceneConstruvtor.get();
+    }
+
+    public boolean equals(StateGUI other){
+        return other != null && this.sceneConstruvtor == other.sceneConstruvtor;
     }
 }
