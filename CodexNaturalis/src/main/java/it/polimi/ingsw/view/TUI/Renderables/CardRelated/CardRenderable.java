@@ -41,7 +41,7 @@ public class CardRenderable extends LightGameRenderable {
      * @param card The card to render.
      */
     protected void renderCard(LightCard card){
-        TextCard textCard = museum.get(card.id());
+        TextCard textCard = museum.get(card.idFront());
         Drawable drawable = textCard.get(this.face);
         Printer.print(drawable.toString());
     }

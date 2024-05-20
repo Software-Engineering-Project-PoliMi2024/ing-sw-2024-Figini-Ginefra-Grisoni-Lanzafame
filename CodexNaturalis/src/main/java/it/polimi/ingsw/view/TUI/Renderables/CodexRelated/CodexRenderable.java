@@ -60,7 +60,7 @@ public class CodexRenderable extends CanvasRenderable {
      */
     public void drawPlacement(LightPlacement placement){
         Position canvasPosition = gridToCanvas(placement.position());
-        TextCard card = cardMuseum.get(placement.card().id());
+        TextCard card = cardMuseum.get(placement.card().idFront());
         Drawable cardDrawable = card.get(placement.face());
         this.canvas.draw(cardDrawable, canvasPosition.getX(), canvasPosition.getY());
     }

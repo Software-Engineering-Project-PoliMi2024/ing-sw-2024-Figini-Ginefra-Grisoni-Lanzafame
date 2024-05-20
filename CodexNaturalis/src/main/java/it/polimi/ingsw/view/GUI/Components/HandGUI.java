@@ -55,7 +55,7 @@ public class HandGUI implements Observer {
             }
         });
 
-        secretObjective = new FlippableCardGUI(new LightCard(1));
+        secretObjective = new FlippableCardGUI(new LightCard(1, 1));
         setSizeBindings(secretObjective);
         hand.getChildren().add(secretObjective.getImageView());
     }

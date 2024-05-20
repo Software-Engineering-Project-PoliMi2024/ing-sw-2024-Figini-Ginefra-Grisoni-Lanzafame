@@ -60,7 +60,7 @@ public class Lightifier implements Serializable {
      * @return a LighCard containing only the CardID
      */
     public static LightCard lightifyToCard(Card card){
-        return new LightCard(card.getId());
+        return new LightCard(card.getIdFront(), card.getIdBack());
     }
     /**
      * @param card which will be lightened

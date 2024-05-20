@@ -92,10 +92,10 @@ public class CardGUI {
         }
 
         if(face == CardFace.FRONT) {
-            imageView.setImage(AssetsGUI.loadCardFront(target.id()));
+            imageView.setImage(AssetsGUI.loadCardFront(target.idFront()));
         }
         else {
-            imageView.setImage(AssetsGUI.loadCardBack(target.id()));
+            imageView.setImage(AssetsGUI.loadCardBack(target.idFront()));
         }
 
     }

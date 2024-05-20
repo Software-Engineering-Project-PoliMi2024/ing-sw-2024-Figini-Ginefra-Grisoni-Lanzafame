@@ -75,10 +75,10 @@ public class GameScene extends SceneGUI{
 
 
         List<LightPlacement> placements = List.of(new LightPlacement[]{
-                new LightPlacement(new Position(0, 0), new LightCard(81), CardFace.FRONT),
-                new LightPlacement(new Position(-1, -1), new LightCard(4), CardFace.BACK),
-                new LightPlacement(new Position(1, -1), new LightCard(20), CardFace.FRONT),
-                new LightPlacement(new Position(-1, 1), new LightCard(16), CardFace.BACK),
+                new LightPlacement(new Position(0, 0), new LightCard(81, 81), CardFace.FRONT),
+                new LightPlacement(new Position(-1, -1), new LightCard(4, 1), CardFace.BACK),
+                new LightPlacement(new Position(1, -1), new LightCard(20, 11), CardFace.FRONT),
+                new LightPlacement(new Position(-1, 1), new LightCard(16, 11), CardFace.BACK),
 
         });
 
@@ -103,16 +103,16 @@ public class GameScene extends SceneGUI{
 
         //get random card
         Random random = new Random();
-        diff = new HandDiffAdd(new LightCard(random.nextInt(1, 81)), true);
+        diff = new HandDiffAdd(new LightCard(random.nextInt(1, 81), 1), true);
         diff.apply(GUI.getLightGame());
 
-        diff = new HandDiffAdd(new LightCard(random.nextInt(1, 81)), false);
+        diff = new HandDiffAdd(new LightCard(random.nextInt(1, 81),1 ), false);
         diff.apply(GUI.getLightGame());
 
-        diff = new HandDiffAdd(new LightCard(random.nextInt(1, 81)), true);
+        diff = new HandDiffAdd(new LightCard(random.nextInt(1, 81),1), true);
         diff.apply(GUI.getLightGame());
 
-        diff = new HandDiffSetObj(new LightCard(random.nextInt(87, 103)));
+        diff = new HandDiffSetObj(new LightCard(random.nextInt(87, 103),1));
         diff.apply(GUI.getLightGame());
 
     }

@@ -3,10 +3,11 @@ package it.polimi.ingsw.lightModel.lightPlayerRelated;
 import java.io.Serializable;
 import java.util.Objects;
 
-public record LightCard(int id) implements Serializable {
+public record LightCard(int idFront, int idBack) implements Serializable {
     /**
      * The constructor of the class
-     * @param id the id of the card
+     * @param idFront the id of the card
+     * @param idBack the id of the card
      */
     public LightCard {
     }
@@ -16,11 +17,11 @@ public record LightCard(int id) implements Serializable {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         LightCard lightCard = (LightCard) o;
-        return id == lightCard.id;
+        return idFront == lightCard.idFront && idBack == lightCard.idBack;
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(id);
+        return Objects.hash(idFront, idBack);
     }
 }

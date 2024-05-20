@@ -38,7 +38,7 @@ public class HandRenderable extends CanvasRenderable {
     }
 
     private void renderCard(LightCard card){
-        TextCard textCard = museum.get(card.id());
+        TextCard textCard = museum.get(card.idFront());
         Drawable drawable = textCard.get(CardFace.FRONT);
         Printer.print(drawable.toString());
     }
@@ -68,7 +68,7 @@ public class HandRenderable extends CanvasRenderable {
             }
 
             PromptStyle.printInABox(text, CardTextStyle.getCardWidth() * 2);
-            this.canvas.draw(museum.get(card.id()).get(CardFace.FRONT), CardTextStyle.getCardWidth() /2 + i * (CardTextStyle.getCardWidth() + 1), CardTextStyle.getCardHeight() /2);
+            this.canvas.draw(museum.get(card.idFront()).get(CardFace.FRONT), CardTextStyle.getCardWidth() /2 + i * (CardTextStyle.getCardWidth() + 1), CardTextStyle.getCardHeight() /2);
         }
 
         super.render();

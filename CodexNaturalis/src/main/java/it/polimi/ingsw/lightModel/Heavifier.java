@@ -12,18 +12,18 @@ import java.io.Serializable;
 public class Heavifier implements Serializable {
 
     public static ObjectiveCard heavifyObjectCard(LightCard lightCard, MultiGame games) {
-       return games.getCardLookUpObjective().lookUp(lightCard.id());
+       return games.getCardLookUpObjective().lookUp(lightCard.idFront());
     }
 
     public static StartCard heavifyStartCard(LightCard lightCard, MultiGame games){
-        return games.getCardLookUpStartCard().lookUp(lightCard.id());
+        return games.getCardLookUpStartCard().lookUp(lightCard.idFront());
     }
 
     public static CardInHand heavifyCardInHand(LightCard lightCard, MultiGame games){
-        if(games.getCardLookUpGoldCard().isPresent(lightCard.id())){
-            return games.getCardLookUpGoldCard().lookUp(lightCard.id());
+        if(games.getCardLookUpGoldCard().isPresent(lightCard.idFront())){
+            return games.getCardLookUpGoldCard().lookUp(lightCard.idFront());
         }else{
-            return games.getCardLookUpResourceCard().lookUp(lightCard.id());
+            return games.getCardLookUpResourceCard().lookUp(lightCard.idFront());
         }
     }
 
