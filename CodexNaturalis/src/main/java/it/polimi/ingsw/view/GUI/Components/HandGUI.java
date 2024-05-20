@@ -66,7 +66,7 @@ public class HandGUI implements Observer {
 
     public void addHandTo(AnchorPane parent){
         handPopUp = new AnchoredPopUp(parent, 0.8f, 0.2f, Pos.BOTTOM_CENTER, 0.25f);
-
+        handPopUp.getContent().setStyle(handPopUp.getContent().getStyle() +  "-fx-background-color: transparent");
         handPopUp.getContent().getChildren().add(hand);
 
         hand.prefWidthProperty().bind(handPopUp.getContent().prefWidthProperty());
