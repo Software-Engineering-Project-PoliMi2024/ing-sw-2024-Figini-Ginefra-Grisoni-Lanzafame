@@ -11,6 +11,9 @@ public record LightCard(int idFront, int idBack) implements Serializable {
      */
     public LightCard {
     }
+    public LightCard(int idFront){
+        this(idFront, 1);
+    }
 
     @Override
     public boolean equals(Object o) {
