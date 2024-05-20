@@ -17,7 +17,7 @@ public class CodexOthers extends CodexGUI{
 
     @Override
     protected LightCodex getLightCodex(){
-        System.out.println(GUI.getLightGame().getCodexMap().get("Player2"));
+        //System.out.println(GUI.getLightGame().getCodexMap().get("Player2"));
         return GUI.getLightGame().getCodexMap().get(targetPlayer);
     }
 }

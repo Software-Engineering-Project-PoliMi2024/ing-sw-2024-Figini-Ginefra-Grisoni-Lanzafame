@@ -2,40 +2,36 @@ package it.polimi.ingsw.view.GUI;
 
 import it.polimi.ingsw.view.GUI.Scenes.*;
 import it.polimi.ingsw.view.ViewState;
-import javafx.fxml.FXMLLoader;
-import javafx.scene.Parent;
-import javafx.scene.Scene;
 
-import java.io.IOException;
-import java.util.Objects;
+import java.lang.reflect.InvocationTargetException;
 import java.util.function.Supplier;
 
 public enum StateGUI {
-    SERVER_CONNECTION(ViewState.SERVER_CONNECTION, ServerConnectionScene::new),
-    LOGIN_FORM(ViewState.LOGIN_FORM, LoginFormScene::new),
-    JOIN_LOBBY(ViewState.JOIN_LOBBY, LobbyListScene::new),
-    LOBBY(ViewState.LOBBY, LobbyScene::new),
-    CHOOSE_START_CARD(ViewState.CHOOSE_START_CARD, GameScene::new),
-    SELECT_OBJECTIVE(ViewState.SELECT_OBJECTIVE, GameScene::new),
-    WAITING_STATE(ViewState.WAITING_STATE, GameScene::new),
-    IDLE(ViewState.IDLE, GameScene::new),
+    SERVER_CONNECTION(ViewState.SERVER_CONNECTION, ServerConnectionScene.class),
+    LOGIN_FORM(ViewState.LOGIN_FORM, LoginFormScene.class),
+    JOIN_LOBBY(ViewState.JOIN_LOBBY, LobbyListScene.class),
+    LOBBY(ViewState.LOBBY, LobbyScene.class),
+    CHOOSE_START_CARD(ViewState.CHOOSE_START_CARD, GameScene.class),
+    SELECT_OBJECTIVE(ViewState.SELECT_OBJECTIVE, GameScene.class),
+    WAITING_STATE(ViewState.WAITING_STATE, GameScene.class),
+    IDLE(ViewState.IDLE, GameScene.class),
 
-    DRAW_CARD(ViewState.DRAW_CARD, GameScene::new),
+    DRAW_CARD(ViewState.DRAW_CARD, GameScene.class),
 
-    PLACE_CARD(ViewState.PLACE_CARD, GameScene::new),
+    PLACE_CARD(ViewState.PLACE_CARD, GameScene.class),
 
-    GAME_WAITING(ViewState.GAME_WAITING, GameScene::new),
+    GAME_WAITING(ViewState.GAME_WAITING, GameScene.class),
 
-    GAME_ENDING(ViewState.GAME_ENDING, GameScene::new),;
+    GAME_ENDING(ViewState.GAME_ENDING, GameScene.class),;
 
     private final ViewState referenceState;
 
-    private final Supplier<SceneGUI> sceneConstruvtor;
+    private final Class<? extends SceneGUI> sceneClass;
 
 
-    StateGUI(ViewState referenceState, Supplier<SceneGUI> sceneConstruvtor) {
+    StateGUI(ViewState referenceState, Class<? extends SceneGUI> sceneClass) {
         this.referenceState = referenceState;
-        this.sceneConstruvtor = sceneConstruvtor;
+        this.sceneClass = sceneClass;
     }
 
     public boolean references(ViewState state) {
@@ -43,10 +39,14 @@ public enum StateGUI {
     }
 
     public SceneGUI getScene() {
-        return sceneConstruvtor.get();
+        try {
+            return sceneClass.getConstructor().newInstance();
+        } catch (InstantiationException | IllegalAccessException | InvocationTargetException | NoSuchMethodException e) {
+            throw new RuntimeException(e);
+        }
     }
 
     public boolean equals(StateGUI other){
-        return other != null && this.sceneConstruvtor == other.sceneConstruvtor;
+        return other != null && this.sceneClass.equals(other.sceneClass);
     }
 }

@@ -1,5 +1,6 @@
 package it.polimi.ingsw.view.GUI.Scenes;
 
+import it.polimi.ingsw.lightModel.lightPlayerRelated.LightBack;
 import it.polimi.ingsw.lightModel.lightPlayerRelated.LightCard;
 import it.polimi.ingsw.lightModel.diffs.ModelDiffs;
 import it.polimi.ingsw.lightModel.diffs.game.*;
@@ -11,7 +12,7 @@ import it.polimi.ingsw.view.GUI.Components.AnchoredPopUp;
 import it.polimi.ingsw.view.GUI.Components.CodexRelated.CodexGUI;
 import it.polimi.ingsw.view.GUI.Components.CodexRelated.CollectedCollectablesGUI;
 import it.polimi.ingsw.view.GUI.Components.CodexRelated.Peeker;
-import it.polimi.ingsw.view.GUI.Components.HandGUI;
+import it.polimi.ingsw.view.GUI.Components.HandRelated.HandGUI;
 import it.polimi.ingsw.view.GUI.Components.LogsGUI;
 import it.polimi.ingsw.view.GUI.GUI;
 import it.polimi.ingsw.view.GUI.Root;
@@ -74,13 +75,13 @@ public class GameScene extends SceneGUI{
         collectedCollectables.addThisTo(getContent());
 
 
-        /*List<LightPlacement> placements = List.of(new LightPlacement[]{
+        List<LightPlacement> placements = List.of(new LightPlacement[]{
                 new LightPlacement(new Position(0, 0), new LightCard(81, 81), CardFace.FRONT),
                 new LightPlacement(new Position(-1, -1), new LightCard(4, 1), CardFace.BACK),
                 new LightPlacement(new Position(1, -1), new LightCard(20, 11), CardFace.FRONT),
                 new LightPlacement(new Position(-1, 1), new LightCard(16, 11), CardFace.BACK),
 
-        });*/
+        });
 
         List<Position> positions = List.of(new Position[]{
                 new Position(1, 1),
@@ -94,7 +95,7 @@ public class GameScene extends SceneGUI{
 
         });
 
-        /*
+
         diff = new CodexDiff("Player1", 0, new HashMap<>(), placements, positions);
         diff.apply(GUI.getLightGame());
 
@@ -112,8 +113,17 @@ public class GameScene extends SceneGUI{
         diff = new HandDiffAdd(new LightCard(random.nextInt(1, 81),1), true);
         diff.apply(GUI.getLightGame());
 
+        diff = new HandOtherDiffAdd(new LightBack(11), "Player2");
+        diff.apply(GUI.getLightGame());
+
+        diff = new HandOtherDiffAdd(new LightBack(11), "Player2");
+        diff.apply(GUI.getLightGame());
+
+        diff = new HandOtherDiffAdd(new LightBack(11), "Player2");
+        diff.apply(GUI.getLightGame());
+
         diff = new HandDiffSetObj(new LightCard(random.nextInt(87, 103),1));
-        diff.apply(GUI.getLightGame());*/
+        diff.apply(GUI.getLightGame());
 
     }
 }

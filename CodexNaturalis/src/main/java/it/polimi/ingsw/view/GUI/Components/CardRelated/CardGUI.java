@@ -1,5 +1,6 @@
 package it.polimi.ingsw.view.GUI.Components.CardRelated;
 
+import it.polimi.ingsw.lightModel.lightPlayerRelated.LightBack;
 import it.polimi.ingsw.lightModel.lightPlayerRelated.LightCard;
 import it.polimi.ingsw.model.cardReleted.utilityEnums.CardFace;
 import it.polimi.ingsw.view.GUI.AssetsGUI;
@@ -83,6 +84,10 @@ public class CardGUI {
 
     public CardGUI(CardGUI other){
         this(other.target, other.face);
+    }
+
+    public CardGUI(LightBack back){
+        this(new LightCard(0, back.idBack()), CardFace.BACK);
     }
 
     public void update(){
