@@ -17,8 +17,8 @@ public abstract class CardInHand extends CardWithCorners {
      * @param points the points of the card
      * @param frontCorners the corners of the front of the card
      */
-    public CardInHand(int id, Resource permanentResource, int points,  Map<CardCorner, Collectable> frontCorners){
-        super(id, points, frontCorners);
+    public CardInHand(int idFront, int idBack, Resource permanentResource, int points,  Map<CardCorner, Collectable> frontCorners){
+        super(idFront, idBack, points, frontCorners);
         this.permanentResource = permanentResource;
     }
 

@@ -8,14 +8,14 @@ public class ObjectiveCard extends Card {
 
     /** @param points given by the card
      * @param multiplier the multiplier of the points */
-    public ObjectiveCard(int id, int points, ObjectiveCardPointMultiplier multiplier){
-        super(id, points);
+    public ObjectiveCard(int idFront, int idBack, int points, ObjectiveCardPointMultiplier multiplier){
+        super(idFront, idBack, points);
         this.multiplier = multiplier;
     }
 
     /** @param other the card to copy */
     public ObjectiveCard(ObjectiveCard other){
-        this(other.getId(), other.getPoints(), other.getMultiplier());
+        this(other.getIdFront(), other.getIdBack(), other.getPoints(), other.getMultiplier());
     }
 
     /** @return the points of the card multiplied by the multiplier

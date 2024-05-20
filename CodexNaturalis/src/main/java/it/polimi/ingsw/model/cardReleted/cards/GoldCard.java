@@ -22,8 +22,8 @@ public class GoldCard extends CardInHand {
      * @param frontCorner the front corners map
      * @param permanentResource the resource in the middle of the card's back
      */
-    public GoldCard(int id, int points, Map<Resource, Integer> requirements, GoldCardPointMultiplier multiplier, Map<CardCorner, Collectable> frontCorner, Resource permanentResource){
-        super(id, permanentResource, points, frontCorner);
+    public GoldCard(int idFront, int idBack, int points, Map<Resource, Integer> requirements, GoldCardPointMultiplier multiplier, Map<CardCorner, Collectable> frontCorner, Resource permanentResource){
+        super(idFront, idBack, permanentResource, points, frontCorner);
         this.requirements = requirements;
         this.multiplier = multiplier;
     }
@@ -33,7 +33,7 @@ public class GoldCard extends CardInHand {
      * @param other the card to copy
      */
     public GoldCard(GoldCard other){
-        this(other.getId(), other.getPoints(), other.getRequirements(), other.getGoldCardPointMultiplier(), other.getFrontCorners(), other.getPermanentResources(CardFace.BACK).stream().findFirst().orElse(null));
+        this(other.getIdFront(), other.getIdBack(), other.getPoints(), other.getRequirements(), other.getGoldCardPointMultiplier(), other.getFrontCorners(), other.getPermanentResources(CardFace.BACK).stream().findFirst().orElse(null));
     }
 
     /**

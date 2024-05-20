@@ -17,15 +17,15 @@ public class StartCard extends CardWithCorners {
     /** @param backCorners the map containing which collectable is in which corner
      * @param permanentResources the permanent resources given by the start card
      * @param frontCorners the front corners map*/
-    public StartCard(int id, Map<CardCorner, Collectable> frontCorners, Map<CardCorner,Collectable> backCorners, HashSet<Resource> permanentResources){
-        super(id, 0, frontCorners);
+    public StartCard(int idFront, int idBack, Map<CardCorner, Collectable> frontCorners, Map<CardCorner,Collectable> backCorners, HashSet<Resource> permanentResources){
+        super(idFront, idBack, 0, frontCorners);
         this.backCorners = backCorners;
         this.permanentResources = permanentResources;
     }
 
     /** @param other the card to copy */
     public StartCard(StartCard other){
-        this(other.getId(), other.getFrontCorners(), other.getBackCorners(), other.getPermanentResources(CardFace.BACK));
+        this(other.getIdFront(), other.getIdBack(), other.getFrontCorners(), other.getBackCorners(), other.getPermanentResources(CardFace.BACK));
     }
 
     /**@param corner the corner to check
