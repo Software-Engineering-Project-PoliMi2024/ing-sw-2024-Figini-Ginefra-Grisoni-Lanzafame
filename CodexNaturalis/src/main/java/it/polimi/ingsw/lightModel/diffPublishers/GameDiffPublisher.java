@@ -162,7 +162,7 @@ public class GameDiffPublisher implements Serializable {
     }
 
     /**
-     * @param diffSubscriber the subscriber to which send the hand of the other players
+     * @param diffSubscriber the subscriber to which sends the hand of the other players
      * @return a list of diffs containing the current state of the hand of the other players
      */
     private List<HandOtherDiff> getHandOtherCurrentState(DiffSubscriber diffSubscriber){

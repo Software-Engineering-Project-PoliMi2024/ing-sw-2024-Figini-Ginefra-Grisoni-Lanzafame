@@ -61,16 +61,16 @@ public class GameLoopController implements Serializable {
             activePlayers.remove(nickname);
             //The player rejoined a single-player game, so he matches the same view as the one-player-left.
             // OR the game is in the setup phase
-            if((everyoneActiveHasPlaced() && !startCardIsPlaced(joiningUser)) || !everyoneActiveHasPlaced()){
+            if((everyoneActiveHasPlaced() && !startCardIsPlaced(joiningUser)) || !everyoneActiveHasPlaced()){ //The joining player need to place his startCard
                 activePlayers.put(nickname, controller);
                 controller.transitionTo(ViewState.CHOOSE_START_CARD);
                 LightCard lightStartCard = Lightifier.lightifyToCard(getOrDrawStartCard(joiningUser));
                 controller.updateGame(new HandDiffAdd(lightStartCard, true));
-            }else if((everyoneActiveHasChosen() && !secretObjectiveIsChose(joiningUser)) || !everyoneActiveHasChosen()){
+            }else if((everyoneActiveHasChosen() && !secretObjectiveIsChose(joiningUser)) || !everyoneActiveHasChosen()){ //The joining player need to choose his secretObjective
                 activePlayers.put(nickname, controller);
                 controller.transitionTo(ViewState.SELECT_OBJECTIVE);
                 for(LightCard secretObjectiveCardChoice : getOrDrawSecretObjectiveChoices(joiningUser)){
-                    controller.updateGame(new HandDiffAdd(secretObjectiveCardChoice, true));
+                    controller.updateGame(new HandDiffAddOneSecretObjectiveOption(secretObjectiveCardChoice));
                 }
             }
 
@@ -166,21 +166,21 @@ public class GameLoopController implements Serializable {
     }
 
     /**
-     * Remove the controller from the activePlayers map,
-     * if the controller is the current player, calculate the next player
-     * @param controller of the user who is leaving
+     * Remove the leavingController from the activePlayers map,
+     * if the leavingController is the current player, calculate the next player
+     * @param leavingController of the user who is leaving
      */
-    public void leaveGame(ServerModelController controller){
-        String leavingPlayerNick = controller.getNickname();
+    public void leaveGame(ServerModelController leavingController){
+        String leavingPlayerNick = leavingController.getNickname();
         User leavingUser = game.getUserFromNick(leavingPlayerNick);
 
-        activePlayers.remove(leavingPlayerNick, controller);
+        activePlayers.remove(leavingPlayerNick, leavingController);
 
         if(activePlayers.size() == 1){
-            this.onePlayerLeft();
+            this.onePlayerLeft(leavingController);
         }else{
             for(ServerModelController stillActiveController : activePlayers.values()){
-                stillActiveController.logOther(controller.getNickname(), LogsOnClient.PLAYER_GAME_LEFT);
+                stillActiveController.logOther(leavingController.getNickname(), LogsOnClient.PLAYER_GAME_LEFT);
             }
             //The leaving player is the current player
             if(hasEveryPlayerHasPlacedAndChosen(leavingUser) && leavingUser.equals(game.getGameParty().getCurrentPlayer())){
@@ -218,8 +218,9 @@ public class GameLoopController implements Serializable {
     /**
      * If only one player is left in the game, start a countdown to end the game
      */
-    private void onePlayerLeft() {
+    private void onePlayerLeft(ServerModelController leavingController) {
         ServerModelController lastController = activePlayers.values().iterator().next();
+        lastController.logOther(leavingController.getNickname(), LogsOnClient.PLAYER_GAME_LEFT);
         lastController.logGame(LogsOnClient.LAST_PLAYER);
         lastController.logGame(LogsOnClient.COUNTDOWN_START);
 

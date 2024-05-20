@@ -325,7 +325,7 @@ public class ServerModelController implements ControllerInterface, DiffSubscribe
                 this.games.removeUser(this.nickname);//Free the nick from the server, so it can be re-used by other people
                 if (games.isInGameParty(this.nickname)) { //Handle the removing of the user from a game
                     games.getUserGame(this.nickname).unsubscribe(this);
-                    this.games.getUserGame(nickname).getGameLoopController().leaveGame(this, this.nickname);
+                    this.games.getUserGame(nickname).getGameLoopController().leaveGame(this);
                 } else if (games.getUserLobby(this.nickname) != null) { //Handle the removing of the user from a lobby
                     this.leaveLobby();
                     games.getUserLobby(this.nickname).unsubscribe(this);

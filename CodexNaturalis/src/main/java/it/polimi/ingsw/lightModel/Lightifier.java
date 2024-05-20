@@ -90,6 +90,7 @@ public class Lightifier implements Serializable {
      * @return a LightHandOther containing the permanent resource of each CardInHand of the other player
      */
     public static LightHandOthers lightifyOthers(Hand hand){
-       return new LightHandOthers(hand.getHand().stream().map(CardInHand -> CardInHand.getPermanentResources(CardFace.BACK)).toArray(Resource[]::new));
+        //getPermanentResources(CardFace.BACK) returns a list set of Resource for each CardInHand. This set is then flattened and converted to an array
+       return new LightHandOthers(hand.getHand().stream().flatMap(CardInHand -> CardInHand.getPermanentResources(CardFace.BACK).stream()).toArray(Resource[]::new));
     }
 }
