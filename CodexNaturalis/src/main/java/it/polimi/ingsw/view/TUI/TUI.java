@@ -53,6 +53,8 @@ public class TUI implements ActualView {
     private PostGameStateRenderable postGameStateRenderable;
     private DrawCardForm drawCardForm;
     private LeaderboardRenderable leaderboardRenderable;
+
+    private SecretObjectiveRenderable secretObjectiveRenderable;
     private final LightGame lightGame = new LightGame();
     private final LightLobby lightLobby = new LightLobby();
     private final LightLobbyList lightLobbyList = new LightLobbyList();
@@ -105,13 +107,24 @@ public class TUI implements ActualView {
                 "Hand",
                 cardMuseum,
                 lightGame,
-                new CommandPrompt[]{CommandPrompt.DISPLAY_HAND, CommandPrompt.DISPLAY_SECRET_OBJECTIVE},
+                new CommandPrompt[]{CommandPrompt.DISPLAY_HAND},
                 this);
         StateTUI.SELECT_OBJECTIVE.attach(handRenderable);
         StateTUI.PLACE_CARD.attach(handRenderable);
         StateTUI.IDLE.attach(handRenderable);
         StateTUI.DRAW_CARD.attach(handRenderable);
         renderables.add(handRenderable);
+
+        secretObjectiveRenderable = new SecretObjectiveRenderable(
+                "Secret Objective",
+                cardMuseum,
+                lightGame,
+                new CommandPrompt[]{CommandPrompt.DISPLAY_SECRET_OBJECTIVE},
+                this);
+        StateTUI.IDLE.attach(secretObjectiveRenderable);
+        StateTUI.PLACE_CARD.attach(secretObjectiveRenderable);
+        StateTUI.DRAW_CARD.attach(secretObjectiveRenderable);
+        renderables.add(secretObjectiveRenderable);
 
         placeCardForm = new PlaceCardForm(
                 "Place Card",

@@ -54,7 +54,7 @@ public class PopUp {
     public PopUp(AnchorPane parent) {
         this.parent = parent;
 
-        bg.setStyle("-fx-fill: rgba(0, 0, 0, 0.5);");
+        bg.setStyle("-fx-fill: rgba(0, 0, 0, 0.8);");
         content.setStyle("-fx-background-color: white; -fx-background-radius: 20;");
 
         content.scaleYProperty().bind(content.scaleXProperty());

@@ -130,8 +130,11 @@ public class CommandDisplayRenderable extends Renderable{
                 //This is used for commands that don't require any input
                 currentPrompt.notifyObservers();
                 currentPrompt.reset();
+
+                if(currentPrompt.isLocal())
+                    this.render();
+
                 currentPrompt = null;
-                this.render();
             }
         }
         else{
