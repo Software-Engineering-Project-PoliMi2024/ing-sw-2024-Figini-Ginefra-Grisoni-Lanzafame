@@ -45,14 +45,6 @@ public class HandRenderable extends CanvasRenderable {
     }
 
     /**
-     * Renders the secret objective card.
-     */
-    public void renderSecretObjective(){
-        PromptStyle.printInABox("Secret Objective", CardTextStyle.getCardWidth() * 2);
-        this.renderCard(lightGame.getHand().getSecretObjective());
-    }
-
-    /**
      * Renders the hand of the main player.
      */
     @Override
@@ -84,9 +76,6 @@ public class HandRenderable extends CanvasRenderable {
             case CommandPrompt.DISPLAY_HAND:
                 int cardIndex = Integer.parseInt(answer.getAnswer(0));
                 this.render();
-                break;
-            case CommandPrompt.DISPLAY_SECRET_OBJECTIVE:
-                this.renderSecretObjective();
                 break;
             default:
                 break;
