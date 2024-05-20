@@ -19,6 +19,7 @@ public class Frontier implements Serializable {
      */
     public Frontier(){
         frontier = new ArrayList<>();
+        frontier.add(new Position(0, 0));
     }
 
     /**
