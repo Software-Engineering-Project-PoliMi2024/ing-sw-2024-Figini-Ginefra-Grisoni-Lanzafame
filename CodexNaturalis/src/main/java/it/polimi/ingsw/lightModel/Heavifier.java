@@ -30,4 +30,8 @@ public class Heavifier implements Serializable {
     public static Placement heavify(LightPlacement lightPlacement, MultiGame games){
         return new Placement(lightPlacement.position(), heavifyCardInHand(lightPlacement.card(), games), lightPlacement.face());
     }
+
+    public static Placement heavifyStartCardPlacement(LightPlacement lightPlacement, MultiGame games){
+        return new Placement(lightPlacement.position(), heavifyStartCard(lightPlacement.card(), games), lightPlacement.face());
+    }
 }

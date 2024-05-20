@@ -61,7 +61,8 @@ public class ChooseStartCardRenderable extends CardRenderable {
             case CommandPrompt.CHOOSE_START_SIDE:
                 try {
                     CardFace face = answer.getAnswer(0).equals("front") ? CardFace.FRONT : CardFace.BACK;
-                    view.getController().place(new LightPlacement(new Position(0,0), Arrays.stream(getLightGame().getHand().getCards()).toList().getFirst(),face));
+                    LightCard startCard = Arrays.stream(getLightGame().getHand().getCards()).toList().getFirst();
+                    view.getController().place(new LightPlacement(new Position(0,0), startCard, face));
                 }
                 catch (Exception e) {
                     e.printStackTrace();

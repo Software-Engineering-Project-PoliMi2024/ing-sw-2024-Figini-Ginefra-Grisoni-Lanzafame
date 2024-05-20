@@ -211,7 +211,7 @@ public class ServerModelController implements ControllerInterface, DiffSubscribe
     @Override
     public void place(LightPlacement placement) throws RemoteException {
         User user = games.getUserFromNick(nickname);
-        Placement heavyPlacement = Heavifier.heavify(placement, this.games);
+        Placement heavyPlacement = Heavifier.heavifyStartCardPlacement(placement, this.games);
         //if the card place is the startCard
         if(user.getUserCodex().getFrontier().isInFrontier(new Position(0,0))){
             user.placeStartCard(heavyPlacement);

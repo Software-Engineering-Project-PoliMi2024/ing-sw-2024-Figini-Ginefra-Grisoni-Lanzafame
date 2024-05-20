@@ -270,7 +270,6 @@ class ServerModelControllerTest {
             serverModelController1.createLobby(lobbyName1, 2);
             serverModelController2.login(view2.name);
             serverModelController2.joinLobby(lobbyName1);
-            serverModelController1.selectStartCardFace(CardFace.FRONT);
         }catch (RemoteException r){
             r.printStackTrace();
         }

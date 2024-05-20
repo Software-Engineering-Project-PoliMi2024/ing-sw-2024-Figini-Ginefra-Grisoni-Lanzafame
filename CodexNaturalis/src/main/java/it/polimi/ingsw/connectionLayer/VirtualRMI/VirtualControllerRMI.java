@@ -116,16 +116,17 @@ public class VirtualControllerRMI implements VirtualController {
 
     @Override
     public void place(LightPlacement placement) {
-        Future<Void> placeFuture = controllerExecutor.submit(()->{
+        /*Future<Void> placeFuture = controllerExecutor.submit(()->{
             try {
                 controllerStub.place(placement);
                 return null;
             } catch (Exception e) {
                 throw new RuntimeException();
             }
-        });
+        });*/
         try {
-            placeFuture.get(Configs.secondsTimeOut, TimeUnit.SECONDS);
+            controllerStub.place(placement);
+            //placeFuture.get(Configs.secondsTimeOut, TimeUnit.SECONDS);
         }catch (Exception e){
             e.printStackTrace();
             this.disconnect();
