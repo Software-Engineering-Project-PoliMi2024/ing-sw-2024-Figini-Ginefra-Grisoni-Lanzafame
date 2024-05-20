@@ -4,29 +4,29 @@ import it.polimi.ingsw.lightModel.Differentiable;
 import it.polimi.ingsw.model.cardReleted.utilityEnums.Resource;
 
 public class LightHandOthers implements Differentiable {
-    private final Resource[] cards;
+    private final LightBack[] cards;
     public LightHandOthers(){
-        cards = new Resource[3];
+        cards = new LightBack[3];
     }
-    public LightHandOthers(Resource[] cards){
+    public LightHandOthers(LightBack[] cards){
         if(cards.length > 3)
             throw new IllegalArgumentException();
         else
             this.cards = cards;
     }
-    public Resource[] getCards() {
+    public LightBack[] getCards() {
         return cards;
     }
-    private int length(Resource[] arr){
+    private int length(LightBack[] arr){
         int i=0;
-        for(Resource r: arr){
-            if(r!=null){
+        for(LightBack back: arr){
+            if(back!=null){
                 i++;
             }
         }
         return i;
     }
-    public void addCard(Resource card){
+    public void addCard(LightBack card){
         if(length(cards) > 3){
             throw new IllegalCallerException();
         }else{
@@ -38,7 +38,7 @@ public class LightHandOthers implements Differentiable {
             }
         }
     }
-    public void removeCard(Resource card){
+    public void removeCard(LightBack card){
         if(card == null){
             throw new IllegalArgumentException("card can not be null");
         }

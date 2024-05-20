@@ -1,4 +1,4 @@
-package it.polimi.ingsw.controller2;
+package it.polimi.ingsw.controller;
 
 import it.polimi.ingsw.lightModel.lightPlayerRelated.LightCard;
 import it.polimi.ingsw.lightModel.lightPlayerRelated.LightPlacement;

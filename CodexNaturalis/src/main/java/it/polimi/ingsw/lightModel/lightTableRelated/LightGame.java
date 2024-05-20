@@ -67,7 +67,7 @@ public class LightGame implements Differentiable {
     public void setCodexMap(String owner, LightCodex codex){
         this.codexMap.put(owner, codex);
     }
-    public void addOtherHand(String owner, Resource card){
+    public void addOtherHand(String owner, LightBack card){
         if(this.handOthers.get(owner) == null){
             this.handOthers.put(owner, new LightHandOthers());
         }else{
@@ -93,8 +93,8 @@ public class LightGame implements Differentiable {
     public void setGoldDeck(LightDeck deck){
         decks.put(DrawableCard.GOLDCARD, deck);
     }
-    public void setTopDeck(Resource resource, DrawableCard type){
-        decks.get(type).setTopDeckCard(resource);
+    public void setTopDeck(LightBack back, DrawableCard type){
+        decks.get(type).setTopDeckCard(back);
     }
     public void setDeckBuffer(LightCard card, DrawableCard type,Integer position){
         decks.get(type).substituteBufferCard(card, position);

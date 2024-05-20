@@ -20,13 +20,13 @@ class HandRenderableTest {
         CardMuseum museum = new CardMuseumFactory(Configs.CardFolder).getCardMuseum();
         LightGame lightGame = new LightGame();
         renderable = new HandRenderable("name", museum, lightGame, new CommandPrompt[]{}, null);
-        GameDiff diff = new HandDiffAdd(new LightCard(5), true);
+        GameDiff diff = new HandDiffAdd(new LightCard(5, 1), true);
         diff.apply(lightGame);
-        diff = new HandDiffAdd(new LightCard(7), false);
+        diff = new HandDiffAdd(new LightCard(7, 1), false);
         diff.apply(lightGame);
-        diff = new HandDiffAdd(new LightCard(9), true);
+        diff = new HandDiffAdd(new LightCard(9, 1), true);
         diff.apply(lightGame);
-        diff = new HandDiffSetObj(new LightCard(91));
+        diff = new HandDiffSetObj(new LightCard(91, 87));
         diff.apply(lightGame);
     }
 

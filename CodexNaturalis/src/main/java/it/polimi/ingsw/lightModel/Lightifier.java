@@ -12,6 +12,7 @@ import it.polimi.ingsw.model.tableReleted.LobbyList;
 import it.polimi.ingsw.model.tableReleted.Lobby;
 
 import java.io.Serializable;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -62,13 +63,6 @@ public class Lightifier implements Serializable {
     public static LightCard lightifyToCard(Card card){
         return new LightCard(card.getIdFront(), card.getIdBack());
     }
-    /**
-     * @param card which will be lightened
-     * @return the permanentResource on the back of the card
-     */
-    public static Resource lightifyToResource(CardInHand card){
-        return card.getPermanentResources(CardFace.BACK).stream().toList().getFirst();
-    }
 
     /**
      * @param hand which will be lightened
@@ -90,7 +84,14 @@ public class Lightifier implements Serializable {
      * @return a LightHandOther containing the permanent resource of each CardInHand of the other player
      */
     public static LightHandOthers lightifyOthers(Hand hand){
-        //getPermanentResources(CardFace.BACK) returns a list set of Resource for each CardInHand. This set is then flattened and converted to an array
-       return new LightHandOthers(hand.getHand().stream().flatMap(CardInHand -> CardInHand.getPermanentResources(CardFace.BACK).stream()).toArray(Resource[]::new));
+        LightHandOthers handOthers = new LightHandOthers();
+        for(CardInHand card : hand.getHand()){
+            handOthers.addCard(new LightBack(card.getIdBack()));
+        }
+       return handOthers;
+    }
+
+    public static LightBack lightifyToBack(Card card){
+        return new LightBack(card.getIdBack());
     }
 }

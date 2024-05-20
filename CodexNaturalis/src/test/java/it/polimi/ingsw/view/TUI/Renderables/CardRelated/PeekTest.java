@@ -1,6 +1,7 @@
 package it.polimi.ingsw.view.TUI.Renderables.CardRelated;
 
 import it.polimi.ingsw.Configs;
+import it.polimi.ingsw.lightModel.lightPlayerRelated.LightBack;
 import it.polimi.ingsw.lightModel.lightPlayerRelated.LightCard;
 import it.polimi.ingsw.lightModel.diffs.game.*;
 import it.polimi.ingsw.lightModel.lightPlayerRelated.LightPlacement;
@@ -58,13 +59,13 @@ class PeekTest {
         diff = new CodexDiff("Player2", 0, new HashMap<>(), placements, positions);
         diff.apply(lightGame);
 
-        diff = new HandOtherDiffAdd(Resource.INSECT, "Player2");
+        diff = new HandOtherDiffAdd(new LightBack(31), "Player2");
         diff.apply(lightGame);
 
-        diff = new HandOtherDiffAdd(Resource.ANIMAL, "Player2");
+        diff = new HandOtherDiffAdd(new LightBack(21), "Player2");
         diff.apply(lightGame);
 
-        diff = new HandOtherDiffAdd(Resource.PLANT, "Player2");
+        diff = new HandOtherDiffAdd(new LightBack(41), "Player2");
         diff.apply(lightGame);
     }
 

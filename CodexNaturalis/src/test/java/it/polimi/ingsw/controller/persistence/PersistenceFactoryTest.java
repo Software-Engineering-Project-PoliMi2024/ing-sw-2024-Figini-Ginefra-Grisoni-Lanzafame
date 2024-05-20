@@ -1,4 +1,4 @@
-package it.polimi.ingsw.controller2.persistence;
+package it.polimi.ingsw.controller.persistence;
 
 import it.polimi.ingsw.Configs;
 import it.polimi.ingsw.model.MultiGame;
@@ -7,9 +7,7 @@ import it.polimi.ingsw.model.tableReleted.Game;
 import it.polimi.ingsw.model.tableReleted.Lobby;
 import org.junit.jupiter.api.Test;
 
-import javax.swing.*;
 import java.io.File;
-import java.nio.file.Paths;
 import java.util.Objects;
 
 class persistenceFactoryTest {

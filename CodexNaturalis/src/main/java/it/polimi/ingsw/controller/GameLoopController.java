@@ -1,6 +1,7 @@
-package it.polimi.ingsw.controller2;
+package it.polimi.ingsw.controller;
 
 import it.polimi.ingsw.Configs;
+import it.polimi.ingsw.lightModel.lightPlayerRelated.LightBack;
 import it.polimi.ingsw.lightModel.lightPlayerRelated.LightCard;
 import it.polimi.ingsw.lightModel.Lightifier;
 import it.polimi.ingsw.lightModel.diffs.game.*;
@@ -198,7 +199,7 @@ public class GameLoopController implements Serializable {
                     if(card != null){ //the decks are not empty
                         leavingUser.getUserHand().addCard(card);
                         //I do not notify the leaving player, because his view is not reachable anymore
-                        game.subscribe(new HandOtherDiffAdd(Lightifier.lightifyToResource(card), leavingPlayerNick));
+                        game.subscribe(new HandOtherDiffAdd(new LightBack(card.getIdBack()), leavingPlayerNick));
                     }
                 }
                 this.gameLoop();
@@ -492,12 +493,12 @@ public class GameLoopController implements Serializable {
                 CardInHand resourceCard = game.getResourceCardDeck().drawFromDeck();
                 user.getUserHand().addCard(resourceCard);
                 game.subscribe(controller, new HandDiffAdd(Lightifier.lightifyToCard(resourceCard), resourceCard.canBePlaced(user.getUserCodex())),
-                        new HandOtherDiffAdd(Lightifier.lightifyToResource(resourceCard), controller.getNickname()));
+                        new HandOtherDiffAdd(new LightBack(resourceCard.getIdBack()), controller.getNickname()));
             }
             CardInHand goldCard = game.getGoldCardDeck().drawFromDeck();
             user.getUserHand().addCard(goldCard);
             game.subscribe(controller, new HandDiffAdd(Lightifier.lightifyToCard(goldCard), goldCard.canBePlaced(user.getUserCodex())),
-                    new HandOtherDiffAdd(Lightifier.lightifyToResource(goldCard), controller.getNickname()));
+                    new HandOtherDiffAdd(new LightBack(goldCard.getIdBack()), controller.getNickname()));
 
             LightCard[] lightCommonObj = game.getCommonObjective().stream().map(Lightifier::lightifyToCard).toArray(LightCard[]::new);
             controller.updateGame(new GameDiffPublicObj(lightCommonObj));

@@ -1,8 +1,7 @@
-package it.polimi.ingsw.controller2;
+package it.polimi.ingsw.controller;
 
 import it.polimi.ingsw.lightModel.Lightifier;
 import it.polimi.ingsw.lightModel.diffPublishers.ViewTest;
-import it.polimi.ingsw.lightModel.diffs.lobby_lobbyList.LobbyListDiffEdit;
 import it.polimi.ingsw.lightModel.lightTableRelated.LightLobby;
 import it.polimi.ingsw.model.MultiGame;
 import it.polimi.ingsw.model.cardReleted.utilityEnums.CardFace;
@@ -167,10 +166,10 @@ class ServerModelControllerTest {
         assert multiGame.getGameByName(lobbyName2).getGameParty().getNumberOfMaxPlayer() == 2;
 
         assert multiGame.getGameByName(lobbyName2).getGameParty().getUsersList().stream().map(User::getUserHand).map(Hand::getStartCard).toList().size() == 2;
-        assert view3.lightGame.getHand().getCards()[0].id() != 0;
+        assert view3.lightGame.getHand().getCards()[0].idFront() != 0;
         assert view3.lightGame.getHand().getCards()[1] == null;
         assert view3.lightGame.getHand().getCards()[2] == null;
-        assert view5.lightGame.getHand().getCards()[0].id() != 0;
+        assert view5.lightGame.getHand().getCards()[0].idFront() != 0;
         assert view5.lightGame.getHand().getCards()[1] == null;
         assert view5.lightGame.getHand().getCards()[2] == null;
 

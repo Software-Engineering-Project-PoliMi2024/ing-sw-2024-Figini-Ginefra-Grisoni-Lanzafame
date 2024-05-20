@@ -1,7 +1,8 @@
-package it.polimi.ingsw.controller2;
+package it.polimi.ingsw.controller;
 
 
 import it.polimi.ingsw.lightModel.Heavifier;
+import it.polimi.ingsw.lightModel.lightPlayerRelated.LightBack;
 import it.polimi.ingsw.lightModel.lightPlayerRelated.LightCard;
 import it.polimi.ingsw.lightModel.Lightifier;
 import it.polimi.ingsw.lightModel.diffs.*;
@@ -234,7 +235,7 @@ public class ServerModelController implements ControllerInterface, DiffSubscribe
 
         Game userGame = this.games.getUserGame(this.nickname);
         userGame.subscribe(this, new HandDiffRemove(placement.card()), new HandOtherDiffRemove(
-                heavyPlacement.card().getPermanentResources(CardFace.BACK).stream().findFirst().orElse(null), this.nickname));
+                new LightBack(heavyPlacement.card().getIdBack()), this.nickname));
         userGame.subscribe(new CodexDiff(this.nickname, user.getUserCodex().getPoints(),
                 user.getUserCodex().getEarnedCollectables(), getPlacementList(placement), user.getUserCodex().getFrontier().getFrontier()));
         for(ServerModelController allControllers : userGame.getGameLoopController().getActivePlayers().values()){
@@ -282,7 +283,7 @@ public class ServerModelController implements ControllerInterface, DiffSubscribe
             User user = games.getUserFromNick(this.nickname);
             user.getUserHand().addCard(drawCard);
             userGame.subscribe(this, new HandDiffAdd(Lightifier.lightifyToCard(drawCard), drawCard.canBePlaced(user.getUserCodex())),
-                    new HandOtherDiffAdd(drawCard.getPermanentResources(CardFace.BACK).stream().toList().getFirst(), this.nickname));
+                    new HandOtherDiffAdd(new LightBack(drawCard.getIdBack()), this.nickname));
             userGame.getGameLoopController().cardDrawn(this);
         }
     }
@@ -300,11 +301,10 @@ public class ServerModelController implements ControllerInterface, DiffSubscribe
         if (cardID == 2) {
             drawCard = deck.drawFromDeck();
             userGame.subscribe(new DeckDiffDeckDraw(drawableCard,
-                    deck.showTopCardOfDeck().getPermanentResources(CardFace.BACK).stream().toList().getFirst()));
+                    new LightBack(deck.showTopCardOfDeck().getIdBack())));
         } else {
             drawCard = deck.drawFromBuffer(cardID);
-            userGame.subscribe(new DeckDiffDeckDraw(drawableCard,
-                    deck.showCardFromBuffer(cardID).getPermanentResources(CardFace.BACK).stream().toList().getFirst()));
+            userGame.subscribe(new DeckDiffBufferDraw(Lightifier.lightifyToCard(drawCard),cardID, drawableCard));
         }
         return drawCard;
     }

@@ -4,7 +4,7 @@ import it.polimi.ingsw.connectionLayer.PingPongInterface;
 import it.polimi.ingsw.connectionLayer.Socket.ClientHandler;
 import it.polimi.ingsw.connectionLayer.Socket.ServerMsg.*;
 import it.polimi.ingsw.connectionLayer.VirtualLayer.VirtualView;
-import it.polimi.ingsw.controller2.ControllerInterface;
+import it.polimi.ingsw.controller.ControllerInterface;
 import it.polimi.ingsw.lightModel.diffs.ModelDiffs;
 import it.polimi.ingsw.lightModel.lightTableRelated.LightGame;
 import it.polimi.ingsw.lightModel.lightTableRelated.LightLobby;

@@ -1,10 +1,9 @@
 package it.polimi.ingsw.view.TUI.Renderables.CardRelated;
 
-import it.polimi.ingsw.controller2.ControllerInterface;
+import it.polimi.ingsw.lightModel.lightPlayerRelated.LightBack;
 import it.polimi.ingsw.lightModel.lightPlayerRelated.LightHandOthers;
 import it.polimi.ingsw.lightModel.lightTableRelated.LightGame;
 import it.polimi.ingsw.model.cardReleted.utilityEnums.CardFace;
-import it.polimi.ingsw.model.cardReleted.utilityEnums.Resource;
 import it.polimi.ingsw.view.ControllerProvider;
 import it.polimi.ingsw.view.TUI.Printing.Printer;
 import it.polimi.ingsw.view.TUI.Styles.CardTextStyle;
@@ -12,9 +11,6 @@ import it.polimi.ingsw.view.TUI.Styles.PromptStyle;
 import it.polimi.ingsw.view.TUI.cardDrawing.CardMuseum;
 import it.polimi.ingsw.view.TUI.inputs.CommandPrompt;
 import it.polimi.ingsw.view.TUI.inputs.CommandPromptResult;
-import it.polimi.ingsw.view.ViewInterface;
-
-import java.rmi.RemoteException;
 
 /**
  * This class is a Renderable that can render the hand of players who are not the main player.
@@ -52,12 +48,12 @@ public class HandOthersRenderable extends CardRenderable{
         PromptStyle.printInABox("Hand of " + targetPlayer, CardTextStyle.getCardWidth() * 3);
         LightHandOthers otherHand = getLightGame().getHandOthers().get(this.targetPlayer);
         for(int i = 0; i < 3; i++){
-            Resource resource = otherHand.getCards()[i];
-            if(resource == null){
+            LightBack card = otherHand.getCards()[i];
+            if(card == null){
                 continue;
             }
 
-            Printer.print(getMuseum().getResourceBack(resource).toString());
+            Printer.print(getMuseum().getBackFromId(card.idBack()).toString());
             Printer.println("");
         }
     }

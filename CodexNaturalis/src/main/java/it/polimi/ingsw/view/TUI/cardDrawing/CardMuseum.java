@@ -1,6 +1,5 @@
 package it.polimi.ingsw.view.TUI.cardDrawing;
 
-import it.polimi.ingsw.model.cardReleted.utilityEnums.Resource;
 import it.polimi.ingsw.view.TUI.Renderables.drawables.Drawable;
 
 import java.io.Serializable;
@@ -16,7 +15,7 @@ public class CardMuseum implements Serializable {
     private final Map<Integer, TextCard> textCards;
 
     /** The backs of the cards based on the resource. */
-    private final Map<Resource, Drawable> resourceBacks = new LinkedHashMap<>();
+    private final Map<Integer, Drawable> idBacks = new LinkedHashMap<>();
 
     /**
      * Creates a new CardMuseum.
@@ -53,19 +52,19 @@ public class CardMuseum implements Serializable {
 
     /**
      * Gets the back of a card based on its resource.
-     * @param resource The resource of the card.
+     * @param backId The id that identify the back of the card.
      * @return The back of the card.
      */
-    public Drawable getResourceBack(Resource resource){
-        return resourceBacks.get(resource);
+    public Drawable getBackFromId(int backId){
+        return idBacks.get(backId);
     }
 
     /**
      * Sets the back of a card based on its resource.
-     * @param resource The resource of the card.
+     * @param backId The id that identify the back of the card.
      * @param drawable The back of the card.
      */
-    public void setResourceBack(Resource resource, Drawable drawable){
-        resourceBacks.put(resource, drawable);
+    public void setBackFromId(int backId, Drawable drawable){
+        idBacks.put(backId, drawable);
     }
 }

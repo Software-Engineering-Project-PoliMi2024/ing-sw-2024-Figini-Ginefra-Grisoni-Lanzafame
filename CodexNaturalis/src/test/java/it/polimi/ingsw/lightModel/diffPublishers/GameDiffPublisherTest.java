@@ -1,6 +1,6 @@
 package it.polimi.ingsw.lightModel.diffPublishers;
 
-import it.polimi.ingsw.controller2.ServerModelController;
+import it.polimi.ingsw.controller.ServerModelController;
 import it.polimi.ingsw.model.MultiGame;
 import it.polimi.ingsw.model.tableReleted.Game;
 import it.polimi.ingsw.model.tableReleted.Lobby;

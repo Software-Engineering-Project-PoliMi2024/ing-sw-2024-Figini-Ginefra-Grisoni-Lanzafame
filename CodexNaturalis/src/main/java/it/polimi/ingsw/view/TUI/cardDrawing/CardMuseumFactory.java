@@ -18,8 +18,10 @@ import it.polimi.ingsw.model.utilities.Pair;
 import it.polimi.ingsw.view.TUI.Renderables.drawables.Drawable;
 
 import java.io.*;
-import java.util.Map;
+import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.Queue;
+import java.util.Set;
 
 /**
  * This class is a factory of CardMuseum. It can create a CardMuseum from the cards json file and save it to a binary file.
@@ -33,14 +35,6 @@ public class CardMuseumFactory {
 
     /** The name of the binary file. */
     public static final String fileName = "CardMuseum.bin";
-
-    /** The first card id having a certain permanent resource. */
-    public final Map<Resource, Integer> resourceBacksIds = Map.of(
-        Resource.FUNGI, 1,
-        Resource.PLANT, 11,
-        Resource.ANIMAL, 21,
-        Resource.INSECT, 31
-    );
 
     /**
      * Creates a new CardMuseumFactory.
@@ -148,11 +142,17 @@ public class CardMuseumFactory {
 
             System.out.println("CardMuseumFactory created of length: " + cardMuseum.getSize());
 
-            for(Resource R : Resource.values()){
-                Drawable back = cardMuseum.get(resourceBacksIds.get(R)).get(CardFace.BACK);
-                cardMuseum.setResourceBack(R, back);
+            Set<Integer> backsIds = new HashSet<>();
+            for(ResourceCard card : resourceCards){
+                backsIds.add(card.getIdBack());
             }
-
+            for(GoldCard card : goldCards){
+                backsIds.add(card.getIdBack());
+            }
+            for(int i : backsIds){
+                Drawable back = cardMuseum.get(i).get(CardFace.BACK);
+                cardMuseum.setBackFromId(i, back);
+            }
             try {
                 // Save the CardMuseum to the binary file
                 saveMuseum(cardMuseum);

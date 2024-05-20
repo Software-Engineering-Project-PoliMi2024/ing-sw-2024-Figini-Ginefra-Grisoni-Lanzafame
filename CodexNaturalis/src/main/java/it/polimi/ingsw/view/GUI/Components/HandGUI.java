@@ -45,6 +45,7 @@ public class HandGUI implements Observer {
         AnchorPane.setTopAnchor(hand, 0.0);
 
         GUI.getStateProperty().addListener((obs, oldState, newState) -> {
+
             if(newState == StateGUI.PLACE_CARD){
                 handPopUp.open();
                 handPopUp.setLocked(true);
@@ -200,6 +201,8 @@ public class HandGUI implements Observer {
         if(freeSpots == Arrays.stream(handCards).filter(Objects::isNull).toArray().length){
             return;
         }
+
+
 
         for (int i = 0; i < handCards.length; i++) {
             if(handCards[i] == null && GUI.getLightGame().getHand().getCards()[i] != null){

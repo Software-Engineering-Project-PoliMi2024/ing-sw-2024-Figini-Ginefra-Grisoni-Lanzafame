@@ -2,7 +2,6 @@ package it.polimi.ingsw.view.TUI;
 
 import it.polimi.ingsw.Configs;
 import it.polimi.ingsw.connectionLayer.VirtualLayer.VirtualController;
-import it.polimi.ingsw.controller2.ControllerInterface;
 import it.polimi.ingsw.lightModel.diffs.ModelDiffs;
 import it.polimi.ingsw.lightModel.lightTableRelated.LightGame;
 import it.polimi.ingsw.lightModel.lightTableRelated.LightLobby;
@@ -26,7 +25,6 @@ import it.polimi.ingsw.view.TUI.inputs.CommandPrompt;
 import it.polimi.ingsw.view.TUI.inputs.InputHandler;
 import it.polimi.ingsw.view.ViewState;
 
-import java.rmi.RemoteException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;

@@ -1,12 +1,13 @@
 package it.polimi.ingsw.lightModel.lightTableRelated;
 
 import it.polimi.ingsw.lightModel.Differentiable;
+import it.polimi.ingsw.lightModel.lightPlayerRelated.LightBack;
 import it.polimi.ingsw.lightModel.lightPlayerRelated.LightCard;
 import it.polimi.ingsw.model.cardReleted.utilityEnums.Resource;
 
 public class LightDeck implements Differentiable {
     private final LightCard[] cardBuffer;
-    private Resource cardDeck;
+    private LightBack deckBack;
 
     /**
      * Constructor of the class
@@ -17,14 +18,14 @@ public class LightDeck implements Differentiable {
     public LightCard[] getCardBuffer() {
         return cardBuffer;
     }
-    public Resource getCardDeck() {
-        return cardDeck;
+    public LightBack getDeckBack() {
+        return deckBack;
     }
     /**
      * @param cardDeck the resource of the first gold card on top of the deck
      */
-    public void setTopDeckCard(Resource cardDeck) {
-        this.cardDeck = cardDeck;
+    public void setTopDeckCard(LightBack cardDeck) {
+        this.deckBack = cardDeck;
     }
     /**
      * @param card the card to add
