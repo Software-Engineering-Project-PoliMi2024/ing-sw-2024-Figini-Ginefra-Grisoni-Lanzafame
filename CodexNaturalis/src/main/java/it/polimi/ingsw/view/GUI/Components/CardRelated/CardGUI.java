@@ -95,7 +95,7 @@ public class CardGUI {
             imageView.setImage(AssetsGUI.loadCardFront(target.idFront()));
         }
         else {
-            imageView.setImage(AssetsGUI.loadCardBack(target.idFront()));
+            imageView.setImage(AssetsGUI.loadCardBack(target.idBack()));
         }
 
     }

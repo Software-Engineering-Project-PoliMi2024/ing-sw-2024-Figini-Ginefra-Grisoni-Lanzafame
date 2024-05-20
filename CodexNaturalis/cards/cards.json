@@ -1171,8 +1171,8 @@
             "permanentResource": [
                 "INSECT"
             ],
-            "frontID": "81",
-            "backID": "81"
+            "frontID": 81,
+            "backID": 81
         },
         {
             "corners": {
@@ -1190,8 +1190,8 @@
             "permanentResource": [
                 "FUNGI"
             ],
-            "frontID": "82",
-            "backID": "82"
+            "frontID": 82,
+            "backID": 82
         },
         {
             "corners": {
@@ -1210,8 +1210,8 @@
                 "PLANT",
                 "FUNGI"
             ],
-            "frontID": "83",
-            "backID": "83"
+            "frontID": 83,
+            "backID": 83
         },
         {
             "corners": {
@@ -1230,8 +1230,8 @@
                 "ANIMAL",
                 "INSECT"
             ],
-            "frontID": "84",
-            "backID": "84"
+            "frontID": 84,
+            "backID": 84
         },
         {
             "corners": {
@@ -1249,8 +1249,8 @@
                 "INSECT",
                 "PLANT"
             ],
-            "frontID": "85",
-            "backID": "85"
+            "frontID": 85,
+            "backID": 85
         },
         {
             "corners": {
@@ -1268,8 +1268,8 @@
                 "ANIMAL",
                 "FUNGI"
             ],
-            "frontID": "86",
-            "backID": "86"
+            "frontID": 86,
+            "backID": 86
         }
     ],
     "ObjectiveCard": [
@@ -1279,7 +1279,7 @@
                 "upwards": 1,
                 "resource": "FUNGI"
             },
-            "frontID": "87",
+            "frontID": 87,
             "backID": 87
         },
         {
@@ -1288,7 +1288,7 @@
                 "upwards": 0,
                 "resource": "PLANT"
             },
-            "frontID": "88",
+            "frontID": 88,
             "backID": 87
         },
         {
@@ -1297,7 +1297,7 @@
                 "upwards": 1,
                 "resource": "ANIMAL"
             },
-            "frontID": "89",
+            "frontID": 89,
             "backID": 87
         },
         {
@@ -1306,7 +1306,7 @@
                 "upwards": "0",
                 "resource": "INSECT"
             },
-            "frontID": "90",
+            "frontID": 90,
             "backID": 87
         },
         {
@@ -1316,7 +1316,7 @@
                 "singleResource": "plant",
                 "multiResource": "fungi"
             },
-            "frontID": "91",
+            "frontID": 91,
             "backID": 87
         },
         {
@@ -1326,7 +1326,7 @@
                 "singleResource": "insect",
                 "multiResource": "plant"
             },
-            "frontID": "92",
+            "frontID": 92,
             "backID": 87
         },
         {

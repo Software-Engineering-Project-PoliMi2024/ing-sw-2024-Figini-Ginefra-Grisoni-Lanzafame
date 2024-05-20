@@ -117,32 +117,32 @@ public class CardMuseumFactory {
             CardMuseum cardMuseum = new CardMuseum();
 
             Queue<ResourceCard> resourceCards = new ResourceCardFactory(folderPath+sourceFileName, folderPath).getCards();
-            resourceCards.forEach(card -> cardMuseum.set(card.getId(), CardPainter.drawResourceCard(card)));
+            resourceCards.forEach(card -> cardMuseum.set(card.getIdFront(), CardPainter.drawResourceCard(card)));
 
             System.out.println("Resource cards loaded: " + resourceCards.size());
 
             Queue<GoldCard> goldCards = new GoldCardFactory(folderPath+sourceFileName, folderPath).getCards();
-            goldCards.forEach(card -> cardMuseum.set(card.getId(), CardPainter.drawGoldCard(card)));
+            goldCards.forEach(card -> cardMuseum.set(card.getIdFront(), CardPainter.drawGoldCard(card)));
 
             System.out.println("Gold cards loaded: " + goldCards.size());
 
             Queue<StartCard> startCards = new StartCardFactory(folderPath+sourceFileName, folderPath).getCards();
-            startCards.forEach(card -> cardMuseum.set(card.getId(), CardPainter.drawStartCard(card)));
+            startCards.forEach(card -> cardMuseum.set(card.getIdFront(), CardPainter.drawStartCard(card)));
 
             System.out.println("Start cards loaded: " + startCards.size());
 
             ObjectiveCardFactory objectiveCardFactory = new ObjectiveCardFactory(folderPath+sourceFileName, folderPath);
 
             Queue<Pair<ObjectiveCard, CollectableCardPointMultiplier>> objectiveCardsWithCollectableMultiplier = objectiveCardFactory.getCardsWithCollectableMultiplier();
-            objectiveCardsWithCollectableMultiplier.forEach(pair -> cardMuseum.set(pair.first().getId(), CardPainter.drawObjectiveCardCollectableMultiplier(pair.first(), pair.second())));
+            objectiveCardsWithCollectableMultiplier.forEach(pair -> cardMuseum.set(pair.first().getIdFront(), CardPainter.drawObjectiveCardCollectableMultiplier(pair.first(), pair.second())));
             System.out.println("Objective cards with collectable multiplier loaded: " + objectiveCardsWithCollectableMultiplier.size());
 
             Queue<Pair<ObjectiveCard, LCardPointMultiplier>> objectiveCardsWithLMultiplier = objectiveCardFactory.getCardsWithLMultiplier();
-            objectiveCardsWithLMultiplier.forEach(pair -> cardMuseum.set(pair.first().getId(), CardPainter.drawObjectiveCardLMultiplier(pair.first(), pair.second())));
+            objectiveCardsWithLMultiplier.forEach(pair -> cardMuseum.set(pair.first().getIdFront(), CardPainter.drawObjectiveCardLMultiplier(pair.first(), pair.second())));
             System.out.println("Objective cards with L multiplier loaded: " + objectiveCardsWithLMultiplier.size());
 
             Queue<Pair<ObjectiveCard, DiagonalCardPointMultiplier>> objectiveCardsWithDiagonalMultiplier = objectiveCardFactory.getCardsWithDiagonalMultiplier();
-            objectiveCardsWithDiagonalMultiplier.forEach(pair -> cardMuseum.set(pair.first().getId(), CardPainter.drawObjectiveCardDiagonalMultiplier(pair.first(), pair.second())));
+            objectiveCardsWithDiagonalMultiplier.forEach(pair -> cardMuseum.set(pair.first().getIdFront(), CardPainter.drawObjectiveCardDiagonalMultiplier(pair.first(), pair.second())));
             System.out.println("Objective cards with diagonal multiplier loaded: " + objectiveCardsWithDiagonalMultiplier.size());
 
 
