@@ -1,9 +1,15 @@
 package it.polimi.ingsw.lightModel.lightPlayerRelated;
 
+import it.polimi.ingsw.designPatterns.Observed;
+import it.polimi.ingsw.designPatterns.Observer;
 import it.polimi.ingsw.lightModel.Differentiable;
 import it.polimi.ingsw.model.cardReleted.utilityEnums.Resource;
 
-public class LightHandOthers implements Differentiable {
+import java.util.LinkedList;
+import java.util.List;
+
+public class LightHandOthers implements Differentiable, Observed {
+    private final List<Observer> observers = new LinkedList<>();
     private final LightBack[] cards;
     public LightHandOthers(){
         cards = new LightBack[3];
@@ -37,6 +43,7 @@ public class LightHandOthers implements Differentiable {
                 }
             }
         }
+        notifyObservers();
     }
     public void removeCard(LightBack card){
         if(card == null){
@@ -51,6 +58,24 @@ public class LightHandOthers implements Differentiable {
         }
         if(!found){
             throw new IllegalArgumentException();
+        }
+        notifyObservers();
+    }
+
+    @Override
+    public void attach(Observer observer) {
+        observers.add(observer);
+    }
+
+    @Override
+    public void detach(Observer observer) {
+        observers.remove(observer);
+    }
+
+    @Override
+    public void notifyObservers() {
+        for(Observer o: observers){
+            o.update();
         }
     }
 }

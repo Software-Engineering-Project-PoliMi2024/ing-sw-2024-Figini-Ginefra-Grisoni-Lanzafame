@@ -119,7 +119,9 @@ public class LightCodex implements Differentiable, Observed{
 
     @Override
     public void attach(Observer observer) {
+
         this.observers.add(observer);
+        observer.update();
     }
 
     @Override
