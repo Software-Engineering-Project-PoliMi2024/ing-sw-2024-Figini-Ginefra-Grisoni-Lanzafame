@@ -2,7 +2,7 @@ package it.polimi.ingsw.controller2;
 
 
 import it.polimi.ingsw.lightModel.Heavifier;
-import it.polimi.ingsw.lightModel.LightCard;
+import it.polimi.ingsw.lightModel.lightPlayerRelated.LightCard;
 import it.polimi.ingsw.lightModel.Lightifier;
 import it.polimi.ingsw.lightModel.diffs.*;
 import it.polimi.ingsw.lightModel.diffs.game.*;

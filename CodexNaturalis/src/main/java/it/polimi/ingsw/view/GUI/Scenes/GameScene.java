@@ -1,6 +1,6 @@
 package it.polimi.ingsw.view.GUI.Scenes;
 
-import it.polimi.ingsw.lightModel.LightCard;
+import it.polimi.ingsw.lightModel.lightPlayerRelated.LightCard;
 import it.polimi.ingsw.lightModel.diffs.ModelDiffs;
 import it.polimi.ingsw.lightModel.diffs.game.*;
 import it.polimi.ingsw.lightModel.lightPlayerRelated.LightPlacement;
@@ -13,7 +13,6 @@ import it.polimi.ingsw.view.GUI.Components.CodexRelated.CollectedCollectablesGUI
 import it.polimi.ingsw.view.GUI.Components.CodexRelated.Peeker;
 import it.polimi.ingsw.view.GUI.Components.HandGUI;
 import it.polimi.ingsw.view.GUI.Components.LogsGUI;
-import it.polimi.ingsw.view.GUI.Components.PopUp;
 import it.polimi.ingsw.view.GUI.GUI;
 import it.polimi.ingsw.view.GUI.Root;
 import javafx.geometry.Pos;

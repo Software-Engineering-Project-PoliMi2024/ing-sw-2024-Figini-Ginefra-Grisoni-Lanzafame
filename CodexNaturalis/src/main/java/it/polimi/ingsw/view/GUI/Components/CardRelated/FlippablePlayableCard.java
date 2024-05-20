@@ -1,6 +1,6 @@
 package it.polimi.ingsw.view.GUI.Components.CardRelated;
 
-import it.polimi.ingsw.lightModel.LightCard;
+import it.polimi.ingsw.lightModel.lightPlayerRelated.LightCard;
 import it.polimi.ingsw.model.cardReleted.utilityEnums.CardFace;
 
 public class FlippablePlayableCard extends FlippableCardGUI {

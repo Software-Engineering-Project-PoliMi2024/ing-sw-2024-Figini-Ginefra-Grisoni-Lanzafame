@@ -1,7 +1,7 @@
 package it.polimi.ingsw.lightModel.lightTableRelated;
 
 import it.polimi.ingsw.lightModel.Differentiable;
-import it.polimi.ingsw.lightModel.LightCard;
+import it.polimi.ingsw.lightModel.lightPlayerRelated.LightCard;
 import it.polimi.ingsw.model.cardReleted.utilityEnums.Resource;
 
 public class LightDeck implements Differentiable {

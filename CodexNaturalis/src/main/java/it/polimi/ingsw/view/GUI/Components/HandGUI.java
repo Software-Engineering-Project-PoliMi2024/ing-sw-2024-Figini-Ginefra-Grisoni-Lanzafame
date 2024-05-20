@@ -1,7 +1,7 @@
 package it.polimi.ingsw.view.GUI.Components;
 
 import it.polimi.ingsw.designPatterns.Observer;
-import it.polimi.ingsw.lightModel.LightCard;
+import it.polimi.ingsw.lightModel.lightPlayerRelated.LightCard;
 import it.polimi.ingsw.model.cardReleted.utilityEnums.CardFace;
 import it.polimi.ingsw.model.playerReleted.Position;
 import it.polimi.ingsw.view.GUI.Components.CardRelated.CardGUI;

@@ -1,7 +1,7 @@
 package it.polimi.ingsw.controller2;
 
 import it.polimi.ingsw.Configs;
-import it.polimi.ingsw.lightModel.LightCard;
+import it.polimi.ingsw.lightModel.lightPlayerRelated.LightCard;
 import it.polimi.ingsw.lightModel.Lightifier;
 import it.polimi.ingsw.lightModel.diffs.game.*;
 import it.polimi.ingsw.model.cardReleted.cards.CardInHand;

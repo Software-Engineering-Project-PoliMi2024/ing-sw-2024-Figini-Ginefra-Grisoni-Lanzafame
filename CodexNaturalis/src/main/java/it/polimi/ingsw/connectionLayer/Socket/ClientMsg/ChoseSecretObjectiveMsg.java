@@ -1,6 +1,6 @@
 package it.polimi.ingsw.connectionLayer.Socket.ClientMsg;
 
-import it.polimi.ingsw.lightModel.LightCard;
+import it.polimi.ingsw.lightModel.lightPlayerRelated.LightCard;
 import it.polimi.ingsw.connectionLayer.Socket.ClientHandler;
 
 public class ChoseSecretObjectiveMsg extends ClientMsg {

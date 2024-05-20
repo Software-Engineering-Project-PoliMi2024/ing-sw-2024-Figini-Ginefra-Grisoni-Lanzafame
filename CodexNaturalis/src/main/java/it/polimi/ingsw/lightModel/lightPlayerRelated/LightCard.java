@@ -1,4 +1,4 @@
-package it.polimi.ingsw.lightModel;
+package it.polimi.ingsw.lightModel.lightPlayerRelated;
 
 import java.io.Serializable;
 import java.util.Objects;

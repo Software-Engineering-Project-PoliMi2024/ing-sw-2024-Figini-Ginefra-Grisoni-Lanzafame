@@ -1,22 +1,14 @@
 package it.polimi.ingsw.view.GUI.Components;
 
 import it.polimi.ingsw.designPatterns.Observer;
-import it.polimi.ingsw.lightModel.LightCard;
+import it.polimi.ingsw.lightModel.lightPlayerRelated.LightCard;
 import it.polimi.ingsw.lightModel.lightPlayerRelated.LightPlacement;
-import it.polimi.ingsw.model.cardReleted.utilityEnums.CardFace;
 import it.polimi.ingsw.model.playerReleted.Position;
 import it.polimi.ingsw.view.GUI.Components.CardRelated.FlippableCardGUI;
 import it.polimi.ingsw.view.GUI.GUI;
-import javafx.animation.KeyFrame;
-import javafx.animation.Timeline;
-import javafx.geometry.Insets;
-import javafx.geometry.Pos;
 import javafx.scene.layout.*;
-import javafx.scene.paint.Color;
 import javafx.scene.shape.Rectangle;
-import javafx.util.Duration;
 
-import java.sql.Time;
 import java.util.Arrays;
 
 public class StartCardGUI implements Observer {

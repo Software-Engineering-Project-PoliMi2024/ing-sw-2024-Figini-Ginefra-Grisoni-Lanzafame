@@ -1,7 +1,7 @@
 package it.polimi.ingsw.view.TUI.Renderables;
 
 import it.polimi.ingsw.Configs;
-import it.polimi.ingsw.lightModel.LightCard;
+import it.polimi.ingsw.lightModel.lightPlayerRelated.LightCard;
 import it.polimi.ingsw.lightModel.diffs.game.GameDiff;
 import it.polimi.ingsw.lightModel.diffs.game.HandDiffAddOneSecretObjectiveOption;
 import it.polimi.ingsw.lightModel.lightTableRelated.LightGame;

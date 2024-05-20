@@ -3,7 +3,6 @@ package it.polimi.ingsw.lightModel.lightPlayerRelated;
 import it.polimi.ingsw.designPatterns.Observed;
 import it.polimi.ingsw.designPatterns.Observer;
 import it.polimi.ingsw.lightModel.Differentiable;
-import it.polimi.ingsw.lightModel.LightCard;
 
 import java.util.HashMap;
 import java.util.LinkedList;

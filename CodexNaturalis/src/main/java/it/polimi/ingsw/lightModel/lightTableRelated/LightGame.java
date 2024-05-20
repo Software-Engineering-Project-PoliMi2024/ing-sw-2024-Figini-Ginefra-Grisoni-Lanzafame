@@ -1,10 +1,7 @@
 package it.polimi.ingsw.lightModel.lightTableRelated;
 
 import it.polimi.ingsw.lightModel.*;
-import it.polimi.ingsw.lightModel.lightPlayerRelated.LightCodex;
-import it.polimi.ingsw.lightModel.lightPlayerRelated.LightFrontier;
-import it.polimi.ingsw.lightModel.lightPlayerRelated.LightHand;
-import it.polimi.ingsw.lightModel.lightPlayerRelated.LightHandOthers;
+import it.polimi.ingsw.lightModel.lightPlayerRelated.*;
 import it.polimi.ingsw.model.cardReleted.utilityEnums.Collectable;
 import it.polimi.ingsw.model.cardReleted.utilityEnums.DrawableCard;
 import it.polimi.ingsw.model.cardReleted.utilityEnums.Resource;
