@@ -137,10 +137,12 @@ public class CodexGUI implements Observer {
     }
 
     public void update(){
+        System.out.println("Updating codex");
         int n = this.getLightCodex().getPlacementHistory().size();
 
-        if(n > this.codex.getChildren().size()){
-            for(int i = this.codex.getChildren().size(); i < n; i++){
+        if(n > this.cards.size()){
+            System.out.println("Adding cards");
+            for(int i = this.cards.size(); i < n; i++){
                 LightPlacement target = this.getLightCodex().getPlacementHistory().values().toArray(new LightPlacement[0])[i];
                 this.addCard(new CardGUI(target.card(), target.face()), target.position());
             }
