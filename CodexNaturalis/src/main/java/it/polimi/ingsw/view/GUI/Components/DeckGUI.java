@@ -10,6 +10,7 @@ import it.polimi.ingsw.view.GUI.Components.HandRelated.HandGUI;
 import it.polimi.ingsw.view.GUI.GUI;
 import it.polimi.ingsw.view.GUI.GUIConfigs;
 import it.polimi.ingsw.view.GUI.StateGUI;
+import javafx.application.Platform;
 import javafx.geometry.Pos;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.AnchorPane;
@@ -22,12 +23,15 @@ public class DeckGUI implements Observer {
     private final FlippableCardGUI[] commonObjectiveCards = new FlippableCardGUI[2];
     private final FlippableCardGUI[] resourceBuffer = new FlippableCardGUI[2];
     private final FlippableCardGUI[] goldBuffer = new FlippableCardGUI[2];
-    private final VBox deckPopUpContenent;
+    private final VBox deckPopUpContent;
     private CardGUI resourceDeckBackCard;
     private CardGUI goldDeckBackCard;
     private AnchoredPopUp deckPopUp;
     private HandGUI hand;
 
+    /**
+     * Constructor for the DeckGUI. Create the boxes for the resource and gold decks and the common objectives
+     */
     public DeckGUI() {
 
         //Creating Deck witch contains the boxes for the resource and gold decks and the common objectives
@@ -35,14 +39,14 @@ public class DeckGUI implements Observer {
         decksContainer.getChildren().addAll(resourceDeck, goldDeck);
         decksContainer.setSpacing(GUIConfigs.deckGap);
 
-        deckPopUpContenent = new VBox();
-        deckPopUpContenent.getChildren().addAll(decksContainer, commonObjective);
-        AnchorPane.setBottomAnchor(deckPopUpContenent, 0.0);
-        AnchorPane.setLeftAnchor(deckPopUpContenent, 0.0);
-        AnchorPane.setRightAnchor(deckPopUpContenent, 0.0);
-        AnchorPane.setTopAnchor(deckPopUpContenent, 0.0);
-        deckPopUpContenent.setAlignment(Pos.CENTER); //set the decks in the center of the AnchorPopUp
-        deckPopUpContenent.spacingProperty().setValue(GUIConfigs.deckGap); //set the width between the decks
+        deckPopUpContent = new VBox();
+        deckPopUpContent.getChildren().addAll(decksContainer, commonObjective);
+        AnchorPane.setBottomAnchor(deckPopUpContent, 0.0);
+        AnchorPane.setLeftAnchor(deckPopUpContent, 0.0);
+        AnchorPane.setRightAnchor(deckPopUpContent, 0.0);
+        AnchorPane.setTopAnchor(deckPopUpContent, 0.0);
+        deckPopUpContent.setAlignment(Pos.CENTER); //set the decks in the center of the AnchorPopUp
+        deckPopUpContent.spacingProperty().setValue(GUIConfigs.deckGap); //set the width between the decks
 
 
         resourceDeck.spacingProperty().setValue(GUIConfigs.deckCardGap);
@@ -54,6 +58,9 @@ public class DeckGUI implements Observer {
         }
 
         GUI.getStateProperty().addListener((obs, oldState, newState) -> {
+            if(newState == StateGUI.SELECT_OBJECTIVE){
+                Platform.runLater(() -> fillDeckPopUp(deckPopUp));
+            }
             if(newState == StateGUI.DRAW_CARD){
                 deckPopUp.open();
                 deckPopUp.setLocked(true);
@@ -66,20 +73,35 @@ public class DeckGUI implements Observer {
     }
 
     /**
-     * Adds the deck to the AnchorPane parent
-     * @param parent the AnchorPane where the deck will be added
+     * Adds the deckPopUp, while being transparent, to the parent
+     * @param parent the parent to add the deckPopUp to
      */
-    public void addDecksTo(AnchorPane parent) {
-        //Add the deck to the PopUp
+    public void addDecksTo(AnchorPane parent){
         deckPopUp = new AnchoredPopUp(parent, 0.2f, 0.6f, Pos.CENTER_RIGHT, 0.1f);
-        deckPopUp.getContent().getChildren().add(deckPopUpContenent);
+        deckPopUp.getContent().setStyle(deckPopUp.getContent().getStyle() +  "-fx-background-color: transparent");
+    }
+
+    /**
+     * Fills the deckPopUp with the decks
+     * @param deckPopUp the deckPopUp to fill
+     */
+    private void fillDeckPopUp(AnchoredPopUp deckPopUp) {
+        //Add the deck to the PopUp
+        deckPopUp.getContent().getChildren().add(deckPopUpContent);
         //Set the size of the deck to be the same as the popUp
-        deckPopUpContenent.prefWidthProperty().bind(deckPopUp.getContent().prefWidthProperty());
-        deckPopUpContenent.prefHeightProperty().bind(deckPopUp.getContent().prefHeightProperty());
-        //deckPopUp.getContent().setStyle(deckPopUp.getContent().getStyle() +  "-fx-background-color: transparent");
+        deckPopUpContent.prefWidthProperty().bind(deckPopUp.getContent().prefWidthProperty());
+        deckPopUpContent.prefHeightProperty().bind(deckPopUp.getContent().prefHeightProperty());
+        deckPopUp.getContent().setStyle(deckPopUp.getContent().getStyle() +  "; -fx-background-color: black");
 
     }
 
+    /**
+     * Update the decks buffer with the new card after a draw from the buffer
+     * Set the action to be performed when the card is holdON
+     * @param card the card to be shown in the buffer
+     * @param deckType the type of buffer to which was draw from
+     * @param index the index of the buffer
+     */
     private void drawFromBuffer(FlippableCardGUI card, DrawableCard deckType, int index){
         setSizeBindings(card);
         if(deckType == DrawableCard.RESOURCECARD) {
@@ -119,6 +141,12 @@ public class DeckGUI implements Observer {
         });
     }
 
+    /**
+     * Update the decks with the new cardOnTop after a draw from the deck
+     * Set the action to be performed when the card is holdON
+     * @param card the card to be shown on top of the deck
+     * @param deckType the type of deck to draw from
+     */
     private void drawFromDeck(CardGUI card, DrawableCard deckType){
         setSizeBindings(card);
         if(deckType == DrawableCard.RESOURCECARD) {
@@ -154,17 +182,20 @@ public class DeckGUI implements Observer {
         });
     }
 
+    /**
+     * Updates the deckGUI with the new information from the lightGame
+     */
     @Override
     public void update() {
         if(!areCommonObjectivesUpdated()){
-            System.out.println("Updating common objectives");
+            //System.out.println("Updating common objectives");
             for(int i=0; i<2; i++){
                 commonObjectiveCards[i] = new FlippableCardGUI(GUI.getLightGame().getPublicObjective()[i]);
                 setSizeBindings(commonObjectiveCards[i]);
                 commonObjective.getChildren().add(commonObjectiveCards[i].getImageView());
             }
         }
-        //Drawn from Deck
+        //Diff about a draw from Deck
         if(!isResourceDeckUpdated()){
             //System.out.println("Drawing from resource deck");
             drawFromDeck(new CardGUI(new LightBack(GUI.getLightGame().getDecks().get(DrawableCard.RESOURCECARD).getDeckBack().idBack())), DrawableCard.RESOURCECARD);
@@ -173,7 +204,8 @@ public class DeckGUI implements Observer {
             //System.out.println("Drawing from gold deck");
             drawFromDeck(new CardGUI(new LightBack(GUI.getLightGame().getDecks().get(DrawableCard.GOLDCARD).getDeckBack().idBack())), DrawableCard.GOLDCARD);
         }
-        if(!resourceDeckBufferIsUpdated()){ //draw from buffer
+        //Diff about a draw from buffer
+        if(!resourceDeckBufferIsUpdated()){
             //System.out.println("Drawing from resource buffer");
             for(int i=0;i<2;i++){
                 if(resourceBuffer[i]==null || (resourceBuffer[i].getTarget() != GUI.getLightGame().getDecks().get(DrawableCard.RESOURCECARD).getCardBuffer()[i])){
@@ -193,6 +225,10 @@ public class DeckGUI implements Observer {
         }
     }
 
+    /**
+     * Checks if the gold buffer is updated to match the buffer in the lightGame
+     * @return true if the gold buffer is updated, false otherwise
+     */
     private boolean goldBufferIsUpdated(){
         boolean isUpdated = true;
         for(int i=0;i<2;i++){
@@ -204,6 +240,10 @@ public class DeckGUI implements Observer {
         return isUpdated;
     }
 
+    /**
+     * Checks if the resource buffer is updated to match the buffer in the lightGame
+     * @return true if the resource buffer is updated, false otherwise
+     */
     private boolean resourceDeckBufferIsUpdated(){
         boolean isUpdated = true;
         for(int i=0;i<2;i++){
@@ -215,20 +255,37 @@ public class DeckGUI implements Observer {
         return isUpdated;
     }
 
+    /**
+     * Checks if the resource deck is updated to match the deck in the lightGame
+     * @return true if the resource deck is updated, false otherwise
+     */
     private boolean isResourceDeckUpdated(){
         return !(GUI.getLightGame().getDecks().get(DrawableCard.RESOURCECARD).getDeckBack()!=null && (resourceDeckBackCard == null || resourceDeckBackCard.getTarget().idBack() != GUI.getLightGame().getDecks().get(DrawableCard.RESOURCECARD).getDeckBack().idBack()));
     }
 
+    /**
+     * Checks if the gold deck is updated to match the deck in the lightGame
+     * @return true if the gold deck is updated, false otherwise
+     */
     private boolean isGoldDeckUpdated(){
         return !(GUI.getLightGame().getDecks().get(DrawableCard.RESOURCECARD).getDeckBack()!=null && (goldDeckBackCard == null || goldDeckBackCard.getTarget().idBack() != GUI.getLightGame().getDecks().get(DrawableCard.GOLDCARD).getDeckBack().idBack()));
     }
+
+    /**
+     * Sets the size bindings for the card
+     * @param card the card to set the size bindings for
+     */
     private void setSizeBindings(CardGUI card){
         ImageView imageView = card.getImageView();
-        double cardHeight = (deckPopUpContenent.prefHeightProperty().getValue()-(GUIConfigs.deckCardGap * 2 + GUIConfigs.deckGap))/(resourceBuffer.length + 2);
+        double cardHeight = (deckPopUpContent.prefHeightProperty().getValue()-(GUIConfigs.deckCardGap * 2 + GUIConfigs.deckGap))/(resourceBuffer.length + 2);
         imageView.setFitWidth(cardHeight/(imageView.getImage().getHeight()/imageView.getImage().getWidth()));
-        imageView.fitWidthProperty().bind(deckPopUpContenent.prefHeightProperty().subtract(GUIConfigs.deckCardGap *2 + GUIConfigs.deckGap).divide(resourceBuffer.length + 2).multiply(imageView.getImage().getWidth()/imageView.getImage().getHeight()));
+        imageView.fitWidthProperty().bind(deckPopUpContent.prefHeightProperty().subtract(GUIConfigs.deckCardGap *2 + GUIConfigs.deckGap).divide(resourceBuffer.length + 2).multiply(imageView.getImage().getWidth()/imageView.getImage().getHeight()));
     }
 
+    /**
+     * Checks if the common objectives are updated to match the objectives in the lightGame
+     * @return true if the common objectives are updated, false otherwise
+     */
     private boolean areCommonObjectivesUpdated(){
         boolean isUpdated = true;
         for(int i=0;i<2;i++){
@@ -240,10 +297,16 @@ public class DeckGUI implements Observer {
         return isUpdated;
     }
 
+    /**
+     * @return the hand
+     */
     public HandGUI getHand() {
         return hand;
     }
 
+    /**
+     * @param hand the hand to set
+     */
     public void setHand(HandGUI hand) {
         this.hand = hand;
     }

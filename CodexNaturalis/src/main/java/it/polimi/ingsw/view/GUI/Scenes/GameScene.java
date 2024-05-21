@@ -79,6 +79,7 @@ public class GameScene extends SceneGUI{
 
         deck = new DeckGUI();
         deck.setHand(hand);
+        deck.addDecksTo(getContent());
 
         collectedCollectables = new CollectedCollectablesGUI();
         collectedCollectables.attachToCodex();
