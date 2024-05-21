@@ -87,13 +87,13 @@ public class GUI extends Application implements ActualView {
     }
 
     public void transitionTo(StateGUI state) {
-        stateProperty.set(state);
-
         if(!state.equals(stateProperty.get())) {
             Platform.runLater(() -> {
                 setRoot(state.getScene().getContent());
             });
         }
+        stateProperty.set(state);
+
     }
 
 
