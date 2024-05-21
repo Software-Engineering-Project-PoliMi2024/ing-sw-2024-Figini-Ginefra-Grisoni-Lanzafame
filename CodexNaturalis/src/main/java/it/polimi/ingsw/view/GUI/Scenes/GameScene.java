@@ -5,6 +5,7 @@ import it.polimi.ingsw.lightModel.lightPlayerRelated.LightBack;
 import it.polimi.ingsw.lightModel.lightPlayerRelated.LightCard;
 import it.polimi.ingsw.lightModel.diffs.ModelDiffs;
 import it.polimi.ingsw.lightModel.diffs.game.*;
+import it.polimi.ingsw.lightModel.lightPlayerRelated.LightPlacement;
 import it.polimi.ingsw.lightModel.lightTableRelated.LightGame;
 import it.polimi.ingsw.model.cardReleted.cards.ObjectiveCard;
 import it.polimi.ingsw.model.cardReleted.utilityEnums.CardFace;
@@ -16,24 +17,27 @@ import it.polimi.ingsw.model.tableReleted.Game;
 import it.polimi.ingsw.view.GUI.Components.*;
 import it.polimi.ingsw.view.GUI.Components.CodexRelated.CodexGUI;
 import it.polimi.ingsw.view.GUI.Components.CodexRelated.CollectedCollectablesGUI;
+import it.polimi.ingsw.view.GUI.Components.CodexRelated.Peeker;
 import it.polimi.ingsw.view.GUI.Components.HandRelated.HandGUI;
 import it.polimi.ingsw.view.GUI.Components.LogsGUI;
-import it.polimi.ingsw.view.GUI.Components.ObjectiveChoice;
 import it.polimi.ingsw.view.GUI.GUI;
 import it.polimi.ingsw.view.GUI.Root;
 import it.polimi.ingsw.view.GUI.StateGUI;
 import javafx.geometry.Pos;
+import javafx.scene.control.Button;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Random;
 
 public class GameScene extends SceneGUI{
-    private final HandGUI hand;
-    private final CodexGUI codex;
-    private final CollectedCollectablesGUI collectedCollectables;
     private DeckGUI deck;
+    private HandGUI hand;
+    private CodexGUI codex;
+    private CollectedCollectablesGUI collectedCollectables;
+    private LeaderboardGUI leaderboard;
     private final LogsGUI logs = new LogsGUI();
-    private final ObjectiveChoice objectiveChoice;
 
     public GameScene() {
         super();
@@ -56,15 +60,12 @@ public class GameScene extends SceneGUI{
         hand = new HandGUI();
         hand.setCodex(codex);
 
-        objectiveChoice = new ObjectiveChoice(getContent());
-
         this.add(codex.getCodex());
 
         //main.getChildren().add(hand.getHand());
 
         this.add(logs.getLogsDisplay());
 
-        this.add(objectiveChoice.getChoiceDisplay());
 //        Peeker peeker = new Peeker(getContent(), "Player2");
 //        Button button = new Button("Open Codex Others");
 //        button.setOnAction(e -> peeker.open());
@@ -80,6 +81,10 @@ public class GameScene extends SceneGUI{
         deck = new DeckGUI();
         deck.setHand(hand);
         deck.addDecksTo(getContent());
+
+        leaderboard = new LeaderboardGUI();
+        leaderboard.addThisTo(getContent());
+        leaderboard.attach();
 
         collectedCollectables = new CollectedCollectablesGUI();
         collectedCollectables.attachToCodex();
@@ -163,4 +168,5 @@ public class GameScene extends SceneGUI{
         diff = new DeckDiffDeckDraw( DrawableCard.GOLDCARD, new LightBack(11));
         diff.apply(GUI.getLightGame());*/
     }
+
 }
