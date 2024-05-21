@@ -22,7 +22,7 @@ public class DeckGUI implements Observer {
     private final FlippableCardGUI[] commonObjectiveCards = new FlippableCardGUI[2];
     private final FlippableCardGUI[] resourceBuffer = new FlippableCardGUI[2];
     private final FlippableCardGUI[] goldBuffer = new FlippableCardGUI[2];
-    private final VBox deck;
+    private final VBox deckPopUpContenent;
     private CardGUI resourceDeckBackCard;
     private CardGUI goldDeckBackCard;
     private AnchoredPopUp deckPopUp;
@@ -35,14 +35,14 @@ public class DeckGUI implements Observer {
         decksContainer.getChildren().addAll(resourceDeck, goldDeck);
         decksContainer.setSpacing(GUIConfigs.deckGap);
 
-        deck = new VBox();
-        deck.getChildren().addAll(decksContainer, commonObjective);
-        AnchorPane.setBottomAnchor(deck, 0.0);
-        AnchorPane.setLeftAnchor(deck, 0.0);
-        AnchorPane.setRightAnchor(deck, 0.0);
-        AnchorPane.setTopAnchor(deck, 0.0);
-        deck.setAlignment(Pos.CENTER); //set the decks in the center of the AnchorPopUp
-        deck.spacingProperty().setValue(GUIConfigs.deckGap); //set the width between the decks
+        deckPopUpContenent = new VBox();
+        deckPopUpContenent.getChildren().addAll(decksContainer, commonObjective);
+        AnchorPane.setBottomAnchor(deckPopUpContenent, 0.0);
+        AnchorPane.setLeftAnchor(deckPopUpContenent, 0.0);
+        AnchorPane.setRightAnchor(deckPopUpContenent, 0.0);
+        AnchorPane.setTopAnchor(deckPopUpContenent, 0.0);
+        deckPopUpContenent.setAlignment(Pos.CENTER); //set the decks in the center of the AnchorPopUp
+        deckPopUpContenent.spacingProperty().setValue(GUIConfigs.deckGap); //set the width between the decks
 
 
         resourceDeck.spacingProperty().setValue(GUIConfigs.deckCardGap);
@@ -67,15 +67,15 @@ public class DeckGUI implements Observer {
 
     /**
      * Adds the deck to the AnchorPane parent
-     * @param parent
+     * @param parent the AnchorPane where the deck will be added
      */
     public void addDecksTo(AnchorPane parent) {
         //Add the deck to the PopUp
         deckPopUp = new AnchoredPopUp(parent, 0.2f, 0.6f, Pos.CENTER_RIGHT, 0.1f);
-        deckPopUp.getContent().getChildren().add(deck);
+        deckPopUp.getContent().getChildren().add(deckPopUpContenent);
         //Set the size of the deck to be the same as the popUp
-        deck.prefWidthProperty().bind(deckPopUp.getContent().prefWidthProperty());
-        deck.prefHeightProperty().bind(deckPopUp.getContent().prefHeightProperty());
+        deckPopUpContenent.prefWidthProperty().bind(deckPopUp.getContent().prefWidthProperty());
+        deckPopUpContenent.prefHeightProperty().bind(deckPopUp.getContent().prefHeightProperty());
         //deckPopUp.getContent().setStyle(deckPopUp.getContent().getStyle() +  "-fx-background-color: transparent");
 
     }
@@ -224,9 +224,9 @@ public class DeckGUI implements Observer {
     }
     private void setSizeBindings(CardGUI card){
         ImageView imageView = card.getImageView();
-        double cardHeight = (deck.prefHeightProperty().getValue()-(GUIConfigs.deckCardGap * 2 + GUIConfigs.deckGap))/(resourceBuffer.length + 2);
+        double cardHeight = (deckPopUpContenent.prefHeightProperty().getValue()-(GUIConfigs.deckCardGap * 2 + GUIConfigs.deckGap))/(resourceBuffer.length + 2);
         imageView.setFitWidth(cardHeight/(imageView.getImage().getHeight()/imageView.getImage().getWidth()));
-        imageView.fitWidthProperty().bind(deck.prefHeightProperty().subtract(GUIConfigs.deckCardGap *2 + GUIConfigs.deckGap).divide(resourceBuffer.length + 2).multiply(imageView.getImage().getWidth()/imageView.getImage().getHeight()));
+        imageView.fitWidthProperty().bind(deckPopUpContenent.prefHeightProperty().subtract(GUIConfigs.deckCardGap *2 + GUIConfigs.deckGap).divide(resourceBuffer.length + 2).multiply(imageView.getImage().getWidth()/imageView.getImage().getHeight()));
     }
 
     private boolean areCommonObjectivesUpdated(){

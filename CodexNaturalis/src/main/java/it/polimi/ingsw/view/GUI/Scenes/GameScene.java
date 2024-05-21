@@ -22,6 +22,7 @@ import it.polimi.ingsw.view.GUI.Components.HandRelated.HandGUI;
 import it.polimi.ingsw.view.GUI.Components.LogsGUI;
 import it.polimi.ingsw.view.GUI.GUI;
 import it.polimi.ingsw.view.GUI.Root;
+import it.polimi.ingsw.view.GUI.StateGUI;
 import javafx.geometry.Pos;
 import javafx.scene.control.Button;
 
@@ -78,7 +79,6 @@ public class GameScene extends SceneGUI{
 
         deck = new DeckGUI();
         deck.setHand(hand);
-        deck.addDecksTo(getContent());
 
         collectedCollectables = new CollectedCollectablesGUI();
         collectedCollectables.attachToCodex();
