@@ -211,9 +211,9 @@ public class ServerModelController implements ControllerInterface, DiffSubscribe
     @Override
     public void place(LightPlacement placement) throws RemoteException {
         User user = games.getUserFromNick(nickname);
-        Placement heavyPlacement = Heavifier.heavifyStartCardPlacement(placement, this.games);
         //if the card place is the startCard
         if(user.getUserCodex().getFrontier().isInFrontier(new Position(0,0))){
+            Placement heavyPlacement = Heavifier.heavifyStartCardPlacement(placement, this.games);
             user.placeStartCard(heavyPlacement);
 
             Game userGame = games.getUserGame(this.nickname);
@@ -222,6 +222,7 @@ public class ServerModelController implements ControllerInterface, DiffSubscribe
                     user.getUserCodex().getEarnedCollectables(), getPlacementList(placement), user.getUserCodex().getFrontier().getFrontier()));
             userGame.getGameLoopController().startCardPlaced(this);
         }else {
+            Placement heavyPlacement = Heavifier.heavify(placement, this.games);
             user.playCard(heavyPlacement); //place the card and remove it from the hand
 
             Game userGame = this.games.getUserGame(this.nickname);
