@@ -80,6 +80,8 @@ public class CodexGUI implements Observer {
     }
 
     public void attachToCodex(){
+        System.out.println("Attaching to codex");
+        System.out.println(this.getLightCodex());
         this.getLightCodex().attach(this);
     }
 
@@ -150,6 +152,7 @@ public class CodexGUI implements Observer {
             Point2D pos = this.getCardPosition(p);
             FrontierCardGUI fc = new FrontierCardGUI(p, pos.getX(), pos.getY());
             fc.setVisibility(isFrontierVisible);
+            fc.setScale(this.getScale(), center);
             frontier.add(fc);
             codex.getChildren().add(fc.getCard());
         }
