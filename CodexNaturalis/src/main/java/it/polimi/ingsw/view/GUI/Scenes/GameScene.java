@@ -41,11 +41,11 @@ public class GameScene extends SceneGUI{
         super();
 
         //Game setup
-        ModelDiffs<LightGame> diff = new GameDiffInitialization(List.of(new String[]{"Player1", "Player2"}), new GameDiffGameName("TestGame"), new GameDiffYourName("Player1"));
-        diff.apply(GUI.getLightGame());
-
-        diff = new GameDiffPlayerActivity(List.of(new String[]{"Player1", "Player2"}), new ArrayList<>());
-        diff.apply(GUI.getLightGame());
+//        ModelDiffs<LightGame> diff = new GameDiffInitialization(List.of(new String[]{"Player1", "Player2"}), new GameDiffGameName("TestGame"), new GameDiffYourName("Player1"));
+//        diff.apply(GUI.getLightGame());
+//
+//        diff = new GameDiffPlayerActivity(List.of(new String[]{"Player1", "Player2"}), new ArrayList<>());
+//        diff.apply(GUI.getLightGame());
 
 
         content.getChildren().add(Root.GAME.getRoot());
@@ -64,12 +64,12 @@ public class GameScene extends SceneGUI{
 
         this.add(logs.getLogsDisplay());
 
-        Peeker peeker = new Peeker(getContent(), "Player2");
-        Button button = new Button("Open Codex Others");
-        button.setOnAction(e -> peeker.open());
+//        Peeker peeker = new Peeker(getContent(), "Player2");
+//        Button button = new Button("Open Codex Others");
+//        button.setOnAction(e -> peeker.open());
 
 
-        this.add(button);
+//        this.add(button);
 
         /*new AnchoredPopUp(getContent(), 0.2f, 0.6f, Pos.CENTER_RIGHT, 0.25f);
         new AnchoredPopUp(getContent(), 0.2f, 0.6f, Pos.CENTER_LEFT, 0.25f);*/
