@@ -48,7 +48,7 @@ public class HandGUI implements Observer {
 
         GUI.getStateProperty().addListener((obs, oldState, newState) -> {
 
-            if(newState == StateGUI.PLACE_CARD || newState == StateGUI.CHOOSE_START_CARD){
+            if(newState == StateGUI.PLACE_CARD || newState == StateGUI.CHOOSE_START_CARD || newState == StateGUI.SELECT_OBJECTIVE) {
                 handPopUp.open();
                 handPopUp.setLocked(true);
             }
@@ -167,6 +167,7 @@ public class HandGUI implements Observer {
                                     System.out.println("Controller.placeCard");
                                     if(GUI.getStateProperty().get() == StateGUI.PLACE_CARD || GUI.getStateProperty().get() == StateGUI.CHOOSE_START_CARD){
                                         try {
+                                            System.out.println(positioningCard.getTarget());
                                             GUI.getControllerStatic().place(new LightPlacement(closestFrontier.getGridPosition(), positioningCard.getTarget(), positioningCard.getFace()));
                                             codex.addCard(new CardGUI(positioningCard), closestFrontier.getGridPosition());
                                         } catch (Exception ex) {

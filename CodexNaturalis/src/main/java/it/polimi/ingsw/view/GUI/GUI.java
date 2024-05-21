@@ -68,9 +68,10 @@ public class GUI extends Application implements ActualView {
         //set stackRoot background and style
         //stackRoot.setStyle("-fx-background-color: #1e1f22;");
         transitionTo(StateGUI.SERVER_CONNECTION);
+        //transitionTo(StateGUI.SELECT_OBJECTIVE);
         //transitionTo(StateGUI.JOIN_LOBBY);
         //transitionTo(StateGUI.LOBBY);
-        //transitionTo(StateGUI.DRAW_CARD);
+        //transitionTo(StateGUI.PLACE_CARD);
     }
 
     private void setRoot(Node root){
