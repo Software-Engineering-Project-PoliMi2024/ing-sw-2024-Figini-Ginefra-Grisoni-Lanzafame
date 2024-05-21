@@ -143,7 +143,7 @@ public class GUI extends Application implements ActualView {
 
     @Override
     public void setFinalRanking(String[] nicks, int[] points) throws RemoteException {
-
+            Platform.runLater(() -> transitionTo(StateGUI.GAME_ENDING));
     }
 
     @Override
