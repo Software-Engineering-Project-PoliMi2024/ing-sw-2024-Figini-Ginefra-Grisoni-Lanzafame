@@ -93,7 +93,6 @@ public class GUI extends Application implements ActualView {
             });
         }
         stateProperty.set(state);
-
     }
 
 

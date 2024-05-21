@@ -35,6 +35,7 @@ public class GameScene extends SceneGUI{
     private HandGUI hand;
     private CodexGUI codex;
     private CollectedCollectablesGUI collectedCollectables;
+    private LeaderboardGUI leaderboard;
     private final LogsGUI logs = new LogsGUI();
 
     public GameScene() {
@@ -79,6 +80,10 @@ public class GameScene extends SceneGUI{
         deck = new DeckGUI();
         deck.setHand(hand);
         deck.addDecksTo(getContent());
+
+        leaderboard = new LeaderboardGUI();
+        leaderboard.addThisTo(getContent());
+        leaderboard.attach();
 
         collectedCollectables = new CollectedCollectablesGUI();
         collectedCollectables.attachToCodex();
