@@ -4,9 +4,9 @@ import it.polimi.ingsw.connectionLayer.PingPongInterface;
 import it.polimi.ingsw.connectionLayer.Socket.ClientMsg.*;
 import it.polimi.ingsw.connectionLayer.Socket.ServerHandler;
 import it.polimi.ingsw.connectionLayer.VirtualLayer.VirtualController;
-import it.polimi.ingsw.controller2.ControllerInterface;
-import it.polimi.ingsw.controller2.LogsOnClient;
-import it.polimi.ingsw.lightModel.LightCard;
+import it.polimi.ingsw.controller.ControllerInterface;
+import it.polimi.ingsw.controller.LogsOnClient;
+import it.polimi.ingsw.lightModel.lightPlayerRelated.LightCard;
 import it.polimi.ingsw.lightModel.lightPlayerRelated.LightPlacement;
 import it.polimi.ingsw.model.cardReleted.utilityEnums.CardFace;
 import it.polimi.ingsw.model.cardReleted.utilityEnums.DrawableCard;
@@ -96,11 +96,6 @@ public class VirtualControllerSocket implements VirtualController {
     @Override
     public void leaveLobby(){
         serverHandler.sendServerMessage(new LeaveLobbyMsg());
-    }
-
-    @Override
-    public void selectStartCardFace(CardFace cardFace){
-        serverHandler.sendServerMessage(new SelectStartCardFaceMsg(cardFace));
     }
 
     @Override

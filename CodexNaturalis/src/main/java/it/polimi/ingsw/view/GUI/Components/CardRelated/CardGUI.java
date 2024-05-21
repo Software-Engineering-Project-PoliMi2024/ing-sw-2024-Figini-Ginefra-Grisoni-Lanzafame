@@ -1,13 +1,13 @@
 package it.polimi.ingsw.view.GUI.Components.CardRelated;
 
-import it.polimi.ingsw.lightModel.LightCard;
+import it.polimi.ingsw.lightModel.lightPlayerRelated.LightBack;
+import it.polimi.ingsw.lightModel.lightPlayerRelated.LightCard;
 import it.polimi.ingsw.model.cardReleted.utilityEnums.CardFace;
 import it.polimi.ingsw.view.GUI.AssetsGUI;
 import it.polimi.ingsw.view.GUI.GUIConfigs;
 import javafx.animation.KeyFrame;
 import javafx.animation.Timeline;
 import javafx.geometry.Point2D;
-import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.shape.Rectangle;
@@ -86,6 +86,10 @@ public class CardGUI {
         this(other.target, other.face);
     }
 
+    public CardGUI(LightBack back){
+        this(new LightCard(0, back.idBack()), CardFace.BACK);
+    }
+
     public void update(){
         if(target == null) {
             imageView.setImage(null);
@@ -93,10 +97,10 @@ public class CardGUI {
         }
 
         if(face == CardFace.FRONT) {
-            imageView.setImage(AssetsGUI.loadCardFront(target.id()));
+            imageView.setImage(AssetsGUI.loadCardFront(target.idFront()));
         }
         else {
-            imageView.setImage(AssetsGUI.loadCardBack(target.id()));
+            imageView.setImage(AssetsGUI.loadCardBack(target.idBack()));
         }
 
     }

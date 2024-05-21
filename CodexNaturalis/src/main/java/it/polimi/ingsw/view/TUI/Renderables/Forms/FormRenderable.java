@@ -1,6 +1,5 @@
 package it.polimi.ingsw.view.TUI.Renderables.Forms;
 
-import it.polimi.ingsw.controller2.ControllerInterface;
 import it.polimi.ingsw.view.ControllerProvider;
 import it.polimi.ingsw.view.TUI.Renderables.Renderable;
 import it.polimi.ingsw.view.TUI.inputs.CommandPrompt;

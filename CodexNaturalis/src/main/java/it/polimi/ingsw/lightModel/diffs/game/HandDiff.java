@@ -1,5 +1,5 @@
 package it.polimi.ingsw.lightModel.diffs.game;
-import it.polimi.ingsw.lightModel.LightCard;
+import it.polimi.ingsw.lightModel.lightPlayerRelated.LightCard;
 import it.polimi.ingsw.lightModel.lightTableRelated.LightGame;
 
 public abstract class HandDiff extends GameDiff{

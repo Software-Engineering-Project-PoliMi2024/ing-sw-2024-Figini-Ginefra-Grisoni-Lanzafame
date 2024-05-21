@@ -3,7 +3,7 @@ package it.polimi.ingsw.connectionLayer.Socket;
 import it.polimi.ingsw.connectionLayer.Socket.ClientMsg.ClientMsg;
 import it.polimi.ingsw.connectionLayer.Socket.ServerMsg.ServerMsg;
 import it.polimi.ingsw.connectionLayer.VirtualLayer.VirtualView;
-import it.polimi.ingsw.controller2.ControllerInterface;
+import it.polimi.ingsw.controller.ControllerInterface;
 
 import java.io.IOException;
 import java.io.ObjectInputStream;
@@ -71,7 +71,7 @@ public class ClientHandler implements Runnable{
         try{
             output.writeObject(serverMsg);
         } catch (IOException e) {
-            System.out.println("could not send message to " + client.getInetAddress());
+            System.out.println("could not send message to " + client.getInetAddress() + ":" + client.getPort());
             e.printStackTrace();
         }
     }

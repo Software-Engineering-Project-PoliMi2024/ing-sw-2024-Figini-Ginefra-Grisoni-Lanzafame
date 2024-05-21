@@ -1,12 +1,8 @@
 package it.polimi.ingsw.lightModel.diffPublishers;
 
-import it.polimi.ingsw.lightModel.LightCard;
+import it.polimi.ingsw.lightModel.lightPlayerRelated.*;
 import it.polimi.ingsw.lightModel.Lightifier;
 import it.polimi.ingsw.lightModel.diffs.game.*;
-import it.polimi.ingsw.lightModel.diffs.nuclearDiffs.GadgetGame;
-import it.polimi.ingsw.lightModel.lightPlayerRelated.LightCodex;
-import it.polimi.ingsw.lightModel.lightPlayerRelated.LightHand;
-import it.polimi.ingsw.lightModel.lightPlayerRelated.LightHandOthers;
 import it.polimi.ingsw.model.cardReleted.cards.GoldCard;
 import it.polimi.ingsw.model.cardReleted.cards.ResourceCard;
 import it.polimi.ingsw.model.cardReleted.utilityEnums.DrawableCard;
@@ -108,8 +104,8 @@ public class GameDiffPublisher implements Serializable {
         for(int i=0; i < goldCardDeck.getBuffer().toArray().length; i++){
             deckDiff.add(new DeckDiffBufferDraw(Lightifier.lightifyToCard(goldCardDeck.getBuffer().stream().toList().get(i)), i, DrawableCard.GOLDCARD));
         }
-        deckDiff.add(new DeckDiffDeckDraw(DrawableCard.RESOURCECARD, Lightifier.lightifyToResource(resourceCardDeck.getActualDeck().stream().toList().getFirst())));
-        deckDiff.add(new DeckDiffDeckDraw(DrawableCard.GOLDCARD, Lightifier.lightifyToResource(goldCardDeck.getActualDeck().stream().toList().getFirst())));
+        deckDiff.add(new DeckDiffDeckDraw(DrawableCard.RESOURCECARD, Lightifier.lightifyToBack(resourceCardDeck.getActualDeck().stream().toList().getFirst())));
+        deckDiff.add(new DeckDiffDeckDraw(DrawableCard.GOLDCARD, Lightifier.lightifyToBack(goldCardDeck.getActualDeck().stream().toList().getFirst())));
         return deckDiff;
     }
 
@@ -162,7 +158,7 @@ public class GameDiffPublisher implements Serializable {
     }
 
     /**
-     * @param diffSubscriber the subscriber to which send the hand of the other players
+     * @param diffSubscriber the subscriber to which sends the hand of the other players
      * @return a list of diffs containing the current state of the hand of the other players
      */
     private List<HandOtherDiff> getHandOtherCurrentState(DiffSubscriber diffSubscriber){
@@ -170,7 +166,7 @@ public class GameDiffPublisher implements Serializable {
         for(String nickname : game.getGameParty().getUsersList().stream().map(User::getNickname).toList()){
             if(!nickname.equals(activeSubscribers.get(diffSubscriber))){
                 LightHandOthers otherHand = Lightifier.lightifyOthers(game.getGameParty().getUsersList().stream().filter(user->user.getNickname().equals(nickname)).findFirst().get().getUserHand());
-                for(Resource card : otherHand.getCards()){
+                for(LightBack card : otherHand.getCards()){
                     handOtherDiff.add(new HandOtherDiffAdd(card, nickname));
                 }
             }

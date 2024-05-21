@@ -1,0 +1,1465 @@
+{
+    "comments": [
+        "corners: TR, TL, BR, BL",
+        "permanentResource: plant, animal, fungi, insect, manuscript, quill, inkwell",
+        "multiplier: multiplier la writing material direttamente (quill, inkwell, manuscript, corner) oppure lasciare vuoto",
+        "imgID: id dell'immagine"
+    ],
+    "GoldCards": [
+        {
+            "points": 1,
+            "corners": {
+                "TR": "EMPTY",
+                "BR": "QUILL",
+                "BL": "EMPTY"
+            },
+            "requirements": {
+                "plant": 0,
+                "animal": 1,
+                "fungi": 2,
+                "insect": 0
+            },
+            "permanentResource": "FUNGI",
+            "multiplier": "QUILL",
+            "frontID": 41,
+            "backID": 41
+        },
+        {
+            "points": 1,
+            "corners": {
+                "TR": "INKWELL",
+                "TL": "EMPTY",
+                "BR": "EMPTY"
+            },
+            "requirements": {
+                "plant": 1,
+                "animal": 0,
+                "fungi": 2,
+                "insect": 0
+            },
+            "permanentResource": "FUNGI",
+            "multiplier": "INKWELL",
+            "frontID": 42,
+            "backID": 41
+        },
+        {
+            "points": 1,
+            "corners": {
+                "TR": "EMPTY",
+                "TL": "MANUSCRIPT",
+                "BL": "EMPTY"
+            },
+            "requirements": {
+                "plant": 0,
+                "animal": 0,
+                "fungi": 2,
+                "insect": 1
+            },
+            "permanentResource": "FUNGI",
+            "multiplier": "MANUSCRIPT",
+            "frontID": 43,
+            "backID": 41
+        },
+        {
+            "points": 2,
+            "corners": {
+                "TR": "EMPTY",
+                "TL": "EMPTY",
+                "BR": "EMPTY"
+            },
+            "requirements": {
+                "plant": 0,
+                "animal": 1,
+                "fungi": 3,
+                "insect": 0
+            },
+            "permanentResource": "FUNGI",
+            "multiplier": "CORNER",
+            "frontID": 44,
+            "backID": 41
+        },
+        {
+            "points": 2,
+            "corners": {
+                "TR": "EMPTY",
+                "TL": "EMPTY",
+                "BL": "EMPTY"
+            },
+            "requirements": {
+                "plant": 1,
+                "animal": 0,
+                "fungi": 3,
+                "insect": 0
+            },
+            "permanentResource": "FUNGI",
+            "multiplier": "CORNER",
+            "frontID": 45,
+            "backID": 41
+        },
+        {
+            "points": 2,
+            "corners": {
+                "TL": "EMPTY",
+                "BL": "EMPTY",
+                "BR": "EMPTY"
+            },
+            "requirements": {
+                "plant": 0,
+                "animal": 0,
+                "fungi": 3,
+                "insect": 1
+            },
+            "permanentResource": "FUNGI",
+            "multiplier": "CORNER",
+            "frontID": 46,
+            "backID": 41
+        },
+        {
+            "points": 3,
+            "corners": {
+                "TL": "EMPTY",
+                "BL": "INKWELL"
+            },
+            "requirements": {
+                "plant": 0,
+                "animal": 0,
+                "fungi": 3,
+                "insect": 0
+            },
+            "permanentResource": "FUNGI",
+            "multiplier": "",
+            "frontID": 47,
+            "backID": 41
+        },
+        {
+            "points": 3,
+            "corners": {
+                "TL": "QUILL",
+                "TR": "EMPTY"
+            },
+            "requirements": {
+                "plant": 0,
+                "animal": 0,
+                "fungi": 3,
+                "insect": 0
+            },
+            "permanentResource": "FUNGI",
+            "multiplier": "",
+            "frontID": 48,
+            "backID": 41
+        },
+        {
+            "points": 3,
+            "corners": {
+                "TR": "MANUSCRIPT",
+                "BR": "EMPTY"
+            },
+            "requirements": {
+                "plant": 0,
+                "animal": 0,
+                "fungi": 3,
+                "insect": 0
+            },
+            "permanentResource": "FUNGI",
+            "multiplier": "",
+            "frontID": 49,
+            "backID": 41
+        },
+        {
+            "points": 5,
+            "corners": {
+                "TL": "EMPTY",
+                "BL": "EMPTY"
+            },
+            "requirements": {
+                "plant": 0,
+                "animal": 0,
+                "fungi": 5,
+                "insect": 0
+            },
+            "permanentResource": "FUNGI",
+            "multiplier": "",
+            "frontID": 50,
+            "backID": 41
+        },
+        {
+            "points": 1,
+            "corners": {
+                "TL": "QUILL",
+                "TR": "EMPTY",
+                "BL": "EMPTY"
+            },
+            "requirements": {
+                "plant": 2,
+                "animal": 0,
+                "fungi": 0,
+                "insect": 1
+            },
+            "permanentResource": "PLANT",
+            "multiplier": "QUILL",
+            "frontID": 51,
+            "backID": 51
+        },
+        {
+            "points": 1,
+            "corners": {
+                "TL": "EMPTY",
+                "TR": "MANUSCRIPT",
+                "BR": "EMPTY"
+            },
+            "requirements": {
+                "plant": 2,
+                "animal": 0,
+                "fungi": 1,
+                "insect": 0
+            },
+            "permanentResource": "PLANT",
+            "multiplier": "MANUSCRIPT",
+            "frontID": 52,
+            "backID": 51
+        },
+        {
+            "points": 1,
+            "corners": {
+                "TL": "EMPTY",
+                "BR": "INKWELL",
+                "BL": "EMPTY"
+            },
+            "requirements": {
+                "plant": 2,
+                "animal": 1,
+                "fungi": 0,
+                "insect": 0
+            },
+            "permanentResource": "PLANT",
+            "multiplier": "INKWELL",
+            "frontID": 53,
+            "backID": 51
+        },
+        {
+            "points": 2,
+            "corners": {
+                "TR": "EMPTY",
+                "BR": "EMPTY",
+                "BL": "EMPTY"
+            },
+            "requirements": {
+                "plant": 3,
+                "animal": 0,
+                "fungi": 0,
+                "insect": 1
+            },
+            "permanentResource": "PLANT",
+            "multiplier": "CORNER",
+            "frontID": 54,
+            "backID": 51
+        },
+        {
+            "points": 2,
+            "corners": {
+                "TR": "EMPTY",
+                "TL": "EMPTY",
+                "BL": "EMPTY"
+            },
+            "requirements": {
+                "plant": 3,
+                "animal": 1,
+                "fungi": 0,
+                "insect": 0
+            },
+            "permanentResource": "PLANT",
+            "multiplier": "CORNER",
+            "frontID": 55,
+            "backID": 51
+        },
+        {
+            "points": 2,
+            "corners": {
+                "TL": "EMPTY",
+                "BL": "EMPTY",
+                "BR": "EMPTY"
+            },
+            "requirements": {
+                "plant": 3,
+                "animal": 0,
+                "fungi": 1,
+                "insect": 0
+            },
+            "permanentResource": "PLANT",
+            "multiplier": "CORNER",
+            "frontID": 56,
+            "backID": 51
+        },
+        {
+            "points": 3,
+            "corners": {
+                "TL": "EMPTY",
+                "BL": "QUILL"
+            },
+            "requirements": {
+                "plant": 3,
+                "animal": 0,
+                "fungi": 0,
+                "insect": 0
+            },
+            "permanentResource": "PLANT",
+            "multiplier": "",
+            "frontID": 57,
+            "backID": 51
+        },
+        {
+            "points": 3,
+            "corners": {
+                "TL": "MANUSCRIPT",
+                "TR": "EMPTY"
+            },
+            "requirements": {
+                "plant": 3,
+                "animal": 0,
+                "fungi": 0,
+                "insect": 0
+            },
+            "permanentResource": "PLANT",
+            "multiplier": "",
+            "frontID": 58,
+            "backID": 51
+        },
+        {
+            "points": 3,
+            "corners": {
+                "TR": "INKWELL",
+                "BR": "EMPTY"
+            },
+            "requirements": {
+                "plant": 3,
+                "animal": 0,
+                "fungi": 0,
+                "insect": 0
+            },
+            "permanentResource": "PLANT",
+            "multiplier": "",
+            "frontID": 59,
+            "backID": 51
+        },
+        {
+            "points": 5,
+            "corners": {
+                "TR": "EMPTY",
+                "TL": "EMPTY"
+            },
+            "requirements": {
+                "plant": 5,
+                "animal": 0,
+                "fungi": 0,
+                "insect": 0
+            },
+            "permanentResource": "PLANT",
+            "multiplier": "",
+            "frontID": 60,
+            "backID": 51
+        },
+        {
+            "points": 1,
+            "corners": {
+                "TR": "EMPTY",
+                "TL": "INKWELL",
+                "BL": "EMPTY"
+            },
+            "requirements": {
+                "plant": 0,
+                "animal": 2,
+                "fungi": 0,
+                "insect": 1
+            },
+            "permanentResource": "ANIMAL",
+            "multiplier": "INKWELL",
+            "frontID": 61,
+            "backID": 61
+        },
+        {
+            "points": 1,
+            "corners": {
+                "TR": "EMPTY",
+                "BR": "MANUSCRIPT",
+                "BL": "EMPTY"
+            },
+            "requirements": {
+                "plant": 1,
+                "animal": 2,
+                "fungi": 0,
+                "insect": 0
+            },
+            "permanentResource": "ANIMAL",
+            "multiplier": "MANUSCRIPT",
+            "frontID": 62,
+            "backID": 61
+        },
+        {
+            "points": 1,
+            "corners": {
+                "TL": "EMPTY",
+                "BR": "EMPTY",
+                "BL": "QUILL"
+            },
+            "requirements": {
+                "plant": 0,
+                "animal": 2,
+                "fungi": 1,
+                "insect": 0
+            },
+            "permanentResource": "ANIMAL",
+            "multiplier": "QUILL",
+            "frontID": 63,
+            "backID": 61
+        },
+        {
+            "points": 2,
+            "corners": {
+                "TR": "EMPTY",
+                "TL": "EMPTY",
+                "BR": "EMPTY"
+            },
+            "requirements": {
+                "plant": 0,
+                "animal": 3,
+                "fungi": 0,
+                "insect": 1
+            },
+            "permanentResource": "ANIMAL",
+            "multiplier": "CORNER",
+            "frontID": 64,
+            "backID": 61
+        },
+        {
+            "points": 2,
+            "corners": {
+                "TL": "EMPTY",
+                "BR": "EMPTY",
+                "BL": "EMPTY"
+            },
+            "requirements": {
+                "plant": 0,
+                "animal": 3,
+                "fungi": 1,
+                "insect": 0
+            },
+            "permanentResource": "ANIMAL",
+            "multiplier": "CORNER",
+            "frontID": 65,
+            "backID": 61
+        },
+        {
+            "points": 2,
+            "corners": {
+                "TR": "EMPTY",
+                "BR": "EMPTY",
+                "BL": "EMPTY"
+            },
+            "requirements": {
+                "plant": 1,
+                "animal": 3,
+                "fungi": 0,
+                "insect": 0
+            },
+            "permanentResource": "ANIMAL",
+            "multiplier": "CORNER",
+            "frontID": 66,
+            "backID": 61
+        },
+        {
+            "points": 3,
+            "corners": {
+                "TL": "EMPTY",
+                "BL": "MANUSCRIPT"
+            },
+            "requirements": {
+                "plant": 0,
+                "animal": 3,
+                "fungi": 0,
+                "insect": 0
+            },
+            "permanentResource": "ANIMAL",
+            "multiplier": "",
+            "frontID": 67,
+            "backID": 61
+        },
+        {
+            "points": 3,
+            "corners": {
+                "TR": "INKWELL",
+                "TL": "EMPTY"
+            },
+            "requirements": {
+                "plant": 0,
+                "animal": 3,
+                "fungi": 0,
+                "insect": 0
+            },
+            "permanentResource": "ANIMAL",
+            "multiplier": "",
+            "frontID": 68,
+            "backID": 61
+        },
+        {
+            "points": 3,
+            "corners": {
+                "TR": "EMPTY",
+                "BR": "QUILL"
+            },
+            "requirements": {
+                "plant": 0,
+                "animal": 3,
+                "fungi": 0,
+                "insect": 0
+            },
+            "permanentResource": "ANIMAL",
+            "multiplier": "",
+            "frontID": 69,
+            "backID": 61
+        },
+        {
+            "points": 5,
+            "corners": {
+                "TR": "EMPTY",
+                "BR": "EMPTY"
+            },
+            "requirements": {
+                "plant": 0,
+                "animal": 5,
+                "fungi": 0,
+                "insect": 0
+            },
+            "permanentResource": "ANIMAL",
+            "multiplier": "",
+            "frontID": 70,
+            "backID": 61
+        },
+        {
+            "points": 1,
+            "corners": {
+                "TR": "QUILL",
+                "TL": "EMPTY",
+                "BR": "EMPTY"
+            },
+            "requirements": {
+                "plant": 1,
+                "animal": 0,
+                "fungi": 0,
+                "insect": 2
+            },
+            "permanentResource": "INSECT",
+            "multiplier": "QUILL",
+            "frontID": 71,
+            "backID": 71
+        },
+        {
+            "points": 1,
+            "corners": {
+                "TL": "EMPTY",
+                "BR": "EMPTY",
+                "BL": "MANUSCRIPT"
+            },
+            "requirements": {
+                "plant": 0,
+                "animal": 1,
+                "fungi": 0,
+                "insect": 2
+            },
+            "permanentResource": "INSECT",
+            "multiplier": "MANUSCRIPT",
+            "frontID": 72,
+            "backID": 71
+        },
+        {
+            "points": 1,
+            "corners": {
+                "TR": "EMPTY",
+                "BR": "INKWELL",
+                "BL": "EMPTY"
+            },
+            "requirements": {
+                "plant": 0,
+                "animal": 0,
+                "fungi": 1,
+                "insect": 2
+            },
+            "permanentResource": "INSECT",
+            "multiplier": "INKWELL",
+            "frontID": 73,
+            "backID": 71
+        },
+        {
+            "points": 2,
+            "corners": {
+                "TR": "EMPTY",
+                "TL": "EMPTY",
+                "BR": "EMPTY"
+            },
+            "requirements": {
+                "plant": 0,
+                "animal": 1,
+                "fungi": 0,
+                "insect": 3
+            },
+            "permanentResource": "INSECT",
+            "multiplier": "CORNER",
+            "frontID": 74,
+            "backID": 71
+        },
+        {
+            "points": 2,
+            "corners": {
+                "TR": "EMPTY",
+                "TL": "EMPTY",
+                "BL": "EMPTY"
+            },
+            "requirements": {
+                "plant": 1,
+                "animal": 0,
+                "fungi": 0,
+                "insect": 3
+            },
+            "permanentResource": "INSECT",
+            "multiplier": "CORNER",
+            "frontID": 75,
+            "backID": 71
+        },
+        {
+            "points": 2,
+            "corners": {
+                "TL": "EMPTY",
+                "BR": "EMPTY",
+                "BL": "EMPTY"
+            },
+            "requirements": {
+                "plant": 0,
+                "animal": 0,
+                "fungi": 1,
+                "insect": 3
+            },
+            "permanentResource": "INSECT",
+            "multiplier": "CORNER",
+            "frontID": 76,
+            "backID": 71
+        },
+        {
+            "points": 3,
+            "corners": {
+                "TL": "INKWELL",
+                "BL": "EMPTY"
+            },
+            "requirements": {
+                "plant": 0,
+                "animal": 0,
+                "fungi": 0,
+                "insect": 3
+            },
+            "permanentResource": "INSECT",
+            "multiplier": "",
+            "frontID": 77,
+            "backID": 71
+        },
+        {
+            "points": 3,
+            "corners": {
+                "TR": "MANUSCRIPT",
+                "TL": "EMPTY"
+            },
+            "requirements": {
+                "plant": 0,
+                "animal": 0,
+                "fungi": 0,
+                "insect": 3
+            },
+            "permanentResource": "INSECT",
+            "multiplier": "",
+            "frontID": 78,
+            "backID": 71
+        },
+        {
+            "points": 3,
+            "corners": {
+                "BR": "EMPTY",
+                "BL": "QUILL"
+            },
+            "requirements": {
+                "plant": 0,
+                "animal": 0,
+                "fungi": 0,
+                "insect": 3
+            },
+            "permanentResource": "INSECT",
+            "multiplier": "",
+            "frontID": 79,
+            "backID": 71
+        },
+        {
+            "points": 5,
+            "corners": {
+                "TR": "EMPTY",
+                "TL": "EMPTY"
+            },
+            "requirements": {
+                "plant": 0,
+                "animal": 0,
+                "fungi": 0,
+                "insect": 5
+            },
+            "permanentResource": "INSECT",
+            "multiplier": "",
+            "frontID": 80,
+            "backID": 71
+        }
+    ],
+    "ResourcesCards": [
+        {
+            "points": 0,
+            "corners": {
+                "TR": "EMPTY",
+                "TL": "FUNGI",
+                "BL": "FUNGI"
+            },
+            "permanentResource": "FUNGI",
+            "frontID": 1,
+            "backID": 1
+        },
+        {
+            "points": 0,
+            "corners": {
+                "TR": "FUNGI",
+                "TL": "FUNGI",
+                "BR": "EMPTY"
+            },
+            "permanentResource": "FUNGI",
+            "frontID": 2,
+            "backID": 1
+        },
+        {
+            "points": 0,
+            "corners": {
+                "TL": "EMPTY",
+                "BR": "FUNGI",
+                "BL": "FUNGI"
+            },
+            "permanentResource": "FUNGI",
+            "frontID": 3,
+            "backID": 1
+        },
+        {
+            "points": 0,
+            "corners": {
+                "TR": "FUNGI",
+                "BR": "FUNGI",
+                "BL": "EMPTY"
+            },
+            "permanentResource": "FUNGI",
+            "frontID": 4,
+            "backID": 1
+        },
+        {
+            "points": 0,
+            "corners": {
+                "TR": "QUILL",
+                "BR": "FUNGI",
+                "BL": "PLANT"
+            },
+            "permanentResource": "FUNGI",
+            "frontID": 5,
+            "backID": 1
+        },
+        {
+            "points": 0,
+            "corners": {
+                "TR": "FUNGI",
+                "TL": "INKWELL",
+                "BR": "ANIMAL"
+            },
+            "permanentResource": "FUNGI",
+            "frontID": 6,
+            "backID": 1
+        },
+        {
+            "points": 0,
+            "corners": {
+                "TR": "INSECT",
+                "TL": "FUNGI",
+                "BR": "EMPTY",
+                "BL": "MANUSCRIPT"
+            },
+            "permanentResource": "FUNGI",
+            "frontID": 7,
+            "backID": 1
+        },
+        {
+            "points": 1,
+            "corners": {
+                "TR": "FUNGI",
+                "TL": "EMPTY",
+                "BL": "EMPTY"
+            },
+            "permanentResource": "FUNGI",
+            "frontID": 8,
+            "backID": 1
+        },
+        {
+            "points": 1,
+            "corners": {
+                "TL": "FUNGI",
+                "BR": "EMPTY",
+                "BL": "EMPTY"
+            },
+            "permanentResource": "FUNGI",
+            "frontID": 9,
+            "backID": 1
+        },
+        {
+            "points": 1,
+            "corners": {
+                "TR": "EMPTY",
+                "BR": "EMPTY",
+                "BL": "FUNGI"
+            },
+            "permanentResource": "FUNGI",
+            "frontID": 10,
+            "backID": 11
+        },
+        {
+            "points": 0,
+            "corners": {
+                "TR": "EMPTY",
+                "TL": "PLANT",
+                "BL": "PLANT"
+            },
+            "permanentResource": "PLANT",
+            "frontID": 11,
+            "backID": 11
+        },
+        {
+            "points": 0,
+            "corners": {
+                "TR": "PLANT",
+                "TL": "PLANT",
+                "BR": "EMPTY"
+            },
+            "permanentResource": "PLANT",
+            "frontID": 12,
+            "backID": 11
+        },
+        {
+            "points": 0,
+            "corners": {
+                "TL": "EMPTY",
+                "BR": "PLANT",
+                "BL": "PLANT"
+            },
+            "permanentResource": "PLANT",
+            "frontID": 13,
+            "backID": 11
+        },
+        {
+            "points": 0,
+            "corners": {
+                "TR": "PLANT",
+                "BR": "PLANT",
+                "BL": "EMPTY"
+            },
+            "permanentResource": "PLANT",
+            "frontID": 14,
+            "backID": 11
+        },
+        {
+            "points": 0,
+            "corners": {
+                "TR": "INSECT",
+                "BR": "PLANT",
+                "BL": "QUILL"
+            },
+            "permanentResource": "PLANT",
+            "frontID": 15,
+            "backID": 11
+        },
+        {
+            "points": 0,
+            "corners": {
+                "TR": "PLANT",
+                "TL": "FUNGI",
+                "BR": "INKWELL"
+            },
+            "permanentResource": "PLANT",
+            "frontID": 16,
+            "backID": 11
+        },
+        {
+            "points": 0,
+            "corners": {
+                "TL": "MANUSCRIPT",
+                "BR": "ANIMAL",
+                "BL": "PLANT"
+            },
+            "permanentResource": "PLANT",
+            "frontID": 17,
+            "backID": 11
+        },
+        {
+            "points": 1,
+            "corners": {
+                "TR": "EMPTY",
+                "TL": "EMPTY",
+                "BL": "PLANT"
+            },
+            "permanentResource": "PLANT",
+            "frontID": 18,
+            "backID": 11
+        },
+        {
+            "points": 1,
+            "corners": {
+                "TR": "EMPTY",
+                "TL": "EMPTY",
+                "BR": "PLANT"
+            },
+            "permanentResource": "PLANT",
+            "frontID": 19,
+            "backID": 11
+        },
+        {
+            "points": 1,
+            "corners": {
+                "TR": "PLANT",
+                "BR": "EMPTY",
+                "BL": "EMPTY"
+            },
+            "permanentResource": "PLANT",
+            "frontID": 20,
+            "backID": 21
+        },
+        {
+            "points": 0,
+            "corners": {
+                "TR": "ANIMAL",
+                "TL": "ANIMAL",
+                "BL": "EMPTY"
+            },
+            "permanentResource": "ANIMAL",
+            "frontID": 21,
+            "backID": 21
+        },
+        {
+            "points": 0,
+            "corners": {
+                "TR": "EMPTY",
+                "BR": "ANIMAL",
+                "BL": "ANIMAL"
+            },
+            "permanentResource": "ANIMAL",
+            "frontID": 22,
+            "backID": 21
+        },
+        {
+            "points": 0,
+            "corners": {
+                "TL": "ANIMAL",
+                "BR": "EMPTY",
+                "BL": "ANIMAL"
+            },
+            "permanentResource": "ANIMAL",
+            "frontID": 23,
+            "backID": 21
+        },
+        {
+            "points": 0,
+            "corners": {
+                "TR": "ANIMAL",
+                "TL": "EMPTY",
+                "BR": "ANIMAL"
+            },
+            "permanentResource": "ANIMAL",
+            "frontID": 24,
+            "backID": 21
+        },
+        {
+            "points": 0,
+            "corners": {
+                "TR": "INSECT",
+                "BR": "ANIMAL",
+                "BL": "INKWELL"
+            },
+            "permanentResource": "ANIMAL",
+            "frontID": 25,
+            "backID": 21
+        },
+        {
+            "points": 0,
+            "corners": {
+                "TR": "ANIMAL",
+                "TL": "PLANT",
+                "BR": "MANUSCRIPT"
+            },
+            "permanentResource": "ANIMAL",
+            "frontID": 26,
+            "backID": 21
+        },
+        {
+            "points": 0,
+            "corners": {
+                "TL": "QUILL",
+                "BR": "FUNGI",
+                "BL": "ANIMAL"
+            },
+            "permanentResource": "ANIMAL",
+            "frontID": 27,
+            "backID": 21
+        },
+        {
+            "points": 1,
+            "corners": {
+                "TR": "EMPTY",
+                "BR": "EMPTY",
+                "BL": "ANIMAL"
+            },
+            "permanentResource": "ANIMAL",
+            "frontID": 28,
+            "backID": 21
+        },
+        {
+            "points": 1,
+            "corners": {
+                "TL": "EMPTY",
+                "BR": "ANIMAL",
+                "BL": "EMPTY"
+            },
+            "permanentResource": "ANIMAL",
+            "frontID": 29,
+            "backID": 21
+        },
+        {
+            "points": 1,
+            "corners": {
+                "TR": "ANIMAL",
+                "TL": "EMPTY",
+                "BL": "EMPTY"
+            },
+            "permanentResource": "ANIMAL",
+            "frontID": 30,
+            "backID": 31
+        },
+        {
+            "points": 0,
+            "corners": {
+                "TR": "INSECT",
+                "TL": "INSECT",
+                "BL": "EMPTY"
+            },
+            "permanentResource": "INSECT",
+            "frontID": 31,
+            "backID": 31
+        },
+        {
+            "points": 0,
+            "corners": {
+                "TR": "EMPTY",
+                "BR": "INSECT",
+                "BL": "INSECT"
+            },
+            "permanentResource": "INSECT",
+            "frontID": 32,
+            "backID": 31
+        },
+        {
+            "points": 0,
+            "corners": {
+                "TL": "INSECT",
+                "BR": "EMPTY",
+                "BL": "INSECT"
+            },
+            "permanentResource": "INSECT",
+            "frontID": 33,
+            "backID": 31
+        },
+        {
+            "points": 0,
+            "corners": {
+                "TR": "INSECT",
+                "TL": "EMPTY",
+                "BR": "INSECT"
+            },
+            "permanentResource": "INSECT",
+            "frontID": 34,
+            "backID": 31
+        },
+        {
+            "points": 0,
+            "corners": {
+                "TR": "QUILL",
+                "BR": "INSECT",
+                "BL": "ANIMAL"
+            },
+            "permanentResource": "INSECT",
+            "frontID": 35,
+            "backID": 31
+        },
+        {
+            "points": 0,
+            "corners": {
+                "TR": "INSECT",
+                "TL": "MANUSCRIPT",
+                "BR": "FUNGI"
+            },
+            "permanentResource": "INSECT",
+            "frontID": 36,
+            "backID": 31
+        },
+        {
+            "points": 0,
+            "corners": {
+                "TR": "PLANT",
+                "TL": "INSECT",
+                "BL": "INKWELL"
+            },
+            "permanentResource": "INSECT",
+            "frontID": 37,
+            "backID": 31
+        },
+        {
+            "points": 1,
+            "corners": {
+                "TL": "INSECT",
+                "BR": "EMPTY",
+                "BL": "EMPTY"
+            },
+            "permanentResource": "INSECT",
+            "frontID": 38,
+            "backID": 31
+        },
+        {
+            "points": 1,
+            "corners": {
+                "TL": "EMPTY",
+                "TR": "EMPTY",
+                "BR": "INSECT"
+            },
+            "permanentResource": "INSECT",
+            "frontID": 39,
+            "backID": 31
+        },
+        {
+            "points": 1,
+            "corners": {
+                "TR": "INSECT",
+                "BR": "EMPTY",
+                "BL": "EMPTY"
+            },
+            "permanentResource": "INSECT",
+            "frontID": 40,
+            "backID": 41
+        }
+    ],
+    "StartingCard": [
+        {
+            "corners": {
+                "TR": "PLANT",
+                "TL": "FUNGI",
+                "BR": "ANIMAL",
+                "BL": "INSECT"
+            },
+            "backCorners": {
+                "TR": "PLANT",
+                "TL": "EMPTY",
+                "BR": "EMPTY",
+                "BL": "INSECT"
+            },
+            "permanentResource": [
+                "INSECT"
+            ],
+            "frontID": 81,
+            "backID": 81
+        },
+        {
+            "corners": {
+                "TR": "ANIMAL",
+                "TL": "PLANT",
+                "BR": "INSECT",
+                "BL": "FUNGI"
+            },
+            "backCorners": {
+                "TR": "EMPTY",
+                "TL": "ANIMAL",
+                "BR": "FUNGI",
+                "BL": "EMPTY"
+            },
+            "permanentResource": [
+                "FUNGI"
+            ],
+            "frontID": 82,
+            "backID": 82
+        },
+        {
+            "corners": {
+                "TR": "ANIMAL",
+                "TL": "INSECT",
+                "BR": "PLANT",
+                "BL": "FUNGI"
+            },
+            "backCorners": {
+                "TR": "EMPTY",
+                "TL": "EMPTY",
+                "BR": "EMPTY",
+                "BL": "EMPTY"
+            },
+            "permanentResource": [
+                "PLANT",
+                "FUNGI"
+            ],
+            "frontID": 83,
+            "backID": 83
+        },
+        {
+            "corners": {
+                "TR": "INSECT",
+                "TL": "PLANT",
+                "BR": "FUNGI",
+                "BL": "ANIMAL"
+            },
+            "backCorners": {
+                "TR": "EMPTY",
+                "TL": "EMPTY",
+                "BR": "EMPTY",
+                "BL": "EMPTY"
+            },
+            "permanentResource": [
+                "ANIMAL",
+                "INSECT"
+            ],
+            "frontID": 84,
+            "backID": 84
+        },
+        {
+            "corners": {
+                "TR": "FUNGI",
+                "TL": "INSECT",
+                "BR": "ANIMAL",
+                "BL": "PLANT"
+            },
+            "backCorners": {
+                "TR": "EMPTY",
+                "TL": "EMPTY"
+            },
+            "permanentResource": [
+                "ANIMAL",
+                "INSECT",
+                "PLANT"
+            ],
+            "frontID": 85,
+            "backID": 85
+        },
+        {
+            "corners": {
+                "TR": "ANIMAL",
+                "TL": "FUNGI",
+                "BR": "INSECT",
+                "BL": "PLANT"
+            },
+            "backCorners": {
+                "TR": "EMPTY",
+                "TL": "EMPTY"
+            },
+            "permanentResource": [
+                "PLANT",
+                "ANIMAL",
+                "FUNGI"
+            ],
+            "frontID": 86,
+            "backID": 86
+        }
+    ],
+    "ObjectiveCard": [
+        {
+            "points": 2,
+            "multiplierD": {
+                "upwards": 1,
+                "resource": "FUNGI"
+            },
+            "frontID": 87,
+            "backID": 87
+        },
+        {
+            "points": 2,
+            "multiplierD": {
+                "upwards": 0,
+                "resource": "PLANT"
+            },
+            "frontID": 88,
+            "backID": 87
+        },
+        {
+            "points": 2,
+            "multiplierD": {
+                "upwards": 1,
+                "resource": "ANIMAL"
+            },
+            "frontID": 89,
+            "backID": 87
+        },
+        {
+            "points": "2",
+            "multiplierD": {
+                "upwards": "0",
+                "resource": "INSECT"
+            },
+            "frontID": 90,
+            "backID": 87
+        },
+        {
+            "points": "3",
+            "multiplierL": {
+                "corner": "TL",
+                "singleResource": "plant",
+                "multiResource": "fungi"
+            },
+            "frontID": 91,
+            "backID": 87
+        },
+        {
+            "points": "3",
+            "multiplierL": {
+                "corner": "TR",
+                "singleResource": "insect",
+                "multiResource": "plant"
+            },
+            "frontID": 92,
+            "backID": 87
+        },
+        {
+            "points": "3",
+            "multiplierL": {
+                "corner": "BL",
+                "singleResource": "fungi",
+                "multiResource": "animal"
+            },
+            "frontID": "93",
+            "backID": 87
+        },
+        {
+            "points": "3",
+            "multiplierL": {
+                "corner": "BR",
+                "singleResource": "animal",
+                "multiResource": "insect"
+            },
+            "frontID": "94",
+            "backID": 87
+        },
+        {
+            "points": "3",
+            "multiplierCollectable": {
+                "plant": 0,
+                "animal": 0,
+                "fungi": 3,
+                "insect": 0,
+                "manuscript": 0,
+                "quill": 0,
+                "inkwell": 0
+            },
+            "frontID": "95",
+            "backID": 87
+        },
+        {
+            "points": "3",
+            "multiplierCollectable": {
+                "plant": 3,
+                "animal": 0,
+                "fungi": 0,
+                "insect": 0,
+                "manuscript": 0,
+                "quill": 0,
+                "inkwell": 0
+            },
+            "frontID": "96",
+            "backID": 87
+        },
+        {
+            "points": "3",
+            "multiplierCollectable": {
+                "plant": 0,
+                "animal": 3,
+                "fungi": 0,
+                "insect": 0,
+                "manuscript": 0,
+                "quill": 0,
+                "inkwell": 0
+            },
+            "frontID": "97",
+            "backID": 87
+        },
+        {
+            "points": "3",
+            "multiplierCollectable": {
+                "plant": 0,
+                "animal": 0,
+                "fungi": 0,
+                "insect": 3,
+                "manuscript": 0,
+                "quill": 0,
+                "inkwell": 0
+            },
+            "frontID": "98",
+            "backID": 87
+        },
+        {
+            "points": "3",
+            "multiplierCollectable": {
+                "plant": 0,
+                "animal": 0,
+                "fungi": 0,
+                "insect": 0,
+                "manuscript": 1,
+                "quill": 1,
+                "inkwell": 1
+            },
+            "frontID": "99",
+            "backID": 87
+        },
+        {
+            "points": "3",
+            "multiplierCollectable": {
+                "plant": 0,
+                "animal": 0,
+                "fungi": 0,
+                "insect": 0,
+                "manuscript": 2,
+                "quill": 0,
+                "inkwell": 0
+            },
+            "frontID": "100",
+            "backID": 87
+        },
+        {
+            "points": "3",
+            "multiplierCollectable": {
+                "plant": 0,
+                "animal": 0,
+                "fungi": 0,
+                "insect": 0,
+                "manuscript": 0,
+                "quill": 0,
+                "inkwell": 2
+            },
+            "frontID": "101",
+            "backID": 87
+        },
+        {
+            "points": "3",
+            "multiplierCollectable": {
+                "plant": 0,
+                "animal": 0,
+                "fungi": 0,
+                "insect": 0,
+                "manuscript": 0,
+                "quill": 2,
+                "inkwell": 0
+            },
+            "frontID": "102",
+            "backID": 87
+        }
+    ]
+}

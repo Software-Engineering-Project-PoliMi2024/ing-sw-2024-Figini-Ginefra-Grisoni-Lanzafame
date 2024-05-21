@@ -1,6 +1,5 @@
 package it.polimi.ingsw.view.TUI.Renderables;
 
-import it.polimi.ingsw.controller2.ControllerInterface;
 import it.polimi.ingsw.view.TUI.Printing.Printable;
 import it.polimi.ingsw.view.TUI.Printing.Printer;
 import it.polimi.ingsw.view.TUI.Styles.*;
@@ -130,8 +129,11 @@ public class CommandDisplayRenderable extends Renderable{
                 //This is used for commands that don't require any input
                 currentPrompt.notifyObservers();
                 currentPrompt.reset();
+
+                if(currentPrompt.isLocal())
+                    this.render();
+
                 currentPrompt = null;
-                this.render();
             }
         }
         else{

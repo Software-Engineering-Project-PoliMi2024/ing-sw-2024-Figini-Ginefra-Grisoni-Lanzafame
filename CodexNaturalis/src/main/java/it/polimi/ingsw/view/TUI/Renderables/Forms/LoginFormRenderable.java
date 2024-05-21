@@ -1,12 +1,8 @@
 package it.polimi.ingsw.view.TUI.Renderables.Forms;
 
-import it.polimi.ingsw.controller2.ControllerInterface;
 import it.polimi.ingsw.view.ControllerProvider;
-import it.polimi.ingsw.view.TUI.Renderables.Forms.FormRenderable;
 import it.polimi.ingsw.view.TUI.inputs.CommandPrompt;
 import it.polimi.ingsw.view.TUI.inputs.CommandPromptResult;
-
-import java.rmi.RemoteException;
 
 /**
  * This class is a Renderable that represents a login form.

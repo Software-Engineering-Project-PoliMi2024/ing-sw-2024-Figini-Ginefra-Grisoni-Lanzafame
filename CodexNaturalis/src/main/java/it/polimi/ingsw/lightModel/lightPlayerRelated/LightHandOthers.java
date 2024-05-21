@@ -1,32 +1,38 @@
 package it.polimi.ingsw.lightModel.lightPlayerRelated;
 
+import it.polimi.ingsw.designPatterns.Observed;
+import it.polimi.ingsw.designPatterns.Observer;
 import it.polimi.ingsw.lightModel.Differentiable;
 import it.polimi.ingsw.model.cardReleted.utilityEnums.Resource;
 
-public class LightHandOthers implements Differentiable {
-    private final Resource[] cards;
+import java.util.LinkedList;
+import java.util.List;
+
+public class LightHandOthers implements Differentiable, Observed {
+    private final List<Observer> observers = new LinkedList<>();
+    private final LightBack[] cards;
     public LightHandOthers(){
-        cards = new Resource[3];
+        cards = new LightBack[3];
     }
-    public LightHandOthers(Resource[] cards){
+    public LightHandOthers(LightBack[] cards){
         if(cards.length > 3)
             throw new IllegalArgumentException();
         else
             this.cards = cards;
     }
-    public Resource[] getCards() {
+    public LightBack[] getCards() {
         return cards;
     }
-    private int length(Resource[] arr){
+    private int length(LightBack[] arr){
         int i=0;
-        for(Resource r: arr){
-            if(r!=null){
+        for(LightBack back: arr){
+            if(back!=null){
                 i++;
             }
         }
         return i;
     }
-    public void addCard(Resource card){
+    public void addCard(LightBack card){
         if(length(cards) > 3){
             throw new IllegalCallerException();
         }else{
@@ -37,8 +43,9 @@ public class LightHandOthers implements Differentiable {
                 }
             }
         }
+        notifyObservers();
     }
-    public void removeCard(Resource card){
+    public void removeCard(LightBack card){
         if(card == null){
             throw new IllegalArgumentException("card can not be null");
         }
@@ -51,6 +58,24 @@ public class LightHandOthers implements Differentiable {
         }
         if(!found){
             throw new IllegalArgumentException();
+        }
+        notifyObservers();
+    }
+
+    @Override
+    public void attach(Observer observer) {
+        observers.add(observer);
+    }
+
+    @Override
+    public void detach(Observer observer) {
+        observers.remove(observer);
+    }
+
+    @Override
+    public void notifyObservers() {
+        for(Observer o: observers){
+            o.update();
         }
     }
 }

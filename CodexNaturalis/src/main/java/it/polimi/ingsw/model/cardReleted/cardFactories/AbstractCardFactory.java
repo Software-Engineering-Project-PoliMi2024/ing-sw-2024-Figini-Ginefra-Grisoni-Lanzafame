@@ -75,8 +75,12 @@ public abstract class AbstractCardFactory<Element> {
         return frontCornerMap;
     }
 
-    protected int getId(JsonObject card){
-        return card.get("imgID").getAsInt();
+    protected int getIdFront(JsonObject card){
+        return card.get("frontID").getAsInt();
+    }
+
+    protected int getIdBack(JsonObject card){
+        return card.get("backID").getAsInt();
     }
 
     /**

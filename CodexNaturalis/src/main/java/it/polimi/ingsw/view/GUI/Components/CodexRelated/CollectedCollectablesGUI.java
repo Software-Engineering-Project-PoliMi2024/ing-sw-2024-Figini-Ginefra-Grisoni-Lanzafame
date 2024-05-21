@@ -29,17 +29,17 @@ public class CollectedCollectablesGUI implements Observer {
 
         Arrays.stream(WritingMaterial.values()).forEach(writingMaterial -> counters.put(writingMaterial, new ImageCounter(AssetsGUI.loadWritingMaterial(writingMaterial))));
 
-        ModelDiffs<LightGame> diffs = new CodexDiff("Player1", 0, Map.of(
-                Resource.PLANT, 2,
-                Resource.ANIMAL, 3,
-                Resource.INSECT, 4,
-                Resource.FUNGI, 5,
-                WritingMaterial.INKWELL, 6,
-                WritingMaterial.MANUSCRIPT, 7,
-                WritingMaterial.QUILL, 8
-        ), new LinkedList<>(), GUI.getLightGame().getMyCodex().getFrontier().frontier());
-
-        diffs.apply(GUI.getLightGame());
+//        ModelDiffs<LightGame> diffs = new CodexDiff("Player1", 0, Map.of(
+//                Resource.PLANT, 2,
+//                Resource.ANIMAL, 3,
+//                Resource.INSECT, 4,
+//                Resource.FUNGI, 5,
+//                WritingMaterial.INKWELL, 6,
+//                WritingMaterial.MANUSCRIPT, 7,
+//                WritingMaterial.QUILL, 8
+//        ), new LinkedList<>(), GUI.getLightGame().getMyCodex().getFrontier().frontier());
+//
+//        diffs.apply(GUI.getLightGame());
 
 
         AnchorPane.setBottomAnchor(container, 0.0);

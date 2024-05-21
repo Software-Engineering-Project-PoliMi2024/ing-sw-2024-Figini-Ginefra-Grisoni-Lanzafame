@@ -1,7 +1,6 @@
 package it.polimi.ingsw.view.TUI.Renderables.CardRelated;
 
-import it.polimi.ingsw.controller2.ControllerInterface;
-import it.polimi.ingsw.lightModel.LightCard;
+import it.polimi.ingsw.lightModel.lightPlayerRelated.LightCard;
 import it.polimi.ingsw.lightModel.lightTableRelated.LightDeck;
 import it.polimi.ingsw.lightModel.lightTableRelated.LightGame;
 import it.polimi.ingsw.model.cardReleted.utilityEnums.CardFace;
@@ -50,10 +49,10 @@ public class DeckRenderable extends CardRenderable {
             this.renderCard(card);
         }
         // Render the top invisible card resource only, showing resource back
-        if (deck.getCardDeck() != null) {
-            String resourceBack = getMuseum().getResourceBack(deck.getCardDeck()).toString();
+        if (deck.getDeckBack() != null) {
+            String resourceBack = getMuseum().getBackFromId(deck.getDeckBack().idBack()).toString();
             PromptStyle.printInABox("Next Draw" , CardTextStyle.getCardWidth() * 2);
-            Printer.println(  resourceBack );
+            Printer.println(resourceBack);
         }
     }
 

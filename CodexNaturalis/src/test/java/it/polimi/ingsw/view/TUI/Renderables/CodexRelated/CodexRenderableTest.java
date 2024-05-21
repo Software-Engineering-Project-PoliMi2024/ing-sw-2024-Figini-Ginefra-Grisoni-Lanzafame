@@ -1,7 +1,7 @@
 package it.polimi.ingsw.view.TUI.Renderables.CodexRelated;
 
 import it.polimi.ingsw.Configs;
-import it.polimi.ingsw.lightModel.LightCard;
+import it.polimi.ingsw.lightModel.lightPlayerRelated.LightCard;
 import it.polimi.ingsw.lightModel.diffs.game.*;
 import it.polimi.ingsw.lightModel.lightPlayerRelated.LightPlacement;
 import it.polimi.ingsw.lightModel.lightTableRelated.LightGame;

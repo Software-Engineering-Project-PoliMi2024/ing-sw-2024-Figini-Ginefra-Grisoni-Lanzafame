@@ -1,6 +1,5 @@
 package it.polimi.ingsw.view.TUI.Renderables;
 
-import it.polimi.ingsw.controller2.ControllerInterface;
 import it.polimi.ingsw.lightModel.lightTableRelated.LightGame;
 import it.polimi.ingsw.view.ControllerProvider;
 import it.polimi.ingsw.view.TUI.inputs.CommandPrompt;

@@ -1,10 +1,9 @@
 package it.polimi.ingsw.model;
 
 import it.polimi.ingsw.Configs;
-import it.polimi.ingsw.controller2.ServerModelController;
-import it.polimi.ingsw.controller2.persistence.PersistenceFactory;
+import it.polimi.ingsw.controller.ServerModelController;
+import it.polimi.ingsw.controller.persistence.PersistenceFactory;
 import it.polimi.ingsw.lightModel.diffPublishers.DiffSubscriber;
-import it.polimi.ingsw.lightModel.diffs.lobby_lobbyList.LobbyListDiffEdit;
 import it.polimi.ingsw.model.cardReleted.cardFactories.GoldCardFactory;
 import it.polimi.ingsw.model.cardReleted.cardFactories.ObjectiveCardFactory;
 import it.polimi.ingsw.model.cardReleted.cardFactories.ResourceCardFactory;

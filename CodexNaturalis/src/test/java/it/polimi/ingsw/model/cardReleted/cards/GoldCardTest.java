@@ -13,7 +13,7 @@ class GoldCardTest {
 
     @Test
     void canBePlaced_ItShouldBePlaceable() {
-        GoldCard card = new GoldCard(1, 1, Map.of(
+        GoldCard card = new GoldCard(1, 1, 1, Map.of(
                 Resource.ANIMAL, 2,
                 Resource.INSECT, 2
         ), null, null, null);
@@ -28,7 +28,7 @@ class GoldCardTest {
 
     @Test
     void canBePlaced_ItShouldNotBePlaceable() {
-        GoldCard card = new GoldCard(1, 1, Map.of(
+        GoldCard card = new GoldCard(1, 1, 1, Map.of(
                 Resource.ANIMAL, 2,
                 Resource.INSECT, 2
         ), null, null, null);

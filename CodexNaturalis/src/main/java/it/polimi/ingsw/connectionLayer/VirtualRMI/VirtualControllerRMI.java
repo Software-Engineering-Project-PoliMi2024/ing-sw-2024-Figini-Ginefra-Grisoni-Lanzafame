@@ -4,9 +4,9 @@ import it.polimi.ingsw.Configs;
 import it.polimi.ingsw.connectionLayer.ConnectionLayerServer;
 import it.polimi.ingsw.connectionLayer.PingPongInterface;
 import it.polimi.ingsw.connectionLayer.VirtualLayer.VirtualController;
-import it.polimi.ingsw.controller2.ControllerInterface;
-import it.polimi.ingsw.controller2.LogsOnClient;
-import it.polimi.ingsw.lightModel.LightCard;
+import it.polimi.ingsw.controller.ControllerInterface;
+import it.polimi.ingsw.controller.LogsOnClient;
+import it.polimi.ingsw.lightModel.lightPlayerRelated.LightCard;
 import it.polimi.ingsw.lightModel.diffs.nuclearDiffs.FatManLobbyList;
 import it.polimi.ingsw.lightModel.diffs.nuclearDiffs.GadgetGame;
 import it.polimi.ingsw.lightModel.diffs.nuclearDiffs.LittleBoyLobby;
@@ -98,23 +98,6 @@ public class VirtualControllerRMI implements VirtualController {
     }
 
     @Override
-    public void selectStartCardFace(CardFace cardFace) {
-        Future<Void> selectStartCardFaceFuture = controllerExecutor.submit(()->{
-            try {
-                controllerStub.selectStartCardFace(cardFace);
-                return null;
-            } catch (Exception e) {
-                throw new RuntimeException();
-            }
-        });
-        try {
-            selectStartCardFaceFuture.get(Configs.secondsTimeOut, TimeUnit.SECONDS);
-        }catch (Exception e){
-            this.disconnect();
-        }
-    }
-
-    @Override
     public void choseSecretObjective(LightCard objectiveCard) {
         Future<Void> choseSecretObjectiveFuture = controllerExecutor.submit(()->{
             try {
@@ -133,17 +116,19 @@ public class VirtualControllerRMI implements VirtualController {
 
     @Override
     public void place(LightPlacement placement) {
-        Future<Void> placeFuture = controllerExecutor.submit(()->{
+        /*Future<Void> placeFuture = controllerExecutor.submit(()->{
             try {
                 controllerStub.place(placement);
                 return null;
             } catch (Exception e) {
                 throw new RuntimeException();
             }
-        });
+        });*/
         try {
-            placeFuture.get(Configs.secondsTimeOut, TimeUnit.SECONDS);
+            controllerStub.place(placement);
+            //placeFuture.get(Configs.secondsTimeOut, TimeUnit.SECONDS);
         }catch (Exception e){
+            e.printStackTrace();
             this.disconnect();
         }
     }

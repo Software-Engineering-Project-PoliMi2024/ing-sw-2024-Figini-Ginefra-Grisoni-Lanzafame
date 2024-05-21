@@ -3,8 +3,6 @@ package it.polimi.ingsw.lightModel.lightPlayerRelated;
 import it.polimi.ingsw.designPatterns.Observed;
 import it.polimi.ingsw.designPatterns.Observer;
 import it.polimi.ingsw.lightModel.Differentiable;
-import it.polimi.ingsw.lightModel.LightCard;
-import it.polimi.ingsw.model.cardReleted.utilityEnums.Resource;
 
 import java.util.HashMap;
 import java.util.LinkedList;
@@ -81,7 +79,7 @@ public class LightHand implements Differentiable, Observed {
      */
     public void addCard(LightCard card, Boolean playability){
         if(length(cards) == 3){
-            throw new IllegalCallerException("hand is full");
+            throw new IllegalCallerException("The player has already 3 cards");
         }else{
             for(int i=0; i<cards.length; i++){
                 if(cards[i]==null){

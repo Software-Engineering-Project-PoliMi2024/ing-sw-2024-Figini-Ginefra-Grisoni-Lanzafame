@@ -19,6 +19,7 @@ public class Frontier implements Serializable {
      */
     public Frontier(){
         frontier = new ArrayList<>();
+        frontier.add(new Position(0, 0));
     }
 
     /**
@@ -42,7 +43,8 @@ public class Frontier implements Serializable {
         this.removePosition(position);
 
         Placement placement = codex.getPlacementAt(position);
-
+        System.out.println(placement);
+        System.out.println(placement.card());
         for (CardCorner corner : CardCorner.values()) {
             if(!placement.card().isCorner(corner, placement.face()))
                 continue;

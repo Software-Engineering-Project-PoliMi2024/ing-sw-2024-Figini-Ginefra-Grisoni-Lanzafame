@@ -74,7 +74,7 @@ public class ObjectiveCardFactory extends AbstractCardFactory<ObjectiveCard>{
         JsonArray ResourceCards = getCardArray("ObjectiveCard");
         for(int i=0; i<ResourceCards.size(); i++) {
             JsonObject card = ResourceCards.get(i).getAsJsonObject();
-            deckBuilder.add(new ObjectiveCard(getId(card), card.get("points").getAsInt(), getPointMultiplier(card)));
+            deckBuilder.add(new ObjectiveCard(getIdFront(card), getIdBack(card), card.get("points").getAsInt(), getPointMultiplier(card)));
         }
         return deckBuilder;
     }
@@ -89,7 +89,7 @@ public class ObjectiveCardFactory extends AbstractCardFactory<ObjectiveCard>{
         for(int i=0; i<ResourceCards.size(); i++) {
             JsonObject card = ResourceCards.get(i).getAsJsonObject();
             if(getDiagonalMultiplier(card) != null){
-                deckBuilder.add(new Pair(new ObjectiveCard(getId(card), card.get("points").getAsInt(), getPointMultiplier(card)), getDiagonalMultiplier(card)));
+                deckBuilder.add(new Pair(new ObjectiveCard(getIdFront(card), getIdBack(card), card.get("points").getAsInt(), getPointMultiplier(card)), getDiagonalMultiplier(card)));
             }
         }
         return deckBuilder;
@@ -106,7 +106,7 @@ public class ObjectiveCardFactory extends AbstractCardFactory<ObjectiveCard>{
         for(int i=0; i<ResourceCards.size(); i++) {
             JsonObject card = ResourceCards.get(i).getAsJsonObject();
             if(getLMultiplier(card) != null){
-                deckBuilder.add(new Pair(new ObjectiveCard(getId(card), card.get("points").getAsInt(), getPointMultiplier(card)), getLMultiplier(card)));
+                deckBuilder.add(new Pair(new ObjectiveCard(getIdFront(card), getIdBack(card), card.get("points").getAsInt(), getPointMultiplier(card)), getLMultiplier(card)));
             }
         }
         return deckBuilder;
@@ -122,7 +122,7 @@ public class ObjectiveCardFactory extends AbstractCardFactory<ObjectiveCard>{
         for(int i=0; i<ResourceCards.size(); i++) {
             JsonObject card = ResourceCards.get(i).getAsJsonObject();
             if(getCollectableMultiplier(card) != null){
-                deckBuilder.add(new Pair(new ObjectiveCard(getId(card), card.get("points").getAsInt(), getPointMultiplier(card)), getCollectableMultiplier(card)));
+                deckBuilder.add(new Pair(new ObjectiveCard(getIdFront(card), getIdBack(card), card.get("points").getAsInt(), getPointMultiplier(card)), getCollectableMultiplier(card)));
             }
         }
         return deckBuilder;

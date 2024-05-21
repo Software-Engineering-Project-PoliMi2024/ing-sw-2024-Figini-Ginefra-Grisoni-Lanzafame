@@ -7,17 +7,22 @@ import java.io.Serializable;
 
 public abstract class Card implements Serializable {
     final private int points;
-    private final int id;
+    private final int idFront;
+    private final int idBack;
 
     /** @param  points given by the card*/
-    public Card(int id, int points){
-        this.id = id;
+    public Card(int idFront, int idBack, int points){
+        this.idFront = idFront;
+        this.idBack = idBack;
         this.points = points;
     }
 
     /** @return the id of the card */
-    public int getId(){
-        return id;
+    public int getIdFront(){
+        return idFront;
+    }
+    public int getIdBack(){
+        return idBack;
     }
 
     /** @return the points of the card */
@@ -37,6 +42,6 @@ public abstract class Card implements Serializable {
         if (obj == this) return true;
         if (obj.getClass() != this.getClass()) return false;
         Card card = (Card) obj;
-        return card.getId() == this.getId();
+        return card.getIdFront() == this.getIdFront();
     }
 }

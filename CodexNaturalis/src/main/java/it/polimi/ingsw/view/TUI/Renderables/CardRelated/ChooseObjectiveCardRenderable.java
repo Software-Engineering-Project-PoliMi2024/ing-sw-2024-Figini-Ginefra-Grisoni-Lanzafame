@@ -1,11 +1,9 @@
 package it.polimi.ingsw.view.TUI.Renderables.CardRelated;
 
-import it.polimi.ingsw.controller2.ControllerInterface;
-import it.polimi.ingsw.lightModel.LightCard;
+import it.polimi.ingsw.lightModel.lightPlayerRelated.LightCard;
 import it.polimi.ingsw.lightModel.lightTableRelated.LightGame;
 import it.polimi.ingsw.model.cardReleted.utilityEnums.CardFace;
 import it.polimi.ingsw.view.ControllerProvider;
-import it.polimi.ingsw.view.TUI.Renderables.CardRelated.CardRenderable;
 import it.polimi.ingsw.view.TUI.Styles.CardTextStyle;
 import it.polimi.ingsw.view.TUI.Styles.DecoratedString;
 import it.polimi.ingsw.view.TUI.Styles.PromptStyle;
@@ -13,8 +11,6 @@ import it.polimi.ingsw.view.TUI.Styles.StringStyle;
 import it.polimi.ingsw.view.TUI.cardDrawing.CardMuseum;
 import it.polimi.ingsw.view.TUI.inputs.CommandPrompt;
 import it.polimi.ingsw.view.TUI.inputs.CommandPromptResult;
-
-import java.rmi.RemoteException;
 
 /**
  * This class is a Renderable that can render a card and prompt the player to choose between two objective cards.

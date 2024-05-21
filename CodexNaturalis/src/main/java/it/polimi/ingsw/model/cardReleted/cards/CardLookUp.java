@@ -14,7 +14,7 @@ public class CardLookUp<T extends Card>{
     public CardLookUp(Queue<T> queue){
         this.cardMap = new HashMap<>();
         for(T card : queue){
-            cardMap.put(card.getId(), card);
+            cardMap.put(card.getIdFront(), card);
         }
     }
     
@@ -23,13 +23,13 @@ public class CardLookUp<T extends Card>{
     }
     
     public void putDown(T card){
-        cardMap.put(card.getId(), card);
+        cardMap.put(card.getIdFront(), card);
     }
 
     public void deckPutDown(Deck<T> deck){
         Map<Integer, T> newMap = new HashMap<>();
         for(T card : deck.getActualDeck()){
-            cardMap.put(card.getId(), card);
+            cardMap.put(card.getIdFront(), card);
         }
         this.cardMap = newMap;
     }

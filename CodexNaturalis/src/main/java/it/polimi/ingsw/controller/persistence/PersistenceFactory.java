@@ -1,4 +1,4 @@
-package it.polimi.ingsw.controller2.persistence;
+package it.polimi.ingsw.controller.persistence;
 
 import it.polimi.ingsw.Configs;
 import it.polimi.ingsw.model.tableReleted.Game;

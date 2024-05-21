@@ -1,9 +1,9 @@
 package it.polimi.ingsw.connectionLayer;
 
 import it.polimi.ingsw.connectionLayer.VirtualRMI.VirtualViewRMI;
-import it.polimi.ingsw.controller2.ControllerInterface;
-import it.polimi.ingsw.controller2.LogsOnClient;
-import it.polimi.ingsw.controller2.ServerModelController;
+import it.polimi.ingsw.controller.ControllerInterface;
+import it.polimi.ingsw.controller.LogsOnClient;
+import it.polimi.ingsw.controller.ServerModelController;
 import it.polimi.ingsw.connectionLayer.VirtualLayer.VirtualController;
 import it.polimi.ingsw.connectionLayer.VirtualLayer.VirtualView;
 import it.polimi.ingsw.view.ViewInterface;

@@ -1,25 +1,19 @@
 package it.polimi.ingsw.view.GUI.Components.CodexRelated;
 
 import it.polimi.ingsw.designPatterns.Observer;
-import it.polimi.ingsw.lightModel.LightCard;
-import it.polimi.ingsw.lightModel.diffs.game.*;
 import it.polimi.ingsw.lightModel.lightPlayerRelated.LightCodex;
 import it.polimi.ingsw.lightModel.lightPlayerRelated.LightPlacement;
-import it.polimi.ingsw.model.cardReleted.utilityEnums.CardFace;
 import it.polimi.ingsw.model.playerReleted.Position;
 import it.polimi.ingsw.view.GUI.Components.CardRelated.CardGUI;
 import it.polimi.ingsw.view.GUI.GUI;
 import it.polimi.ingsw.view.GUI.GUIConfigs;
-import it.polimi.ingsw.view.GUI.StateGUI;
 import javafx.geometry.Point2D;
 import javafx.geometry.Pos;
-import javafx.scene.Node;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.Pane;
 import javafx.scene.layout.StackPane;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
 
 public class CodexGUI implements Observer {

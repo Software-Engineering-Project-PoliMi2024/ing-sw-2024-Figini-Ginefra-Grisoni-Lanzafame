@@ -1,7 +1,6 @@
 package it.polimi.ingsw.view.TUI.Renderables.CardRelated;
 
-import it.polimi.ingsw.controller2.ControllerInterface;
-import it.polimi.ingsw.lightModel.LightCard;
+import it.polimi.ingsw.lightModel.lightPlayerRelated.LightCard;
 import it.polimi.ingsw.lightModel.lightTableRelated.LightGame;
 import it.polimi.ingsw.model.cardReleted.utilityEnums.CardFace;
 import it.polimi.ingsw.view.ControllerProvider;
@@ -39,17 +38,9 @@ public class HandRenderable extends CanvasRenderable {
     }
 
     private void renderCard(LightCard card){
-        TextCard textCard = museum.get(card.id());
+        TextCard textCard = museum.get(card.idFront());
         Drawable drawable = textCard.get(CardFace.FRONT);
         Printer.print(drawable.toString());
-    }
-
-    /**
-     * Renders the secret objective card.
-     */
-    public void renderSecretObjective(){
-        PromptStyle.printInABox("Secret Objective", CardTextStyle.getCardWidth() * 2);
-        this.renderCard(lightGame.getHand().getSecretObjective());
     }
 
     /**
@@ -69,7 +60,7 @@ public class HandRenderable extends CanvasRenderable {
             }
 
             PromptStyle.printInABox(text, CardTextStyle.getCardWidth() * 2);
-            this.canvas.draw(museum.get(card.id()).get(CardFace.FRONT), CardTextStyle.getCardWidth() /2 + i * (CardTextStyle.getCardWidth() + 1), CardTextStyle.getCardHeight() /2);
+            this.canvas.draw(museum.get(card.idFront()).get(CardFace.FRONT), CardTextStyle.getCardWidth() /2 + i * (CardTextStyle.getCardWidth() + 1), CardTextStyle.getCardHeight() /2);
         }
 
         super.render();
@@ -84,9 +75,6 @@ public class HandRenderable extends CanvasRenderable {
             case CommandPrompt.DISPLAY_HAND:
                 int cardIndex = Integer.parseInt(answer.getAnswer(0));
                 this.render();
-                break;
-            case CommandPrompt.DISPLAY_SECRET_OBJECTIVE:
-                this.renderSecretObjective();
                 break;
             default:
                 break;

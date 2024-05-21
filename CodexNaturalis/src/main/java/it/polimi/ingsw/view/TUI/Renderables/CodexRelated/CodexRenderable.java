@@ -1,6 +1,5 @@
 package it.polimi.ingsw.view.TUI.Renderables.CodexRelated;
 
-import it.polimi.ingsw.controller2.ControllerInterface;
 import it.polimi.ingsw.lightModel.lightPlayerRelated.LightCodex;
 import it.polimi.ingsw.lightModel.lightPlayerRelated.LightPlacement;
 import it.polimi.ingsw.lightModel.lightTableRelated.LightGame;
@@ -60,7 +59,7 @@ public class CodexRenderable extends CanvasRenderable {
      */
     public void drawPlacement(LightPlacement placement){
         Position canvasPosition = gridToCanvas(placement.position());
-        TextCard card = cardMuseum.get(placement.card().id());
+        TextCard card = cardMuseum.get(placement.card().idFront());
         Drawable cardDrawable = card.get(placement.face());
         this.canvas.draw(cardDrawable, canvasPosition.getX(), canvasPosition.getY());
     }

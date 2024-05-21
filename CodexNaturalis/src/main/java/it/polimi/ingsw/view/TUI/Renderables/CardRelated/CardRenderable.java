@@ -1,7 +1,6 @@
 package it.polimi.ingsw.view.TUI.Renderables.CardRelated;
 
-import it.polimi.ingsw.controller2.ControllerInterface;
-import it.polimi.ingsw.lightModel.LightCard;
+import it.polimi.ingsw.lightModel.lightPlayerRelated.LightCard;
 import it.polimi.ingsw.lightModel.lightTableRelated.LightGame;
 import it.polimi.ingsw.model.cardReleted.utilityEnums.CardFace;
 import it.polimi.ingsw.view.ControllerProvider;
@@ -42,7 +41,7 @@ public class CardRenderable extends LightGameRenderable {
      * @param card The card to render.
      */
     protected void renderCard(LightCard card){
-        TextCard textCard = museum.get(card.id());
+        TextCard textCard = museum.get(card.idFront());
         Drawable drawable = textCard.get(this.face);
         Printer.print(drawable.toString());
     }

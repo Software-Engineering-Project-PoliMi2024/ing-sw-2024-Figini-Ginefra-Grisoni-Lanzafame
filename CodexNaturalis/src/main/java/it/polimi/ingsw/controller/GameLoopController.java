@@ -1,9 +1,10 @@
-package it.polimi.ingsw.controller2;
+package it.polimi.ingsw.controller;
 
-import it.polimi.ingsw.lightModel.LightCard;
+import it.polimi.ingsw.Configs;
+import it.polimi.ingsw.lightModel.lightPlayerRelated.LightBack;
+import it.polimi.ingsw.lightModel.lightPlayerRelated.LightCard;
 import it.polimi.ingsw.lightModel.Lightifier;
 import it.polimi.ingsw.lightModel.diffs.game.*;
-import it.polimi.ingsw.model.cardReleted.cards.Card;
 import it.polimi.ingsw.model.cardReleted.cards.CardInHand;
 import it.polimi.ingsw.model.cardReleted.cards.ObjectiveCard;
 import it.polimi.ingsw.model.cardReleted.cards.StartCard;
@@ -16,9 +17,11 @@ import java.io.Serializable;
 import java.util.*;
 
 public class GameLoopController implements Serializable {
-    //A map containing the view for each ACTIVE player in the game
+    //A map containing the controller for each ACTIVE player in the game
+    //Todo this map is useless now that we store the nickname in the controller
     private final Map<String, ServerModelController> activePlayers;
     private final Game game;
+    private Timer countdownTimer;
 
     /**
      * The constructor of the class
@@ -38,28 +41,45 @@ public class GameLoopController implements Serializable {
      * @param controller of the user who is joining
      */
     public void joinGame(String nickname, ServerModelController controller){
-        activePlayers.put(nickname, controller);
         game.subscribe(controller, nickname);
-        //pls notice that this is a log before the transition
-        this.logYouAndOther(controller, LogsOnClient.MID_GAME_JOINED, LogsOnClient.PLAYER_REJOINED);
-        for(User user : game.getGameParty().getUsersList()){
-            if(user.getNickname().equals(nickname)){
-                if(startCardIsPlaced(user) && secretObjectiveIsChose(user)){
-                    controller.transitionTo(ViewState.IDLE);
-                }else{
-                    if(!startCardIsPlaced(user)){
-                        controller.transitionTo(ViewState.CHOOSE_START_CARD);
-                        LightCard lightStartCard = Lightifier.lightifyToCard(getOrDrawStartCard(user));
-                        controller.updateGame(new HandDiffAdd(lightStartCard, true));
-                    }else{  //!secretObjectiveIsChose(user)
-                        controller.transitionTo(ViewState.SELECT_OBJECTIVE);
-                        for(LightCard secretObjectiveCardChoice : getOrDrawSecretObjectiveChoices(user)){
-                            controller.updateGame(new HandDiffAdd(secretObjectiveCardChoice, true));
-                        }
-                    }
-                }
-                break;
+
+        if(countdownTimer!=null){
+            countdownTimer.cancel();
+            countdownTimer = null;
+            ServerModelController lastController = activePlayers.values().iterator().next();
+            activePlayers.put(nickname, controller);
+            this.logYouAndOther(controller, LogsOnClient.MID_GAME_JOINED, LogsOnClient.PLAYER_REJOINED);
+            lastController.logGame(LogsOnClient.COUNTDOWN_INTERRUPTED);
+            //If the player rejoined a single-player game after the setup phase,
+            //to avoid both players to be "idle" (e.g., the leavingPlayer was the currentPlayer) the gameLoop is recalculated
+            if(everyoneActiveHasPlaced() && everyoneActiveHasChosen()) {
+                this.gameLoop();
             }
+        }else {
+            activePlayers.put(nickname, controller);
+            this.logYouAndOther(controller, LogsOnClient.MID_GAME_JOINED, LogsOnClient.PLAYER_REJOINED);
+        }
+
+        User joiningUser = game.getUserFromNick(nickname);
+        if(everyoneActiveHasPlaced() && everyoneActiveHasChosen()) { //player rejoined in the middle of the game
+            controller.transitionTo(ViewState.IDLE);
+        }else{
+            activePlayers.remove(nickname);
+            //The player rejoined a single-player game, so he matches the same view as the one-player-left.
+            // OR the game, with multiple people connected, is still in the setup phase
+            if((everyoneActiveHasPlaced() && !startCardIsPlaced(joiningUser)) || !everyoneActiveHasPlaced()){ //The joining player need to place his startCard
+                activePlayers.put(nickname, controller);
+                controller.transitionTo(ViewState.CHOOSE_START_CARD);
+                LightCard lightStartCard = Lightifier.lightifyToCard(getOrDrawStartCard(joiningUser));
+                controller.updateGame(new HandDiffAdd(lightStartCard, true));
+            }else if((everyoneActiveHasChosen() && !secretObjectiveIsChose(joiningUser)) || !everyoneActiveHasChosen()){ //The joining player need to choose his secretObjective
+                activePlayers.put(nickname, controller);
+                controller.transitionTo(ViewState.SELECT_OBJECTIVE);
+                for(LightCard secretObjectiveCardChoice : getOrDrawSecretObjectiveChoices(joiningUser)){
+                    controller.updateGame(new HandDiffAddOneSecretObjectiveOption(secretObjectiveCardChoice));
+                }
+            }
+
         }
     }
     /**
@@ -150,48 +170,77 @@ public class GameLoopController implements Serializable {
         user.getUserHand().setSecretObjectiveChoice(cardList);
         return cardList;
     }
-    public void leaveGame(ServerModelController controller, String nickname){
-        String currentPlayerNick = game.getGameParty().getCurrentPlayer().getNickname();
-            //The leaving player is the current player
-        if(everyonePlaced() && everyoneChose() && controller.getNickname().equals(currentPlayerNick)){
-            User leavingPLayer = game.getUserFromNick(nickname);
-            //The leaving player has to draw a card if possible
-            if(leavingPLayer.getUserHand().getHandSize()<3){
-                CardInHand card = drawRandomCard();
-                if(card != null){ //The card is null if all the decks are empty
-                    leavingPLayer.getUserHand().addCard(card);
-                    game.subscribe(controller, new HandDiffAdd(Lightifier.lightifyToCard(card), (card).canBePlaced(leavingPLayer.getUserCodex())),
-                            new HandOtherDiffAdd(Lightifier.lightifyToResource(card), controller.getNickname()));
-                }
-            }
-            activePlayers.remove(nickname, controller);
-            for(ServerModelController stillActiveController : activePlayers.values()){
-                stillActiveController.logOther(controller.getNickname(), LogsOnClient.PLAYER_GAME_LEFT);
-            }
-            this.gameLoop();
-        }else if(isLastToPlace(controller)){ //The leaving player is the last that need to place their startCard
-            activePlayers.remove(nickname, controller);
-            for(ServerModelController stillActiveController : activePlayers.values()){
-                stillActiveController.logOther(controller.getNickname(), LogsOnClient.PLAYER_GAME_LEFT);
-            }
-            this.logAll(LogsOnClient.EVERYONE_PLACED_STARTCARD);
-            this.secretObjectiveSetup();
-        }else if(isLastToChose(controller)){ //The leaving player is the last that need to choose their secretObjective
-            activePlayers.remove(nickname, controller);
-            for(ServerModelController stillActiveController : activePlayers.values()){
-                stillActiveController.logOther(controller.getNickname(), LogsOnClient.PLAYER_GAME_LEFT);
-            }
-            this.logAll(LogsOnClient.EVERYONE_CHOSE);
-            this.gameLoopStarter();
+
+    /**
+     * Remove the leavingController from the activePlayers map,
+     * if the leavingController is the current player, calculate the next player
+     * @param leavingController of the user who is leaving
+     */
+    public void leaveGame(ServerModelController leavingController){
+        String leavingPlayerNick = leavingController.getNickname();
+        User leavingUser = game.getUserFromNick(leavingPlayerNick);
+
+        /*if(activePlayers.containsKey(leavingPlayerNick)){
+            activePlayers.remove(leavingPlayerNick, leavingController);
+        } fix to issue #10 on gitHub? */
+
+        activePlayers.remove(leavingPlayerNick, leavingController);
+        if(activePlayers.size() == 1){
+            this.onePlayerLeft(leavingController);
         }else{
-            //The leaving player is in IDLE
-            activePlayers.remove(nickname, controller);
             for(ServerModelController stillActiveController : activePlayers.values()){
-                stillActiveController.logOther(controller.getNickname(), LogsOnClient.PLAYER_GAME_LEFT);
+                stillActiveController.logOther(leavingController.getNickname(), LogsOnClient.PLAYER_GAME_LEFT);
+            }
+            //The leaving player is the current player
+            if(hasEveryPlayerHasPlacedAndChosen(leavingUser) && leavingUser.equals(game.getGameParty().getCurrentPlayer())){
+                //The leaving player has to draw a card if possible
+                if(leavingUser.getUserHand().getHandSize()<3){
+                    CardInHand card = drawRandomCard();
+                    if(card != null){ //the decks are not empty
+                        leavingUser.getUserHand().addCard(card);
+                        //I do not notify the leaving player, because his view is not reachable anymore
+                        game.subscribe(new HandOtherDiffAdd(new LightBack(card.getIdBack()), leavingPlayerNick));
+                    }
+                }
+                this.gameLoop();
+                //The leaving player is the last that need to place their startCard
+            }else if(everyoneActiveHasPlaced() && leavingUser.getUserHand().getStartCard()!=null){
+                this.logAll(LogsOnClient.EVERYONE_PLACED_STARTCARD);
+                this.secretObjectiveSetup();
+                //The leaving player is the last that need to choose his secretObjective
+            }else if(everyoneActiveHasChosen() && leavingUser.getUserHand().getSecretObjectiveChoices() != null){
+                this.logAll(LogsOnClient.EVERYONE_CHOSE);
+                this.gameLoopStarter();
             }
         }
     }
 
+    /**
+     * @param notActiveUser a User not present in the activePlayers map
+     * @return True if every activePlayer has placed their startCard and chosen their secretObjective along with the notActiveUser
+     */
+    private boolean hasEveryPlayerHasPlacedAndChosen(User notActiveUser) {
+        return everyoneActiveHasPlaced() && everyoneActiveHasChosen() &&
+                this.startCardIsPlaced(notActiveUser) && this.secretObjectiveIsChose(notActiveUser);
+    }
+
+    /**
+     * If only one player is left in the game, start a countdown to end the game
+     */
+    private void onePlayerLeft(ServerModelController leavingController) {
+        ServerModelController lastController = activePlayers.values().iterator().next();
+        lastController.logOther(leavingController.getNickname(), LogsOnClient.PLAYER_GAME_LEFT);
+        lastController.logGame(LogsOnClient.LAST_PLAYER);
+        lastController.logGame(LogsOnClient.COUNTDOWN_START);
+
+        countdownTimer = new Timer();
+        countdownTimer.schedule(new TimerTask() {
+            @Override
+            public void run() {
+                endGame();
+            }
+        }, Configs.timerDurationSeconds * 1000L);
+    }
     /**
      * @return a random card from a non-empty deck. If all decks are empty return null
      */
@@ -225,7 +274,7 @@ public class GameLoopController implements Serializable {
      */
     public void startCardPlaced(ServerModelController controller) {
         this.logYouAndOther(controller, LogsOnClient.YOU_PLACE_STARTCARD, LogsOnClient.PLAYER_PLACE_STARTCARD);
-        if(!everyonePlaced()){ //Not all activePlayer placed their starting Card
+        if(!everyoneActiveHasPlaced()){ //Not all activePlayer placed their starting Card
             controller.logYou(LogsOnClient.WAIT_STARTCARD);
             controller.transitionTo(ViewState.WAITING_STATE);
         }else{
@@ -243,7 +292,7 @@ public class GameLoopController implements Serializable {
      */
     public void secretObjectiveChose(ServerModelController controller){
         logYouAndOther(controller, LogsOnClient.YOU_CHOSE, LogsOnClient.PLAYER_CHOSE);
-        if(!everyoneChose()){ //Not all activePlayer chose their secretObjective Card
+        if(!everyoneActiveHasChosen()){ //Not all activePlayer chose their secretObjective Card
             controller.logYou(LogsOnClient.WAIT_SECRET_OBJECTIVE);
             controller.transitionTo(ViewState.WAITING_STATE);
         }else{
@@ -300,7 +349,7 @@ public class GameLoopController implements Serializable {
     /**
      * @return true if every activePlayer has chosen their secretObjective
      */
-    private boolean everyoneChose(){
+    private boolean everyoneActiveHasChosen(){
         boolean everybodyHasChoose = true;
         for (String nick : activePlayers.keySet()) {
             User user = game.getUserFromNick(nick);
@@ -313,7 +362,7 @@ public class GameLoopController implements Serializable {
     /**
      * @return true if every activePlayer has placed their startCard
      */
-    private boolean everyonePlaced() {
+    private boolean everyoneActiveHasPlaced() {
         boolean everyoneHasPlace = true;
         for (String nick : activePlayers.keySet()) {
             User user = game.getUserFromNick(nick);
@@ -430,37 +479,6 @@ public class GameLoopController implements Serializable {
                 game.getCommonObjective().stream().mapToInt(objectiveCard -> objectiveCard.getPoints(user.getUserCodex())).sum()
                 + game.getUserFromNick(nick).getUserHand().getSecretObjective().getPoints(user.getUserCodex());
     }
-    /**
-     * @param controller the player on which the check is being done
-     * @return true if the controller is the last one left to place the startCard
-     */
-    private boolean isLastToPlace(ServerModelController controller){
-        boolean lastToPlace = true;
-        for(ServerModelController othersController : activePlayers.values()){
-            User user = game.getUserFromNick(othersController.getNickname());
-            if(user.getUserHand().getStartCard() != null && !controller.equals(othersController)){
-                lastToPlace = false;
-                break;
-            }
-        }
-        return lastToPlace;
-    }
-
-    /**
-     * @param controller the player on which the check is being done
-     * @return true if the controller is the last one left to choose the secretObjective
-     */
-    private boolean isLastToChose(ServerModelController controller){
-        boolean lastToChose = true;
-        for(ServerModelController othersController : activePlayers.values()){
-            User user = game.getUserFromNick(othersController.getNickname());
-            if(user.getUserHand().getSecretObjectiveChoices() != null && !controller.equals(othersController)){
-                lastToChose = false;
-                break;
-            }
-        }
-        return lastToChose;
-    }
 
 
     /**
@@ -475,12 +493,12 @@ public class GameLoopController implements Serializable {
                 CardInHand resourceCard = game.getResourceCardDeck().drawFromDeck();
                 user.getUserHand().addCard(resourceCard);
                 game.subscribe(controller, new HandDiffAdd(Lightifier.lightifyToCard(resourceCard), resourceCard.canBePlaced(user.getUserCodex())),
-                        new HandOtherDiffAdd(Lightifier.lightifyToResource(resourceCard), controller.getNickname()));
+                        new HandOtherDiffAdd(new LightBack(resourceCard.getIdBack()), controller.getNickname()));
             }
             CardInHand goldCard = game.getGoldCardDeck().drawFromDeck();
             user.getUserHand().addCard(goldCard);
             game.subscribe(controller, new HandDiffAdd(Lightifier.lightifyToCard(goldCard), goldCard.canBePlaced(user.getUserCodex())),
-                    new HandOtherDiffAdd(Lightifier.lightifyToResource(goldCard), controller.getNickname()));
+                    new HandOtherDiffAdd(new LightBack(goldCard.getIdBack()), controller.getNickname()));
 
             LightCard[] lightCommonObj = game.getCommonObjective().stream().map(Lightifier::lightifyToCard).toArray(LightCard[]::new);
             controller.updateGame(new GameDiffPublicObj(lightCommonObj));
@@ -495,6 +513,12 @@ public class GameLoopController implements Serializable {
         return activePlayers;
     }
 
+    /**
+     * Send the log to all the activePlayers, about a specific player move. The log is different for the player who made the move
+     * @param controller of the player who made the move
+     * @param youLog the log for the player who made the move
+     * @param theirLog the log for the other activePlayers
+     */
     private void logYouAndOther(ServerModelController controller, LogsOnClient youLog, LogsOnClient theirLog){
         for(ServerModelController allControllers : activePlayers.values()){
             if(!allControllers.equals(controller)){
@@ -505,6 +529,10 @@ public class GameLoopController implements Serializable {
         }
     }
 
+    /**
+     * Send the log to all the activePlayers about a Game event
+     * @param logsOnClient the log to send
+     */
     private void logAll(LogsOnClient logsOnClient) {
         for(ServerModelController allController : activePlayers.values()){
             allController.logGame(logsOnClient);

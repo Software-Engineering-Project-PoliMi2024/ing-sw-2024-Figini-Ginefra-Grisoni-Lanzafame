@@ -1,15 +1,12 @@
 package it.polimi.ingsw.view.TUI.Renderables.CodexRelated;
 
-import it.polimi.ingsw.controller2.ControllerInterface;
 import it.polimi.ingsw.lightModel.lightPlayerRelated.LightCodex;
 import it.polimi.ingsw.lightModel.lightTableRelated.LightGame;
 import it.polimi.ingsw.view.ActualView;
-import it.polimi.ingsw.view.ControllerProvider;
 import it.polimi.ingsw.view.TUI.Styles.PromptStyle;
 import it.polimi.ingsw.view.TUI.cardDrawing.CardMuseum;
 import it.polimi.ingsw.view.TUI.inputs.CommandPrompt;
 import it.polimi.ingsw.view.TUI.inputs.CommandPromptResult;
-import it.polimi.ingsw.view.ViewInterface;
 
 import java.rmi.RemoteException;
 
