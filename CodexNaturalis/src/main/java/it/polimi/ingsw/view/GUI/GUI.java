@@ -70,7 +70,7 @@ public class GUI extends Application implements ActualView {
         transitionTo(StateGUI.SERVER_CONNECTION);
         //transitionTo(StateGUI.JOIN_LOBBY);
         //transitionTo(StateGUI.LOBBY);
-        //transitionTo(StateGUI.PLACE_CARD);
+        //transitionTo(StateGUI.DRAW_CARD);
     }
 
     private void setRoot(Node root){

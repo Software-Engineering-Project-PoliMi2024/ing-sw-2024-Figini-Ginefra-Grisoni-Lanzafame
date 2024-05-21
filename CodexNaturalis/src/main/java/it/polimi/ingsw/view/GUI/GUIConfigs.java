@@ -22,4 +22,6 @@ public class GUIConfigs {
     public static int holdDuration = 200; //in milliseconds
 
     public static int collectablesWidth = 50;
+    public static int deckGap = 35;
+    public static int deckCardGap = 10;
 }

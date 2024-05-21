@@ -64,8 +64,10 @@ public class GameScene extends SceneGUI{
 //
 //        this.add(button);
 
-        new AnchoredPopUp(getContent(), 0.2f, 0.6f, Pos.CENTER_RIGHT, 0.25f);
-        new AnchoredPopUp(getContent(), 0.2f, 0.6f, Pos.CENTER_LEFT, 0.25f);
+        this.add(button);
+
+        /*new AnchoredPopUp(getContent(), 0.2f, 0.6f, Pos.CENTER_RIGHT, 0.25f);
+        new AnchoredPopUp(getContent(), 0.2f, 0.6f, Pos.CENTER_LEFT, 0.25f);*/
 
         hand.addHandTo(getContent());
 
