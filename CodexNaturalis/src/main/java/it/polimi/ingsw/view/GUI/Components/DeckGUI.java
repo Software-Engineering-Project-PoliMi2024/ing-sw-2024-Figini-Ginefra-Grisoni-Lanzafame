@@ -6,7 +6,6 @@ import it.polimi.ingsw.lightModel.lightTableRelated.LightDeck;
 import it.polimi.ingsw.model.cardReleted.utilityEnums.DrawableCard;
 import it.polimi.ingsw.view.GUI.Components.CardRelated.CardGUI;
 import it.polimi.ingsw.view.GUI.Components.CardRelated.FlippableCardGUI;
-import it.polimi.ingsw.view.GUI.Components.CardRelated.FlippablePlayableCard;
 import it.polimi.ingsw.view.GUI.Components.HandRelated.HandGUI;
 import it.polimi.ingsw.view.GUI.GUI;
 import it.polimi.ingsw.view.GUI.GUIConfigs;
@@ -30,9 +29,6 @@ public class DeckGUI implements Observer {
     private HandGUI hand;
 
     public DeckGUI() {
-        for(LightDeck deck : GUI.getLightGame().getDecks().values()){
-            deck.attach(this);
-        }
 
         //Creating Deck witch contains the boxes for the resource and gold decks and the common objectives
         HBox decksContainer = new HBox();
@@ -52,6 +48,10 @@ public class DeckGUI implements Observer {
         resourceDeck.spacingProperty().setValue(GUIConfigs.deckCardGap);
         goldDeck.spacingProperty().setValue(GUIConfigs.deckCardGap);
         commonObjective.spacingProperty().setValue(GUIConfigs.deckGap);
+
+        for(LightDeck deck : GUI.getLightGame().getDecks().values()){
+            deck.attach(this);
+        }
 
         GUI.getStateProperty().addListener((obs, oldState, newState) -> {
             if(newState == StateGUI.DRAW_CARD){
@@ -107,24 +107,14 @@ public class DeckGUI implements Observer {
         }
 
         card.setOnHold(e -> {
-            if((GUI.getStateProperty().get() != StateGUI.DRAW_CARD)) {
+            if((GUI.getStateProperty().get() != StateGUI.DRAW_CARD)){
                 return;
-            }else {
-                //todo review. Atm I'm not checking if the card is playable or not because the card is not in the hand yet
-                //boolean playability = GUI.getLightGame().getHand().getCardPlayability().get(card.getTarget());
-                hand.addCardToHand(new FlippablePlayableCard(card.getTarget(), true), true);
-                if (deckType == DrawableCard.RESOURCECARD) {
-                    resourceBuffer[index] = null;
-                    resourceDeck.getChildren().remove(index+1);
-                } else if (deckType == DrawableCard.GOLDCARD){
-                    goldBuffer[index] = null;
-                    goldDeck.getChildren().remove(index+1);
+            }else{
+                try {
+                    GUI.getControllerStatic().draw(deckType, index);
+                } catch (Exception ex) {
+                    throw new RuntimeException(ex);
                 }
-            }
-            try {
-                GUI.getControllerStatic().draw(deckType, index);
-            } catch (Exception ex) {
-                throw new RuntimeException(ex);
             }
         });
     }
@@ -136,22 +126,30 @@ public class DeckGUI implements Observer {
             resourceDeck.getChildren().clear();
             resourceDeck.getChildren().add(0, card.getImageView());
             for(FlippableCardGUI bufferCard : resourceBuffer){
-                resourceDeck.getChildren().add(bufferCard.getImageView());
+                if(bufferCard!=null){
+                    resourceDeck.getChildren().add(bufferCard.getImageView());
+                }
             }
         }else if(deckType == DrawableCard.GOLDCARD){
             goldDeckBackCard = card;
             goldDeck.getChildren().clear();
             goldDeck.getChildren().add(0, card.getImageView());
             for(FlippableCardGUI bufferCard : goldBuffer){
-                goldDeck.getChildren().add(bufferCard.getImageView());
+                if(bufferCard!=null){
+                    goldDeck.getChildren().add(bufferCard.getImageView());
+                }
             }
         }
 
         card.setOnHold(e-> {
-            try {
-                GUI.getControllerStatic().draw(deckType, 2);
-            } catch (Exception ex) {
-                throw new RuntimeException(ex);
+            if((GUI.getStateProperty().get() != StateGUI.DRAW_CARD)) {
+                return;
+            }else {
+                try {
+                    GUI.getControllerStatic().draw(deckType, 2);
+                } catch (Exception ex) {
+                    throw new RuntimeException(ex);
+                }
             }
         });
     }
@@ -168,21 +166,24 @@ public class DeckGUI implements Observer {
         }
         //Drawn from Deck
         if(!isResourceDeckUpdated()){
-            System.out.println("Drawing from resource deck");
+            //System.out.println("Drawing from resource deck");
             drawFromDeck(new CardGUI(new LightBack(GUI.getLightGame().getDecks().get(DrawableCard.RESOURCECARD).getDeckBack().idBack())), DrawableCard.RESOURCECARD);
-        }else if(!isGoldDeckUpdated()) {
-            System.out.println("Drawing from gold deck");
+        }
+        if(!isGoldDeckUpdated()) {
+            //System.out.println("Drawing from gold deck");
             drawFromDeck(new CardGUI(new LightBack(GUI.getLightGame().getDecks().get(DrawableCard.GOLDCARD).getDeckBack().idBack())), DrawableCard.GOLDCARD);
-        }else if(!resourceDeckBufferIsUpdated()){ //draw from buffer
-            System.out.println("Drawing from resource buffer");
+        }
+        if(!resourceDeckBufferIsUpdated()){ //draw from buffer
+            //System.out.println("Drawing from resource buffer");
             for(int i=0;i<2;i++){
                 if(resourceBuffer[i]==null || (resourceBuffer[i].getTarget() != GUI.getLightGame().getDecks().get(DrawableCard.RESOURCECARD).getCardBuffer()[i])){
                     drawFromBuffer(new FlippableCardGUI(GUI.getLightGame().getDecks().get(DrawableCard.RESOURCECARD).getCardBuffer()[i]), DrawableCard.RESOURCECARD, i);
                     break;
                 }
             }
-        }else{ //!goldBufferIsUpdated
-            System.out.println("Drawing from gold buffer");
+        }
+        if(!goldBufferIsUpdated()){
+            //System.out.println("Drawing from gold buffer");
             for(int i=0;i<2;i++){
                 if(goldBuffer[i]==null || (goldBuffer[i].getTarget() != GUI.getLightGame().getDecks().get(DrawableCard.GOLDCARD).getCardBuffer()[i])){
                     drawFromBuffer(new FlippableCardGUI(GUI.getLightGame().getDecks().get(DrawableCard.GOLDCARD).getCardBuffer()[i]), DrawableCard.GOLDCARD, i);
@@ -190,6 +191,17 @@ public class DeckGUI implements Observer {
                 }
             }
         }
+    }
+
+    private boolean goldBufferIsUpdated(){
+        boolean isUpdated = true;
+        for(int i=0;i<2;i++){
+            if(GUI.getLightGame().getDecks().get(DrawableCard.GOLDCARD).getCardBuffer()[i]!=null && (goldBuffer[i]==null || goldBuffer[i].getTarget() != GUI.getLightGame().getDecks().get(DrawableCard.GOLDCARD).getCardBuffer()[i])){
+                isUpdated = false;
+                break;
+            }
+        }
+        return isUpdated;
     }
 
     private boolean resourceDeckBufferIsUpdated(){

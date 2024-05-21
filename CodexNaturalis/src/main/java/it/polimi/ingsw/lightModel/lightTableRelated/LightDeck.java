@@ -47,6 +47,7 @@ public class LightDeck implements Differentiable, Observed {
     @Override
     public void attach(Observer observer) {
         observerList.add(observer);
+        this.notifyObservers();
     }
 
     @Override

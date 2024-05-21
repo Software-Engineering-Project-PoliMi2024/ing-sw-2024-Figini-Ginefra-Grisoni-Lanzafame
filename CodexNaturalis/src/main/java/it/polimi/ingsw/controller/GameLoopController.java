@@ -462,7 +462,7 @@ public class GameLoopController implements Serializable {
 
     /**
      * @param nick of the player
-     * @return the point of the nick obtain exclusively from the common and secret Objective card
+     * @return the point of the nick obtains exclusively from the common and secret Objective card
      */
     private int getWinnerPoint(String nick){
         User user = game.getUserFromNick(nick);
