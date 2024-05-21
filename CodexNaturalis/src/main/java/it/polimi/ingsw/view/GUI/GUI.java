@@ -67,11 +67,11 @@ public class GUI extends Application implements ActualView {
 
         //set stackRoot background and style
         //stackRoot.setStyle("-fx-background-color: #1e1f22;");
-        //transitionTo(StateGUI.SERVER_CONNECTION);
+        transitionTo(StateGUI.SERVER_CONNECTION);
         //transitionTo(StateGUI.SELECT_OBJECTIVE);
         //transitionTo(StateGUI.JOIN_LOBBY);
         //transitionTo(StateGUI.LOBBY);
-        transitionTo(StateGUI.PLACE_CARD);
+        //transitionTo(StateGUI.PLACE_CARD);
     }
 
     private void setRoot(Node root){
@@ -88,13 +88,11 @@ public class GUI extends Application implements ActualView {
     }
 
     public void transitionTo(StateGUI state) {
-        if(state.equals(stateProperty.get()))
-            return;
-
-        Platform.runLater(() -> {
-            setRoot(state.getScene().getContent());
-        });
-
+        if(!state.equals(stateProperty.get())) {
+            Platform.runLater(() -> {
+                setRoot(state.getScene().getContent());
+            });
+        }
         stateProperty.set(state);
 
     }
@@ -144,7 +142,7 @@ public class GUI extends Application implements ActualView {
 
     @Override
     public void setFinalRanking(String[] nicks, int[] points) throws RemoteException {
-
+            Platform.runLater(() -> transitionTo(StateGUI.GAME_ENDING));
     }
 
     @Override

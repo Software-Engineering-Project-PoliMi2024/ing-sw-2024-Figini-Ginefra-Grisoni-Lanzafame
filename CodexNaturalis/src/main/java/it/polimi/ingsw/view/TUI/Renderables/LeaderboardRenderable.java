@@ -43,16 +43,3 @@ public class LeaderboardRenderable extends Renderable {
         }
     }
 }
-
-
-/*} public void render() {
-    this.scores = getLightGame().getCodexMap().values().stream().mapToInt(LightCodex::getPoints);
-    List<String> scoreDisplay = scores.entrySet().stream()
-            .sorted(Map.Entry.<String, Integer>comparingByValue().reversed())
-            .map(e -> e.getKey() + ": " + e.getValue())
-            .collect(Collectors.toList());
-
-    System.out.println(PromptStyle.Title);  // Optional: Adds a title or header if you have any defined for sections
-    PromptStyle.printListInABox("Leaderboard", scoreDisplay, 50, 1);
-}
- */

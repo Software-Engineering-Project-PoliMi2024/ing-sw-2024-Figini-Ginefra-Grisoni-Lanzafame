@@ -22,7 +22,7 @@ public enum StateGUI {
 
     GAME_WAITING(ViewState.GAME_WAITING, GameScene.class),
 
-    GAME_ENDING(ViewState.GAME_ENDING, GameScene.class),;
+    GAME_ENDING(ViewState.GAME_ENDING, PostGameScene.class),;
 
     private final ViewState referenceState;
 
