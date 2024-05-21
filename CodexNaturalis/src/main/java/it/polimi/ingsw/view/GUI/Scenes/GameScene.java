@@ -23,6 +23,7 @@ import it.polimi.ingsw.view.GUI.Components.LogsGUI;
 import it.polimi.ingsw.view.GUI.GUI;
 import it.polimi.ingsw.view.GUI.Root;
 import it.polimi.ingsw.view.GUI.StateGUI;
+import it.polimi.ingsw.view.TUI.Renderables.CardRelated.SecretObjectiveRenderable;
 import javafx.geometry.Pos;
 import javafx.scene.control.Button;
 
@@ -37,6 +38,7 @@ public class GameScene extends SceneGUI{
     private CodexGUI codex;
     private CollectedCollectablesGUI collectedCollectables;
     private LeaderboardGUI leaderboard;
+    private ObjectiveChoice objectiveChoice;
     private final LogsGUI logs = new LogsGUI();
 
     public GameScene() {
@@ -89,6 +91,9 @@ public class GameScene extends SceneGUI{
         collectedCollectables = new CollectedCollectablesGUI();
         collectedCollectables.attachToCodex();
         collectedCollectables.addThisTo(getContent());
+
+        objectiveChoice = new ObjectiveChoice(getContent());
+        this.add(objectiveChoice.getChoiceDisplay());
 
 /*
         List<LightPlacement> placements = List.of(new LightPlacement[]{
