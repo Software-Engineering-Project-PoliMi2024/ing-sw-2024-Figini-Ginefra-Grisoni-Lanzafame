@@ -15,7 +15,7 @@ class persistenceFactoryTest {
     @Test
     void save() {
         MultiGame multiGame = new MultiGame();
-        Lobby lobby = new Lobby(3, "gianni", "testGame");
+        Lobby lobby = new Lobby(3, "gianni", "teestGame");
         lobby.addUserName("gianni1");
         lobby.addUserName("gianni2");
         PersistenceFactory.save(multiGame.createGame(lobby));

@@ -99,7 +99,7 @@ public class HandGUI implements Observer {
                             e -> {
                                 if((GUI.getStateProperty().get() != StateGUI.PLACE_CARD && GUI.getStateProperty().get() != StateGUI.CHOOSE_START_CARD) || card.getFace() == CardFace.FRONT && !card.isPlayable())
                                     return;
-                                System.out.println("Holding card");
+                                //System.out.println("Holding card");
                                 codex.toggleFrontier(true);
 
                                 positioningCard = card;
@@ -164,10 +164,10 @@ public class HandGUI implements Observer {
                                 if(closestFrontier == null)
                                     positioningCard.enable();
                                 else{
-                                    System.out.println("Controller.placeCard");
+                                    //System.out.println("Controller.placeCard");
                                     if(GUI.getStateProperty().get() == StateGUI.PLACE_CARD || GUI.getStateProperty().get() == StateGUI.CHOOSE_START_CARD){
                                         try {
-                                            System.out.println(positioningCard.getTarget());
+                                            //System.out.println(positioningCard.getTarget());
                                             GUI.getControllerStatic().place(new LightPlacement(closestFrontier.getGridPosition(), positioningCard.getTarget(), positioningCard.getFace()));
                                             codex.addCard(new CardGUI(positioningCard), closestFrontier.getGridPosition());
                                         } catch (Exception ex) {
