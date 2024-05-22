@@ -9,10 +9,7 @@ import javafx.application.Platform;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.HBox;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
-import java.util.Set;
+import java.util.*;
 import java.util.stream.Collectors;
 
 public class ObjectiveChoice implements Observer {
@@ -64,7 +61,7 @@ public class ObjectiveChoice implements Observer {
         GUI.getStateProperty().addListener((obs, oldState, newState) -> {
 
             if(newState == StateGUI.SELECT_OBJECTIVE){
-                checkAndShow();
+                //checkAndShow();
             }else{
                 Platform.runLater(()->choiceBox.getChildren().clear());
             }
@@ -73,13 +70,14 @@ public class ObjectiveChoice implements Observer {
     }
 
     private void checkAndShow(){
-        Set<LightCard> objectives = Arrays.stream(GUI.getLightGame().getHand().getSecretObjectiveOptions()).collect(Collectors.toSet());
-        if(objectives.size() == 2 && GUI.getStateProperty().get() == StateGUI.SELECT_OBJECTIVE){
+        LightCard[] objectives = GUI.getLightGame().getHand().getSecretObjectiveOptions();
+        int nonNull = (int) Arrays.stream(objectives).filter(Objects::nonNull).count();
+        if(nonNull == 2 && GUI.getStateProperty().get() == StateGUI.SELECT_OBJECTIVE){
             setFlippableCard(objectives);
             choiceBox.getChildren().addAll(Arrays.stream(objectivesCard).map(FlippableCardGUI::getImageView).toList());
         }
     }
-    private void setFlippableCard(Set<LightCard> objectives){
+    private void setFlippableCard(LightCard[] objectives){
         List<FlippableCardGUI> objectivesList = new ArrayList<>();
 
         for(LightCard lightCard : objectives){

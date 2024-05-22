@@ -19,6 +19,10 @@ public abstract class CardInHand extends CardWithCorners {
      */
     public CardInHand(int idFront, int idBack, Resource permanentResource, int points,  Map<CardCorner, Collectable> frontCorners){
         super(idFront, idBack, points, frontCorners);
+
+        if (permanentResource == null)
+            throw new IllegalArgumentException("permanentResource can't be null");
+
         this.permanentResource = permanentResource;
     }
 

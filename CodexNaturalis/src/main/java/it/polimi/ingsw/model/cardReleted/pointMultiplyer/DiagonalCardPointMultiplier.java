@@ -8,6 +8,8 @@ import it.polimi.ingsw.model.playerReleted.Placement;
 import it.polimi.ingsw.model.playerReleted.Position;
 
 import java.util.ArrayList;
+import java.util.HashSet;
+import java.util.Set;
 
 public class DiagonalCardPointMultiplier implements ObjectiveCardPointMultiplier {
     final private boolean upwards;
@@ -29,23 +31,34 @@ public class DiagonalCardPointMultiplier implements ObjectiveCardPointMultiplier
      * @param codex the codex from which to calc the multiplier factor*/
     public int getMultiplier(Codex codex){
         int multiplier = 0;
-        ArrayList <Position> positions = new ArrayList<>();
-        if(upwards) {
-            positions.add(CardCorner.TR.getOffset().add(CardCorner.TR.getOffset()));
-            positions.add(CardCorner.BL.getOffset().add(CardCorner.BL.getOffset()));
-        }else{
-            positions.add(CardCorner.TL.getOffset().add(CardCorner.TL.getOffset()));
-            positions.add(CardCorner.BR.getOffset().add(CardCorner.BR.getOffset()));
-        }
 
-        for(Placement placement : codex.getPlacementHistory()){
-            if(placement.card().getPermanentResources(CardFace.BACK).contains(color) &&
-                    codex.getPlacementAt(positions.getFirst())!= null &&
-                    codex.getPlacementAt(positions.getFirst()).card().getPermanentResources(CardFace.BACK).contains(color) &&
-                    codex.getPlacementAt(positions.getLast())!= null &&
-                    codex.getPlacementAt(positions.getLast()).card().getPermanentResources(CardFace.BACK).contains(color))
+        Set<Position> alreadySeen = new HashSet<>();
 
-                multiplier++;
+        Position offset = upwards ? CardCorner.TR.getOffset() : CardCorner.TL.getOffset();
+
+        for(Placement p : codex.getPlacementHistory()){
+            if(alreadySeen.contains(p.position()) || !codex.getPlacementAt(p.position()).card().getPermanentResources(CardFace.BACK).contains(color))
+                continue;
+
+            int counter = 0;
+            Position current = p.position();
+
+            while(codex.getPlacementAt(current) != null &&
+                    codex.getPlacementAt(current).card().getPermanentResources(CardFace.BACK).contains(color)){
+                counter++;
+                current = current.add(offset);
+                alreadySeen.add(current);
+            }
+
+            current = p.position();
+            while(codex.getPlacementAt(current) != null &&
+                    codex.getPlacementAt(current).card().getPermanentResources(CardFace.BACK).contains(color)){
+                counter++;
+                current = current.add(offset.multiply(-1));
+                alreadySeen.add(current);
+            }
+
+            multiplier += Math.floorDiv(counter, 3);
         }
         return multiplier;
     }

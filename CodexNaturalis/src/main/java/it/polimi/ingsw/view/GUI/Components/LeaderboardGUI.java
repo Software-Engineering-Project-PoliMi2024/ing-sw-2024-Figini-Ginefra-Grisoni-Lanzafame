@@ -65,6 +65,7 @@ public class LeaderboardGUI implements Observer {
                     labelMap.put(e.getKey(), label);
 
                     if(!e.getKey().equals(GUI.getLightGame().getLightGameParty().getYourName())){
+                        System.out.println("Adding peeker for " + e.getKey());
                         Peeker peeker = new Peeker(parent, e.getKey());
 
                         label.setOnMouseClicked(event -> peeker.open());
