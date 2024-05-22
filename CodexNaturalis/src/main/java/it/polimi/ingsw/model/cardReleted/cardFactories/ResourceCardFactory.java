@@ -47,7 +47,7 @@ public class ResourceCardFactory extends AbstractCardFactory<ResourceCard>{
      */
     @Override
     public Queue<ResourceCard> getCards() {
-        String filePath = outDirPath + "goldCards.bin";
+        String filePath = outDirPath + "resourceCards.bin";
         File fileSerialized = new File(filePath);
         if(fileSerialized.exists()){
             return deserializeQueue(fileSerialized);
