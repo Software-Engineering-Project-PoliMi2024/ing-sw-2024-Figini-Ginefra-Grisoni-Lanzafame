@@ -16,7 +16,7 @@ class GoldCardTest {
         GoldCard card = new GoldCard(1, 1, 1, Map.of(
                 Resource.ANIMAL, 2,
                 Resource.INSECT, 2
-        ), null, null, null);
+        ), null, null, Resource.PLANT);
 
         Codex codex = new Codex();
         codex.setEarnedCollectables(Resource.ANIMAL, 3);
@@ -31,7 +31,7 @@ class GoldCardTest {
         GoldCard card = new GoldCard(1, 1, 1, Map.of(
                 Resource.ANIMAL, 2,
                 Resource.INSECT, 2
-        ), null, null, null);
+        ), null, null, Resource.PLANT);
 
         Codex codex = new Codex();
         codex.setEarnedCollectables(Resource.INSECT, 1);

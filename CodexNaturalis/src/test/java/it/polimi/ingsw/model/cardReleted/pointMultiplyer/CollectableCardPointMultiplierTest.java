@@ -27,11 +27,20 @@ class CollectableCardPointMultiplierTest {
     }
 
     @Test
-    void getMultiplier_correctPoints() {
+    void getMultiplier_correctPointsX2() {
         codex.setEarnedCollectables(Resource.PLANT, 4);
         codex.setEarnedCollectables(Resource.ANIMAL, 6);
         codex.setEarnedCollectables(WritingMaterial.INKWELL, 2);
 
         assertEquals(2, multiplier.getMultiplier(codex));
+    }
+
+    @Test
+    void getMultiplier_correctPointsX0() {
+        codex.setEarnedCollectables(Resource.PLANT, 4);
+        codex.setEarnedCollectables(Resource.ANIMAL, 6);
+        codex.setEarnedCollectables(WritingMaterial.INKWELL, 0);
+
+        assertEquals(0, multiplier.getMultiplier(codex));
     }
 }
