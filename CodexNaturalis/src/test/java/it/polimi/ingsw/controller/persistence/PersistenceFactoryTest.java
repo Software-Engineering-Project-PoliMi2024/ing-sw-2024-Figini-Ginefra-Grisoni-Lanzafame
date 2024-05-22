@@ -15,19 +15,21 @@ class persistenceFactoryTest {
     @Test
     void save() {
         MultiGame multiGame = new MultiGame();
-        Lobby lobby = new Lobby(3, "gianni", "teestGame");
+        Lobby lobby = new Lobby(3, "gianni", "testGame");
         lobby.addUserName("gianni1");
         lobby.addUserName("gianni2");
         PersistenceFactory.save(multiGame.createGame(lobby));
 
         File folder = new File(Configs.gameSavesDir);
         File[] saves = folder.listFiles();
+
         for(File gameSave : saves) {
             if (gameSave.getName().contains(lobby.getLobbyName())) {
                 assert true;
                 return;
             }
         }
+        assert false;
     }
 
     @Test

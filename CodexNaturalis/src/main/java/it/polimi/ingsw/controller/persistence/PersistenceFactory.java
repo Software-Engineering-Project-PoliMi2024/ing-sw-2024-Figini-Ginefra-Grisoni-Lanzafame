@@ -15,7 +15,7 @@ import java.util.HashSet;
 public class PersistenceFactory {
     private final static String _ser = ".ser";
     private final static String dateGameNameSeparator = "--";
-
+    private final static DateTimeFormatter windowSucks = DateTimeFormatter.ofPattern("yyyy-MM-dd_HH-mm-ss");;
     /**
      * @param game the game to save to file
      */
@@ -24,7 +24,7 @@ public class PersistenceFactory {
         PersistenceFactory.deleteGameSave(game);
         try{
         FileOutputStream fileOut = new FileOutputStream(
-                Configs.gameSavesDir + LocalDateTime.now().format(DateTimeFormatter.ISO_DATE_TIME) + dateGameNameSeparator + game.getName() + _ser);
+                Configs.gameSavesDir + LocalDateTime.now().format(windowSucks) + dateGameNameSeparator + game.getName() + _ser);
         ObjectOutputStream outStream = new ObjectOutputStream(fileOut);
         outStream.writeObject(game);
         outStream.close();
@@ -94,7 +94,7 @@ public class PersistenceFactory {
 
     public static boolean checkTimeIsToDelete(String saveName){
         String date = saveName.substring(0, saveName.indexOf(dateGameNameSeparator));
-        LocalDateTime saveDate = LocalDateTime.parse(date, DateTimeFormatter.ISO_DATE_TIME);
+        LocalDateTime saveDate = LocalDateTime.parse(date, windowSucks);
 
         Duration timeDifference = Duration.between(saveDate, LocalDateTime.now());
         return timeDifference.toMinutes() > Configs.gameSaveExpirationTimeMinutes;
