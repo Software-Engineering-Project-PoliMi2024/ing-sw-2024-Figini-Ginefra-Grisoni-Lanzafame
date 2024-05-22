@@ -12,16 +12,16 @@ import java.util.List;
  * This class is a container for the list of lobbies.
  */
 public class LightLobby implements Differentiable, Observed {
+    private static final int defaultNumberMaxPlayer = 0;
+    private static final String defaultLobbyName = "";
     private final List<Observer> observers = new LinkedList<>();
-    private int numberMaxPlayer = 0;
-    private List<String> nicknames;
-    private String name;
+    private int numberMaxPlayer = defaultNumberMaxPlayer;
+    private List<String> nicknames = new ArrayList<>();
+    private String name = defaultLobbyName;
     /**
      * Creates a LightLobby object.
      */
     public LightLobby (){
-        nicknames=  new ArrayList<>();
-        name = "";
     }
 
     /**
@@ -84,9 +84,9 @@ public class LightLobby implements Differentiable, Observed {
         return this.numberMaxPlayer;
     }
     public void reset(){
-        this.setName("");
+        this.setName(defaultLobbyName);
         this.nicknames = new ArrayList<>();
-        this.setNumberMaxPlayer(0);
+        this.setNumberMaxPlayer(defaultNumberMaxPlayer);
         notifyObservers();
     }
 
