@@ -11,7 +11,7 @@ public class CollectableCardPointMultiplier implements ObjectiveCardPointMultipl
     final private Map<Collectable, Integer> targets;
 
     /** @param targets HashMap of the collectables that the player has to collect to get the multiplier*/
-    public CollectableCardPointMultiplier(HashMap <Collectable, Integer> targets){
+    public CollectableCardPointMultiplier(Map<Collectable, Integer> targets){
         this.targets = targets;
     }
 
