@@ -13,14 +13,9 @@ import it.polimi.ingsw.model.cardReleted.utilityEnums.Collectable;
 import it.polimi.ingsw.model.cardReleted.utilityEnums.Resource;
 import it.polimi.ingsw.model.cardReleted.utilityEnums.WritingMaterial;
 import it.polimi.ingsw.model.utilities.Pair;
-import it.polimi.ingsw.view.TUI.Printing.Printer;
 
-import java.io.FileInputStream;
-import java.io.FileNotFoundException;
-import java.util.HashMap;
-import java.util.LinkedList;
-import java.util.Map;
-import java.util.Queue;
+import java.io.*;
+import java.util.*;
 
 /**
  * The concreteFactory for the Objective type of Card
@@ -41,27 +36,59 @@ public class ObjectiveCardFactory extends AbstractCardFactory<ObjectiveCard>{
 
     /**
      Retrieves a Queue of ObjectiveCard objects.
-     If a binary file containing serialized GoldCard objects exists, it deserializes and returns the Queue from it.
-     If the binary file does not exist, call getCardsFromJson()
-     @return A Queue of GoldCard objects obtained either from existing binary file or serialized from JSON.
+     If a binary file containing serialized Objective objects exists, it deserializes and returns the Queue from it.
+     If the binary file does not exist, create a new one by call getCardsFromJson()
+     @return A Queue of ObjectiveCards objects obtained either from existing binary file or serialized from JSON.
      @throws RuntimeException If an error occurs during file operations or deserialization.
      */
     @Override
     public Queue<ObjectiveCard> getCards() {
-        String fileSerializedName = outDirPath + "objectiveCards.bin";
-        FileInputStream file;
-        try { //check if the .bin file exist
-            file = new FileInputStream(fileSerializedName);
-            return deserializeQueue(file);
-        } catch (FileNotFoundException e) { //the .bin file doesn't exist
-            serializeQueue(fileSerializedName, getCardsFromJson()); //create the .bin file
-            try {
-                file = new FileInputStream(fileSerializedName);
-            } catch (FileNotFoundException ex) {
-                throw new RuntimeException(ex);
-            }
-            return deserializeQueue(file);
+        String filePath = outDirPath + "objectiveCards.bin";
+        File fileSerialized = new File(filePath);
+        if(fileSerialized.exists()){
+            return deserializeQueue(fileSerialized);
+        }else{
+            serializeQueue(filePath, getCardsFromJson()); //create the .bin file
+            return deserializeQueue(fileSerialized);
         }
+    }
+
+    /**
+     * Deserialize the ObjectiveCard from the .bin file. If the file is corrupted or not up-to-date, it will be deleted
+     * and the getCards() method will be called to create a new one
+     * @param binFile the file that contains the serialized ObjectiveCard
+     * @return the Queue of ObjectiveCard
+     */
+    @SuppressWarnings("unchecked")
+    public Queue<ObjectiveCard> deserializeQueue(File binFile){
+        FileInputStream fileInputStream;
+        try{
+            fileInputStream = new FileInputStream(binFile);
+        }catch (FileNotFoundException e){
+            //This should never happen. If the file is not found, it should be created by the getCards() method before calling this one
+            throw new RuntimeException("Error in creating the file");
+        }
+        ObjectInputStream objectInputStream;
+        Queue<ObjectiveCard> queue;
+        try {
+            objectInputStream = new ObjectInputStream(fileInputStream);
+            queue = (Queue<ObjectiveCard>) objectInputStream.readObject();
+            objectInputStream.close();
+            fileInputStream.close();
+        } catch (IOException | ClassNotFoundException e) {
+            try {
+                fileInputStream.close();
+            } catch (IOException ex) {
+                throw new RuntimeException("An error occurred while closing the fileStream");
+            }
+            if(!binFile.delete()){
+                throw new RuntimeException("An error occurred while deleting file");
+            }else{
+                System.out.println("Corrupted or not up-to-date " + binFile.getPath() + " file deleted");
+                queue = this.getCards();
+            }
+        }
+        return queue;
     }
 
     /**

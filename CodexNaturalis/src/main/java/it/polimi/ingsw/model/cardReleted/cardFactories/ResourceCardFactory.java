@@ -4,8 +4,7 @@ import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
 import it.polimi.ingsw.model.cardReleted.cards.ResourceCard;
 
-import java.io.FileInputStream;
-import java.io.FileNotFoundException;
+import java.io.*;
 import java.util.*;
 
 /**
@@ -48,19 +47,45 @@ public class ResourceCardFactory extends AbstractCardFactory<ResourceCard>{
      */
     @Override
     public Queue<ResourceCard> getCards() {
-        String fileSerializedName = outDirPath + "resourceCards.bin";
-        FileInputStream file;
-        try { //check if the .bin file exist
-            file = new FileInputStream(fileSerializedName);
-            return deserializeQueue(file);
-        } catch (FileNotFoundException e) { //the .bin file doesn't exist
-            serializeQueue(fileSerializedName, getCardsFromJson()); //create the .bin file
-            try {
-                file = new FileInputStream(fileSerializedName);
-            } catch (FileNotFoundException ex) {
-                throw new RuntimeException(ex);
-            }
-            return deserializeQueue(file);
+        String filePath = outDirPath + "goldCards.bin";
+        File fileSerialized = new File(filePath);
+        if(fileSerialized.exists()){
+            return deserializeQueue(fileSerialized);
+        }else{
+            serializeQueue(filePath, getCardsFromJson()); //create the .bin file
+            return deserializeQueue(fileSerialized);
         }
+    }
+
+    @SuppressWarnings("unchecked")
+    public Queue<ResourceCard> deserializeQueue(File binFile){
+        FileInputStream fileInputStream;
+        try{
+            fileInputStream = new FileInputStream(binFile);
+        }catch (FileNotFoundException e){
+            //This should never happen. If the file is not found, it should be created by the getCards() method before calling this one
+            throw new RuntimeException("Error in creating the file");
+        }
+        ObjectInputStream objectInputStream;
+        Queue<ResourceCard> queue;
+        try {
+            objectInputStream = new ObjectInputStream(fileInputStream);
+            queue = (Queue<ResourceCard>) objectInputStream.readObject();
+            objectInputStream.close();
+            fileInputStream.close();
+        } catch (IOException | ClassNotFoundException e) {
+            try {
+                fileInputStream.close();
+            } catch (IOException ex) {
+                throw new RuntimeException("An error occurred while closing the fileStream");
+            }
+            if(!binFile.delete()){
+                throw new RuntimeException("An error occurred while deleting file");
+            }else{
+                System.out.println("Corrupted or not up-to-date " + binFile.getPath() + " file deleted");
+                queue = this.getCards();
+            }
+        }
+        return queue;
     }
 }

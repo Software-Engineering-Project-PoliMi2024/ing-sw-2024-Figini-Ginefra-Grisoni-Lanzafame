@@ -10,8 +10,7 @@ import it.polimi.ingsw.model.cardReleted.pointMultiplyer.WritingMaterialsCardPoi
 import it.polimi.ingsw.model.cardReleted.utilityEnums.Resource;
 import it.polimi.ingsw.model.cardReleted.utilityEnums.WritingMaterial;
 
-import java.io.FileInputStream;
-import java.io.FileNotFoundException;
+import java.io.*;
 import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.Map;
@@ -21,6 +20,7 @@ import java.util.Queue;
  * The concreteFactory for the Gold type of Card
  */
 public class GoldCardFactory extends AbstractCardFactory<GoldCard>{
+    private final Queue<GoldCard> deckBuilder = new LinkedList<>();
 
     /**
      * The constructor of the class
@@ -41,23 +41,47 @@ public class GoldCardFactory extends AbstractCardFactory<GoldCard>{
      */
     @Override
     public Queue<GoldCard> getCards() {
-        String fileSerializedName = outDirPath + "goldCards.bin";
-        FileInputStream file;
-        try { //check if the .bin file exist
-            file = new FileInputStream(fileSerializedName);
-            return deserializeQueue(file);
-        } catch (FileNotFoundException e) { //the .bin file doesn't exist
-            serializeQueue(fileSerializedName, getCardsFromJson()); //create the .bin file
-            try {
-                file = new FileInputStream(fileSerializedName);
-            } catch (FileNotFoundException ex) {
-                throw new RuntimeException(ex);
-            }
-            return deserializeQueue(file);
+        String filePath = outDirPath + "goldCards.bin";
+        File fileSerialized = new File(filePath);
+        if(fileSerialized.exists()){
+            return deserializeQueue(fileSerialized);
+        }else{
+            serializeQueue(filePath, getCardsFromJson()); //create the .bin file
+            return deserializeQueue(fileSerialized);
         }
     }
 
-    private final Queue<GoldCard> deckBuilder = new LinkedList<>();
+    @SuppressWarnings("unchecked")
+    public Queue<GoldCard> deserializeQueue(File binFile){
+        FileInputStream fileInputStream;
+        try{
+            fileInputStream = new FileInputStream(binFile);
+        }catch (FileNotFoundException e){
+            //This should never happen. If the file is not found, it should be created by the getCards() method before calling this one
+            throw new RuntimeException("Error in creating the file");
+        }
+        ObjectInputStream objectInputStream;
+        Queue<GoldCard> queue;
+        try {
+            objectInputStream = new ObjectInputStream(fileInputStream);
+            queue = (Queue<GoldCard>) objectInputStream.readObject();
+            objectInputStream.close();
+            fileInputStream.close();
+        } catch (IOException | ClassNotFoundException e) {
+            try {
+                fileInputStream.close();
+            } catch (IOException ex) {
+                throw new RuntimeException("An error occurred while closing the fileStream");
+            }
+            if(!binFile.delete()){
+                throw new RuntimeException("An error occurred while deleting file");
+            }else{
+                System.out.println("Corrupted or not up-to-date " + binFile.getPath() + " file deleted");
+                queue = this.getCards();
+            }
+        }
+        return queue;
+    }
 
     /**
      * Retrieves a queue of Gold cards from JSON file

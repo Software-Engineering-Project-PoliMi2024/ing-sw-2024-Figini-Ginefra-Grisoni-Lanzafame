@@ -111,20 +111,7 @@ public abstract class AbstractCardFactory<Element> {
         }
     }
 
-    @SuppressWarnings("unchecked") //The warning are due to the same reason as the CardFactory class
-    public Queue<Element> deserializeQueue(FileInputStream filename){
-        ObjectInputStream objectInputStream;
-        Queue<Element> queue;
-        try {
-            objectInputStream = new ObjectInputStream(filename);
-            queue = (Queue<Element>) objectInputStream.readObject();
-            objectInputStream.close();
-            filename.close();
-        } catch (IOException | ClassNotFoundException e) {
-            throw new RuntimeException(e);
-        }
-        return queue;
-    }
+    public abstract Queue<Element> deserializeQueue(File filename);
 }
 
 
