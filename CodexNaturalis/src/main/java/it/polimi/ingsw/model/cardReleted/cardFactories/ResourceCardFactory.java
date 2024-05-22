@@ -18,10 +18,7 @@ public class ResourceCardFactory extends AbstractCardFactory<ResourceCard>{
      */
     public ResourceCardFactory(String inFile, String outDirPath) {
         super(inFile, outDirPath);
-    }
-
-
-    private final Queue<ResourceCard> deckBuilder = new LinkedList<>();
+    };
     /**
      * Retrieves a queue of Resource cards from JSON file
      * It calls StartCard() for building the actual card
@@ -29,6 +26,7 @@ public class ResourceCardFactory extends AbstractCardFactory<ResourceCard>{
      */
     @Override
     public Queue<ResourceCard> getCardsFromJson() {
+        Queue<ResourceCard> deckBuilder = new LinkedList<>();
         JsonArray ResourceCards = getCardArray("ResourcesCards");
         for(int i=0; i<ResourceCards.size(); i++){
             JsonObject card = ResourceCards.get(i).getAsJsonObject();

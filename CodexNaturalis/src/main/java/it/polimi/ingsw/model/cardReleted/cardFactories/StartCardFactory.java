@@ -22,7 +22,6 @@ public class StartCardFactory extends AbstractCardFactory<StartCard>{
         super(inFile, outDirPath);
     }
 
-    private final Queue<StartCard> deckBuilder = new LinkedList<>();
     /**
      Retrieves a Queue of StarCard objects.
      If a binary file containing serialized GoldCard objects exists, it deserializes and returns the Queue from it.
@@ -82,6 +81,7 @@ public class StartCardFactory extends AbstractCardFactory<StartCard>{
      */
     @Override
     public Queue<StartCard> getCardsFromJson() {
+        Queue<StartCard> deckBuilder = new LinkedList<>();
         JsonArray ResourceCards = getCardArray("StartingCard");
         for(int i=0; i<ResourceCards.size(); i++){
             JsonObject card = ResourceCards.get(i).getAsJsonObject();

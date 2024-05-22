@@ -22,8 +22,6 @@ import java.util.*;
  */
 public class ObjectiveCardFactory extends AbstractCardFactory<ObjectiveCard>{
 
-    private final Queue<ObjectiveCard> deckBuilder = new LinkedList<>();
-
     /**
      * The constructor of the class
      * @param inFile the path of the card.json file
@@ -98,6 +96,7 @@ public class ObjectiveCardFactory extends AbstractCardFactory<ObjectiveCard>{
      */
     @Override
     public Queue<ObjectiveCard> getCardsFromJson() {
+        Queue<ObjectiveCard> deckBuilder = new LinkedList<>();
         JsonArray ResourceCards = getCardArray("ObjectiveCard");
         for(int i=0; i<ResourceCards.size(); i++) {
             JsonObject card = ResourceCards.get(i).getAsJsonObject();

@@ -20,7 +20,6 @@ import java.util.Queue;
  * The concreteFactory for the Gold type of Card
  */
 public class GoldCardFactory extends AbstractCardFactory<GoldCard>{
-    private final Queue<GoldCard> deckBuilder = new LinkedList<>();
 
     /**
      * The constructor of the class
@@ -89,6 +88,7 @@ public class GoldCardFactory extends AbstractCardFactory<GoldCard>{
      * @return A queue containing StartCard objects parsed from the JSON data.
      */
     public Queue<GoldCard> getCardsFromJson() {
+        Queue<GoldCard> deckBuilder = new LinkedList<>();
         JsonArray GoldCards = getCardArray("GoldCards");
         for(int i =0; i<GoldCards.size(); i++){
             JsonObject card = GoldCards.get(i).getAsJsonObject();
