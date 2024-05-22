@@ -119,13 +119,14 @@ public class Codex implements Serializable {
 
     }
 
-    /** method that given a placement calculates the points that the placement gives to the codex
+    /** Method that, given a placement, calculates the points that the placement gives to the codex. The points are added only if the card is placed on the front
      * @param placement the placement that contains the card of which calculates the points
      * @throws IllegalArgumentException if placement == null */
     private void calculateConsequencesPoints(Placement placement){
         if (placement == null)
             throw new IllegalArgumentException("placement cannot be null");
-        this.points += placement.card().getPoints(this);
+        if(placement.face() == CardFace.FRONT)
+            this.points += placement.card().getPoints(this);
     }
 
     /** method that given a placement updates the codex Collectables and Points
