@@ -190,7 +190,7 @@ public class GameDiffPublisher implements Serializable {
      */
     private GameDiffNewGame getTotalCurrentState(DiffSubscriber diffSubscriber){
         GameDiffNewGame newGameDiff = new GameDiffNewGame(
-                new GameDiffInitialization(game.getGameParty().getUsersList().stream().map(User::getNickname).toList(), new GameDiffGameName(game.getName()),new GameDiffYourName(activeSubscribers.get(diffSubscriber)) ),
+                new GameDiffInitialization(game.getGameParty().getUsersList().stream().map(User::getNickname).toList(), new GameDiffGameName(game.getName()),new GameDiffYourName(activeSubscribers.get(diffSubscriber)), new GameDiffCurrentPlayer(game.getGameParty().getCurrentPlayer().getNickname())),
                 getPlayerActivity(),
                 getDeckCurrentState(),
                 getCodexCurrentState(),
