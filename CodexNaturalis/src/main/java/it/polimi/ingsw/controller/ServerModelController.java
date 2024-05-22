@@ -57,7 +57,7 @@ public class ServerModelController implements ControllerInterface, DiffSubscribe
      * @throws RemoteException in an error occurs during the sending/receiving of the data
      */
     @Override
-    public void login(String nickname) throws RemoteException {
+    public void login(String nickname) {
         if(!this.games.isUnique(nickname)) {
             logErr(LogsOnClient.NAME_TAKEN);
         }else if(Objects.equals(nickname, "")){
@@ -91,7 +91,7 @@ public class ServerModelController implements ControllerInterface, DiffSubscribe
      * @throws RemoteException If an error occurs during the sending or receiving of data.
      */
     @Override
-    public void createLobby(String gameName, int maxPlayerCount) throws RemoteException {
+    public void createLobby(String gameName, int maxPlayerCount) {
         if(games.getLobbyByName(gameName)!=null || games.getGameByName(gameName)!=null  || gameName.isEmpty()) {
             logErr(LogsOnClient.LOBBY_NAME_TAKEN);
         }else {
@@ -118,7 +118,7 @@ public class ServerModelController implements ControllerInterface, DiffSubscribe
     }
 
     @Override
-    public void joinLobby(String lobbyName) throws RemoteException{
+    public void joinLobby(String lobbyName){
         Lobby lobbyToJoin = this.games.getLobbyByName(lobbyName);
         if(lobbyToJoin!=null){
             Boolean result = this.games.addPlayerToLobby(lobbyName, this.nickname);
@@ -194,7 +194,7 @@ public class ServerModelController implements ControllerInterface, DiffSubscribe
      * @throws RemoteException if something goes with the sending of the Diffs
      */
     @Override
-    public void choseSecretObjective(LightCard card) throws RemoteException{
+    public void choseSecretObjective(LightCard card){
         User userToEdit = games.getUserFromNick(this.nickname);
         Game userGame = games.getUserGame(nickname);
         userToEdit.setSecretObject(Heavifier.heavifyObjectCard(card, games));
@@ -209,7 +209,7 @@ public class ServerModelController implements ControllerInterface, DiffSubscribe
      * @throws RemoteException if something goes with the sending of the Diffs
      */
     @Override
-    public void place(LightPlacement placement) throws RemoteException {
+    public void place(LightPlacement placement) {
         User user = games.getUserFromNick(nickname);
         //if the card place is the startCard
         if(user.getUserCodex().getFrontier().isInFrontier(new Position(0,0))){
@@ -259,7 +259,7 @@ public class ServerModelController implements ControllerInterface, DiffSubscribe
      * @throws RemoteException if something goes with the sending of the Diffs
      */
     @Override
-    public void draw(DrawableCard deckID, int cardID) throws RemoteException {
+    public void draw(DrawableCard deckID, int cardID) {
         CardInHand drawCard;
         if(cardID<0 || cardID>2){
             throw  new IllegalArgumentException(cardID + " is out of bound");
@@ -397,14 +397,14 @@ public class ServerModelController implements ControllerInterface, DiffSubscribe
     public void logYou(LogsOnClient log){
         try {
             view.log(log.getMessage());
-        }catch (RemoteException r){
+        }catch (Exception r){
             r.printStackTrace();
         }
     }
     public void logOther(String prefix, LogsOnClient log){
         try{
             view.logOthers(prefix + log.getMessage());
-        }catch (RemoteException r){
+        }catch (Exception r){
             r.printStackTrace();
         }
     }

@@ -59,7 +59,7 @@ public class ServerHandler implements Runnable{
                     try {
                         System.out.println("Error while creating the input and output streams");
                         view.logErr(LogsOnClient.CONNECTION_ERROR.getMessage());
-                    } catch (RemoteException ex) {
+                    } catch (Exception ex) {
                         //This is socket, RemoteException should not be thrown
                         throw new RuntimeException(ex);
                     }
@@ -72,7 +72,7 @@ public class ServerHandler implements Runnable{
             try {
                 System.out.println("Error while connecting to the server, the server exists but did not expect this protocol");
                 view.logErr(LogsOnClient.CONNECTION_ERROR.getMessage());
-            } catch (RemoteException ex) {
+            } catch (Exception ex) {
                 //This is socket, RemoteException should not be thrown
                 throw new RuntimeException(ex);
             }
@@ -126,7 +126,7 @@ public class ServerHandler implements Runnable{
                 try{
                     server.close();
                     view.logErr(LogsOnClient.CONNECTION_LOST_CLIENT_SIDE.getMessage());
-                }catch (IOException ex){
+                }catch (Exception ex){
                     System.out.println("Error while closing the Socket of the Server");
                     e.printStackTrace();
                 }
