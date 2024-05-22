@@ -102,7 +102,7 @@ public class DeckGUI implements Observer {
      * @param deckType the type of buffer to which was draw from
      * @param index the index of the buffer
      */
-    private void drawFromBuffer(FlippableCardGUI card, DrawableCard deckType, int index){
+    private void updateBuffer(FlippableCardGUI card, DrawableCard deckType, int index){
         setSizeBindings(card);
         if(deckType == DrawableCard.RESOURCECARD) {
            resourceDeck.getChildren().clear();
@@ -147,7 +147,7 @@ public class DeckGUI implements Observer {
      * @param card the card to be shown on top of the deck
      * @param deckType the type of deck to draw from
      */
-    private void drawFromDeck(CardGUI card, DrawableCard deckType){
+    private void updateTopDeck(CardGUI card, DrawableCard deckType){
         setSizeBindings(card);
         if(deckType == DrawableCard.RESOURCECARD) {
             resourceDeckBackCard = card;
@@ -168,7 +168,7 @@ public class DeckGUI implements Observer {
                 }
             }
         }
-
+        System.out.println("TopCardOnDeck: " + resourceDeckBackCard.getTarget());
         card.setOnHold(e-> {
             if((GUI.getStateProperty().get() != StateGUI.DRAW_CARD)) {
                 return;
@@ -197,20 +197,23 @@ public class DeckGUI implements Observer {
         }
         //Diff about a draw from Deck
         if(!isResourceDeckUpdated()){
+            System.out.println("BackResource in LightGame: " + GUI.getLightGame().getDecks().get(DrawableCard.RESOURCECARD).getDeckBack().idBack());
             //System.out.println("Drawing from resource deck");
-            drawFromDeck(new CardGUI(new LightBack(GUI.getLightGame().getDecks().get(DrawableCard.RESOURCECARD).getDeckBack().idBack())), DrawableCard.RESOURCECARD);
+            updateTopDeck(new CardGUI(new LightBack(GUI.getLightGame().getDecks().get(DrawableCard.RESOURCECARD).getDeckBack().idBack())), DrawableCard.RESOURCECARD);
         }
         if(!isGoldDeckUpdated()) {
+            System.out.println("BackGold in LightGame: " + GUI.getLightGame().getDecks().get(DrawableCard.GOLDCARD).getDeckBack().idBack());
             //System.out.println("Drawing from gold deck");
-            drawFromDeck(new CardGUI(new LightBack(GUI.getLightGame().getDecks().get(DrawableCard.GOLDCARD).getDeckBack().idBack())), DrawableCard.GOLDCARD);
+            updateTopDeck(new CardGUI(new LightBack(GUI.getLightGame().getDecks().get(DrawableCard.GOLDCARD).getDeckBack().idBack())), DrawableCard.GOLDCARD);
         }
         //Diff about a draw from buffer
         if(!resourceDeckBufferIsUpdated()){
             //System.out.println("Drawing from resource buffer");
             for(int i=0;i<2;i++){
                 if(resourceBuffer[i]==null || (resourceBuffer[i].getTarget() != GUI.getLightGame().getDecks().get(DrawableCard.RESOURCECARD).getCardBuffer()[i])){
-                    drawFromBuffer(new FlippableCardGUI(GUI.getLightGame().getDecks().get(DrawableCard.RESOURCECARD).getCardBuffer()[i]), DrawableCard.RESOURCECARD, i);
+                    updateBuffer(new FlippableCardGUI(GUI.getLightGame().getDecks().get(DrawableCard.RESOURCECARD).getCardBuffer()[i]), DrawableCard.RESOURCECARD, i);
                     break;
+
                 }
             }
         }
@@ -218,7 +221,7 @@ public class DeckGUI implements Observer {
             //System.out.println("Drawing from gold buffer");
             for(int i=0;i<2;i++){
                 if(goldBuffer[i]==null || (goldBuffer[i].getTarget() != GUI.getLightGame().getDecks().get(DrawableCard.GOLDCARD).getCardBuffer()[i])){
-                    drawFromBuffer(new FlippableCardGUI(GUI.getLightGame().getDecks().get(DrawableCard.GOLDCARD).getCardBuffer()[i]), DrawableCard.GOLDCARD, i);
+                    updateBuffer(new FlippableCardGUI(GUI.getLightGame().getDecks().get(DrawableCard.GOLDCARD).getCardBuffer()[i]), DrawableCard.GOLDCARD, i);
                     break;
                 }
             }
