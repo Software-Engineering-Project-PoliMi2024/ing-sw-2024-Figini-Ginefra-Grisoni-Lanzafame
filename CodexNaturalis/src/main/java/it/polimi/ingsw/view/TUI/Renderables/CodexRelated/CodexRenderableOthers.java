@@ -69,7 +69,7 @@ public class CodexRenderableOthers extends CodexRenderable{
                 if(nickname.equals(lightGame.getLightGameParty().getYourName())){
                     try {
                         view.logErr("You can't peek at your own codex");
-                    } catch (RemoteException e) {
+                    } catch (Exception e) {
                         throw new RuntimeException(e);
                     }
                     return;
@@ -78,7 +78,7 @@ public class CodexRenderableOthers extends CodexRenderable{
                 if(!lightGame.getCodexMap().containsKey(nickname)){
                     try {
                         view.logErr("The player " + nickname + " does not exist");
-                    } catch (RemoteException e) {
+                    } catch (Exception e) {
                         throw new RuntimeException(e);
                     }
                     return;
