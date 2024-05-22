@@ -21,8 +21,7 @@ public class CoveredCornersCardPointMultiplier implements GoldCardPointMultiplie
                         .equals(goldCard)).findFirst().orElseThrow(NoSuchElementException::new).position();
 
         for (CardCorner corner : CardCorner.values()){
-            if(codex.getPlacementAt(cardPos.add(corner.getOffset())
-                    .add(corner.getOffset())) != null)
+            if(codex.getPlacementAt(cardPos.add(corner.getOffset())) != null)
                 multiplier++;
         }
         return multiplier;
