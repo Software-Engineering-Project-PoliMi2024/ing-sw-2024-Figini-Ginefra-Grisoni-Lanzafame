@@ -10,20 +10,20 @@ import java.rmi.Remote;
 import java.rmi.RemoteException;
 
 public interface ViewInterface extends Serializable, Remote {
-    void transitionTo(ViewState state) throws RemoteException;
+    void transitionTo(ViewState state) throws Exception;
     /** Logs a message to the view. */
-    void log(String logMsg) throws RemoteException;
+    void log(String logMsg) throws Exception;
 
     /** Logs an error message to the view. And renders the active commands*/
-    void logErr(String logMsg) throws RemoteException;
+    void logErr(String logMsg) throws Exception;
 
     /** Logs a message to the view relative to somebody else's action. */
-    void logOthers(String logMsg) throws RemoteException;
+    void logOthers(String logMsg) throws Exception  ;
 
     /** Logs a message to the view relative to the game. */
-    void logGame(String logMsg) throws RemoteException;
-    void updateLobbyList(ModelDiffs<LightLobbyList> diff) throws RemoteException;
-    void updateLobby(ModelDiffs<LightLobby> diff) throws RemoteException;
-    void updateGame(ModelDiffs<LightGame> diff) throws RemoteException;
-    void setFinalRanking(String[] nicks, int[] points) throws RemoteException;
+    void logGame(String logMsg) throws Exception;
+    void updateLobbyList(ModelDiffs<LightLobbyList> diff) throws Exception;
+    void updateLobby(ModelDiffs<LightLobby> diff) throws Exception;
+    void updateGame(ModelDiffs<LightGame> diff) throws Exception;
+    void setFinalRanking(String[] nicks, int[] points) throws Exception;
 }
