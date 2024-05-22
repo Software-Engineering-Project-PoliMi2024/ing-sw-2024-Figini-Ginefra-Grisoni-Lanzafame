@@ -32,13 +32,13 @@ public class MultiGame implements Serializable {
         String filePath = Configs.CardFolder;
         String sourceFileName = Configs.CardFile;
         cardLookUpObjective =
-                new CardLookUp<>(new ObjectiveCardFactory(filePath+sourceFileName, filePath).getCards());
+                new CardLookUp<>(new ObjectiveCardFactory(filePath+sourceFileName, filePath).getCards(Configs.objectiveCardBinFileName));
         cardLookUpStartCard =
-                new CardLookUp<>(new StartCardFactory(filePath+sourceFileName, filePath).getCards());
+                new CardLookUp<>(new StartCardFactory(filePath+sourceFileName, filePath).getCards(Configs.startCardBinFileName));
         cardLookUpResourceCard =
-                new CardLookUp<>(new ResourceCardFactory(filePath+sourceFileName, filePath).getCards());
+                new CardLookUp<>(new ResourceCardFactory(filePath+sourceFileName, filePath).getCards(Configs.resourceCardBinFileName));
         cardLookUpGoldCard =
-                new CardLookUp<>(new GoldCardFactory(filePath+sourceFileName, filePath).getCards());
+                new CardLookUp<>(new GoldCardFactory(filePath+sourceFileName, filePath).getCards(Configs.goldCardBinFileName));
     }
 
     public synchronized Set<Game> getGames() {

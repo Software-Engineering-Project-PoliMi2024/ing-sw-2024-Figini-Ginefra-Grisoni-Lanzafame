@@ -16,7 +16,7 @@ import java.util.Queue;
  * @param <Element> is the "type" of Card that will be produced
  */
 public abstract class AbstractCardFactory<Element> {
-    public abstract Queue<Element> getCards();
+    public abstract Queue<Element> getCards(String binFileName);
 
     public abstract Queue<Element> getCardsFromJson();
     private final String inFile;

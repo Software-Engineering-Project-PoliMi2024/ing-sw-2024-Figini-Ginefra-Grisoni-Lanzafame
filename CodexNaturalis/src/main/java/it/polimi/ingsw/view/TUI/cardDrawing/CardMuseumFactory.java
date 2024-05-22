@@ -110,17 +110,17 @@ public class CardMuseumFactory {
 
             CardMuseum cardMuseum = new CardMuseum();
 
-            Queue<ResourceCard> resourceCards = new ResourceCardFactory(folderPath+sourceFileName, folderPath).getCards();
+            Queue<ResourceCard> resourceCards = new ResourceCardFactory(folderPath+sourceFileName, folderPath).getCards(Configs.resourceCardBinFileName);
             resourceCards.forEach(card -> cardMuseum.set(card.getIdFront(), CardPainter.drawResourceCard(card)));
 
             System.out.println("Resource cards loaded: " + resourceCards.size());
 
-            Queue<GoldCard> goldCards = new GoldCardFactory(folderPath+sourceFileName, folderPath).getCards();
+            Queue<GoldCard> goldCards = new GoldCardFactory(folderPath+sourceFileName, folderPath).getCards(Configs.goldCardBinFileName);
             goldCards.forEach(card -> cardMuseum.set(card.getIdFront(), CardPainter.drawGoldCard(card)));
 
             System.out.println("Gold cards loaded: " + goldCards.size());
 
-            Queue<StartCard> startCards = new StartCardFactory(folderPath+sourceFileName, folderPath).getCards();
+            Queue<StartCard> startCards = new StartCardFactory(folderPath+sourceFileName, folderPath).getCards(Configs.startCardBinFileName);
             startCards.forEach(card -> cardMuseum.set(card.getIdFront(), CardPainter.drawStartCard(card)));
 
             System.out.println("Start cards loaded: " + startCards.size());

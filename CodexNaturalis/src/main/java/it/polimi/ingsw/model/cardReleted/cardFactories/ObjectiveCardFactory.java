@@ -3,6 +3,7 @@ package it.polimi.ingsw.model.cardReleted.cardFactories;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
+import it.polimi.ingsw.Configs;
 import it.polimi.ingsw.model.cardReleted.cards.ObjectiveCard;
 import it.polimi.ingsw.model.cardReleted.pointMultiplyer.CollectableCardPointMultiplier;
 import it.polimi.ingsw.model.cardReleted.pointMultiplyer.DiagonalCardPointMultiplier;
@@ -40,8 +41,8 @@ public class ObjectiveCardFactory extends AbstractCardFactory<ObjectiveCard>{
      @throws RuntimeException If an error occurs during file operations or deserialization.
      */
     @Override
-    public Queue<ObjectiveCard> getCards() {
-        String filePath = outDirPath + "objectiveCards.bin";
+    public Queue<ObjectiveCard> getCards(String binFileName) {
+        String filePath = outDirPath + binFileName;
         File fileSerialized = new File(filePath);
         if(fileSerialized.exists()){
             return deserializeQueue(fileSerialized);
@@ -83,7 +84,7 @@ public class ObjectiveCardFactory extends AbstractCardFactory<ObjectiveCard>{
                 throw new RuntimeException("An error occurred while deleting file");
             }else{
                 System.out.println("Corrupted or not up-to-date " + binFile.getPath() + " file deleted");
-                queue = this.getCards();
+                queue = this.getCards(Configs.objectiveCardBinFileName);
             }
         }
         return queue;

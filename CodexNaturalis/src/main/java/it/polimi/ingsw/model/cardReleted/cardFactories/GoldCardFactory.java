@@ -3,6 +3,7 @@ package it.polimi.ingsw.model.cardReleted.cardFactories;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
+import it.polimi.ingsw.Configs;
 import it.polimi.ingsw.model.cardReleted.cards.GoldCard;
 import it.polimi.ingsw.model.cardReleted.pointMultiplyer.CoveredCornersCardPointMultiplier;
 import it.polimi.ingsw.model.cardReleted.pointMultiplyer.GoldCardPointMultiplier;
@@ -39,8 +40,8 @@ public class GoldCardFactory extends AbstractCardFactory<GoldCard>{
      * @throws RuntimeException If an error occurs during file operations or deserialization.
      */
     @Override
-    public Queue<GoldCard> getCards() {
-        String filePath = outDirPath + "goldCards.bin";
+    public Queue<GoldCard> getCards(String binFileName) {
+        String filePath = outDirPath + binFileName;
         File fileSerialized = new File(filePath);
         if(fileSerialized.exists()){
             return deserializeQueue(fileSerialized);
@@ -76,7 +77,7 @@ public class GoldCardFactory extends AbstractCardFactory<GoldCard>{
                 throw new RuntimeException("An error occurred while deleting file");
             }else{
                 System.out.println("Corrupted or not up-to-date " + binFile.getPath() + " file deleted");
-                queue = this.getCards();
+                queue = this.getCards(Configs.goldCardBinFileName);
             }
         }
         return queue;

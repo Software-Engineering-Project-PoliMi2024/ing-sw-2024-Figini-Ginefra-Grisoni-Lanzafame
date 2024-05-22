@@ -11,4 +11,8 @@ public class Configs {
     public static int secondsTimeOut = 3;
     public static int pingPongFrequency = 10;
     public static int timerDurationSeconds = 60;
+    public static String goldCardBinFileName = "goldCards.bin";
+    public static String objectiveCardBinFileName = "objectiveCards.bin";
+    public static String resourceCardBinFileName = "resourceCards.bin";
+    public static String startCardBinFileName = "startCards.bin";
 }
