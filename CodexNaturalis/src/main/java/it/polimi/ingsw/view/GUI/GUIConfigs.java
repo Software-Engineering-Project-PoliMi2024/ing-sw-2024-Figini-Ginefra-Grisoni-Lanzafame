@@ -19,7 +19,7 @@ public class GUIConfigs {
 
     public static int cardBorderRadius = 40;
 
-    public static int holdDuration = 200; //in milliseconds
+    public static int holdDuration = 300; //in milliseconds
 
     public static int collectablesWidth = 50;
     public static int deckGap = 35;

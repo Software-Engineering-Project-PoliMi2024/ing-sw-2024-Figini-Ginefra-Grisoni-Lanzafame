@@ -4,6 +4,7 @@ import it.polimi.ingsw.lightModel.lightPlayerRelated.LightBack;
 import it.polimi.ingsw.lightModel.lightPlayerRelated.LightCard;
 import it.polimi.ingsw.model.cardReleted.utilityEnums.CardFace;
 import it.polimi.ingsw.view.GUI.AssetsGUI;
+import it.polimi.ingsw.view.GUI.Components.Utils.AnimationStuff;
 import it.polimi.ingsw.view.GUI.GUIConfigs;
 import javafx.animation.KeyFrame;
 import javafx.animation.Timeline;
@@ -53,7 +54,12 @@ public class CardGUI {
 
         holdTimer = new Timeline();
         //Make an empty keyframe at holdDuration
-        holdTimer.getKeyFrames().add(new KeyFrame(Duration.millis(GUIConfigs.holdDuration)));
+        holdTimer.getKeyFrames().addAll(
+                new KeyFrame(Duration.millis(0), AnimationStuff.createScaleXKeyValue(imageView, 1)),
+                new KeyFrame(Duration.millis(0), AnimationStuff.createScaleYKeyValue(imageView, 1)),
+                new KeyFrame(Duration.millis(GUIConfigs.holdDuration), AnimationStuff.createScaleXKeyValue(imageView, 0.8)),
+                new KeyFrame(Duration.millis(GUIConfigs.holdDuration), AnimationStuff.createScaleYKeyValue(imageView, 0.8))
+        );
 
         //set hold detected to false
         holdTimer.setOnFinished(t -> {
@@ -78,6 +84,9 @@ public class CardGUI {
             }
             holdTimer.stop();
             holdDetected = false;
+
+            imageView.setScaleX(1);
+            imageView.setScaleY(1);
         });
 
     }
