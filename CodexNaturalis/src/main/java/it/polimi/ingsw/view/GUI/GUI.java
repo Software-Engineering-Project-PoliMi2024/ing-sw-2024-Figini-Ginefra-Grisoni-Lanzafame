@@ -146,7 +146,7 @@ public class GUI extends Application implements ActualView {
     }
 
     @Override
-    public void setController(VirtualController controller) {
+    public void setController(ControllerInterface controller) {
         GUI.controller = controller;
     }
 

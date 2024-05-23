@@ -321,7 +321,7 @@ public class TUI implements ActualView {
     }
 
     @Override
-    public void setController(VirtualController controller) {
+    public void setController(ControllerInterface controller) {
         this.controller = controller;
     }
 }
