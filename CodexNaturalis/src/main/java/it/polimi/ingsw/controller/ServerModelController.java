@@ -177,15 +177,6 @@ public class ServerModelController implements ControllerInterface, DiffSubscribe
         updateLobbyYou(new LittleBoyLobby());
     }
 
-    private void leaveGame(){
-        Game gameToLeave = games.getUserGame(this.nickname);
-        if(gameToLeave == null){
-            throw new IllegalCallerException(nickname + " is not in any game");
-        }else{
-            gameToLeave.unsubscribe(this);
-        }
-    }
-
     /**
      * Set the secretObjectiveCard chose by the user
      * @param card which represent the secret objective choose by the user
