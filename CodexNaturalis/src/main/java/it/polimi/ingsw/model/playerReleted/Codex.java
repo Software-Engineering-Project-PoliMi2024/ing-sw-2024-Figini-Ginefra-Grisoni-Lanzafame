@@ -1,5 +1,7 @@
 package it.polimi.ingsw.model.playerReleted;
 
+import it.polimi.ingsw.model.cardReleted.cards.Card;
+import it.polimi.ingsw.model.cardReleted.cards.CardWithCorners;
 import it.polimi.ingsw.model.cardReleted.cards.ObjectiveCard;
 import it.polimi.ingsw.model.cardReleted.utilityEnums.*;
 
@@ -75,7 +77,7 @@ public class Codex implements Serializable {
         return new ArrayList<>(this.placementHistory.values());
     }
 
-    /** @return the placement at a certain position
+    /** @return the placement at a certain position, null if there is no placement at that position
      * @throws IllegalArgumentException if the position is null
      * @param position is the position of the placement to get
      * */
@@ -104,18 +106,30 @@ public class Codex implements Serializable {
         if (placement == null)
             throw new IllegalArgumentException("placement cannot be null");
 
+        CardWithCorners card = placement.card();
         // collectables from the corners
         for (CardCorner corner : CardCorner.values()){
-            if(placement.card().isCorner(corner, placement.face()) &&
-                    placement.card().getCollectableAt(corner, placement.face()) != SpecialCollectable.EMPTY)
-                this.collectables.put(placement.card().getCollectableAt(corner, placement.face()),
-                        this.collectables.get(placement.card().getCollectableAt(corner, placement.face())) + 1);
+            //Adding collectables from the corners
+            if(card.isCorner(corner, placement.face())){
+                Collectable cornerCollectable = card.getCollectableAt(corner, placement.face());
+                if(cornerCollectable != SpecialCollectable.EMPTY)
+                    this.collectables.put(cornerCollectable, this.collectables.get(cornerCollectable) + 1);
+            }
+
+            //Removing covered collectables
+            Placement neighbour = this.getPlacementAt(placement.position().add(corner.getOffset()));
+            if(neighbour != null){
+                Collectable cornerCollectable = neighbour.card().getCollectableAt(corner.getOpposite(), neighbour.face());
+                if(cornerCollectable != SpecialCollectable.EMPTY)
+                    this.collectables.put(cornerCollectable, this.collectables.get(cornerCollectable) - 1);
+            }
         }
 
         // collectables from the permanent resources
-        for (Collectable c : placement.card().getPermanentResources(placement.face()))
-            if(c != SpecialCollectable.EMPTY)
-                this.collectables.put(c, this.collectables.get(c) + 1);
+        if(placement.face() == CardFace.BACK)
+            for (Collectable c : placement.card().getPermanentResources(placement.face()))
+                if(c != SpecialCollectable.EMPTY)
+                    this.collectables.put(c, this.collectables.get(c) + 1);
 
     }
 

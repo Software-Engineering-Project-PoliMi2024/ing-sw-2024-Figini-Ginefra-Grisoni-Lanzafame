@@ -1,4 +1,4 @@
-package it.polimi.ingsw.view.GUI.Components;
+package it.polimi.ingsw.view.GUI.Components.Logs;
 
 import javafx.geometry.Pos;
 import javafx.scene.Scene;

@@ -1,6 +1,6 @@
 package it.polimi.ingsw.view.GUI.Controllers;
 
-import it.polimi.ingsw.view.GUI.Components.LobbyListJoinGUI;
+import it.polimi.ingsw.view.GUI.Components.PreGame.LobbyListJoinGUI;
 import it.polimi.ingsw.view.GUI.GUI;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;

@@ -1,36 +1,11 @@
 package it.polimi.ingsw.view.GUI.Scenes;
 
-import it.polimi.ingsw.lightModel.Differentiable;
-import it.polimi.ingsw.lightModel.lightPlayerRelated.LightBack;
-import it.polimi.ingsw.lightModel.lightPlayerRelated.LightCard;
-import it.polimi.ingsw.lightModel.diffs.ModelDiffs;
-import it.polimi.ingsw.lightModel.diffs.game.*;
-import it.polimi.ingsw.lightModel.lightPlayerRelated.LightPlacement;
-import it.polimi.ingsw.lightModel.lightTableRelated.LightGame;
-import it.polimi.ingsw.model.cardReleted.cards.ObjectiveCard;
-import it.polimi.ingsw.model.cardReleted.utilityEnums.CardFace;
-import it.polimi.ingsw.model.cardReleted.utilityEnums.DrawableCard;
-import it.polimi.ingsw.model.cardReleted.utilityEnums.Resource;
-import it.polimi.ingsw.model.playerReleted.Hand;
-import it.polimi.ingsw.model.playerReleted.Position;
-import it.polimi.ingsw.model.tableReleted.Game;
 import it.polimi.ingsw.view.GUI.Components.*;
 import it.polimi.ingsw.view.GUI.Components.CodexRelated.CodexGUI;
 import it.polimi.ingsw.view.GUI.Components.CodexRelated.CollectedCollectablesGUI;
-import it.polimi.ingsw.view.GUI.Components.CodexRelated.Peeker;
 import it.polimi.ingsw.view.GUI.Components.HandRelated.HandGUI;
-import it.polimi.ingsw.view.GUI.Components.LogsGUI;
-import it.polimi.ingsw.view.GUI.GUI;
+import it.polimi.ingsw.view.GUI.Components.Logs.LogsGUI;
 import it.polimi.ingsw.view.GUI.Root;
-import it.polimi.ingsw.view.GUI.StateGUI;
-import it.polimi.ingsw.view.TUI.Renderables.CardRelated.SecretObjectiveRenderable;
-import javafx.geometry.Pos;
-import javafx.scene.control.Button;
-
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Random;
 
 public class GameScene extends SceneGUI{
     private DeckGUI deck;

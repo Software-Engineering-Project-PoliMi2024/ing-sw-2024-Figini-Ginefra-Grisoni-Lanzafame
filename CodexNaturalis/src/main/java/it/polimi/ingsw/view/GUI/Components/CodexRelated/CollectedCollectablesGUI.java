@@ -1,15 +1,12 @@
 package it.polimi.ingsw.view.GUI.Components.CodexRelated;
 
 import it.polimi.ingsw.designPatterns.Observer;
-import it.polimi.ingsw.lightModel.diffs.ModelDiffs;
-import it.polimi.ingsw.lightModel.diffs.game.CodexDiff;
 import it.polimi.ingsw.lightModel.lightPlayerRelated.LightCodex;
-import it.polimi.ingsw.lightModel.lightTableRelated.LightGame;
 import it.polimi.ingsw.model.cardReleted.utilityEnums.Collectable;
 import it.polimi.ingsw.model.cardReleted.utilityEnums.Resource;
 import it.polimi.ingsw.model.cardReleted.utilityEnums.WritingMaterial;
 import it.polimi.ingsw.view.GUI.AssetsGUI;
-import it.polimi.ingsw.view.GUI.Components.AnchoredPopUp;
+import it.polimi.ingsw.view.GUI.Components.Utils.AnchoredPopUp;
 import it.polimi.ingsw.view.GUI.GUI;
 import javafx.geometry.Pos;
 import javafx.scene.layout.AnchorPane;

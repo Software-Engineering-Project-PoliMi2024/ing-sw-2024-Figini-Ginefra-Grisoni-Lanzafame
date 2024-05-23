@@ -1,4 +1,4 @@
-package it.polimi.ingsw.view.GUI.Components;
+package it.polimi.ingsw.view.GUI.Components.Utils;
 
 import javafx.animation.Interpolator;
 import javafx.animation.KeyFrame;
