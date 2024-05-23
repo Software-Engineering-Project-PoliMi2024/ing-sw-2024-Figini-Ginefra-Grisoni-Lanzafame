@@ -54,7 +54,6 @@ public class ServerModelController implements ControllerInterface, DiffSubscribe
      * Log the player into the server.
      * Check if his username is unique and if he is already in a game or not
      * @param nickname of the client who is trying to loggin in
-     * @throws RemoteException in an error occurs during the sending/receiving of the data
      */
     @Override
     public void login(String nickname) {
@@ -88,7 +87,6 @@ public class ServerModelController implements ControllerInterface, DiffSubscribe
      * and sends the diff  to all subscribers in the gamesPublisher list.
      * @param gameName The name of the new lobby being created.
      * @param maxPlayerCount The number of players needed to exit the lobby and start the game.
-     * @throws RemoteException If an error occurs during the sending or receiving of data.
      */
     @Override
     public void createLobby(String gameName, int maxPlayerCount) {
@@ -191,7 +189,6 @@ public class ServerModelController implements ControllerInterface, DiffSubscribe
     /**
      * Set the secretObjectiveCard chose by the user
      * @param card which represent the secret objective choose by the user
-     * @throws RemoteException if something goes with the sending of the Diffs
      */
     @Override
     public void choseSecretObjective(LightCard card){
@@ -206,7 +203,6 @@ public class ServerModelController implements ControllerInterface, DiffSubscribe
     /**
      * Update the deck, Hand, Codex for the player and others
      * @param placement the LightPlacement created by placing the card
-     * @throws RemoteException if something goes with the sending of the Diffs
      */
     @Override
     public void place(LightPlacement placement) {
@@ -256,7 +252,6 @@ public class ServerModelController implements ControllerInterface, DiffSubscribe
      * Transition to the newPlayer and set the current one to Idle
      * @param deckID the deck from which the card is drawn
      * @param cardID the position from where draw the card (buffer/deck)
-     * @throws RemoteException if something goes with the sending of the Diffs
      */
     @Override
     public void draw(DrawableCard deckID, int cardID) {
