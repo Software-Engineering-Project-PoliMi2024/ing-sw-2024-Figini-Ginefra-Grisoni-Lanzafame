@@ -1,6 +1,7 @@
 package it.polimi.ingsw.controller;
 
 
+import it.polimi.ingsw.controller3.Controller;
 import it.polimi.ingsw.lightModel.Heavifier;
 import it.polimi.ingsw.lightModel.lightPlayerRelated.LightBack;
 import it.polimi.ingsw.lightModel.lightPlayerRelated.LightCard;
@@ -39,6 +40,7 @@ public class ServerModelController implements ControllerInterface, DiffSubscribe
     private final MultiGame games;
     private final ViewInterface view;
     private String nickname;
+    private final Controller controller;
     private final Object freezeDisconnect = new Object();
     /**
      * The constructor of the class
@@ -48,6 +50,7 @@ public class ServerModelController implements ControllerInterface, DiffSubscribe
     public ServerModelController(MultiGame games, ViewInterface view) {
         this.games = games;
         this.view = view;
+        this.controller = new Controller(games, view);
     }
 
     /**
@@ -59,8 +62,10 @@ public class ServerModelController implements ControllerInterface, DiffSubscribe
     public void login(String nickname) {
         if(!this.games.isUnique(nickname)) {
             logErr(LogsOnClient.NAME_TAKEN);
+            transitionTo(ViewState.LOGIN_FORM);
         }else if(Objects.equals(nickname, "")){
             logErr(LogsOnClient.EMPTY_NAME);
+            transitionTo(ViewState.LOGIN_FORM);
         }else{
             //Client is now logged-In. If he disconnects we have to update the model
             this.nickname = nickname;
@@ -92,6 +97,7 @@ public class ServerModelController implements ControllerInterface, DiffSubscribe
     public void createLobby(String gameName, int maxPlayerCount) {
         if(games.getLobbyByName(gameName)!=null || games.getGameByName(gameName)!=null  || gameName.isEmpty()) {
             logErr(LogsOnClient.LOBBY_NAME_TAKEN);
+            transitionTo(ViewState.JOIN_LOBBY);
         }else {
             Lobby newLobby = new Lobby(maxPlayerCount, this.nickname, gameName);
             this.games.addLobby(newLobby);
@@ -139,9 +145,11 @@ public class ServerModelController implements ControllerInterface, DiffSubscribe
                 }
             }else{
                 logErr(LogsOnClient.LOBBY_IS_FULL);
+                transitionTo(ViewState.JOIN_LOBBY);
             }
         }else{
             logErr(LogsOnClient.LOBBY_NONEXISTENT);
+            transitionTo(ViewState.JOIN_LOBBY);
         }
     }
 

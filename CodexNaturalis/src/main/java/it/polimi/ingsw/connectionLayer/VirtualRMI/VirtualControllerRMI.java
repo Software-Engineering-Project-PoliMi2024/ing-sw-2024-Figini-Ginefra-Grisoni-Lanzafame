@@ -224,6 +224,7 @@ public class VirtualControllerRMI implements VirtualController {
             try {
                 e.printStackTrace();
                 view.logErr(LogsOnClient.CONNECTION_ERROR.getMessage());
+                view.transitionTo(ViewState.SERVER_CONNECTION);
             }catch (Exception e1){
                 e1.printStackTrace();
             }
