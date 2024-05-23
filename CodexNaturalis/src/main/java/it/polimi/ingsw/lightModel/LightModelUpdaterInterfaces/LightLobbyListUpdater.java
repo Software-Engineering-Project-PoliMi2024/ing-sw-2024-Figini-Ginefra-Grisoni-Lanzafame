@@ -5,6 +5,6 @@ import it.polimi.ingsw.lightModel.lightTableRelated.LightGame;
 import it.polimi.ingsw.lightModel.lightTableRelated.LightLobby;
 import it.polimi.ingsw.lightModel.lightTableRelated.LightLobbyList;
 
-public interface LightLobbyListUpdater {
+public interface LightLobbyListUpdater extends Updater {
     void updateLobbyList(ModelDiffs<LightLobbyList> diff) throws Exception;
 }
