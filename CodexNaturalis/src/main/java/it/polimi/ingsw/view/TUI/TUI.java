@@ -2,6 +2,7 @@ package it.polimi.ingsw.view.TUI;
 
 import it.polimi.ingsw.Configs;
 import it.polimi.ingsw.connectionLayer.VirtualLayer.VirtualController;
+import it.polimi.ingsw.controller.ControllerInterface;
 import it.polimi.ingsw.lightModel.diffs.ModelDiffs;
 import it.polimi.ingsw.lightModel.lightTableRelated.LightGame;
 import it.polimi.ingsw.lightModel.lightTableRelated.LightLobby;
@@ -30,7 +31,7 @@ import java.util.Arrays;
 import java.util.List;
 
 public class TUI implements ActualView {
-    private VirtualController controller;
+    private ControllerInterface controller;
     private ViewState state;
     private final InputHandler inputHandler = new InputHandler();
     private final CommandDisplayRenderable commandDisplay;
@@ -312,7 +313,7 @@ public class TUI implements ActualView {
     }
 
     @Override
-    public VirtualController getController() {
+    public ControllerInterface getController() {
         return controller;
     }
 

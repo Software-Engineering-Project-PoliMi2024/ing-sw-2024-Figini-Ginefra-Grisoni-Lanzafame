@@ -1,6 +1,7 @@
 package it.polimi.ingsw.view.GUI;
 
 import it.polimi.ingsw.connectionLayer.VirtualLayer.VirtualController;
+import it.polimi.ingsw.controller.ControllerInterface;
 import it.polimi.ingsw.lightModel.diffs.ModelDiffs;
 import it.polimi.ingsw.lightModel.lightTableRelated.LightGame;
 import it.polimi.ingsw.lightModel.lightTableRelated.LightLobby;
@@ -24,7 +25,7 @@ import java.rmi.RemoteException;
 import java.util.Arrays;
 
 public class GUI extends Application implements ActualView {
-    static private VirtualController controller;
+    static private ControllerInterface controller;
     private static final LightLobbyList lobbyList = new LightLobbyList();
     private static final LightLobby lobby = new LightLobby();
     private static final LightGame lightGame = new LightGame();
@@ -150,11 +151,11 @@ public class GUI extends Application implements ActualView {
     }
 
     @Override
-    public VirtualController getController() {
+    public ControllerInterface getController() {
         return controller;
     }
 
-    public static VirtualController getControllerStatic() {
+    public static ControllerInterface getControllerStatic() {
         return controller;
     }
 
