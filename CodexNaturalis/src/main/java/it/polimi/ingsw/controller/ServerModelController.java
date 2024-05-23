@@ -40,7 +40,6 @@ public class ServerModelController implements ControllerInterface, DiffSubscribe
     private final MultiGame games;
     private final ViewInterface view;
     private String nickname;
-    private final Controller controller;
     private final Object freezeDisconnect = new Object();
     /**
      * The constructor of the class
@@ -50,7 +49,6 @@ public class ServerModelController implements ControllerInterface, DiffSubscribe
     public ServerModelController(MultiGame games, ViewInterface view) {
         this.games = games;
         this.view = view;
-        this.controller = new Controller(games, view);
     }
 
     /**
