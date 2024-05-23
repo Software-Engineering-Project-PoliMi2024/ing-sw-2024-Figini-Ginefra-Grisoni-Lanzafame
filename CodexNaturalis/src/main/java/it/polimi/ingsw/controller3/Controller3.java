@@ -3,8 +3,11 @@ package it.polimi.ingsw.controller3;
 import it.polimi.ingsw.controller.ControllerInterface;
 import it.polimi.ingsw.controller3.mediatorSubscriber.FullMediatorSubscriber;
 import it.polimi.ingsw.controller3.mediators.LobbyListMediator;
+import it.polimi.ingsw.lightModel.diffs.ModelDiffs;
 import it.polimi.ingsw.lightModel.lightPlayerRelated.LightCard;
 import it.polimi.ingsw.lightModel.lightPlayerRelated.LightPlacement;
+import it.polimi.ingsw.lightModel.lightTableRelated.LightGame;
+import it.polimi.ingsw.lightModel.lightTableRelated.LightLobbyList;
 import it.polimi.ingsw.model.MultiGame;
 import it.polimi.ingsw.model.cardReleted.utilityEnums.DrawableCard;
 import it.polimi.ingsw.view.ViewInterface;
@@ -57,5 +60,68 @@ public class Controller3 implements ControllerInterface, FullMediatorSubscriber{
     @Override
     public void draw(DrawableCard deckID, int cardID) {
 
+    }
+
+    @Override
+    public void updateGame(ModelDiffs<LightGame> diff) {
+        try{
+            view.updateGame(diff);
+        }catch (Exception e) {
+            logErr("Error in updateGame: " + e.getMessage());
+        }
+    }
+
+    @Override
+    public void setFinalRanking(String[] nicks, int[] points) {
+        try {
+            view.setFinalRanking(nicks, points);
+        } catch (Exception e) {
+            logErr("Error in setFinalRanking: " + e.getMessage());
+        }
+    }
+
+    @Override
+    public void updateLobbyList(ModelDiffs<LightLobbyList> diff) {
+        try {
+            view.updateLobbyList(diff);
+        } catch (Exception e) {
+            logErr("Error in updateLobbyList: " + e.getMessage());
+        }
+    }
+
+    @Override
+    public void log(String logMsg) {
+        try {
+            view.log(logMsg);
+        } catch (Exception e) {
+            logErr("Error in log: " + e.getMessage());
+        }
+    }
+
+    @Override
+    public void logErr(String logMsg) {
+        try {
+            view.logErr(logMsg);
+        } catch (Exception e) {
+            logErr("Error in logErr: " + e.getMessage());
+        }
+    }
+
+    @Override
+    public void logOthers(String logMsg) {
+        try {
+            view.logOthers(logMsg);
+        } catch (Exception e) {
+            logErr("Error in logOthers: " + e.getMessage());
+        }
+    }
+
+    @Override
+    public void logGame(String logMsg) {
+        try {
+            view.logGame(logMsg);
+        } catch (Exception e) {
+            logErr("Error in logGame: " + e.getMessage());
+        }
     }
 }
