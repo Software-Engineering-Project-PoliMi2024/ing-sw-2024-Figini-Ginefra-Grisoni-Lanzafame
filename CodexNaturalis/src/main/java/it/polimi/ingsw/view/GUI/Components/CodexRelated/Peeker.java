@@ -1,7 +1,7 @@
 package it.polimi.ingsw.view.GUI.Components.CodexRelated;
 
 import it.polimi.ingsw.view.GUI.Components.HandRelated.HandOthersGUI;
-import it.polimi.ingsw.view.GUI.Components.PopUp;
+import it.polimi.ingsw.view.GUI.Components.Utils.PopUp;
 import javafx.scene.layout.AnchorPane;
 
 public class Peeker {

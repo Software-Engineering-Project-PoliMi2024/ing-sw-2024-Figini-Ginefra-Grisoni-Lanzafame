@@ -1,4 +1,4 @@
-package it.polimi.ingsw.view.GUI.Components;
+package it.polimi.ingsw.view.GUI.Components.Logs;
 
 import it.polimi.ingsw.designPatterns.Observer;
 import it.polimi.ingsw.view.GUI.GUI;

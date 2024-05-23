@@ -1,6 +1,6 @@
 package it.polimi.ingsw.view.GUI.Controllers;
 
-import it.polimi.ingsw.view.GUI.Components.LobbyGUI;
+import it.polimi.ingsw.view.GUI.Components.PreGame.LobbyGUI;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.layout.AnchorPane;

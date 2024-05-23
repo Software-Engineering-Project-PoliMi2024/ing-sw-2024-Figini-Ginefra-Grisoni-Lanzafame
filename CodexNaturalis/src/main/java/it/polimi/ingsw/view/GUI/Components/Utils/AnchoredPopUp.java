@@ -1,4 +1,4 @@
-package it.polimi.ingsw.view.GUI.Components;
+package it.polimi.ingsw.view.GUI.Components.Utils;
 
 import it.polimi.ingsw.view.GUI.Components.Utils.AnimationStuff;
 import javafx.animation.KeyFrame;
