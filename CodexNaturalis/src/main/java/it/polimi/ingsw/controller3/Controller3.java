@@ -11,6 +11,7 @@ import it.polimi.ingsw.lightModel.lightTableRelated.LightLobbyList;
 import it.polimi.ingsw.model.MultiGame;
 import it.polimi.ingsw.model.cardReleted.utilityEnums.DrawableCard;
 import it.polimi.ingsw.view.ViewInterface;
+import it.polimi.ingsw.view.ViewState;
 
 public class Controller3 implements ControllerInterface, FullMediatorSubscriber{
     private final ViewInterface view;
@@ -122,6 +123,14 @@ public class Controller3 implements ControllerInterface, FullMediatorSubscriber{
             view.logGame(logMsg);
         } catch (Exception e) {
             logErr("Error in logGame: " + e.getMessage());
+        }
+    }
+
+    public void transitionTo(ViewState state) {
+        try {
+            view.transitionTo(state);
+        } catch (Exception e) {
+            logErr("Error in transitionTo: " + e.getMessage());
         }
     }
 }
