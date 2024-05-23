@@ -1,13 +1,15 @@
 package it.polimi.ingsw.controller3;
 
 import it.polimi.ingsw.controller.ControllerInterface;
+import it.polimi.ingsw.controller3.mediatorSubscriber.FullMediatorSubscriber;
+import it.polimi.ingsw.controller3.mediators.LobbyListMediator;
 import it.polimi.ingsw.lightModel.lightPlayerRelated.LightCard;
 import it.polimi.ingsw.lightModel.lightPlayerRelated.LightPlacement;
 import it.polimi.ingsw.model.MultiGame;
 import it.polimi.ingsw.model.cardReleted.utilityEnums.DrawableCard;
 import it.polimi.ingsw.view.ViewInterface;
 
-public class Controller3 implements ControllerInterface {
+public class Controller3 implements ControllerInterface, FullMediatorSubscriber{
     private final ViewInterface view;
     private final ModelInteract modelInteract;
     private final MalevolentChecker malevolentChecker;
@@ -18,42 +20,42 @@ public class Controller3 implements ControllerInterface {
         this.malevolentChecker = new MalevolentChecker(games);
     }
     @Override
-    public void login(String nickname) throws Exception {
+    public void login(String nickname) {
+        LobbyListMediator lobbyListMediator = new LobbyListMediator();
+    }
+
+    @Override
+    public void createLobby(String gameName, int maxPlayerCount) {
 
     }
 
     @Override
-    public void createLobby(String gameName, int maxPlayerCount) throws Exception {
+    public void joinLobby(String lobbyName) {
 
     }
 
     @Override
-    public void joinLobby(String lobbyName) throws Exception {
+    public void disconnect() {
 
     }
 
     @Override
-    public void disconnect() throws Exception {
+    public void leaveLobby() {
 
     }
 
     @Override
-    public void leaveLobby() throws Exception {
+    public void choseSecretObjective(LightCard objectiveCard) {
 
     }
 
     @Override
-    public void choseSecretObjective(LightCard objectiveCard) throws Exception {
+    public void place(LightPlacement placement) {
 
     }
 
     @Override
-    public void place(LightPlacement placement) throws Exception {
-
-    }
-
-    @Override
-    public void draw(DrawableCard deckID, int cardID) throws Exception {
+    public void draw(DrawableCard deckID, int cardID) {
 
     }
 }
