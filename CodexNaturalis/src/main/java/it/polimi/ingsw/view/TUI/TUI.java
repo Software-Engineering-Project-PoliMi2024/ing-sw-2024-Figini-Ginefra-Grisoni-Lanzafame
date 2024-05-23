@@ -228,25 +228,29 @@ public class TUI implements ActualView {
 
     @Override
     public void transitionTo(ViewState state){
-        this.state = state;
+        if(this.state == state){
+            commandDisplay.render();
+        }else {
+            this.state = state;
 
-        StateTUI stateTUI = Arrays.stream(StateTUI.values()).reduce((a, b) -> a.references(state) ? a : b).orElse(null);
+            StateTUI stateTUI = Arrays.stream(StateTUI.values()).reduce((a, b) -> a.references(state) ? a : b).orElse(null);
 
-        if(stateTUI == null){
-            throw new IllegalArgumentException("Current View State(" + stateTUI.name() + ") not supported by TUI");
+            if (stateTUI == null) {
+                throw new IllegalArgumentException("Current View State(" + stateTUI.name() + ") not supported by TUI");
+            }
+
+            for (Renderable renderable : renderables) {
+                renderable.setActive(false);
+            }
+
+            for (Renderable renderable : stateTUI.getRenderables()) {
+                renderable.setActive(true);
+            }
+
+            updateCommands();
+
+            commandDisplay.render();
         }
-
-        for(Renderable renderable : renderables){
-            renderable.setActive(false);
-        }
-
-        for(Renderable renderable : stateTUI.getRenderables()){
-            renderable.setActive(true);
-        }
-
-        updateCommands();
-
-        commandDisplay.render();
     }
 
     @Override
@@ -276,7 +280,6 @@ public class TUI implements ActualView {
         Printer.println("");
         PromptStyle.printInABox(logMsg,50, StringStyle.RED_FOREGROUND);
         Printer.println("");
-        commandDisplay.render();
     }
 
     @Override
