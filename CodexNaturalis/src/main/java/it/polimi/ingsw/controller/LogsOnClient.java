@@ -11,17 +11,18 @@ public enum LogsOnClient {
     //login related
     NAME_TAKEN("The chosen nickname is already in use."),
     SERVER_JOINED("Joined the server."),
-    EMPTY_NAME("Nickname cannot be empty."),
+    NOT_VALID_NICKNAME("The chosen nickname is not valid."),
 
     //lobbyList related
     LOBBY_NONEXISTENT("The queried lobby does not exist."),
     LOBBY_NAME_TAKEN("The specified lobby name is already taken."),
+    LOBBY_IS_FULL("The lobby is currently full."),
+    LOBBY_CREATED_YOU("New Lobby creation successful."),
+    LOBBY_CREATED_OTHERS("Added a new lobby."),
 
     //lobby related
-    LOBBY_IS_FULL("The lobby is currently full."),
     LOBBY_JOINED("Successfully joined the lobby."),
     LOBBY_LEFT("Left the lobby."),
-    LOBBY_CREATED("Created a new lobby."),
     PLAYER_JOIN_LOBBY(" joined the lobby"),
 
     //joinGame related

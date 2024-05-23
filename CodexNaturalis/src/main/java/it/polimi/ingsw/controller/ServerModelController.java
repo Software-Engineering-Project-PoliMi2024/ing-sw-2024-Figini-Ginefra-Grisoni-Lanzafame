@@ -18,10 +18,8 @@ import it.polimi.ingsw.lightModel.lightTableRelated.LightLobby;
 import it.polimi.ingsw.lightModel.lightTableRelated.LightLobbyList;
 import it.polimi.ingsw.model.MultiGame;
 import it.polimi.ingsw.model.cardReleted.cards.CardInHand;
-import it.polimi.ingsw.model.cardReleted.cards.CardWithCorners;
 import it.polimi.ingsw.model.cardReleted.cards.GoldCard;
 import it.polimi.ingsw.model.cardReleted.cards.ResourceCard;
-import it.polimi.ingsw.model.cardReleted.utilityEnums.CardFace;
 import it.polimi.ingsw.model.cardReleted.utilityEnums.DrawableCard;
 import it.polimi.ingsw.model.playerReleted.*;
 import it.polimi.ingsw.model.tableReleted.Deck;
@@ -30,7 +28,6 @@ import it.polimi.ingsw.model.tableReleted.Lobby;
 import it.polimi.ingsw.view.ViewInterface;
 import it.polimi.ingsw.view.ViewState;
 
-import java.rmi.RemoteException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
@@ -61,7 +58,7 @@ public class ServerModelController implements ControllerInterface, DiffSubscribe
             logErr(LogsOnClient.NAME_TAKEN);
             transitionTo(ViewState.LOGIN_FORM);
         }else if(Objects.equals(nickname, "")){
-            logErr(LogsOnClient.EMPTY_NAME);
+            logErr(LogsOnClient.NOT_VALID_NICKNAME);
             transitionTo(ViewState.LOGIN_FORM);
         }else{
             //Client is now logged-In. If he disconnects we have to update the model
@@ -101,7 +98,7 @@ public class ServerModelController implements ControllerInterface, DiffSubscribe
             unsubscribeLobbyList();
             //Create a new LobbyDiffEditLogin
             subscribeLobby(newLobby);
-            logGame(LogsOnClient.LOBBY_CREATED);
+            logGame(LogsOnClient.LOBBY_CREATED_YOU);
             logYou(LogsOnClient.LOBBY_JOINED);
             transitionTo(ViewState.LOBBY);
         }
