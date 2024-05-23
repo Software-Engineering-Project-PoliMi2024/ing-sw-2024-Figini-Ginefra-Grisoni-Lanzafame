@@ -1,7 +1,6 @@
 package it.polimi.ingsw.controller;
 
 
-import it.polimi.ingsw.controller3.Controller;
 import it.polimi.ingsw.lightModel.Heavifier;
 import it.polimi.ingsw.lightModel.lightPlayerRelated.LightBack;
 import it.polimi.ingsw.lightModel.lightPlayerRelated.LightCard;
