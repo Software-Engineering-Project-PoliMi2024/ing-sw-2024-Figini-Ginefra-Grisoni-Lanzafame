@@ -42,9 +42,10 @@ class CodexTest {
 
         codex.playCard(new Placement(new Position(0, 0), card, CardFace.FRONT));
         codex.playCard(new Placement(new Position(1, 1), card1, CardFace.FRONT));
+        codex.playCard(new Placement(new Position(2, 2), card1, CardFace.BACK));
         Map<Collectable, Integer> expected = Map.of(
-                Resource.ANIMAL, 1,
-                Resource.FUNGI, 3,
+                Resource.ANIMAL, 0,
+                Resource.FUNGI, 2,
                 Resource.PLANT, 3,
                 Resource.INSECT, 2,
                 WritingMaterial.INKWELL, 0,
