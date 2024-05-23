@@ -55,7 +55,7 @@ public class MultiGame implements Serializable {
         return games.add(game);
     }
 
-    public boolean addUser(ServerModelController controller, String username) {
+    public boolean addUser(String username) {
         synchronized (usernames){
             if(isUnique(username)){
                 this.usernames.add(username);

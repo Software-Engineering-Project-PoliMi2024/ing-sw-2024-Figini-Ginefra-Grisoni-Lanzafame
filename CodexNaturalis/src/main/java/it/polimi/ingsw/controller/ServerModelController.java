@@ -69,7 +69,7 @@ public class ServerModelController implements ControllerInterface, DiffSubscribe
                 //The player must join a game
                 this.games.getUserGame(nickname).getGameLoopController().joinGame(nickname, this);
             }else{
-                this.games.addUser(this, nickname);
+                this.games.addUser(nickname);
                 subscribeLobbyList();
                 logYou(LogsOnClient.SERVER_JOINED);
                 transitionTo(ViewState.JOIN_LOBBY);
