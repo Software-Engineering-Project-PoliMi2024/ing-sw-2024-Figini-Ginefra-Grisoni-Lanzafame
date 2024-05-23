@@ -2,6 +2,7 @@ package it.polimi.ingsw.view.GUI.Components.CodexRelated;
 
 import it.polimi.ingsw.designPatterns.Observer;
 import it.polimi.ingsw.lightModel.lightPlayerRelated.LightCodex;
+import it.polimi.ingsw.lightModel.lightPlayerRelated.LightFrontier;
 import it.polimi.ingsw.lightModel.lightPlayerRelated.LightPlacement;
 import it.polimi.ingsw.model.playerReleted.Position;
 import it.polimi.ingsw.view.GUI.Components.CardRelated.CardGUI;
@@ -9,12 +10,15 @@ import it.polimi.ingsw.view.GUI.GUI;
 import it.polimi.ingsw.view.GUI.GUIConfigs;
 import javafx.geometry.Point2D;
 import javafx.geometry.Pos;
+import javafx.scene.Node;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.Pane;
 import javafx.scene.layout.StackPane;
 
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 public class CodexGUI implements Observer {
     private final StackPane codex = new StackPane();
@@ -54,8 +58,9 @@ public class CodexGUI implements Observer {
                     this.setCenter(center.getX() + deltaX, center.getY() + deltaY);
 
                     for (int i = 0; i < codex.getChildren().size(); i++) {
-                        codex.getChildren().get(i).setTranslateX(codex.getChildren().get(i).getTranslateX() + deltaX);
-                        codex.getChildren().get(i).setTranslateY(codex.getChildren().get(i).getTranslateY() + deltaY);
+                        Node target = codex.getChildren().get(i);
+                        target.setTranslateX(target.getTranslateX() + deltaX);
+                        target.setTranslateY(target.getTranslateY() + deltaY);
                     }
 
                     pastX = e.getSceneX();
@@ -74,14 +79,12 @@ public class CodexGUI implements Observer {
                     }
                     scale += deltaY / 1000;
                     this.cards.forEach(card -> card.setScaleAndUpdateTranslation(this.getScale(), this.center));
-                    this.frontier.forEach(card -> card.setScale(this.getScale(), this.center));
+                    this.frontier.forEach(card -> card.setScaleAndUpdateTranslation(this.getScale(), this.center));
                 }
         );
     }
 
     public void attachToCodex(){
-        System.out.println("Attaching to codex");
-        System.out.println(this.getLightCodex());
         this.getLightCodex().attach(this);
     }
 
@@ -137,26 +140,40 @@ public class CodexGUI implements Observer {
     }
 
     public void update(){
-        System.out.println("Updating codex");
         int n = this.getLightCodex().getPlacementHistory().size();
 
         if(n > this.cards.size()){
-            System.out.println("Adding cards");
             for(int i = this.cards.size(); i < n; i++){
                 LightPlacement target = this.getLightCodex().getPlacementHistory().values().toArray(new LightPlacement[0])[i];
                 this.addCard(new CardGUI(target.card(), target.face()), target.position());
             }
         }
 
-        codex.getChildren().removeAll(frontier.stream().map(FrontierCardGUI::getCard).toList());
-        frontier.clear();
-        for(Position p : this.getLightCodex().getFrontier().frontier()){
-            Point2D pos = this.getCardPosition(p);
-            FrontierCardGUI fc = new FrontierCardGUI(p, pos.getX(), pos.getY());
-            fc.setVisibility(isFrontierVisible);
-            fc.setScale(this.getScale(), center);
-            frontier.add(fc);
-            codex.getChildren().add(fc.getCard());
+
+        Set<Position> staySet = new HashSet<>();
+        List<Position> newFrontier = this.getLightCodex().getFrontier().frontier();
+        Set<Position> currentFrontier = new HashSet<>(this.frontier.stream().map(FrontierCardGUI::getGridPosition).toList());
+
+        //Add the new Elements
+        for(Position newElement : newFrontier){
+            staySet.add(newElement);
+            if(!currentFrontier.contains(newElement)){
+                Point2D cardPos = this.getCardPosition(newElement);
+                FrontierCardGUI fc = new FrontierCardGUI(newElement, cardPos.getX(), cardPos.getY());
+                codex.getChildren().add(fc.getCard());
+                fc.setVisibility(isFrontierVisible);
+                fc.setScale(this.getScale());
+                frontier.add(fc);
+            }
+        }
+
+        //Remove the old elements
+        for(int i = frontier.size() - 1; i >= 0; i--){
+            FrontierCardGUI fc = frontier.get(i);
+            if(!staySet.contains(fc.getGridPosition())){
+                codex.getChildren().remove(fc.getCard());
+                frontier.remove(fc);
+            }
         }
     }
 

@@ -131,7 +131,6 @@ public class CardGUI {
     public void setScale(double scale){
         imageView.setScaleX(scale);
         imageView.setScaleY(scale);
-
     }
 
     public CardFace getFace() {
