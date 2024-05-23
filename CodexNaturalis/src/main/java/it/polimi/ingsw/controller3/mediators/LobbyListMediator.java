@@ -8,8 +8,4 @@ import it.polimi.ingsw.lightModel.lightTableRelated.LightLobbyList;
 
 public class LobbyListMediator extends Mediator<LobbyListMediatorSubscriber, LightLobbyList> {
 
-    @Override
-    void notify(LobbyListMediatorSubscriber subscriber, ModelDiffs<LightLobbyList> diff) {
-
-    }
 }

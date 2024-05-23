@@ -1,5 +1,7 @@
 package it.polimi.ingsw.model.tableReleted;
 
+import it.polimi.ingsw.controller3.mediatorSubscriber.LobbyListMediatorSubscriber;
+import it.polimi.ingsw.controller3.mediators.LobbyListMediator;
 import it.polimi.ingsw.lightModel.Lightifier;
 import it.polimi.ingsw.lightModel.diffPublishers.DiffPublisher;
 import it.polimi.ingsw.lightModel.diffPublishers.DiffSubscriber;
@@ -17,7 +19,7 @@ import java.util.Set;
 
 public class LobbyList implements Serializable {
     private final Set<Lobby> lobbies;
-    private final LobbyListDiffPublisher lobbyListDiffPublisher = new LobbyListDiffPublisher();
+    private final LobbyListMediator mediator = new LobbyListMediator();
 
     public LobbyList(){
         lobbies = new HashSet<>();
@@ -28,19 +30,19 @@ public class LobbyList implements Serializable {
 
     public void addLobby(Lobby lobby){
         lobbies.add(lobby);
-        lobbyListDiffPublisher.addLobbyNotification(lobby);
     }
 
     public void remove(Lobby lobby){
         lobbies.remove(lobby);
-        lobbyListDiffPublisher.removeLobbyNotification(lobby);
     }
 
-    public void subscribe(DiffSubscriber diffSubscriber) {
-        lobbyListDiffPublisher.subscribe(diffSubscriber);
+    public void subscribe(LobbyListMediatorSubscriber subscriber){
+        mediator.subscribe(subscriber);
     }
-    public void unsubscribe(DiffSubscriber diffSubscriber) {
-        lobbyListDiffPublisher.unsubscribe(diffSubscriber);
+
+    public void unsubscribe(LobbyListMediatorSubscriber subscriber){
+        mediator.unsubscribe(subscriber);
     }
+
 
 }
