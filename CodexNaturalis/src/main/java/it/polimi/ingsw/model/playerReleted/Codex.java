@@ -126,9 +126,10 @@ public class Codex implements Serializable {
         }
 
         // collectables from the permanent resources
-        for (Collectable c : placement.card().getPermanentResources(placement.face()))
-            if(c != SpecialCollectable.EMPTY)
-                this.collectables.put(c, this.collectables.get(c) + 1);
+        if(placement.face() == CardFace.BACK)
+            for (Collectable c : placement.card().getPermanentResources(placement.face()))
+                if(c != SpecialCollectable.EMPTY)
+                    this.collectables.put(c, this.collectables.get(c) + 1);
 
     }
 
