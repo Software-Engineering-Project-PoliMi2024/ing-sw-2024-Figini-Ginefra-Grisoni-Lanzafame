@@ -36,6 +36,9 @@ public class LeaderboardGUI implements Observer {
 
         popUp.getContent().getChildren().add(layout);
 
+        popUp.open();
+        popUp.setLocked(true);
+
         createLeaderboard(parent);
 
         layout.prefHeightProperty().bind(popUp.getContent().prefHeightProperty());
