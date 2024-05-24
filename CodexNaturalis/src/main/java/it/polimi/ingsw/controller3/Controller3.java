@@ -7,6 +7,7 @@ import it.polimi.ingsw.lightModel.lightPlayerRelated.LightCard;
 import it.polimi.ingsw.lightModel.lightPlayerRelated.LightPlacement;
 import it.polimi.ingsw.model.MultiGame;
 import it.polimi.ingsw.model.cardReleted.utilityEnums.DrawableCard;
+import it.polimi.ingsw.model.tableReleted.Lobby;
 import it.polimi.ingsw.view.ViewInterface;
 import it.polimi.ingsw.view.ViewState;
 
@@ -20,15 +21,24 @@ public class Controller3 implements ControllerInterface{
         this.view = view;
         this.multiGame = multiGame;
     }
+
+    /**
+     * This method is called when the client wants to login
+     * It checks if the nickname is valid and if it is not already taken
+     * if the nickname was in a game before disconnecting, it will rejoin the game
+     * else it will join the lobbyList receiving the list of Lobby and
+     * subscribing to the lobbyList mediator in order to receive updates on the lobbyList
+     * @param nickname the nickname chosen by the player
+     */
     @Override
     public void login(String nickname){
         //check if the nickname is already taken
         if(!this.multiGame.isUnique(nickname)) {
-            logErr(LogsOnClient.NAME_TAKEN.getMessage());
+            logErr(LogsOnClientStatic.NAME_TAKEN);
             transitionTo(ViewState.LOGIN_FORM);
             //check if the nickname is valid
         }else if(nickname.matches(Configs.validNicknameRegex)){
-            logErr(LogsOnClient.NOT_VALID_NICKNAME.getMessage());
+            logErr(LogsOnClientStatic.NOT_VALID_NICKNAME);
             transitionTo(ViewState.LOGIN_FORM);
         }else{
             //Client is now logged-In. If he disconnects we have to update the model
@@ -47,6 +57,11 @@ public class Controller3 implements ControllerInterface{
         }
     }
 
+    /**
+     *
+     * @param gameName
+     * @param maxPlayerCount
+     */
     @Override
     public void createLobby(String gameName, int maxPlayerCount) {
 
@@ -80,6 +95,16 @@ public class Controller3 implements ControllerInterface{
     @Override
     public void disconnect() {
 
+    }
+
+    //malevolent user checker
+    private boolean hasAlreadyLogged(){
+        return this.nickname != null && this.nickname.equals(nickname);
+    }
+
+    private void malevolentConsequences(){
+        System.out.println(nickname + "is a malevolent user");
+        this.disconnect();
     }
 
     //view methods used by the controller
