@@ -29,7 +29,7 @@ public class HandGUI implements Observer {
 
     private final FlippablePlayableCard[] handCards = new FlippablePlayableCard[3];
 
-    private final FlippableCardGUI secretObjective;
+    private FlippableCardGUI secretObjective;
     private FlippablePlayableCard positioningCard = null;
     private CardGUI stubCard = null;
     private AnchoredPopUp handPopUp;
@@ -57,10 +57,6 @@ public class HandGUI implements Observer {
                 handPopUp.setLocked(false);
             }
         });
-
-        secretObjective = new FlippableCardGUI(new LightCard(1, 1));
-        setSizeBindings(secretObjective);
-        hand.getChildren().add(secretObjective.getImageView());
     }
 
     public HBox getHand() {
@@ -69,16 +65,23 @@ public class HandGUI implements Observer {
 
     public void addHandTo(AnchorPane parent){
         handPopUp = new AnchoredPopUp(parent, 0.8f, 0.2f, Pos.BOTTOM_CENTER, 0.25f);
-        handPopUp.getContent().setStyle(handPopUp.getContent().getStyle() +  "-fx-background-color: transparent");
         handPopUp.getContent().getChildren().add(hand);
+        //handPopUp.getContent().setStyle(handPopUp.getContent().getStyle() +  "-fx-background-color: transparent");
 
-        hand.prefWidthProperty().bind(handPopUp.getContent().prefWidthProperty());
-        hand.prefHeightProperty().bind(handPopUp.getContent().prefHeightProperty());
+        AnchorPane.setBottomAnchor(hand, 0.0);
+        AnchorPane.setLeftAnchor(hand, 0.0);
+        AnchorPane.setRightAnchor(hand, 0.0);
+        AnchorPane.setTopAnchor(hand, 0.0);
+
+        //hand.setStyle(hand.getStyle() +  "-fx-background-color: transparent");
+
+        secretObjective = new FlippableCardGUI(new LightCard(1, 1));
+        setSizeBindings(secretObjective);
+        hand.getChildren().add(secretObjective.getImageView());
     }
 
     private void setSizeBindings(CardGUI card){
-        card.getImageView().setFitWidth(hand.prefWidthProperty().getValue()/ (handCards.length + 1) - hand.spacingProperty().getValue());
-        card.getImageView().fitWidthProperty().bind(hand.prefWidthProperty().divide(handCards.length + 1).subtract(hand.spacingProperty().getValue()));
+        card.getImageView().fitWidthProperty().bind(handPopUp.getContent().maxWidthProperty().subtract((handCards.length) * hand.spacingProperty().getValue()).divide(handCards.length + 1));
     }
 
     public void addCardToHand(FlippablePlayableCard card, boolean draggable){
@@ -183,7 +186,6 @@ public class HandGUI implements Observer {
                             }
                     );
                 }
-
 
                 return;
             }

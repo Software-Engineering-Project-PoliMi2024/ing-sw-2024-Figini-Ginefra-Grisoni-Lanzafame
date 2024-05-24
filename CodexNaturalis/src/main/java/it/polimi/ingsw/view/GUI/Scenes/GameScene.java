@@ -3,12 +3,13 @@ package it.polimi.ingsw.view.GUI.Scenes;
 import it.polimi.ingsw.view.GUI.Components.*;
 import it.polimi.ingsw.view.GUI.Components.CodexRelated.CodexGUI;
 import it.polimi.ingsw.view.GUI.Components.CodexRelated.CollectedCollectablesGUI;
+import it.polimi.ingsw.view.GUI.Components.DeckRelated.DeckAreaGUI;
 import it.polimi.ingsw.view.GUI.Components.HandRelated.HandGUI;
 import it.polimi.ingsw.view.GUI.Components.Logs.LogsGUI;
 import it.polimi.ingsw.view.GUI.Root;
 
 public class GameScene extends SceneGUI{
-    private DeckGUI deck;
+    private DeckAreaGUI deck;
     private HandGUI hand;
     private CodexGUI codex;
     private CollectedCollectablesGUI collectedCollectables;
@@ -55,9 +56,8 @@ public class GameScene extends SceneGUI{
 
         hand.addHandTo(getContent());
 
-        deck = new DeckGUI();
-        deck.setHand(hand);
-        deck.addDecksTo(getContent());
+        deck = new DeckAreaGUI();
+        deck.addThisTo(getContent());
 
         leaderboard = new LeaderboardGUI();
         leaderboard.addThisTo(getContent());

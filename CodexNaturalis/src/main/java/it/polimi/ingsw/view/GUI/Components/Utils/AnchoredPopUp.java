@@ -2,8 +2,13 @@ package it.polimi.ingsw.view.GUI.Components.Utils;
 
 import it.polimi.ingsw.view.GUI.Components.Utils.AnimationStuff;
 import javafx.animation.KeyFrame;
+import javafx.animation.KeyValue;
 import javafx.animation.Timeline;
+import javafx.beans.binding.Bindings;
+import javafx.beans.binding.DoubleBinding;
+import javafx.collections.ListChangeListener;
 import javafx.geometry.Pos;
+import javafx.scene.Node;
 import javafx.scene.layout.AnchorPane;
 import javafx.util.Duration;
 
@@ -16,6 +21,11 @@ public class AnchoredPopUp {
 
     private final int animationDuration = 200;
     private final Pos alignment;
+    private final AnchorPane parent;
+
+    private final float closedPercentage;
+
+    private final float widthPercentage;
 
     /**
      * Creates a new anchored popup
@@ -27,17 +37,19 @@ public class AnchoredPopUp {
      * @param closedPercentage the percentage of the respective side that the popup will be once closed
      */
     public AnchoredPopUp(AnchorPane parent, float widthPercentage, float heightPercentage, Pos alignment, float closedPercentage) {
-        final float backedPercentage = 1 - closedPercentage;
+        this.parent = parent;
         this.alignment = alignment;
+        this.closedPercentage = closedPercentage;
+        this.widthPercentage = widthPercentage;
 
         //align the content using the alignment parameter
         switch (alignment) {
             case TOP_CENTER:
-                content.setLayoutX(0);
+                //content.setLayoutX(0);
                 AnchorPane.setTopAnchor(content, 0.0);
                 break;
             case BOTTOM_CENTER:
-                content.setLayoutX(0);
+                //content.setLayoutX(0);
                 AnchorPane.setBottomAnchor(content, 0.0);
                 break;
             case Pos.CENTER_RIGHT:
@@ -52,72 +64,39 @@ public class AnchoredPopUp {
                 throw new IllegalArgumentException("Invalid alignment");
         }
 
-        // add listeners to parent's width and height properties to update the content's width and height
-        parent.widthProperty().addListener((obs, oldVal, newVal) -> {
-            content.setPrefWidth(newVal.doubleValue() * widthPercentage);
+        content.maxWidthProperty().bind(parent.widthProperty().multiply(widthPercentage));
+        content.maxHeightProperty().bind(parent.heightProperty().multiply(heightPercentage));
 
-            switch (alignment) {
-                case Pos.CENTER_RIGHT:
-                    closeAnimation.getKeyFrames().set(0,
-                            new KeyFrame(Duration.millis(animationDuration), AnimationStuff.createTranslateXKeyValue(content, content.getPrefWidth() * backedPercentage)));
+        //Set Translation Bindings for centering the content
+        switch(alignment){
+            case Pos.TOP_CENTER:
+            case Pos.BOTTOM_CENTER:
+                content.translateXProperty().bind(
+                        Bindings.createDoubleBinding(
+                                () -> (parent.getWidth() - content.getWidth()) / 2,
+                                parent.widthProperty(),
+                                content.widthProperty(),
+                                content.maxWidthProperty()
+                        )
+                );
+                break;
 
-                    if(isOpen)
-                        content.setTranslateX(0);
-                    else
-                        content.setTranslateX(content.getPrefWidth() * backedPercentage);
-                    break;
-                case Pos.CENTER_LEFT:
-                    closeAnimation.getKeyFrames().set(0,
-                            new KeyFrame(Duration.millis(animationDuration), AnimationStuff.createTranslateXKeyValue(content, -content.getPrefWidth() * backedPercentage)));
+            case Pos.CENTER_RIGHT:
+            case Pos.CENTER_LEFT:
+                content.translateYProperty().bind(
+                        Bindings.createDoubleBinding(
+                                () -> (parent.getHeight() - content.getHeight()) / 2,
+                                parent.heightProperty(),
+                                content.heightProperty(),
+                                content.maxHeightProperty()
+                        )
+                );
+                break;
+        }
 
-                    if(isOpen)
-                        content.setTranslateX(0);
-                    else
-                        content.setTranslateX(-content.getPrefWidth() * backedPercentage);
-                    break;
-                case TOP_CENTER:
-                case BOTTOM_CENTER:
-                    content.setLayoutX((newVal.doubleValue() - content.getPrefWidth()) / 2);
-                    break;
-            }
-        });
-
-        parent.heightProperty().addListener((obs, oldVal, newVal) -> {
-            double newHeight = newVal.doubleValue() * heightPercentage;
-            content.setPrefHeight(newHeight);
-
-            switch (alignment) {
-                case TOP_CENTER:
-                    closeAnimation.getKeyFrames().set(0,
-                            new KeyFrame(Duration.millis(animationDuration), AnimationStuff.createTranslateYKeyValue(content, -newHeight * backedPercentage)));
-
-                    if(isOpen)
-                        content.setTranslateY(0);
-                    else
-                        content.setTranslateY(-newHeight * backedPercentage);
-
-                    break;
-                case BOTTOM_CENTER:
-                    closeAnimation.getKeyFrames().set(0,
-                            new KeyFrame(Duration.millis(animationDuration), AnimationStuff.createTranslateYKeyValue(content, newHeight * backedPercentage)));
-
-                    if(isOpen)
-                        content.setTranslateY(0);
-                    else
-                        content.setTranslateY(newHeight * backedPercentage);
-                    break;
-
-                case Pos.CENTER_RIGHT:
-                case Pos.CENTER_LEFT:
-                    content.setLayoutY((newVal.doubleValue() - content.getPrefHeight()) / 2);
-                    break;
-            }
-
-
-        });
 
         //set the content background color and radius
-        content.setStyle("-fx-background-color: black; -fx-background-radius: 0 0 20 20;");
+        content.setStyle("-fx-background-color: black;");
 
         switch (alignment) {
             case BOTTOM_CENTER:
@@ -134,15 +113,67 @@ public class AnchoredPopUp {
                 break;
         }
 
-        //Set up the animations
-        openAnimation.getKeyFrames().addAll(
-                new KeyFrame(Duration.millis(animationDuration), AnimationStuff.createTranslateXKeyValue(content, 0)),
-                new KeyFrame(Duration.millis(animationDuration), AnimationStuff.createTranslateYKeyValue(content, 0))
-        );
+        //Set up the Open and Close animation
+        switch (alignment){
+            case Pos.TOP_CENTER:
+            case BOTTOM_CENTER:
+                openAnimation.getKeyFrames().addAll(
+                        new KeyFrame(Duration.millis(animationDuration), AnimationStuff.createTranslateYKeyValue(content, 0))
+                );
 
-        closeAnimation.getKeyFrames().addAll(
-                new KeyFrame(Duration.millis(animationDuration), AnimationStuff.createTranslateXKeyValue(content, 0))
-        );
+                closeAnimation.getKeyFrames().addAll(
+                        new KeyFrame(Duration.millis(animationDuration), new KeyValue(content.translateYProperty(), 0)));
+                break;
+
+            case Pos.CENTER_RIGHT:
+            case Pos.CENTER_LEFT:
+                openAnimation.getKeyFrames().addAll(
+                        new KeyFrame(Duration.millis(animationDuration), AnimationStuff.createTranslateXKeyValue(content, 0))
+                );
+
+                closeAnimation.getKeyFrames().addAll(
+                        new KeyFrame(Duration.millis(animationDuration), new KeyValue(content.translateXProperty(), 0)));
+                break;
+
+        }
+
+        //add a listener to the content height to update the close animation
+
+        switch (alignment){
+            case Pos.TOP_CENTER:
+                content.heightProperty().addListener((observable, oldValue, newValue) -> {
+                    closeAnimation.getKeyFrames().set(0,
+                            new KeyFrame(Duration.millis(animationDuration), AnimationStuff.createTranslateYKeyValue(content, -content.getHeight() * (1 - closedPercentage))));
+                    if(!isOpen)
+                        content.setTranslateY(-content.getHeight() * (1 - closedPercentage));
+                });
+                break;
+            case BOTTOM_CENTER:
+                content.heightProperty().addListener((observable, oldValue, newValue) -> {
+                    closeAnimation.getKeyFrames().set(0,
+                            new KeyFrame(Duration.millis(animationDuration), AnimationStuff.createTranslateYKeyValue(content, content.getHeight() * (1 - closedPercentage))));
+                    if(!isOpen)
+                        content.setTranslateY(content.getHeight() * (1 - closedPercentage));
+                });
+                break;
+            case Pos.CENTER_RIGHT:
+                content.widthProperty().addListener((observable, oldValue, newValue) -> {
+                    closeAnimation.getKeyFrames().set(0,
+                            new KeyFrame(Duration.millis(animationDuration), AnimationStuff.createTranslateXKeyValue(content, content.getWidth() * (1 - closedPercentage))));
+                    if(!isOpen)
+                        content.setTranslateX(content.getWidth() * (1 - closedPercentage));
+                });
+                break;
+            case Pos.CENTER_LEFT:
+                content.widthProperty().addListener((observable, oldValue, newValue) -> {
+                    closeAnimation.getKeyFrames().set(0,
+                            new KeyFrame(Duration.millis(animationDuration), AnimationStuff.createTranslateXKeyValue(content, -content.getWidth() * (1 - closedPercentage))));
+                    if(!isOpen)
+                        content.setTranslateX(-content.getWidth() * (1 - closedPercentage));
+                });
+                break;
+
+        }
 
 
         // add listeners to the content to open and close the popup

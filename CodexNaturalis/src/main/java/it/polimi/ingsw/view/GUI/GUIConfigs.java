@@ -1,9 +1,11 @@
 package it.polimi.ingsw.view.GUI;
 
+import it.polimi.ingsw.Configs;
+
 public class GUIConfigs {
-    public static int swapAnimationDuration = 500;
-    public static int swapAnimationDelay = 100;
-    public static int swapAnimationPause = 400;
+    public static int swapAnimationDuration = Configs.debugMode ? 1 : 500;
+    public static int swapAnimationDelay = Configs.debugMode ? 1 : 100;
+    public static int swapAnimationPause = Configs.debugMode ? 1 : 400;
 
     public static int cardImageWidth = 993;
     public static int cardImageHeight = 662;
@@ -22,6 +24,6 @@ public class GUIConfigs {
     public static int holdDuration = 300; //in milliseconds
 
     public static int collectablesWidth = 50;
-    public static int deckGap = 35;
-    public static int deckCardGap = 10;
+    public static int hDeckGap = 35;
+    public static int vCardGapInDeck = 10;
 }

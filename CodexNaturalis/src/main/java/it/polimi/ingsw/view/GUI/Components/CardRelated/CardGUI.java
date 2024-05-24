@@ -50,7 +50,7 @@ public class CardGUI {
         this.update();
 
         imageView.setFitWidth(GUIConfigs.cardWidth);
-        imageView.fitHeightProperty().bind(imageView.fitWidthProperty().multiply(imageView.getImage().getHeight() / imageView.getImage().getWidth()));
+        imageView.fitHeightProperty().bind(imageView.fitWidthProperty().multiply(GUIConfigs.cardHeight / GUIConfigs.cardWidth));
 
         holdTimer = new Timeline();
         //Make an empty keyframe at holdDuration
@@ -116,6 +116,11 @@ public class CardGUI {
 
     public void setTarget(LightCard target) {
         this.target = target;
+        this.update();
+    }
+
+    public void setTarget(LightBack back) {
+        this.target = new LightCard(0, back.idBack());
         this.update();
     }
 
