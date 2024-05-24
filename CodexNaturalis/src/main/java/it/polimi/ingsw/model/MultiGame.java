@@ -188,6 +188,9 @@ public class MultiGame implements Serializable {
         }
         return null;
     }
+    public synchronized boolean isInLobby(String nickname){
+        return getUserLobby(nickname)!=null;
+    }
 
     /**
      * Add player to the lobbyName
