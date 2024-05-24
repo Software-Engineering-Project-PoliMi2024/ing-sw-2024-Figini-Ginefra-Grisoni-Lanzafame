@@ -3,6 +3,7 @@ package it.polimi.ingsw.controller3.mediators;
 import it.polimi.ingsw.controller3.LogsOnClientStatic;
 import it.polimi.ingsw.lightModel.DiffGenerator;
 import it.polimi.ingsw.lightModel.LightModelUpdaterInterfaces.LightLobbyListUpdater;
+import it.polimi.ingsw.lightModel.diffs.nuclearDiffs.FatManLobbyList;
 import it.polimi.ingsw.lightModel.lightTableRelated.LightLobbyList;
 import it.polimi.ingsw.model.tableReleted.Lobby;
 import it.polimi.ingsw.view.LoggerInterface;
@@ -23,7 +24,7 @@ public class LobbyListMediator extends Mediator<LightLobbyListUpdater, LightLobb
         super.subscribe(nickname, loggerUpdater, loggerUpdater);
         try {
             loggerUpdater.updateLobbyList(DiffGenerator.lobbyListHistory(lobbyHistory));
-            loggerUpdater.log(LogsOnClientStatic.SERVER_JOINED);
+            loggerUpdater.log(LogsOnClientStatic.JOIN_LOBBY_LIST);
         }catch (Exception e){
             System.out.println("LobbyListMediator: error in subscribing" + e.getMessage());
         }
@@ -34,6 +35,12 @@ public class LobbyListMediator extends Mediator<LightLobbyListUpdater, LightLobb
      * @param nickname the unSubscriber's nickname
      */
     public synchronized void unsubscribe(String nickname){
+        try {
+            subscribers.get(nickname).first().updateLobbyList(new FatManLobbyList());
+            subscribers.get(nickname).second().log(LogsOnClientStatic.LEFT_LOBBY_LIST);
+        }catch (Exception e){
+            System.out.println("LobbyListMediator: error in unsubscribing" + e.getMessage());
+        }
         super.unsubscribe(nickname);
     }
     /**
