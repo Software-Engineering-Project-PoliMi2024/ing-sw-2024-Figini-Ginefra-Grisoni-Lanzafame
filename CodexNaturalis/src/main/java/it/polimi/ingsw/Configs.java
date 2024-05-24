@@ -16,4 +16,5 @@ public class Configs {
     public static String resourceCardBinFileName = "resourceCards.bin";
     public static String startCardBinFileName = "startCards.bin";
     public static String validNicknameRegex = "^\\s*$";
+    public static String validLobbyNameRegex = "^\\s*$";
 }
