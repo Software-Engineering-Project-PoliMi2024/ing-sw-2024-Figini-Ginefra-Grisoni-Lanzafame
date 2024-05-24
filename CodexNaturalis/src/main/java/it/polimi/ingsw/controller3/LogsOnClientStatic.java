@@ -26,9 +26,10 @@ public class LogsOnClientStatic {
     public static String LOBBY_REMOVED_YOU = "Lobby removal successful.";
 
     //lobby related
-    public static String LOBBY_JOINED = "Successfully joined the lobby.";
+    public static String LOBBY_JOIN_YOU = "Successfully joined the lobby.";
     public static String LOBBY_LEFT = "Left the lobby.";
-    public static String PLAYER_JOIN_LOBBY = " joined the lobby";
+    public static String LOBBY_LEFT_OTHER = " left the lobby.";
+    public static String LOBBY_JOIN_OTHER = " joined the lobby";
 
     //joinGame related
     public static String GAME_CREATED = "Lobby is full, the game is starting.";
