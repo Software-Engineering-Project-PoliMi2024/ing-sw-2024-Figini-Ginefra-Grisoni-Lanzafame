@@ -94,9 +94,44 @@ public class Controller3 implements ControllerInterface{
         }
     }
 
+    /**
+     * This method is called when the client wants to join a lobby
+     * It checks if the player is a malevolent user
+     * checks if the lobby exists and if it is full and determines if the player can join the lobby
+     * it adds the player to the lobby and updates the model
+     * it unsubscribes the view from the lobbyList mediator and subscribes it to the new lobby mediator
+     * if the lobby is full after the join it starts the game
+     * @param lobbyName the name of the lobby the user wants to join
+     */
     @Override
     public void joinLobby(String lobbyName) {
+        //check if the player is a malevolent user
+        if (!hasAlreadyLogged()) {
+            malevolentConsequences();
+            return;
+        }
 
+        Lobby lobbyToJoin = this.multiGame.getLobbyByName(lobbyName);
+        if (lobbyToJoin == null) {
+            logErr(LogsOnClientStatic.LOBBY_NONEXISTENT);
+            transitionTo(ViewState.JOIN_LOBBY);
+        } else if (lobbyToJoin.getLobbyPlayerList().size() == lobbyToJoin.getNumberOfMaxPlayer()) {
+            logErr(LogsOnClientStatic.LOBBY_IS_FULL);
+            transitionTo(ViewState.JOIN_LOBBY);
+        } else {
+            //add the player to the lobby, updated model
+            multiGame.addPlayerToLobby(lobbyName, this.nickname);
+            //disconnect from lobbyList mediator and subscribe to the new lobby
+            multiGame.unsubscribe(this.nickname);
+
+            if (lobbyToJoin.getLobbyPlayerList().size() != lobbyToJoin.getNumberOfMaxPlayer()) {
+                lobbyToJoin.subscribe(this.nickname, this.view);
+                transitionTo(ViewState.LOBBY);
+            }else{
+                //TODO
+
+            }
+        }
     }
 
     /**
