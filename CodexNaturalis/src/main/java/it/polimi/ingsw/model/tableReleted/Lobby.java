@@ -1,13 +1,15 @@
 package it.polimi.ingsw.model.tableReleted;
 
+import it.polimi.ingsw.controller3.mediators.LobbyMediator;
 import it.polimi.ingsw.lightModel.diffPublishers.DiffSubscriber;
 import it.polimi.ingsw.lightModel.diffPublishers.LobbyDiffPublisher;
+import it.polimi.ingsw.view.ViewInterface;
 
 import java.io.Serializable;
 import java.util.*;
 
 public class Lobby implements Serializable {
-    private final LobbyDiffPublisher lobbyDiffPublisher;
+    private final LobbyMediator lobbyMediator;
     private final String lobbyName;
     final private List<String> lobbyPlayerList;
     private final int numberOfMaxPlayer;
@@ -25,7 +27,7 @@ public class Lobby implements Serializable {
         lobbyPlayerList = new ArrayList<>();
         this.lobbyName = lobbyName;
         lobbyPlayerList.add(creatorNickname);
-        lobbyDiffPublisher = new LobbyDiffPublisher();
+        lobbyMediator = new LobbyMediator();
     }
     /**
      * Handles the adding of a user to the current lobby.
@@ -76,21 +78,27 @@ public class Lobby implements Serializable {
     }
 
     /**
-     * @param diffSubscriber who is joining the lobby
+     * Subscribes the viewInterface to the mediator
+     * Updates the lobby of the subscriber with the lobby passed as parameter
+     * Logs the event on the view
+     * Notifies all the other subscribers that a new user has joined the lobby
+     * adds the subscriber to the mediator
+     * @param nickname the subscriber's nickname
+     * @param loggerAndUpdater the logger and updater connected to the subscriber
      */
-    public void subscribe(DiffSubscriber diffSubscriber){
-        lobbyDiffPublisher.subscribe(diffSubscriber);
+    public void subscribe(String nickname, ViewInterface loggerAndUpdater){
+        lobbyMediator.subscribe(nickname, loggerAndUpdater, this);
     }
 
     /**
-     * @param unsubscriber who is leaving the lobby
+     * Unsubscribes the subscriber with the nickname passed as parameter
+     * erases the lobby of the unSubscriber
+     * notifies all the other subscribers that the unSubscriber has left the lobby
+     * logs the event on the unSubscriber
+     * removes the unSubscriber from the mediator
+     * @param nickname the unSubscriber's nickname
      */
-    public void unsubscribe(DiffSubscriber unsubscriber){
-        lobbyDiffPublisher.unsubscribe(unsubscriber);
+    public void unsubscribe(String nickname){
+        lobbyMediator.unsubscribe(nickname);
     }
-
-    public void notifyStartGame(){
-        lobbyDiffPublisher.notifyStartGame();
-    }
-
 }
