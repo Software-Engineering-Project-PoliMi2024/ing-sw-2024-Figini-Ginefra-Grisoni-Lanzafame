@@ -2,7 +2,6 @@ package it.polimi.ingsw.controller3;
 
 import it.polimi.ingsw.Configs;
 import it.polimi.ingsw.controller.ControllerInterface;
-import it.polimi.ingsw.controller.LogsOnClient;
 import it.polimi.ingsw.lightModel.lightPlayerRelated.LightCard;
 import it.polimi.ingsw.lightModel.lightPlayerRelated.LightPlacement;
 import it.polimi.ingsw.model.MultiGame;
@@ -100,8 +99,31 @@ public class Controller3 implements ControllerInterface{
 
     }
 
+    /**
+     * This method is called when the client wants to leave the lobby
+     * It checks if the player is a malevolent user
+     * it removes the player from the lobby and updates the model
+     * if the lobby is empty it removes the lobby from the model
+     * it subscribes the view to the lobbyList mediator
+     */
     @Override
     public void leaveLobby() {
+        if (!multiGame.isInLobby(this.nickname)) {
+            malevolentConsequences();
+            return;
+        }
+
+        Lobby lobbyToLeave = multiGame.getUserLobby(this.nickname);
+        //update the model
+        lobbyToLeave.removeUserName(this.nickname);
+
+        if (lobbyToLeave.getLobbyPlayerList().isEmpty()) {
+            multiGame.removeLobby(lobbyToLeave);
+            multiGame.notifyLobbyRemoved(this.nickname, lobbyToLeave);
+        }
+        multiGame.subscribe(this.nickname, view);
+
+        transitionTo(ViewState.JOIN_LOBBY);
 
     }
 
