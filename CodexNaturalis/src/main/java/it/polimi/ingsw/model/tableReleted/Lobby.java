@@ -7,12 +7,14 @@ import it.polimi.ingsw.view.ViewInterface;
 
 import java.io.Serializable;
 import java.util.*;
+import java.util.concurrent.locks.ReentrantLock;
 
 public class Lobby implements Serializable {
     private final LobbyMediator lobbyMediator;
     private final String lobbyName;
     final private List<String> lobbyPlayerList;
     private final int numberOfMaxPlayer;
+    private final ReentrantLock transitioningToGameLock;
 
     /**
      * @param numberOfMaxPlayer the number of player that can join the lobby
@@ -28,6 +30,7 @@ public class Lobby implements Serializable {
         this.lobbyName = lobbyName;
         lobbyPlayerList.add(creatorNickname);
         lobbyMediator = new LobbyMediator();
+        transitioningToGameLock = new ReentrantLock();
     }
     /**
      * Handles the adding of a user to the current lobby.
@@ -100,5 +103,19 @@ public class Lobby implements Serializable {
      */
     public void unsubscribe(String nickname){
         lobbyMediator.unsubscribe(nickname);
+    }
+
+    /**
+     * acquires the lock on the transitioningToGameLock
+     */
+    public synchronized void lock(){
+        transitioningToGameLock.lock();
+    }
+
+    /**
+     * releases the lock on the transitioningToGameLock
+     */
+    public synchronized void unlock(){
+        transitioningToGameLock.unlock();
     }
 }
