@@ -14,6 +14,7 @@ import it.polimi.ingsw.model.tableReleted.Lobby;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 public class Lightifier implements Serializable {
@@ -24,8 +25,18 @@ public class Lightifier implements Serializable {
     public static LightLobby lightify(Lobby lobby) {
         return new LightLobby(lobby.getLobbyPlayerList(), lobby.getLobbyName(), lobby.getNumberOfMaxPlayer());
     }
-    public static LightLobbyList lightify(LobbyList lobbies){
-        return new LightLobbyList(lobbies.getLobbies().stream().map(Lightifier::lightify).toList());
+
+    /**
+     * transforms a list of lobbies into a list of lightLobbies
+     * @param lobbies the list of lobbies to be lightened
+     * @return a list of LightLobby
+     */
+    public static List<LightLobby> lightify(List<Lobby> lobbies){
+        List<LightLobby> lightLobbies = new ArrayList<>();
+        for(Lobby lobby : lobbies){
+            lightLobbies.add(lightify(lobby));
+        }
+        return lightLobbies;
     }
 
     /**
