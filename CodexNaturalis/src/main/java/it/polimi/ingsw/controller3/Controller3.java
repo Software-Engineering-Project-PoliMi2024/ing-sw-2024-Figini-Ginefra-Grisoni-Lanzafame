@@ -58,13 +58,41 @@ public class Controller3 implements ControllerInterface{
     }
 
     /**
-     *
-     * @param gameName
-     * @param maxPlayerCount
+     * This method is called when the client wants to create a new lobby
+     * It checks if the player is a malevolent user
+     * checks if the lobby name is already taken or if it is valid
+     * it creates the lobby and adds it to the model
+     * it unsubscribes the view from the lobbyList mediator and subscribes it to the new lobby mediator
+     * @param gameName the name of the lobby
+     * @param maxPlayerCount the maximum number of players that can join the lobby
      */
     @Override
     public void createLobby(String gameName, int maxPlayerCount) {
+        //check if the player is a malevolent user
+        if(!hasAlreadyLogged()){
+            malevolentConsequences();
+            return;
+        }
 
+        //check if the lobby name is already taken
+        if(multiGame.getLobbyByName(gameName)!=null || multiGame.getGameByName(gameName)!=null) {
+            logErr(LogsOnClientStatic.LOBBY_NAME_TAKEN);
+            transitionTo(ViewState.JOIN_LOBBY);
+            //check if the lobby name is valid
+        }else if(gameName.matches(Configs.validLobbyNameRegex)){
+            logErr(LogsOnClientStatic.NOT_VALID_LOBBY_NAME);
+            transitionTo(ViewState.JOIN_LOBBY);
+        }else { //create the lobby
+            Lobby lobbyCreated = new Lobby(maxPlayerCount, this.nickname, gameName);
+            //add the lobby to the model
+            multiGame.addLobby(lobbyCreated);
+            //disconnect from lobbyList mediator and subscribe to the new lobby
+            multiGame.unsubscribe(this.nickname); //unsubscribe the view from the lobbyList mediator
+            multiGame.notifyNewLobby(this.nickname, lobbyCreated); //notify the lobbyList mediator of the new lobby creation
+            lobbyCreated.subscribe(this.nickname, this.view);
+
+            transitionTo(ViewState.LOBBY);
+        }
     }
 
     @Override
