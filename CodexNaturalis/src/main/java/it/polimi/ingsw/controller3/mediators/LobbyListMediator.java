@@ -17,14 +17,14 @@ public class LobbyListMediator extends Mediator<LightLobbyListUpdater, LightLobb
      * Updates the lobbyList of the subscriber with the lobbyHistory passed as parameter
      * Logs the event
      * @param nickname the subscriber's nickname
-     * @param loggerUpdater the logger connected to the subscriber
+     * @param loggerAndUpdater the logger connected to the subscriber
      * @param lobbyHistory the history of the lobbies
      */
-    public synchronized void subscribe(String nickname, ViewInterface loggerUpdater, List<Lobby> lobbyHistory){
-        super.subscribe(nickname, loggerUpdater, loggerUpdater);
+    public synchronized void subscribe(String nickname, ViewInterface loggerAndUpdater, List<Lobby> lobbyHistory){
+        super.subscribe(nickname, loggerAndUpdater, loggerAndUpdater);
         try {
-            loggerUpdater.updateLobbyList(DiffGenerator.lobbyListHistory(lobbyHistory));
-            loggerUpdater.log(LogsOnClientStatic.JOIN_LOBBY_LIST);
+            loggerAndUpdater.updateLobbyList(DiffGenerator.lobbyListHistory(lobbyHistory));
+            loggerAndUpdater.log(LogsOnClientStatic.JOIN_LOBBY_LIST);
         }catch (Exception e){
             System.out.println("LobbyListMediator: error in subscribing" + e.getMessage());
         }
@@ -57,6 +57,7 @@ public class LobbyListMediator extends Mediator<LightLobbyListUpdater, LightLobb
                     pair.second().log(LogsOnClientStatic.LOBBY_CREATED_OTHERS);
                 else
                     pair.second().log(LogsOnClientStatic.LOBBY_CREATED_YOU);
+                    pair.second().log(LogsOnClientStatic.LOBBY_JOIN_YOU);
             } catch (Exception e) {
                 System.out.println("LobbyListMediator: error in notifying about the new lobby" + e.getMessage());
             }
