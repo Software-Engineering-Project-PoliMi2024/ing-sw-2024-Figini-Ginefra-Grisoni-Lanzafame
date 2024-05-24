@@ -3,7 +3,6 @@ package it.polimi.ingsw.model;
 import it.polimi.ingsw.Configs;
 import it.polimi.ingsw.controller.ServerModelController;
 import it.polimi.ingsw.controller.persistence.PersistenceFactory;
-import it.polimi.ingsw.lightModel.diffPublishers.DiffSubscriber;
 import it.polimi.ingsw.model.cardReleted.cardFactories.GoldCardFactory;
 import it.polimi.ingsw.model.cardReleted.cardFactories.ObjectiveCardFactory;
 import it.polimi.ingsw.model.cardReleted.cardFactories.ResourceCardFactory;
@@ -13,13 +12,14 @@ import it.polimi.ingsw.model.playerReleted.User;
 import it.polimi.ingsw.model.tableReleted.Game;
 import it.polimi.ingsw.model.tableReleted.Lobby;
 import it.polimi.ingsw.model.tableReleted.LobbyList;
+import it.polimi.ingsw.view.ViewInterface;
 
 import java.io.Serializable;
 import java.util.*;
 
 public class MultiGame implements Serializable {
     private final Set<Game> games;
-    private final LobbyList lobbies;
+    private final LobbyList lobbies; //users that are currently connected to the server
     private final List<String> usernames;
     private final CardLookUp<ObjectiveCard> cardLookUpObjective;
     private final CardLookUp<StartCard> cardLookUpStartCard;
@@ -27,7 +27,7 @@ public class MultiGame implements Serializable {
     private final CardLookUp<GoldCard> cardLookUpGoldCard;
     public MultiGame() {
         this.games = PersistenceFactory.load();
-        this.usernames = new ArrayList<>(); //users that are currently connected to the server
+        this.usernames = new ArrayList<>();
         lobbies = new LobbyList();
         String filePath = Configs.CardFolder;
         String sourceFileName = Configs.CardFile;
@@ -106,11 +106,41 @@ public class MultiGame implements Serializable {
     public synchronized String[] getLobbyNames() {
         return lobbies.getLobbies().stream().map(Lobby::getLobbyName).toArray(String[]::new);
     }
-    public void subscribe(DiffSubscriber diffSubscriber) {
-        lobbies.subscribe(diffSubscriber);
+    /**
+     * Subscribes viewInterface to the mediator
+     * passes the lobbyHistory to the mediator
+     * the viewInterface is updated with the lobbyHistory and the logs of the join
+     * @param nickname the subscriber's nickname
+     * @param loggerUpdater the logger connected to the subscriber
+     */
+    public void subscribe(String nickname, ViewInterface loggerUpdater) {
+        lobbies.subscribe(nickname, loggerUpdater);
     }
-    public void unsubscribe(DiffSubscriber diffSubscriber) {
-        lobbies.unsubscribe(diffSubscriber);
+    /**
+     * Unsubscribes the subscriber with the nickname
+     * passed as parameter from the lobbyList mediator
+     * @param nickname the unSubscriber's nickname
+     */
+    public void unsubscribe(String nickname) {
+        lobbies.unsubscribe(nickname);
+    }
+    /**
+     * Notifies all the subscribers that a lobby has been added
+     * Adds the lobby to the lightLobbyList connected to the updater
+     * @param creator the subscriber that created the lobby
+     * @param addedLobby the lobby added to the lobbyList
+     */
+    public void notifyNewLobby(String creator, Lobby addedLobby) {
+        lobbies.notifyNewLobby(creator, addedLobby);
+    }
+    /**
+     * Notifies the subscriber that removed the lobby
+     * Removes the lobby from the lightLobbyList connected to the updater
+     * @param destroyer the subscriber that removed the lobby
+     * @param removedLobby the lobby removed from the lobbyList
+     */
+    public void notifyLobbyRemoved(String destroyer, Lobby removedLobby) {
+        lobbies.notifyLobbyRemoved(destroyer, removedLobby);
     }
 
     /**

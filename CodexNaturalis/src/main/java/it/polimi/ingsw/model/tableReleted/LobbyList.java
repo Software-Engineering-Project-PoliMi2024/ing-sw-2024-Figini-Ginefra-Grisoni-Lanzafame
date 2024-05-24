@@ -1,15 +1,12 @@
 package it.polimi.ingsw.model.tableReleted;
 
-import it.polimi.ingsw.controller3.mediatorSubscriber.LobbyListMediatorSubscriber;
 import it.polimi.ingsw.controller3.mediators.LobbyListMediator;
-import it.polimi.ingsw.lightModel.Lightifier;
-import it.polimi.ingsw.lightModel.diffPublishers.DiffPublisher;
-import it.polimi.ingsw.lightModel.diffPublishers.DiffSubscriber;
-import it.polimi.ingsw.lightModel.diffPublishers.LobbyListDiffPublisher;
+import it.polimi.ingsw.lightModel.LightModelUpdaterInterfaces.LightLobbyListUpdater;
 import it.polimi.ingsw.lightModel.diffs.ModelDiffs;
-import it.polimi.ingsw.lightModel.diffs.lobby_lobbyList.LobbyListDiffEdit;
-import it.polimi.ingsw.lightModel.lightTableRelated.LightLobby;
+import it.polimi.ingsw.lightModel.diffs.lobby_lobbyList.LobbyListDiff;
 import it.polimi.ingsw.lightModel.lightTableRelated.LightLobbyList;
+import it.polimi.ingsw.view.LoggerInterface;
+import it.polimi.ingsw.view.ViewInterface;
 
 import java.io.Serializable;
 import java.util.ArrayList;
@@ -35,14 +32,40 @@ public class LobbyList implements Serializable {
     public void remove(Lobby lobby){
         lobbies.remove(lobby);
     }
-
-    public void subscribe(LobbyListMediatorSubscriber subscriber){
-        mediator.subscribe(subscriber);
+    /**
+     * Subscribes viewInterface to the mediator
+     * passes the lobbyHistory to the mediator
+     * the viewInterface is updated with the lobbyHistory and the logs of the join
+     * @param nickname the subscriber's nickname
+     * @param loggerUpdater the logger connected to the subscriber
+     */
+    public void subscribe(String nickname, ViewInterface loggerUpdater){
+        mediator.subscribe(nickname, loggerUpdater, new ArrayList<>(this.lobbies));
     }
-
-    public void unsubscribe(LobbyListMediatorSubscriber subscriber){
-        mediator.unsubscribe(subscriber);
+    /**
+     * Unsubscribes the subscriber with the nickname
+     * passed as parameter from the lobbyList mediator
+     * @param nickname the unSubscriber's nickname
+     */
+    public void unsubscribe(String nickname){
+        mediator.unsubscribe(nickname);
     }
-
-
+    /**
+     * Notifies all the subscribers that a lobby has been added
+     * Adds the lobby to the lightLobbyList connected to the updater
+     * @param creator the subscriber that created the lobby
+     * @param addedLobby the lobby added to the lobbyList
+     */
+    public void notifyNewLobby(String creator, Lobby addedLobby){
+        mediator.notifyNewLobby(creator, addedLobby);
+    }
+    /**
+     * Notifies the subscriber that removed the lobby
+     * Removes the lobby from the lightLobbyList connected to the updater
+     * @param destroyer the subscriber that removed the lobby
+     * @param removedLobby the lobby removed from the lobbyList
+     */
+    public void notifyLobbyRemoved(String destroyer, Lobby removedLobby){
+        mediator.notifyLobbyRemoved(destroyer, removedLobby);
+    }
 }
