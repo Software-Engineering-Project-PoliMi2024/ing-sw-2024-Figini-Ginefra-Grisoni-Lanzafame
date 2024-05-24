@@ -10,8 +10,12 @@ public class AnimationStuff {
         return new KeyValue(target.opacityProperty(), value, Interpolator.EASE_BOTH);
     }
 
-    public static KeyValue createScaleKeyValue(Node target, double value) {
+    public static KeyValue createScaleXKeyValue(Node target, double value) {
         return new KeyValue(target.scaleXProperty(), value, Interpolator.EASE_BOTH);
+    }
+
+    public static KeyValue createScaleYKeyValue(Node target, double value) {
+        return new KeyValue(target.scaleYProperty(), value, Interpolator.EASE_BOTH);
     }
 
     public static KeyValue createTranslateXKeyValue(Node target, double value) {

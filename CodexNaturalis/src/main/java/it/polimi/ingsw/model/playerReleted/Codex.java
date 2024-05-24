@@ -119,9 +119,11 @@ public class Codex implements Serializable {
             //Removing covered collectables
             Placement neighbour = this.getPlacementAt(placement.position().add(corner.getOffset()));
             if(neighbour != null){
-                Collectable cornerCollectable = neighbour.card().getCollectableAt(corner.getOpposite(), neighbour.face());
-                if(cornerCollectable != SpecialCollectable.EMPTY)
-                    this.collectables.put(cornerCollectable, this.collectables.get(cornerCollectable) - 1);
+                if(neighbour.card().isCorner(corner.getOpposite(), neighbour.face())) {
+                    Collectable cornerCollectable = neighbour.card().getCollectableAt(corner.getOpposite(), neighbour.face());
+                    if (cornerCollectable != SpecialCollectable.EMPTY)
+                        this.collectables.put(cornerCollectable, this.collectables.get(cornerCollectable) - 1);
+                }
             }
         }
 

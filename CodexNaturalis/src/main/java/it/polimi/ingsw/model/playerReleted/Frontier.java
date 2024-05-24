@@ -43,11 +43,11 @@ public class Frontier implements Serializable {
         this.removePosition(position);
 
         Placement placement = codex.getPlacementAt(position);
-        System.out.println(placement);
-        System.out.println(placement.card());
         for (CardCorner corner : CardCorner.values()) {
-            if(!placement.card().isCorner(corner, placement.face()))
+            if(!placement.card().isCorner(corner, placement.face())){
+                this.removePosition(position.add(corner.getOffset()));
                 continue;
+            }
 
             Position possiblePosition = position.add(corner.getOffset());
             if (codex.getPlacementAt(possiblePosition) == null) {
