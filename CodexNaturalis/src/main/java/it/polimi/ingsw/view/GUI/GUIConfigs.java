@@ -26,4 +26,6 @@ public class GUIConfigs {
     public static int collectablesWidth = 50;
     public static int hDeckGap = 35;
     public static int vCardGapInDeck = 10;
+
+    public static int counterGlowDuration = 3000;
 }
