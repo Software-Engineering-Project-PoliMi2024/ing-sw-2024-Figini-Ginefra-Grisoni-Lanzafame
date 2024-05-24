@@ -1,31 +1,50 @@
 package it.polimi.ingsw.controller3;
 
+import it.polimi.ingsw.Configs;
 import it.polimi.ingsw.controller.ControllerInterface;
-import it.polimi.ingsw.controller3.mediatorSubscriber.FullMediatorSubscriber;
-import it.polimi.ingsw.controller3.mediators.LobbyListMediator;
-import it.polimi.ingsw.lightModel.diffs.ModelDiffs;
+import it.polimi.ingsw.controller.LogsOnClient;
 import it.polimi.ingsw.lightModel.lightPlayerRelated.LightCard;
 import it.polimi.ingsw.lightModel.lightPlayerRelated.LightPlacement;
-import it.polimi.ingsw.lightModel.lightTableRelated.LightGame;
-import it.polimi.ingsw.lightModel.lightTableRelated.LightLobbyList;
 import it.polimi.ingsw.model.MultiGame;
 import it.polimi.ingsw.model.cardReleted.utilityEnums.DrawableCard;
 import it.polimi.ingsw.view.ViewInterface;
 import it.polimi.ingsw.view.ViewState;
 
-public class Controller3 implements ControllerInterface, FullMediatorSubscriber{
+public class Controller3 implements ControllerInterface{
     private final ViewInterface view;
-    private final ModelInteract modelInteract;
-    private final MalevolentChecker malevolentChecker;
+    private final MultiGame multiGame;
 
-    public Controller3(MultiGame games, ViewInterface view) {
+    private String nickname;
+
+    public Controller3(MultiGame multiGame, ViewInterface view) {
         this.view = view;
-        this.modelInteract = new ModelInteract(games);
-        this.malevolentChecker = new MalevolentChecker(games);
+        this.multiGame = multiGame;
     }
     @Override
-    public void login(String nickname) {
-        LobbyListMediator lobbyListMediator = new LobbyListMediator();
+    public void login(String nickname){
+        //check if the nickname is already taken
+        if(!this.multiGame.isUnique(nickname)) {
+            logErr(LogsOnClient.NAME_TAKEN.getMessage());
+            transitionTo(ViewState.LOGIN_FORM);
+            //check if the nickname is valid
+        }else if(nickname.matches(Configs.validNicknameRegex)){
+            logErr(LogsOnClient.NOT_VALID_NICKNAME.getMessage());
+            transitionTo(ViewState.LOGIN_FORM);
+        }else{
+            //Client is now logged-In. If he disconnects we have to update the model
+            this.nickname = nickname;
+            this.multiGame.addUser(nickname);
+            System.out.println(this.nickname + " has connected");
+
+            //check if the player was playing a game before disconnecting
+            if(multiGame.isInGameParty(nickname)){
+                //TODO
+            }else{
+                //subscribe the view to the lobbyList mediator
+                multiGame.subscribe(nickname, view);
+                transitionTo(ViewState.JOIN_LOBBY);
+            }
+        }
     }
 
     @Override
@@ -35,11 +54,6 @@ public class Controller3 implements ControllerInterface, FullMediatorSubscriber{
 
     @Override
     public void joinLobby(String lobbyName) {
-
-    }
-
-    @Override
-    public void disconnect() {
 
     }
 
@@ -64,43 +78,12 @@ public class Controller3 implements ControllerInterface, FullMediatorSubscriber{
     }
 
     @Override
-    public void updateGame(ModelDiffs<LightGame> diff) {
-        try{
-            view.updateGame(diff);
-        }catch (Exception e) {
-            logErr("Error in updateGame: " + e.getMessage());
-        }
+    public void disconnect() {
+
     }
 
-    @Override
-    public void setFinalRanking(String[] nicks, int[] points) {
-        try {
-            view.setFinalRanking(nicks, points);
-        } catch (Exception e) {
-            logErr("Error in setFinalRanking: " + e.getMessage());
-        }
-    }
-
-    @Override
-    public void updateLobbyList(ModelDiffs<LightLobbyList> diff) {
-        try {
-            view.updateLobbyList(diff);
-        } catch (Exception e) {
-            logErr("Error in updateLobbyList: " + e.getMessage());
-        }
-    }
-
-    @Override
-    public void log(String logMsg) {
-        try {
-            view.log(logMsg);
-        } catch (Exception e) {
-            logErr("Error in log: " + e.getMessage());
-        }
-    }
-
-    @Override
-    public void logErr(String logMsg) {
+    //view methods used by the controller
+    private void logErr(String logMsg) {
         try {
             view.logErr(logMsg);
         } catch (Exception e) {
@@ -108,25 +91,7 @@ public class Controller3 implements ControllerInterface, FullMediatorSubscriber{
         }
     }
 
-    @Override
-    public void logOthers(String logMsg) {
-        try {
-            view.logOthers(logMsg);
-        } catch (Exception e) {
-            logErr("Error in logOthers: " + e.getMessage());
-        }
-    }
-
-    @Override
-    public void logGame(String logMsg) {
-        try {
-            view.logGame(logMsg);
-        } catch (Exception e) {
-            logErr("Error in logGame: " + e.getMessage());
-        }
-    }
-
-    public void transitionTo(ViewState state) {
+    private void transitionTo(ViewState state) {
         try {
             view.transitionTo(state);
         } catch (Exception e) {
