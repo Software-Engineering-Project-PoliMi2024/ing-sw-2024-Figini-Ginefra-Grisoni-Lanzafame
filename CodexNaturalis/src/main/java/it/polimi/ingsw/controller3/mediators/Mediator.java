@@ -14,10 +14,10 @@ import java.util.Map;
 public abstract class Mediator <updaterType extends Updater, DiffType extends Differentiable> {
     protected final Map<String, Pair<updaterType, LoggerInterface>> subscribers = new HashMap<>();
 
-    protected synchronized void subscribe(String nickname, updaterType updater, LoggerInterface logger){
+    protected void subscribe(String nickname, updaterType updater, LoggerInterface logger){
         subscribers.put(nickname, new Pair<>(updater, logger));
     }
-    protected synchronized void unsubscribe(String nickname){
+    protected void unsubscribe(String nickname){
         subscribers.remove(nickname);
     }
 
