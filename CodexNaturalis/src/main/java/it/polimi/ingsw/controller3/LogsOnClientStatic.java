@@ -11,9 +11,12 @@ public class LogsOnClientStatic {
     //login related
     public static String NAME_TAKEN = "The chosen nickname is already in use.";
     public static String SERVER_JOINED = "Joined the server.";
+    public static String SERVER_LEFT = "Left the server.";
     public static String NOT_VALID_NICKNAME = "The chosen nickname is not valid.";
 
     //lobbyList related
+    public static String JOIN_LOBBY_LIST = "Joined the lobbyList.";
+    public static String LEFT_LOBBY_LIST = "Left the lobbyList.";
     public static String LOBBY_NONEXISTENT = "The queried lobby does not exist.";
     public static String LOBBY_NAME_TAKEN = "The chosen lobby name is already taken.";
     public static String NOT_VALID_LOBBY_NAME = "The chosen lobby name is not valid.";
