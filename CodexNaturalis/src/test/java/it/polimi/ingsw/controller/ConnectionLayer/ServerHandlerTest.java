@@ -91,7 +91,6 @@ public class ServerHandlerTest {
     public void testLogErrInvocation() throws Exception {
         ServerHandlerTestSetup setup = setupServerHandler();
 
-        ServerHandler serverHandler = setup.serverHandler();
         ObjectOutputStream toServerHandler = setup.toServerHandler();
         ViewInterface mockView = setup.mockView();
 
@@ -105,6 +104,152 @@ public class ServerHandlerTest {
         // Verify if logErr was called on the mockView
         verify(mockView, times(1)).logErr(anyString());
     }
+
+    @Test
+    public void testLogGameInvocation() throws Exception {
+        ServerHandlerTestSetup setup = setupServerHandler();
+
+        ObjectOutputStream toServerHandler = setup.toServerHandler();
+        ViewInterface mockView = setup.mockView();
+
+        // Send a LogGameMsg to the ServerHandler
+        ServerMsg logGameMsg = new LogGameMsg("Game message");
+        logGameMsg.setIndex(1);
+        toServerHandler.writeObject(logGameMsg);
+        toServerHandler.flush();
+        Thread.sleep(10);
+
+        // Verify if logGame was called on the mockView
+        verify(mockView, times(1)).logGame(anyString());
+    }
+
+    @Test
+    public void testLogMsgInvocation() throws Exception {
+        ServerHandlerTestSetup setup = setupServerHandler();
+
+        ObjectOutputStream toServerHandler = setup.toServerHandler();
+        ViewInterface mockView = setup.mockView();
+
+        // Send a LogMsg to the ServerHandler
+        ServerMsg logMsg = new LogMsg("Message");
+        logMsg.setIndex(1);
+        toServerHandler.writeObject(logMsg);
+        toServerHandler.flush();
+        Thread.sleep(10);
+
+        // Verify if log was called on the mockView
+        verify(mockView, times(1)).log(anyString());
+    }
+
+    @Test
+    public void testLogOthersMsgInvocation() throws Exception {
+        ServerHandlerTestSetup setup = setupServerHandler();
+
+        ObjectOutputStream toServerHandler = setup.toServerHandler();
+        ViewInterface mockView = setup.mockView();
+
+        // Send a LogOthersMsg to the ServerHandler
+        ServerMsg logOthersMsg = new LogOthersMsg("Other message");
+        logOthersMsg.setIndex(1);
+        toServerHandler.writeObject(logOthersMsg);
+        toServerHandler.flush();
+        Thread.sleep(10);
+
+        // Verify if logOthers was called on the mockView
+        verify(mockView, times(1)).logOthers(anyString());
+    }
+
+    @Test
+    public void testSetFinalRankingMsgInvocation() throws Exception {
+        ServerHandlerTestSetup setup = setupServerHandler();
+
+        ObjectOutputStream toServerHandler = setup.toServerHandler();
+        ViewInterface mockView = setup.mockView();
+
+        // Send a SetFinalRankingMsg to the ServerHandler
+        ServerMsg setFinalRankingMsg = new SetFinalRankingMsg(new String[]{"Player1", "Player2"}, new int[]{1, 2});
+        setFinalRankingMsg.setIndex(1);
+        toServerHandler.writeObject(setFinalRankingMsg);
+        toServerHandler.flush();
+        Thread.sleep(10);
+
+        // Verify if setFinalRanking was called on the mockView
+        verify(mockView, times(1)).setFinalRanking(any(), any());
+    }
+
+    @Test
+    public void testUpdateGameMsgInvocation() throws Exception {
+        ServerHandlerTestSetup setup = setupServerHandler();
+
+        ObjectOutputStream toServerHandler = setup.toServerHandler();
+        ViewInterface mockView = setup.mockView();
+
+        // Send a UpdateGameMsg to the ServerHandler
+        ServerMsg updateGameMsg = new UpdateGameMsg(null);
+        updateGameMsg.setIndex(1);
+        toServerHandler.writeObject(updateGameMsg);
+        toServerHandler.flush();
+        Thread.sleep(10);
+
+        // Verify if updateGame was called on the mockView
+        verify(mockView, times(1)).updateGame(any());
+    }
+
+    @Test
+    public void testUpdateLobbyListMsgInvocation() throws Exception {
+        ServerHandlerTestSetup setup = setupServerHandler();
+
+        ObjectOutputStream toServerHandler = setup.toServerHandler();
+        ViewInterface mockView = setup.mockView();
+
+        // Send a UpdateLobbyListMsg to the ServerHandler
+        ServerMsg updateLobbyListMsg = new UpdateLobbyListMsg(null);
+        updateLobbyListMsg.setIndex(1);
+        toServerHandler.writeObject(updateLobbyListMsg);
+        toServerHandler.flush();
+        Thread.sleep(10);
+
+        // Verify if updateLobbyList was called on the mockView
+        verify(mockView, times(1)).updateLobbyList(any());
+    }
+
+    @Test
+    public void testUpdateLobbyMsgInvocation() throws Exception {
+        ServerHandlerTestSetup setup = setupServerHandler();
+
+        ObjectOutputStream toServerHandler = setup.toServerHandler();
+        ViewInterface mockView = setup.mockView();
+
+        // Send a UpdateLobbyMsg to the ServerHandler
+        ServerMsg updateLobbyMsg = new UpdateLobbyMsg(null);
+        updateLobbyMsg.setIndex(1);
+        toServerHandler.writeObject(updateLobbyMsg);
+        toServerHandler.flush();
+        Thread.sleep(10);
+
+        // Verify if updateLobby was called on the mockView
+        verify(mockView, times(1)).updateLobby(any());
+    }
+
+    @Test
+    public void testTransitionToMsgInvocation() throws Exception {
+        //todo check why is slow. Probably because is something to do with the fact that a TransitionToMsg is used in the Setup
+        ServerHandlerTestSetup setup = setupServerHandler();
+
+        ObjectOutputStream toServerHandler = setup.toServerHandler();
+        ViewInterface mockView = setup.mockView();
+
+        // Send a TransitionToMsg to the ServerHandler
+        ServerMsg transitionToMsg = new TransitionToMsg(ViewState.GAME_ENDING);
+        transitionToMsg.setIndex(1);
+        toServerHandler.writeObject(transitionToMsg);
+        toServerHandler.flush();
+        Thread.sleep(10);
+
+        // Verify if transitionTo was called on the mockView
+        verify(mockView, times(1)).transitionTo(ViewState.GAME_ENDING);
+    }
+
 
     private ServerHandlerTestSetup setupServerHandler() throws IOException {
         PipedInputStream inputPipe = new PipedInputStream();
