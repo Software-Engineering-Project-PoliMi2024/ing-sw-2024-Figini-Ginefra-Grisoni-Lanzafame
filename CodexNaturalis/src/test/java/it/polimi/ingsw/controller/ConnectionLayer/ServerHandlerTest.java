@@ -1,6 +1,8 @@
 package it.polimi.ingsw.controller.ConnectionLayer;
 
 import it.polimi.ingsw.connectionLayer.Socket.ServerHandler;
+import it.polimi.ingsw.connectionLayer.Socket.ServerMsg.LogMsg;
+import it.polimi.ingsw.connectionLayer.Socket.ServerMsg.ServerMsg;
 import it.polimi.ingsw.connectionLayer.Socket.ServerMsg.TransitionToMsg;
 import it.polimi.ingsw.connectionLayer.VirtualLayer.VirtualController;
 import it.polimi.ingsw.connectionLayer.VirtualSocket.VirtualControllerSocket;
@@ -16,7 +18,7 @@ import java.net.Socket;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
-public class serverHandlerTest {
+public class ServerHandlerTest {
     @Test
     public void testServerHandler() throws IOException, InterruptedException {
         PipedInputStream inputPipe = new PipedInputStream();
@@ -25,13 +27,13 @@ public class serverHandlerTest {
 
         //For some reason, the ObjectInputStream's constructor blocks the code flow until there is some inputData to read
         //This is handy in some scenario, e.g. checking if the right protocol is selected, but here we need to simulate a succefully connection
-        ObjectOutputStream toServer = new ObjectOutputStream(outputPipe);
-        toServer.writeObject(new TransitionToMsg(ViewState.LOGIN_FORM));
-        toServer.flush();
+        ObjectOutputStream toServerHandler = new ObjectOutputStream(outputPipe);
+        toServerHandler.writeObject(new TransitionToMsg(ViewState.LOGIN_FORM));
+        toServerHandler.flush();
 
-        ByteArrayOutputStream fromServer = new ByteArrayOutputStream();
+        ByteArrayOutputStream fromServerHandler = new ByteArrayOutputStream();
         Socket mockServer = mock(Socket.class);
-        when(mockServer.getOutputStream()).thenReturn(fromServer);
+        when(mockServer.getOutputStream()).thenReturn(fromServerHandler);
         when(mockServer.getInputStream()).thenReturn(inputPipe);
 
         when(mockServer.getInetAddress()).thenReturn(null);
@@ -44,5 +46,7 @@ public class serverHandlerTest {
         serverHandlerThread.start();
         serverHandler.setView(mockView);
         serverHandler.setOwner(mockController);
+        Thread.sleep(10); //Allow some time for the serverHandler to start his own Thread
+
     }
 }
