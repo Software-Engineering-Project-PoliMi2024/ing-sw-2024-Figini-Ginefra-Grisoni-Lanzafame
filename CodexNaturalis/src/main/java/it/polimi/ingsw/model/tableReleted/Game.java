@@ -71,13 +71,9 @@ public class Game implements Serializable {
     }
 
     public GameParty getGameParty() {
-        return new GameParty(gameParty);
+        return gameParty;
     }
 
-    public void setGameParty(GameParty gameParty){
-
-        this.gameParty = new GameParty(gameParty);
-    }
     @Override
     public String toString() {
 
