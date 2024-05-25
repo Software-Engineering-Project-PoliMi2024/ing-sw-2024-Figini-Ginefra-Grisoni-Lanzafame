@@ -10,12 +10,14 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 public class GameParty implements Serializable {
-    final private List<User> playerList; //player that have joined the game at least once
-    private User currentPlayer; //the player that is playing currently
+    final private List<User> playerList; //the player that were in the lobby pre game
+    final private List<User> activePlayers; //the player that are currently playing in the game
     private int currentPlayerIndex;
 
     /**
      * The constructor of the class
+     * playerList is shuffled to create a random order of the players
+     * all players are considered active at the creation of the gameParty
      * @param playerNames list of all players nicks' who can join this game
      */
     public GameParty(List<String> playerNames) {
@@ -23,13 +25,7 @@ public class GameParty implements Serializable {
         Collections.shuffle(players);
         playerList = players.stream().map(User::new).collect(Collectors.toList());
         currentPlayerIndex = -1;
-        currentPlayer = playerList.getFirst();
-    }
-
-    public GameParty(GameParty other){
-        this.playerList = new ArrayList<>(other.playerList);
-        this.currentPlayer = new User(other.currentPlayer);
-        this.currentPlayerIndex = other.currentPlayerIndex;
+        activePlayers = new ArrayList<>(playerList);
     }
 
     /**
@@ -40,13 +36,9 @@ public class GameParty implements Serializable {
     public User nextPlayer() throws IllegalCallerException {
         if(playerList.isEmpty()){
             throw new IllegalCallerException("The game is empty, there is no next player");
-        }
-        if (currentPlayer == null) {
-            throw new IllegalCallerException("The current player is null");
         } else {
             currentPlayerIndex = (currentPlayerIndex + 1) % playerList.size();
-            currentPlayer = playerList.get(currentPlayerIndex);
-            return new User(playerList.get(currentPlayerIndex));
+            return playerList.get(currentPlayerIndex);
         }
     }
     /** @return list of the players in this match*/
@@ -74,6 +66,17 @@ public class GameParty implements Serializable {
     }
 
     public User getCurrentPlayer() {
-        return new User(currentPlayer);
+        return playerList.get(currentPlayerIndex);
+    }
+    public List<String> getActivePlayers() {
+        return activePlayers.stream().map(User::getNickname).toList();
+    }
+
+    public void addActivePlayer(User user){
+        activePlayers.add(user);
+    }
+
+    public void removeActivePlayer(User user){
+        activePlayers.remove(user);
     }
 }
