@@ -3,6 +3,7 @@ package it.polimi.ingsw.view.TUI.Renderables.CodexRelated;
 import it.polimi.ingsw.lightModel.lightPlayerRelated.LightCodex;
 import it.polimi.ingsw.lightModel.lightPlayerRelated.LightPlacement;
 import it.polimi.ingsw.lightModel.lightTableRelated.LightGame;
+import it.polimi.ingsw.model.playerReleted.Placement;
 import it.polimi.ingsw.model.playerReleted.Position;
 import it.polimi.ingsw.view.ControllerProvider;
 import it.polimi.ingsw.view.TUI.Renderables.drawables.Drawable;
@@ -13,6 +14,7 @@ import it.polimi.ingsw.view.TUI.cardDrawing.TextCard;
 import it.polimi.ingsw.view.TUI.inputs.CommandPrompt;
 import it.polimi.ingsw.view.TUI.inputs.CommandPromptResult;
 
+import java.util.List;
 import java.util.Map;
 
 /**
@@ -68,12 +70,13 @@ public class CodexRenderable extends CanvasRenderable {
      * Draws the codex on the canvas.
      */
     public void drawCodex(){
-        Map<Position, LightPlacement> placementHistory = getCodex().getPlacementHistory();
+        List<LightPlacement> placementHistory = getCodex().getPlacementHistory();
 
         //compute the width and height of the codex
         Position LL_corner = new Position(0, 0);
         Position UR_corner = new Position(0, 0);
-        for(Position p : placementHistory.keySet()){
+        for(LightPlacement placement : placementHistory){
+            Position p = placement.position();
             if(p.getX() < LL_corner.getX())
                 LL_corner =  LL_corner.setX(p.getX());
             if(p.getY() < LL_corner.getY())
@@ -102,8 +105,8 @@ public class CodexRenderable extends CanvasRenderable {
         }
 
         //draw the cards
-        for(Position p : placementHistory.keySet()){
-            drawPlacement(placementHistory.get(p));
+        for(LightPlacement placement : placementHistory){
+            drawPlacement(placement);
         }
     }
 

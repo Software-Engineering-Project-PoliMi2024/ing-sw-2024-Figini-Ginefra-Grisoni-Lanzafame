@@ -77,7 +77,11 @@ public class DeckGUI implements Observer {
         LightDeck deck = GUI.getLightGame().getDecks().get(cardTarget);
         drawableCard.setTarget(deck.getDeckBack());
         for(int i = 0; i < buffer.length; i++){
-            buffer[i].setTarget(deck.getCardBuffer()[i]);
+            if(buffer[i].getTarget() == null || !buffer[i].getTarget().equals(deck.getCardBuffer()[i])) {
+                buffer[i].setTarget(deck.getCardBuffer()[i]);
+                buffer[i].setFace(CardFace.FRONT);
+            }
+
         }
     }
 

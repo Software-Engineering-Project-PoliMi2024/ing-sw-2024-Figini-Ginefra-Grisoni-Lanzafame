@@ -127,7 +127,7 @@ public class GameDiffPublisher implements Serializable {
                     nickname,
                     codex.getPoints(),
                     codex.getEarnedCollectables(),
-                    codex.getPlacementHistory().values().stream().toList(),
+                    codex.getPlacementHistory(),
                     codex.getFrontier().frontier()
             ));
         }
