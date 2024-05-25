@@ -2,10 +2,12 @@ package it.polimi.ingsw.view.GUI.Components;
 
 import it.polimi.ingsw.designPatterns.Observer;
 import it.polimi.ingsw.lightModel.lightPlayerRelated.LightCard;
+import it.polimi.ingsw.model.playerReleted.Placement;
 import it.polimi.ingsw.view.GUI.Components.CardRelated.FlippableCardGUI;
 import it.polimi.ingsw.view.GUI.GUI;
 import it.polimi.ingsw.view.GUI.StateGUI;
 import javafx.application.Platform;
+import javafx.geometry.Pos;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.HBox;
 
@@ -30,40 +32,17 @@ public class ObjectiveChoice implements Observer {
 
         GUI.getLightGame().getHand().attach(this);
 
-        choiceBox.layoutBoundsProperty().addListener((obs, oldBounds, newBounds) -> {
-            AnchorPane.setLeftAnchor(choiceBox, (parent.getWidth() - newBounds.getWidth()) / 2);
-            AnchorPane.setTopAnchor(choiceBox, (parent.getHeight() - newBounds.getHeight()) / 2);
-        });
+        choiceBox.setAlignment(Pos.CENTER);
+        choiceBox.setSpacing(10);
 
-        choiceBox.setOnMousePressed(
-                e -> {
-                    pastX = e.getSceneX();
-                    pastY = e.getSceneY();
-                }
-        );
-
-        choiceBox.setOnMouseDragged(
-                e -> {
-                    double deltaX = e.getSceneX() - pastX;
-                    double deltaY = e.getSceneY() - pastY;
-
-                    for (int i = 0; i < choiceBox.getChildren().size(); i++) {
-                        choiceBox.getChildren().get(i).setTranslateX(choiceBox.getChildren().get(i).getTranslateX() + deltaX);
-                        choiceBox.getChildren().get(i).setTranslateY(choiceBox.getChildren().get(i).getTranslateY() + deltaY);
-                    }
-
-                    pastX = e.getSceneX();
-                    pastY = e.getSceneY();
-                }
-        );
-
+        AnchorPane.setBottomAnchor(choiceBox, 0.0);
+        AnchorPane.setLeftAnchor(choiceBox, 0.0);
+        AnchorPane.setRightAnchor(choiceBox, 0.0);
+        AnchorPane.setTopAnchor(choiceBox, 0.0);
 
         GUI.getStateProperty().addListener((obs, oldState, newState) -> {
-
-            if(newState == StateGUI.SELECT_OBJECTIVE){
-                //checkAndShow();
-            }else{
-                Platform.runLater(()->choiceBox.getChildren().clear());
+            if(newState == StateGUI.SELECT_OBJECTIVE) {
+                Platform.runLater(() -> parent.getChildren().add(choiceBox));
             }
         });
 
@@ -77,6 +56,7 @@ public class ObjectiveChoice implements Observer {
             choiceBox.getChildren().addAll(Arrays.stream(objectivesCard).map(FlippableCardGUI::getImageView).toList());
         }
     }
+
     private void setFlippableCard(LightCard[] objectives){
         List<FlippableCardGUI> objectivesList = new ArrayList<>();
 
@@ -86,6 +66,7 @@ public class ObjectiveChoice implements Observer {
                     e -> {
                         try {
                             GUI.getControllerStatic().choseSecretObjective(card.getTarget());
+                            parent.getChildren().remove(choiceBox);
                         }catch (Exception ex){
                         }
                         e.consume();

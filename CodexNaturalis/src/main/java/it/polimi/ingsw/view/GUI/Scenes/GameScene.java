@@ -68,7 +68,6 @@ public class GameScene extends SceneGUI{
         collectedCollectables.addThisTo(getContent());
 
         objectiveChoice = new ObjectiveChoice(getContent());
-        this.add(objectiveChoice.getChoiceDisplay());
 
 /*
         List<LightPlacement> placements = List.of(new LightPlacement[]{
