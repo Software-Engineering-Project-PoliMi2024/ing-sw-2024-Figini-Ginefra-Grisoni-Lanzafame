@@ -1,6 +1,5 @@
 package it.polimi.ingsw.controller3.mediators;
 
-import it.polimi.ingsw.controller.LogsOnClient;
 import it.polimi.ingsw.controller3.LogsOnClientStatic;
 import it.polimi.ingsw.lightModel.DiffGenerator;
 import it.polimi.ingsw.lightModel.LightModelUpdaterInterfaces.LightLobbyUpdater;
@@ -8,8 +7,6 @@ import it.polimi.ingsw.lightModel.diffs.nuclearDiffs.LittleBoyLobby;
 import it.polimi.ingsw.lightModel.lightTableRelated.LightLobby;
 import it.polimi.ingsw.model.tableReleted.Lobby;
 import it.polimi.ingsw.view.ViewInterface;
-
-import java.util.List;
 
 public class LobbyMediator extends Mediator<LightLobbyUpdater, LightLobby> {
     /**

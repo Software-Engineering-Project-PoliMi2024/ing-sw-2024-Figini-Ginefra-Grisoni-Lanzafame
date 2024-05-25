@@ -1,6 +1,8 @@
 package it.polimi.ingsw.model.tableReleted;
 
 import it.polimi.ingsw.controller3.mediators.LobbyMediator;
+import it.polimi.ingsw.controller3.mediators.turnTakerMediator.TurnTaker;
+import it.polimi.ingsw.controller3.mediators.turnTakerMediator.TurnTakersMediator;
 import it.polimi.ingsw.lightModel.diffPublishers.DiffSubscriber;
 import it.polimi.ingsw.lightModel.diffPublishers.LobbyDiffPublisher;
 import it.polimi.ingsw.view.ViewInterface;
@@ -11,6 +13,7 @@ import java.util.concurrent.locks.ReentrantLock;
 
 public class Lobby implements Serializable {
     private final LobbyMediator lobbyMediator;
+    private final TurnTakersMediator turnTakersMediator;
     private final String lobbyName;
     final private List<String> lobbyPlayerList;
     private final int numberOfMaxPlayer;
@@ -30,7 +33,8 @@ public class Lobby implements Serializable {
         this.lobbyName = lobbyName;
         lobbyPlayerList.add(creatorNickname);
         lobbyMediator = new LobbyMediator();
-        transitioningToGameLock = new ReentrantLock();
+        turnTakersMediator = new TurnTakersMediator();
+        transitioningToGameLock = new ReentrantLock(true);
     }
     /**
      * Handles the adding of a user to the current lobby.
@@ -85,12 +89,15 @@ public class Lobby implements Serializable {
      * Updates the lobby of the subscriber with the lobby passed as parameter
      * Logs the event on the view
      * Notifies all the other subscribers that a new user has joined the lobby
-     * adds the subscriber to the mediator
+     * adds the subscriber to the LoggerAndUpdater mediator
+     * adds the subscriber to the turnTakersMediator
      * @param nickname the subscriber's nickname
      * @param loggerAndUpdater the logger and updater connected to the subscriber
+     * @param turnTaker the turnTaker connected to the subscriber
      */
-    public void subscribe(String nickname, ViewInterface loggerAndUpdater){
+    public void subscribe(String nickname, ViewInterface loggerAndUpdater, TurnTaker turnTaker){
         lobbyMediator.subscribe(nickname, loggerAndUpdater, this);
+        turnTakersMediator.subscribe(nickname, turnTaker);
     }
 
     /**
@@ -98,24 +105,26 @@ public class Lobby implements Serializable {
      * erases the lobby of the unSubscriber
      * notifies all the other subscribers that the unSubscriber has left the lobby
      * logs the event on the unSubscriber
-     * removes the unSubscriber from the mediator
+     * removes the unSubscriber from the LoggerAndUpdaterMediator
+     * removes the unSubscriber from the turnTakersMediator
      * @param nickname the unSubscriber's nickname
      */
     public void unsubscribe(String nickname){
         lobbyMediator.unsubscribe(nickname);
+        turnTakersMediator.unsubscribe(nickname);
     }
 
     /**
      * acquires the lock on the transitioningToGameLock
      */
-    public synchronized void lock(){
+    public void lock(){
         transitioningToGameLock.lock();
     }
 
     /**
      * releases the lock on the transitioningToGameLock
      */
-    public synchronized void unlock(){
+    public void unlock(){
         transitioningToGameLock.unlock();
     }
 }
