@@ -4,7 +4,9 @@ import it.polimi.ingsw.model.cardReleted.utilityEnums.CardCorner;
 
 import java.io.Serializable;
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 /**
  * Represents the frontier of a codex
@@ -13,6 +15,9 @@ import java.util.List;
 public class Frontier implements Serializable {
     /** The frontier */
     List<Position> frontier;
+
+    /** The set of all the positions that will never be in the frontier because they are near a missing corner of a card */
+    private final Set<Position> deadSpots = new HashSet<>();
 
     /**
      * Default constructor
@@ -46,11 +51,12 @@ public class Frontier implements Serializable {
         for (CardCorner corner : CardCorner.values()) {
             if(!placement.card().isCorner(corner, placement.face())){
                 this.removePosition(position.add(corner.getOffset()));
+                deadSpots.add(position.add(corner.getOffset()));
                 continue;
             }
 
             Position possiblePosition = position.add(corner.getOffset());
-            if (codex.getPlacementAt(possiblePosition) == null) {
+            if (codex.getPlacementAt(possiblePosition) == null && !deadSpots.contains(possiblePosition)) {
                 this.addPosition(possiblePosition);
             }
         }
