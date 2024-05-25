@@ -1,5 +1,6 @@
 package it.polimi.ingsw.controller.ConnectionLayer;
 
+import it.polimi.ingsw.Server;
 import it.polimi.ingsw.connectionLayer.Socket.ServerHandler;
 import it.polimi.ingsw.connectionLayer.Socket.ServerMsg.LogErrMsg;
 import it.polimi.ingsw.connectionLayer.Socket.ServerMsg.LogMsg;
@@ -13,7 +14,10 @@ import org.junit.jupiter.api.Test;
 
 import java.io.*;
 import java.net.Socket;
+import java.util.LinkedList;
+import java.util.Random;
 
+import static org.junit.Assert.assertEquals;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
@@ -21,21 +25,25 @@ public class ServerHandlerTest {
     @Test
     public void testOutOfOrderMessage() throws IOException, InterruptedException {
         ServerHandlerTestSetup setup = setupServerHandler();
-
         ServerHandler serverHandler = setup.serverHandler();
         ObjectOutputStream toServerHandler = setup.toServerHandler();
+        Random random = new Random();
+        int numberOfMessages = random.nextInt(1, 10);
+        for(int i = 0; i < numberOfMessages; i++) {
+            ServerMsg msg = new LogMsg("hi");
+            msg.setIndex(i+2); //keep in mind that index 0 is used during the setup
+            toServerHandler.writeObject(msg);
+            toServerHandler.flush();
+        }
+        Thread.sleep(100); //Allow some time for the serverHandler to process the messages
+        //Check if all messages are stored in the serverHandler
+        assertEquals(serverHandler.getRecivedMsgs().size(), numberOfMessages);
 
-        ServerMsg msg1 = new LogMsg("hi");
-        msg1.setIndex(1);
-        toServerHandler.writeObject(msg1);
-        toServerHandler.flush();
-        ServerMsg msg2 = new LogErrMsg("hi");
-        msg2.setIndex(3);
-        toServerHandler.writeObject(msg2);
-        toServerHandler.flush();
-        Thread.sleep(10); //Allow some time for the serverHandler to process the messages
-        System.out.println(serverHandler.getRecivedMsgs());
-
+        //Check if the messages are stored in the right order
+        LinkedList<ServerMsg> messageList = new LinkedList<>(serverHandler.getRecivedMsgs());
+        for(int i = 0; i < numberOfMessages; i++) {
+            assertEquals(messageList.get(i).getIndex(), i+2);
+        }
     }
 
     private ServerHandlerTestSetup setupServerHandler() throws IOException {
