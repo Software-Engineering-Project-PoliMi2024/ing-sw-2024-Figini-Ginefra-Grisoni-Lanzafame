@@ -288,7 +288,8 @@ public class ServerModelController implements ControllerInterface, DiffSubscribe
                     new LightBack(deck.showTopCardOfDeck().getIdBack())));
         } else {
             drawCard = deck.drawFromBuffer(cardID);
-            userGame.subscribe(new DeckDiffBufferDraw(Lightifier.lightifyToCard(drawCard),cardID, drawableCard));
+            CardWithCorners newBufferCard = deck.showCardFromBuffer(cardID);
+            userGame.subscribe(new DeckDiffBufferDraw(Lightifier.lightifyToCard(newBufferCard), cardID, drawableCard));
         }
         return drawCard;
     }

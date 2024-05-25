@@ -60,7 +60,7 @@ public class DeckGUI implements Observer {
         Arrays.stream(buffer).forEach(card -> card.setOnHold(e -> {
             try {
                 if(GUI.getStateProperty().get() == StateGUI.DRAW_CARD)
-                    GUI.getControllerStatic().draw(cardTarget,  buffer.length - 1 - Arrays.asList(buffer).indexOf(card));
+                    GUI.getControllerStatic().draw(cardTarget,  Arrays.asList(buffer).indexOf(card));
             } catch (Exception ex) {
                 throw new RuntimeException(ex);
             }
