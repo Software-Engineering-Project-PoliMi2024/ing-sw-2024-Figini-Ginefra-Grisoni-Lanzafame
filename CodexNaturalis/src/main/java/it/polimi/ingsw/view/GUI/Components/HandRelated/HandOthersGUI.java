@@ -44,8 +44,8 @@ public class HandOthersGUI implements Observer {
     }
 
     private void setSizeBindings(CardGUI card){
-        card.getImageView().setFitWidth(hand.prefWidthProperty().getValue()/ (handCards.length + 1) - hand.spacingProperty().getValue());
-        card.getImageView().fitWidthProperty().bind(hand.prefWidthProperty().divide(handCards.length + 1).subtract(hand.spacingProperty().getValue()));
+        card.getImageView().setFitWidth(handPopUp.getContent().getMaxWidth()/ (handCards.length + 1) - hand.spacingProperty().getValue());
+        card.getImageView().fitWidthProperty().bind(handPopUp.getContent().maxWidthProperty().divide(handCards.length + 1).subtract(hand.spacingProperty().getValue()));
     }
 
     private void addCard(CardGUI card){
