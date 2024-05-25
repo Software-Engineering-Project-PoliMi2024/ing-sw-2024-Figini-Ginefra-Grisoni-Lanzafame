@@ -22,6 +22,8 @@ public class WritingMaterialsCardPointMultiplier implements GoldCardPointMultipl
      *  @return the multiplicator of the points*/
     @Override
     public int getMultiplier(Codex codex, GoldCard goldCard) {
+        if(!codex.getEarnedCollectables().containsKey(target))
+            return 0;
         return codex.getEarnedCollectables().get(target);
     }
 
