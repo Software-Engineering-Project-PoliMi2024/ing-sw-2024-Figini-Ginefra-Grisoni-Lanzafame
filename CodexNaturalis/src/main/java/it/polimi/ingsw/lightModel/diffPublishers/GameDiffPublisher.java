@@ -188,8 +188,8 @@ public class GameDiffPublisher implements Serializable {
      * @param diffSubscriber the subscriber from which perspective to get the total state of the game
      * @return a list of diffs containing the current state of the game
      */
-    private GameDiffNewGame getTotalCurrentState(DiffSubscriber diffSubscriber){
-        GameDiffNewGame newGameDiff = new GameDiffNewGame(
+    private GameDiffRejoinAfterDisconnection getTotalCurrentState(DiffSubscriber diffSubscriber){
+        GameDiffRejoinAfterDisconnection newGameDiff = new GameDiffRejoinAfterDisconnection(
                 new GameDiffInitialization(game.getGameParty().getUsersList().stream().map(User::getNickname).toList(), new GameDiffGameName(game.getName()),new GameDiffYourName(activeSubscribers.get(diffSubscriber)), new GameDiffCurrentPlayer(game.getGameParty().getCurrentPlayer().getNickname())),
                 getPlayerActivity(),
                 getDeckCurrentState(),

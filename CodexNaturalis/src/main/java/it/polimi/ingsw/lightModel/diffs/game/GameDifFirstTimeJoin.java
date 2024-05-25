@@ -4,24 +4,21 @@ import it.polimi.ingsw.lightModel.lightTableRelated.LightGame;
 
 import java.util.List;
 
-public class GameDiffNewGame extends GameDiff{
+public class GameDifFirstTimeJoin extends GameDiff{
     private final GameDiffInitialization initialization;
     private final GameDiffPlayerActivity playerActivity;
     private final List<DeckDiff> decks;
     private final List<CodexDiff> codex;
     private final List<HandDiff> handYours;
     private final List<HandOtherDiff> handOther;
-    private final GameDiffPublicObj publicObjs;
 
-    public GameDiffNewGame(GameDiffInitialization initializeCodexMap, GameDiffPlayerActivity playerActivity, List<DeckDiff> decks, List<CodexDiff> codex, List<HandDiff> handYours, List<HandOtherDiff> handOther, GameDiffPublicObj publicObjs) {
+    public GameDifFirstTimeJoin(GameDiffInitialization initializeCodexMap, GameDiffPlayerActivity playerActivity, List<DeckDiff> decks, List<CodexDiff> codex, List<HandDiff> handYours, List<HandOtherDiff> handOther) {
         this.initialization = initializeCodexMap;
         this.playerActivity = playerActivity;
         this.decks = decks;
         this.codex = codex;
         this.handYours = handYours;
         this.handOther = handOther;
-        this.publicObjs = publicObjs;
-
     }
     @Override
     public void apply(LightGame game) {
@@ -39,6 +36,5 @@ public class GameDiffNewGame extends GameDiff{
         for (HandOtherDiff h : handOther) {
             h.apply(game);
         }
-        publicObjs.apply(game);
     }
 }
