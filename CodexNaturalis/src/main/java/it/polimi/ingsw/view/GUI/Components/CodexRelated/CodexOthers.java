@@ -20,11 +20,4 @@ public class CodexOthers extends CodexGUI{
         //System.out.println(GUI.getLightGame().getCodexMap().get(targetPlayer));
         return GUI.getLightGame().getCodexMap().get(targetPlayer);
     }
-
-    @Override
-    public void update() {
-        System.out.println("CodexOthers update for " + targetPlayer + " called");
-        System.out.println("new codex: " + getLightCodex().getPlacementHistory());
-        super.update();
-    }
 }
