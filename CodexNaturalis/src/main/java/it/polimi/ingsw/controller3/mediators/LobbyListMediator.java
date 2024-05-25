@@ -53,11 +53,12 @@ public class LobbyListMediator extends Mediator<LightLobbyListUpdater, LightLobb
         subscribers.forEach((nickname, pair) -> {
             try {
                 pair.first().updateLobbyList(DiffGenerator.addLobbyDiff(addedLobby));
-                if(!nickname.equals(creator))
+                if(!nickname.equals(creator)) {
                     pair.second().log(LogsOnClientStatic.LOBBY_CREATED_OTHERS);
-                else
+                }else{
                     pair.second().log(LogsOnClientStatic.LOBBY_CREATED_YOU);
                     pair.second().log(LogsOnClientStatic.LOBBY_JOIN_YOU);
+                }
             } catch (Exception e) {
                 System.out.println("LobbyListMediator: error in notifying about the new lobby" + e.getMessage());
             }
