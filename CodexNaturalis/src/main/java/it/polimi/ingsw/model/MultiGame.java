@@ -156,11 +156,7 @@ public class MultiGame implements Serializable {
      * @return true if the nick is already present in a game (e.g. the user disconnected while still playing a match)
      */
     public synchronized Boolean isInGameParty(String nickname){
-        if(getUserGame(nickname)==null){
-            return false;
-        }else{
-            return true;
-        }
+        return getUserGame(nickname) != null;
     }
 
     /**
@@ -169,7 +165,7 @@ public class MultiGame implements Serializable {
      */
     public synchronized Game getUserGame(String nickName){
         for(Game game : this.getGames()){
-            if(game.getGameParty().getUsersList().stream().map(User::getNickname).toList().contains(nickName)){
+            if(game.getUserFromNick(nickName) != null){
                 return game;
             }
         }

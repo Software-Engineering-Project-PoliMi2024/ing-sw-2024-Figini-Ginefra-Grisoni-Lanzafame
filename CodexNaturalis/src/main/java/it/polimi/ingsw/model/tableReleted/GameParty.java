@@ -50,6 +50,22 @@ public class GameParty implements Serializable {
         }
     }
 
+    /**
+     * This method is used to get the user from its nickname
+     * if the user is not in the gameParty, it returns null
+     * @param nickname the nickname of the user
+     * @return the user with the given nickname; returns null if the user is not in the gameParty
+     */
+    public User getUserFromNick(String nickname){
+        synchronized (playerList) {
+            if(!playerList.stream().map(User::getNickname).toList().contains(nickname))
+                return null;
+            else{
+                return playerList.stream().filter(u -> u.getNickname().equals(nickname)).findFirst().orElse(null);
+            }
+        }
+    }
+
     /***
      * @return the number Of Player needed to start the game
      */

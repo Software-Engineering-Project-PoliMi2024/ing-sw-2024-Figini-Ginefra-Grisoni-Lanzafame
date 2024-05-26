@@ -103,6 +103,16 @@ public class Game implements Serializable {
         return gameParty.getUsersList();
     }
 
+    /**
+     * This method is used to get the user from its nickname
+     * if the user is not in the gameParty, it returns null
+     * @param nickname the nickname of the user
+     * @return the user with the given nickname; returns null if the user is not in the gameParty
+     */
+    public User getUserFromNick(String nickname){
+        return gameParty.getUserFromNick(nickname);
+    }
+
     /***
      * @return the number Of Player needed to start the game
      */
@@ -190,15 +200,6 @@ public class Game implements Serializable {
 
     public GameLoopController getGameLoopController() {
         return gameLoopController;
-    }
-
-    public User getUserFromNick(String nickname){
-        for(User user : this.getGameParty().getUsersList()){
-            if(user.getNickname().equals(nickname)){
-                return user;
-            }
-        }
-        throw new IllegalCallerException("Nickname not found in this game");
     }
 
     public boolean decksAreEmpty(){
