@@ -163,6 +163,27 @@ public class Game implements Serializable {
     }
 
     /**
+     * @return true if the players in game are choosing the startCard
+     */
+    public boolean isInStartCardState(){
+        return gameParty.getUsersList().stream().allMatch(user ->user.getUserHand().getStartCard()!=null);
+    }
+
+    /**
+     * @return true if the players in game are choosing the secretObjective
+     */
+    public boolean inInSecretObjState(){
+        return gameParty.getUsersList().stream().allMatch(user->user.getUserHand().getSecretObjectiveChoices() != null);
+    }
+
+    /**
+     * @return true if the players in game are in the setup phase
+     * (choosing StartCardFace or SecretObjective)
+     */
+    public boolean isInSetup(){
+        return inInSecretObjState() || isInStartCardState();
+    }
+    /**
      * notify a player that it is their turn to play by
      * calling the takeTurnMediator method of the subscriber
      * @param nickname the nickname of the player that is being notified
