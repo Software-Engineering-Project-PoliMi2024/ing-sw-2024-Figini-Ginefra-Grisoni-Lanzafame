@@ -58,9 +58,7 @@ public class GameParty implements Serializable {
      */
     public User getCurrentPlayer() {
         currentPlayerLock.lock();
-        User user = playerList.get(currentPlayerIndex);
-        currentPlayerLock.unlock();
-        return user;
+        return getPlayerFromIndex(currentPlayerIndex);
     }
 
     /**
@@ -146,6 +144,17 @@ public class GameParty implements Serializable {
      */
     public void notifyTurn(){
         activeTurnTakerMediator.notifyTurn();
+    }
+
+    /**
+     * This method is used to get the player from its index
+     * @param index the index of the player
+     * @return the player with the given index
+     */
+    public User getPlayerFromIndex(int index){
+        synchronized (playerList) {
+            return playerList.get(index);
+        }
     }
 
     /**

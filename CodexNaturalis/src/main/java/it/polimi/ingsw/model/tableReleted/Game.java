@@ -205,6 +205,7 @@ public class Game implements Serializable {
     /**
      * notify a player that it is their turn to play by
      * calling the takeTurnMediator method of the subscriber
+     * @param nicknameOfNextPlayer the nickname of the player that is goint to play next
      */
     public void notifyTurn(String nicknameOfNextPlayer){
         gameMediator.notifyTurnChange(nicknameOfNextPlayer);
@@ -231,10 +232,18 @@ public class Game implements Serializable {
      * @param nickname the nickname of the player that wants to check if it is active
      * @return true if the player is active, false otherwise
      */
-    public synchronized boolean isPlayerActive(String nickname){
+    public boolean isPlayerActive(String nickname){
         return gameParty.isPlayerActive(nickname);
     }
 
+    /**
+     * This method is used to get the player from its index
+     * @param index the index of the player
+     * @return the player with the given index
+     */
+    public User getPlayerFromIndex(int index){
+        return gameParty.getPlayerFromIndex(index);
+    }
     /**
      * This method is used to lock the current player lock
      */
