@@ -21,15 +21,15 @@ public class GameMediator extends LoggerAndUpdaterMediator<LightGameUpdater, Lig
      * @param nicknameJoin the nickname of the player who joined
      * @param LoggerAndUpdater the view of the player who joined
      * @param game the game the player joined
-     * @param firstTime true if the player is joining for the first time, false if he is rejoining
+     * @param rejoining false if the player is joining for the first time, true if he is rejoining
      */
-    public synchronized void subscribe(String nicknameJoin, ViewInterface LoggerAndUpdater, Game game, boolean firstTime){
+    public synchronized void subscribe(String nicknameJoin, ViewInterface LoggerAndUpdater, Game game, boolean rejoining){
         GameDiffPlayerActivity communicateJoin = new GameDiffPlayerActivity(List.of(nicknameJoin), new ArrayList<>());
         for(String subscriberNick : subscribers.keySet()){
             if(!subscriberNick.equals(nicknameJoin)) {
                 try {
                     subscribers.get(subscriberNick).first().updateGame(communicateJoin);
-                    if(!firstTime){
+                    if(rejoining){
                         subscribers.get(subscriberNick).second().log(nicknameJoin + LogsOnClientStatic.PLAYER_REJOINED);
                     }
                 } catch (Exception e) {
@@ -40,12 +40,12 @@ public class GameMediator extends LoggerAndUpdaterMediator<LightGameUpdater, Lig
         List<String> activePlayers = new ArrayList<>(subscribers.keySet().stream().toList());
         activePlayers.add(nicknameJoin);
         try {
-            if (firstTime) {
-                LoggerAndUpdater.updateGame(DiffGenerator.diffFirstTimeJoin(game, nicknameJoin, activePlayers));
-                LoggerAndUpdater.log(LogsOnClientStatic.NEW_GAME_JOINED);
-            }else{
+            if (rejoining) {
                 LoggerAndUpdater.updateGame(DiffGenerator.diffRejoin(game, nicknameJoin, activePlayers));
                 LoggerAndUpdater.log(LogsOnClientStatic.MID_GAME_JOINED);
+            }else{
+                LoggerAndUpdater.updateGame(DiffGenerator.diffFirstTimeJoin(game, nicknameJoin, activePlayers));
+                LoggerAndUpdater.log(LogsOnClientStatic.NEW_GAME_JOINED);
             }
         }catch (Exception e){
             System.out.println("GameMediator: new subscriber " + nicknameJoin + " not reachable" + e.getMessage());
