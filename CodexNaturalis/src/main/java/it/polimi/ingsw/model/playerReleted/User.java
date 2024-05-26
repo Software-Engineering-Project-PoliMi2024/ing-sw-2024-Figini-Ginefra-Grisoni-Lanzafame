@@ -60,6 +60,14 @@ public class User implements Serializable {
     }
 
     /**
+     * This method returns the number of cards in the user's hand
+     * @return the number of cards in the user's hand
+     */
+    public int getHandSize(){
+        return userHand.getHandSize();
+    }
+
+    /**
      * This method checks if the user has already chosen the objective
      * @return true if the user has already chosen the objective, false otherwise
      */
