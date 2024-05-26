@@ -123,12 +123,18 @@ public class GameParty implements Serializable {
     /**
      * notify a player that it is their turn to play by
      * calling the takeTurnMediator method of the subscriber
-     * @param nickname the nickname of the player that is being notified
      */
-    public void notifyTurn(String nickname){
-        activeTurnTakerMediator.notifyTurn(nickname);
+    public void notifyTurn(){
+        activeTurnTakerMediator.notifyTurn();
     }
 
+    /**
+     * This method is used to notify all players that
+     * it is his turn to choose the objective
+     */
+    public synchronized void notifyChooseObjective(){
+        activeTurnTakerMediator.notifyChooseObjective();
+    }
     /**
      * get the list of active players
      * @return the list of active players

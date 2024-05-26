@@ -186,12 +186,18 @@ public class Game implements Serializable {
     /**
      * notify a player that it is their turn to play by
      * calling the takeTurnMediator method of the subscriber
-     * @param nickname the nickname of the player that is being notified
      */
-    public void notifyTurn(String nickname){
-        gameParty.notifyTurn(nickname);
+    public void notifyTurn(){
+        gameParty.notifyTurn();
     }
 
+    /**
+     * This method is used to notify all players that
+     * it is his turn to choose the objective
+     */
+    public void notifyChooseObjective(){
+        gameParty.notifyChooseObjective();
+    }
     /**
      * get the list of active players
      * @return the list of active players

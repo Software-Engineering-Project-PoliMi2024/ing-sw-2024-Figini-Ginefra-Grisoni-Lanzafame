@@ -26,10 +26,17 @@ public class TurnTakerMediator extends GenericJoinAndTurnMediator<TurnTaker> {
     /**
      * This method is used to notify a player that it is his turn
      * by calling the takeTurn method of the subscriber
-     * @param nickname the nickname of the player that is being notified
      */
-    public synchronized void notifyTurn(String nickname){
-        subscribers.get(nickname).takeTurn();
+    public synchronized void notifyTurn(){
+        subscribers.values().forEach(TurnTaker::takeTurn);
+    }
+
+    /**
+     * This method is used to notify all players that
+     * it is his turn to choose the objective
+     */
+    public synchronized void notifyChooseObjective(){
+        subscribers.values().forEach(TurnTaker::chooseObjective);
     }
 
     /**
