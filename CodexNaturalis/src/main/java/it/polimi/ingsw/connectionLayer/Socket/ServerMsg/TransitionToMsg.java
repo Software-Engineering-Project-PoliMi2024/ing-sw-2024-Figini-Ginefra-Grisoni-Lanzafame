@@ -10,10 +10,6 @@ public class TransitionToMsg extends ServerMsg{
         this.state = state;
     }
 
-    public ViewState getState() {
-        return state;
-    }
-
     @Override
     public void processMsg(ServerHandler serverHandler) throws Exception{
         serverHandler.getView().transitionTo(state);

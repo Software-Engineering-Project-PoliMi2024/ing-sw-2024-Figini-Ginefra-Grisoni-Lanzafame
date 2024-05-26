@@ -12,10 +12,6 @@ public class UpdateGameMsg extends ServerMsg{
         this.diff = diff;
     }
 
-    public ModelDiffs<LightGame> getDiff() {
-        return diff;
-    }
-
     @Override
     public void processMsg(ServerHandler serverHandler) throws Exception {
         serverHandler.getView().updateGame(diff);

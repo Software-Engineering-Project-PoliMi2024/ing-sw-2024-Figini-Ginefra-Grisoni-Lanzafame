@@ -1,18 +1,26 @@
 package it.polimi.ingsw.controller.ConnectionLayer;
 
+import it.polimi.ingsw.Configs;
+import it.polimi.ingsw.Server;
 import it.polimi.ingsw.connectionLayer.Socket.ServerHandler;
 import it.polimi.ingsw.connectionLayer.Socket.ServerMsg.*;
 import it.polimi.ingsw.connectionLayer.VirtualLayer.VirtualController;
 import it.polimi.ingsw.connectionLayer.VirtualSocket.VirtualControllerSocket;
+import it.polimi.ingsw.controller.LogsOnClient;
 import it.polimi.ingsw.view.ViewInterface;
 import it.polimi.ingsw.view.ViewState;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 
 import java.io.*;
+import java.net.ServerSocket;
 import java.net.Socket;
 import java.util.LinkedList;
 import java.util.Random;
+import java.util.concurrent.ExecutionException;
+import java.util.concurrent.TimeoutException;
+
+import static org.junit.Assert.assertThrows;
 import static org.mockito.Mockito.*;
 
 public class ServerHandlerTest {
@@ -26,9 +34,9 @@ public class ServerHandlerTest {
         //Check if all out of order messages are stored in the serverHandler
         Random random = new Random();
         int numberOfMessages = random.nextInt(1, 10);
-        for(int i = 0; i < numberOfMessages; i++) {
+        for (int i = 0; i < numberOfMessages; i++) {
             ServerMsg msg = new LogMsg("hi");
-            msg.setIndex(i+1); //keep in mind that index 0 is the expected index
+            msg.setIndex(i + 1); //keep in mind that index 0 is the expected index
             toServerHandler.writeObject(msg);
             toServerHandler.flush();
         }
@@ -37,8 +45,8 @@ public class ServerHandlerTest {
 
         //Check if the messages are stored in the right order
         LinkedList<ServerMsg> messageList = new LinkedList<>(serverHandler.getReceivedMsg());
-        for(int i = 0; i < numberOfMessages; i++) {
-            Assertions.assertEquals(messageList.get(i).getIndex(), i+1);
+        for (int i = 0; i < numberOfMessages; i++) {
+            Assertions.assertEquals(messageList.get(i).getIndex(), i + 1);
         }
 
         //Check what happens when the expected message is received after some out of order messages
@@ -51,6 +59,41 @@ public class ServerHandlerTest {
     }
 
     @Test
+    public void testTimeoutException() throws Exception {
+        ServerSocket serverSocket = new ServerSocket(6969);
+        Thread serverSocketThread = new Thread(() -> {
+            while(true){
+                try {
+                    serverSocket.accept();
+                } catch (IOException e) {
+                    throw new RuntimeException(e);
+                }
+            }
+        });
+
+        PipedInputStream inputPipe = new PipedInputStream();
+        PipedOutputStream outputPipe = new PipedOutputStream();
+        inputPipe.connect(outputPipe);
+        ByteArrayOutputStream fromServerHandler = new ByteArrayOutputStream();
+        Socket server = spy(new Socket("0.0.0.0", 6969));
+        //Return an unexpected inputStream that cause the ObjectInputStream's constructor to block the code flow,
+        //simulating the connection to a wrong protocol. It will cause a TimeoutException
+        when(server.getOutputStream()).thenReturn(fromServerHandler);
+        when(server.getInputStream()).thenReturn(inputPipe);
+
+        ViewInterface mockView = mock(ViewInterface.class);
+        VirtualController mockController = mock(VirtualControllerSocket.class);
+
+        serverSocketThread.start();
+        ServerHandler serverHandler = new ServerHandler(server);
+        serverHandler.setView(mockView);
+        serverHandler.setOwner(mockController);
+        serverHandler.run();
+        //If the exception is correctly thrown and catch, a Connection_Error message should be logged to the view
+        verify(mockView, times(1)).logErr(LogsOnClient.CONNECTION_ERROR.getMessage());
+    }
+
+    @Test
     public void testContinueMessagesWindow() throws IOException, InterruptedException {
         ServerHandlerTestSetup setup = setupServerHandler();
 
@@ -59,14 +102,14 @@ public class ServerHandlerTest {
 
         Random random = new Random();
         int numberOfMessages = random.nextInt(1, 10);
-        for(int i = 0; i < numberOfMessages; i++) {
+        for (int i = 0; i < numberOfMessages; i++) {
             ServerMsg continueMsg = new LogErrMsg("hi");
-            continueMsg.setIndex(i+1);
+            continueMsg.setIndex(i + 1);
             toServerHandler.writeObject(continueMsg);
             toServerHandler.flush();
 
             ServerMsg notContinueMsg = new LogOthersMsg("hi");
-            notContinueMsg.setIndex((int) Math.pow(2, i+4)); //the non ContinueMsg will start with index  of 16
+            notContinueMsg.setIndex((int) Math.pow(2, i + 4)); //the non ContinueMsg will start with index  of 16
             toServerHandler.writeObject(notContinueMsg);
             toServerHandler.flush();
         }
@@ -219,7 +262,7 @@ public class ServerHandlerTest {
 
     @Test
     public void testTransitionToMsgInvocation() throws Exception {
-        //todo check why this test is so slow.
+        //todo check why this test is so slow. It is so because it is the first test to be executed?
         ServerHandlerTestSetup setup = setupServerHandler();
 
         ObjectOutputStream toServerHandler = setup.toServerHandler();
@@ -241,7 +284,6 @@ public class ServerHandlerTest {
         PipedOutputStream outputPipe = new PipedOutputStream();
         inputPipe.connect(outputPipe);
 
-        ObjectOutputStream toServerHandler = new ObjectOutputStream(outputPipe);
         ByteArrayOutputStream fromServerHandler = new ByteArrayOutputStream();
         Socket mockServer = mock(Socket.class);
         when(mockServer.getOutputStream()).thenReturn(fromServerHandler);
@@ -258,8 +300,10 @@ public class ServerHandlerTest {
         serverHandler.setView(mockView);
         serverHandler.setOwner(mockController);
 
-        return new ServerHandlerTestSetup(serverHandler, toServerHandler, mockView);
+        return new ServerHandlerTestSetup(serverHandler, new ObjectOutputStream(outputPipe), mockView);
     }
 
-    private record ServerHandlerTestSetup(ServerHandler serverHandler, ObjectOutputStream toServerHandler, ViewInterface mockView) {}
+    private record ServerHandlerTestSetup(ServerHandler serverHandler, ObjectOutputStream toServerHandler,
+                                          ViewInterface mockView) {
+    }
 }
