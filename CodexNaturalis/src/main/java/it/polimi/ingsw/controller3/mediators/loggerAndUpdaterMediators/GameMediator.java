@@ -5,7 +5,10 @@ import it.polimi.ingsw.lightModel.DiffGenerator;
 import it.polimi.ingsw.lightModel.LightModelUpdaterInterfaces.LightGameUpdater;
 import it.polimi.ingsw.lightModel.diffs.game.GameDiffPlayerActivity;
 import it.polimi.ingsw.lightModel.diffs.nuclearDiffs.GadgetGame;
+import it.polimi.ingsw.lightModel.lightPlayerRelated.LightCard;
 import it.polimi.ingsw.lightModel.lightTableRelated.LightGame;
+import it.polimi.ingsw.model.cardReleted.cards.CardInHand;
+import it.polimi.ingsw.model.cardReleted.utilityEnums.DrawableCard;
 import it.polimi.ingsw.model.tableReleted.Game;
 import it.polimi.ingsw.view.ViewInterface;
 
@@ -105,6 +108,10 @@ public class GameMediator extends LoggerAndUpdaterMediator<LightGameUpdater, Lig
         }
     }
 
+    /**
+     * notify all players the change of turn
+     * @param playerNickname the nickname of the player that will play next
+     */
     public synchronized void notifyTurnChange(String playerNickname){
         for(String subscriberNick : subscribers.keySet()){
             try {
@@ -113,6 +120,28 @@ public class GameMediator extends LoggerAndUpdaterMediator<LightGameUpdater, Lig
                 } else {
                     subscribers.get(subscriberNick).second().log(LogsOnClientStatic.YOUR_TURN);
                 }
+            } catch (Exception e) {
+                System.out.println("GameMediator: subscriber " + subscriberNick + " not reachable" + e.getMessage());
+            }
+        }
+    }
+
+    /**
+     *
+     * @param card
+     * @param pos
+     * @param deckType
+     * @param drawerNickname
+     */
+    public synchronized void notifyDraw(String drawerNickname, DrawableCard deckType, int pos, LightCard card){
+        for(String subscriberNick : subscribers.keySet()){
+            try {
+                if (!subscriberNick.equals(drawerNickname)) {
+                    subscribers.get(subscriberNick).second().log(drawerNickname + LogsOnClientStatic.PLAYER_DRAW);
+                } else {
+                    subscribers.get(subscriberNick).second().log(LogsOnClientStatic.YOU_DRAW);
+                }
+                subscribers.get(subscriberNick).first().updateGame(DiffGenerator.draw(deckType, pos, card));
             } catch (Exception e) {
                 System.out.println("GameMediator: subscriber " + subscriberNick + " not reachable" + e.getMessage());
             }

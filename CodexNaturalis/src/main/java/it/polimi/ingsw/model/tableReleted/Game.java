@@ -7,7 +7,9 @@ import it.polimi.ingsw.controller3.mediators.gameJoinerAndTurnTakerMediators.Tur
 import it.polimi.ingsw.lightModel.diffs.game.GameDiff;
 import it.polimi.ingsw.lightModel.diffPublishers.DiffSubscriber;
 import it.polimi.ingsw.lightModel.diffPublishers.GameDiffPublisher;
+import it.polimi.ingsw.lightModel.lightPlayerRelated.LightCard;
 import it.polimi.ingsw.model.cardReleted.cards.*;
+import it.polimi.ingsw.model.cardReleted.utilityEnums.DrawableCard;
 import it.polimi.ingsw.model.playerReleted.User;
 import it.polimi.ingsw.view.ViewInterface;
 
@@ -210,6 +212,41 @@ public class Game implements Serializable {
     public void notifyTurn(String nicknameOfNextPlayer){
         gameMediator.notifyTurnChange(nicknameOfNextPlayer);
         gameParty.notifyTurn();
+    }
+
+    /**
+     * This method is used to notify all players a change in the decks
+     * @param deckType the type of the deck that has changed (GOLD, RESOURCE)
+     * @param pos the position of the card that has changed (2 = from deck, 1,0 = buffer)
+     * @param card the card that has changed
+     * @param drawerNickname the nickname of the player that has drawn the card
+     */
+    public void notifyDraw(DrawableCard deckType, int pos, LightCard card, String drawerNickname){
+        gameMediator.notifyDraw(drawerNickname, deckType, pos, card);
+    }
+
+    /**
+     * This method is used to check if the decks are empty
+     * @return true if the decks are empty, false otherwise
+     */
+    public boolean areDeckEmpty(){
+        return goldCardDeck.isEmpty() && resourceCardDeck.isEmpty();
+    }
+
+    /**
+     * @param deck from which drawn a Card
+     * @param cardID the position from where draw the card (buffer/deck)
+     * @return the card drawn
+     * @param <T> a CardInHand (GoldCard/ResourceCard)
+     */
+    public  <T extends CardInHand> T drawACard(Deck<T> deck, int cardID) {
+        T drawCard;
+        if (cardID == 2) {
+            drawCard = deck.drawFromDeck();
+        } else {
+            drawCard = deck.drawFromBuffer(cardID);
+        }
+        return drawCard;
     }
 
     /**
