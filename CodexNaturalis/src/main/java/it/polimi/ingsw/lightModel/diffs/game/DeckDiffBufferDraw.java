@@ -11,6 +11,7 @@ public class DeckDiffBufferDraw extends DeckDiff{
     /**
      * @param card the card drawn from the buffer
      * @param position the position in the buffer where the card is drawn
+     * @param type the type of the card drawn (GoldCard or ResourceCard)
      */
     public DeckDiffBufferDraw(LightCard card, Integer position, DrawableCard type) {
         this.card = card;
