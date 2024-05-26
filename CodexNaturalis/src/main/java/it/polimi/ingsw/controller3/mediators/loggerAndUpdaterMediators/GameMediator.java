@@ -12,7 +12,17 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class GameMediator extends LoggerAndUpdaterMediator<LightGameUpdater, LightGame> {
-
+    /**
+     * This method is called when a player joins the game
+     * it is added to the list of active players
+     * the players already in the game are notified of the new player
+     * the new player is notified with the current state of the game
+     * all players are notified with a log of the event
+     * @param nicknameJoin the nickname of the player who joined
+     * @param LoggerAndUpdater the view of the player who joined
+     * @param game the game the player joined
+     * @param firstTime true if the player is joining for the first time, false if he is rejoining
+     */
     public synchronized void subscribe(String nicknameJoin, ViewInterface LoggerAndUpdater, Game game, boolean firstTime){
         GameDiffPlayerActivity communicateJoin = new GameDiffPlayerActivity(List.of(nicknameJoin), new ArrayList<>());
         for(String subscriberNick : subscribers.keySet()){

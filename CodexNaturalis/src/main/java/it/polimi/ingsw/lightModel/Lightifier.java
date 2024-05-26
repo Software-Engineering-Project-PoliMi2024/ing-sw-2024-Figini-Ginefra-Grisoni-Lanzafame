@@ -5,6 +5,7 @@ import it.polimi.ingsw.lightModel.lightTableRelated.LightLobby;
 import it.polimi.ingsw.lightModel.lightTableRelated.LightLobbyList;
 import it.polimi.ingsw.model.cardReleted.cards.Card;
 import it.polimi.ingsw.model.cardReleted.cards.CardInHand;
+import it.polimi.ingsw.model.cardReleted.cards.ObjectiveCard;
 import it.polimi.ingsw.model.cardReleted.utilityEnums.CardFace;
 import it.polimi.ingsw.model.cardReleted.utilityEnums.Resource;
 import it.polimi.ingsw.model.playerReleted.*;
@@ -12,10 +13,7 @@ import it.polimi.ingsw.model.tableReleted.LobbyList;
 import it.polimi.ingsw.model.tableReleted.Lobby;
 
 import java.io.Serializable;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 public class Lightifier implements Serializable {
     /**
@@ -84,9 +82,17 @@ public class Lightifier implements Serializable {
         for(CardInHand card : hand.getHand()){
             cardPlayability.put(lightifyToCard(card), card.canBePlaced(user.getUserCodex()));
         }
+
         LightHand h = new LightHand(cardPlayability);
         if(hand.getSecretObjective() != null)
             h.setSecretObjective(lightifyToCard(hand.getSecretObjective()));
+
+        List<ObjectiveCard> objectiveOptions = hand.getSecretObjectiveChoices();
+        if(objectiveOptions != null){
+            h.addSecretObjectiveOption(Lightifier.lightifyToCard(objectiveOptions.getFirst()));
+            h.addSecretObjectiveOption(Lightifier.lightifyToCard(objectiveOptions.getLast()));
+        }
+
         return h;
     }
 

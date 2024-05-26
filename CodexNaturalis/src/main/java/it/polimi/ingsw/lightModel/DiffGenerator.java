@@ -10,6 +10,7 @@ import it.polimi.ingsw.lightModel.diffs.lobby_lobbyList.LobbyListDiffEdit;
 import it.polimi.ingsw.lightModel.lightPlayerRelated.*;
 import it.polimi.ingsw.lightModel.lightTableRelated.LightLobby;
 import it.polimi.ingsw.model.cardReleted.cards.GoldCard;
+import it.polimi.ingsw.model.cardReleted.cards.ObjectiveCard;
 import it.polimi.ingsw.model.cardReleted.cards.ResourceCard;
 import it.polimi.ingsw.model.cardReleted.utilityEnums.DrawableCard;
 import it.polimi.ingsw.model.playerReleted.Hand;
@@ -19,6 +20,7 @@ import it.polimi.ingsw.model.tableReleted.Game;
 import it.polimi.ingsw.model.tableReleted.Lobby;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 public class DiffGenerator {
@@ -189,9 +191,15 @@ public class DiffGenerator {
             if (card != null)
                 handDiffAdd.add(new HandDiffAdd(card, subscriberHand.isPlayble(card)));
         }
+
         if (subscriberHand.getSecretObjective() != null)
             handDiffAdd.add(new HandDiffSetObj(subscriberHand.getSecretObjective()));
 
+        List<ObjectiveCard> objectiveOptions = user.getUserHand().getSecretObjectiveChoices();
+        if(objectiveOptions != null){
+            handDiffAdd.add(new HandDiffAddOneSecretObjectiveOption(Lightifier.lightifyToCard(objectiveOptions.getFirst())));
+            handDiffAdd.add(new HandDiffAddOneSecretObjectiveOption(Lightifier.lightifyToCard(objectiveOptions.getLast())));
+        }
         return handDiffAdd;
     }
 
