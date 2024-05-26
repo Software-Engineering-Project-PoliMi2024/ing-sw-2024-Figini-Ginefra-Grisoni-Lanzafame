@@ -12,14 +12,6 @@ public class DrawMsg extends ClientMsg {
         this.cardID = cardID;
     }
 
-    public DrawableCard getDeckID() {
-        return deckID;
-    }
-
-    public int getCardID() {
-        return cardID;
-    }
-
     @Override
     public void processMsg(ClientHandler clientHandler) throws Exception {
         clientHandler.getController().draw(deckID, cardID);

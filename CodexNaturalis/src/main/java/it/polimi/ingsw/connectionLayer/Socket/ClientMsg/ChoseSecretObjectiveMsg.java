@@ -10,10 +10,6 @@ public class ChoseSecretObjectiveMsg extends ClientMsg {
         this.secretObjective = secretObjectiveCard;
     }
 
-    public LightCard getSecretObjectiveCard() {
-        return secretObjective;
-    }
-
     @Override
     public void processMsg(ClientHandler clientHandler) throws Exception {
         clientHandler.getController().choseSecretObjective(secretObjective);
