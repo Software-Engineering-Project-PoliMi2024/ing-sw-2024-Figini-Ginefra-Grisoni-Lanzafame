@@ -2,21 +2,31 @@ package it.polimi.ingsw.controller3;
 
 import it.polimi.ingsw.Configs;
 import it.polimi.ingsw.controller.ControllerInterface;
+import it.polimi.ingsw.controller.LogsOnClient;
+import it.polimi.ingsw.controller.ServerModelController;
 import it.polimi.ingsw.controller3.mediators.gameJoinerAndTurnTakerMediators.GameJoiner;
 import it.polimi.ingsw.controller3.mediators.gameJoinerAndTurnTakerMediators.TurnTaker;
+import it.polimi.ingsw.lightModel.Lightifier;
+import it.polimi.ingsw.lightModel.diffs.game.HandOtherDiffAdd;
+import it.polimi.ingsw.lightModel.lightPlayerRelated.LightBack;
 import it.polimi.ingsw.lightModel.lightPlayerRelated.LightCard;
 import it.polimi.ingsw.lightModel.lightPlayerRelated.LightPlacement;
 import it.polimi.ingsw.model.MultiGame;
+import it.polimi.ingsw.model.cardReleted.cards.CardInHand;
 import it.polimi.ingsw.model.cardReleted.cards.StartCard;
 import it.polimi.ingsw.model.cardReleted.utilityEnums.DrawableCard;
 import it.polimi.ingsw.model.playerReleted.User;
+import it.polimi.ingsw.model.tableReleted.Deck;
 import it.polimi.ingsw.model.tableReleted.Game;
 import it.polimi.ingsw.model.tableReleted.Lobby;
 import it.polimi.ingsw.view.ViewInterface;
 import it.polimi.ingsw.view.ViewState;
 
+import java.util.Objects;
+import java.util.Random;
+
 /*
-TODO remove gameDiffYourName and gameDiffGameName
+TODO  test when the decks finish the cards
 */
 
 public class Controller3 implements ControllerInterface, TurnTaker, GameJoiner {
@@ -200,16 +210,150 @@ public class Controller3 implements ControllerInterface, TurnTaker, GameJoiner {
 
     @Override
     public void draw(DrawableCard deckID, int cardID) {
+        //TODO saveGame
+        //TODO change current player lock
+    }
 
+    private void leaveGame() {
+        //when leaving a Game check if currentPlayer
+        Game gameToLeave = multiGame.getGameFromUserNick(this.nickname);
+        gameToLeave.unsubscribe(this.nickname);
+
+        if (gameToLeave.isInStartCardState()) {
+
+            if (checkIfLastToPlaceStartCard()) {
+                gameToLeave.removeUser(this.nickname);
+                gameToLeave.fromStartCardMoveOnToSecretObjectiveSelection();
+            }
+        } else if (gameToLeave.inInSecretObjState()) {
+
+            if (checkIfLastToChooseSecretObjective()) {
+                gameToLeave.removeUser(this.nickname);
+                User currentUserInGame = gameToLeave.getCurrentPlayer();
+                int nextPlayerIndex = getNextActivePlayerIndex();
+                String nextPlayerNick = gameToLeave.getPlayerFromIndex(nextPlayerIndex).getNickname();
+                if (Objects.equals(currentUserInGame.getNickname(), this.nickname)) {
+                    gameToLeave.setPlayerIndex(nextPlayerIndex);
+                }
+                gameToLeave.fromSecretObjectiveMoveOnToGame(nextPlayerNick);
+            }
+        } else if (!gameToLeave.isInSetup()) { //if the game is in the actual game phase
+            if (gameToLeave.getCurrentPlayer().getNickname().equals(this.nickname)) {
+                User userLeaving = gameToLeave.getUserFromNick(this.nickname);
+                int nextPlayerIndex = getNextActivePlayerIndex();
+                String nextPlayerNick = gameToLeave.getPlayerFromIndex(nextPlayerIndex).getNickname();
+                //check if the user has disconnected after placing
+                if (userLeaving.getHandSize() < 3 && !gameToLeave.areDeckEmpty()) {
+                    CardInHand card;
+                    DrawableCard deckType;
+                    int pos;
+                    do {
+                        deckType = randomDeckType(gameToLeave);
+                        pos = randomDeckPosition(gameToLeave, deckType);
+                        if (deckType == DrawableCard.RESOURCECARD)
+                            card = gameToLeave.drawACard(gameToLeave.getResourceCardDeck(), pos);
+                        else
+                            card = gameToLeave.drawACard(gameToLeave.getGoldCardDeck(), pos);
+                    } while (card == null);
+
+                    userLeaving.getUserHand().addCard(card);
+                    gameToLeave.notifyDraw(deckType, pos, Lightifier.lightifyToCard(card), userLeaving.getNickname());
+
+                }
+                //move on with the turns for the other players
+                gameToLeave.setPlayerIndex(nextPlayerIndex);
+                gameToLeave.notifyTurn(nextPlayerNick);
+            }
+        } else
+            throw new IllegalStateException("Controller.leaveGame: Game is in an invalid state");
+
+        //If the game is empty, remove it from the MultiGame
+        if (gameToLeave.getGameLoopController().getActivePlayers().isEmpty()) {
+            multiGame.removeGame(gameToLeave);
+        }
+    }
+
+    private boolean checkIfLastToPlaceStartCard(){
+        Game game = multiGame.getGameFromUserNick(this.nickname);
+        boolean check = false;
+
+        if(!game.isInStartCardState())
+            throw new IllegalCallerException("Controller.checkIfLastToPlaceStartCard: Game is not in StartCardState");
+
+        if(game.getGameParty().getUsersList().stream().allMatch(user -> !user.getNickname().equals(this.nickname)
+                && user.hasPlacedStartCard())){
+            check = true;
+        }
+
+        return check;
+    }
+
+    private boolean checkIfLastToChooseSecretObjective(){
+        Game game = multiGame.getGameFromUserNick(this.nickname);
+        boolean check = false;
+
+        if(!game.inInSecretObjState())
+            throw new IllegalCallerException("Controller.checkIfLastToChooseSecretObjective: Game is not in SelectSecretObjectiveState");
+
+        if(game.getGameParty().getUsersList().stream().allMatch(user -> !user.getNickname().equals(this.nickname)
+                && user.hasChosenObjective())){
+            check = true;
+        }
+
+        return check;
+    }
+
+    /**
+     * @return a random card from a non-empty deck. If all decks are empty return null
+     */
+
+    private DrawableCard randomDeckType(Game game){
+        Random random = new Random();
+        int deckNumber = random.nextInt(2);
+        DrawableCard drawableCard = deckNumber == 0 ? DrawableCard.RESOURCECARD : DrawableCard.GOLDCARD;
+
+
+        return drawableCard;
+    }
+
+    private int randomDeckPosition(Game game, DrawableCard deckType){
+        Random random = new Random();
+        return random.nextInt(3);
+    }
+
+    private int getNextActivePlayerIndex(){
+        Game game = multiGame.getGameFromUserNick(this.nickname);
+        User nextPlayer = game.getUsersList().get(game.getNextPlayerIndex());
+        while(!game.isPlayerActive(nextPlayer.getNickname())){
+            nextPlayer = game.getUsersList().get(game.getNextPlayerIndex());
+        }
+
+        return game.getUsersList().indexOf(nextPlayer);
     }
 
     @Override
     public void disconnect() {
-        if(this.nickname == null)
+        if(this.nickname == null){
+            System.out.println("User disconnected before logging in");
             return;
+        }
 
-        //when leaving a Game check if currentPlayer
+        if(multiGame.getUserLobby(this.nickname) != null){
+            Lobby lobbyToLeave = multiGame.getUserLobby(this.nickname);
+            lobbyToLeave.lock();
+            leaveLobby();
+            lobbyToLeave.unlock();
+        }else if(multiGame.isInGameParty(this.nickname)) {
+            Game gameToLeave = multiGame.getGameFromUserNick(this.nickname);
+            gameToLeave.lockCurrentPlayer();
+            leaveGame();
+            gameToLeave.unlockCurrentPlayer();
+        }else{
+            multiGame.removeUser(this.nickname);
+        }
+
         multiGame.removeUser(this.nickname);
+        System.out.println(this.nickname + " has disconnected");
     }
 
     //turnTaker methods
