@@ -88,6 +88,15 @@ public class DiffGenerator {
     }
 
     /**
+     * Generates a diff that updates the lightGame with the name of the user disconnected
+     * @param nickname the nickname of the user disconnected
+     * @return the diff that updates the lightGame with the name of the user disconnected
+     */
+    public static GameDiffPlayerActivity diffRemoveUserFromGame(String nickname) {
+        return new GameDiffPlayerActivity(new ArrayList<>(), List.of(nickname));
+    }
+
+    /**
      * Generates a diff that updates the lightGame with the current state of the game
      * for users that join the game for the first time
      * @param game the game to get the current state from and that the user is joining
