@@ -7,7 +7,6 @@ import it.polimi.ingsw.lightModel.lightTableRelated.LightDeck;
 import it.polimi.ingsw.lightModel.lightTableRelated.LightLobby;
 import it.polimi.ingsw.model.MultiGame;
 import it.polimi.ingsw.model.cardReleted.cards.Card;
-import it.polimi.ingsw.model.cardReleted.utilityEnums.CardFace;
 import it.polimi.ingsw.model.playerReleted.Hand;
 import it.polimi.ingsw.model.playerReleted.Position;
 import it.polimi.ingsw.model.playerReleted.User;
@@ -15,7 +14,6 @@ import it.polimi.ingsw.model.tableReleted.Game;
 import it.polimi.ingsw.model.tableReleted.Lobby;
 import org.junit.jupiter.api.Test;
 
-import java.rmi.RemoteException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Objects;
@@ -109,7 +107,7 @@ class ServerModelControllerTest {
         serverModelController2.login(view2.name);
         serverModelController2.joinLobby(lobbyName1);
 
-        assert multiGame.getUserGame(view1.name) == null;
+        assert multiGame.getGameFromUserNick(view1.name) == null;
         assert multiGame.getLobbyByName(lobbyName1) != null;
         assert multiGame.getLobbyByName(lobbyName1).getLobbyPlayerList().contains(view1.name);
         assert multiGame.getLobbyByName(lobbyName1).getLobbyPlayerList().contains(view2.name);
