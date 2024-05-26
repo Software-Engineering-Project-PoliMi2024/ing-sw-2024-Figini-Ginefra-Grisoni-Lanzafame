@@ -134,7 +134,7 @@ public class Game implements Serializable {
     }
 
     /**
-     * Remove a user from the gameParty
+     * Remove a user from the gameParty preventing them from joining the game later
      * @param nickname of the user being removed
      */
     public void removeUser(String nickname){
@@ -214,6 +214,20 @@ public class Game implements Serializable {
      */
     public List<String> getActivePlayers(){
         return gameParty.getActivePlayers();
+    }
+
+    /**
+     * This method is used to lock the current player lock
+     */
+    public void lockCurrentPlayer(){
+        gameParty.lockCurrentPlayer();
+    }
+
+    /**
+     * This method is used to unlock the current player lock
+     */
+    public void unlockCurrentPlayer(){
+        gameParty.unlockCurrentPlayer();
     }
 
     @Override

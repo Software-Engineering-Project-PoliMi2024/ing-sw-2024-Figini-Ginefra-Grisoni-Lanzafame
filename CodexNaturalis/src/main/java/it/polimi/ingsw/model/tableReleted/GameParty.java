@@ -6,12 +6,14 @@ import it.polimi.ingsw.model.playerReleted.User;
 
 import java.io.Serializable;
 import java.util.*;
+import java.util.concurrent.locks.ReentrantLock;
 import java.util.stream.Collectors;
 
 public class GameParty implements Serializable {
     final private List<User> playerList; //the player that were in the lobby pre game
     private int currentPlayerIndex;
     private final TurnTakerMediator activeTurnTakerMediator = new TurnTakerMediator();
+    ReentrantLock currentPlayerLock = new ReentrantLock();
 
     /**
      * The constructor of the class
@@ -27,13 +29,27 @@ public class GameParty implements Serializable {
     }
 
     /**
+     * This method is used to lock the current player lock
+     */
+    public void lockCurrentPlayer(){
+        currentPlayerLock.lock();
+    }
+
+    /**
+     * This method is used to unlock the current player lock
+     */
+    public void unlockCurrentPlayer(){
+        currentPlayerLock.unlock();
+    }
+
+    /**
      * This method is used to set the player index in the game
      * @param index the index of the player that is playing
      */
     public void setPlayerIndex(int index){
-        synchronized (playerList){
-            currentPlayerIndex = index;
-        }
+        currentPlayerLock.lock();
+        currentPlayerIndex = index;
+        currentPlayerLock.unlock();
     }
 
     /**
@@ -41,9 +57,10 @@ public class GameParty implements Serializable {
      * @return the current player
      */
     public User getCurrentPlayer() {
-        synchronized (playerList) {
-            return playerList.get(currentPlayerIndex);
-        }
+        currentPlayerLock.lock();
+        User user = playerList.get(currentPlayerIndex);
+        currentPlayerLock.unlock();
+        return user;
     }
 
     /**
@@ -52,7 +69,10 @@ public class GameParty implements Serializable {
      * @return the index of the next player
      */
     public int getNextPlayerIndex() {
-        return (currentPlayerIndex % getNumberOfMaxPlayer());
+        currentPlayerLock.lock();
+        int index = (currentPlayerIndex % getNumberOfMaxPlayer());
+        currentPlayerLock.unlock();
+        return index;
     }
 
     /** @return list of the users in this match*/
