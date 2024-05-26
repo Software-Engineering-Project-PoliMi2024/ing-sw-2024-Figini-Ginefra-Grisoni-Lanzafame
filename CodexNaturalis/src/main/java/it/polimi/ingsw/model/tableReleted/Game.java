@@ -226,6 +226,15 @@ public class Game implements Serializable {
     }
 
     /**
+     * This method is used to check if a player is active
+     * @param nickname the nickname of the player that wants to check if it is active
+     * @return true if the player is active, false otherwise
+     */
+    public synchronized boolean isPlayerActive(String nickname){
+        return gameParty.isPlayerActive(nickname);
+    }
+
+    /**
      * This method is used to lock the current player lock
      */
     public void lockCurrentPlayer(){

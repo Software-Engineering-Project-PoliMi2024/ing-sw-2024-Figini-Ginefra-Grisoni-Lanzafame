@@ -46,4 +46,13 @@ public class TurnTakerMediator extends GenericJoinAndTurnMediator<TurnTaker> {
     public synchronized List<String> getActivePlayers(){
         return subscribers.keySet().stream().toList();
     }
+
+    /**
+     * This method is used to check if a player is active
+     * @param nickname the nickname of the player that wants to check if it is active
+     * @return true if the player is active, false otherwise
+     */
+    public synchronized boolean isPlayerActive(String nickname){
+        return subscribers.containsKey(nickname);
+    }
 }

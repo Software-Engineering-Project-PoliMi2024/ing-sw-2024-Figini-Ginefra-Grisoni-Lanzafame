@@ -163,6 +163,14 @@ public class GameParty implements Serializable {
         return activeTurnTakerMediator.getActivePlayers();
     }
 
+    /**
+     * This method is used to check if a player is active
+     * @param nickname the nickname of the player that wants to check if it is active
+     * @return true if the player is active, false otherwise
+     */
+    public synchronized boolean isPlayerActive(String nickname){
+        return activeTurnTakerMediator.isPlayerActive(nickname);
+    }
 
 //TODO to remove
     public User getFirstPlayerInOrder() {
