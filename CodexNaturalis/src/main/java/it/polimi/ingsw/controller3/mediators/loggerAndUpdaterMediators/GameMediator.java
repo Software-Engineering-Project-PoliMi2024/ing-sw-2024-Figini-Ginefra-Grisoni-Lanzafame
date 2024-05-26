@@ -4,6 +4,7 @@ import it.polimi.ingsw.controller3.LogsOnClientStatic;
 import it.polimi.ingsw.lightModel.DiffGenerator;
 import it.polimi.ingsw.lightModel.LightModelUpdaterInterfaces.LightGameUpdater;
 import it.polimi.ingsw.lightModel.diffs.game.GameDiffPlayerActivity;
+import it.polimi.ingsw.lightModel.diffs.nuclearDiffs.GadgetGame;
 import it.polimi.ingsw.lightModel.lightTableRelated.LightGame;
 import it.polimi.ingsw.model.tableReleted.Game;
 import it.polimi.ingsw.view.ViewInterface;
@@ -54,8 +55,22 @@ public class GameMediator extends LoggerAndUpdaterMediator<LightGameUpdater, Lig
     }
 
     public synchronized void unsubscribe(String nickname){
-
-
+        for(String subscriberNick : subscribers.keySet()){
+            if(!subscriberNick.equals(nickname)) {
+                try {
+                    subscribers.get(subscriberNick).first().updateGame(DiffGenerator.diffRemoveUserFromGame(nickname));
+                    subscribers.get(subscriberNick).second().log(nickname + LogsOnClientStatic.PLAYER_GAME_LEFT);
+                } catch (Exception e) {
+                    System.out.println("GameMediator: subscriber " + subscriberNick + " not reachable" + e.getMessage());
+                }
+            }
+        }
+        try {
+            subscribers.get(nickname).first().updateGame(new GadgetGame());
+            subscribers.get(nickname).second().log("You"+ LogsOnClientStatic.PLAYER_GAME_LEFT);
+        }catch (Exception e){
+            System.out.println("GameMediator: subscriber " + nickname + " not reachable" + e.getMessage());
+        }
         super.unsubscribe(nickname);
     }
 }
