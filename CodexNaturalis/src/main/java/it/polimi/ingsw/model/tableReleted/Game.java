@@ -176,9 +176,9 @@ public class Game implements Serializable {
      * notify all players that the secretObjective selection phase has finished
      * and move to the next phase
      */
-    public void fromSecretObjectiveMoveOnToGame(){
+    public void fromSecretObjectiveMoveOnToGame(String nicknameOfFirstPlayer){
         gameMediator.notifyAllChoseSecretObjective();
-        gameParty.notifyTurn();
+        this.notifyTurn(nicknameOfFirstPlayer);
     }
 
     /**
@@ -206,7 +206,8 @@ public class Game implements Serializable {
      * notify a player that it is their turn to play by
      * calling the takeTurnMediator method of the subscriber
      */
-    public void notifyTurn(){
+    public void notifyTurn(String nicknameOfNextPlayer){
+        gameMediator.notifyTurnChange(nicknameOfNextPlayer);
         gameParty.notifyTurn();
     }
 

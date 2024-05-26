@@ -24,7 +24,7 @@ public class TurnTakerMediator extends GenericJoinAndTurnMediator<TurnTaker> {
     }
 
     /**
-     * This method is used to notify a player that it is his turn
+     * This method is used to notify players that the turn has changed
      * by calling the takeTurn method of the subscriber
      */
     public synchronized void notifyTurn(){

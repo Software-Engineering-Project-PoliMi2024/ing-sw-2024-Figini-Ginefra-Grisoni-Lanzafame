@@ -104,4 +104,18 @@ public class GameMediator extends LoggerAndUpdaterMediator<LightGameUpdater, Lig
             }
         }
     }
+
+    public synchronized void notifyTurnChange(String playerNickname){
+        for(String subscriberNick : subscribers.keySet()){
+            try {
+                if (!subscriberNick.equals(playerNickname)) {
+                    subscribers.get(subscriberNick).second().log(playerNickname + LogsOnClientStatic.PLAYER_TURN);
+                } else {
+                    subscribers.get(subscriberNick).second().log(LogsOnClientStatic.YOUR_TURN);
+                }
+            } catch (Exception e) {
+                System.out.println("GameMediator: subscriber " + subscriberNick + " not reachable" + e.getMessage());
+            }
+        }
+    }
 }

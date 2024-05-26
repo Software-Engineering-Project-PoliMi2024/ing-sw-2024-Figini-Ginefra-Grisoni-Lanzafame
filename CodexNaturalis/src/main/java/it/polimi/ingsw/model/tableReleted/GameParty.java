@@ -141,7 +141,7 @@ public class GameParty implements Serializable {
     }
 
     /**
-     * notify a player that it is their turn to play by
+     * This method is used to notify players that the turn has changed
      * calling the takeTurnMediator method of the subscriber
      */
     public void notifyTurn(){
