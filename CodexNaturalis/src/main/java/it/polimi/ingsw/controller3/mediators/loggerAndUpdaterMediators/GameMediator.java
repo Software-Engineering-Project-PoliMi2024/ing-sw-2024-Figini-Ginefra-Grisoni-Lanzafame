@@ -91,4 +91,17 @@ public class GameMediator extends LoggerAndUpdaterMediator<LightGameUpdater, Lig
             }
         }
     }
+
+    /**
+     * notify all players that the secretObjective selection phase has finished
+     */
+    public synchronized void notifyAllChoseSecretObjective(){
+        for(String subscriberNick : subscribers.keySet()){
+            try {
+                subscribers.get(subscriberNick).second().log(LogsOnClientStatic.EVERYONE_CHOSE);
+            } catch (Exception e) {
+                System.out.println("GameMediator: subscriber " + subscriberNick + " not reachable" + e.getMessage());
+            }
+        }
+    }
 }

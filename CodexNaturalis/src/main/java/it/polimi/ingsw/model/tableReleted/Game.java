@@ -167,9 +167,18 @@ public class Game implements Serializable {
      * notify all players that the startCardFace selection phase has finished
      * and move to the next phase
      */
-    public synchronized void fromStartCardMoveOnToSecretObjectiveSelection(){
-        this.gameMediator.notifyAllChoseStartCardFace();
+    public void fromStartCardMoveOnToSecretObjectiveSelection(){
+        gameMediator.notifyAllChoseStartCardFace();
         gameParty.notifyChooseObjective();
+    }
+
+    /**
+     * notify all players that the secretObjective selection phase has finished
+     * and move to the next phase
+     */
+    public void fromSecretObjectiveMoveOnToGame(){
+        gameMediator.notifyAllChoseSecretObjective();
+        gameParty.notifyTurn();
     }
 
     /**
