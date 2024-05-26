@@ -43,7 +43,7 @@ public class GameParty implements Serializable {
         return (currentPlayerIndex % getNumberOfMaxPlayer());
     }
 
-    /** @return list of the players in this match*/
+    /** @return list of the users in this match*/
     public List<User> getUsersList() {
         synchronized (playerList) {
             return playerList;

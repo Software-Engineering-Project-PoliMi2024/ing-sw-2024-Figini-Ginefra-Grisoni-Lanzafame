@@ -98,7 +98,7 @@ public class Game implements Serializable {
         return gameParty.getNextPlayerIndex();
     }
 
-    /** @return list of the players in this match*/
+    /** @return list of the User in this match*/
     public List<User> getUsersList() {
         return gameParty.getUsersList();
     }
@@ -111,6 +111,14 @@ public class Game implements Serializable {
      */
     public User getUserFromNick(String nickname){
         return gameParty.getUserFromNick(nickname);
+    }
+
+    /**
+     * This method is used to get the player currently playing
+     * @return the player currently playing
+     */
+    public User getCurrentPlayer() {
+        return gameParty.getCurrentPlayer();
     }
 
     /***
