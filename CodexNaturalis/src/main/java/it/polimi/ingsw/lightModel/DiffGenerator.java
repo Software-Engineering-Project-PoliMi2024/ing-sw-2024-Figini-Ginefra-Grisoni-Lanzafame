@@ -12,12 +12,14 @@ import it.polimi.ingsw.lightModel.lightTableRelated.LightLobby;
 import it.polimi.ingsw.model.cardReleted.cards.GoldCard;
 import it.polimi.ingsw.model.cardReleted.cards.ObjectiveCard;
 import it.polimi.ingsw.model.cardReleted.cards.ResourceCard;
+import it.polimi.ingsw.model.cardReleted.cards.StartCard;
 import it.polimi.ingsw.model.cardReleted.utilityEnums.DrawableCard;
 import it.polimi.ingsw.model.playerReleted.Hand;
 import it.polimi.ingsw.model.playerReleted.User;
 import it.polimi.ingsw.model.tableReleted.Deck;
 import it.polimi.ingsw.model.tableReleted.Game;
 import it.polimi.ingsw.model.tableReleted.Lobby;
+import javafx.scene.effect.Light;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -209,6 +211,11 @@ public class DiffGenerator {
             handDiffAdd.add(new HandDiffAddOneSecretObjectiveOption(Lightifier.lightifyToCard(objectiveOptions.getFirst())));
             handDiffAdd.add(new HandDiffAddOneSecretObjectiveOption(Lightifier.lightifyToCard(objectiveOptions.getLast())));
         }
+
+        StartCard startCard = user.getUserHand().getStartCard();
+        if(startCard != null)
+            handDiffAdd.add(new HandDiffAdd(Lightifier.lightifyToCard(startCard), true));
+
         return handDiffAdd;
     }
 
@@ -218,15 +225,21 @@ public class DiffGenerator {
      */
     private static List<HandOtherDiff> getHandOtherCurrentState(Game game, String nickname){
         List<HandOtherDiff> handOtherDiff = new ArrayList<>();
-        for(String nick : game.getGameParty().getUsersList().stream().map(User::getNickname).toList()){
-            if(!nick.equals(nickname)){
-                Hand handOther = game.getUserFromNick(nick).getUserHand();
+        for(User user : game.getGameParty().getUsersList()){
+            if(!user.getNickname().equals(nickname)){
+                Hand handOther = user.getUserHand();
                 LightHandOthers otherHand = Lightifier.lightifyOthers(handOther);
                 for(LightBack card : otherHand.getCards()){
-                    handOtherDiff.add(new HandOtherDiffAdd(card, nick));
+                    handOtherDiff.add(new HandOtherDiffAdd(card, user.getNickname()));
                 }
+
+                StartCard startCard = user.getUserHand().getStartCard();
+                if(startCard != null)
+                    handOtherDiff.add(new HandOtherDiffAdd(Lightifier.lightifyToBack(startCard), user.getNickname()));
             }
+
         }
+
         return handOtherDiff;
     }
 
