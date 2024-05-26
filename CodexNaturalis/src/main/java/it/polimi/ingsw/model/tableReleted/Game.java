@@ -159,7 +159,17 @@ public class Game implements Serializable {
      * @param nickname the nickname of the player that is unsubscribing
      */
     public void unsubscribe(String nickname){
+        this.gameMediator.unsubscribe(nickname);
         gameParty.unsubscribe(nickname);
+    }
+
+    /**
+     * notify all players that the startCardFace selection phase has finished
+     * and move to the next phase
+     */
+    public synchronized void fromStartCardMoveOnToSecretObjectiveSelection(){
+        this.gameMediator.notifyAllChoseStartCardFace();
+        gameParty.notifyChooseObjective();
     }
 
     /**

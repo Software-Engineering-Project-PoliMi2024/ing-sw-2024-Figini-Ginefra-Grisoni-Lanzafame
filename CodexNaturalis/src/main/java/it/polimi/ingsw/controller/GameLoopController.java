@@ -82,10 +82,6 @@ public class GameLoopController implements Serializable {
      * joinGame from the lobby
      */
     public void joinGame(){
-
-        LightCard lightStartCard = Lightifier.lightifyToCard(getOrDrawStartCard(user));
-        controller.updateGame(new HandDiffAdd(lightStartCard, true));
-
     }
 
     /**

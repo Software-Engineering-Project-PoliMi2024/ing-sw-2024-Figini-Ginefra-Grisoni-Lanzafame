@@ -54,6 +54,11 @@ public class GameMediator extends LoggerAndUpdaterMediator<LightGameUpdater, Lig
         super.subscribe(nicknameJoin, LoggerAndUpdater, LoggerAndUpdater);
     }
 
+    /**
+     * unsubscribe a player from the activeTurnTakerMediator
+     * removing them from the list of players that will receive notifications
+     * @param nickname the nickname of the player that is unsubscribing
+     */
     public synchronized void unsubscribe(String nickname){
         for(String subscriberNick : subscribers.keySet()){
             if(!subscriberNick.equals(nickname)) {
@@ -72,5 +77,18 @@ public class GameMediator extends LoggerAndUpdaterMediator<LightGameUpdater, Lig
             System.out.println("GameMediator: subscriber " + nickname + " not reachable" + e.getMessage());
         }
         super.unsubscribe(nickname);
+    }
+
+    /**
+     * notify all players that the startCardFace selection phase has finished
+     */
+    public synchronized void notifyAllChoseStartCardFace(){
+        for(String subscriberNick : subscribers.keySet()){
+            try {
+                subscribers.get(subscriberNick).second().log(LogsOnClientStatic.EVERYONE_PLACED_STARTCARD);
+            } catch (Exception e) {
+                System.out.println("GameMediator: subscriber " + subscriberNick + " not reachable" + e.getMessage());
+            }
+        }
     }
 }
