@@ -24,13 +24,18 @@ import java.util.List;
 public class Game implements Serializable {
     private final GameDiffPublisher gameDiffPublisher;
     private final GameLoopController gameLoopController;
+
     final private Deck<ObjectiveCard> objectiveCardDeck;
     final private Deck<ResourceCard> resourceCardDeck;
     final private Deck<GoldCard> goldCardDeck;
     final private Deck<StartCard> startingCardDeck;
+
     private final String name;
     private final GameParty gameParty;
+
     private boolean isLastTurn;
+    private final Object isLastTurnLock = new Object();
+
     private final List<ObjectiveCard> commonObjective;
     private final GameMediator gameMediator;
     /**
@@ -140,10 +145,11 @@ public class Game implements Serializable {
      * subscribe a turnTaker to the activeTurnTakerMediator in order to receive notification
      * on when it is their turn to play
      * @param nickname the nickname of the player that is subscribing
+     * @param LoggerAndUpdater the view that is subscribing
      * @param turnTaker the turnTaker that is subscribing
      */
-    public void subscribe(String nickname, ViewInterface LoggerAndUpdater, TurnTaker turnTaker, boolean firstTime){
-        this.gameMediator.subscribe(nickname, LoggerAndUpdater, this, firstTime);
+    public void subscribe(String nickname, ViewInterface LoggerAndUpdater, TurnTaker turnTaker, boolean sendPublicObj){
+        this.gameMediator.subscribe(nickname, LoggerAndUpdater, this, sendPublicObj);
         gameParty.subscribe(nickname, turnTaker);
     }
 
@@ -172,8 +178,6 @@ public class Game implements Serializable {
     public List<String> getActivePlayers(){
         return gameParty.getActivePlayers();
     }
-
-
 
     @Override
     public String toString() {
@@ -215,20 +219,28 @@ public class Game implements Serializable {
     }
 
     public void setLastTurn(boolean lastTurn) {
-        isLastTurn = lastTurn;
+        synchronized (isLastTurnLock) {
+            isLastTurn = lastTurn;
+        }
     }
 
     public boolean isLastTurn() {
-        return isLastTurn;
+        synchronized (isLastTurnLock) {
+            return isLastTurn;
+        }
     }
 
     private void populateCommonObjective(){
-        for(int i = 0;i<2;i++){
-            commonObjective.add(objectiveCardDeck.drawFromDeck());
+        synchronized (commonObjective) {
+            for (int i = 0; i < 2; i++) {
+                commonObjective.add(objectiveCardDeck.drawFromDeck());
+            }
         }
     }
     public List<ObjectiveCard> getCommonObjective() {
-        return commonObjective;
+        synchronized (commonObjective) {
+            return new ArrayList<>(commonObjective);
+        }
     }
 
     public void removeUser(User user){

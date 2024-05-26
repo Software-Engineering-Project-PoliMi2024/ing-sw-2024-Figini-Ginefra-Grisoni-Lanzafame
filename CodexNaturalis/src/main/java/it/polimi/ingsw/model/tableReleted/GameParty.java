@@ -31,7 +31,19 @@ public class GameParty implements Serializable {
      * @param index the index of the player that is playing
      */
     public void setPlayerIndex(int index){
-        currentPlayerIndex = index;
+        synchronized (playerList){
+            currentPlayerIndex = index;
+        }
+    }
+
+    /**
+     * This method is used to get the current player that is supposed to play
+     * @return the current player
+     */
+    public User getCurrentPlayer() {
+        synchronized (playerList) {
+            return playerList.get(currentPlayerIndex);
+        }
     }
 
     /**
@@ -131,21 +143,19 @@ public class GameParty implements Serializable {
         return new User(playerList.getFirst());
     }
 
-    public User getCurrentPlayer() {
-        return playerList.get(currentPlayerIndex);
-    }
-
     /**
      * This method advances the game to the next player in the rotation sequence.
      * if there is no currentPlayer, it creates it by launching the chooseStartingOrder method
      * @throws IllegalCallerException if the game is empty.
      */
     public User nextPlayer() {
-        if(playerList.isEmpty()){
-            throw new IllegalCallerException("The game is empty, there is no next player");
-        } else {
-            currentPlayerIndex = getNextPlayerIndex();
-            return playerList.get(currentPlayerIndex);
+        synchronized (playerList) {
+            if (playerList.isEmpty()) {
+                throw new IllegalCallerException("The game is empty, there is no next player");
+            } else {
+                currentPlayerIndex = getNextPlayerIndex();
+                return playerList.get(currentPlayerIndex);
+            }
         }
     }
 }
