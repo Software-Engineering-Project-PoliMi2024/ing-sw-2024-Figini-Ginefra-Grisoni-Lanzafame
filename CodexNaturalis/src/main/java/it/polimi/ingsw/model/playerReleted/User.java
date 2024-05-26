@@ -51,8 +51,20 @@ public class User implements Serializable {
         this.getUserHand().removeCard((CardInHand) placement.card()); //A user can place only a CardInHand, so the cast is safe
     }
 
+    /**
+     * This method checks if the user has already placed the start card
+     * @return true if the user has already placed the start card, false otherwise
+     */
     public boolean hasPlacedStartCard(){
         return (userCodex.getPlacementAt(new Position(0,0)) != null);
+    }
+
+    /**
+     * This method checks if the user has already chosen the objective
+     * @return true if the user has already chosen the objective, false otherwise
+     */
+    public boolean hasChosenObjective(){
+        return userHand.getSecretObjective() != null;
     }
 
     public void placeStartCard(Placement placement){
