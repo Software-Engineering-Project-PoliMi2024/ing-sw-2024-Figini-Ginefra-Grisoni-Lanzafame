@@ -2,17 +2,17 @@ package it.polimi.ingsw.model.tableReleted;
 
 
 import it.polimi.ingsw.controller.GameLoopController;
-import it.polimi.ingsw.controller3.mediators.GameMediator;
-import it.polimi.ingsw.controller3.mediators.turnTakerMediator.TurnTaker;
+import it.polimi.ingsw.controller3.mediators.loggerAndUpdaterMediators.GameMediator;
+import it.polimi.ingsw.controller3.mediators.gameJoinerAndTurnTakerMediators.TurnTaker;
 import it.polimi.ingsw.lightModel.diffs.game.GameDiff;
 import it.polimi.ingsw.lightModel.diffPublishers.DiffSubscriber;
 import it.polimi.ingsw.lightModel.diffPublishers.GameDiffPublisher;
 import it.polimi.ingsw.model.cardReleted.cards.*;
 import it.polimi.ingsw.model.playerReleted.User;
+import it.polimi.ingsw.view.ViewInterface;
 
 import java.io.Serializable;
 import java.util.ArrayList;
-import java.util.LinkedList;
 import java.util.List;
 
 
@@ -124,7 +124,8 @@ public class Game implements Serializable {
      * @param nickname the nickname of the player that is subscribing
      * @param turnTaker the turnTaker that is subscribing
      */
-    public void subscribe(String nickname, TurnTaker turnTaker){
+    public void subscribe(String nickname, ViewInterface LoggerAndUpdater, TurnTaker turnTaker, boolean firstTime){
+        this.gameMediator.subscribe(nickname, LoggerAndUpdater, this, firstTime);
         gameParty.subscribe(nickname, turnTaker);
     }
 
