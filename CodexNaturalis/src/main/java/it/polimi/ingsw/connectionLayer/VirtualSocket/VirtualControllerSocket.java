@@ -35,11 +35,13 @@ public class VirtualControllerSocket implements VirtualController {
             server = new Socket(ip, port);
         } catch (IOException e) { //catch a "UnknownHostException" or a "ConnectException"
             System.out.println("Server unreachable, check the port and the ip address");
-            view.logErr(LogsOnClient.CONNECTION_ERROR.getMessage());
+            this.view.logErr(LogsOnClient.CONNECTION_ERROR.getMessage());
             return;
         }
         //If the connection goes well
-        this.serverHandler = new ServerHandler(server);
+        if(serverHandler==null){
+            this.serverHandler = new ServerHandler(server);
+        }
         Thread serverHandlerThread = new Thread(serverHandler, "serverHandler of " + server.getInetAddress().getHostAddress());
         serverHandlerThread.start();
         while (!serverHandler.isReady()) {
@@ -113,7 +115,7 @@ public class VirtualControllerSocket implements VirtualController {
         serverHandler.sendServerMessage(new DrawMsg(deckID, cardID));
     }
 
-    public ViewInterface getView() {
-        return view;
+    public void setServerHanlder(ServerHandler serverHandler) {
+        this.serverHandler = serverHandler;
     }
 }
