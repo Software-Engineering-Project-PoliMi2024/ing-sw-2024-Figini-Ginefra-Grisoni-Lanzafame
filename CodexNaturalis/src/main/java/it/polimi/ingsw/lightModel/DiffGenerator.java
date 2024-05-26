@@ -1,6 +1,7 @@
 package it.polimi.ingsw.lightModel;
 
 
+import it.polimi.ingsw.lightModel.diffs.game.GameDiffPlayerActivity;
 import it.polimi.ingsw.lightModel.diffs.lobby_lobbyList.LobbyDiffEdit;
 import it.polimi.ingsw.lightModel.diffs.lobby_lobbyList.LobbyDiffEditLogin;
 import it.polimi.ingsw.lightModel.diffs.lobby_lobbyList.LobbyListDiff;
@@ -65,4 +66,16 @@ public class DiffGenerator {
     public static LobbyDiffEdit diffRemoveUserFromLobby(String nickname){
         return new LobbyDiffEdit(new ArrayList<>(), List.of(nickname));
     }
+
+    /**
+     * Generates a diff that updates the lightGame with the name of the user joined
+     * @param nickname the nickname of the user joined
+     * @return the diff that updates the lightGame with the name of the user joined
+     */
+    public static GameDiffPlayerActivity diffAddUserToGame(String nickname){
+        return new GameDiffPlayerActivity(List.of(nickname), new ArrayList<>());
+    }
+
+
+
 }
