@@ -1,4 +1,4 @@
-package it.polimi.ingsw.controller3.mediators;
+package it.polimi.ingsw.controller3.mediators.loggerAndUpdaterMediators;
 
 import it.polimi.ingsw.lightModel.Differentiable;
 import it.polimi.ingsw.lightModel.LightModelUpdaterInterfaces.Updater;
@@ -8,7 +8,7 @@ import it.polimi.ingsw.view.LoggerInterface;
  import java.util.HashMap;
  import java.util.Map;
 
-public abstract class Mediator <updaterType extends Updater, DiffType extends Differentiable> {
+public abstract class LoggerAndUpdaterMediator<updaterType extends Updater, DiffType extends Differentiable> {
     protected final Map<String, Pair<updaterType, LoggerInterface>> subscribers = new HashMap<>();
 
     protected void subscribe(String nickname, updaterType updater, LoggerInterface logger){

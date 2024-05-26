@@ -1,9 +1,6 @@
-package it.polimi.ingsw.controller3.mediators.turnTakerMediator;
+package it.polimi.ingsw.controller3.mediators.gameJoinerAndTurnTakerMediators;
 
-import java.util.HashMap;
-import java.util.Map;
-
-public class GameJoinerMediator extends GenericMediator<GameJoiner> {
+public class GameJoinerMediator extends GenericJoinAndTurnMediator<GameJoiner> {
     /**
      * Subscribes a gameJoiner to the mediator, so that it can be notified when the game starts
      * @param nickname the nickname of the turnTaker

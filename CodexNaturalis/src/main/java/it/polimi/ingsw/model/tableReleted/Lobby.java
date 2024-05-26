@@ -1,8 +1,8 @@
 package it.polimi.ingsw.model.tableReleted;
 
-import it.polimi.ingsw.controller3.mediators.LobbyMediator;
-import it.polimi.ingsw.controller3.mediators.turnTakerMediator.GameJoiner;
-import it.polimi.ingsw.controller3.mediators.turnTakerMediator.GameJoinerMediator;
+import it.polimi.ingsw.controller3.mediators.loggerAndUpdaterMediators.LobbyMediator;
+import it.polimi.ingsw.controller3.mediators.gameJoinerAndTurnTakerMediators.GameJoiner;
+import it.polimi.ingsw.controller3.mediators.gameJoinerAndTurnTakerMediators.GameJoinerMediator;
 import it.polimi.ingsw.view.ViewInterface;
 
 import java.io.Serializable;

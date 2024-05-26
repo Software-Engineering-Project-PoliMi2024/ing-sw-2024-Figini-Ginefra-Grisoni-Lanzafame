@@ -1,8 +1,8 @@
-package it.polimi.ingsw.controller3.mediators.turnTakerMediator;
+package it.polimi.ingsw.controller3.mediators.gameJoinerAndTurnTakerMediators;
 
 import java.util.List;
 
-public class TurnTakerMediator extends GenericMediator<TurnTaker>{
+public class TurnTakerMediator extends GenericJoinAndTurnMediator<TurnTaker> {
     /**
      * This method is used to subscribe a new player to the mediator
      * subscribing a player means that he will be able to be notified when it is his turn

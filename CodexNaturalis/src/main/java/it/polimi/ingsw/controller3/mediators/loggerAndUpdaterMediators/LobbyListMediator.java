@@ -1,4 +1,4 @@
-package it.polimi.ingsw.controller3.mediators;
+package it.polimi.ingsw.controller3.mediators.loggerAndUpdaterMediators;
 
 import it.polimi.ingsw.controller3.LogsOnClientStatic;
 import it.polimi.ingsw.lightModel.DiffGenerator;
@@ -6,12 +6,11 @@ import it.polimi.ingsw.lightModel.LightModelUpdaterInterfaces.LightLobbyListUpda
 import it.polimi.ingsw.lightModel.diffs.nuclearDiffs.FatManLobbyList;
 import it.polimi.ingsw.lightModel.lightTableRelated.LightLobbyList;
 import it.polimi.ingsw.model.tableReleted.Lobby;
-import it.polimi.ingsw.view.LoggerInterface;
 import it.polimi.ingsw.view.ViewInterface;
 
 import java.util.List;
 
-public class LobbyListMediator extends Mediator<LightLobbyListUpdater, LightLobbyList> {
+public class LobbyListMediator extends LoggerAndUpdaterMediator<LightLobbyListUpdater, LightLobbyList> {
     /**
      * Subscribes the updater and the logger to the mediator (both interfaces are implemented by viewInterface)
      * Updates the lobbyList of the subscriber with the lobbyHistory passed as parameter

@@ -1,17 +1,11 @@
 package it.polimi.ingsw.model.tableReleted;
 
-import it.polimi.ingsw.controller3.mediators.LobbyListMediator;
-import it.polimi.ingsw.lightModel.LightModelUpdaterInterfaces.LightLobbyListUpdater;
-import it.polimi.ingsw.lightModel.diffs.ModelDiffs;
-import it.polimi.ingsw.lightModel.diffs.lobby_lobbyList.LobbyListDiff;
-import it.polimi.ingsw.lightModel.lightTableRelated.LightLobbyList;
-import it.polimi.ingsw.view.LoggerInterface;
+import it.polimi.ingsw.controller3.mediators.loggerAndUpdaterMediators.LobbyListMediator;
 import it.polimi.ingsw.view.ViewInterface;
 
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.HashSet;
-import java.util.List;
 import java.util.Set;
 
 public class LobbyList implements Serializable {

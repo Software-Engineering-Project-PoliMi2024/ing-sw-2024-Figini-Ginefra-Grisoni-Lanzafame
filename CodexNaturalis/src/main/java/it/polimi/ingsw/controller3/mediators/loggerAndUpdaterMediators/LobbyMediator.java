@@ -1,4 +1,4 @@
-package it.polimi.ingsw.controller3.mediators;
+package it.polimi.ingsw.controller3.mediators.loggerAndUpdaterMediators;
 
 import it.polimi.ingsw.controller3.LogsOnClientStatic;
 import it.polimi.ingsw.lightModel.DiffGenerator;
@@ -8,7 +8,7 @@ import it.polimi.ingsw.lightModel.lightTableRelated.LightLobby;
 import it.polimi.ingsw.model.tableReleted.Lobby;
 import it.polimi.ingsw.view.ViewInterface;
 
-public class LobbyMediator extends Mediator<LightLobbyUpdater, LightLobby> {
+public class LobbyMediator extends LoggerAndUpdaterMediator<LightLobbyUpdater, LightLobby> {
     /**
      * Subscribes the updater and the logger to the mediator (both interfaces are implemented by viewInterface)
      * Updates the lobby of the subscriber with the lobby passed as parameter
