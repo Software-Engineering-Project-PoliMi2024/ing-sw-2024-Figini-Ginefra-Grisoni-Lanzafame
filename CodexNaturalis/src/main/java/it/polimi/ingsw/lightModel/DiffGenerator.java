@@ -99,26 +99,22 @@ public class DiffGenerator {
     }
 
     /**
-     * Generates a diff that updates the deck with a new card after one is drawn from the buffer
+     * Generates a diff that updates the deck with a new card after one is drawn
      * @param deckType the type of the deck
-     * @param pos the position of the card in the buffer
-     * @param card the card that replaces the card drawn from the buffer
-     * @return the diff that updates the buffer on the lightModel with
-     * the card that substitute the card drawn from the buffer
+     * @param pos the position of the card (2 = deck; 0,1 = buffer)
+     * @param card the card that replaces the card drawn
+     * @return the diff that replace the buffer or the deck card drawn on the lightModel
      */
-    public static DeckDiffBufferDraw drawFromBuffer(DrawableCard deckType, int pos, LightCard card){
-        return new DeckDiffBufferDraw(card, pos, deckType);
+    public static DeckDiff draw(DrawableCard deckType, int pos, LightCard card){
+        DeckDiff diff;
+        if(pos == 2)
+            diff = new DeckDiffDeckDraw(deckType, new LightBack(card.idBack()));
+        else
+            diff = new DeckDiffBufferDraw(card, pos, deckType);
+
+        return diff;
     }
 
-    /**
-     * Generates a diff that updates the deck with a new card after one is drawn from the deck top
-     * @param deckType the type of the deck
-     * @param card the card that replaces the card drawn
-     * @return the diff that updates the deck on the lightModel with the replacement card
-     */
-    public static DeckDiffDeckDraw drawFromDeck(DrawableCard deckType, LightBack card){
-        return new DeckDiffDeckDraw(deckType, card);
-    }
 
     /**
      * Generates a diff that updates the lightGame with the current state of the game
