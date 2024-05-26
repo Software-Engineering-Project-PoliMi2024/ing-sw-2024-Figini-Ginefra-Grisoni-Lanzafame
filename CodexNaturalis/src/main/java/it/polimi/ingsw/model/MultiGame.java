@@ -1,7 +1,6 @@
 package it.polimi.ingsw.model;
 
 import it.polimi.ingsw.Configs;
-import it.polimi.ingsw.controller.ServerModelController;
 import it.polimi.ingsw.controller.persistence.PersistenceFactory;
 import it.polimi.ingsw.model.cardReleted.cardFactories.GoldCardFactory;
 import it.polimi.ingsw.model.cardReleted.cardFactories.ObjectiveCardFactory;
@@ -41,8 +40,13 @@ public class MultiGame implements Serializable {
                 new CardLookUp<>(new GoldCardFactory(filePath+sourceFileName, filePath).getCards(Configs.goldCardBinFileName));
     }
 
-    public synchronized Set<Game> getGames() {
-        return games;
+    /**
+     * @return the set of games that are were created
+     */
+    public Set<Game> getGames() {
+        synchronized (usernames) {
+            return games;
+        }
     }
 
     public List<String> getUsernames() {
@@ -51,60 +55,111 @@ public class MultiGame implements Serializable {
         }
     }
 
-    public synchronized boolean addGame(Game game) {
-        return games.add(game);
+    /**
+     * Adds a game to the list of games in the MultiGame
+     * @param game the game to be added
+     */
+    public void addGame(Game game) {
+        synchronized (games) {
+            games.add(game);
+        }
     }
 
-    public boolean addUser(String username) {
+    /**
+     * Adds a user to the list of usernames in the MultiGame
+     * @param username the username to be added
+     */
+    public void addUser(String username) {
         synchronized (usernames){
-            if(isUnique(username)){
-                this.usernames.add(username);
-                return true;
-            }else{
-                return false;
+            this.usernames.add(username);
+        }
+    }
+
+    /**
+     * returns the Game given the gameName
+     * @param name the name of the game
+     * @return the game with the given name
+     */
+    public Game getGameByName(String name) {
+        synchronized (games) {
+            return games.stream().filter(game -> game.getName().equals(name)).findFirst().orElse(null);
+        }
+    }
+
+    /**
+     * Removes a game from the list of games in the MultiGame
+     * @param game the game to be removed
+     */
+    public void removeGame(Game game) {
+        synchronized(games) {
+            games.remove(game);
+        }
+    }
+
+    /**
+     * Adds a lobby to the list of lobbies in the MultiGame
+     * @param lobby the lobby ti add
+     */
+    public void addLobby(Lobby lobby) {
+        synchronized (lobbies) {
+            if (getGameByName(lobby.getLobbyName()) == null) {
+                lobbies.addLobby(lobby);
             }
         }
     }
 
-    public synchronized Game getGameByName(String name) {
-        return games.stream().filter(game -> game.getName().equals(name)).findFirst().orElse(null);
-    }
-    public synchronized void removeGame(Game game) {
-        games.remove(game);
-    }
-
-    public synchronized Boolean addLobby(Lobby lobby) {
-        if (getGameByName(lobby.getLobbyName()) != null) {
-            return false;
-        } else {
-            lobbies.addLobby(lobby);
-            return true;
+    /**
+     * Remove a lobby from the list of lobbies in the MultiGame
+     * @param lobby the lobby to remove
+     */
+    public void removeLobby(Lobby lobby) {
+        synchronized(lobbies){
+            lobbies.remove(lobby);
         }
     }
-    public synchronized void removeLobby(Lobby lobby) {
-        lobbies.remove(lobby);
-    }
-    public synchronized Lobby getLobbyByName(String name) {
-        return lobbies.getLobbies().stream().filter(lobby -> lobby.getLobbyName().equals(name)).findFirst().orElse(null);
+
+    /**
+     * get the lobby given the name
+     * @param name the name of the lobby
+     * @return the lobby with the given name
+     */
+    public Lobby getLobbyByName(String name) {
+        synchronized(lobbies){
+            return lobbies.getLobbies().stream().filter(lobby -> lobby.getLobbyName().equals(name)).findFirst().orElse(null);
+        }
     }
 
-    public synchronized Set<Lobby> getLobbies() {
-        return lobbies.getLobbies();
+    /**
+     * @return the set of lobbies that are currently active
+     */
+    public Set<Lobby> getLobbies() {
+        synchronized (lobbies){
+            return lobbies.getLobbies();
+        }
     }
 
+    /**
+     * Removes a user from the list of usernames in the MultiGame
+     * @param username the username to be removed
+     */
     public void removeUser(String username) {
-        synchronized (this.usernames){
+        synchronized (usernames){
             this.usernames.remove(username);
         }
     }
+
     /**
      * @return an array of String of each game's name
      */
-    public synchronized String[] getGameNames() {
-        return games.stream().map(Game::getName).toArray(String[]::new);
+    public String[] getGameNames() {
+        synchronized (games) {
+            return games.stream().map(Game::getName).toArray(String[]::new);
+        }
     }
-    public synchronized String[] getLobbyNames() {
-        return lobbies.getLobbies().stream().map(Lobby::getLobbyName).toArray(String[]::new);
+    public String[] getLobbyNames() {
+        synchronized (lobbies) {
+            return lobbies.getLobbies().stream().map(Lobby::getLobbyName).toArray(String[]::new);
+        }
     }
     /**
      * Subscribes viewInterface to the mediator
@@ -148,14 +203,16 @@ public class MultiGame implements Serializable {
      * @return True if the nickname is Unique, false otherwise
      */
     public boolean isUnique(String nickname){
-        return !this.getUsernames().contains(nickname);
+        synchronized (usernames){
+            return !this.getUsernames().contains(nickname);
+        }
     }
 
     /**
      * @param nickname of the user
      * @return true if the nick is already present in a game (e.g. the user disconnected while still playing a match)
      */
-    public synchronized Boolean isInGameParty(String nickname){
+    public Boolean isInGameParty(String nickname){
         return getUserGame(nickname) != null;
     }
 
@@ -163,28 +220,39 @@ public class MultiGame implements Serializable {
      * @param nickName of the player
      * @return Game if the player is in a Game, null otherwise
      */
-    public synchronized Game getUserGame(String nickName){
-        for(Game game : this.getGames()){
-            if(game.getUserFromNick(nickName) != null){
-                return game;
+    public Game getUserGame(String nickName){
+        synchronized (games) {
+            for (Game game : this.getGames()) {
+                if (game.getUserFromNick(nickName) != null) {
+                    return game;
+                }
             }
+            return null;
         }
-        return null;
     }
 
     /**
+     * returns the lobby in which the user is
      * @param nickname of the user
      * @return the Lobby if the user is in a lobby, null otherwise
      */
-    public synchronized Lobby getUserLobby(String nickname){
-        for(Lobby lobby: lobbies.getLobbies()){
-            for(String name : lobby.getLobbyPlayerList())
-                if(name.equals(nickname))
-                    return lobby;
+    public Lobby getUserLobby(String nickname){
+        synchronized (lobbies) {
+            for (Lobby lobby : lobbies.getLobbies()) {
+                for (String name : lobby.getLobbyPlayerList())
+                    if (name.equals(nickname))
+                        return lobby;
+            }
+            return null;
         }
-        return null;
     }
-    public synchronized boolean isInLobby(String nickname){
+
+    /**
+     * check if the user is in a lobby
+     * @param nickname of the user
+     * @return true if the user is in a lobby, false otherwise
+     */
+    public boolean isInLobby(String nickname){
         return getUserLobby(nickname)!=null;
     }
 
@@ -210,6 +278,11 @@ public class MultiGame implements Serializable {
         }
     }
 
+    /**
+     * Create a new game from the lobby
+     * @param lobby the lobby from which the game is created
+     * @return the game created
+     */
     public Game createGame(Lobby lobby){
         return new Game(lobby, cardLookUpObjective, cardLookUpResourceCard, cardLookUpStartCard, cardLookUpGoldCard);
     }
@@ -230,11 +303,19 @@ public class MultiGame implements Serializable {
         return cardLookUpGoldCard;
     }
 
-    public synchronized User getUserFromNick(String nickname){
+    /**
+     * Get the user from the nickname
+     * @param nickname of the user
+     * @return the user with the given nickname
+     */
+    public User getUserFromNick(String nickname) {
         User returnUser = null;
-        List<User> userList = this.getGames().stream()
-                .map(Game::getGameParty)
-                .flatMap(gameParty -> gameParty.getUsersList().stream()).toList();
+        List<User> userList;
+        synchronized (games) {
+             userList = this.getGames().stream()
+                    .map(Game::getGameParty)
+                    .flatMap(gameParty -> gameParty.getUsersList().stream()).toList();
+        }
         for(User user : userList){
             if(user.getNickname().equals(nickname)){
                 returnUser = user;
