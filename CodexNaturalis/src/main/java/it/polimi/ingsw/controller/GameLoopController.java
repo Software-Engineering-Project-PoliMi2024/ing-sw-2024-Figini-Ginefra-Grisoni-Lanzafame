@@ -47,8 +47,6 @@ public class GameLoopController implements Serializable {
             countdownTimer.cancel();
             countdownTimer = null;
             ServerModelController lastController = activePlayers.values().iterator().next();
-            activePlayers.put(nickname, controller);
-            this.logYouAndOther(controller, LogsOnClient.MID_GAME_JOINED, LogsOnClient.PLAYER_REJOINED);
             lastController.logGame(LogsOnClient.COUNTDOWN_INTERRUPTED);
             //If the player rejoined a single-player game after the setup phase,
             //to avoid both players to be "idle" (e.g., the leavingPlayer was the currentPlayer) the gameLoop is recalculated
@@ -56,8 +54,6 @@ public class GameLoopController implements Serializable {
                 this.gameLoop();
             }
         }else {
-            activePlayers.put(nickname, controller);
-            this.logYouAndOther(controller, LogsOnClient.MID_GAME_JOINED, LogsOnClient.PLAYER_REJOINED);
         }
 
         User joiningUser = game.getUserFromNick(nickname);
@@ -86,24 +82,10 @@ public class GameLoopController implements Serializable {
      * joinGame from the lobby
      */
     public void joinGame(){
-        User user;
-        for(String nick : game.getGameParty().getUsersList().stream().map(User::getNickname).toList()){
-            ServerModelController controller = activePlayers.get(nick);
-            game.subscribe(controller, nick);
-            if(controller == null){
-                throw new NullPointerException("Controller not found");
-            }else {
-                controller.logYou(LogsOnClient.NEW_GAME_JOINED);
-                controller.transitionTo(ViewState.CHOOSE_START_CARD);
-                try {
-                    user = game.getUserFromNick(nick);
-                }catch (IllegalCallerException e){
-                    throw new NullPointerException("User not found");
-                }
-                LightCard lightStartCard = Lightifier.lightifyToCard(getOrDrawStartCard(user));
-                controller.updateGame(new HandDiffAdd(lightStartCard, true));
-            }
-        }
+
+        LightCard lightStartCard = Lightifier.lightifyToCard(getOrDrawStartCard(user));
+        controller.updateGame(new HandDiffAdd(lightStartCard, true));
+
     }
 
     /**

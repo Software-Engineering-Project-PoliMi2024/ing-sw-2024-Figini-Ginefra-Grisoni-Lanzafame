@@ -1,5 +1,6 @@
 package it.polimi.ingsw.lightModel.diffPublishers;
 
+import it.polimi.ingsw.lightModel.DiffGenerator;
 import it.polimi.ingsw.lightModel.lightPlayerRelated.*;
 import it.polimi.ingsw.lightModel.Lightifier;
 import it.polimi.ingsw.lightModel.diffs.game.*;
@@ -30,9 +31,10 @@ public class GameDiffPublisher implements Serializable {
      * @param nickname the nickname of the subscriber
      */
     public synchronized void subscribe(DiffSubscriber diffSubscriber, String nickname) {
-        GameDiffPlayerActivity communicateJoin = new GameDiffPlayerActivity(List.of(nickname), new ArrayList<>());
+        GameDiffPlayerActivity communicateJoin = DiffGenerator.diffAddUserToGame(nickname);
         for(DiffSubscriberGame subscriber : activeSubscribers.keySet()){
             notifySubscriber(subscriber, communicateJoin);
+
         }
         activeSubscribers.put(diffSubscriber, nickname);
         notifySubscriber(diffSubscriber, getTotalCurrentState(diffSubscriber));

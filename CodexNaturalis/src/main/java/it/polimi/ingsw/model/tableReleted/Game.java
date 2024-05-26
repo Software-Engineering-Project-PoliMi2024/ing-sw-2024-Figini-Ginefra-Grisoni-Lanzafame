@@ -38,7 +38,6 @@ public class Game implements Serializable {
      */
     public Game(Lobby lobby, CardLookUp<ObjectiveCard> objectiveCardCardLookUp, CardLookUp<ResourceCard> resourceCardCardLookUp,
                 CardLookUp<StartCard> startCardCardLookUp, CardLookUp<GoldCard> goldCardCardLookUp) {
-        gameDiffPublisher = new GameDiffPublisher(this);
         this.name = lobby.getLobbyName();
         this.gameParty = new GameParty(lobby.getLobbyPlayerList());
         objectiveCardDeck = new Deck<>(0,objectiveCardCardLookUp.getQueue());
@@ -47,6 +46,7 @@ public class Game implements Serializable {
         goldCardDeck = new Deck<>(2, goldCardCardLookUp.getQueue());
         this.commonObjective = new ArrayList<>();
         this.populateCommonObjective();
+        gameDiffPublisher = new GameDiffPublisher(this);
         this.gameLoopController = new GameLoopController(this);
         gameMediator = new GameMediator();
     }
