@@ -9,10 +9,6 @@ public class LogGameMsg extends ServerMsg{
         this.logMsg = logMsg;
     }
 
-    public String getLogMsg() {
-        return logMsg;
-    }
-
     @Override
     public void processMsg(ServerHandler clientHandler) throws Exception {
         clientHandler.getView().logGame(logMsg);

@@ -10,10 +10,6 @@ public class PlaceMsg extends ClientMsg {
         this.placement = placement;
     }
 
-    public LightPlacement getPlacement() {
-        return placement;
-    }
-
     @Override
     public void processMsg(ClientHandler clientHandler) throws Exception {
         clientHandler.getController().place(placement);

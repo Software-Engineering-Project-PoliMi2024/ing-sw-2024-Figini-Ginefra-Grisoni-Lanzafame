@@ -9,10 +9,6 @@ public class JoinLobbyMsg extends ClientMsg{
         this.lobbyName = lobbyName;
     }
 
-    public String getLobbyName() {
-        return lobbyName;
-    }
-
     @Override
     public void processMsg(ClientHandler clientHandler) throws Exception{
         clientHandler.getController().joinLobby(lobbyName);

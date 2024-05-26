@@ -8,10 +8,6 @@ public class LoginMsg extends ClientMsg{
         this.username = username;
     }
 
-    public String getUsername() {
-        return username;
-    }
-
     @Override
     public void processMsg(ClientHandler clientHandler) throws Exception{
         clientHandler.getController().login(username);

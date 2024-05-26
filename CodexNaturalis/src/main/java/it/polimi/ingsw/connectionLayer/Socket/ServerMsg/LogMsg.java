@@ -9,10 +9,6 @@ public class LogMsg extends ServerMsg{
         this.log = log;
     }
 
-    public String getLog() {
-        return log;
-    }
-
     @Override
     public void processMsg(ServerHandler serverHandler) throws Exception {
         //todo review Generic exception of log
