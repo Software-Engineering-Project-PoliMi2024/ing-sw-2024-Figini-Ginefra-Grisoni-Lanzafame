@@ -33,16 +33,9 @@ class PeekTest {
         handRenderable = new HandOthersRenderable("name", museum, lightGame, new CommandPrompt[]{}, null);
 
 
-        GameDiff diff = new GameDiffInitialization(List.of(new String[]{"Player1","Player2"}), new GameDiffGameName("TestGame"), new GameDiffYourName("Player1"), new GameDiffCurrentPlayer("Player1") );
+        GameDiff diff = new GameDiffInitialization(List.of(new String[]{"Player1","Player2"}), "TestGame", "Player1", new GameDiffCurrentPlayer("Player1") );
         diff.apply(lightGame);
         diff = new GameDiffPlayerActivity(List.of(new String[]{"Player1", "Player2"}), new ArrayList<>());
-        diff.apply(lightGame);
-
-
-
-        diff = new GameDiffGameName("TestGame");
-        diff.apply(lightGame);
-        diff = new GameDiffYourName( "Player1");
         diff.apply(lightGame);
 
         List<LightPlacement> placements = List.of(new LightPlacement[]{

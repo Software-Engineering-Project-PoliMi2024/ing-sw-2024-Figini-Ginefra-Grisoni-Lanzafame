@@ -190,7 +190,7 @@ public class GameDiffPublisher implements Serializable {
      */
     private GameDiffRejoinAfterDisconnection getTotalCurrentState(DiffSubscriber diffSubscriber){
         GameDiffRejoinAfterDisconnection newGameDiff = new GameDiffRejoinAfterDisconnection(
-                new GameDiffInitialization(game.getGameParty().getUsersList().stream().map(User::getNickname).toList(), new GameDiffGameName(game.getName()),new GameDiffYourName(activeSubscribers.get(diffSubscriber)), new GameDiffCurrentPlayer(game.getGameParty().getCurrentPlayer().getNickname())),
+                new GameDiffInitialization(game.getGameParty().getUsersList().stream().map(User::getNickname).toList(), game.getName(),activeSubscribers.get(diffSubscriber), new GameDiffCurrentPlayer(game.getGameParty().getCurrentPlayer().getNickname())),
                 getPlayerActivity(),
                 getDeckCurrentState(),
                 getCodexCurrentState(),
