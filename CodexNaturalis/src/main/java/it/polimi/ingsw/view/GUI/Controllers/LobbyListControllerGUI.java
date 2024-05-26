@@ -14,8 +14,6 @@ public class LobbyListControllerGUI implements Initializable {
     @FXML
     AnchorPane joinLobby;
     @FXML
-    AnchorPane createGame;
-    @FXML
     private TextField lobbyToCreateName;
     @FXML
     private Slider playerNumber;
