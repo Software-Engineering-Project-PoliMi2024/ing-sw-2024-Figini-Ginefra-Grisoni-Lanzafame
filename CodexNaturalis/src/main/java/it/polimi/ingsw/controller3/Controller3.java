@@ -2,15 +2,24 @@ package it.polimi.ingsw.controller3;
 
 import it.polimi.ingsw.Configs;
 import it.polimi.ingsw.controller.ControllerInterface;
+import it.polimi.ingsw.controller3.mediators.gameJoinerAndTurnTakerMediators.GameJoiner;
+import it.polimi.ingsw.controller3.mediators.gameJoinerAndTurnTakerMediators.TurnTaker;
 import it.polimi.ingsw.lightModel.lightPlayerRelated.LightCard;
 import it.polimi.ingsw.lightModel.lightPlayerRelated.LightPlacement;
 import it.polimi.ingsw.model.MultiGame;
+import it.polimi.ingsw.model.cardReleted.cards.StartCard;
 import it.polimi.ingsw.model.cardReleted.utilityEnums.DrawableCard;
+import it.polimi.ingsw.model.playerReleted.User;
+import it.polimi.ingsw.model.tableReleted.Game;
 import it.polimi.ingsw.model.tableReleted.Lobby;
 import it.polimi.ingsw.view.ViewInterface;
 import it.polimi.ingsw.view.ViewState;
 
-public class Controller3 implements ControllerInterface{
+/*
+TODO remove gameDiffYourName and gameDiffGameName
+*/
+
+public class Controller3 implements ControllerInterface, TurnTaker, GameJoiner {
     private final ViewInterface view;
     private final MultiGame multiGame;
 
@@ -22,7 +31,7 @@ public class Controller3 implements ControllerInterface{
     }
 
     /**
-     * This method is called when the client wants to login
+     * This method is called when the client wants to log-in
      * It checks if the nickname is valid and if it is not already taken
      * if the nickname was in a game before disconnecting, it will rejoin the game
      * else it will join the lobbyList receiving the list of Lobby and
@@ -47,7 +56,21 @@ public class Controller3 implements ControllerInterface{
 
             //check if the player was playing a game before disconnecting
             if(multiGame.isInGameParty(nickname)){
-                //TODO
+                Game gameToJoin = multiGame.getGameFromUserNick(nickname);
+                if(gameToJoin.isInStartCardState()) {
+                    gameToJoin.subscribe(nickname, view, this, false);
+                    transitionTo(ViewState.CHOOSE_START_CARD);
+                }else{
+                    gameToJoin.subscribe(nickname, view, this, false);
+                    if(gameToJoin.inInSecretObjState()){
+                        transitionTo(ViewState.SELECT_OBJECTIVE);
+                    }else if(gameToJoin.getCurrentPlayer().getNickname().equals(this.nickname)){
+                        takeTurn();
+                    }else{
+                        transitionTo(ViewState.IDLE);
+                    }
+                }
+
             }else{
                 //subscribe the view to the lobbyList mediator
                 multiGame.subscribe(nickname, view);
@@ -68,7 +91,7 @@ public class Controller3 implements ControllerInterface{
     @Override
     public void createLobby(String gameName, int maxPlayerCount) {
         //check if the player is a malevolent user
-        if(!hasAlreadyLogged()){
+        if(isNotLogged()){
             malevolentConsequences();
             return;
         }
@@ -88,7 +111,7 @@ public class Controller3 implements ControllerInterface{
             //disconnect from lobbyList mediator and subscribe to the new lobby
             multiGame.unsubscribe(this.nickname); //unsubscribe the view from the lobbyList mediator
             multiGame.notifyNewLobby(this.nickname, lobbyCreated); //notify the lobbyList mediator of the new lobby creation
-            lobbyCreated.subscribe(this.nickname, this.view);
+            lobbyCreated.subscribe(this.nickname, this.view, this);
 
             transitionTo(ViewState.LOBBY);
         }
@@ -106,7 +129,7 @@ public class Controller3 implements ControllerInterface{
     @Override
     public void joinLobby(String lobbyName) {
         //check if the player is a malevolent user
-        if (!hasAlreadyLogged()) {
+        if (isNotLogged()) {
             malevolentConsequences();
             return;
         }
@@ -123,14 +146,17 @@ public class Controller3 implements ControllerInterface{
             multiGame.addPlayerToLobby(lobbyName, this.nickname);
             //disconnect from lobbyList mediator and subscribe to the new lobby
             multiGame.unsubscribe(this.nickname);
-
+            lobbyToJoin.subscribe(this.nickname, this.view, this);
+            lobbyToJoin.lock();
             if (lobbyToJoin.getLobbyPlayerList().size() != lobbyToJoin.getNumberOfMaxPlayer()) {
-                lobbyToJoin.subscribe(this.nickname, this.view);
                 transitionTo(ViewState.LOBBY);
             }else{
-                //TODO
-
+                Game createdGame = multiGame.createGame(lobbyToJoin);
+                multiGame.addGame(createdGame);
+                lobbyToJoin.notifyGameStart();
+                multiGame.removeLobby(lobbyToJoin);
             }
+            lobbyToJoin.unlock();
         }
     }
 
@@ -143,7 +169,7 @@ public class Controller3 implements ControllerInterface{
      */
     @Override
     public void leaveLobby() {
-        if (!multiGame.isInLobby(this.nickname)) {
+        if (isNotLogged() || !multiGame.isInLobby(this.nickname)) {
             malevolentConsequences();
             return;
         }
@@ -156,20 +182,20 @@ public class Controller3 implements ControllerInterface{
             multiGame.removeLobby(lobbyToLeave);
             multiGame.notifyLobbyRemoved(this.nickname, lobbyToLeave);
         }
+        lobbyToLeave.unsubscribe(this.nickname);
         multiGame.subscribe(this.nickname, view);
 
         transitionTo(ViewState.JOIN_LOBBY);
-
     }
 
     @Override
     public void choseSecretObjective(LightCard objectiveCard) {
-
+        //TODO settare a null secretObjectiveChoices
     }
 
     @Override
     public void place(LightPlacement placement) {
-
+        //TODO startCard settare a null nel model la startCard (user.gethand.getStartCard)
     }
 
     @Override
@@ -179,12 +205,43 @@ public class Controller3 implements ControllerInterface{
 
     @Override
     public void disconnect() {
+        if(this.nickname == null)
+            return;
+
+        //when leaving a Game check if currentPlayer
+        multiGame.removeUser(this.nickname);
+    }
+
+    //turnTaker methods
+    @Override
+    public void joinGame() {
+        multiGame.getUserLobby(this.nickname).unsubscribe(this.nickname);
+        Game gameToJoin = multiGame.getGameFromUserNick(this.nickname);
+        User user = gameToJoin.getUserFromNick(this.nickname);
+
+        if (user.getUserHand().getStartCard() != null)
+            throw new IllegalStateException("Controller.joinGame: User already has startCard");
+
+        StartCard startCard = gameToJoin.getStartingCardDeck().drawFromDeck();
+        user.getUserHand().setStartCard(startCard);
+        gameToJoin.subscribe(nickname, view, this, false);
+
+        transitionTo(ViewState.CHOOSE_START_CARD);
+    }
+
+    @Override
+    public void chooseObjective() {
+
+    }
+
+    @Override
+    public void takeTurn() {
 
     }
 
     //malevolent user checker
-    private boolean hasAlreadyLogged(){
-        return this.nickname != null && this.nickname.equals(nickname);
+    private boolean isNotLogged(){
+        return this.nickname == null || !multiGame.getUsernames().contains(this.nickname);
     }
 
     private void malevolentConsequences(){
