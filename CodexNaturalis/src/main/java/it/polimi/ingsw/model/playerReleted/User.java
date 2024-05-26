@@ -51,6 +51,10 @@ public class User implements Serializable {
         this.getUserHand().removeCard((CardInHand) placement.card()); //A user can place only a CardInHand, so the cast is safe
     }
 
+    public boolean hasPlacedStartCard(){
+        return (userCodex.getPlacementAt(new Position(0,0)) != null);
+    }
+
     public void placeStartCard(Placement placement){
         if(placement.position().x()!=0 || placement.position().y() != 0){
             throw new IllegalCallerException("The card provided must be a startCard");
