@@ -2,6 +2,8 @@ package it.polimi.ingsw.model.tableReleted;
 
 
 import it.polimi.ingsw.controller.GameLoopController;
+import it.polimi.ingsw.controller3.mediators.GameMediator;
+import it.polimi.ingsw.controller3.mediators.turnTakerMediator.TurnTaker;
 import it.polimi.ingsw.lightModel.diffs.game.GameDiff;
 import it.polimi.ingsw.lightModel.diffPublishers.DiffSubscriber;
 import it.polimi.ingsw.lightModel.diffPublishers.GameDiffPublisher;
@@ -10,6 +12,7 @@ import it.polimi.ingsw.model.playerReleted.User;
 
 import java.io.Serializable;
 import java.util.ArrayList;
+import java.util.LinkedList;
 import java.util.List;
 
 
@@ -26,9 +29,10 @@ public class Game implements Serializable {
     final private Deck<GoldCard> goldCardDeck;
     final private Deck<StartCard> startingCardDeck;
     private final String name;
-    private GameParty gameParty;
+    private final GameParty gameParty;
     private boolean isLastTurn;
     private final List<ObjectiveCard> commonObjective;
+    private final GameMediator gameMediator;
     /**
      * Constructs a new Game instance with a specified maximum number of players.
      */
@@ -44,6 +48,7 @@ public class Game implements Serializable {
         this.commonObjective = new ArrayList<>();
         this.populateCommonObjective();
         this.gameLoopController = new GameLoopController(this);
+        gameMediator = new GameMediator();
     }
 
     /** @return the Objective Card Deck*/
@@ -70,9 +75,86 @@ public class Game implements Serializable {
         return name;
     }
 
+    //game party methods
+
     public GameParty getGameParty() {
         return gameParty;
     }
+
+    /**
+     * This method is used to set the player index in the game
+     * @param index the index of the player that is playing
+     */
+    public void setPlayerIndex(int index){
+        gameParty.setPlayerIndex(index);
+    }
+
+    /**
+     * This method is used to get the index of the next player that is supposed to play
+     * not considering the possible disconnection that may have occurred
+     * @return the index of the next player
+     */
+    public int getNextPlayerIndex() {
+        return gameParty.getNextPlayerIndex();
+    }
+
+    /** @return list of the players in this match*/
+    public List<User> getUsersList() {
+        return gameParty.getUsersList();
+    }
+
+    /***
+     * @return the number Of Player needed to start the game
+     */
+    public int getNumberOfMaxPlayer() {
+        return gameParty.getNumberOfMaxPlayer();
+    }
+
+    /**
+     * Remove a user from the gameParty
+     * @param nickname of the user being removed
+     */
+    public void removeUser(String nickname){
+        gameParty.removeUser(nickname);
+    }
+
+    /**
+     * subscribe a turnTaker to the activeTurnTakerMediator in order to receive notification
+     * on when it is their turn to play
+     * @param nickname the nickname of the player that is subscribing
+     * @param turnTaker the turnTaker that is subscribing
+     */
+    public void subscribe(String nickname, TurnTaker turnTaker){
+        gameParty.subscribe(nickname, turnTaker);
+    }
+
+    /**
+     * unsubscribe a player from the activeTurnTakerMediator
+     * removing them from the list of players that will receive notifications
+     * @param nickname the nickname of the player that is unsubscribing
+     */
+    public void unsubscribe(String nickname){
+        gameParty.unsubscribe(nickname);
+    }
+
+    /**
+     * notify a player that it is their turn to play by
+     * calling the takeTurnMediator method of the subscriber
+     * @param nickname the nickname of the player that is being notified
+     */
+    public void notifyTurn(String nickname){
+        gameParty.notifyTurn(nickname);
+    }
+
+    /**
+     * get the list of active players
+     * @return the list of active players
+     */
+    public List<String> getActivePlayers(){
+        return gameParty.getActivePlayers();
+    }
+
+
 
     @Override
     public String toString() {
@@ -140,7 +222,7 @@ public class Game implements Serializable {
     }
 
     public void removeUser(User user){
-        this.gameParty.removeUser(user);
+        this.gameParty.removeUser(user.getNickname());
     }
 
     public User nextPlayer(){

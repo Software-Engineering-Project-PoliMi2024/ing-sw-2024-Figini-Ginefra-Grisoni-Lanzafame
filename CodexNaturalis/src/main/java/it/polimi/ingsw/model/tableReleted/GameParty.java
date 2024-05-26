@@ -13,7 +13,6 @@ public class GameParty implements Serializable {
     final private List<User> playerList; //the player that were in the lobby pre game
     private int currentPlayerIndex;
     private final TurnTakerMediator activeTurnTakerMediator = new TurnTakerMediator();
-    private final ReentrantLock gamePartyLock = new ReentrantLock(true);
 
     /**
      * The constructor of the class
@@ -42,27 +41,37 @@ public class GameParty implements Serializable {
      * @return the index of the next player
      */
     public int getNextPlayerIndex() {
-        return (currentPlayerIndex % playerList.size());
+        return (currentPlayerIndex % getNumberOfMaxPlayer());
     }
 
     /** @return list of the players in this match*/
     public List<User> getUsersList() {
-        return playerList;
+        synchronized (playerList) {
+            return playerList;
+        }
     }
 
     /***
      * @return the number Of Player needed to start the game
      */
     public int getNumberOfMaxPlayer() {
-        return playerList.size();
+        synchronized (playerList) {
+            return playerList.size();
+        }
     }
 
     /**
      * Remove a user from the gameParty
      * @param user being removed
      */
-    public void removeUser(User user){
-        playerList.remove(user);
+    public void removeUser(String user){
+        synchronized (playerList) {
+            User userToRemove = playerList.stream().filter(u -> u.getNickname().equals(user)).findFirst().orElse(null);
+            if (userToRemove != null)
+                playerList.remove(userToRemove);
+            else
+                throw new IllegalArgumentException("User not in this gameParty");
+        }
     }
 
     /**
@@ -99,20 +108,6 @@ public class GameParty implements Serializable {
      */
     public List<String> getActivePlayers(){
         return activeTurnTakerMediator.getActivePlayers();
-    }
-
-    /**
-     * acquires the lock on the gamePartyLock
-     */
-    public void lock(){
-        gamePartyLock.lock();
-    }
-
-    /**
-     * releases the lock on the gamePartyLock
-     */
-    public void unlock(){
-        gamePartyLock.unlock();
     }
 
 
