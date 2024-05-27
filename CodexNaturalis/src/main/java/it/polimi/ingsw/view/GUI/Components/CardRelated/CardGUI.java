@@ -32,6 +32,8 @@ public class CardGUI {
 
     private MouseEvent lastEvent = null;
 
+    private final Timeline holdingAnimation = new Timeline();
+
 
     public CardGUI(LightCard target, CardFace face) {
         Rectangle clip = new Rectangle(GUIConfigs.cardWidth, GUIConfigs.cardHeight);
@@ -55,10 +57,7 @@ public class CardGUI {
         holdTimer = new Timeline();
         //Make an empty keyframe at holdDuration
         holdTimer.getKeyFrames().addAll(
-                new KeyFrame(Duration.millis(0), AnimationStuff.createScaleXKeyValue(imageView, 1)),
-                new KeyFrame(Duration.millis(0), AnimationStuff.createScaleYKeyValue(imageView, 1)),
-                new KeyFrame(Duration.millis(GUIConfigs.holdDuration), AnimationStuff.createScaleXKeyValue(imageView, 0.8)),
-                new KeyFrame(Duration.millis(GUIConfigs.holdDuration), AnimationStuff.createScaleYKeyValue(imageView, 0.8))
+                new KeyFrame(Duration.millis(GUIConfigs.holdDuration))
         );
 
         //set hold detected to false
@@ -68,9 +67,22 @@ public class CardGUI {
             holdDetected = true;
         });
 
+        //Set up the holding animation
+        holdingAnimation.getKeyFrames().addAll(
+                new KeyFrame(Duration.millis(0), AnimationStuff.createScaleXKeyValue(imageView, 1)),
+                new KeyFrame(Duration.millis(0), AnimationStuff.createScaleYKeyValue(imageView, 1)),
+                new KeyFrame(Duration.millis(GUIConfigs.holdDuration), AnimationStuff.createScaleXKeyValue(imageView, 0.8)),
+                new KeyFrame(Duration.millis(GUIConfigs.holdDuration), AnimationStuff.createScaleYKeyValue(imageView, 0.8))
+        );
+
         imageView.setOnMousePressed(e -> {
             holdDetected = false;
             holdTimer.playFromStart();
+
+            if(onHold != null) {
+                holdingAnimation.play();
+            }
+
             lastEvent = e;
         });
 
@@ -84,6 +96,9 @@ public class CardGUI {
             }
             holdTimer.stop();
             holdDetected = false;
+
+            if(onHold != null)
+                holdingAnimation.stop();
 
             imageView.setScaleX(1);
             imageView.setScaleY(1);
