@@ -76,7 +76,7 @@ public class ServerHandlerTest {
             toServerHandler.flush();
         }
         Thread.sleep(30); //Allow some time for the serverHandler to process the messages
-        Assertions.assertEquals(serverHandler.getReceivedMsg().size(), numberOfMessages);
+        Assertions.assertEquals(numberOfMessages, serverHandler.getReceivedMsg().size());
 
         //Check if the messages are stored in the right order
         LinkedList<ServerMsg> messageList = new LinkedList<>(serverHandler.getReceivedMsg());
