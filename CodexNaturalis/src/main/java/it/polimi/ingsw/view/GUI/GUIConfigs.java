@@ -28,4 +28,6 @@ public class GUIConfigs {
     public static int vCardGapInDeck = 10;
 
     public static int counterGlowDuration = 3000;
+
+    public static int cardAddRemAnimationDuration = 100;
 }

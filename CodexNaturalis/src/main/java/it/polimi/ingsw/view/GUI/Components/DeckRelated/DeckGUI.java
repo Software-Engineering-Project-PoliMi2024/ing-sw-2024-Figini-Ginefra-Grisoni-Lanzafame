@@ -18,7 +18,7 @@ import java.util.Arrays;
 
 public class DeckGUI implements Observer {
     private final VBox content = new VBox();
-    private CardGUI drawableCard;
+    private final CardGUI drawableCard;
     private final FlippableCardGUI[] buffer = new FlippableCardGUI[2];
 
     private final DrawableCard cardTarget;
@@ -40,8 +40,8 @@ public class DeckGUI implements Observer {
         AnchorPane.setRightAnchor(content, 0.0);
         AnchorPane.setTopAnchor(content, 0.0);
 
-        content.getChildren().add(drawableCard.getImageView());
-        Arrays.stream(buffer).forEach(card -> content.getChildren().add(card.getImageView()));
+        drawableCard.addThisTo(content);
+        Arrays.stream(buffer).forEach(card -> card.addThisTo(content));
 
         setSizeBindings(drawableCard);
         Arrays.stream(buffer).forEach(this::setSizeBindings);
@@ -75,10 +75,14 @@ public class DeckGUI implements Observer {
 
     public void update(){
         LightDeck deck = GUI.getLightGame().getDecks().get(cardTarget);
-        drawableCard.setTarget(deck.getDeckBack());
+
+        if(drawableCard.getTarget() == null ||drawableCard.getTarget().idBack() != deck.getDeckBack().idBack()) {
+            drawableCard.runBetweenRemovingAndAddingAnimation(() -> drawableCard.setTarget(deck.getDeckBack()));
+        }
         for(int i = 0; i < buffer.length; i++){
             if(buffer[i].getTarget() == null || !buffer[i].getTarget().equals(deck.getCardBuffer()[i])) {
-                buffer[i].setTarget(deck.getCardBuffer()[i]);
+                final int finalI = i;
+                buffer[i].runBetweenRemovingAndAddingAnimation(() -> buffer[finalI].setTarget(deck.getCardBuffer()[finalI]));
                 buffer[i].setFace(CardFace.FRONT);
             }
 
