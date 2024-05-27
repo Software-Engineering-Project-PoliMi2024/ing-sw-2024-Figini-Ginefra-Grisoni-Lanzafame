@@ -44,9 +44,11 @@ public class Hand implements Serializable {
             throw new IllegalArgumentException("The card is not in this hand");
         }
     }
-    /** @param objective is set to being the player secret objective*/
+    /** sets the secret objective chosen and sets the secretObjectiveOptions to Null
+     * @param objective is set to being the player secret objective*/
     public void setSecretObjective(ObjectiveCard objective){
         synchronized (secretObjectiveLock) {
+            this.setSecretObjectiveChoice(null);
             this.secretObjective = objective;
         }
     }
