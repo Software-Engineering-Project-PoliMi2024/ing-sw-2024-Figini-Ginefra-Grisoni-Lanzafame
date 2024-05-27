@@ -21,6 +21,7 @@ import it.polimi.ingsw.model.tableReleted.Lobby;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 
 public class DiffGenerator {
     /**
@@ -182,8 +183,10 @@ public class DiffGenerator {
             deckDiff.add(new DeckDiffBufferDraw(Lightifier.lightifyToCard(goldCardDeck.getBuffer().stream().toList().get(i)), i, DrawableCard.GOLDCARD));
         }
 
-        deckDiff.add(new DeckDiffDeckDraw(DrawableCard.RESOURCECARD, Lightifier.lightifyToBack(resourceCardDeck.getActualDeck().stream().toList().getFirst())));
-        deckDiff.add(new DeckDiffDeckDraw(DrawableCard.GOLDCARD, Lightifier.lightifyToBack(goldCardDeck.getActualDeck().stream().toList().getFirst())));
+        if(resourceCardDeck.getActualDeck().peek()!=null)
+            deckDiff.add(new DeckDiffDeckDraw(DrawableCard.RESOURCECARD, Lightifier.lightifyToBack(Objects.requireNonNull(resourceCardDeck.getActualDeck().peek()))));
+        if(goldCardDeck.getActualDeck().peek() != null)
+            deckDiff.add(new DeckDiffDeckDraw(DrawableCard.GOLDCARD, Lightifier.lightifyToBack(Objects.requireNonNull(goldCardDeck.getActualDeck().peek()))));
         return deckDiff;
     }
 
