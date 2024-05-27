@@ -30,7 +30,7 @@ public class User implements Serializable {
         return this.userHand;
     }
 
-    public void playCard(Placement placement){
+    public synchronized void playCard(Placement placement){
         if(placement.position().x()==0 && placement.position().y() == 0){
             throw new IllegalCallerException("The card provided cannot be a startCard");
         }
@@ -50,7 +50,7 @@ public class User implements Serializable {
      * This method returns the number of cards in the user's hand
      * @return the number of cards in the user's hand
      */
-    public int getHandSize(){
+    public synchronized int getHandSize(){
         return userHand.getHandSize();
     }
 
@@ -58,18 +58,18 @@ public class User implements Serializable {
      * This method checks if the user has already chosen the objective
      * @return true if the user has already chosen the objective, false otherwise
      */
-    public boolean hasChosenObjective(){
+    public synchronized boolean hasChosenObjective(){
         return userHand.getSecretObjective() != null;
     }
 
-    public void placeStartCard(Placement placement){
+    public synchronized void placeStartCard(Placement placement){
         if(placement.position().x()!=0 || placement.position().y() != 0){
             throw new IllegalCallerException("The card provided must be a startCard");
         }
         this.userCodex.playCard(placement);
         this.getUserHand().setStartCard(null);
     }
-    public void setSecretObject(ObjectiveCard objectiveCard){
+    public synchronized void setSecretObject(ObjectiveCard objectiveCard){
         userHand.setSecretObjective(objectiveCard);
     }
 
