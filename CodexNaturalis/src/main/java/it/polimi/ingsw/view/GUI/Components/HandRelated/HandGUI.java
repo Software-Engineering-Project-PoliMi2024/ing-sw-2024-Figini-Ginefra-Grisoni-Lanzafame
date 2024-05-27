@@ -74,10 +74,6 @@ public class HandGUI implements Observer {
         AnchorPane.setTopAnchor(hand, 0.0);
 
         //hand.setStyle(hand.getStyle() +  "-fx-background-color: transparent");
-
-        secretObjective = new FlippableCardGUI(new LightCard(1, 1));
-        setSizeBindings(secretObjective);
-        hand.getChildren().add(secretObjective.getImageView());
     }
 
     private void setSizeBindings(CardGUI card){
@@ -207,7 +203,11 @@ public class HandGUI implements Observer {
     }
 
     public void update(){
-        secretObjective.setTarget(GUI.getLightGame().getHand().getSecretObjective());
+        if(secretObjective == null && GUI.getLightGame().getHand().getSecretObjective() != null){
+            secretObjective = new FlippableCardGUI(GUI.getLightGame().getHand().getSecretObjective());
+            setSizeBindings(secretObjective);
+            hand.getChildren().addFirst(secretObjective.getImageView());
+        }
 
         int freeSpots = Arrays.stream(GUI.getLightGame().getHand().getCards()).filter(Objects::isNull).toArray().length;
 
