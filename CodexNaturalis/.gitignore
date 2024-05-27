@@ -92,3 +92,5 @@ fabric.properties
 
 #target
 target/
+
+gameSaves/
