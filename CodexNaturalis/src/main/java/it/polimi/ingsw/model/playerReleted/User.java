@@ -42,7 +42,7 @@ public class User implements Serializable {
      * This method checks if the user has already placed the start card
      * @return true if the user has already placed the start card, false otherwise
      */
-    public boolean hasPlacedStartCard(){
+    public synchronized boolean hasPlacedStartCard(){
         return (userCodex.getPlacementAt(new Position(0,0)) != null);
     }
 

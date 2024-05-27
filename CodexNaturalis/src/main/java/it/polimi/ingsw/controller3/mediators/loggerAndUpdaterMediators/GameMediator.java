@@ -1,14 +1,23 @@
 package it.polimi.ingsw.controller3.mediators.loggerAndUpdaterMediators;
 
+import it.polimi.ingsw.controller.LogsOnClient;
 import it.polimi.ingsw.controller3.LogsOnClientStatic;
 import it.polimi.ingsw.lightModel.DiffGenerator;
 import it.polimi.ingsw.lightModel.LightModelUpdaterInterfaces.LightGameUpdater;
+import it.polimi.ingsw.lightModel.LightModelUpdaterInterfaces.Updater;
+import it.polimi.ingsw.lightModel.diffs.game.CodexDiff;
 import it.polimi.ingsw.lightModel.diffs.game.GameDiffPlayerActivity;
+import it.polimi.ingsw.lightModel.diffs.game.HandDiff;
+import it.polimi.ingsw.lightModel.diffs.game.HandDiffRemove;
 import it.polimi.ingsw.lightModel.diffs.nuclearDiffs.GadgetGame;
 import it.polimi.ingsw.lightModel.lightPlayerRelated.LightCard;
+import it.polimi.ingsw.lightModel.lightPlayerRelated.LightPlacement;
 import it.polimi.ingsw.lightModel.lightTableRelated.LightGame;
 import it.polimi.ingsw.model.cardReleted.cards.CardInHand;
+import it.polimi.ingsw.model.cardReleted.cards.StartCard;
 import it.polimi.ingsw.model.cardReleted.utilityEnums.DrawableCard;
+import it.polimi.ingsw.model.playerReleted.Codex;
+import it.polimi.ingsw.model.playerReleted.User;
 import it.polimi.ingsw.model.tableReleted.Game;
 import it.polimi.ingsw.view.ViewInterface;
 
@@ -83,6 +92,36 @@ public class GameMediator extends LoggerAndUpdaterMediator<LightGameUpdater, Lig
     }
 
     /**
+     * notify that a player has chosen a startCardFace
+     * logs on the chooser and other player in game
+     * update the lightModel of the chooser with the new startCardFace
+     * update the lightModel of the chooser with the modified codex
+     * update the lightModel of the chooser with the hand drawn
+     * @param placer the nickname of the player that placed the card
+     * @param user the user that placed the card
+     * @param placement the placement of the startCard card
+     */
+    public synchronized void notifyStartCardFaceChoice(String placer, User user, LightPlacement placement){
+        for(String subscriberNick : subscribers.keySet()){
+            try {
+                if (subscriberNick.equals(placer)) {
+                    LightGameUpdater updater = subscribers.get(subscriberNick).first();
+                    subscribers.get(subscriberNick).second().log(LogsOnClientStatic.YOU_PLACE_STARTCARD);
+                    updater.updateGame(new HandDiffRemove(placement.card()));
+                    updater.updateGame(new CodexDiff(placer, user.getUserCodex().getPoints(),
+                            user.getUserCodex().getEarnedCollectables(), List.of(placement), user.getUserCodex().getFrontier().getFrontier()));
+                    for(HandDiff handDiff : DiffGenerator.getHandYourCurrentState(user)){
+                        updater.updateGame(handDiff);
+                    }
+                }else {
+                    subscribers.get(subscriberNick).second().log(placer + LogsOnClientStatic.PLAYER_PLACE_STARTCARD);
+                }
+            }catch (Exception e){
+                System.out.println("GameMediator: subscriber " + subscriberNick + " not reachable" + e.getMessage());
+            }
+        }
+    }
+    /**
      * notify all players that the startCardFace selection phase has finished
      */
     public synchronized void notifyAllChoseStartCardFace(){
@@ -126,12 +165,13 @@ public class GameMediator extends LoggerAndUpdaterMediator<LightGameUpdater, Lig
         }
     }
 
+
     /**
-     *
-     * @param card
-     * @param pos
-     * @param deckType
-     * @param drawerNickname
+     * notify players someone has drawn a card
+     * @param card the card drawn
+     * @param pos the position of the card in the deck
+     * @param deckType the type of deck the card was drawn from
+     * @param drawerNickname the nickname of the player that drew the card
      */
     public synchronized void notifyDraw(String drawerNickname, DrawableCard deckType, int pos, LightCard card){
         for(String subscriberNick : subscribers.keySet()){

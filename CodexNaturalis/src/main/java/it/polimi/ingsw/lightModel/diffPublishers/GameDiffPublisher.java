@@ -148,7 +148,7 @@ public class GameDiffPublisher implements Serializable {
                         .equals(activeSubscribers.get(diffSubscriber)))
                 .findFirst().orElse(null);
         if(user!=null) {
-            LightHand subscriberHand = Lightifier.lightifyYour(user.getUserHand(), user);
+            LightHand subscriberHand = Lightifier.lightifyYour(user.getUserHand(), user.getUserCodex());
             for (LightCard card : subscriberHand.getCards()) {
                 if(card!=null)
                     handDiffAdd.add(new HandDiffAdd(card, subscriberHand.isPlayble(card)));

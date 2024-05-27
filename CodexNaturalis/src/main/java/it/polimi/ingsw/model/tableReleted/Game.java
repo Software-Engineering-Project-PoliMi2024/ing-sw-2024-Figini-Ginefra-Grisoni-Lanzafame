@@ -2,12 +2,14 @@ package it.polimi.ingsw.model.tableReleted;
 
 
 import it.polimi.ingsw.controller.GameLoopController;
+import it.polimi.ingsw.controller3.mediators.gameJoinerAndTurnTakerMediators.TurnTakerMediator;
 import it.polimi.ingsw.controller3.mediators.loggerAndUpdaterMediators.GameMediator;
 import it.polimi.ingsw.controller3.mediators.gameJoinerAndTurnTakerMediators.TurnTaker;
 import it.polimi.ingsw.lightModel.diffs.game.GameDiff;
 import it.polimi.ingsw.lightModel.diffPublishers.DiffSubscriber;
 import it.polimi.ingsw.lightModel.diffPublishers.GameDiffPublisher;
 import it.polimi.ingsw.lightModel.lightPlayerRelated.LightCard;
+import it.polimi.ingsw.lightModel.lightPlayerRelated.LightPlacement;
 import it.polimi.ingsw.model.cardReleted.cards.*;
 import it.polimi.ingsw.model.cardReleted.utilityEnums.DrawableCard;
 import it.polimi.ingsw.model.playerReleted.Hand;
@@ -43,6 +45,7 @@ public class Game implements Serializable {
     private final Object isLastTurnLock = new Object();
     private final ReentrantLock calculateNextStateLock = new ReentrantLock(true);
 
+    private final TurnTakerMediator activeTurnTakerMediator = new TurnTakerMediator();
     private final GameMediator gameMediator;
     /**
      * Constructs a new Game instance with a specified maximum number of players.
@@ -156,7 +159,7 @@ public class Game implements Serializable {
      */
     public void subscribe(String nickname, ViewInterface LoggerAndUpdater, TurnTaker turnTaker, boolean sendPublicObj){
         this.gameMediator.subscribe(nickname, LoggerAndUpdater, this, sendPublicObj);
-        gameParty.subscribe(nickname, turnTaker);
+        activeTurnTakerMediator.subscribe(nickname, turnTaker);
     }
 
     /**
@@ -166,16 +169,16 @@ public class Game implements Serializable {
      */
     public void unsubscribe(String nickname){
         this.gameMediator.unsubscribe(nickname);
-        gameParty.unsubscribe(nickname);
+        activeTurnTakerMediator.unsubscribe(nickname);
     }
 
     /**
      * notify all players that the startCardFace selection phase has finished
      * and move to the next phase
      */
-    public void fromStartCardMoveOnToSecretObjectiveSelection(){
+    public void notifyMoveToSelectObjState(){
         gameMediator.notifyAllChoseStartCardFace();
-        gameParty.notifyChooseObjective();
+        activeTurnTakerMediator.notifyChooseObjective();
     }
 
     /**
@@ -187,17 +190,21 @@ public class Game implements Serializable {
         this.notifyTurn(nicknameOfFirstPlayer);
     }
 
+    public void notifyStartCardFaceChoice(String placer, User user, LightPlacement placement){
+        gameMediator.notifyStartCardFaceChoice(placer, user, placement);
+    }
+
     /**
      * @return true if the players in game are choosing the startCard
      */
-    public boolean isInStartCardState(){
+    public synchronized boolean isInStartCardState(){
         return gameParty.getUsersList().stream().map(User::getUserHand).map(Hand::getStartCard).anyMatch(Objects::nonNull);
     }
 
     /**
      * @return true if the players in game are choosing the secretObjective
      */
-    public boolean inInSecretObjState(){
+    public synchronized boolean inInSecretObjState(){
         return gameParty.getUsersList().stream().map(User::getUserHand).map(Hand::getSecretObjectiveChoices).anyMatch(Objects::nonNull);
     }
 
@@ -205,7 +212,7 @@ public class Game implements Serializable {
      * @return true if the players in game are in the setup phase
      * (choosing StartCardFace or SecretObjective)
      */
-    public boolean isInSetup(){
+    public synchronized boolean isInSetup(){
         return inInSecretObjState() || isInStartCardState();
     }
     /**
@@ -215,7 +222,7 @@ public class Game implements Serializable {
      */
     public void notifyTurn(String nicknameOfNextPlayer){
         gameMediator.notifyTurnChange(nicknameOfNextPlayer);
-        gameParty.notifyTurn();
+        activeTurnTakerMediator.notifyTurn();
     }
 
     /**
@@ -258,14 +265,14 @@ public class Game implements Serializable {
      * it is his turn to choose the objective
      */
     public void notifyChooseObjective(){
-        gameParty.notifyChooseObjective();
+        activeTurnTakerMediator.notifyChooseObjective();
     }
     /**
      * get the list of active players
      * @return the list of active players
      */
     public List<String> getActivePlayers(){
-        return gameParty.getActivePlayers();
+        return activeTurnTakerMediator.getActivePlayers();
     }
 
     /**
@@ -274,7 +281,7 @@ public class Game implements Serializable {
      * @return true if the player is active, false otherwise
      */
     public boolean isPlayerActive(String nickname){
-        return gameParty.isPlayerActive(nickname);
+        return activeTurnTakerMediator.isPlayerActive(nickname);
     }
 
     /**
@@ -299,6 +306,38 @@ public class Game implements Serializable {
         calculateNextStateLock.unlock();
     }
 
+    public synchronized boolean othersHadAllPlacedStartCard(String nicknamePerspective){
+        boolean check = false;
+        if (!isInStartCardState())
+            throw new IllegalCallerException("Controller.checkIfLastToPlaceStartCard: Game is not in StartCardState");
+
+        if(gameParty.getUsersList().stream().allMatch(user ->
+                !user.getNickname().equals(nicknamePerspective) && user.hasPlacedStartCard())){
+            check = true;
+        }
+        return check;
+    }
+
+    public synchronized boolean othersHadAllChooseSecretObjective(String nicknamePerspective){
+        boolean check = false;
+
+        if(!inInSecretObjState())
+            throw new IllegalCallerException("Controller.checkIfLastToChooseSecretObjective: Game is not in SelectSecretObjectiveState");
+
+        if(gameParty.getUsersList().stream().allMatch(user ->
+                !user.getNickname().equals(nicknamePerspective) && user.hasChosenObjective())){
+            check = true;
+        }
+        return check;
+    }
+
+    public synchronized boolean isYourTurnToPlace(String nickname){
+        User you = getUserFromNick(nickname);
+
+        return (isInStartCardState() && !you.hasPlacedStartCard()) || (
+                getCurrentPlayer().getNickname().equals(nickname)
+                        && you.getUserHand().getHand().size() == 3);
+    }
     @Override
     public String toString() {
 

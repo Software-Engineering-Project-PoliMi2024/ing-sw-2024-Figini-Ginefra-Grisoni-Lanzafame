@@ -74,13 +74,14 @@ public class Lightifier implements Serializable {
     }
 
     /**
-     * @param hand which will be lightened
+     * @param codex from which get the playability
+     * @param hand the hand which will be lightened
      * @return a LighHand containing all the (light)CardInHand, the lightSecretObjective and each card playbility
      */
-    public static LightHand lightifyYour(Hand hand, User user){
+    public static LightHand lightifyYour(Hand hand, Codex codex){
         HashMap<LightCard, Boolean> cardPlayability = new HashMap<>();
         for(CardInHand card : hand.getHand()){
-            cardPlayability.put(lightifyToCard(card), card.canBePlaced(user.getUserCodex()));
+            cardPlayability.put(lightifyToCard(card), card.canBePlaced(codex));
         }
 
         LightHand h = new LightHand(cardPlayability);

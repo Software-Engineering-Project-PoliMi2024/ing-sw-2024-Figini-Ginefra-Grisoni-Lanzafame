@@ -115,7 +115,6 @@ public class DiffGenerator {
         return diff;
     }
 
-
     /**
      * Generates a diff that updates the lightGame with the current state of the game
      * for users that join the game for the first time
@@ -130,7 +129,7 @@ public class DiffGenerator {
                 getPlayerActivity(activePlayers),
                 getDeckCurrentState(game),
                 getCodexCurrentState(game),
-                getHandYourCurrentState(game, nickname),
+                getHandYourCurrentState(game.getUserFromNick(nickname)),
                 getHandOtherCurrentState(game, nickname)
         );
     }
@@ -149,7 +148,7 @@ public class DiffGenerator {
                 getPlayerActivity(activePlayers),
                 getDeckCurrentState(game),
                 getCodexCurrentState(game),
-                getHandYourCurrentState(game, nickname),
+                getHandYourCurrentState(game.getUserFromNick(nickname)),
                 getHandOtherCurrentState(game, nickname),
                 getPublicObjectiveCurrentState(game)
         );
@@ -208,14 +207,15 @@ public class DiffGenerator {
     }
 
     /**
-     * @param game the subscriber to get the hand from
+     * @param user the user to which sends the hand diffs
      * @return a list of diffs containing the current state of the hand of the subscriber
      */
-    private static List<HandDiff> getHandYourCurrentState(Game game, String nickname) {
+    public static List<HandDiff> getHandYourCurrentState(User user) {
         List<HandDiff> handDiffAdd = new ArrayList<>();
-        User user = game.getUserFromNick(nickname);
+        //User user = game.getUserFromNick(nickname);
+        Hand hand = user.getUserHand();
 
-        LightHand subscriberHand = Lightifier.lightifyYour(user.getUserHand(), user);
+        LightHand subscriberHand = Lightifier.lightifyYour(user.getUserHand(), user.getUserCodex());
         for (LightCard card : subscriberHand.getCards()) {
             if (card != null)
                 handDiffAdd.add(new HandDiffAdd(card, subscriberHand.isPlayble(card)));

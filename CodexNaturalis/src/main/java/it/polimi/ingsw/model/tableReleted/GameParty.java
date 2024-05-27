@@ -11,7 +11,7 @@ import java.util.stream.Collectors;
 public class GameParty implements Serializable {
     final private List<User> playerList; //the player that were in the lobby pre game
     private int currentPlayerIndex;
-    private final TurnTakerMediator activeTurnTakerMediator = new TurnTakerMediator();
+
     private final Object currentPlayerLock = new Object();
 
     /**
@@ -105,33 +105,6 @@ public class GameParty implements Serializable {
     }
 
     /**
-     * subscribe a turnTaker to the activeTurnTakerMediator in order to receive notification
-     * on when it is their turn to play
-     * @param nickname the nickname of the player that is subscribing
-     * @param turnTaker the turnTaker that is subscribing
-     */
-    public void subscribe(String nickname, TurnTaker turnTaker){
-        activeTurnTakerMediator.subscribe(nickname, turnTaker);
-    }
-
-    /**
-     * unsubscribe a player from the activeTurnTakerMediator
-     * removing them from the list of players that will receive notifications
-     * @param nickname the nickname of the player that is unsubscribing
-     */
-    public void unsubscribe(String nickname){
-        activeTurnTakerMediator.unsubscribe(nickname);
-    }
-
-    /**
-     * This method is used to notify players that the turn has changed
-     * calling the takeTurnMediator method of the subscriber
-     */
-    public void notifyTurn(){
-        activeTurnTakerMediator.notifyTurn();
-    }
-
-    /**
      * This method is used to get the player from its index
      * @param index the index of the player
      * @return the player with the given index
@@ -140,30 +113,6 @@ public class GameParty implements Serializable {
         synchronized (playerList) {
             return playerList.get(index);
         }
-    }
-
-    /**
-     * This method is used to notify all players that
-     * it is his turn to choose the objective
-     */
-    public synchronized void notifyChooseObjective(){
-        activeTurnTakerMediator.notifyChooseObjective();
-    }
-    /**
-     * get the list of active players
-     * @return the list of active players
-     */
-    public List<String> getActivePlayers(){
-        return activeTurnTakerMediator.getActivePlayers();
-    }
-
-    /**
-     * This method is used to check if a player is active
-     * @param nickname the nickname of the player that wants to check if it is active
-     * @return true if the player is active, false otherwise
-     */
-    public synchronized boolean isPlayerActive(String nickname){
-        return activeTurnTakerMediator.isPlayerActive(nickname);
     }
 
 //TODO to remove
