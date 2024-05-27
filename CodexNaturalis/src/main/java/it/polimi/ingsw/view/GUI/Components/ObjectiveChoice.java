@@ -7,15 +7,22 @@ import it.polimi.ingsw.view.GUI.Components.CardRelated.FlippableCardGUI;
 import it.polimi.ingsw.view.GUI.GUI;
 import it.polimi.ingsw.view.GUI.StateGUI;
 import javafx.application.Platform;
+import javafx.geometry.Insets;
 import javafx.geometry.Pos;
-import javafx.scene.layout.AnchorPane;
-import javafx.scene.layout.HBox;
+import javafx.scene.control.TextField;
+import javafx.scene.layout.*;
+import javafx.scene.text.Text;
+import javafx.scene.text.TextAlignment;
 
 import java.util.*;
 import java.util.stream.Collectors;
 
 public class ObjectiveChoice implements Observer {
     private FlippableCardGUI[] objectivesCard = new FlippableCardGUI[2];
+
+    private final VBox container = new VBox();
+
+    private final Text label = new Text("Choose your secret objective");
     private final HBox choiceBox = new HBox();
     private final AnchorPane parent;
 
@@ -30,19 +37,30 @@ public class ObjectiveChoice implements Observer {
 
         this.parent = parent;
 
+        AnchorPane.setBottomAnchor(container, 20.0);
+        AnchorPane.setLeftAnchor(container, 20.0);
+        AnchorPane.setRightAnchor(container, 20.0);
+        AnchorPane.setTopAnchor(container, 20.0);
+
+        //Make it bold and centered
+        label.setStyle("-fx-font-size: 30; -fx-font-weight: bold; -fx-text-fill: white;");
+        label.setTextAlignment(TextAlignment.CENTER);
+
+        container.getChildren().addAll(label, choiceBox);
+
+        container.setAlignment(Pos.CENTER);
+
         GUI.getLightGame().getHand().attach(this);
 
         choiceBox.setAlignment(Pos.CENTER);
         choiceBox.setSpacing(10);
+        choiceBox.setStyle("-fx-background-color: rgba(0, 0, 0, 0.8); -fx-background-radius: 20; -fx-border-radius: 20;");
 
-        AnchorPane.setBottomAnchor(choiceBox, 0.0);
-        AnchorPane.setLeftAnchor(choiceBox, 0.0);
-        AnchorPane.setRightAnchor(choiceBox, 0.0);
-        AnchorPane.setTopAnchor(choiceBox, 0.0);
+        choiceBox.setPadding(new Insets(30));
 
         GUI.getStateProperty().addListener((obs, oldState, newState) -> {
             if(newState == StateGUI.SELECT_OBJECTIVE) {
-                Platform.runLater(() -> parent.getChildren().add(choiceBox));
+                Platform.runLater(() -> parent.getChildren().add(container));
             }
         });
 
@@ -66,7 +84,7 @@ public class ObjectiveChoice implements Observer {
                     e -> {
                         try {
                             GUI.getControllerStatic().choseSecretObjective(card.getTarget());
-                            parent.getChildren().remove(choiceBox);
+                            parent.getChildren().remove(container);
                         }catch (Exception ex){
                         }
                         e.consume();
@@ -77,9 +95,6 @@ public class ObjectiveChoice implements Observer {
         objectivesCard = objectivesList.toArray(new FlippableCardGUI[0]);
     }
 
-    public HBox getChoiceDisplay() {
-        return choiceBox;
-    }
     @Override
     public void update() {
         checkAndShow();
