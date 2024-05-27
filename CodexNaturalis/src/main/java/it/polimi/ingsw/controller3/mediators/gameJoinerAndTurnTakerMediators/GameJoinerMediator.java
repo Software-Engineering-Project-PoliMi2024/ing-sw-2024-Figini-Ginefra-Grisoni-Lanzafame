@@ -18,7 +18,7 @@ public class GameJoinerMediator extends GenericJoinAndTurnMediator<GameJoiner> {
         super.unsubscribe(nickname);
     }
 
-    public void notifyGameStart() {
+    public synchronized void notifyGameStart() {
         subscribers.values().forEach(GameJoiner::joinGame);
     }
 }
