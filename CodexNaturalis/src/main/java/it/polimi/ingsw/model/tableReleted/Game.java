@@ -13,6 +13,7 @@ import it.polimi.ingsw.lightModel.lightPlayerRelated.LightCard;
 import it.polimi.ingsw.lightModel.lightPlayerRelated.LightPlacement;
 import it.polimi.ingsw.model.cardReleted.cards.*;
 import it.polimi.ingsw.model.cardReleted.utilityEnums.DrawableCard;
+import it.polimi.ingsw.model.playerReleted.Codex;
 import it.polimi.ingsw.model.playerReleted.Hand;
 import it.polimi.ingsw.model.playerReleted.User;
 import it.polimi.ingsw.view.ViewInterface;
@@ -20,6 +21,7 @@ import it.polimi.ingsw.view.ViewInterface;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 import java.util.Objects;
 import java.util.concurrent.locks.ReentrantLock;
 
@@ -209,6 +211,10 @@ public class Game implements Serializable {
 
     public void notifySecretObjectiveChoice(String choice, LightCard objCard){
         gameMediator.notifySecretObjectiveChoice(choice, objCard);
+    }
+
+    public void notifyPlacement(String placer, LightPlacement newPlacement, Codex placerCodex, Map<LightCard, Boolean> playability){
+        gameMediator.notifyPlacement(placer, newPlacement, placerCodex, playability);
     }
 
     /**

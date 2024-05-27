@@ -13,6 +13,7 @@ import it.polimi.ingsw.model.cardReleted.cards.CardInHand;
 import it.polimi.ingsw.model.cardReleted.cards.ObjectiveCard;
 import it.polimi.ingsw.model.cardReleted.cards.StartCard;
 import it.polimi.ingsw.model.cardReleted.utilityEnums.DrawableCard;
+import it.polimi.ingsw.model.playerReleted.Codex;
 import it.polimi.ingsw.model.playerReleted.Placement;
 import it.polimi.ingsw.model.playerReleted.User;
 import it.polimi.ingsw.model.tableReleted.Game;
@@ -20,15 +21,11 @@ import it.polimi.ingsw.model.tableReleted.Lobby;
 import it.polimi.ingsw.view.ViewInterface;
 import it.polimi.ingsw.view.ViewState;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Objects;
-import java.util.Random;
+import java.util.*;
 
 /*
 TODO  test when the decks finish the cards
 TODO separare cardLookup da MultiGame -> creare una classe CardLookup (es. per fare Lightify di startCard passo MultiGame solo per poter prendere la carta da CardLookUp)
-TODO codex synchronization
 */
 
 public class Controller3 implements ControllerInterface, TurnTaker, GameJoiner {
@@ -68,7 +65,6 @@ public class Controller3 implements ControllerInterface, TurnTaker, GameJoiner {
 
             //check if the player was playing a game before disconnecting
             if(multiGame.isInGameParty(nickname)){
-                //TODO
                 Game gameToJoin = multiGame.getGameFromUserNick(nickname);
                 if(gameToJoin.isInStartCardState()) {
                     this.joinGame();
@@ -80,11 +76,8 @@ public class Controller3 implements ControllerInterface, TurnTaker, GameJoiner {
                 }else {
                     gameToJoin.subscribe(nickname, view, this, true);
                     gameToJoin.joinMidGame(nickname, gameToJoin);
-                    if(gameToJoin.getCurrentPlayer().getNickname().equals(this.nickname))
-                        this.takeTurn();
-                    else{
-                        transitionTo(ViewState.IDLE);
-                    }
+
+                    this.takeTurn();
                 }
             }else{
                 //subscribe the view to the lobbyList mediator
@@ -256,7 +249,25 @@ public class Controller3 implements ControllerInterface, TurnTaker, GameJoiner {
                 transitionTo(ViewState.WAITING_STATE);
             }
         }else{
+            Placement heavyPlacement = Heavifier.heavify(placement, multiGame);
+            Codex codexBeforePlacement = new Codex(user.getUserCodex());
+            user.playCard(heavyPlacement);
+            Set<CardInHand> hand = user.getUserHand().getHand();
+            Codex codexAfterPlacement = user.getUserCodex();
+            //update playability
+            Map<LightCard, Boolean> FrontIdToPlayability = new HashMap<>();
+            for(CardInHand cardInHand: hand){
+                boolean oldPlayability = cardInHand.canBePlaced(codexBeforePlacement);
+                boolean newPlayability = cardInHand.canBePlaced(codexAfterPlacement);
+                if(oldPlayability != newPlayability){
+                    FrontIdToPlayability.put(Lightifier.lightifyToCard(cardInHand), newPlayability);
+                }
+            }
 
+            //notify everyone
+            game.notifyPlacement(this.nickname, placement, user.getUserCodex(), FrontIdToPlayability);
+
+            transitionTo(ViewState.DRAW_CARD);
         }
 
     }
@@ -303,8 +314,8 @@ public class Controller3 implements ControllerInterface, TurnTaker, GameJoiner {
                     DrawableCard deckType;
                     int pos;
                     do {
-                        deckType = randomDeckType(gameToLeave);
-                        pos = randomDeckPosition(gameToLeave, deckType);
+                        deckType = randomDeckType();
+                        pos = randomDeckPosition();
                         if (deckType == DrawableCard.RESOURCECARD)
                             card = gameToLeave.drawACard(gameToLeave.getResourceCardDeck(), pos);
                         else
@@ -331,13 +342,13 @@ public class Controller3 implements ControllerInterface, TurnTaker, GameJoiner {
      * @return a random card from a non-empty deck. If all decks are empty return null
      */
 
-    private DrawableCard randomDeckType(Game game){
+    private DrawableCard randomDeckType(){
         Random random = new Random();
         int deckNumber = random.nextInt(2);
         return deckNumber == 0 ? DrawableCard.RESOURCECARD : DrawableCard.GOLDCARD;
     }
 
-    private int randomDeckPosition(Game game, DrawableCard deckType){
+    private int randomDeckPosition(){
         Random random = new Random();
         return random.nextInt(3);
     }
@@ -426,6 +437,12 @@ public class Controller3 implements ControllerInterface, TurnTaker, GameJoiner {
 
     @Override
     public synchronized void takeTurn() {
+        Game game = multiGame.getGameFromUserNick(this.nickname);
+        if(game.getCurrentPlayer().getNickname().equals(this.nickname)){
+            transitionTo(ViewState.PLACE_CARD);
+        }else {
+            transitionTo(ViewState.IDLE);
+        }
 
     }
 

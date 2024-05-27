@@ -6,11 +6,13 @@ import it.polimi.ingsw.lightModel.LightModelUpdaterInterfaces.LightGameUpdater;
 import it.polimi.ingsw.lightModel.Lightifier;
 import it.polimi.ingsw.lightModel.diffs.game.*;
 import it.polimi.ingsw.lightModel.diffs.nuclearDiffs.GadgetGame;
+import it.polimi.ingsw.lightModel.lightPlayerRelated.LightBack;
 import it.polimi.ingsw.lightModel.lightPlayerRelated.LightCard;
 import it.polimi.ingsw.lightModel.lightPlayerRelated.LightPlacement;
 import it.polimi.ingsw.lightModel.lightTableRelated.LightGame;
 import it.polimi.ingsw.model.cardReleted.cards.ObjectiveCard;
 import it.polimi.ingsw.model.cardReleted.utilityEnums.DrawableCard;
+import it.polimi.ingsw.model.playerReleted.Codex;
 import it.polimi.ingsw.model.playerReleted.User;
 import it.polimi.ingsw.model.tableReleted.Game;
 import it.polimi.ingsw.view.LoggerInterface;
@@ -38,7 +40,7 @@ public class GameMediator extends LoggerAndUpdaterMediator<LightGameUpdater, Lig
                 try {
                     subscribers.get(subscriberNick).first().updateGame(communicateJoin);
                     if(rejoining){
-                        subscribers.get(subscriberNick).second().log(nicknameJoin + LogsOnClientStatic.PLAYER_REJOINED);
+                        subscribers.get(subscriberNick).second().logOthers(nicknameJoin + LogsOnClientStatic.PLAYER_REJOINED);
                     }
                 } catch (Exception e) {
                     System.out.println("GameMediator: subscriber " + subscriberNick + " not reachable" + e.getMessage());
@@ -52,7 +54,7 @@ public class GameMediator extends LoggerAndUpdaterMediator<LightGameUpdater, Lig
         List<String> activePlayers = new ArrayList<>(subscribers.keySet().stream().toList());
         try {
             subscribers.get(joiner).first().updateGame(DiffGenerator.diffJoinStartCard(game, joiner, activePlayers));
-            subscribers.get(joiner).second().log(LogsOnClientStatic.GAME_JOINED);
+            subscribers.get(joiner).second().logGame(LogsOnClientStatic.GAME_JOINED);
         } catch (Exception e){
             System.out.println("GameMediator: new subscriber " + joiner + " not reachable" + e.getMessage());
         }
@@ -62,7 +64,7 @@ public class GameMediator extends LoggerAndUpdaterMediator<LightGameUpdater, Lig
         List<String> activePlayers = new ArrayList<>(subscribers.keySet().stream().toList());
         try{
             subscribers.get(joiner).first().updateGame(DiffGenerator.diffJoinSecretObj(game, joiner, activePlayers));
-            subscribers.get(joiner).second().log(LogsOnClientStatic.GAME_JOINED);
+            subscribers.get(joiner).second().logGame(LogsOnClientStatic.GAME_JOINED);
         } catch (Exception e){
             System.out.println("GameMediator: rejoining subscriber " + joiner + " not reachable" + e.getMessage());
         }
@@ -72,7 +74,7 @@ public class GameMediator extends LoggerAndUpdaterMediator<LightGameUpdater, Lig
         List<String> activePlayers = new ArrayList<>(subscribers.keySet().stream().toList());
         try{
             subscribers.get(joiner).first().updateGame(DiffGenerator.diffJoinMidGame(game, joiner, activePlayers));
-            subscribers.get(joiner).second().log(LogsOnClientStatic.GAME_JOINED);
+            subscribers.get(joiner).second().logGame(LogsOnClientStatic.GAME_JOINED);
         } catch (Exception e){
             System.out.println("GameMediator: rejoining subscriber " + joiner + " not reachable" + e.getMessage());
         }
@@ -89,7 +91,7 @@ public class GameMediator extends LoggerAndUpdaterMediator<LightGameUpdater, Lig
             if(!subscriberNick.equals(nickname)) {
                 try {
                     subscribers.get(subscriberNick).first().updateGame(DiffGenerator.diffRemoveUserFromGame(nickname));
-                    subscribers.get(subscriberNick).second().log(nickname + LogsOnClientStatic.PLAYER_GAME_LEFT);
+                    subscribers.get(subscriberNick).second().logOthers(nickname + LogsOnClientStatic.PLAYER_GAME_LEFT);
                 } catch (Exception e) {
                     System.out.println("GameMediator: subscriber " + subscriberNick + " not reachable" + e.getMessage());
                 }
@@ -119,7 +121,7 @@ public class GameMediator extends LoggerAndUpdaterMediator<LightGameUpdater, Lig
             try {
                 if (subscriberNick.equals(placer)) {
                     subscribers.get(subscriberNick).second().log(LogsOnClientStatic.YOU_PLACE_STARTCARD);
-                    subscribers.get(subscriberNick).second().log(LogsOnClientStatic.WAIT_STARTCARD);
+                    subscribers.get(subscriberNick).second().logGame(LogsOnClientStatic.WAIT_STARTCARD);
                     LightGameUpdater updater = subscribers.get(subscriberNick).first();
                     updater.updateGame(new HandDiffRemove(placement.card()));
                     updater.updateGame(new CodexDiff(placer, user.getUserCodex().getPoints(),
@@ -128,7 +130,7 @@ public class GameMediator extends LoggerAndUpdaterMediator<LightGameUpdater, Lig
                         updater.updateGame(handDiff);
                     }
                 }else {
-                    subscribers.get(subscriberNick).second().log(placer + LogsOnClientStatic.PLAYER_PLACE_STARTCARD);
+                    subscribers.get(subscriberNick).second().logOthers(placer + LogsOnClientStatic.PLAYER_PLACE_STARTCARD);
                 }
             }catch (Exception e){
                 System.out.println("GameMediator: subscriber " + subscriberNick + " not reachable" + e.getMessage());
@@ -141,7 +143,7 @@ public class GameMediator extends LoggerAndUpdaterMediator<LightGameUpdater, Lig
     public synchronized void notifyAllChoseStartCardFace(){
         for(String subscriberNick : subscribers.keySet()){
             try {
-                subscribers.get(subscriberNick).second().log(LogsOnClientStatic.EVERYONE_PLACED_STARTCARD);
+                subscribers.get(subscriberNick).second().logGame(LogsOnClientStatic.EVERYONE_PLACED_STARTCARD);
             } catch (Exception e) {
                 System.out.println("GameMediator: subscriber " + subscriberNick + " not reachable" + e.getMessage());
             }
@@ -174,9 +176,9 @@ public class GameMediator extends LoggerAndUpdaterMediator<LightGameUpdater, Lig
                     LightGameUpdater updater = subscribers.get(nickname).first();
                     updater.updateGame(new HandDiffRemove(objCard));
                     logger.log(LogsOnClientStatic.YOU_CHOSE);
-                    logger.log(LogsOnClientStatic.WAIT_SECRET_OBJECTIVE);
+                    logger.logGame(LogsOnClientStatic.WAIT_SECRET_OBJECTIVE);
                 }else{
-                    logger.log(chooser + LogsOnClientStatic.PLAYER_CHOSE);
+                    logger.logOthers(chooser + LogsOnClientStatic.PLAYER_CHOSE);
                 }
             } catch (Exception e) {
                 System.out.println("GameMediator: subscriber " + nickname + " not reachable" + e.getMessage());
@@ -192,7 +194,7 @@ public class GameMediator extends LoggerAndUpdaterMediator<LightGameUpdater, Lig
                 LoggerInterface logger = subscribers.get(subscriberNick).second();
                 LightGameUpdater updater = subscribers.get(subscriberNick).first();
                 updater.updateGame(new GameDiffPublicObj(commonObjectives.toArray(new LightCard[1])));
-                logger.log(LogsOnClientStatic.EVERYONE_CHOSE);
+                logger.logGame(LogsOnClientStatic.EVERYONE_CHOSE);
             } catch (Exception e) {
                 System.out.println("GameMediator: subscriber " + subscriberNick + " not reachable" + e.getMessage());
             }
@@ -210,7 +212,7 @@ public class GameMediator extends LoggerAndUpdaterMediator<LightGameUpdater, Lig
                 updater.updateGame(new GameDiffCurrentPlayer(playerNickname));
                 LoggerInterface logger = subscribers.get(subscriberNick).second();
                 if (!subscriberNick.equals(playerNickname)) {
-                    logger.log(playerNickname + LogsOnClientStatic.PLAYER_TURN);
+                    logger.logOthers(playerNickname + LogsOnClientStatic.PLAYER_TURN);
                 } else {
                     logger.log(LogsOnClientStatic.YOUR_TURN);
                 }
@@ -220,6 +222,29 @@ public class GameMediator extends LoggerAndUpdaterMediator<LightGameUpdater, Lig
         }
     }
 
+    public synchronized void notifyPlacement(String placer, LightPlacement newPlacement, Codex placerCodex, Map<LightCard, Boolean> playability){
+        for(String subscriberNick : subscribers.keySet()){
+            try {
+                LightGameUpdater updater = subscribers.get(subscriberNick).first();
+                LoggerInterface logger = subscribers.get(subscriberNick).second();
+
+                updater.updateGame(DiffGenerator.placeCodexDiff(placer, newPlacement, placerCodex));
+
+                if(subscriberNick.equals(placer)){
+                    updater.updateGame(new HandDiffRemove(newPlacement.card()));
+                    for(LightCard card : playability.keySet())
+                        updater.updateGame(new HandDiffUpdatePlayability(card, playability.get(card)));
+                    logger.log(LogsOnClientStatic.YOU_PLACED);
+                }else {
+                    LightBack newPlacementBack = new LightBack(newPlacement.card().idBack());
+                    updater.updateGame(new HandOtherDiffRemove(newPlacementBack, placer));
+                    logger.logOthers(placer + LogsOnClientStatic.PLAYER_PLACED);
+                }
+            } catch (Exception e) {
+                System.out.println("GameMediator: subscriber " + subscriberNick + " not reachable" + e.getMessage());
+            }
+        }
+    }
 
     /**
      * notify players someone has drawn a card
@@ -232,7 +257,7 @@ public class GameMediator extends LoggerAndUpdaterMediator<LightGameUpdater, Lig
         for(String subscriberNick : subscribers.keySet()){
             try {
                 if (!subscriberNick.equals(drawerNickname)) {
-                    subscribers.get(subscriberNick).second().log(drawerNickname + LogsOnClientStatic.PLAYER_DRAW);
+                    subscribers.get(subscriberNick).second().logOthers(drawerNickname + LogsOnClientStatic.PLAYER_DRAW);
                 } else {
                     subscribers.get(subscriberNick).second().log(LogsOnClientStatic.YOU_DRAW);
                 }
