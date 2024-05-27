@@ -1,7 +1,5 @@
 package it.polimi.ingsw.controller.ConnectionLayer;
 
-import it.polimi.ingsw.Configs;
-import it.polimi.ingsw.Server;
 import it.polimi.ingsw.connectionLayer.Socket.ServerHandler;
 import it.polimi.ingsw.connectionLayer.Socket.ServerMsg.*;
 import it.polimi.ingsw.connectionLayer.VirtualLayer.VirtualController;
@@ -17,42 +15,43 @@ import java.net.ServerSocket;
 import java.net.Socket;
 import java.util.LinkedList;
 import java.util.Random;
-import java.util.concurrent.ExecutionException;
-import java.util.concurrent.TimeoutException;
 
-import static org.junit.Assert.assertThrows;
 import static org.mockito.Mockito.*;
 
 public class ServerHandlerTest {
 
     @Test
     public void testTimeoutException() throws Exception {
-        ServerSocket serverSocket = new ServerSocket(6969);
-        Thread serverSocketThread = new Thread(() -> {
-            while(true){
+
+        Random portGenerator = new Random();
+        int port = portGenerator.nextInt(10000, 20000);
+        ServerSocket serverSocket = new ServerSocket(port);
+        Thread serverThread = new Thread(() -> {
+            while (true) {
+                System.out.println("Waiting for connection");
                 try {
-                    serverSocket.accept();
+                    Socket client = serverSocket.accept();
+                    System.out.println("Connection accepted");
                 } catch (IOException e) {
                     throw new RuntimeException(e);
                 }
             }
         });
+        serverThread.start();
 
         PipedInputStream inputPipe = new PipedInputStream();
         PipedOutputStream outputPipe = new PipedOutputStream();
         inputPipe.connect(outputPipe);
         ByteArrayOutputStream fromServerHandler = new ByteArrayOutputStream();
-        Socket server = spy(new Socket("0.0.0.0", 6969));
-        //Return an unexpected inputStream that cause the ObjectInputStream's constructor to block the code flow,
-        //simulating the connection to a wrong protocol. It will cause a TimeoutException
-        when(server.getOutputStream()).thenReturn(fromServerHandler);
-        when(server.getInputStream()).thenReturn(inputPipe);
+        Socket mockServer = mock(Socket.class);
+        when(mockServer.getOutputStream()).thenReturn(fromServerHandler);
+        when(mockServer.getInputStream()).thenReturn(inputPipe);
+        when(mockServer.getInetAddress()).thenReturn(null);
 
         ViewInterface mockView = mock(ViewInterface.class);
         VirtualController mockController = mock(VirtualControllerSocket.class);
 
-        serverSocketThread.start();
-        ServerHandler serverHandler = new ServerHandler(server);
+        ServerHandler serverHandler = new ServerHandler(mockServer);
         serverHandler.setView(mockView);
         serverHandler.setOwner(mockController);
         serverHandler.run();
@@ -305,6 +304,7 @@ public class ServerHandlerTest {
         return new ServerHandlerTestSetup(serverHandler, new ObjectOutputStream(outputPipe), mockView);
     }
 
-    private record ServerHandlerTestSetup(ServerHandler serverHandler, ObjectOutputStream toServerHandler, ViewInterface mockView) {
+    private record ServerHandlerTestSetup(ServerHandler serverHandler, ObjectOutputStream toServerHandler,
+                                          ViewInterface mockView) {
     }
 }
