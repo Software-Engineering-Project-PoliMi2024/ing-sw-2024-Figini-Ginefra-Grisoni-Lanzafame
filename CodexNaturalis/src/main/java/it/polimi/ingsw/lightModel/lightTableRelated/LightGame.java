@@ -96,6 +96,9 @@ public class LightGame implements Differentiable {
     public void setTopDeck(LightBack back, DrawableCard type){
         decks.get(type).setTopDeckCard(back);
     }
+    public void updateHandPlayability(LightCard card, Boolean playability){
+        this.hand.updatePlayability(card, playability);
+    }
     public void setDeckBuffer(LightCard card, DrawableCard type,Integer position){
         decks.get(type).substituteBufferCard(card, position);
     }

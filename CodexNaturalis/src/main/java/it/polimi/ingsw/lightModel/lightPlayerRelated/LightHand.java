@@ -71,6 +71,11 @@ public class LightHand implements Differentiable, Observed {
     public Boolean isPlayble(LightCard card){
         return cardPlayability.get(card);
     }
+
+    public void updatePlayability(LightCard card, Boolean playability){
+        cardPlayability.put(card, playability);
+        this.notifyObservers();
+    }
     /**
      * Add a card to the cards array and the cardPlayability Map
      * @param card that need to be added
