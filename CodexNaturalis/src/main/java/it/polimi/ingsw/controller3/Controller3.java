@@ -6,9 +6,6 @@ import it.polimi.ingsw.controller3.mediators.gameJoinerAndTurnTakerMediators.Gam
 import it.polimi.ingsw.controller3.mediators.gameJoinerAndTurnTakerMediators.TurnTaker;
 import it.polimi.ingsw.lightModel.Heavifier;
 import it.polimi.ingsw.lightModel.Lightifier;
-import it.polimi.ingsw.lightModel.diffs.game.GameDiffPublicObj;
-import it.polimi.ingsw.lightModel.diffs.game.HandDiffAddOneSecretObjectiveOption;
-import it.polimi.ingsw.lightModel.diffs.game.HandDiffSetObj;
 import it.polimi.ingsw.lightModel.lightPlayerRelated.LightCard;
 import it.polimi.ingsw.lightModel.lightPlayerRelated.LightPlacement;
 import it.polimi.ingsw.model.MultiGame;
@@ -16,7 +13,6 @@ import it.polimi.ingsw.model.cardReleted.cards.CardInHand;
 import it.polimi.ingsw.model.cardReleted.cards.ObjectiveCard;
 import it.polimi.ingsw.model.cardReleted.cards.StartCard;
 import it.polimi.ingsw.model.cardReleted.utilityEnums.DrawableCard;
-import it.polimi.ingsw.model.playerReleted.Hand;
 import it.polimi.ingsw.model.playerReleted.Placement;
 import it.polimi.ingsw.model.playerReleted.User;
 import it.polimi.ingsw.model.tableReleted.Game;
@@ -32,6 +28,7 @@ import java.util.Random;
 /*
 TODO  test when the decks finish the cards
 TODO separare cardLookup da MultiGame -> creare una classe CardLookup (es. per fare Lightify di startCard passo MultiGame solo per poter prendere la carta da CardLookUp)
+TODO codex synchronization
 */
 
 public class Controller3 implements ControllerInterface, TurnTaker, GameJoiner {
@@ -215,7 +212,16 @@ public class Controller3 implements ControllerInterface, TurnTaker, GameJoiner {
             return;
         }
 
+        Game game = multiGame.getGameFromUserNick(this.nickname);
+        User user = game.getUserFromNick(this.nickname);
 
+        user.setSecretObject(Heavifier.heavifyObjectCard(objectiveCard, multiGame));
+        game.notifySecretObjectiveChoice(this.nickname, objectiveCard);
+
+        if(game.othersHadAllChooseSecretObjective(this.nickname)) {
+            game.notifyEndSetupStartActualGame();
+        }else
+            transitionTo(ViewState.WAITING_STATE);
     }
 
     @Override
@@ -276,13 +282,14 @@ public class Controller3 implements ControllerInterface, TurnTaker, GameJoiner {
 
             if (gameToLeave.othersHadAllChooseSecretObjective(this.nickname) && !you.hasChosenObjective()) {
                 gameToLeave.removeUser(this.nickname);
-                User currentUserInGame = gameToLeave.getCurrentPlayer();
+                User currentUserPlayer = gameToLeave.getCurrentPlayer();
                 int nextPlayerIndex = getNextActivePlayerIndex();
                 String nextPlayerNick = gameToLeave.getPlayerFromIndex(nextPlayerIndex).getNickname();
-                if (Objects.equals(currentUserInGame.getNickname(), this.nickname)) {
+                if (Objects.equals(currentUserPlayer.getNickname(), this.nickname)) {
                     gameToLeave.setPlayerIndex(nextPlayerIndex);
                 }
-                gameToLeave.fromSecretObjectiveMoveOnToGame(nextPlayerNick);
+                gameToLeave.notifyTurn(nextPlayerNick);
+                gameToLeave.notifyEndSetupStartActualGame();
             }
 
         } else if (!gameToLeave.isInSetup()) { //if the game is in the actual game phase
@@ -352,7 +359,6 @@ public class Controller3 implements ControllerInterface, TurnTaker, GameJoiner {
             System.out.println("User disconnected before logging in");
             return;
         }
-        //TODO synchronization on method like isInStartCardState
         if(multiGame.getUserLobby(this.nickname) != null){
             Lobby lobbyToLeave = multiGame.getUserLobby(this.nickname);
             lobbyToLeave.lock();

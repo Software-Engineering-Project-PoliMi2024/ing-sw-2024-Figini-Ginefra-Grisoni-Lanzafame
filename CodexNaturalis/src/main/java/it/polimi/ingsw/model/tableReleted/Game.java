@@ -5,6 +5,7 @@ import it.polimi.ingsw.controller.GameLoopController;
 import it.polimi.ingsw.controller3.mediators.gameJoinerAndTurnTakerMediators.TurnTakerMediator;
 import it.polimi.ingsw.controller3.mediators.loggerAndUpdaterMediators.GameMediator;
 import it.polimi.ingsw.controller3.mediators.gameJoinerAndTurnTakerMediators.TurnTaker;
+import it.polimi.ingsw.lightModel.Lightifier;
 import it.polimi.ingsw.lightModel.diffs.game.GameDiff;
 import it.polimi.ingsw.lightModel.diffPublishers.DiffSubscriber;
 import it.polimi.ingsw.lightModel.diffPublishers.GameDiffPublisher;
@@ -196,13 +197,18 @@ public class Game implements Serializable {
      * notify all players that the secretObjective selection phase has finished
      * and move to the next phase
      */
-    public void fromSecretObjectiveMoveOnToGame(String nicknameOfFirstPlayer){
-        gameMediator.notifyAllChoseSecretObjective();
-        this.notifyTurn(nicknameOfFirstPlayer);
+    public void notifyEndSetupStartActualGame(){
+        List<LightCard> lightCommonObjective = commonObjective.stream().map(Lightifier::lightifyToCard).toList();
+        gameMediator.notifyAllChoseSecretObjective(lightCommonObjective);
+        activeTurnTakerMediator.notifyTurn();
     }
 
     public void notifyStartCardFaceChoice(String placer, User user, LightPlacement placement){
         gameMediator.notifyStartCardFaceChoice(placer, user, placement);
+    }
+
+    public void notifySecretObjectiveChoice(String choice, LightCard objCard){
+        gameMediator.notifySecretObjectiveChoice(choice, objCard);
     }
 
     /**

@@ -6,13 +6,11 @@ import it.polimi.ingsw.lightModel.LightModelUpdaterInterfaces.LightGameUpdater;
 import it.polimi.ingsw.lightModel.Lightifier;
 import it.polimi.ingsw.lightModel.diffs.game.*;
 import it.polimi.ingsw.lightModel.diffs.nuclearDiffs.GadgetGame;
-import it.polimi.ingsw.lightModel.lightPlayerRelated.LightBack;
 import it.polimi.ingsw.lightModel.lightPlayerRelated.LightCard;
 import it.polimi.ingsw.lightModel.lightPlayerRelated.LightPlacement;
 import it.polimi.ingsw.lightModel.lightTableRelated.LightGame;
 import it.polimi.ingsw.model.cardReleted.cards.ObjectiveCard;
 import it.polimi.ingsw.model.cardReleted.utilityEnums.DrawableCard;
-import it.polimi.ingsw.model.playerReleted.Hand;
 import it.polimi.ingsw.model.playerReleted.User;
 import it.polimi.ingsw.model.tableReleted.Game;
 import it.polimi.ingsw.view.LoggerInterface;
@@ -31,7 +29,6 @@ public class GameMediator extends LoggerAndUpdaterMediator<LightGameUpdater, Lig
      * all players are notified with a log of the event
      * @param nicknameJoin the nickname of the player who joined
      * @param LoggerAndUpdater the view of the player who joined
-     * @param game the game the player joined
      * @param rejoining false if the player is joining for the first time, true if he is rejoining
      */
     public synchronized void subscribe(String nicknameJoin, ViewInterface LoggerAndUpdater, boolean rejoining){
@@ -169,13 +166,33 @@ public class GameMediator extends LoggerAndUpdaterMediator<LightGameUpdater, Lig
         }
     }
 
+    public synchronized void notifySecretObjectiveChoice(String chooser, LightCard objCard){
+        for(String nickname : subscribers.keySet()){
+            try {
+                LoggerInterface logger = subscribers.get(nickname).second();
+                if(nickname.equals(chooser)) {
+                    LightGameUpdater updater = subscribers.get(nickname).first();
+                    updater.updateGame(new HandDiffRemove(objCard));
+                    logger.log(LogsOnClientStatic.YOU_CHOSE);
+                    logger.log(LogsOnClientStatic.WAIT_SECRET_OBJECTIVE);
+                }else{
+                    logger.log(chooser + LogsOnClientStatic.PLAYER_CHOSE);
+                }
+            } catch (Exception e) {
+                System.out.println("GameMediator: subscriber " + nickname + " not reachable" + e.getMessage());
+            }
+        }
+    }
     /**
      * notify all players that the secretObjective selection phase has finished
      */
-    public synchronized void notifyAllChoseSecretObjective(){
+    public synchronized void notifyAllChoseSecretObjective(List<LightCard> commonObjectives){
         for(String subscriberNick : subscribers.keySet()){
             try {
-                subscribers.get(subscriberNick).second().log(LogsOnClientStatic.EVERYONE_CHOSE);
+                LoggerInterface logger = subscribers.get(subscriberNick).second();
+                LightGameUpdater updater = subscribers.get(subscriberNick).first();
+                updater.updateGame(new GameDiffPublicObj(commonObjectives.toArray(new LightCard[1])));
+                logger.log(LogsOnClientStatic.EVERYONE_CHOSE);
             } catch (Exception e) {
                 System.out.println("GameMediator: subscriber " + subscriberNick + " not reachable" + e.getMessage());
             }
@@ -189,10 +206,13 @@ public class GameMediator extends LoggerAndUpdaterMediator<LightGameUpdater, Lig
     public synchronized void notifyTurnChange(String playerNickname){
         for(String subscriberNick : subscribers.keySet()){
             try {
+                LightGameUpdater updater = subscribers.get(subscriberNick).first();
+                updater.updateGame(new GameDiffCurrentPlayer(playerNickname));
+                LoggerInterface logger = subscribers.get(subscriberNick).second();
                 if (!subscriberNick.equals(playerNickname)) {
-                    subscribers.get(subscriberNick).second().log(playerNickname + LogsOnClientStatic.PLAYER_TURN);
+                    logger.log(playerNickname + LogsOnClientStatic.PLAYER_TURN);
                 } else {
-                    subscribers.get(subscriberNick).second().log(LogsOnClientStatic.YOUR_TURN);
+                    logger.log(LogsOnClientStatic.YOUR_TURN);
                 }
             } catch (Exception e) {
                 System.out.println("GameMediator: subscriber " + subscriberNick + " not reachable" + e.getMessage());
