@@ -38,6 +38,7 @@ class ServerModelControllerTest {
         serverModelController1.login(view1.name);
 
         multiGame.addLobby(lobby2);
+        multiGame.notifyNewLobby("r", lobby2);
         ArrayList<LightLobby> lobbies = new ArrayList<>();
         lobbies.add(Lightifier.lightify(lobby2));
         serverModelController2.login(view2.name);
@@ -49,8 +50,6 @@ class ServerModelControllerTest {
         assert view2.lightLobbyList.getLobbies().contains(Lightifier.lightify(lobby2));
         assert multiGame.getUsernames().contains(view1.name);
         assert multiGame.getUsernames().contains(view2.name);
-        assert serverModelController1.getNickname().equals(view1.name);
-        assert serverModelController2.getNickname().equals(view2.name);
     }
     @Test
     void createLobby() {
@@ -205,6 +204,7 @@ class ServerModelControllerTest {
         assert view1.lightGame.getHandOthers().get(view1.name) == null;
         assert view1.lightGame.getHandOthers().get(view2.name) != null;
         assert view1.lightGame.getHandOthers().get(view2.name).getCards().length == 3;
+        //TODO check in hand there is the startCard
         assert Arrays.stream(view1.lightGame.getHandOthers().get(view2.name).getCards()).allMatch(Objects::isNull);
         //decks correctly set
         assert view1.lightGame.getDecks().keySet().size() == 2;

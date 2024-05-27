@@ -4,13 +4,12 @@ import it.polimi.ingsw.lightModel.lightTableRelated.LightGame;
 
 import java.util.List;
 
-public class GameDifFirstTimeJoin extends GameDiff{
+public class GameDiffJoinStartCard extends GameDiff{
     private final GameDiffInitialization initialization;
     private final GameDiffPlayerActivity playerActivity;
     private final List<DeckDiff> decks;
     private final List<CodexDiff> codex;
     private final List<HandDiff> handYours;
-    private final List<HandOtherDiff> handOther;
 
     /**
      * Creates a diff to update the lightGame when it's the first time a player joins
@@ -21,15 +20,14 @@ public class GameDifFirstTimeJoin extends GameDiff{
      * @param decks the diffs to set the current state of the decks
      * @param codex the diffs to set the current state of the codexes
      * @param handYours the diffs to get the current state of your hand
-     * @param handOther the diffs to get the current state of the other players' hands
      */
-    public GameDifFirstTimeJoin(GameDiffInitialization initialization, GameDiffPlayerActivity playerActivity, List<DeckDiff> decks, List<CodexDiff> codex, List<HandDiff> handYours, List<HandOtherDiff> handOther) {
+    public GameDiffJoinStartCard(GameDiffInitialization initialization, GameDiffPlayerActivity playerActivity, List<DeckDiff> decks, List<CodexDiff> codex, List<HandDiff> handYours) {
         this.initialization = initialization;
         this.playerActivity = playerActivity;
         this.decks = decks;
         this.codex = codex;
         this.handYours = handYours;
-        this.handOther = handOther;
+
     }
     @Override
     public void apply(LightGame game) {
@@ -42,9 +40,6 @@ public class GameDifFirstTimeJoin extends GameDiff{
             c.apply(game);
         }
         for (HandDiff h : handYours) {
-            h.apply(game);
-        }
-        for (HandOtherDiff h : handOther) {
             h.apply(game);
         }
     }

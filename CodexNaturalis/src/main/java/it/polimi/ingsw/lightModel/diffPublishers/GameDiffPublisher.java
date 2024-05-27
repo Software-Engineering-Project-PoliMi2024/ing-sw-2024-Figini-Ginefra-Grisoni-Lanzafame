@@ -7,7 +7,6 @@ import it.polimi.ingsw.lightModel.diffs.game.*;
 import it.polimi.ingsw.model.cardReleted.cards.GoldCard;
 import it.polimi.ingsw.model.cardReleted.cards.ResourceCard;
 import it.polimi.ingsw.model.cardReleted.utilityEnums.DrawableCard;
-import it.polimi.ingsw.model.cardReleted.utilityEnums.Resource;
 import it.polimi.ingsw.model.playerReleted.User;
 import it.polimi.ingsw.model.tableReleted.Deck;
 import it.polimi.ingsw.model.tableReleted.Game;
@@ -190,8 +189,8 @@ public class GameDiffPublisher implements Serializable {
      * @param diffSubscriber the subscriber from which perspective to get the total state of the game
      * @return a list of diffs containing the current state of the game
      */
-    private GameDiffRejoinAfterDisconnection getTotalCurrentState(DiffSubscriber diffSubscriber){
-        GameDiffRejoinAfterDisconnection newGameDiff = new GameDiffRejoinAfterDisconnection(
+    private GameDiffJoinMidGame getTotalCurrentState(DiffSubscriber diffSubscriber){
+        GameDiffJoinMidGame newGameDiff = new GameDiffJoinMidGame(
                 new GameDiffInitialization(game.getGameParty().getUsersList().stream().map(User::getNickname).toList(), game.getName(),activeSubscribers.get(diffSubscriber), new GameDiffCurrentPlayer(game.getGameParty().getCurrentPlayer().getNickname())),
                 getPlayerActivity(),
                 getDeckCurrentState(),

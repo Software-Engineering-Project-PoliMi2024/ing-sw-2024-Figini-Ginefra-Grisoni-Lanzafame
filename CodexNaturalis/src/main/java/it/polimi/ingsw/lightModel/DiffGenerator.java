@@ -1,7 +1,6 @@
 package it.polimi.ingsw.lightModel;
 
 
-import it.polimi.ingsw.lightModel.diffPublishers.DiffSubscriber;
 import it.polimi.ingsw.lightModel.diffs.game.*;
 import it.polimi.ingsw.lightModel.diffs.lobby_lobbyList.LobbyDiffEdit;
 import it.polimi.ingsw.lightModel.diffs.lobby_lobbyList.LobbyDiffEditLogin;
@@ -19,10 +18,8 @@ import it.polimi.ingsw.model.playerReleted.User;
 import it.polimi.ingsw.model.tableReleted.Deck;
 import it.polimi.ingsw.model.tableReleted.Game;
 import it.polimi.ingsw.model.tableReleted.Lobby;
-import javafx.scene.effect.Light;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 
 public class DiffGenerator {
@@ -123,14 +120,13 @@ public class DiffGenerator {
      * @param activePlayers a list containing the nickname of the active players
      * @return the diff that updates the lightGame with the current state of the game
      */
-    public static GameDifFirstTimeJoin diffFirstTimeJoin(Game game, String nickname, List<String> activePlayers){
-        return new GameDifFirstTimeJoin(
+    public static GameDiffJoinStartCard diffJoinStartCard(Game game, String nickname, List<String> activePlayers){
+        return new GameDiffJoinStartCard(
                 getInitialization(game, nickname),
                 getPlayerActivity(activePlayers),
                 getDeckCurrentState(game),
                 getCodexCurrentState(game),
-                getHandYourCurrentState(game.getUserFromNick(nickname)),
-                getHandOtherCurrentState(game, nickname)
+                getHandYourCurrentState(game.getUserFromNick(nickname))
         );
     }
 
@@ -142,8 +138,8 @@ public class DiffGenerator {
      * @param activePlayers a list containing the nickname of the active players
      * @return the diff that updates the lightGame with the current state of the game
      */
-    public static GameDiffRejoinAfterDisconnection diffRejoin(Game game, String nickname, List<String> activePlayers){
-        return new GameDiffRejoinAfterDisconnection(
+    public static GameDiffJoinMidGame diffJoinMidGame(Game game, String nickname, List<String> activePlayers){
+        return new GameDiffJoinMidGame(
                 getInitialization(game, nickname),
                 getPlayerActivity(activePlayers),
                 getDeckCurrentState(game),
@@ -152,6 +148,17 @@ public class DiffGenerator {
                 getHandOtherCurrentState(game, nickname),
                 getPublicObjectiveCurrentState(game)
         );
+    }
+
+    public static GameDiffJoinSecretObj diffJoinSecretObj(Game game, String nickname, List<String> activePlayers){
+        return new GameDiffJoinSecretObj(
+                getInitialization(game, nickname),
+                getPlayerActivity(activePlayers),
+                getDeckCurrentState(game),
+                getCodexCurrentState(game),
+                getHandYourCurrentState(game.getUserFromNick(nickname)),
+                getHandOtherCurrentState(game, nickname)
+                );
     }
 
     private static GameDiffInitialization getInitialization(Game game, String nickname){
@@ -241,7 +248,7 @@ public class DiffGenerator {
      * @param game the subscriber to which sends the hand of the other players
      * @return a list of diffs containing the current state of the hand of the other players
      */
-    private static List<HandOtherDiff> getHandOtherCurrentState(Game game, String nickname){
+    public static List<HandOtherDiff> getHandOtherCurrentState(Game game, String nickname){
         List<HandOtherDiff> handOtherDiff = new ArrayList<>();
         for(User user : game.getGameParty().getUsersList()){
             if(!user.getNickname().equals(nickname)){

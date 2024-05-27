@@ -33,11 +33,9 @@ public class LogsOnClientStatic {
 
     //joinGame related
     public static String GAME_CREATED = "Lobby is full, the game is starting.";
-    public static String NEW_GAME_JOINED = "Joined a new game.";
-    public static String MID_GAME_JOINED = "Rejoined a previous game.";
+    public static String GAME_JOINED = "Joined game.";
 
     //gameSetup related  = startCard face and SecretObjective option selection)
-    public static String DECK_SHUFFLE = "The Resource and Gold card decks have been shuffled.";
     public static String YOU_PLACE_STARTCARD = "Successfully placed your Start Card.";
     public static String YOU_CHOSE = "Successfully chose your Secret Objective.";
     public static String PLAYER_PLACE_STARTCARD = " placed their Start Card.";
@@ -54,7 +52,6 @@ public class LogsOnClientStatic {
     public static String YOU_PLACED = "Successfully placed a card in your Codex.";
     public static String PLAYER_DRAW = " drew a card.";
     public static String YOU_DRAW = "Successfully drew a card to your Hand.";
-
 
     //gameTurn related
     public static String YOUR_TURN = "It's now your turn to play.";

@@ -157,11 +157,22 @@ public class Game implements Serializable {
      * @param LoggerAndUpdater the view that is subscribing
      * @param turnTaker the turnTaker that is subscribing
      */
-    public void subscribe(String nickname, ViewInterface LoggerAndUpdater, TurnTaker turnTaker, boolean sendPublicObj){
-        this.gameMediator.subscribe(nickname, LoggerAndUpdater, this, sendPublicObj);
+    public void subscribe(String nickname, ViewInterface LoggerAndUpdater, TurnTaker turnTaker, boolean rejoining){
+        this.gameMediator.subscribe(nickname, LoggerAndUpdater, rejoining);
         activeTurnTakerMediator.subscribe(nickname, turnTaker);
     }
 
+    public void joinStartCard(String joiner, Game game){
+        gameMediator.updateJoinStartCard(joiner, game);
+    }
+
+    public void joinSecretObjective(String joiner, Game game){
+        gameMediator.updateJoinObjectiveSelect(joiner, game);
+    }
+
+    public void joinMidGame(String joiner, Game game){
+        gameMediator.updateJoinActualGame(joiner, game);
+    }
     /**
      * unsubscribe a player from the activeTurnTakerMediator
      * removing them from the list of players that will receive notifications
@@ -266,6 +277,10 @@ public class Game implements Serializable {
      */
     public void notifyChooseObjective(){
         activeTurnTakerMediator.notifyChooseObjective();
+    }
+
+    public void secretObjectiveSetup(){
+        gameMediator.secretObjectiveSetup(this);
     }
     /**
      * get the list of active players

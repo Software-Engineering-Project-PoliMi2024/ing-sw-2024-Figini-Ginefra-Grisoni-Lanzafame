@@ -1,28 +1,26 @@
 package it.polimi.ingsw.controller3.mediators.loggerAndUpdaterMediators;
 
-import it.polimi.ingsw.controller.LogsOnClient;
 import it.polimi.ingsw.controller3.LogsOnClientStatic;
 import it.polimi.ingsw.lightModel.DiffGenerator;
 import it.polimi.ingsw.lightModel.LightModelUpdaterInterfaces.LightGameUpdater;
-import it.polimi.ingsw.lightModel.LightModelUpdaterInterfaces.Updater;
-import it.polimi.ingsw.lightModel.diffs.game.CodexDiff;
-import it.polimi.ingsw.lightModel.diffs.game.GameDiffPlayerActivity;
-import it.polimi.ingsw.lightModel.diffs.game.HandDiff;
-import it.polimi.ingsw.lightModel.diffs.game.HandDiffRemove;
+import it.polimi.ingsw.lightModel.Lightifier;
+import it.polimi.ingsw.lightModel.diffs.game.*;
 import it.polimi.ingsw.lightModel.diffs.nuclearDiffs.GadgetGame;
+import it.polimi.ingsw.lightModel.lightPlayerRelated.LightBack;
 import it.polimi.ingsw.lightModel.lightPlayerRelated.LightCard;
 import it.polimi.ingsw.lightModel.lightPlayerRelated.LightPlacement;
 import it.polimi.ingsw.lightModel.lightTableRelated.LightGame;
-import it.polimi.ingsw.model.cardReleted.cards.CardInHand;
-import it.polimi.ingsw.model.cardReleted.cards.StartCard;
+import it.polimi.ingsw.model.cardReleted.cards.ObjectiveCard;
 import it.polimi.ingsw.model.cardReleted.utilityEnums.DrawableCard;
-import it.polimi.ingsw.model.playerReleted.Codex;
+import it.polimi.ingsw.model.playerReleted.Hand;
 import it.polimi.ingsw.model.playerReleted.User;
 import it.polimi.ingsw.model.tableReleted.Game;
+import it.polimi.ingsw.view.LoggerInterface;
 import it.polimi.ingsw.view.ViewInterface;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 
 public class GameMediator extends LoggerAndUpdaterMediator<LightGameUpdater, LightGame> {
     /**
@@ -36,7 +34,7 @@ public class GameMediator extends LoggerAndUpdaterMediator<LightGameUpdater, Lig
      * @param game the game the player joined
      * @param rejoining false if the player is joining for the first time, true if he is rejoining
      */
-    public synchronized void subscribe(String nicknameJoin, ViewInterface LoggerAndUpdater, Game game, boolean rejoining){
+    public synchronized void subscribe(String nicknameJoin, ViewInterface LoggerAndUpdater, boolean rejoining){
         GameDiffPlayerActivity communicateJoin = new GameDiffPlayerActivity(List.of(nicknameJoin), new ArrayList<>());
         for(String subscriberNick : subscribers.keySet()){
             if(!subscriberNick.equals(nicknameJoin)) {
@@ -50,20 +48,38 @@ public class GameMediator extends LoggerAndUpdaterMediator<LightGameUpdater, Lig
                 }
             }
         }
-        List<String> activePlayers = new ArrayList<>(subscribers.keySet().stream().toList());
-        activePlayers.add(nicknameJoin);
-        try {
-            if (rejoining) {
-                LoggerAndUpdater.updateGame(DiffGenerator.diffRejoin(game, nicknameJoin, activePlayers));
-                LoggerAndUpdater.log(LogsOnClientStatic.MID_GAME_JOINED);
-            }else{
-                LoggerAndUpdater.updateGame(DiffGenerator.diffFirstTimeJoin(game, nicknameJoin, activePlayers));
-                LoggerAndUpdater.log(LogsOnClientStatic.NEW_GAME_JOINED);
-            }
-        }catch (Exception e){
-            System.out.println("GameMediator: new subscriber " + nicknameJoin + " not reachable" + e.getMessage());
-        }
         super.subscribe(nicknameJoin, LoggerAndUpdater, LoggerAndUpdater);
+    }
+
+    public synchronized void updateJoinStartCard(String joiner, Game game){
+        List<String> activePlayers = new ArrayList<>(subscribers.keySet().stream().toList());
+        try {
+            subscribers.get(joiner).first().updateGame(DiffGenerator.diffJoinStartCard(game, joiner, activePlayers));
+            subscribers.get(joiner).second().log(LogsOnClientStatic.GAME_JOINED);
+        } catch (Exception e){
+            System.out.println("GameMediator: new subscriber " + joiner + " not reachable" + e.getMessage());
+        }
+    }
+
+    public synchronized void updateJoinObjectiveSelect(String joiner, Game game){
+        List<String> activePlayers = new ArrayList<>(subscribers.keySet().stream().toList());
+        try{
+            subscribers.get(joiner).first().updateGame(DiffGenerator.diffJoinSecretObj(game, joiner, activePlayers));
+            subscribers.get(joiner).second().log(LogsOnClientStatic.GAME_JOINED);
+        } catch (Exception e){
+            System.out.println("GameMediator: rejoining subscriber " + joiner + " not reachable" + e.getMessage());
+        }
+    }
+
+    public synchronized void updateJoinActualGame(String joiner, Game game){
+        List<String> activePlayers = new ArrayList<>(subscribers.keySet().stream().toList());
+        try{
+            subscribers.get(joiner).first().updateGame(DiffGenerator.diffJoinMidGame(game, joiner, activePlayers));
+            subscribers.get(joiner).second().log(LogsOnClientStatic.GAME_JOINED);
+        } catch (Exception e){
+            System.out.println("GameMediator: rejoining subscriber " + joiner + " not reachable" + e.getMessage());
+        }
+
     }
 
     /**
@@ -105,8 +121,9 @@ public class GameMediator extends LoggerAndUpdaterMediator<LightGameUpdater, Lig
         for(String subscriberNick : subscribers.keySet()){
             try {
                 if (subscriberNick.equals(placer)) {
-                    LightGameUpdater updater = subscribers.get(subscriberNick).first();
                     subscribers.get(subscriberNick).second().log(LogsOnClientStatic.YOU_PLACE_STARTCARD);
+                    subscribers.get(subscriberNick).second().log(LogsOnClientStatic.WAIT_STARTCARD);
+                    LightGameUpdater updater = subscribers.get(subscriberNick).first();
                     updater.updateGame(new HandDiffRemove(placement.card()));
                     updater.updateGame(new CodexDiff(placer, user.getUserCodex().getPoints(),
                             user.getUserCodex().getEarnedCollectables(), List.of(placement), user.getUserCodex().getFrontier().getFrontier()));
@@ -128,6 +145,24 @@ public class GameMediator extends LoggerAndUpdaterMediator<LightGameUpdater, Lig
         for(String subscriberNick : subscribers.keySet()){
             try {
                 subscribers.get(subscriberNick).second().log(LogsOnClientStatic.EVERYONE_PLACED_STARTCARD);
+            } catch (Exception e) {
+                System.out.println("GameMediator: subscriber " + subscriberNick + " not reachable" + e.getMessage());
+            }
+        }
+    }
+
+    public synchronized void secretObjectiveSetup(Game game){
+        for(String subscriberNick : subscribers.keySet()){
+            try {
+                LightGameUpdater updater = subscribers.get(subscriberNick).first();
+                List<ObjectiveCard> secretObjChoices = game.getUserFromNick(subscriberNick).getUserHand().getSecretObjectiveChoices();
+                List<LightCard> lightSecretObjChoices = secretObjChoices.stream().map(Lightifier::lightifyToCard).toList();
+                for(LightCard secretObj : lightSecretObjChoices){
+                    updater.updateGame(new HandDiffAddOneSecretObjectiveOption(secretObj));
+                }
+                for(HandOtherDiff handDiff : DiffGenerator.getHandOtherCurrentState(game, subscriberNick)) {
+                    updater.updateGame(handDiff);
+                }
             } catch (Exception e) {
                 System.out.println("GameMediator: subscriber " + subscriberNick + " not reachable" + e.getMessage());
             }

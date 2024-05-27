@@ -467,16 +467,16 @@ public class GameLoopController implements Serializable {
             controller.transitionTo(ViewState.SELECT_OBJECTIVE);
             User user = game.getUserFromNick(controller.getNickname());
             //Draw and send diff about my CardInHands to me and others
-            for(int i = 0; i<2; i++){
-                CardInHand resourceCard = game.getResourceCardDeck().drawFromDeck();
-                user.getUserHand().addCard(resourceCard);
-                game.subscribe(controller, new HandDiffAdd(Lightifier.lightifyToCard(resourceCard), resourceCard.canBePlaced(user.getUserCodex())),
-                        new HandOtherDiffAdd(new LightBack(resourceCard.getIdBack()), controller.getNickname()));
-            }
-            CardInHand goldCard = game.getGoldCardDeck().drawFromDeck();
-            user.getUserHand().addCard(goldCard);
-            game.subscribe(controller, new HandDiffAdd(Lightifier.lightifyToCard(goldCard), goldCard.canBePlaced(user.getUserCodex())),
-                    new HandOtherDiffAdd(new LightBack(goldCard.getIdBack()), controller.getNickname()));
+//            for(int i = 0; i<2; i++){
+////                CardInHand resourceCard = game.getResourceCardDeck().drawFromDeck();
+////                user.getUserHand().addCard(resourceCard);
+////                game.subscribe(controller, new HandDiffAdd(Lightifier.lightifyToCard(resourceCard), resourceCard.canBePlaced(user.getUserCodex())),
+////                        new HandOtherDiffAdd(new LightBack(resourceCard.getIdBack()), controller.getNickname()));
+//            }
+//            CardInHand goldCard = game.getGoldCardDeck().drawFromDeck();
+//            user.getUserHand().addCard(goldCard);
+//            game.subscribe(controller, new HandDiffAdd(Lightifier.lightifyToCard(goldCard), goldCard.canBePlaced(user.getUserCodex())),
+//                    new HandOtherDiffAdd(new LightBack(goldCard.getIdBack()), controller.getNickname()));
 
             LightCard[] lightCommonObj = game.getCommonObjective().stream().map(Lightifier::lightifyToCard).toArray(LightCard[]::new);
             controller.updateGame(new GameDiffPublicObj(lightCommonObj));
