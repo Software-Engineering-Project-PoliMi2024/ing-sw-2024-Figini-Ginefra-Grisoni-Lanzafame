@@ -51,11 +51,12 @@ public class PersistenceFactory {
      */
     private static Game getGameFromFile(File file, String directory){
         Game game = null;
+        FileInputStream fileIn = null;
         try{
             if(!file.isFile())
                 throw new FileNotFoundException("the file given as input is not a valid file");
 
-            FileInputStream fileIn = new FileInputStream(directory + file.getName());
+            fileIn = new FileInputStream(directory + file.getName());
             ObjectInputStream streamIn = new ObjectInputStream(fileIn);
             Object readObject = streamIn.readObject();
             if(readObject instanceof Game)
@@ -64,8 +65,15 @@ public class PersistenceFactory {
                 throw new IOException("the file given as input is not a valid game file");
         }catch (Exception e){
             System.out.println("file:" + file.getName() + " corrupted, deleting it");
-            file.delete();
-            e.printStackTrace();
+
+            try {
+                fileIn.close();
+            } catch (IOException ex) {
+                throw new RuntimeException(ex);
+            }
+
+            if(!file.delete())
+                System.out.println("file:" + file.getName() + " could not be deleted");
         }
         return game;
     }

@@ -1,11 +1,12 @@
 package it.polimi.ingsw.model.tableReleted;
 
 import java.io.Serializable;
+import java.lang.reflect.Array;
 import java.util.*;
 
 public class Deck<Element> implements Serializable {
     private final int bufferSize;
-    private final Set<Element> buffer;
+    private final List<Element> buffer;
     private final Queue<Element> actualDeck;
 
     /**
@@ -16,7 +17,7 @@ public class Deck<Element> implements Serializable {
     public Deck(int bufferSize, Queue<Element> elements) {
         this.bufferSize = bufferSize;
         this.actualDeck = elements;
-        this.buffer = new LinkedHashSet<>();
+        this.buffer = new ArrayList<>();
         this.shuffle();
         this.populateBuffer();
     }
@@ -28,7 +29,7 @@ public class Deck<Element> implements Serializable {
     public Deck(Deck<Element> other){
         this.bufferSize = other.bufferSize;
         this.actualDeck = new LinkedList<>(other.actualDeck);
-        this.buffer = new LinkedHashSet<>(other.buffer);
+        this.buffer = other.buffer.stream().toList();
     }
 
     /**
@@ -72,13 +73,11 @@ public class Deck<Element> implements Serializable {
      * @return the element drawn
      */
     public Element drawFromBuffer(int indexElement){
-        List<Element> tmpList = new LinkedList<>(buffer);
-        Element element = tmpList.get(indexElement);
+        Element element = buffer.get(indexElement);
         if(element!=null){
-            buffer.remove(element);
             Element newElement = this.drawFromDeck();
             if(newElement != null){
-                buffer.add(newElement);
+                buffer.set(indexElement, newElement);
             }
             return element;
         }
@@ -103,8 +102,7 @@ public class Deck<Element> implements Serializable {
      * @return the bufferID card from the buffer but do not remove it
      */
     public Element showCardFromBuffer(int bufferId){
-        List<Element> tmpList = new LinkedList<>(buffer);
-        return tmpList.get(bufferId);
+        return buffer.stream().toList().get(bufferId);
     }
 
     public boolean isEmpty(){

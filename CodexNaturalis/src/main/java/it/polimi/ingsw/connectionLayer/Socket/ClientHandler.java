@@ -177,7 +177,7 @@ public class ClientHandler implements Runnable{
         return ready;
     }
 
-    public Queue<ClientMsg> getRecivedMsgs() {
+    public Queue<ClientMsg> getReceivedMsg() {
         return recivedMsgs;
     }
 }

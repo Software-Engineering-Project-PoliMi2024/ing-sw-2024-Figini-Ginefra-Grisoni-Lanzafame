@@ -51,6 +51,8 @@ public class ConnectionFormControllerGUI implements Initializable {
         protocolChoice.getItems().add("RMI");
         protocolChoice.setValue("RMI");
 
+        //make The font bigger
+        protocolChoice.setStyle("-fx-font-size: 20px;");
 
         //image.setImage(CardMuseumGUI.loadCardFront(100));
     }

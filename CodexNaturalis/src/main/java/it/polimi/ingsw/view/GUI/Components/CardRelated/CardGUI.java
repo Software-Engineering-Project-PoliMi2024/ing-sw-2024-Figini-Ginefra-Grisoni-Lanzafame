@@ -9,8 +9,10 @@ import it.polimi.ingsw.view.GUI.GUIConfigs;
 import javafx.animation.KeyFrame;
 import javafx.animation.Timeline;
 import javafx.geometry.Point2D;
+import javafx.scene.Node;
 import javafx.scene.image.ImageView;
 import javafx.scene.input.MouseEvent;
+import javafx.scene.layout.Pane;
 import javafx.scene.shape.Rectangle;
 import javafx.util.Duration;
 
@@ -31,6 +33,14 @@ public class CardGUI {
     private boolean holdDetected = false;
 
     private MouseEvent lastEvent = null;
+
+    private final Timeline holdingAnimation = new Timeline();
+
+    protected final Timeline addingAnimation = new Timeline();
+
+    protected final Timeline removingAnimation = new Timeline();
+
+    private double scale = 1;
 
 
     public CardGUI(LightCard target, CardFace face) {
@@ -55,10 +65,7 @@ public class CardGUI {
         holdTimer = new Timeline();
         //Make an empty keyframe at holdDuration
         holdTimer.getKeyFrames().addAll(
-                new KeyFrame(Duration.millis(0), AnimationStuff.createScaleXKeyValue(imageView, 1)),
-                new KeyFrame(Duration.millis(0), AnimationStuff.createScaleYKeyValue(imageView, 1)),
-                new KeyFrame(Duration.millis(GUIConfigs.holdDuration), AnimationStuff.createScaleXKeyValue(imageView, 0.8)),
-                new KeyFrame(Duration.millis(GUIConfigs.holdDuration), AnimationStuff.createScaleYKeyValue(imageView, 0.8))
+                new KeyFrame(Duration.millis(GUIConfigs.holdDuration))
         );
 
         //set hold detected to false
@@ -68,9 +75,22 @@ public class CardGUI {
             holdDetected = true;
         });
 
+        //Set up the holding animation
+        holdingAnimation.getKeyFrames().addAll(
+                new KeyFrame(Duration.millis(0), AnimationStuff.createScaleXKeyValue(imageView, 1)),
+                new KeyFrame(Duration.millis(0), AnimationStuff.createScaleYKeyValue(imageView, 1)),
+                new KeyFrame(Duration.millis(GUIConfigs.holdDuration), AnimationStuff.createScaleXKeyValue(imageView, 0.8)),
+                new KeyFrame(Duration.millis(GUIConfigs.holdDuration), AnimationStuff.createScaleYKeyValue(imageView, 0.8))
+        );
+
         imageView.setOnMousePressed(e -> {
             holdDetected = false;
             holdTimer.playFromStart();
+
+            if(onHold != null) {
+                holdingAnimation.play();
+            }
+
             lastEvent = e;
         });
 
@@ -85,9 +105,26 @@ public class CardGUI {
             holdTimer.stop();
             holdDetected = false;
 
-            imageView.setScaleX(1);
-            imageView.setScaleY(1);
+            if(onHold != null) {
+                holdingAnimation.stop();
+                this.setScale();
+            }
         });
+
+
+        //Set up the adding animation
+        addingAnimation.getKeyFrames().addAll(
+                new KeyFrame(Duration.millis(0), AnimationStuff.createScaleXKeyValue(imageView, 0)),
+                new KeyFrame(Duration.millis(0), AnimationStuff.createScaleYKeyValue(imageView, 0)),
+                new KeyFrame(Duration.millis(GUIConfigs.cardAddRemAnimationDuration), AnimationStuff.createScaleXKeyValue(imageView, 1)),
+                new KeyFrame(Duration.millis(GUIConfigs.cardAddRemAnimationDuration), AnimationStuff.createScaleYKeyValue(imageView, 1))
+        );
+
+        //Set up the removing animation
+        removingAnimation.getKeyFrames().addAll(
+                new KeyFrame(Duration.millis(GUIConfigs.cardAddRemAnimationDuration), AnimationStuff.createScaleXKeyValue(imageView, 0)),
+                new KeyFrame(Duration.millis(GUIConfigs.cardAddRemAnimationDuration), AnimationStuff.createScaleYKeyValue(imageView, 0))
+        );
 
     }
 
@@ -114,6 +151,14 @@ public class CardGUI {
 
     }
 
+    public void playAddingAnimation(){
+        addingAnimation.getKeyFrames().set(2,
+                new KeyFrame(Duration.millis(GUIConfigs.cardAddRemAnimationDuration), AnimationStuff.createScaleXKeyValue(imageView, this.scale)));
+        addingAnimation.getKeyFrames().set(3,
+                new KeyFrame(Duration.millis(GUIConfigs.cardAddRemAnimationDuration), AnimationStuff.createScaleYKeyValue(imageView, this.scale)));
+        addingAnimation.play();
+    }
+
     public void setTarget(LightCard target) {
         this.target = target;
         this.update();
@@ -122,6 +167,24 @@ public class CardGUI {
     public void setTarget(LightBack back) {
         this.target = new LightCard(0, back.idBack());
         this.update();
+    }
+
+    public void runWithAddingAnimation(Runnable runnable){
+        this.playAddingAnimation();
+        runnable.run();
+    }
+
+    public void runWithRemovingAnimation(Runnable runnable){
+        removingAnimation.play();
+        removingAnimation.setOnFinished(e -> runnable.run());
+    }
+
+    public void runBetweenRemovingAndAddingAnimation(Runnable runnable){
+        removingAnimation.play();
+        removingAnimation.setOnFinished(e -> {
+            runnable.run();
+            this.playAddingAnimation();
+        });
     }
 
     public void setPosition(double x, double y) {
@@ -143,8 +206,26 @@ public class CardGUI {
     }
 
     public void setScale(double scale){
+        this.scale = scale;
         imageView.setScaleX(scale);
         imageView.setScaleY(scale);
+
+        this.addingAnimation.getKeyFrames().set(2,
+                new KeyFrame(Duration.millis(GUIConfigs.cardAddRemAnimationDuration), AnimationStuff.createScaleXKeyValue(imageView, this.scale)));
+
+        this.addingAnimation.getKeyFrames().set(3,
+                new KeyFrame(Duration.millis(GUIConfigs.cardAddRemAnimationDuration), AnimationStuff.createScaleYKeyValue(imageView, this.scale)));
+    }
+
+    public void setScale(){
+        imageView.setScaleX(this.scale);
+        imageView.setScaleY(this.scale);
+
+        this.addingAnimation.getKeyFrames().set(2,
+                new KeyFrame(Duration.millis(GUIConfigs.cardAddRemAnimationDuration), AnimationStuff.createScaleXKeyValue(imageView, this.scale)));
+
+        this.addingAnimation.getKeyFrames().set(3,
+                new KeyFrame(Duration.millis(GUIConfigs.cardAddRemAnimationDuration), AnimationStuff.createScaleYKeyValue(imageView, this.scale)));
     }
 
     public CardFace getFace() {
@@ -173,7 +254,7 @@ public class CardGUI {
         imageView.setDisable(true);
 
         //set the opacity to 0.5
-        imageView.setOpacity(0.5);
+        imageView.setOpacity(0.8);
     }
 
     public void enable(){
@@ -181,5 +262,48 @@ public class CardGUI {
 
         //set the opacity to 1
         imageView.setOpacity(1);
+    }
+
+    public void addThisTo(Pane parent){
+        parent.getChildren().add(imageView);
+        this.playAddingAnimation();
+    }
+
+    public void addThisTo(Pane parent, int index){
+        parent.getChildren().add(index, imageView);
+        this.playAddingAnimation();
+    }
+
+    public void addThisBy(Consumer<CardGUI> parentAdder){
+        parentAdder.accept(this);
+        this.playAddingAnimation();
+    }
+
+    public void removeThisFrom(Pane parent){
+        this.removingAnimation.play();
+        this.removingAnimation.setOnFinished(e -> {
+            parent.getChildren().remove(imageView);
+        });
+    }
+
+    public void removeThisFrom(Pane parent, int index){
+        this.removingAnimation.play();
+        this.removingAnimation.setOnFinished(e -> {
+            parent.getChildren().remove(index);
+        });
+    }
+
+    public void removeThisBy(Consumer<CardGUI> parentRemover){
+        this.removingAnimation.play();
+        this.removingAnimation.setOnFinished(e -> {
+            parentRemover.accept(this);
+        });
+    }
+
+    public boolean equals(CardGUI other){
+        if (other == null)
+            return false;
+
+        return this.target.equals(other.target);
     }
 }

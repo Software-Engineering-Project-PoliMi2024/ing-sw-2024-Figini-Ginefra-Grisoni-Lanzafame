@@ -48,7 +48,10 @@ public class GoldCard extends CardInHand {
      * @return the amount of point given to the player by the card
      */
     public int getPoints(Codex codex) {
-        return this.getPoints()*multiplier.getMultiplier(codex, this);
+        if(multiplier == null)
+            return this.getPoints();
+
+        return this.getPoints() * multiplier.getMultiplier(codex, this);
     }
 
     /**

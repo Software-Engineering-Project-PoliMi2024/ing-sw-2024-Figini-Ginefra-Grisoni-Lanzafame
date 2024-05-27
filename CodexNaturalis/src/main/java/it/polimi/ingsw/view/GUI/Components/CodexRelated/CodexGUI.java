@@ -4,6 +4,7 @@ import it.polimi.ingsw.designPatterns.Observer;
 import it.polimi.ingsw.lightModel.lightPlayerRelated.LightCodex;
 import it.polimi.ingsw.lightModel.lightPlayerRelated.LightFrontier;
 import it.polimi.ingsw.lightModel.lightPlayerRelated.LightPlacement;
+import it.polimi.ingsw.model.playerReleted.Placement;
 import it.polimi.ingsw.model.playerReleted.Position;
 import it.polimi.ingsw.view.GUI.Components.CardRelated.CardGUI;
 import it.polimi.ingsw.view.GUI.GUI;
@@ -15,10 +16,7 @@ import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.Pane;
 import javafx.scene.layout.StackPane;
 
-import java.util.ArrayList;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
+import java.util.*;
 
 public class CodexGUI implements Observer {
     private final StackPane codex = new StackPane();
@@ -144,7 +142,7 @@ public class CodexGUI implements Observer {
 
         if(n > this.cards.size()){
             for(int i = this.cards.size(); i < n; i++){
-                LightPlacement target = this.getLightCodex().getPlacementHistory().values().toArray(new LightPlacement[0])[i];
+                LightPlacement target = this.getLightCodex().getPlacementHistory().get(i);
                 this.addCard(new CardGUI(target.card(), target.face()), target.position());
             }
         }

@@ -166,8 +166,7 @@ public class ServerModelController implements ControllerInterface, DiffSubscribe
         if (cardID == 2) {
             drawCard = deck.drawFromDeck();
         } else {
-            drawCard = deck.drawFromBuffer(cardID);
-        }
+            drawCard = deck.drawFromBuffer(cardID);}
         return drawCard;
     }
 

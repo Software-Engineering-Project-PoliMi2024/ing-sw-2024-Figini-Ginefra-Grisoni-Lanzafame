@@ -74,10 +74,6 @@ public class HandGUI implements Observer {
         AnchorPane.setTopAnchor(hand, 0.0);
 
         //hand.setStyle(hand.getStyle() +  "-fx-background-color: transparent");
-
-        secretObjective = new FlippableCardGUI(new LightCard(1, 1));
-        setSizeBindings(secretObjective);
-        hand.getChildren().add(secretObjective.getImageView());
     }
 
     private void setSizeBindings(CardGUI card){
@@ -172,14 +168,18 @@ public class HandGUI implements Observer {
                                         try {
                                             //System.out.println(positioningCard.getTarget());
                                             GUI.getControllerStatic().place(new LightPlacement(closestFrontier.getGridPosition(), positioningCard.getTarget(), positioningCard.getFace()));
-                                            codex.addCard(new CardGUI(positioningCard), closestFrontier.getGridPosition());
+                                            CardGUI newCard = new CardGUI(positioningCard);
+
+                                            codex.addCard(newCard, closestFrontier.getGridPosition());
+
                                         } catch (Exception ex) {
                                             throw new RuntimeException(ex);
                                         }
                                     }
                                     else
                                         throw new IllegalStateException("Invalid state");
-                                    this.removeCardFromHand(positioningCard);
+
+                                    positioningCard.removeThisByFlippablePlayable(this::removeCardFromHand);
                                     positioningCard = null;
                                     this.closestFrontier = null;
                                 }
@@ -196,7 +196,7 @@ public class HandGUI implements Observer {
 
     public void removeCardFromHand(FlippablePlayableCard card){
         for (int i = 0; i < handCards.length; i++) {
-            if(handCards[i] == card){
+            if(card.equals(handCards[i])){
                 hand.getChildren().remove(card.getImageView());
                 handCards[i] = null;
                 return;
@@ -207,7 +207,11 @@ public class HandGUI implements Observer {
     }
 
     public void update(){
-        secretObjective.setTarget(GUI.getLightGame().getHand().getSecretObjective());
+        if(secretObjective == null && GUI.getLightGame().getHand().getSecretObjective() != null){
+            secretObjective = new FlippableCardGUI(GUI.getLightGame().getHand().getSecretObjective());
+            setSizeBindings(secretObjective);
+            secretObjective.addThisTo(hand, 0);
+        }
 
         int freeSpots = Arrays.stream(GUI.getLightGame().getHand().getCards()).filter(Objects::isNull).toArray().length;
 
@@ -219,12 +223,14 @@ public class HandGUI implements Observer {
             if(handCards[i] == null && GUI.getLightGame().getHand().getCards()[i] != null){
                 LightCard target = GUI.getLightGame().getHand().getCards()[i];
                 boolean playability = GUI.getLightGame().getHand().getCardPlayability().get(target);
-                addCardToHand(new FlippablePlayableCard(target, playability), true);
+                FlippablePlayableCard newCard = new FlippablePlayableCard(target, playability);
+
+                newCard.addThisByFlippablePlayable(card -> addCardToHand(card, true));
             }
-            else if (handCards[i] != null && GUI.getLightGame().getHand().getCards()[i] == null){
-                hand.getChildren().remove(handCards[i].getImageView());
-                handCards[i] = null;
-            }
+//            else if (handCards[i] != null && GUI.getLightGame().getHand().getCards()[i] == null){
+//                handCards[i].removeThisByFlippablePlayable(this::removeCardFromHand);
+//                handCards[i] = null;
+//            }
         }
 
 

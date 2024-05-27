@@ -28,6 +28,7 @@ public class LeaderboardGUI implements Observer {
     }
 
     public void attach() {
+
         GUI.getLightGame().getCodexMap().values().forEach(codex -> codex.attach(this));
     }
 
@@ -62,6 +63,8 @@ public class LeaderboardGUI implements Observer {
 
                     label.setStyle("-fx-text-fill: white; -fx-font-size: 16pt;");
 
+                    label.scaleXProperty().bindBidirectional(label.scaleYProperty());
+
                     row.getChildren().add(label);
 
                     labelMap.put(e.getKey(), label);
@@ -88,6 +91,15 @@ public class LeaderboardGUI implements Observer {
                 .forEach(e -> {
                     labelMap.get(e.getKey()).setText(e.getKey() + ": " + e.getValue());
                 });
+
+        labelMap.forEach((name, label) -> {
+            if(GUI.getLightGame().getLightGameParty().getCurrentPlayer().equals(name)){
+                label.setScaleX(1.2);
+            }
+            else{
+                label.setScaleX(1);
+            }
+        });
     }
 
     @Override

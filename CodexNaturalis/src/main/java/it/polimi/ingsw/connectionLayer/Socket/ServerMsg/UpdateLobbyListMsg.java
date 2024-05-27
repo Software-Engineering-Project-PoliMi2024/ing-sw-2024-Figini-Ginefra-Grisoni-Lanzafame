@@ -11,10 +11,6 @@ public class UpdateLobbyListMsg extends ServerMsg{
         this.diff = diff;
     }
 
-    public ModelDiffs<LightLobbyList> getDiff() {
-        return diff;
-    }
-
     @Override
     public void processMsg(ServerHandler serverHandler) throws Exception {
         serverHandler.getView().updateLobbyList(diff);

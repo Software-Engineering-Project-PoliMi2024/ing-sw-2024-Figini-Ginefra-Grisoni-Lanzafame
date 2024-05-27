@@ -11,7 +11,6 @@ import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.net.Socket;
-import java.rmi.RemoteException;
 import java.util.Comparator;
 import java.util.LinkedList;
 import java.util.PriorityQueue;
@@ -27,7 +26,7 @@ public class ServerHandler implements Runnable{
     private ViewInterface view;
     private boolean ready = false;
     private int msgIndex;
-    private final Queue<ServerMsg> recivedMsgs = new PriorityQueue<>(Comparator.comparingInt(ServerMsg::getIndex));
+    private final Queue<ServerMsg> receivedMsg = new PriorityQueue<>(Comparator.comparingInt(ServerMsg::getIndex));
 
     /**
      * Initializes a new handler using a specific socket that is present on a server.
@@ -66,7 +65,7 @@ public class ServerHandler implements Runnable{
                 }
             });
             future.get(Configs.secondsTimeOut, TimeUnit.SECONDS);
-        }catch (TimeoutException | InterruptedException | ExecutionException e) {
+        }catch (TimeoutException e) {
             //wait for the view to be set so that the error can be logged
             this.waitForOwnerAndView();
             try {
@@ -76,22 +75,20 @@ public class ServerHandler implements Runnable{
                 //This is socket, RemoteException should not be thrown
                 throw new RuntimeException(ex);
             }
-        }
-    }
-
-    /**
-     * Set the serverHandler has ready, wait for the controller to set the owner and the view
-     */
-    private void waitForOwnerAndView(){
-        this.ready = true;
-        while(this.owner == null || this.view == null){
+        }catch (InterruptedException | ExecutionException e){
+            e.printStackTrace();
+            //wait for the view to be set so that the error can be logged
+            this.waitForOwnerAndView();
             try {
-                Thread.sleep(10);
-            } catch (InterruptedException e) {
-                e.printStackTrace();
+                System.out.println("Unknown error while connecting to the server");
+                view.logErr(LogsOnClient.CONNECTION_ERROR.getMessage());
+            } catch (Exception ex) {
+                //This is socket, RemoteException should not be thrown
+                throw new RuntimeException(ex);
             }
         }
     }
+
     /**
      * Sends a message to the server
      * @param clientMsg The message to be sent
@@ -106,6 +103,7 @@ public class ServerHandler implements Runnable{
             e.printStackTrace();
         }
     }
+
     /**
      * Handles the messages received from the server. If a message is received out of order (i.e. with an index higher than the expected one)
      * it is stored in a queue until the expected message is received. Then all the messages in the queue are processed
@@ -133,12 +131,12 @@ public class ServerHandler implements Runnable{
                 return;
             }
             if(serverMsg.getIndex() > expectedIndex){
-                recivedMsgs.add(serverMsg);
+                receivedMsg.add(serverMsg);
             }else if(serverMsg.getIndex()<expectedIndex){
                 throw new IllegalCallerException("The Client received a message with an index lower than the expected one");
             }else{ //clientMsg.getIndex() == expectingIndex
-                recivedMsgs.add(serverMsg);
-                Queue<ServerMsg> toBeProcessMsgs = continueMessagesWindow(recivedMsgs, expectedIndex);
+                receivedMsg.add(serverMsg);
+                Queue<ServerMsg> toBeProcessMsgs = continueMessagesWindow(receivedMsg, expectedIndex);
                 expectedIndex = toBeProcessMsgs.stream().max(Comparator.comparingInt(ServerMsg::getIndex)).get().getIndex() + 1;
                 Thread elaborateMsgThread = new Thread(() -> {
                     processMsg(toBeProcessMsgs);
@@ -186,6 +184,21 @@ public class ServerHandler implements Runnable{
             }
         }
     }
+
+    /**
+     * Set the serverHandler has ready, wait for the controller to set the owner and the view
+     */
+    private void waitForOwnerAndView(){
+        this.ready = true;
+        while(this.owner == null || this.view == null){
+            try {
+                Thread.sleep(10);
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            }
+        }
+    }
+
     public void setOwner(VirtualController owner) {
         this.owner = owner;
     }
@@ -206,7 +219,7 @@ public class ServerHandler implements Runnable{
         return view;
     }
 
-    public Queue<ServerMsg> getRecivedMsgs() {
-        return recivedMsgs;
+    public Queue<ServerMsg> getReceivedMsg() {
+        return receivedMsg;
     }
 }

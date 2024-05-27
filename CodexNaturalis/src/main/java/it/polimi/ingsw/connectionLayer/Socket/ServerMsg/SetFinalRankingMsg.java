@@ -10,14 +10,6 @@ public class SetFinalRankingMsg extends ServerMsg{
         this.nicknames = nicknames;
         this.points = points;
     }
-
-    public String[] getNicknames() {
-        return nicknames;
-    }
-
-    public int[] getPoints() {
-        return points;
-    }
     @Override
     public void processMsg(ServerHandler serverHandler) throws Exception {
         serverHandler.getView().setFinalRanking(nicknames, points);

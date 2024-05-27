@@ -821,7 +821,7 @@
             },
             "permanentResource": "FUNGI",
             "frontID": 10,
-            "backID": 11
+            "backID": 1
         },
         {
             "points": 0,
@@ -931,7 +931,7 @@
             },
             "permanentResource": "PLANT",
             "frontID": 20,
-            "backID": 21
+            "backID": 11
         },
         {
             "points": 0,
@@ -1041,7 +1041,7 @@
             },
             "permanentResource": "ANIMAL",
             "frontID": 30,
-            "backID": 31
+            "backID": 21
         },
         {
             "points": 0,
@@ -1151,7 +1151,7 @@
             },
             "permanentResource": "INSECT",
             "frontID": 40,
-            "backID": 41
+            "backID": 31
         }
     ],
     "StartingCard": [

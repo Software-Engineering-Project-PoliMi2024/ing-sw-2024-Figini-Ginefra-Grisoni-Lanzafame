@@ -12,13 +12,6 @@ public class CreateLobbyMsg extends ClientMsg {
         this.maxPlayerCount = maxPlayerCount;
     }
 
-    public String getGameName() {
-        return gameName;
-    }
-
-    public int getMaxPlayerCount() {
-        return maxPlayerCount;
-    }
     @Override
     public void processMsg(ClientHandler clientHandler) throws Exception {
         ControllerInterface controller = clientHandler.getController();

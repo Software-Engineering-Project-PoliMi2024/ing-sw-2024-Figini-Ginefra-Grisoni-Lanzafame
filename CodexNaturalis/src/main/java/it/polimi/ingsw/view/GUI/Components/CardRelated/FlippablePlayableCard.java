@@ -3,6 +3,8 @@ package it.polimi.ingsw.view.GUI.Components.CardRelated;
 import it.polimi.ingsw.lightModel.lightPlayerRelated.LightCard;
 import it.polimi.ingsw.model.cardReleted.utilityEnums.CardFace;
 
+import java.util.function.Consumer;
+
 public class FlippablePlayableCard extends FlippableCardGUI {
     private boolean playable;
     public FlippablePlayableCard(LightCard target, boolean playable) {
@@ -27,6 +29,16 @@ public class FlippablePlayableCard extends FlippableCardGUI {
             this.getImageView().setOpacity(1);
 
         super.update();
+    }
+
+    public void addThisByFlippablePlayable(Consumer<FlippablePlayableCard> parentAdder){
+        parentAdder.accept(this);
+        this.playAddingAnimation();
+    }
+
+    public void removeThisByFlippablePlayable(Consumer<FlippablePlayableCard> parentRemover){
+        this.removingAnimation.setOnFinished(e -> parentRemover.accept(this));
+        this.removingAnimation.play();
     }
 
 }
