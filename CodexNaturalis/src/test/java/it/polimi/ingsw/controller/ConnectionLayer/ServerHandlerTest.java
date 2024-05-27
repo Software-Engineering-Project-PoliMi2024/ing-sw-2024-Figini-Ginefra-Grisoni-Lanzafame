@@ -24,39 +24,6 @@ import static org.junit.Assert.assertThrows;
 import static org.mockito.Mockito.*;
 
 public class ServerHandlerTest {
-    @Test
-    public void testOutOfOrderMessage() throws IOException, InterruptedException, NoSuchMethodException {
-        ServerHandlerTestSetup setup = setupServerHandler();
-
-        ServerHandler serverHandler = setup.serverHandler();
-        ObjectOutputStream toServerHandler = setup.toServerHandler();
-
-        //Check if all out of order messages are stored in the serverHandler
-        Random random = new Random();
-        int numberOfMessages = random.nextInt(1, 10);
-        for (int i = 0; i < numberOfMessages; i++) {
-            ServerMsg msg = new LogMsg("hi");
-            msg.setIndex(i + 1); //keep in mind that index 0 is the expected index
-            toServerHandler.writeObject(msg);
-            toServerHandler.flush();
-        }
-        Thread.sleep(30); //Allow some time for the serverHandler to process the messages
-        Assertions.assertEquals(serverHandler.getReceivedMsg().size(), numberOfMessages);
-
-        //Check if the messages are stored in the right order
-        LinkedList<ServerMsg> messageList = new LinkedList<>(serverHandler.getReceivedMsg());
-        for (int i = 0; i < numberOfMessages; i++) {
-            Assertions.assertEquals(messageList.get(i).getIndex(), i + 1);
-        }
-
-        //Check what happens when the expected message is received after some out of order messages
-        ServerMsg expectedMsg = new LogMsg("hi");
-        expectedMsg.setIndex(0);
-        toServerHandler.writeObject(expectedMsg);
-        toServerHandler.flush();
-        Thread.sleep(30); //Allow some time for the serverHandler to all the messages in the queue
-        Assertions.assertEquals(serverHandler.getReceivedMsg().size(), 0);
-    }
 
     @Test
     public void testTimeoutException() throws Exception {
@@ -94,6 +61,40 @@ public class ServerHandlerTest {
     }
 
     @Test
+    public void testOutOfOrderMessage() throws IOException, InterruptedException, NoSuchMethodException {
+        ServerHandlerTestSetup setup = setupServerHandler();
+
+        ServerHandler serverHandler = setup.serverHandler();
+        ObjectOutputStream toServerHandler = setup.toServerHandler();
+
+        //Check if all out of order messages are stored in the serverHandler
+        Random random = new Random();
+        int numberOfMessages = random.nextInt(1, 10);
+        for (int i = 0; i < numberOfMessages; i++) {
+            ServerMsg msg = new LogMsg("hi");
+            msg.setIndex(i + 1); //keep in mind that index 0 is the expected index
+            toServerHandler.writeObject(msg);
+            toServerHandler.flush();
+        }
+        Thread.sleep(30); //Allow some time for the serverHandler to process the messages
+        Assertions.assertEquals(serverHandler.getReceivedMsg().size(), numberOfMessages);
+
+        //Check if the messages are stored in the right order
+        LinkedList<ServerMsg> messageList = new LinkedList<>(serverHandler.getReceivedMsg());
+        for (int i = 0; i < numberOfMessages; i++) {
+            Assertions.assertEquals(messageList.get(i).getIndex(), i + 1);
+        }
+
+        //Check what happens when the expected message is received after some out of order messages
+        ServerMsg expectedMsg = new LogMsg("hi");
+        expectedMsg.setIndex(0);
+        toServerHandler.writeObject(expectedMsg);
+        toServerHandler.flush();
+        Thread.sleep(30); //Allow some time for the serverHandler to process all the messages in the queue
+        Assertions.assertEquals(serverHandler.getReceivedMsg().size(), 0);
+    }
+
+    @Test
     public void testContinueMessagesWindow() throws IOException, InterruptedException {
         ServerHandlerTestSetup setup = setupServerHandler();
 
@@ -109,7 +110,7 @@ public class ServerHandlerTest {
             toServerHandler.flush();
 
             ServerMsg notContinueMsg = new LogOthersMsg("hi");
-            notContinueMsg.setIndex((int) Math.pow(2, i + 4)); //the non ContinueMsg will start with index  of 16
+            notContinueMsg.setIndex((int) Math.pow(2, i + 4)); //the non-ContinueMsg will start with index  of 16
             toServerHandler.writeObject(notContinueMsg);
             toServerHandler.flush();
         }
@@ -117,13 +118,14 @@ public class ServerHandlerTest {
         expectedMsg.setIndex(0);
         toServerHandler.writeObject(expectedMsg);
         toServerHandler.flush();
-        Thread.sleep(30); //Allow some time for the serverHandler to all the messages in the queue
+        Thread.sleep(30); //Allow some time for the serverHandler to process all of the messages in the queue
 
         //The number of messages in the queue should be equal to the number of messages that are not part of the continue window
         //The number of messages not present in the continue window is equal to numberOfMessages created in the loop above
         Assertions.assertEquals(serverHandler.getReceivedMsg().size(), numberOfMessages);
     }
 
+    //This series of the test will test if the handle() method of the serverHandler correctly invokes the right method on the view
     @Test
     public void testLogErrInvocation() throws Exception {
         ServerHandlerTestSetup setup = setupServerHandler();
@@ -303,7 +305,6 @@ public class ServerHandlerTest {
         return new ServerHandlerTestSetup(serverHandler, new ObjectOutputStream(outputPipe), mockView);
     }
 
-    private record ServerHandlerTestSetup(ServerHandler serverHandler, ObjectOutputStream toServerHandler,
-                                          ViewInterface mockView) {
+    private record ServerHandlerTestSetup(ServerHandler serverHandler, ObjectOutputStream toServerHandler, ViewInterface mockView) {
     }
 }
