@@ -27,8 +27,9 @@ import static org.mockito.Mockito.*;
 
 public class ClientHandlerTest {
 
-    //@Test
-    /*public void testOutOfOrderMessage() throws IOException, InterruptedException, NoSuchMethodException {
+    /*@Test
+    The test throws a java.io.IOException: Read end dead if runned with other tests. I cant find the cause of this error.
+    public void testOutOfOrderMessage() throws IOException, InterruptedException, NoSuchMethodException {
         ClientHandlerTestSetup setup = setupClientHandler();
 
         ClientHandler clientHandler = setup.clientHandler;
@@ -42,7 +43,7 @@ public class ClientHandlerTest {
             toClientHandler.writeObject(msg);
             toClientHandler.flush();
         }
-        Thread.sleep(30);
+        Thread.sleep(10);
         Assertions.assertEquals(numberOfMessages, clientHandler.getReceivedMsg().size());
     }*/
 
@@ -56,15 +57,16 @@ public class ClientHandlerTest {
         when(mockClient.getOutputStream()).thenReturn(fromClientHandler);
         when(mockClient.getInputStream()).thenReturn(inputPipe);
         when(mockClient.getInetAddress()).thenReturn(null);
+        when(mockClient.getPort()).thenReturn(null);
 
         VirtualView mockView = mock(VirtualView.class);
         ControllerInterface mockController = mock(ControllerInterface.class);
 
         ClientHandler clientHandler = new ClientHandler(mockClient);
-        clientHandler.setOwner(mockView);
-        clientHandler.setController(mockController);
         Thread clientHandlerThread = new Thread(clientHandler);
         clientHandlerThread.start();
+        clientHandler.setOwner(mockView);
+        clientHandler.setController(mockController);
 
         return new ClientHandlerTestSetup(clientHandler, new ObjectOutputStream(outputPipe), mockController);
     }
