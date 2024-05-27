@@ -13,6 +13,9 @@ public class Hand implements Serializable {
     private StartCard startCard;
     private List<ObjectiveCard> secretObjectiveChoices;
     final private Set<CardInHand> playableHand;
+    final private Object startCardLock = new Object();
+    final private Object secretObjectiveChoicesLock = new Object();
+    final private Object secretObjectiveLock = new Object();
 
     public Hand(){
         this.playableHand = new HashSet<>();
@@ -43,7 +46,9 @@ public class Hand implements Serializable {
     }
     /** @param objective is set to being the player secret objective*/
     public void setSecretObjective(ObjectiveCard objective){
-        this.secretObjective=objective;
+        synchronized (secretObjectiveLock) {
+            this.secretObjective = objective;
+        }
     }
     /** @return the user nickname*/
     public Set<CardInHand> getHand(){
@@ -51,7 +56,9 @@ public class Hand implements Serializable {
     }
     /** @return the secretObjective nickname*/
     public ObjectiveCard getSecretObjective(){
-        return secretObjective == null ? null : new ObjectiveCard(secretObjective);
+        synchronized (secretObjectiveLock) {
+            return secretObjective == null ? null : new ObjectiveCard(secretObjective);
+        }
     }
 
     @Override
@@ -67,26 +74,36 @@ public class Hand implements Serializable {
     }
 
     public void setStartCard(StartCard startCard) {
-        this.startCard = startCard == null ? null : new StartCard(startCard);
+        synchronized (startCardLock) {
+            this.startCard = startCard == null ? null : new StartCard(startCard);
+        }
     }
 
     public StartCard getStartCard() {
-        return startCard == null ? null : new StartCard(startCard);
+        synchronized (startCardLock) {
+            return startCard == null ? null : new StartCard(startCard);
+        }
     }
 
     public void setSecretObjectiveChoice(List<ObjectiveCard> secretObjectiveChoices) {
-        this.secretObjectiveChoices = secretObjectiveChoices == null ? null : new LinkedList<>(secretObjectiveChoices);
+        synchronized (secretObjectiveChoicesLock) {
+            this.secretObjectiveChoices = secretObjectiveChoices == null ? null : new LinkedList<>(secretObjectiveChoices);
+        }
     }
 
     public List<ObjectiveCard> getSecretObjectiveChoices() {
-        return secretObjectiveChoices == null ? null : new ArrayList<>(secretObjectiveChoices);
+        synchronized (secretObjectiveChoicesLock) {
+            return secretObjectiveChoices == null ? null : new ArrayList<>(secretObjectiveChoices);
+        }
     }
 
     public void addSecretObjectiveChoice(ObjectiveCard objectiveCard){
-        if(secretObjectiveChoices == null){
-            secretObjectiveChoices = new LinkedList<>();
+        synchronized (secretObjectiveChoicesLock) {
+            if (secretObjectiveChoices == null) {
+                secretObjectiveChoices = new LinkedList<>();
+            }
+            secretObjectiveChoices.add(objectiveCard);
         }
-        secretObjectiveChoices.add(objectiveCard);
     }
 
     public int getHandSize(){

@@ -10,12 +10,15 @@ import it.polimi.ingsw.lightModel.diffPublishers.GameDiffPublisher;
 import it.polimi.ingsw.lightModel.lightPlayerRelated.LightCard;
 import it.polimi.ingsw.model.cardReleted.cards.*;
 import it.polimi.ingsw.model.cardReleted.utilityEnums.DrawableCard;
+import it.polimi.ingsw.model.playerReleted.Hand;
 import it.polimi.ingsw.model.playerReleted.User;
 import it.polimi.ingsw.view.ViewInterface;
 
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
+import java.util.concurrent.locks.ReentrantLock;
 
 
 /**
@@ -34,11 +37,12 @@ public class Game implements Serializable {
 
     private final String name;
     private final GameParty gameParty;
+    private final List<ObjectiveCard> commonObjective;
 
     private boolean isLastTurn;
     private final Object isLastTurnLock = new Object();
+    private final ReentrantLock calculateNextStateLock = new ReentrantLock(true);
 
-    private final List<ObjectiveCard> commonObjective;
     private final GameMediator gameMediator;
     /**
      * Constructs a new Game instance with a specified maximum number of players.
@@ -187,14 +191,14 @@ public class Game implements Serializable {
      * @return true if the players in game are choosing the startCard
      */
     public boolean isInStartCardState(){
-        return gameParty.getUsersList().stream().allMatch(user ->user.getUserHand().getStartCard()!=null);
+        return gameParty.getUsersList().stream().map(User::getUserHand).map(Hand::getStartCard).anyMatch(Objects::nonNull);
     }
 
     /**
      * @return true if the players in game are choosing the secretObjective
      */
     public boolean inInSecretObjState(){
-        return gameParty.getUsersList().stream().allMatch(user->user.getUserHand().getSecretObjectiveChoices() != null);
+        return gameParty.getUsersList().stream().map(User::getUserHand).map(Hand::getSecretObjectiveChoices).anyMatch(Objects::nonNull);
     }
 
     /**
@@ -284,15 +288,15 @@ public class Game implements Serializable {
     /**
      * This method is used to lock the current player lock
      */
-    public void lockCurrentPlayer(){
-        gameParty.lockCurrentPlayer();
+    public void lock(){
+        calculateNextStateLock.lock();
     }
 
     /**
      * This method is used to unlock the current player lock
      */
-    public void unlockCurrentPlayer(){
-        gameParty.unlockCurrentPlayer();
+    public void unlock(){
+        calculateNextStateLock.unlock();
     }
 
     @Override
