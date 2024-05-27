@@ -13,6 +13,7 @@ import it.polimi.ingsw.model.cardReleted.cards.ObjectiveCard;
 import it.polimi.ingsw.model.cardReleted.cards.ResourceCard;
 import it.polimi.ingsw.model.cardReleted.cards.StartCard;
 import it.polimi.ingsw.model.cardReleted.utilityEnums.DrawableCard;
+import it.polimi.ingsw.model.playerReleted.Codex;
 import it.polimi.ingsw.model.playerReleted.Hand;
 import it.polimi.ingsw.model.playerReleted.User;
 import it.polimi.ingsw.model.tableReleted.Deck;
@@ -113,6 +114,10 @@ public class DiffGenerator {
         return diff;
     }
 
+    public static CodexDiff placeCodexDiff(String placer, LightPlacement placement, Codex codex){
+        return new CodexDiff(placer, codex.getPoints(),
+                codex.getEarnedCollectables(), List.of(placement), codex.getFrontier().getFrontier());
+    }
     /**
      * Generates a diff that updates the lightGame with the current state of the game
      * for users that join the game for the first time
