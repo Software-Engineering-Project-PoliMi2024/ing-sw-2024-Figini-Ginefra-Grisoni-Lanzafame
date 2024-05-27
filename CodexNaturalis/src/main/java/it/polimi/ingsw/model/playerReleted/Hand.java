@@ -13,16 +13,11 @@ public class Hand implements Serializable {
     private StartCard startCard;
     private List<ObjectiveCard> secretObjectiveChoices;
     final private Set<CardInHand> playableHand;
+
     public Hand(){
         this.playableHand = new HashSet<>();
     }
 
-    public Hand(Hand other){
-        this.playableHand = new HashSet<>(other.playableHand);
-        this.secretObjective = other.getSecretObjective();
-        this.startCard = other.getStartCard();
-        this.secretObjectiveChoices = other.getSecretObjectiveChoices();
-    }
 
     /**
      * Add a card to the player hand

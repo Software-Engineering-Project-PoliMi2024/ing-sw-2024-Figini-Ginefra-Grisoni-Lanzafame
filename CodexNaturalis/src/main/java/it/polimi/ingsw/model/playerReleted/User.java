@@ -16,12 +16,6 @@ public class User implements Serializable {
         this.userHand = new Hand();
     }
 
-    public User(User other){
-        this.nickname = other.nickname;
-        this.userCodex = new Codex(other.userCodex);
-        this.userHand = new Hand(other.userHand);
-    }
-
     /** @return the user nickname*/
     public String getNickname(){
         return this.nickname;
@@ -31,16 +25,9 @@ public class User implements Serializable {
         return this.userCodex;
     }
 
-    public void setUserCodex(Codex codex){
-        this.userCodex = codex;
-    }
     /** @return the user hand address*/
     public Hand getUserHand(){
         return this.userHand;
-    }
-
-    public void setUserHand(Hand hand){
-        this.userHand=hand;
     }
 
     public void playCard(Placement placement){

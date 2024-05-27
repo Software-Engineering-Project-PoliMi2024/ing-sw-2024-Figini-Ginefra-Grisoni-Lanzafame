@@ -6,14 +6,13 @@ import it.polimi.ingsw.model.playerReleted.User;
 
 import java.io.Serializable;
 import java.util.*;
-import java.util.concurrent.locks.ReentrantLock;
 import java.util.stream.Collectors;
 
 public class GameParty implements Serializable {
     final private List<User> playerList; //the player that were in the lobby pre game
     private int currentPlayerIndex;
     private final TurnTakerMediator activeTurnTakerMediator = new TurnTakerMediator();
-    ReentrantLock currentPlayerLock = new ReentrantLock();
+    private final Object currentPlayerLock = new Object();
 
     /**
      * The constructor of the class
@@ -29,27 +28,13 @@ public class GameParty implements Serializable {
     }
 
     /**
-     * This method is used to lock the current player lock
-     */
-    public void lockCurrentPlayer(){
-        currentPlayerLock.lock();
-    }
-
-    /**
-     * This method is used to unlock the current player lock
-     */
-    public void unlockCurrentPlayer(){
-        currentPlayerLock.unlock();
-    }
-
-    /**
      * This method is used to set the player index in the game
      * @param index the index of the player that is playing
      */
     public void setPlayerIndex(int index){
-        currentPlayerLock.lock();
-        currentPlayerIndex = index;
-        currentPlayerLock.unlock();
+        synchronized (currentPlayerLock) {
+            currentPlayerIndex = index;
+        }
     }
 
     /**
@@ -57,8 +42,9 @@ public class GameParty implements Serializable {
      * @return the current player
      */
     public User getCurrentPlayer() {
-        currentPlayerLock.lock();
-        return getPlayerFromIndex(currentPlayerIndex);
+        synchronized (currentPlayerLock){
+            return playerList.get(currentPlayerIndex);
+        }
     }
 
     /**
@@ -67,10 +53,9 @@ public class GameParty implements Serializable {
      * @return the index of the next player
      */
     public int getNextPlayerIndex() {
-        currentPlayerLock.lock();
-        int index = (currentPlayerIndex % getNumberOfMaxPlayer());
-        currentPlayerLock.unlock();
-        return index;
+        synchronized (currentPlayerLock){
+            return (currentPlayerIndex + 1 % getNumberOfMaxPlayer());
+        }
     }
 
     /** @return list of the users in this match*/
@@ -183,7 +168,7 @@ public class GameParty implements Serializable {
 
 //TODO to remove
     public User getFirstPlayerInOrder() {
-        return new User(playerList.getFirst());
+        return (playerList.getFirst());
     }
 
     /**
