@@ -189,9 +189,9 @@ public class DiffGenerator {
         }
 
         if(resourceCardDeck.getActualDeck().peek()!=null)
-            deckDiff.add(new DeckDiffDeckDraw(DrawableCard.RESOURCECARD, Lightifier.lightifyToBack(Objects.requireNonNull(resourceCardDeck.getActualDeck().peek()))));
+            deckDiff.add(new DeckDiffDeckDraw(DrawableCard.RESOURCECARD, Lightifier.lightifyToBack(Objects.requireNonNull(resourceCardDeck.showTopCardOfDeck()))));
         if(goldCardDeck.getActualDeck().peek() != null)
-            deckDiff.add(new DeckDiffDeckDraw(DrawableCard.GOLDCARD, Lightifier.lightifyToBack(Objects.requireNonNull(goldCardDeck.getActualDeck().peek()))));
+            deckDiff.add(new DeckDiffDeckDraw(DrawableCard.GOLDCARD, Lightifier.lightifyToBack(Objects.requireNonNull(goldCardDeck.showTopCardOfDeck()))));
         return deckDiff;
     }
 

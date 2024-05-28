@@ -9,6 +9,7 @@ import it.polimi.ingsw.lightModel.Lightifier;
 import it.polimi.ingsw.lightModel.diffs.game.GameDiff;
 import it.polimi.ingsw.lightModel.diffPublishers.DiffSubscriber;
 import it.polimi.ingsw.lightModel.diffPublishers.GameDiffPublisher;
+import it.polimi.ingsw.lightModel.lightPlayerRelated.LightBack;
 import it.polimi.ingsw.lightModel.lightPlayerRelated.LightCard;
 import it.polimi.ingsw.lightModel.lightPlayerRelated.LightPlacement;
 import it.polimi.ingsw.model.cardReleted.cards.*;
@@ -205,8 +206,8 @@ public class Game implements Serializable {
         activeTurnTakerMediator.notifyTurn();
     }
 
-    public void notifyStartCardFaceChoice(String placer, User user, LightPlacement placement){
-        gameMediator.notifyStartCardFaceChoice(placer, user, placement);
+    public void notifyStartCardFaceChoice(String placer, User user, LightPlacement placement, LightBack resourceBack, LightBack goldBack){
+        gameMediator.notifyStartCardFaceChoice(placer, user, placement, resourceBack, goldBack);
     }
 
     public void notifySecretObjectiveChoice(String choice, LightCard objCard){
@@ -345,15 +346,13 @@ public class Game implements Serializable {
     }
 
     public synchronized boolean othersHadAllChooseSecretObjective(String nicknamePerspective){
-        boolean check = false;
-
-        if(!inInSecretObjState())
-            throw new IllegalCallerException("Controller.checkIfLastToChooseSecretObjective: Game is not in SelectSecretObjectiveState");
-
-        if(gameParty.getUsersList().stream().allMatch(user ->
-                !user.getNickname().equals(nicknamePerspective) && user.hasChosenObjective())){
-            check = true;
+        boolean check = true;
+        for(User user : gameParty.getUsersList()){
+            if(!user.getNickname().equals(nicknamePerspective) && !user.hasChosenObjective()){
+                check = false;
+            }
         }
+
         return check;
     }
 

@@ -6,6 +6,7 @@ import it.polimi.ingsw.controller3.mediators.gameJoinerAndTurnTakerMediators.Gam
 import it.polimi.ingsw.controller3.mediators.gameJoinerAndTurnTakerMediators.TurnTaker;
 import it.polimi.ingsw.lightModel.Heavifier;
 import it.polimi.ingsw.lightModel.Lightifier;
+import it.polimi.ingsw.lightModel.lightPlayerRelated.LightBack;
 import it.polimi.ingsw.lightModel.lightPlayerRelated.LightCard;
 import it.polimi.ingsw.lightModel.lightPlayerRelated.LightPlacement;
 import it.polimi.ingsw.model.MultiGame;
@@ -24,7 +25,6 @@ import java.util.*;
 
 /*
 TODO  test when the decks finish the cards
-TODO separare cardLookup da MultiGame -> creare una classe CardLookup (es. per fare Lightify di startCard passo MultiGame solo per poter prendere la carta da CardLookUp)
 */
 
 public class Controller3 implements ControllerInterface, TurnTaker, GameJoiner {
@@ -213,7 +213,7 @@ public class Controller3 implements ControllerInterface, TurnTaker, GameJoiner {
         Game game = multiGame.getGameFromUserNick(this.nickname);
         User user = game.getUserFromNick(this.nickname);
 
-        user.setSecretObject(Heavifier.heavifyObjectCard(objectiveCard, multiGame));
+        user.setSecretObjective(Heavifier.heavifyObjectCard(objectiveCard, multiGame));
         game.notifySecretObjectiveChoice(this.nickname, objectiveCard);
 
         if(game.othersHadAllChooseSecretObjective(this.nickname)) {
@@ -248,7 +248,9 @@ public class Controller3 implements ControllerInterface, TurnTaker, GameJoiner {
             CardInHand goldCard = game.getGoldCardDeck().drawFromDeck();
             user.getUserHand().addCard(goldCard);
             //notify everyone and update my lightModel
-            game.notifyStartCardFaceChoice(this.nickname, user, placement);
+            LightBack resourceBack = new LightBack(game.getResourceCardDeck().showTopCardOfDeck().getIdBack());
+            LightBack goldBack = new LightBack(game.getGoldCardDeck().showTopCardOfDeck().getIdBack());
+            game.notifyStartCardFaceChoice(this.nickname, user, placement, resourceBack, goldBack);
 
             //check if lastToPlace
             if (game.othersHadAllPlacedStartCard(this.nickname)) {
@@ -420,6 +422,7 @@ public class Controller3 implements ControllerInterface, TurnTaker, GameJoiner {
                 this.disconnect();
             }
         }else if(multiGame.isInGameParty(this.nickname)) {
+            //block the entire game
             leaveGame();
         }else{
             multiGame.removeUser(this.nickname);

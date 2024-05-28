@@ -118,13 +118,16 @@ public class GameMediator extends LoggerAndUpdaterMediator<LightGameUpdater, Lig
      * @param user the user that placed the card
      * @param placement the placement of the startCard card
      */
-    public synchronized void notifyStartCardFaceChoice(String placer, User user, LightPlacement placement){
+    public synchronized void notifyStartCardFaceChoice(String placer, User user, LightPlacement placement, LightBack resourceBack, LightBack goldBack){
         for(String subscriberNick : subscribers.keySet()){
             try {
+                LoggerInterface logger = subscribers.get(subscriberNick).second();
+                LightGameUpdater updater = subscribers.get(subscriberNick).first();
+                updater.updateGame(new DeckDiffDeckDraw(DrawableCard.RESOURCECARD, resourceBack));
+                updater.updateGame(new DeckDiffDeckDraw(DrawableCard.GOLDCARD, goldBack));
                 if (subscriberNick.equals(placer)) {
-                    subscribers.get(subscriberNick).second().log(LogsOnClientStatic.YOU_PLACE_STARTCARD);
-                    subscribers.get(subscriberNick).second().logGame(LogsOnClientStatic.WAIT_STARTCARD);
-                    LightGameUpdater updater = subscribers.get(subscriberNick).first();
+                    logger.log(LogsOnClientStatic.YOU_PLACE_STARTCARD);
+                    logger.logGame(LogsOnClientStatic.WAIT_STARTCARD);
                     updater.updateGame(new HandDiffRemove(placement.card()));
                     updater.updateGame(new CodexDiff(placer, user.getUserCodex().getPoints(),
                             user.getUserCodex().getEarnedCollectables(), List.of(placement), user.getUserCodex().getFrontier().getFrontier()));
@@ -183,7 +186,8 @@ public class GameMediator extends LoggerAndUpdaterMediator<LightGameUpdater, Lig
                 LoggerInterface logger = subscribers.get(nickname).second();
                 if(nickname.equals(chooser)) {
                     LightGameUpdater updater = subscribers.get(nickname).first();
-                    updater.updateGame(new HandDiffRemove(objCard));
+
+                    updater.updateGame(new HandDiffSetObj(objCard));
                     logger.log(LogsOnClientStatic.YOU_CHOSE);
                     logger.logGame(LogsOnClientStatic.WAIT_SECRET_OBJECTIVE);
                 }else{
