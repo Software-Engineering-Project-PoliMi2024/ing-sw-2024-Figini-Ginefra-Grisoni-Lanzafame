@@ -265,10 +265,6 @@ public class DiffGenerator {
                 for(LightBack card : otherHand.getCards()){
                     handOtherDiff.add(new HandOtherDiffAdd(card, user.getNickname()));
                 }
-
-                StartCard startCard = user.getUserHand().getStartCard();
-                if(startCard != null)
-                    handOtherDiff.add(new HandOtherDiffAdd(Lightifier.lightifyToBack(startCard), user.getNickname()));
             }
 
         }
