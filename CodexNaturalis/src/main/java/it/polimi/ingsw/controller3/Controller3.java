@@ -229,6 +229,7 @@ public class Controller3 implements ControllerInterface, TurnTaker, GameJoiner {
             malevolentConsequences();
             return;
         }
+        //TODO check placement: card in mano e position in frontiera
 
         System.out.println(this.nickname + " placed a card");
 
@@ -250,9 +251,10 @@ public class Controller3 implements ControllerInterface, TurnTaker, GameJoiner {
             game.notifyStartCardFaceChoice(this.nickname, user, placement);
 
             //check if lastToPlace
-            if (game.othersHadAllPlacedStartCard(this.nickname))
+            if (game.othersHadAllPlacedStartCard(this.nickname)) {
+                this.setupSecretObjectives();
                 game.notifyMoveToSelectObjState();
-            else{
+            }else{
                 transitionTo(ViewState.WAITING_STATE);
             }
         }else{
@@ -277,6 +279,14 @@ public class Controller3 implements ControllerInterface, TurnTaker, GameJoiner {
             transitionTo(ViewState.DRAW_CARD);
         }
 
+    }
+
+    private void setupSecretObjectives(){
+        Game game = multiGame.getGameFromUserNick(this.nickname);
+        for(User user : game.getUsersList()){
+                drawObjectiveCard(user);
+        }
+        game.secretObjectiveSetup();
     }
 
     @Override
@@ -442,11 +452,6 @@ public class Controller3 implements ControllerInterface, TurnTaker, GameJoiner {
     @Override
     public synchronized void chooseObjective() {
         User user = multiGame.getUserFromNick(this.nickname);
-        Game game = multiGame.getGameFromUserNick(this.nickname);
-        if(user.getUserHand().getSecretObjectiveChoices()==null && !user.hasChosenObjective()) {
-            drawObjectiveCard(user);
-            game.secretObjectiveSetup();
-        }
         if(!user.hasChosenObjective()){
             transitionTo(ViewState.SELECT_OBJECTIVE);
         }else
