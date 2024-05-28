@@ -9,7 +9,7 @@ import java.util.Map;
 
 public class CardTextStyle {
     private static final int CardWidth = 9;
-    private static final int CardHeight = 5;
+    private static final int CardHeight = 7;
 
     public static final String ESCReset = "\u001B[0m";
 
@@ -24,7 +24,7 @@ public class CardTextStyle {
             SpecialCollectable.EMPTY, new DecoratedString("\uD83C\uDFB5", StringStyle.DARK_BG).toString()  // "🎵"
     );
 
-    private static final String backgroundEmoji = "▪\uFE0F";
+    private static final String backgroundEmoji = "  ";
 
     private static final String coveredCornerMultiplierEmoji = new DecoratedString("\uD83D\uDD17", StringStyle.DARK_BG).toString(); //🔗
 
@@ -33,16 +33,16 @@ public class CardTextStyle {
     private static final String cornerFiller = new DecoratedString("\uD83D\uDD38", StringStyle.DARK_BG).toString(); //🔸
 
     private static final Map<Integer, String> numberEmoji = Map.of(
-            1, "1️⃣",
-            2, "2️⃣",
-            3, "3️⃣",
-            4, "4️⃣",
-            5, "5️⃣",
-            6, "6️⃣",
-            7, "7️⃣",
-            8, "8️⃣",
-            9, "9️⃣",
-            0, "0️⃣"
+            1, " 1",
+            2, " 2",
+            3, " 3",
+            4, " 4",
+            5, " 5",
+            6, " 6",
+            7, " 7",
+            8, " 8",
+            9, " 9",
+            0, " 0"
     );
 
     private static final String Border = "➕"; //➕
