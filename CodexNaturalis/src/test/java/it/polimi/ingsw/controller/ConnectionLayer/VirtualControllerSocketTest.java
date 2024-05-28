@@ -1,6 +1,6 @@
 package it.polimi.ingsw.controller.ConnectionLayer;
 
-import it.polimi.ingsw.connectionLayer.Socket.ClientMsg.LoginMsg;
+import it.polimi.ingsw.connectionLayer.Socket.ClientMsg.*;
 import it.polimi.ingsw.connectionLayer.Socket.ServerHandler;
 import it.polimi.ingsw.connectionLayer.VirtualLayer.VirtualView;
 import it.polimi.ingsw.connectionLayer.VirtualSocket.VirtualControllerSocket;
@@ -70,7 +70,7 @@ public class VirtualControllerSocketTest {
         virtualControllerSocket.setServerHanlder(mockServerHandler);
         virtualControllerSocket.createLobby("gameName", 4);
 
-        verify(mockServerHandler, times(1)).sendServerMessage(any());
+        verify(mockServerHandler, times(1)).sendServerMessage(any(CreateLobbyMsg.class));
     }
 
     @Test
@@ -81,7 +81,7 @@ public class VirtualControllerSocketTest {
         virtualControllerSocket.setServerHanlder(mockServerHandler);
         virtualControllerSocket.joinLobby("gameName");
 
-        verify(mockServerHandler, times(1)).sendServerMessage(any());
+        verify(mockServerHandler, times(1)).sendServerMessage(any(JoinLobbyMsg.class));
     }
 
     @Test
@@ -92,7 +92,7 @@ public class VirtualControllerSocketTest {
         virtualControllerSocket.setServerHanlder(mockServerHandler);
         virtualControllerSocket.disconnect();
 
-        verify(mockServerHandler, times(1)).sendServerMessage(any());
+        verify(mockServerHandler, times(1)).sendServerMessage(any(DisconnectMsg.class));
     }
 
     @Test
@@ -103,7 +103,7 @@ public class VirtualControllerSocketTest {
         virtualControllerSocket.setServerHanlder(mockServerHandler);
         virtualControllerSocket.leaveLobby();
 
-        verify(mockServerHandler, times(1)).sendServerMessage(any());
+        verify(mockServerHandler, times(1)).sendServerMessage(any(LeaveLobbyMsg.class));
     }
 
     @Test
@@ -114,7 +114,7 @@ public class VirtualControllerSocketTest {
         virtualControllerSocket.setServerHanlder(mockServerHandler);
         virtualControllerSocket.choseSecretObjective(null);
 
-        verify(mockServerHandler, times(1)).sendServerMessage(any());
+        verify(mockServerHandler, times(1)).sendServerMessage(any(ChoseSecretObjectiveMsg.class));
     }
 
     @Test
@@ -125,7 +125,7 @@ public class VirtualControllerSocketTest {
         virtualControllerSocket.setServerHanlder(mockServerHandler);
         virtualControllerSocket.place(null);
 
-        verify(mockServerHandler, times(1)).sendServerMessage(any());
+        verify(mockServerHandler, times(1)).sendServerMessage(any(PlaceMsg.class));
     }
 
     @Test
@@ -136,6 +136,6 @@ public class VirtualControllerSocketTest {
         virtualControllerSocket.setServerHanlder(mockServerHandler);
         virtualControllerSocket.draw(null, 0);
 
-        verify(mockServerHandler, times(1)).sendServerMessage(any());
+        verify(mockServerHandler, times(1)).sendServerMessage(any(DrawMsg.class));
     }
 }
