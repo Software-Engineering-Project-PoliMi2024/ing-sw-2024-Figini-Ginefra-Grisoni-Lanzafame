@@ -127,6 +127,8 @@ public class CommandDisplayRenderable extends Renderable{
             else{
                 //If the prompt has no next, it will notify the observers
                 //This is used for commands that don't require any input
+                System.out.print("\033[H\033[2J");
+
                 currentPrompt.notifyObservers();
                 currentPrompt.reset();
 
@@ -134,6 +136,7 @@ public class CommandDisplayRenderable extends Renderable{
                     this.render();
 
                 currentPrompt = null;
+
             }
         }
         else{
@@ -145,6 +148,7 @@ public class CommandDisplayRenderable extends Renderable{
                 }
                 else{
                     //If the prompt has no next, it will notify the observers, reset the prompt and set the current prompt to null
+                    System.out.print("\033[H\033[2J");
                     currentPrompt.notifyObservers();
                     currentPrompt.reset();
 
@@ -152,6 +156,7 @@ public class CommandDisplayRenderable extends Renderable{
                         this.render();
 
                     currentPrompt = null;
+
                 }
             }
         }
