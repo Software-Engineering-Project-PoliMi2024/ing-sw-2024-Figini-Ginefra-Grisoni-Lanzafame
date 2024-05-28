@@ -134,6 +134,9 @@ public class LightGame implements Differentiable {
     public void setCollectable(Map<Collectable, Integer> collectables, String nickname){
         codexMap.get(nickname).setCollectables(collectables);
     }
+    public String getCurrentPlayer(){
+        return lightGameParty.getCurrentPlayer();
+    }
     public void setYourName(String yourName){
         this.lightGameParty.setYourName(yourName);
     }
