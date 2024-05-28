@@ -244,28 +244,23 @@ public class Controller3 implements ControllerInterface, TurnTaker, GameJoiner {
         try{
             if(placement.position().equals(new Position(0,0))){
                 heavyPlacement = Heavifier.heavifyStartCardPlacement(placement, multiGame);
+                if(!user.getUserHand().getStartCard().equals(heavyPlacement.card())){
+                    throw new IllegalArgumentException("The card in the placement in position (0,0) is not the start card in hand");
+                }
             }else {
                 heavyPlacement = Heavifier.heavify(placement, multiGame);
+                if(!user.getUserHand().getHand().contains(heavyPlacement.card()) || !user.getUserCodex().getFrontier().isInFrontier(placement.position())){
+                    throw new IllegalArgumentException("The card in the placement is not in the hand or the position is not in the frontier");
+                }
             }
-            if(heavyPlacement)
         }catch (Exception e) {
             malevolentConsequences();
             return;
         }
-        if(!user.getUserHand().getHand().contains(Heavifier.hea(placement.card())) ||
-                user.getUserCodex().getFrontier().getFrontier().contains(placement.position())){
-            malevolentConsequences();
-            return;
-        }
-
-        //TODO check placement: card in mano e position in frontiera
-
         System.out.println(this.nickname + " placed a card");
 
 
         if(!user.hasPlacedStartCard()) {
-            Placement heavyPlacement = Heavifier.heavifyStartCardPlacement(placement, multiGame);
-
             //model: place startCard
             user.placeStartCard(heavyPlacement);
             //model: add cards to hand
@@ -288,7 +283,6 @@ public class Controller3 implements ControllerInterface, TurnTaker, GameJoiner {
                 transitionTo(ViewState.WAITING_STATE);
             }
         }else{
-            Placement heavyPlacement = Heavifier.heavify(placement, multiGame);
             Codex codexBeforePlacement = new Codex(user.getUserCodex());
             user.playCard(heavyPlacement);
             Set<CardInHand> hand = user.getUserHand().getHand();
