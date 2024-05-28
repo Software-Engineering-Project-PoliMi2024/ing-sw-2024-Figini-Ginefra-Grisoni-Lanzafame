@@ -422,6 +422,7 @@ public class Controller3 implements ControllerInterface, TurnTaker, GameJoiner {
     //turnTaker methods
     @Override
     public synchronized void joinGame() {
+        System.out.println(this.nickname + " joined the game");
         if(multiGame.getUserLobby(this.nickname) != null)
             multiGame.getUserLobby(this.nickname).unsubscribe(this.nickname);
         Game gameToJoin = multiGame.getGameFromUserNick(this.nickname);
