@@ -97,7 +97,7 @@ public class Controller3 implements ControllerInterface, TurnTaker, GameJoiner {
     @Override
     public synchronized void createLobby(String gameName, int maxPlayerCount) {
         //check if the player is a malevolent user
-        if(isNotLogged() && multiGame.isInGameParty(this.nickname) && multiGame.isInLobby(this.nickname)){
+        if(isNotLogged() || multiGame.isInGameParty(this.nickname) || multiGame.isInLobby(this.nickname)){
             malevolentConsequences();
             return;
         }
@@ -135,7 +135,7 @@ public class Controller3 implements ControllerInterface, TurnTaker, GameJoiner {
     @Override
     public synchronized void joinLobby(String lobbyName) {
         //check if the player is a malevolent user
-        if (isNotLogged()) {
+        if (isNotLogged() || multiGame.isInGameParty(this.nickname) || multiGame.isInLobby(this.nickname)) {
             malevolentConsequences();
             return;
         }
