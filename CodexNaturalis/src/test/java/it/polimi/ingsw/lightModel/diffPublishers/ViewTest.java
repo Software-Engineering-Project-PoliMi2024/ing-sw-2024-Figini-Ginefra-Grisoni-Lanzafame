@@ -14,6 +14,7 @@ public class ViewTest implements ViewInterface {
     public LightLobbyList lightLobbyList;
     public LightLobby lightLobby;
     public LightGame lightGame;
+    public ViewState state = ViewState.LOGIN_FORM;
 
     public ViewTest() {
         lightLobbyList = new LightLobbyList();
@@ -23,7 +24,7 @@ public class ViewTest implements ViewInterface {
 
     @Override
     public void transitionTo(ViewState state) throws RemoteException {
-
+        this.state = state;
     }
 
     @Override
