@@ -110,6 +110,7 @@ public class Controller3 implements ControllerInterface, TurnTaker, GameJoiner {
             logErr(LogsOnClientStatic.NOT_VALID_LOBBY_NAME);
             transitionTo(ViewState.JOIN_LOBBY);
         }else { //create the lobby
+            System.out.println(this.nickname + " create" + gameName + " lobby");
             Lobby lobbyCreated = new Lobby(maxPlayerCount, this.nickname, gameName);
             //add the lobby to the model
             multiGame.addLobby(lobbyCreated);
@@ -147,6 +148,7 @@ public class Controller3 implements ControllerInterface, TurnTaker, GameJoiner {
             logErr(LogsOnClientStatic.LOBBY_IS_FULL);
             transitionTo(ViewState.JOIN_LOBBY);
         } else {
+            System.out.println(this.nickname + " joined " + lobbyName + " lobby");
             //add the player to the lobby, updated model
             multiGame.addPlayerToLobby(lobbyName, this.nickname);
             //disconnect from lobbyList mediator and subscribe to the new lobby
@@ -158,6 +160,7 @@ public class Controller3 implements ControllerInterface, TurnTaker, GameJoiner {
             }else{
                 Game createdGame = multiGame.createGame(lobbyToJoin);
                 multiGame.addGame(createdGame);
+                multiGame.notifyLobbyRemoved(this.nickname, lobbyToJoin);
                 lobbyToJoin.notifyGameStart();
                 multiGame.removeLobby(lobbyToJoin);
             }
@@ -179,9 +182,12 @@ public class Controller3 implements ControllerInterface, TurnTaker, GameJoiner {
             return;
         }
 
+
         Lobby lobbyToLeave = multiGame.getUserLobby(this.nickname);
+        System.out.println(this.nickname + " left" + lobbyToLeave.getLobbyName() + " lobby");
         //update the model
         lobbyToLeave.removeUserName(this.nickname);
+
 
         if (lobbyToLeave.getLobbyPlayerList().isEmpty()) {
             multiGame.removeLobby(lobbyToLeave);
@@ -202,6 +208,8 @@ public class Controller3 implements ControllerInterface, TurnTaker, GameJoiner {
             return;
         }
 
+        System.out.println(this.nickname + " chose secret objective");
+
         Game game = multiGame.getGameFromUserNick(this.nickname);
         User user = game.getUserFromNick(this.nickname);
 
@@ -221,6 +229,8 @@ public class Controller3 implements ControllerInterface, TurnTaker, GameJoiner {
             malevolentConsequences();
             return;
         }
+
+        System.out.println(this.nickname + " placed a card");
 
         Game game = multiGame.getGameFromUserNick(this.nickname);
         User user = game.getUserFromNick(this.nickname);
@@ -271,7 +281,11 @@ public class Controller3 implements ControllerInterface, TurnTaker, GameJoiner {
 
     @Override
     public synchronized void draw(DrawableCard deckID, int cardID) {
-
+        if(isNotLogged() || !multiGame.isInGameParty(this.nickname)){
+            malevolentConsequences();
+            return;
+        }
+        System.out.println(this.nickname + " drew a card");
 
         Game game = multiGame.getGameFromUserNick(this.nickname);
         User user = multiGame.getUserFromNick(this.nickname);
