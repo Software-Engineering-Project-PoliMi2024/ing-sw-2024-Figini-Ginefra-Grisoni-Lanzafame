@@ -9,13 +9,12 @@ import it.polimi.ingsw.lightModel.Lightifier;
 import it.polimi.ingsw.lightModel.lightPlayerRelated.LightCard;
 import it.polimi.ingsw.lightModel.lightPlayerRelated.LightPlacement;
 import it.polimi.ingsw.model.MultiGame;
-import it.polimi.ingsw.model.cardReleted.cards.CardInHand;
-import it.polimi.ingsw.model.cardReleted.cards.ObjectiveCard;
-import it.polimi.ingsw.model.cardReleted.cards.StartCard;
+import it.polimi.ingsw.model.cardReleted.cards.*;
 import it.polimi.ingsw.model.cardReleted.utilityEnums.DrawableCard;
 import it.polimi.ingsw.model.playerReleted.Codex;
 import it.polimi.ingsw.model.playerReleted.Placement;
 import it.polimi.ingsw.model.playerReleted.User;
+import it.polimi.ingsw.model.tableReleted.Deck;
 import it.polimi.ingsw.model.tableReleted.Game;
 import it.polimi.ingsw.model.tableReleted.Lobby;
 import it.polimi.ingsw.view.ViewInterface;
@@ -54,7 +53,7 @@ public class Controller3 implements ControllerInterface, TurnTaker, GameJoiner {
             logErr(LogsOnClientStatic.NAME_TAKEN);
             transitionTo(ViewState.LOGIN_FORM);
             //check if the nickname is valid
-        }else if(nickname.matches(Configs.validNicknameRegex)){
+        }else if(nickname.matches(Configs.invalidNicknameRegex)){
             logErr(LogsOnClientStatic.NOT_VALID_NICKNAME);
             transitionTo(ViewState.LOGIN_FORM);
         }else{
@@ -76,7 +75,6 @@ public class Controller3 implements ControllerInterface, TurnTaker, GameJoiner {
                 }else {
                     gameToJoin.subscribe(nickname, view, this, true);
                     gameToJoin.joinMidGame(nickname, gameToJoin);
-
                     this.takeTurn();
                 }
             }else{
@@ -99,7 +97,7 @@ public class Controller3 implements ControllerInterface, TurnTaker, GameJoiner {
     @Override
     public synchronized void createLobby(String gameName, int maxPlayerCount) {
         //check if the player is a malevolent user
-        if(isNotLogged()){
+        if(isNotLogged() && multiGame.isInGameParty(this.nickname) && multiGame.isInLobby(this.nickname)){
             malevolentConsequences();
             return;
         }
@@ -109,7 +107,7 @@ public class Controller3 implements ControllerInterface, TurnTaker, GameJoiner {
             logErr(LogsOnClientStatic.LOBBY_NAME_TAKEN);
             transitionTo(ViewState.JOIN_LOBBY);
             //check if the lobby name is valid
-        }else if(gameName.matches(Configs.validLobbyNameRegex)){
+        }else if(gameName.matches(Configs.invalidLobbyNameRegex)){
             logErr(LogsOnClientStatic.NOT_VALID_LOBBY_NAME);
             transitionTo(ViewState.JOIN_LOBBY);
         }else { //create the lobby
@@ -274,8 +272,25 @@ public class Controller3 implements ControllerInterface, TurnTaker, GameJoiner {
 
     @Override
     public synchronized void draw(DrawableCard deckID, int cardID) {
+
+
+        Game game = multiGame.getGameFromUserNick(this.nickname);
+        User user = multiGame.getUserFromNick(this.nickname);
+        CardInHand drawnCard;
+        if(deckID == DrawableCard.GOLDCARD){
+            drawnCard = drawACard(game.getGoldCardDeck(), cardID);
+        }else {
+            drawnCard = drawACard(game.getResourceCardDeck(), cardID);
+        }
+        user.getUserHand().addCard(drawnCard);
+        game.notifyTurn(game.getCurrentPlayer().getNickname());
+        game.notifyDraw(deckID, cardID, Lightifier.lightifyToCard(drawnCard), this.nickname, drawnCard.canBePlaced(user.getUserCodex()));
+        //TODO check for chicken dinner
+
+        //turn
+        game.setPlayerIndex(getNextActivePlayerIndex());
+        game.notifyTurn(game.getCurrentPlayer().getNickname());
         //TODO saveGame
-        //TODO change current player lock
     }
 
     private void leaveGame() {
@@ -323,7 +338,8 @@ public class Controller3 implements ControllerInterface, TurnTaker, GameJoiner {
                     } while (card == null);
 
                     you.getUserHand().addCard(card);
-                    gameToLeave.notifyDraw(deckType, pos, Lightifier.lightifyToCard(card), you.getNickname());
+                    boolean playability = card.canBePlaced(you.getUserCodex());
+                    gameToLeave.notifyDraw(deckType, pos, Lightifier.lightifyToCard(card), you.getNickname(), playability);
                 }
                 //move on with the turns for the other players
                 gameToLeave.setPlayerIndex(nextPlayerIndex);
@@ -435,15 +451,29 @@ public class Controller3 implements ControllerInterface, TurnTaker, GameJoiner {
         user.getUserHand().setSecretObjectiveChoice(objectiveCards);
     }
 
+     /**
+     * @param deck from which drawn a Card
+     * @param cardID the position from where draw the card (buffer/deck)
+     * @return the card drawn
+     * @param <T> a CardInHand (GoldCard/ResourceCard)
+     */
+    private <T extends CardInHand> T drawACard(Deck<T> deck, int cardID) {
+        T drawCard;
+        if (cardID == Configs.actualDeckPos) {
+            drawCard = deck.drawFromDeck();
+        } else {
+            drawCard = deck.drawFromBuffer(cardID);}
+        return drawCard;
+    }
+
     @Override
     public synchronized void takeTurn() {
         Game game = multiGame.getGameFromUserNick(this.nickname);
-        if(game.getCurrentPlayer().getNickname().equals(this.nickname)){
+        if(game.getCurrentPlayer().getNickname().equals(this.nickname)) {
             transitionTo(ViewState.PLACE_CARD);
-        }else {
+        }else{
             transitionTo(ViewState.IDLE);
         }
-
     }
 
     //malevolent user checker

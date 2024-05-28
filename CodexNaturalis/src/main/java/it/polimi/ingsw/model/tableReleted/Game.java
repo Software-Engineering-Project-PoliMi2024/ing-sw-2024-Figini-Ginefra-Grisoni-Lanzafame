@@ -255,8 +255,8 @@ public class Game implements Serializable {
      * @param card the card that has changed
      * @param drawerNickname the nickname of the player that has drawn the card
      */
-    public void notifyDraw(DrawableCard deckType, int pos, LightCard card, String drawerNickname){
-        gameMediator.notifyDraw(drawerNickname, deckType, pos, card);
+    public void notifyDraw(DrawableCard deckType, int pos, LightCard card, String drawerNickname, boolean playability){
+        gameMediator.notifyDraw(drawerNickname, deckType, pos, card, playability);
     }
 
     /**

@@ -253,15 +253,20 @@ public class GameMediator extends LoggerAndUpdaterMediator<LightGameUpdater, Lig
      * @param deckType the type of deck the card was drawn from
      * @param drawerNickname the nickname of the player that drew the card
      */
-    public synchronized void notifyDraw(String drawerNickname, DrawableCard deckType, int pos, LightCard card){
+    public synchronized void notifyDraw(String drawerNickname, DrawableCard deckType, int pos, LightCard card, boolean playability){
         for(String subscriberNick : subscribers.keySet()){
             try {
+                LoggerInterface logger = subscribers.get(subscriberNick).second();
+                LightGameUpdater updater = subscribers.get(subscriberNick).first();
                 if (!subscriberNick.equals(drawerNickname)) {
-                    subscribers.get(subscriberNick).second().logOthers(drawerNickname + LogsOnClientStatic.PLAYER_DRAW);
+                    logger.logOthers(drawerNickname + LogsOnClientStatic.PLAYER_DRAW);
+                    LightBack backOfDrawnCard = new LightBack(card.idBack());
+                    updater.updateGame(new HandOtherDiffAdd(backOfDrawnCard, drawerNickname));
                 } else {
-                    subscribers.get(subscriberNick).second().log(LogsOnClientStatic.YOU_DRAW);
+                    logger.log(LogsOnClientStatic.YOU_DRAW);
+                    updater.updateGame(new HandDiffAdd(card, playability));
                 }
-                subscribers.get(subscriberNick).first().updateGame(DiffGenerator.draw(deckType, pos, card));
+                updater.updateGame(DiffGenerator.draw(deckType, pos, card));
             } catch (Exception e) {
                 System.out.println("GameMediator: subscriber " + subscriberNick + " not reachable" + e.getMessage());
             }

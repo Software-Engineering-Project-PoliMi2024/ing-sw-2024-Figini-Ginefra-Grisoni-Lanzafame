@@ -214,7 +214,7 @@ public class DiffGenerator {
                     nickname,
                     codex.getPoints(),
                     codex.getEarnedCollectables(),
-                    codex.getPlacementHistory().values().stream().toList(),
+                    codex.getPlacementHistory().stream().toList(),
                     codex.getFrontier().frontier()
             ));
         }
