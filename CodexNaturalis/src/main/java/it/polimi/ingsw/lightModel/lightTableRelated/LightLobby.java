@@ -3,6 +3,7 @@ package it.polimi.ingsw.lightModel.lightTableRelated;
 import it.polimi.ingsw.designPatterns.Observed;
 import it.polimi.ingsw.designPatterns.Observer;
 import it.polimi.ingsw.lightModel.Differentiable;
+import it.polimi.ingsw.lightModel.LightModelConfig;
 
 import java.util.ArrayList;
 import java.util.LinkedList;
@@ -12,12 +13,10 @@ import java.util.List;
  * This class is a container for the list of lobbies.
  */
 public class LightLobby implements Differentiable, Observed {
-    private static final int defaultNumberMaxPlayer = 0;
-    private static final String defaultLobbyName = "";
     private final List<Observer> observers = new LinkedList<>();
-    private int numberMaxPlayer = defaultNumberMaxPlayer;
+    private int numberMaxPlayer = LightModelConfig.defaultNumberMaxPlayer;
     private List<String> nicknames = new ArrayList<>();
-    private String name = defaultLobbyName;
+    private String name = LightModelConfig.defaultLobbyName;
     /**
      * Creates a LightLobby object.
      */
@@ -84,9 +83,9 @@ public class LightLobby implements Differentiable, Observed {
         return this.numberMaxPlayer;
     }
     public void reset(){
-        this.setName(defaultLobbyName);
+        this.setName(LightModelConfig.defaultLobbyName);
         this.nicknames = new ArrayList<>();
-        this.setNumberMaxPlayer(defaultNumberMaxPlayer);
+        this.setNumberMaxPlayer(LightModelConfig.defaultNumberMaxPlayer);
         notifyObservers();
     }
 
