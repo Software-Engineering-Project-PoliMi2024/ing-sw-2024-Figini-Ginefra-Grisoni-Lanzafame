@@ -190,7 +190,7 @@ public class ServerModelController implements ControllerInterface, DiffSubscribe
     public void choseSecretObjective(LightCard card){
         User userToEdit = games.getUserFromNick(this.nickname);
         Game userGame = games.getUserGame(nickname);
-        userToEdit.setSecretObject(Heavifier.heavifyObjectCard(card, games));
+        userToEdit.setSecretObject(Heavifier.heavifyObjectCard(card, games.getCardTable()));
         userToEdit.getUserHand().setSecretObjectiveChoice(null);
         this.updateGame(new HandDiffSetObj(card));
         userGame.getGameLoopController().secretObjectiveChose(this);
@@ -205,7 +205,7 @@ public class ServerModelController implements ControllerInterface, DiffSubscribe
         User user = games.getUserFromNick(nickname);
         //if the card place is the startCard
         if(user.getUserCodex().getFrontier().isInFrontier(new Position(0,0))){
-            Placement heavyPlacement = Heavifier.heavifyStartCardPlacement(placement, this.games);
+            Placement heavyPlacement = Heavifier.heavifyStartCardPlacement(placement, this.games.getCardTable());
             user.placeStartCard(heavyPlacement);
 
             Game userGame = games.getUserGame(this.nickname);
@@ -214,7 +214,7 @@ public class ServerModelController implements ControllerInterface, DiffSubscribe
                     user.getUserCodex().getEarnedCollectables(), getPlacementList(placement), user.getUserCodex().getFrontier().getFrontier()));
             userGame.getGameLoopController().startCardPlaced(this);
         }else {
-            Placement heavyPlacement = Heavifier.heavify(placement, this.games);
+            Placement heavyPlacement = Heavifier.heavify(placement, this.games.getCardTable());
             user.playCard(heavyPlacement); //place the card and remove it from the hand
 
             Game userGame = this.games.getUserGame(this.nickname);

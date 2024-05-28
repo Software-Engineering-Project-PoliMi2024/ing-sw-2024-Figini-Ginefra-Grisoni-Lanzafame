@@ -17,14 +17,6 @@ import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.*;
 
 public class VirtualViewSocketTest {
-    /*@Test
-    public void testLogErrMsg() throws IOException {
-        VirtualViewSocket virtualViewSocket = setUp().first();
-        ClientHandler clientHandler = setUp().second();
-
-        virtualViewSocket.logErrMsg("test");
-        verify(clientHandler, times(1)).sendServerMessage(any(TransitionToMsg.class));
-    }*/
     @Test
     public void testTransitionTo() throws IOException {
         ClientHandler clientHandler = setUp();
