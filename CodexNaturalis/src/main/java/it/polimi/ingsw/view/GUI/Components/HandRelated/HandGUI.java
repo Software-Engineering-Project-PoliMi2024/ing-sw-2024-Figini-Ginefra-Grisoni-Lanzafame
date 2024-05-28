@@ -36,8 +36,6 @@ public class HandGUI implements Observer {
     private FrontierCardGUI closestFrontier;
 
     public HandGUI() {
-        GUI.getLightGame().getHand().attach(this);
-
         hand.setSpacing(10);
         hand.setAlignment(Pos.CENTER);
 
@@ -73,6 +71,7 @@ public class HandGUI implements Observer {
         AnchorPane.setRightAnchor(hand, 0.0);
         AnchorPane.setTopAnchor(hand, 0.0);
 
+        GUI.getLightGame().getHand().attach(this);
         //hand.setStyle(hand.getStyle() +  "-fx-background-color: transparent");
     }
 

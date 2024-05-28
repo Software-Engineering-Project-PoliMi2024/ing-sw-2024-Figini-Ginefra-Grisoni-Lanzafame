@@ -18,7 +18,7 @@ public class LightHand implements Differentiable, Observed {
 
     /**
      * The constructor of the class
-     * */
+     */
     public LightHand(){
         this.cardPlayability = new HashMap<>();
         this.cards = new LightCard[3];
@@ -43,6 +43,8 @@ public class LightHand implements Differentiable, Observed {
      * @param secretObjective the secret objective of the player
      */
     public void setSecretObjective(LightCard secretObjective) {
+        this.secretObjectiveOptions[0] = null;
+        this.secretObjectiveOptions[1] = null;
         this.secretObjective = secretObjective;
         this.notifyObservers();
     }
@@ -151,6 +153,7 @@ public class LightHand implements Differentiable, Observed {
 
     @Override
     public void attach(Observer observer) {
+        observer.update();
         observers.add(observer);
     }
 
