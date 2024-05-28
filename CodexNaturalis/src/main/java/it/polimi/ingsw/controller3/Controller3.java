@@ -67,7 +67,6 @@ public class Controller3 implements ControllerInterface, TurnTaker, GameJoiner {
                 Game gameToJoin = multiGame.getGameFromUserNick(nickname);
                 if(gameToJoin.isInStartCardState()) {
                     this.joinGame();
-                    gameToJoin.joinStartCard(nickname, gameToJoin);
                 }else if(gameToJoin.inInSecretObjState()){
                     gameToJoin.subscribe(nickname, view, this, true);
                     gameToJoin.joinSecretObjective(nickname, gameToJoin);
@@ -418,6 +417,7 @@ public class Controller3 implements ControllerInterface, TurnTaker, GameJoiner {
             user.getUserHand().setStartCard(startCard);
         }
         gameToJoin.subscribe(nickname, view, this, false);
+        gameToJoin.joinStartCard(nickname, gameToJoin);
         if(!user.hasPlacedStartCard())
             transitionTo(ViewState.CHOOSE_START_CARD);
         else
