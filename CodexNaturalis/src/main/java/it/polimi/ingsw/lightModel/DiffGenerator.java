@@ -208,7 +208,8 @@ public class DiffGenerator {
      */
     private static List<CodexDiff> getCodexCurrentState(Game game){
         List<CodexDiff> codexDiff = new ArrayList<>();
-        for(String nickname : game.getGameParty().getUsersList().stream().map(User::getNickname).toList()){
+        List<String> nicknamesInGameParty = game.getGameParty().getUsersList().stream().map(User::getNickname).toList();
+        for(String nickname : nicknamesInGameParty){
             LightCodex codex = Lightifier.lightify(game.getGameParty().getUsersList().stream().filter(user -> user.getNickname().equals(nickname)).findFirst().get().getUserCodex());
             codexDiff.add(new CodexDiff(
                     nickname,

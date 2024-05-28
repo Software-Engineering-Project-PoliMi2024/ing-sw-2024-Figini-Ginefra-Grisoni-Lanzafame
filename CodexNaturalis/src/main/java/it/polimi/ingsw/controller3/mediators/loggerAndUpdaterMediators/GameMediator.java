@@ -13,6 +13,8 @@ import it.polimi.ingsw.lightModel.lightTableRelated.LightGame;
 import it.polimi.ingsw.model.cardReleted.cards.ObjectiveCard;
 import it.polimi.ingsw.model.cardReleted.utilityEnums.DrawableCard;
 import it.polimi.ingsw.model.playerReleted.Codex;
+import it.polimi.ingsw.model.playerReleted.Placement;
+import it.polimi.ingsw.model.playerReleted.Position;
 import it.polimi.ingsw.model.playerReleted.User;
 import it.polimi.ingsw.model.tableReleted.Game;
 import it.polimi.ingsw.view.LoggerInterface;
@@ -162,8 +164,15 @@ public class GameMediator extends LoggerAndUpdaterMediator<LightGameUpdater, Lig
                 for(HandOtherDiff handDiff : DiffGenerator.getHandOtherCurrentState(game, subscriberNick)) {
                     updater.updateGame(handDiff);
                 }
+                for(User user : game.getUsersList()){
+                    //update with the diff of the startCard placement
+                    if(!user.getNickname().equals(subscriberNick)){
+                        Placement startCardPlacement = user.getUserCodex().getPlacementAt(new Position(0,0));
+                        updater.updateGame(DiffGenerator.placeCodexDiff(user.getNickname(), Lightifier.lightify(startCardPlacement), user.getUserCodex()));
+                    }
+                }
             } catch (Exception e) {
-                System.out.println("GameMediator: subscriber " + subscriberNick + " not reachable" + e.getMessage());
+                System.out.println("GameMediator.secretObjSetup: subscriber " + subscriberNick + " not reachable" + e.getMessage());
             }
         }
     }
