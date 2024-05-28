@@ -54,7 +54,7 @@ public class GameParty implements Serializable {
      */
     public int getNextPlayerIndex() {
         synchronized (currentPlayerLock){
-            return (currentPlayerIndex + 1 % getNumberOfMaxPlayer());
+            return (currentPlayerIndex + 1) % getNumberOfMaxPlayer();
         }
     }
 

@@ -19,6 +19,7 @@ import it.polimi.ingsw.model.playerReleted.User;
 import it.polimi.ingsw.model.tableReleted.Deck;
 import it.polimi.ingsw.model.tableReleted.Game;
 import it.polimi.ingsw.model.tableReleted.Lobby;
+import it.polimi.ingsw.model.utilities.Pair;
 import it.polimi.ingsw.view.ViewInterface;
 import it.polimi.ingsw.view.ViewState;
 
@@ -314,7 +315,7 @@ public class Controller3 implements ControllerInterface, TurnTaker, GameJoiner {
     }
 
     @Override
-    public synchronized void draw(DrawableCard deckID, int cardID) {
+    public synchronized void draw(DrawableCard deckType, int cardID) {
         if(isNotLogged() || !multiGame.isInGameParty(this.nickname)){
             malevolentConsequences();
             return;
@@ -323,15 +324,17 @@ public class Controller3 implements ControllerInterface, TurnTaker, GameJoiner {
 
         Game game = multiGame.getGameFromUserNick(this.nickname);
         User user = multiGame.getUserFromNick(this.nickname);
+
         CardInHand drawnCard;
-        if(deckID == DrawableCard.GOLDCARD){
-            drawnCard = drawACard(game.getGoldCardDeck(), cardID);
-        }else {
-            drawnCard = drawACard(game.getResourceCardDeck(), cardID);
-        }
+        CardInHand cardReplacement;
+        Pair<CardInHand, CardInHand> drawnAndReplacement= drawAndGetReplacement(game.getResourceCardDeck(), game.getGoldCardDeck(), deckType, cardID);
+        drawnCard = drawnAndReplacement.first();
+        cardReplacement = drawnAndReplacement.second();
+
         user.getUserHand().addCard(drawnCard);
+
+        game.notifyDraw(deckType, cardID, Lightifier.lightifyToCard(drawnCard), Lightifier.lightifyToCard(cardReplacement), this.nickname, drawnCard.canBePlaced(user.getUserCodex()));
         game.notifyTurn(game.getCurrentPlayer().getNickname());
-        game.notifyDraw(deckID, cardID, Lightifier.lightifyToCard(drawnCard), this.nickname, drawnCard.canBePlaced(user.getUserCodex()));
         //TODO check for chicken dinner
 
         //turn
@@ -372,21 +375,21 @@ public class Controller3 implements ControllerInterface, TurnTaker, GameJoiner {
                 String nextPlayerNick = gameToLeave.getPlayerFromIndex(nextPlayerIndex).getNickname();
                 //check if the user has disconnected after placing
                 if (you.getHandSize() < 3 && !gameToLeave.areDeckEmpty()) {
-                    CardInHand card;
+                    CardInHand cardDrawn;
+                    CardInHand cardReplacement;
                     DrawableCard deckType;
                     int pos;
                     do {
                         deckType = randomDeckType();
                         pos = randomDeckPosition();
-                        if (deckType == DrawableCard.RESOURCECARD)
-                            card = gameToLeave.drawACard(gameToLeave.getResourceCardDeck(), pos);
-                        else
-                            card = gameToLeave.drawACard(gameToLeave.getGoldCardDeck(), pos);
-                    } while (card == null);
+                        Pair<CardInHand, CardInHand> drawnAndReplacement= drawAndGetReplacement(gameToLeave.getResourceCardDeck(), gameToLeave.getGoldCardDeck(), deckType, pos);
+                        cardDrawn = drawnAndReplacement.first();
+                        cardReplacement = drawnAndReplacement.second();
+                    } while (cardDrawn == null);
 
-                    you.getUserHand().addCard(card);
-                    boolean playability = card.canBePlaced(you.getUserCodex());
-                    gameToLeave.notifyDraw(deckType, pos, Lightifier.lightifyToCard(card), you.getNickname(), playability);
+                    you.getUserHand().addCard(cardDrawn);
+                    boolean playability = cardDrawn.canBePlaced(you.getUserCodex());
+                    gameToLeave.notifyDraw(deckType, pos, Lightifier.lightifyToCard(cardDrawn), Lightifier.lightifyToCard(cardReplacement), you.getNickname(), playability);
                 }
                 //move on with the turns for the other players
                 gameToLeave.setPlayerIndex(nextPlayerIndex);
@@ -398,7 +401,7 @@ public class Controller3 implements ControllerInterface, TurnTaker, GameJoiner {
         if (gameToLeave.getGameLoopController().getActivePlayers().isEmpty()) {
             multiGame.removeGame(gameToLeave);
         }
-
+        multiGame.removeUser(this.nickname);
     }
 
     /**
@@ -507,8 +510,42 @@ public class Controller3 implements ControllerInterface, TurnTaker, GameJoiner {
         if (cardID == Configs.actualDeckPos) {
             drawCard = deck.drawFromDeck();
         } else {
-            drawCard = deck.drawFromBuffer(cardID);}
+            drawCard = deck.drawFromBuffer(cardID);
+        }
         return drawCard;
+    }
+
+    /**
+     * draw a card from one deck (depending on the type passed as parameter) and returns a
+     * pair containing the card drawn and the card that took its place in the decks
+     * @param resourceDeck the deck of resource cards
+     * @param goldDeck the deck of gold cards
+     * @param deckType the deckType (resource or gold)
+     * @param cardID the position from which the user draws
+     * @return the pair <drawnCard, newCard> where the drawn card is
+     * the card drawn and new card is the card replacing it
+     */
+    private Pair<CardInHand, CardInHand> drawAndGetReplacement(Deck<ResourceCard> resourceDeck, Deck<GoldCard> goldDeck, DrawableCard deckType, int cardID){
+        CardInHand drawnCard;
+        CardInHand cardReplacement;
+        if(deckType == DrawableCard.GOLDCARD){
+            drawnCard = drawACard(goldDeck, cardID);
+            cardReplacement = peekCardInDecks(goldDeck, cardID);
+        }else {
+            drawnCard = drawACard(resourceDeck, cardID);
+            cardReplacement = peekCardInDecks(resourceDeck, cardID);
+        }
+        return new Pair<>(drawnCard, cardReplacement);
+    }
+
+    private <T extends CardInHand> T peekCardInDecks(Deck<T> deck, int cardID){
+        T card;
+        if (cardID == Configs.actualDeckPos) {
+            card = deck.showTopCardOfDeck();
+        } else {
+            card = deck.getBuffer().stream().toList().get(cardID);
+        }
+        return card;
     }
 
     @Override

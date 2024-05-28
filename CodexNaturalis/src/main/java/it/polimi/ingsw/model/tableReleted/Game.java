@@ -253,11 +253,12 @@ public class Game implements Serializable {
      * This method is used to notify all players a change in the decks
      * @param deckType the type of the deck that has changed (GOLD, RESOURCE)
      * @param pos the position of the card that has changed (2 = from deck, 1,0 = buffer)
-     * @param card the card that has changed
+     * @param drawnCard the card drawn by the user
+     * @param drawnReplaceCard the card that has replaced the drawn card in the decks/buffers
      * @param drawerNickname the nickname of the player that has drawn the card
      */
-    public void notifyDraw(DrawableCard deckType, int pos, LightCard card, String drawerNickname, boolean playability){
-        gameMediator.notifyDraw(drawerNickname, deckType, pos, card, playability);
+    public void notifyDraw(DrawableCard deckType, int pos, LightCard drawnCard, LightCard drawnReplaceCard, String drawerNickname, boolean playability){
+        gameMediator.notifyDraw(drawerNickname, deckType, pos, drawnCard, drawnReplaceCard, playability);
     }
 
     /**
