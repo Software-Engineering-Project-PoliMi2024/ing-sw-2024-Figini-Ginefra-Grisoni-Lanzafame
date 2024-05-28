@@ -69,7 +69,7 @@ public class User implements Serializable {
         this.userCodex.playCard(placement);
         this.getUserHand().setStartCard(null);
     }
-    public synchronized void setSecretObject(ObjectiveCard objectiveCard){
+    public synchronized void setSecretObjective(ObjectiveCard objectiveCard){
         userHand.setSecretObjective(objectiveCard);
     }
 

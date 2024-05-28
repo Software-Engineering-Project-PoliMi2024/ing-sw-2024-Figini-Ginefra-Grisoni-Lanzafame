@@ -14,6 +14,7 @@ import it.polimi.ingsw.model.cardReleted.cards.*;
 import it.polimi.ingsw.model.cardReleted.utilityEnums.DrawableCard;
 import it.polimi.ingsw.model.playerReleted.Codex;
 import it.polimi.ingsw.model.playerReleted.Placement;
+import it.polimi.ingsw.model.playerReleted.Position;
 import it.polimi.ingsw.model.playerReleted.User;
 import it.polimi.ingsw.model.tableReleted.Deck;
 import it.polimi.ingsw.model.tableReleted.Game;
@@ -48,6 +49,11 @@ public class Controller3 implements ControllerInterface, TurnTaker, GameJoiner {
      */
     @Override
     public synchronized void login(String nickname){
+        if(nickname == null){
+            malevolentConsequences();
+            return;
+        }
+
         //check if the nickname is already taken
         if(!this.multiGame.isUnique(nickname)) {
             logErr(LogsOnClientStatic.NAME_TAKEN);
@@ -96,7 +102,7 @@ public class Controller3 implements ControllerInterface, TurnTaker, GameJoiner {
     @Override
     public synchronized void createLobby(String gameName, int maxPlayerCount) {
         //check if the player is a malevolent user
-        if(isNotLogged() || multiGame.isInGameParty(this.nickname) || multiGame.isInLobby(this.nickname)){
+        if(gameName == null || isNotLogged() || multiGame.isInGameParty(this.nickname) || multiGame.isInLobby(this.nickname)){
             malevolentConsequences();
             return;
         }
@@ -106,8 +112,11 @@ public class Controller3 implements ControllerInterface, TurnTaker, GameJoiner {
             logErr(LogsOnClientStatic.LOBBY_NAME_TAKEN);
             transitionTo(ViewState.JOIN_LOBBY);
             //check if the lobby name is valid
-        }else if(gameName.matches(Configs.invalidLobbyNameRegex)){
+        }else if(gameName.matches(Configs.invalidLobbyNameRegex)) {
             logErr(LogsOnClientStatic.NOT_VALID_LOBBY_NAME);
+            transitionTo(ViewState.JOIN_LOBBY);
+        }else if(maxPlayerCount < 2 || maxPlayerCount > 4){
+            logErr(LogsOnClientStatic.INVALID_MAX_PLAYER_COUNT);
             transitionTo(ViewState.JOIN_LOBBY);
         }else { //create the lobby
             System.out.println(this.nickname + " create" + gameName + " lobby");
@@ -135,7 +144,7 @@ public class Controller3 implements ControllerInterface, TurnTaker, GameJoiner {
     @Override
     public synchronized void joinLobby(String lobbyName) {
         //check if the player is a malevolent user
-        if (isNotLogged() || multiGame.isInGameParty(this.nickname) || multiGame.isInLobby(this.nickname)) {
+        if (lobbyName == null || isNotLogged() || multiGame.isInGameParty(this.nickname) || multiGame.isInLobby(this.nickname)) {
             malevolentConsequences();
             return;
         }
@@ -201,7 +210,7 @@ public class Controller3 implements ControllerInterface, TurnTaker, GameJoiner {
 
     @Override
     public synchronized void choseSecretObjective(LightCard objectiveCard) {
-        if(isNotLogged() || !multiGame.isInGameParty(this.nickname) ||
+        if(objectiveCard == null || isNotLogged() || !multiGame.isInGameParty(this.nickname) ||
                 !multiGame.getGameFromUserNick(this.nickname).inInSecretObjState() &&
                         multiGame.getUserFromNick(this.nickname).hasChosenObjective()){
             malevolentConsequences();
@@ -224,17 +233,36 @@ public class Controller3 implements ControllerInterface, TurnTaker, GameJoiner {
 
     @Override
     public synchronized void place(LightPlacement placement) {
-        if(isNotLogged() || !multiGame.isInGameParty(this.nickname) ||
+        if(placement == null || isNotLogged() || !multiGame.isInGameParty(this.nickname) ||
                 !multiGame.getGameFromUserNick(this.nickname).isYourTurnToPlace(this.nickname)) {
             malevolentConsequences();
             return;
         }
+        Game game = multiGame.getGameFromUserNick(this.nickname);
+        User user = game.getUserFromNick(this.nickname);
+        Placement heavyPlacement;
+        try{
+            if(placement.position().equals(new Position(0,0))){
+                heavyPlacement = Heavifier.heavifyStartCardPlacement(placement, multiGame);
+            }else {
+                heavyPlacement = Heavifier.heavify(placement, multiGame);
+            }
+            if(heavyPlacement)
+        }catch (Exception e) {
+            malevolentConsequences();
+            return;
+        }
+        if(!user.getUserHand().getHand().contains(Heavifier.hea(placement.card())) ||
+                user.getUserCodex().getFrontier().getFrontier().contains(placement.position())){
+            malevolentConsequences();
+            return;
+        }
+
         //TODO check placement: card in mano e position in frontiera
 
         System.out.println(this.nickname + " placed a card");
 
-        Game game = multiGame.getGameFromUserNick(this.nickname);
-        User user = game.getUserFromNick(this.nickname);
+
         if(!user.hasPlacedStartCard()) {
             Placement heavyPlacement = Heavifier.heavifyStartCardPlacement(placement, multiGame);
 

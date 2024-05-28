@@ -20,6 +20,7 @@ public class LogsOnClientStatic {
     public static String LOBBY_NONEXISTENT = "The queried lobby does not exist.";
     public static String LOBBY_NAME_TAKEN = "The chosen lobby name is already taken.";
     public static String NOT_VALID_LOBBY_NAME = "The chosen lobby name is not valid.";
+    public static String INVALID_MAX_PLAYER_COUNT = "the number of player per game must be 1 < n < 5.";
     public static String LOBBY_IS_FULL = "The lobby is currently full.";
     public static String LOBBY_CREATED_YOU = "New Lobby creation successful.";
     public static String LOBBY_CREATED_OTHERS = "Added a new lobby.";
