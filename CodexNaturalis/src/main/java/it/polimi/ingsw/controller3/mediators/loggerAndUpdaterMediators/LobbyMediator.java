@@ -30,7 +30,7 @@ public class LobbyMediator extends LoggerAndUpdaterMediator<LightLobbyUpdater, L
             if(nick != nickname) {
                 try {
                     pair.first().updateLobby(DiffGenerator.diffAddUserToLobby(nickname));
-                    pair.second().log(nickname + LogsOnClientStatic.LOBBY_JOIN_OTHER);
+                    pair.second().logOthers(nickname + LogsOnClientStatic.LOBBY_JOIN_OTHER);
                 }catch (Exception e){
                     System.out.println("LobbyMediator: error in notifying other user" + e.getMessage());
                 }
@@ -59,7 +59,7 @@ public class LobbyMediator extends LoggerAndUpdaterMediator<LightLobbyUpdater, L
             if(nick != nickname) {
                 try {
                     pair.first().updateLobby(DiffGenerator.diffRemoveUserFromLobby(nickname));
-                    pair.second().log(nickname + LogsOnClientStatic.LOBBY_LEFT_OTHER);
+                    pair.second().logOthers(nickname + LogsOnClientStatic.LOBBY_LEFT_OTHER);
                 }catch (Exception e){
                     System.out.println("LobbyMediator: error in notifying other user" + e.getMessage());
                 }
@@ -67,5 +67,15 @@ public class LobbyMediator extends LoggerAndUpdaterMediator<LightLobbyUpdater, L
         });
 
         super.unsubscribe(nickname);
+    }
+
+    public synchronized void notifyGameStart(){
+        subscribers.forEach((nickname, pair) -> {
+            try {
+                pair.second().logGame(LogsOnClientStatic.GAME_CREATED);
+            } catch (Exception e) {
+                System.out.println("LobbyMediator: error in notifying about the game starting" + e.getMessage());
+            }
+        });
     }
 }

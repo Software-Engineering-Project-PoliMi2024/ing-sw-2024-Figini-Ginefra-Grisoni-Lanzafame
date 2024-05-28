@@ -127,6 +127,7 @@ public class Lobby implements Serializable {
     }
 
     public void notifyGameStart() {
+        lobbyMediator.notifyGameStart();
         gameJoinerMediator.notifyGameStart();
     }
 }
