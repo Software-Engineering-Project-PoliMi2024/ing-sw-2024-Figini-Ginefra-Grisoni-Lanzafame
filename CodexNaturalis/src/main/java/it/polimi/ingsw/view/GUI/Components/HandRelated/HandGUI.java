@@ -225,6 +225,13 @@ public class HandGUI implements Observer {
                 FlippablePlayableCard newCard = new FlippablePlayableCard(target, playability);
 
                 newCard.addThisByFlippablePlayable(card -> addCardToHand(card, true));
+            }else if(handCards[i] != null && GUI.getLightGame().getHand().getCards()[i] != null &&
+                    handCards[i].getTarget().equals(GUI.getLightGame().getHand().getCards()[i])){
+                LightCard flippableCardTarget = handCards[i].getTarget();
+                boolean oldPlayability = handCards[i].isPlayable();
+                boolean newPlayability = GUI.getLightGame().getHand().getCardPlayability().get(flippableCardTarget);
+                if(oldPlayability != newPlayability)
+                    handCards[i].setPlayable(newPlayability);
             }
 //            else if (handCards[i] != null && GUI.getLightGame().getHand().getCards()[i] == null){
 //                handCards[i].removeThisByFlippablePlayable(this::removeCardFromHand);
