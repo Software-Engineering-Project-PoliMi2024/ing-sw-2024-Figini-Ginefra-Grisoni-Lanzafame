@@ -334,14 +334,13 @@ public class Game implements Serializable {
     }
 
     public synchronized boolean othersHadAllPlacedStartCard(String nicknamePerspective){
-        boolean check = false;
-        if (!isInStartCardState())
-            throw new IllegalCallerException("Controller.checkIfLastToPlaceStartCard: Game is not in StartCardState");
-
-        if(gameParty.getUsersList().stream().allMatch(user ->
-                !user.getNickname().equals(nicknamePerspective) && user.hasPlacedStartCard())){
-            check = true;
+        boolean check = true;
+        for(User user : gameParty.getUsersList()){
+            if(!user.getNickname().equals(nicknamePerspective) && !user.hasPlacedStartCard()){
+                check = false;
+            }
         }
+
         return check;
     }
 
