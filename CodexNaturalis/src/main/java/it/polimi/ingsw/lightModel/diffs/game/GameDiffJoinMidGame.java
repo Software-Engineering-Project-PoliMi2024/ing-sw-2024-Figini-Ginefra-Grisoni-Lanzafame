@@ -7,7 +7,7 @@ import java.util.List;
 public class GameDiffJoinMidGame extends GameDiffJoinSecretObj {
     private final GameDiffPublicObj publicObjs;
 
-    public GameDiffJoinMidGame(GameDiffInitialization initializeCodexMap, GameDiffPlayerActivity playerActivity, List<DeckDiff> decks, List<CodexDiff> codex, List<HandDiff> handYours, List<HandOtherDiff> handOther, GameDiffPublicObj publicObjs) {
+    public GameDiffJoinMidGame(GameDiffInitialization initializeCodexMap, GameDiffPlayerActivity playerActivity, List<DeckDiff> decks, List<CodexDiffPlacement> codex, List<HandDiff> handYours, List<HandOtherDiff> handOther, GameDiffPublicObj publicObjs) {
         super(initializeCodexMap, playerActivity, decks, codex, handYours, handOther);
         this.publicObjs = publicObjs;
 

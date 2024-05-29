@@ -13,8 +13,7 @@ import org.junit.jupiter.api.Test;
 import java.io.*;
 import java.net.ServerSocket;
 import java.net.Socket;
-import java.util.LinkedList;
-import java.util.Random;
+import java.util.*;
 
 import static org.mockito.Mockito.*;
 
@@ -201,13 +200,13 @@ public class ServerHandlerTest {
         ViewInterface mockView = setup.mockView();
 
         // Send a SetFinalRankingMsg to the ServerHandler
-        ServerMsg setFinalRankingMsg = new SetFinalRankingMsg(new String[]{"Player1", "Player2"}, new int[]{1, 2});
+        ServerMsg setFinalRankingMsg = new SetFinalRankingMsg(List.of("Player1", "Player2"));
         toServerHandler.writeObject(setFinalRankingMsg);
         toServerHandler.flush();
         Thread.sleep(10);
 
         // Verify if setFinalRanking was called on the mockView
-        verify(mockView, times(1)).setFinalRanking(any(), any());
+        verify(mockView, times(1)).setFinalRanking(any());
     }
 
     @Test

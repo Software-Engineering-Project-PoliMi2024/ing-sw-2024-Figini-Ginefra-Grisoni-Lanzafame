@@ -19,11 +19,10 @@ import it.polimi.ingsw.model.playerReleted.Hand;
 import it.polimi.ingsw.model.playerReleted.User;
 import it.polimi.ingsw.view.ViewInterface;
 
+import java.awt.*;
 import java.io.Serializable;
-import java.util.ArrayList;
+import java.util.*;
 import java.util.List;
-import java.util.Map;
-import java.util.Objects;
 import java.util.concurrent.locks.ReentrantLock;
 
 
@@ -47,7 +46,6 @@ public class Game implements Serializable {
 
     private boolean isLastTurn;
     private final Object isLastTurnLock = new Object();
-    private final ReentrantLock calculateNextStateLock = new ReentrantLock(true);
 
     private final TurnTakerMediator activeTurnTakerMediator = new TurnTakerMediator();
     private final GameMediator gameMediator;
@@ -121,6 +119,43 @@ public class Game implements Serializable {
         return gameParty.getUsersList();
     }
 
+    /**
+     * @return the active player that is the first in order in the game turn
+     */
+    public String getFirstActivePlayer(){
+        List<String> activePlayers = this.getActivePlayers();
+        List<String> turnsOrder = this.getUsersList().stream().map(User::getNickname).toList();
+
+        return String.valueOf(turnsOrder.stream().filter(activePlayers::contains).findFirst());
+    }
+
+    /**
+     * @return the active player that is the last in order in the game turn
+     */
+    public String getLastActivePlayer(){
+        List<String> activePlayers = this.getActivePlayers();
+        ArrayList<String> turnsOrder = new ArrayList<>(this.getUsersList().stream().map(User::getNickname).toList());
+        Collections.reverse(turnsOrder);
+
+        return String.valueOf(turnsOrder.stream().filter(activePlayers::contains).findFirst());
+    }
+
+    /**
+     * adds points given by common objective and by the secret objective of the user
+     * to the codex of the user
+     */
+    public void addObjectivePoints(){
+        for(User user : getUsersList()){
+            for(ObjectiveCard commonObj : commonObjective){
+                user.getUserCodex().pointsFromObjective(commonObj);
+            }
+            user.getUserCodex().pointsFromObjective(user.getUserHand().getSecretObjective());
+        }
+    }
+
+    public Map<String, Integer> getPointPerPlayerMap(){
+        return gameParty.getPointPerPlayerMap();
+    }
     /**
      * This method is used to get the user from its nickname
      * if the user is not in the gameParty, it returns null
@@ -218,6 +253,9 @@ public class Game implements Serializable {
         gameMediator.notifyPlacement(placer, newPlacement, placerCodex, playability);
     }
 
+    public void notifyGameEnded(Map<String, Integer> pointsPerPlayerMap, List<String> playerRanking){
+        gameMediator.notifyGameEnded(pointsPerPlayerMap, playerRanking);
+    }
     /**
      * @return true if the players in game are choosing the startCard
      */
@@ -261,6 +299,9 @@ public class Game implements Serializable {
         gameMediator.notifyDraw(drawerNickname, deckType, pos, drawnCard, drawnReplaceCard, playability);
     }
 
+    public void notifyLastTurn(){
+        gameMediator.notifyLastTurn();
+    }
     /**
      * This method is used to check if the decks are empty
      * @return true if the decks are empty, false otherwise
@@ -320,19 +361,6 @@ public class Game implements Serializable {
      */
     public User getPlayerFromIndex(int index){
         return gameParty.getPlayerFromIndex(index);
-    }
-    /**
-     * This method is used to lock the current player lock
-     */
-    public void lock(){
-        calculateNextStateLock.lock();
-    }
-
-    /**
-     * This method is used to unlock the current player lock
-     */
-    public void unlock(){
-        calculateNextStateLock.unlock();
     }
 
     public synchronized boolean othersHadAllPlacedStartCard(String nicknamePerspective){

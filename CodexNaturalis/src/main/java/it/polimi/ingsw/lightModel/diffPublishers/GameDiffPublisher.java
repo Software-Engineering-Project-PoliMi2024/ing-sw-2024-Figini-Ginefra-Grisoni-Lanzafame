@@ -120,11 +120,11 @@ public class GameDiffPublisher implements Serializable {
     /**
      * @return a list of diffs containing the current state of the codexes in the game
      */
-    private List<CodexDiff> getCodexCurrentState(){
-        List<CodexDiff> codexDiff = new ArrayList<>();
+    private List<CodexDiffPlacement> getCodexCurrentState(){
+        List<CodexDiffPlacement> codexDiff = new ArrayList<>();
         for(String nickname : game.getGameParty().getUsersList().stream().map(User::getNickname).toList()){
             LightCodex codex = Lightifier.lightify(game.getGameParty().getUsersList().stream().filter(user -> user.getNickname().equals(nickname)).findFirst().get().getUserCodex());
-            codexDiff.add(new CodexDiff(
+            codexDiff.add(new CodexDiffPlacement(
                     nickname,
                     codex.getPoints(),
                     codex.getEarnedCollectables(),

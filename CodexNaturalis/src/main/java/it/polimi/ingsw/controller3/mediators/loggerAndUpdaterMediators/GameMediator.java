@@ -129,7 +129,7 @@ public class GameMediator extends LoggerAndUpdaterMediator<LightGameUpdater, Lig
                     logger.log(LogsOnClientStatic.YOU_PLACE_STARTCARD);
                     logger.logGame(LogsOnClientStatic.WAIT_STARTCARD);
                     updater.updateGame(new HandDiffRemove(placement.card()));
-                    updater.updateGame(new CodexDiff(placer, user.getUserCodex().getPoints(),
+                    updater.updateGame(new CodexDiffPlacement(placer, user.getUserCodex().getPoints(),
                             user.getUserCodex().getEarnedCollectables(), List.of(placement), user.getUserCodex().getFrontier().getFrontier()));
                     for(HandDiff handDiff : DiffGenerator.getHandYourCurrentState(user)){
                         updater.updateGame(handDiff);
@@ -261,7 +261,8 @@ public class GameMediator extends LoggerAndUpdaterMediator<LightGameUpdater, Lig
 
     /**
      * notify players someone has drawn a card
-     * @param card the card drawn
+     * @param drawnCard the card drawn
+     * @param drawnReplace the card that replaces the card drawn in the decks/buffer
      * @param pos the position of the card in the deck
      * @param deckType the type of deck the card was drawn from
      * @param drawerNickname the nickname of the player that drew the card
@@ -284,5 +285,34 @@ public class GameMediator extends LoggerAndUpdaterMediator<LightGameUpdater, Lig
                 System.out.println("GameMediator: subscriber " + subscriberNick + " not reachable" + e.getMessage());
             }
         }
+    }
+
+    public synchronized void notifyLastTurn(){
+        subscribers.forEach((nick, pair)->{
+            LoggerInterface logger = pair.second();
+            try {
+                logger.logGame(LogsOnClientStatic.LAST_TURN);
+            }catch (Exception e){
+                System.out.println("GameMediator.notifyLastTurn: subscriber " + nick + " not reachable" + e.getMessage());
+            }
+        });
+    }
+
+    /**
+     * update the codex on lightGame with the points given by the objective points
+     * @param pointsPerPlayerMap the map containing for ech player their name and the point earned
+     */
+    public synchronized void notifyGameEnded(Map<String, Integer> pointsPerPlayerMap, List<String> finalRanking){
+        subscribers.forEach((nick, pair)->{
+            LoggerInterface logger = pair.second();
+            LightGameUpdater updater = pair.first();
+            try{
+                updater.updateGame(new CodexDiffSetFinalPoints(pointsPerPlayerMap));
+                updater.setFinalRanking(finalRanking);
+                logger.logGame(LogsOnClientStatic.GAME_END);
+            }catch (Exception e){
+                System.out.println("GameMediator.notifyGameEnded: subscriber " + nick + " not reachable" + e.getMessage());
+            }
+        });
     }
 }

@@ -9,7 +9,7 @@ import it.polimi.ingsw.model.playerReleted.Position;
 import java.util.List;
 import java.util.Map;
 
-public class CodexDiff extends GameDiff{
+public class CodexDiffPlacement extends GameDiff{
     private final String owner;
     private final int setPoints;
     private final Map<Collectable, Integer> collectables;
@@ -23,7 +23,7 @@ public class CodexDiff extends GameDiff{
      * @param placements the placements to add
      * @param frontier the new frontier
      */
-    public CodexDiff(String owner, int points, Map<Collectable, Integer> collectables, List<LightPlacement> placements, List<Position> frontier){
+    public CodexDiffPlacement(String owner, int points, Map<Collectable, Integer> collectables, List<LightPlacement> placements, List<Position> frontier){
         this.owner = owner;
         this.setPoints = points;
         this.collectables = collectables;

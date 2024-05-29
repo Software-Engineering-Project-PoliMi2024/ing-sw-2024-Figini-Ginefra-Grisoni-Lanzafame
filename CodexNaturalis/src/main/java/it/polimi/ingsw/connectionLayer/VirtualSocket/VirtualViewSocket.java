@@ -12,6 +12,8 @@ import it.polimi.ingsw.lightModel.lightTableRelated.LightLobbyList;
 import it.polimi.ingsw.view.ViewState;
 
 import java.rmi.RemoteException;
+import java.util.List;
+import java.util.Map;
 
 public class VirtualViewSocket implements VirtualView {
     private ControllerInterface controller;
@@ -81,8 +83,8 @@ public class VirtualViewSocket implements VirtualView {
     }
 
     @Override
-    public void setFinalRanking(String[] nicks, int[] points) throws RemoteException {
-        clientHandler.sendServerMessage(new SetFinalRankingMsg(nicks, points));
+    public void setFinalRanking(List<String> ranking) throws RemoteException {
+        clientHandler.sendServerMessage(new SetFinalRankingMsg(ranking));
     }
 
     public ControllerInterface getController() {

@@ -2,16 +2,17 @@ package it.polimi.ingsw.connectionLayer.Socket.ServerMsg;
 
 import it.polimi.ingsw.connectionLayer.Socket.ServerHandler;
 
-public class SetFinalRankingMsg extends ServerMsg{
-    private final String[] nicknames;
-    private final int[] points;
+import java.util.List;
+import java.util.Map;
 
-    public SetFinalRankingMsg(String[] nicknames, int[] points) {
-        this.nicknames = nicknames;
-        this.points = points;
+public class SetFinalRankingMsg extends ServerMsg{
+    private final List<String> ranking;
+
+    public SetFinalRankingMsg(List<String> ranking) {
+        this.ranking = ranking;
     }
     @Override
     public void processMsg(ServerHandler serverHandler) throws Exception {
-        serverHandler.getView().setFinalRanking(nicknames, points);
+        serverHandler.getView().setFinalRanking(ranking);
     }
 }

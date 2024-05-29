@@ -26,6 +26,7 @@ import it.polimi.ingsw.view.ViewState;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 
 public class ServerModelController implements ControllerInterface, DiffSubscriber, ViewInterface {
     private final MultiGame games;
@@ -144,7 +145,7 @@ public class ServerModelController implements ControllerInterface, DiffSubscribe
     }
 
     @Override
-    public void setFinalRanking(String[] nicks, int[] points) {
+    public void setFinalRanking(List<String> ranking) throws Exception {
 
     }
 

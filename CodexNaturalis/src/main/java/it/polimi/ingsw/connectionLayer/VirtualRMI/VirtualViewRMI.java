@@ -12,6 +12,8 @@ import it.polimi.ingsw.view.ViewInterface;
 import it.polimi.ingsw.view.ViewState;
 
 import java.rmi.RemoteException;
+import java.util.List;
+import java.util.Map;
 import java.util.concurrent.*;
 
 public class VirtualViewRMI implements VirtualView {
@@ -163,9 +165,9 @@ public class VirtualViewRMI implements VirtualView {
     }
 
     @Override
-    public void setFinalRanking(String[] nicks, int[] points) throws RemoteException {
+    public void setFinalRanking(List<String> ranking) throws RemoteException {
         Future<Void> setFinalRankingFuture = viewExecutor.submit(()->{
-            viewStub.setFinalRanking(nicks, points);
+            viewStub.setFinalRanking(ranking);
             return null;
         });
         try {
@@ -175,6 +177,7 @@ public class VirtualViewRMI implements VirtualView {
             //this.disconnect();
         }
     }
+
     private synchronized void disconnect(){
         try {
             if(!notAlreadyDisconnected){

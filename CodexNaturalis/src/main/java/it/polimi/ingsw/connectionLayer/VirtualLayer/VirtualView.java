@@ -10,6 +10,8 @@ import it.polimi.ingsw.view.ViewInterface;
 import it.polimi.ingsw.view.ViewState;
 
 import java.rmi.RemoteException;
+import java.util.List;
+import java.util.Map;
 
 public interface VirtualView extends ViewInterface, PingPongInterface {
     @Override
@@ -39,5 +41,5 @@ public interface VirtualView extends ViewInterface, PingPongInterface {
     public void updateGame(ModelDiffs<LightGame> diff) throws RemoteException;
 
     @Override
-    public void setFinalRanking(String[] nicks, int[] points) throws RemoteException;
+    public void setFinalRanking(List<String> ranking) throws RemoteException;
 }

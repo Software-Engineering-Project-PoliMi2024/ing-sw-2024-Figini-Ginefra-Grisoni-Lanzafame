@@ -4,6 +4,7 @@ package it.polimi.ingsw.controller.ConnectionLayer;
 import it.polimi.ingsw.connectionLayer.Socket.ClientHandler;
 import it.polimi.ingsw.connectionLayer.Socket.ServerMsg.*;
 import it.polimi.ingsw.connectionLayer.VirtualSocket.VirtualViewSocket;
+import it.polimi.ingsw.lightModel.diffs.game.HandDiffAdd;
 import it.polimi.ingsw.view.ViewState;
 import org.junit.jupiter.api.Test;
 
@@ -12,6 +13,10 @@ import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.net.ServerSocket;
 import java.net.Socket;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.*;
@@ -84,9 +89,8 @@ public class VirtualViewSocketTest {
     public void testSetFinalRanking() throws IOException {
         ClientHandler clientHandler = setUp();
         VirtualViewSocket virtualViewSocket = new VirtualViewSocket(clientHandler);
-        String[] args = new String[1];
-        int[] points = new int[1];
-        virtualViewSocket.setFinalRanking(args, points);
+        List<String> ranking = new ArrayList<>();
+        virtualViewSocket.setFinalRanking(ranking);
 
         verify(clientHandler, times(1)).sendServerMessage(any(SetFinalRankingMsg.class));
     }

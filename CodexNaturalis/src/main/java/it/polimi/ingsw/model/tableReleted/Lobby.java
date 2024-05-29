@@ -15,7 +15,6 @@ public class Lobby implements Serializable {
     private final String lobbyName;
     final private List<String> lobbyPlayerList;
     private final int numberOfMaxPlayer;
-    private final ReentrantLock transitioningToGameLock;
 
     /**
      * @param numberOfMaxPlayer the number of player that can join the lobby
@@ -32,7 +31,6 @@ public class Lobby implements Serializable {
         lobbyPlayerList.add(creatorNickname);
         lobbyMediator = new LobbyMediator();
         gameJoinerMediator = new GameJoinerMediator();
-        transitioningToGameLock = new ReentrantLock(true);
     }
     /**
      * Handles the adding of a user to the current lobby.
@@ -116,20 +114,6 @@ public class Lobby implements Serializable {
     public void unsubscribe(String nickname){
         lobbyMediator.unsubscribe(nickname);
         gameJoinerMediator.unsubscribe(nickname);
-    }
-
-    /**
-     * acquires the lock on the transitioningToGameLock
-     */
-    public void lock(){
-        transitioningToGameLock.lock();
-    }
-
-    /**
-     * releases the lock on the transitioningToGameLock
-     */
-    public void unlock(){
-        transitioningToGameLock.unlock();
     }
 
     public void notifyGameStart() {

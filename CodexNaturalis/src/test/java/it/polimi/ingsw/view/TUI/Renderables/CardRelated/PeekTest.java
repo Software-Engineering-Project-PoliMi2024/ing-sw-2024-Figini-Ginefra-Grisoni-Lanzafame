@@ -7,7 +7,6 @@ import it.polimi.ingsw.lightModel.diffs.game.*;
 import it.polimi.ingsw.lightModel.lightPlayerRelated.LightPlacement;
 import it.polimi.ingsw.lightModel.lightTableRelated.LightGame;
 import it.polimi.ingsw.model.cardReleted.utilityEnums.CardFace;
-import it.polimi.ingsw.model.cardReleted.utilityEnums.Resource;
 import it.polimi.ingsw.model.playerReleted.Position;
 import it.polimi.ingsw.view.TUI.Renderables.CodexRelated.CodexRenderableOthers;
 import it.polimi.ingsw.view.TUI.cardDrawing.CardMuseum;
@@ -46,10 +45,10 @@ class PeekTest {
                 new Position(1, 1)
         });
 
-        diff = new CodexDiff("Player1", 0, new HashMap<>(), placements, positions);
+        diff = new CodexDiffPlacement("Player1", 0, new HashMap<>(), placements, positions);
         diff.apply(lightGame);
 
-        diff = new CodexDiff("Player2", 0, new HashMap<>(), placements, positions);
+        diff = new CodexDiffPlacement("Player2", 0, new HashMap<>(), placements, positions);
         diff.apply(lightGame);
 
         diff = new HandOtherDiffAdd(new LightBack(31), "Player2");

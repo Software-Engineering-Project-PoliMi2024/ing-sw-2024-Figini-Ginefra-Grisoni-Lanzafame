@@ -28,6 +28,7 @@ import java.util.*;
 /*
 TODO test deck (when drawing all cards it remains a card)
 TODO  test when the decks finish the cards
+TODO saveGame
 */
 
 public class Controller3 implements ControllerInterface, TurnTaker, GameJoiner {
@@ -321,22 +322,35 @@ public class Controller3 implements ControllerInterface, TurnTaker, GameJoiner {
         Game game = multiGame.getGameFromUserNick(this.nickname);
         User user = multiGame.getUserFromNick(this.nickname);
 
-        CardInHand drawnCard;
-        CardInHand cardReplacement;
-        Pair<CardInHand, CardInHand> drawnAndReplacement= drawAndGetReplacement(game.getResourceCardDeck(), game.getGoldCardDeck(), deckType, cardID);
-        drawnCard = drawnAndReplacement.first();
-        cardReplacement = drawnAndReplacement.second();
+        if(!game.areDeckEmpty()) {
+            CardInHand drawnCard;
+            CardInHand cardReplacement;
+            Pair<CardInHand, CardInHand> drawnAndReplacement = drawAndGetReplacement(game.getResourceCardDeck(), game.getGoldCardDeck(), deckType, cardID);
+            drawnCard = drawnAndReplacement.first();
+            cardReplacement = drawnAndReplacement.second();
 
-        user.getUserHand().addCard(drawnCard);
+            user.getUserHand().addCard(drawnCard);
 
-        game.notifyDraw(deckType, cardID, Lightifier.lightifyToCard(drawnCard), Lightifier.lightifyToCard(cardReplacement), this.nickname, drawnCard.canBePlaced(user.getUserCodex()));
-        game.notifyTurn(game.getCurrentPlayer().getNickname());
-        //TODO check for chicken dinner
+            game.notifyDraw(deckType, cardID, Lightifier.lightifyToCard(drawnCard), Lightifier.lightifyToCard(cardReplacement), this.nickname, drawnCard.canBePlaced(user.getUserCodex()));
+        }
 
-        //turn
-        game.setPlayerIndex(getNextActivePlayerIndex());
-        game.notifyTurn(game.getCurrentPlayer().getNickname());
-        //TODO saveGame
+        if(checkForChickenDinner() && Objects.equals(game.getFirstActivePlayer(), this.nickname) && !game.isLastTurn()){
+            game.setLastTurn(true);
+            game.notifyLastTurn();
+        }
+
+        if(Objects.equals(game.getLastActivePlayer(), this.nickname) && game.isLastTurn()){
+            //model update with points
+            game.addObjectivePoints();
+            //notify
+            Map<String, Integer> playerPerPoints = game.getPointPerPlayerMap();
+
+            game.notifyGameEnded(playerPerPoints, playerPerPoints.keySet().stream().toList());
+        }else{
+            //turn
+            game.setPlayerIndex(getNextActivePlayerIndex());
+            game.notifyTurn(game.getCurrentPlayer().getNickname());
+        }
     }
 
     private void leaveGame() {
@@ -345,6 +359,7 @@ public class Controller3 implements ControllerInterface, TurnTaker, GameJoiner {
 
             //TODO timer
             //TODO check concurrency with lobby creation
+            //TODO check if gameEnded
             Game gameToLeave = multiGame.getGameFromUserNick(this.nickname);
             gameToLeave.unsubscribe(this.nickname);
             User you = gameToLeave.getUserFromNick(this.nickname);
@@ -473,6 +488,11 @@ public class Controller3 implements ControllerInterface, TurnTaker, GameJoiner {
 
     }
 
+    @Override
+    public void endGame() {
+        transitionTo(ViewState.GAME_ENDING);
+    }
+
     /**
      * draw objectiveCard from the deck and set them in the userHand
      * @param user which is drawing the objectiveCard
@@ -499,6 +519,17 @@ public class Controller3 implements ControllerInterface, TurnTaker, GameJoiner {
             drawCard = deck.drawFromBuffer(cardID);
         }
         return drawCard;
+    }
+
+    /**
+     * endGame triggered if anyPlayer have at least 20 points or decks are empty
+     * @return true if the conditions for triggering the last turn are met
+     */
+    private boolean checkForChickenDinner() {
+        Game gameToCheck = multiGame.getGameFromUserNick(this.nickname);
+        List<Integer> playerPoints = gameToCheck.getUsersList().stream().map(User::getUserCodex).map(Codex::getPoints).toList();
+
+        return gameToCheck.areDeckEmpty() || playerPoints.stream().anyMatch(p->p>=Configs.pointsToStartGameEnding);
     }
 
     /**

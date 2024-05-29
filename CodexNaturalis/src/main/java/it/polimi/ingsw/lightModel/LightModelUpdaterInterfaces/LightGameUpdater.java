@@ -6,6 +6,9 @@ import it.polimi.ingsw.lightModel.lightTableRelated.LightGame;
 import java.io.Serializable;
 import java.rmi.Remote;
 import java.rmi.RemoteException;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Map;
 
 public interface LightGameUpdater extends Updater, Serializable, Remote {
     /**
@@ -17,9 +20,9 @@ public interface LightGameUpdater extends Updater, Serializable, Remote {
 
     /**
      * Set the final ranking of the game
-     * @param nicks the nicknames of the players
-     * @param points the points of the players
+     * @param ranking the ordered list of the final raking in decreasing order
+     *                depending on player points
      * @throws RemoteException if the connection between the server and the client fails
      */
-    void setFinalRanking(String[] nicks, int[] points) throws Exception;
+    void setFinalRanking(List<String> ranking) throws Exception;
 }

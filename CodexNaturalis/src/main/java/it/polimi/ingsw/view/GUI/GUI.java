@@ -24,6 +24,8 @@ import javafx.stage.WindowEvent;
 
 import java.rmi.RemoteException;
 import java.util.Arrays;
+import java.util.List;
+import java.util.Map;
 
 public class GUI extends Application implements ActualView {
     static private ControllerInterface controller;
@@ -148,7 +150,7 @@ public class GUI extends Application implements ActualView {
     }
 
     @Override
-    public void setFinalRanking(String[] nicks, int[] points) throws RemoteException {
+    public void setFinalRanking(List<String> ranking) throws RemoteException {
             Platform.runLater(() -> transitionTo(StateGUI.GAME_ENDING));
     }
 

@@ -8,7 +8,7 @@ public class GameDiffJoinStartCard extends GameDiff{
     private final GameDiffInitialization initialization;
     private final GameDiffPlayerActivity playerActivity;
     private final List<DeckDiff> decks;
-    private final List<CodexDiff> codex;
+    private final List<CodexDiffPlacement> codex;
     private final List<HandDiff> handYours;
 
     /**
@@ -21,7 +21,7 @@ public class GameDiffJoinStartCard extends GameDiff{
      * @param codex the diffs to set the current state of the codexes
      * @param handYours the diffs to get the current state of your hand
      */
-    public GameDiffJoinStartCard(GameDiffInitialization initialization, GameDiffPlayerActivity playerActivity, List<DeckDiff> decks, List<CodexDiff> codex, List<HandDiff> handYours) {
+    public GameDiffJoinStartCard(GameDiffInitialization initialization, GameDiffPlayerActivity playerActivity, List<DeckDiff> decks, List<CodexDiffPlacement> codex, List<HandDiff> handYours) {
         this.initialization = initialization;
         this.playerActivity = playerActivity;
         this.decks = decks;
@@ -36,7 +36,7 @@ public class GameDiffJoinStartCard extends GameDiff{
         for (DeckDiff d : decks) {
             d.apply(game);
         }
-        for (CodexDiff c : codex) {
+        for (CodexDiffPlacement c : codex) {
             c.apply(game);
         }
         for (HandDiff h : handYours) {

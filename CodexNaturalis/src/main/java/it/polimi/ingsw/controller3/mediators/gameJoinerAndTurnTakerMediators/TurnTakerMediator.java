@@ -39,6 +39,9 @@ public class TurnTakerMediator extends GenericJoinAndTurnMediator<TurnTaker> {
         subscribers.values().forEach(TurnTaker::chooseObjective);
     }
 
+    public synchronized void notifyGameEnded(){
+        subscribers.values().forEach(TurnTaker::endGame);
+    }
     /**
      * This method is used to get the list of active player's nickname
      * @return the list of active player's nickname
@@ -55,4 +58,5 @@ public class TurnTakerMediator extends GenericJoinAndTurnMediator<TurnTaker> {
     public synchronized boolean isPlayerActive(String nickname){
         return subscribers.containsKey(nickname);
     }
+
 }

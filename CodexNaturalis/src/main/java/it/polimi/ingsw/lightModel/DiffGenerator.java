@@ -114,8 +114,8 @@ public class DiffGenerator {
         return diff;
     }
 
-    public static CodexDiff placeCodexDiff(String placer, LightPlacement placement, Codex codex){
-        return new CodexDiff(placer, codex.getPoints(),
+    public static CodexDiffPlacement placeCodexDiff(String placer, LightPlacement placement, Codex codex){
+        return new CodexDiffPlacement(placer, codex.getPoints(),
                 codex.getEarnedCollectables(), List.of(placement), codex.getFrontier().getFrontier());
     }
     /**
@@ -206,12 +206,12 @@ public class DiffGenerator {
     /**
      * @return a list of diffs containing the current state of the codexes in the game
      */
-    private static List<CodexDiff> getCodexCurrentState(Game game){
-        List<CodexDiff> codexDiff = new ArrayList<>();
+    private static List<CodexDiffPlacement> getCodexCurrentState(Game game){
+        List<CodexDiffPlacement> codexDiff = new ArrayList<>();
         List<String> nicknamesInGameParty = game.getGameParty().getUsersList().stream().map(User::getNickname).toList();
         for(String nickname : nicknamesInGameParty){
             LightCodex codex = Lightifier.lightify(game.getGameParty().getUsersList().stream().filter(user -> user.getNickname().equals(nickname)).findFirst().get().getUserCodex());
-            codexDiff.add(new CodexDiff(
+            codexDiff.add(new CodexDiffPlacement(
                     nickname,
                     codex.getPoints(),
                     codex.getEarnedCollectables(),

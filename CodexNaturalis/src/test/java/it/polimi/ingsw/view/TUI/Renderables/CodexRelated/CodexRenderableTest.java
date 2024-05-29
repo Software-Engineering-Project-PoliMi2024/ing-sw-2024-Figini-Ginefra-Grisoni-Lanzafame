@@ -45,7 +45,7 @@ class CodexRenderableTest {
         });
 
 
-        diff = new CodexDiff("Player1", 0, new HashMap<>(), placements, positions);
+        diff = new CodexDiffPlacement("Player1", 0, new HashMap<>(), placements, positions);
         diff.apply(lightGame);
     }
 

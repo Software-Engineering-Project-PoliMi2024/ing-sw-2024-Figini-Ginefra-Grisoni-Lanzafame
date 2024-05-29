@@ -1,7 +1,5 @@
 package it.polimi.ingsw.model.tableReleted;
 
-import it.polimi.ingsw.controller3.mediators.gameJoinerAndTurnTakerMediators.TurnTaker;
-import it.polimi.ingsw.controller3.mediators.gameJoinerAndTurnTakerMediators.TurnTakerMediator;
 import it.polimi.ingsw.model.playerReleted.User;
 
 import java.io.Serializable;
@@ -45,6 +43,16 @@ public class GameParty implements Serializable {
         synchronized (currentPlayerLock){
             return playerList.get(currentPlayerIndex);
         }
+    }
+
+    public Map<String, Integer> getPointPerPlayerMap(){
+        Map<String, Integer> userPointsMap = new HashMap<>();
+        synchronized (playerList) {
+            playerList.forEach(user ->{
+                userPointsMap.put(user.getNickname(), user.getUserCodex().getPoints());
+            });
+        }
+        return userPointsMap;
     }
 
     /**
@@ -115,11 +123,12 @@ public class GameParty implements Serializable {
         }
     }
 
-//TODO to remove
+    //TODO to remove
     public User getFirstPlayerInOrder() {
-        return (playerList.getFirst());
+        synchronized (playerList) {
+            return (playerList.getFirst());
+        }
     }
-
     /**
      * This method advances the game to the next player in the rotation sequence.
      * if there is no currentPlayer, it creates it by launching the chooseStartingOrder method

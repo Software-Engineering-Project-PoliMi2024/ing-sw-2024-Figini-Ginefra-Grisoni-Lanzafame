@@ -29,6 +29,7 @@ import it.polimi.ingsw.view.ViewState;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.Map;
 
 public class TUI implements ActualView {
     private ControllerInterface controller;
@@ -298,7 +299,7 @@ public class TUI implements ActualView {
     }
 
     @Override
-    public void setFinalRanking(String[] nicks, int[] points) {
+    public void setFinalRanking(List<String> ranking) {
 
     }
 

@@ -19,7 +19,7 @@ public class GameDiffJoinSecretObj extends GameDiffJoinStartCard{
      * @param handYours      the diffs to get the current state of your hand
      * @param handOther      the diffs to get the current state of the other players' hands
      */
-    public GameDiffJoinSecretObj(GameDiffInitialization initialization, GameDiffPlayerActivity playerActivity, List<DeckDiff> decks, List<CodexDiff> codex, List<HandDiff> handYours, List<HandOtherDiff> handOther) {
+    public GameDiffJoinSecretObj(GameDiffInitialization initialization, GameDiffPlayerActivity playerActivity, List<DeckDiff> decks, List<CodexDiffPlacement> codex, List<HandDiff> handYours, List<HandOtherDiff> handOther) {
         super(initialization, playerActivity, decks, codex, handYours);
         this.handOther = handOther;
     }
