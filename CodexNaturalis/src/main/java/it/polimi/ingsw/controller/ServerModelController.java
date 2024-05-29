@@ -27,7 +27,7 @@ import it.polimi.ingsw.view.ViewState;
 import java.util.ArrayList;
 import java.util.List;
 
-public class ServerModelController implements ControllerInterface, DiffSubscriber {
+public class ServerModelController implements ControllerInterface, DiffSubscriber, ViewInterface {
     private final MultiGame games;
     private final ViewInterface view;
     private final Controller3 controller3;
@@ -71,12 +71,7 @@ public class ServerModelController implements ControllerInterface, DiffSubscribe
      */
     @Override
     public void choseSecretObjective(LightCard card){
-        User userToEdit = games.getUserFromNick(this.nickname);
-        Game userGame = games.getGameFromUserNick(nickname);
-        userToEdit.setSecretObject(Heavifier.heavifyObjectCard(card, games));
-        userToEdit.getUserHand().setSecretObjectiveChoice(null);
-        this.updateGame(new HandDiffSetObj(card));
-        userGame.getGameLoopController().secretObjectiveChose(this);
+        controller3.choseSecretObjective(card);
     }
 
     /**
@@ -85,45 +80,7 @@ public class ServerModelController implements ControllerInterface, DiffSubscribe
      */
     @Override
     public void place(LightPlacement placement) {
-        User user = games.getUserFromNick(nickname);
-        //if the card place is the startCard
-        if(user.getUserCodex().getFrontier().isInFrontier(new Position(0,0))){
-            Placement heavyPlacement = Heavifier.heavifyStartCardPlacement(placement, this.games.getCardTable());
-            user.placeStartCard(heavyPlacement);
-
-            Game userGame = games.getGameFromUserNick(this.nickname);
-            this.updateGame(new HandDiffRemove(placement.card())); //remove the startCard from the Hand
-            userGame.subscribe(new CodexDiff(this.nickname, user.getUserCodex().getPoints(),
-                    user.getUserCodex().getEarnedCollectables(), getPlacementList(placement), user.getUserCodex().getFrontier().getFrontier()));
-            userGame.getGameLoopController().startCardPlaced(this);
-        }else {
-            Placement heavyPlacement = Heavifier.heavify(placement, this.games.getCardTable());
-            user.playCard(heavyPlacement); //place the card and remove it from the hand
-
-            Game userGame = this.games.getGameFromUserNick(this.nickname);
-            userGame.subscribe(this, new HandDiffRemove(placement.card()), new HandOtherDiffRemove(
-                    new LightBack(heavyPlacement.card().getIdBack()), this.nickname));
-            userGame.subscribe(new CodexDiff(this.nickname, user.getUserCodex().getPoints(),
-                    user.getUserCodex().getEarnedCollectables(), getPlacementList(placement), user.getUserCodex().getFrontier().getFrontier()));
-            for (ServerModelController allControllers : userGame.getGameLoopController().getActivePlayers().values()) {
-                if (!allControllers.equals(this)) {
-                    this.logOther(this.nickname, LogsOnClient.PLAYER_PLACED);
-                } else {
-                    this.logYou(LogsOnClient.YOU_PLACED);
-                }
-            }
-            transitionTo(ViewState.DRAW_CARD);
-        }
-    }
-
-    /**
-     * @param placement the new Placement that is being added
-     * @return a mockList containing only the newPlacement
-     */
-    private List<LightPlacement> getPlacementList(LightPlacement placement){
-        List<LightPlacement> list = new ArrayList<>();
-        list.add(placement);
-        return list;
+        controller3.place(placement);
     }
 
     /**
@@ -134,40 +91,12 @@ public class ServerModelController implements ControllerInterface, DiffSubscribe
      */
     @Override
     public void draw(DrawableCard deckID, int cardID) {
-        CardInHand drawCard;
-        if(cardID<0 || cardID>2){
-            throw  new IllegalArgumentException(cardID + " is out of bound");
-        }else{
-            Game userGame = games.getGameFromUserNick(this.nickname);
-            if(deckID == DrawableCard.GOLDCARD){
-                Deck<GoldCard> goldDeck = userGame.getGoldCardDeck();
-                //drawCard = drawACard(goldDeck, DrawableCard.GOLDCARD, cardID, userGame);
-            }else {
-                Deck<ResourceCard> resourceDeck = userGame.getResourceCardDeck();
-                //drawCard = drawACard(resourceDeck, DrawableCard.RESOURCECARD, cardID, userGame);
-            }
-            logYou(LogsOnClient.CARD_DRAWN);
-            User user = games.getUserFromNick(this.nickname);
+        controller3.draw(deckID, cardID);
             //user.getUserHand().addCard(drawCard);
             /*userGame.subscribe(this, new HandDiffAdd(Lightifier.lightifyToCard(drawCard), drawCard.canBePlaced(user.getUserCodex())),
                     new HandOtherDiffAdd(new LightBack(drawCard.getIdBack()), this.nickname));
             userGame.getGameLoopController().cardDrawn(this);*/
-        }
-    }
 
-    /**
-     * @param deck from which drawn a Card
-     * @param cardID the position from where draw the card (buffer/deck)
-     * @return the card drawn
-     * @param <T> a CardInHand (GoldCard/ResourceCard)
-     */
-    private <T extends CardInHand> T drawACard(Deck<T> deck, int cardID) {
-        T drawCard;
-        if (cardID == 2) {
-            drawCard = deck.drawFromDeck();
-        } else {
-            drawCard = deck.drawFromBuffer(cardID);}
-        return drawCard;
     }
 
     /**
@@ -194,90 +123,65 @@ public class ServerModelController implements ControllerInterface, DiffSubscribe
     public ViewInterface getView() {
         return view;
     }
-    public void log(LogsOnClient log){
-        try {
-            view.log(log.getMessage());
-        }catch (Exception r){
-            r.printStackTrace();
-        }
-    }
-    public void transitionTo(ViewState state){
-        System.out.println(nickname + ":" + state);
-        try {
-            view.transitionTo(state);
-        }catch (Exception r){
-            r.printStackTrace();
-        }
-    }
-    public void updateLobbyYou(ModelDiffs<LightLobby> diff){
-        try {
-            view.updateLobby(diff);
-        }catch (Exception r){
-            r.printStackTrace();
-        }
-    }
-    public void updateLobby(ModelDiffs<LightLobby> diff){
-        try {
-            view.logOthers(this.nickname + LogsOnClient.PLAYER_JOIN_LOBBY.getMessage());
-            view.updateLobby(diff);
-        }catch (Exception r){
-            r.printStackTrace();
-        }
-    }
-    public void updateLobbyList(ModelDiffs<LightLobbyList> diff){
-        System.out.println(nickname + " updated lobbyList");
-        try {
-            view.updateLobbyList(diff);
-        }catch (Exception r){
-            r.printStackTrace();
-        }
-    }
-    public void updateGame(ModelDiffs<LightGame> diff){
-        try {
-            view.updateGame(diff);
-        }catch (Exception r) {
-            r.printStackTrace();
-        }
+
+    @Override
+    public void updateLobby(ModelDiffs<LightLobby> diff) {
+
     }
 
-    public void logYou(LogsOnClient log){
-        try {
-            view.log(log.getMessage());
-        }catch (Exception r){
-            r.printStackTrace();
-        }
-    }
-    public void logOther(String prefix, LogsOnClient log){
-        try{
-            view.logOthers(prefix + log.getMessage());
-        }catch (Exception r){
-            r.printStackTrace();
-        }
-    }
-    public void logErr(LogsOnClient log){
-        try {
-            view.logErr(log.getMessage());
-        }catch (Exception r) {
-            r.printStackTrace();
-        }
-    }
-
-    public void logGame(LogsOnClient log){
-        try {
-            view.logGame(log.getMessage());
-        }catch (Exception r){
-            r.printStackTrace();
-        }
-    }
-    /**
-     * @return user nick
-     */
-    public String getNickname() {
-        return nickname;
+    public String getNickname(){
+        return this.nickname;
     }
 
     @Override
     public void gameStarted() {
+
+    }
+
+    @Override
+    public void updateGame(ModelDiffs<LightGame> diff) {
+
+    }
+
+    @Override
+    public void setFinalRanking(String[] nicks, int[] points) {
+
+    }
+
+    @Override
+    public void updateLobbyList(ModelDiffs<LightLobbyList> diff) {
+
+    }
+
+    @Override
+    public void transitionTo(ViewState state) {
+
+    }
+
+    @Override
+    public void log(String logMsg) {
+
+    }
+
+    @Override
+    public void logErr(String logMsg) {
+
+    }
+
+    @Override
+    public void logOthers(String logMsg) {
+
+    }
+
+    @Override
+    public void logGame(String logMsg) {
+
+    }
+
+    public void logGame(LogsOnClient msg){}
+    public void logYou(LogsOnClient msg){}
+
+    public void logOther(String log){
 
     }
 }

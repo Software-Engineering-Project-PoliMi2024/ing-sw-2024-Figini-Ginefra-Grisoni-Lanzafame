@@ -26,6 +26,7 @@ import it.polimi.ingsw.view.ViewState;
 import java.util.*;
 
 /*
+TODO test deck (when drawing all cards it remains a card)
 TODO  test when the decks finish the cards
 */
 
@@ -223,7 +224,7 @@ public class Controller3 implements ControllerInterface, TurnTaker, GameJoiner {
         Game game = multiGame.getGameFromUserNick(this.nickname);
         User user = game.getUserFromNick(this.nickname);
 
-        user.setSecretObjective(Heavifier.heavifyObjectCard(objectiveCard, multiGame));
+        user.setSecretObjective(Heavifier.heavifyObjectCard(objectiveCard, multiGame.getCardTable()));
         game.notifySecretObjectiveChoice(this.nickname, objectiveCard);
 
         if(game.othersHadAllChooseSecretObjective(this.nickname)) {
@@ -244,12 +245,12 @@ public class Controller3 implements ControllerInterface, TurnTaker, GameJoiner {
         Placement heavyPlacement;
         try{
             if(placement.position().equals(new Position(0,0))){
-                heavyPlacement = Heavifier.heavifyStartCardPlacement(placement, multiGame);
+                heavyPlacement = Heavifier.heavifyStartCardPlacement(placement, multiGame.getCardTable());
                 if(!user.getUserHand().getStartCard().equals(heavyPlacement.card())){
                     throw new IllegalArgumentException("The card in the placement in position (0,0) is not the start card in hand");
                 }
             }else {
-                heavyPlacement = Heavifier.heavify(placement, multiGame);
+                heavyPlacement = Heavifier.heavify(placement, multiGame.getCardTable());
                 if(!user.getUserHand().getHand().contains(heavyPlacement.card()) || !user.getUserCodex().getFrontier().isInFrontier(placement.position())){
                     throw new IllegalArgumentException("The card in the placement is not in the hand or the position is not in the frontier");
                 }
@@ -345,6 +346,7 @@ public class Controller3 implements ControllerInterface, TurnTaker, GameJoiner {
 
     private void leaveGame() {
         //TODO timer
+        //TODO check concurrency with lobby creation
         Game gameToLeave = multiGame.getGameFromUserNick(this.nickname);
         gameToLeave.unsubscribe(this.nickname);
         User you = gameToLeave.getUserFromNick(this.nickname);
@@ -447,7 +449,6 @@ public class Controller3 implements ControllerInterface, TurnTaker, GameJoiner {
                 this.disconnect();
             }
         }else if(multiGame.isInGameParty(this.nickname)) {
-            //block the entire game
             leaveGame();
         }else{
             multiGame.removeUser(this.nickname);

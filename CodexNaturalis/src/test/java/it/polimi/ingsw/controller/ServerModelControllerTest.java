@@ -896,13 +896,13 @@ class ServerModelControllerTest {
         assert Arrays.stream(view1.lightGame.getHand().getCards()).toList().contains(Lightifier.lightifyToCard(card));
         assert view1.lightGame.getCurrentPlayer().equals(view2.name);
         assert heavyBuffer.containsAll(lightBuffer1) && lightBuffer1.containsAll(heavyBuffer);
-        assert view1.lightGame.getGoldDeck().getDeckBack().idBack() == game.getGoldCardDeck().showTopCardOfDeck().getIdBack();
+        assert view1.lightGame.getGoldDeck().getDeckBack().idBack() == game.getGoldCardDeck().showCardFromBuffer(0).getIdBack();
         //lightModel2
         List<Integer> lightBuffer2 = Arrays.stream(view1.lightGame.getGoldDeck().getCardBuffer()).map(LightCard::idFront).toList();
         assert Arrays.stream(view2.lightGame.getHandOthers().get(view1.name).getCards()).toList().contains(new LightBack(card.getIdBack()));
         assert view1.lightGame.getCurrentPlayer().equals(view2.name);
         assert heavyBuffer.containsAll(lightBuffer2) && lightBuffer2.containsAll(heavyBuffer);
-        assert view2.lightGame.getGoldDeck().getDeckBack().idBack() == game.getGoldCardDeck().showTopCardOfDeck().getIdBack();
+        assert view2.lightGame.getGoldDeck().getDeckBack().idBack() == game.getGoldCardDeck().showCardFromBuffer(0).getIdBack();
 
     }
 }

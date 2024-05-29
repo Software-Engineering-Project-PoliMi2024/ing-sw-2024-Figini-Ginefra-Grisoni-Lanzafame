@@ -167,7 +167,7 @@ public class GameLoopController implements Serializable {
             this.onePlayerLeft(leavingController);
         }else{
             for(ServerModelController stillActiveController : activePlayers.values()){
-                stillActiveController.logOther(leavingController.getNickname(), LogsOnClient.PLAYER_GAME_LEFT);
+                //stillActiveController.logOther(leavingController.getNickname(), LogsOnClient.PLAYER_GAME_LEFT);
             }
             //The leaving player is the current player
             if(hasEveryPlayerHasPlacedAndChosen(leavingUser) && leavingUser.equals(game.getGameParty().getCurrentPlayer())){
@@ -207,7 +207,7 @@ public class GameLoopController implements Serializable {
      */
     private void onePlayerLeft(ServerModelController leavingController) {
         ServerModelController lastController = activePlayers.values().iterator().next();
-        lastController.logOther(leavingController.getNickname(), LogsOnClient.PLAYER_GAME_LEFT);
+        //lastController.logOther(leavingController.getNickname(), LogsOnClient.PLAYER_GAME_LEFT);
         lastController.logGame(LogsOnClient.LAST_PLAYER);
         lastController.logGame(LogsOnClient.COUNTDOWN_START);
 
@@ -500,7 +500,7 @@ public class GameLoopController implements Serializable {
     private void logYouAndOther(ServerModelController controller, LogsOnClient youLog, LogsOnClient theirLog){
         for(ServerModelController allControllers : activePlayers.values()){
             if(!allControllers.equals(controller)){
-                allControllers.logOther(controller.getNickname(), theirLog);
+                //allControllers.logOther(controller.getNickname(), theirLog);
             }else{
                 controller.logYou(youLog);
             }
