@@ -344,8 +344,7 @@ public class Controller3 implements ControllerInterface, TurnTaker, GameJoiner {
             game.addObjectivePoints();
             //notify
             Map<String, Integer> playerPerPoints = game.getPointPerPlayerMap();
-
-            game.notifyGameEnded(playerPerPoints, playerPerPoints.keySet().stream().toList());
+            game.notifyGameEnded(playerPerPoints);
         }else{
             //turn
             game.setPlayerIndex(getNextActivePlayerIndex());

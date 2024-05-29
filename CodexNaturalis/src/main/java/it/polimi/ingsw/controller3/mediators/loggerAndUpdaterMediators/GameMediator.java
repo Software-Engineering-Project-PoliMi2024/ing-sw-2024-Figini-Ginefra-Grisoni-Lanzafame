@@ -311,13 +311,12 @@ public class GameMediator extends LoggerAndUpdaterMediator<LightGameUpdater, Lig
      * update the codex on lightGame with the points given by the objective points
      * @param pointsPerPlayerMap the map containing for ech player their name and the point earned
      */
-    public synchronized void notifyGameEnded(Map<String, Integer> pointsPerPlayerMap, List<String> finalRanking){
+    public synchronized void notifyGameEnded(Map<String, Integer> pointsPerPlayerMap){
         subscribers.forEach((nick, pair)->{
             LoggerInterface logger = pair.second();
             LightGameUpdater updater = pair.first();
             try{
                 updater.updateGame(new CodexDiffSetFinalPoints(pointsPerPlayerMap));
-                updater.setFinalRanking(finalRanking);
                 logger.logGame(LogsOnClientStatic.GAME_END);
             }catch (Exception e){
                 System.out.println("GameMediator.notifyGameEnded: subscriber " + nick + " not reachable" + e.getMessage());

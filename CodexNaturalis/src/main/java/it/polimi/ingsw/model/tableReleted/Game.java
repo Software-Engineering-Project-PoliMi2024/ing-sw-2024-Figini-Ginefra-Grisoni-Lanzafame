@@ -253,8 +253,8 @@ public class Game implements Serializable {
         gameMediator.notifyPlacement(placer, newPlacement, placerCodex, playability);
     }
 
-    public void notifyGameEnded(Map<String, Integer> pointsPerPlayerMap, List<String> playerRanking){
-        gameMediator.notifyGameEnded(pointsPerPlayerMap, playerRanking);
+    public void notifyGameEnded(Map<String, Integer> pointsPerPlayerMap){
+        gameMediator.notifyGameEnded(pointsPerPlayerMap);
     }
     /**
      * @return true if the players in game are choosing the startCard
