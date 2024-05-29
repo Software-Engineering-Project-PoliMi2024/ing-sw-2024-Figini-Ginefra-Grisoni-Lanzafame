@@ -27,7 +27,7 @@ import java.util.*;
 
 /*
 TODO test deck (when drawing all cards it remains a card)
-TODO  test when the decks finish the cards
+TODO test when the decks finish the cards
 TODO saveGame
 */
 
@@ -343,14 +343,15 @@ public class Controller3 implements ControllerInterface, TurnTaker, GameJoiner {
             //model update with points
             game.addObjectivePoints();
             //notify
-            Map<String, Integer> playerPerPoints = game.getPointPerPlayerMap();
-            game.notifyGameEnded(playerPerPoints);
+            game.notifyGameEnded(game.getPointPerPlayerMap(), game.getRankingList());
         }else{
             //turn
             game.setPlayerIndex(getNextActivePlayerIndex());
             game.notifyTurn(game.getCurrentPlayer().getNickname());
         }
     }
+
+
 
     private void leaveGame() {
         if(multiGame.isInGameParty(this.nickname)) {
@@ -416,7 +417,6 @@ public class Controller3 implements ControllerInterface, TurnTaker, GameJoiner {
                 multiGame.removeGame(gameToLeave);
             }
         }
-        this.disconnect();
     }
 
     /**
@@ -580,7 +580,7 @@ public class Controller3 implements ControllerInterface, TurnTaker, GameJoiner {
     }
 
     private void malevolentConsequences(){
-        System.out.println(nickname + "is a malevolent user");
+        System.out.println(nickname + " is a malevolent user");
         this.disconnect();
     }
 

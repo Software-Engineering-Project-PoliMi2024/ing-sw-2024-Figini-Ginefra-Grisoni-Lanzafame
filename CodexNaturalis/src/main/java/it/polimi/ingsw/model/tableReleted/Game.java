@@ -126,7 +126,7 @@ public class Game implements Serializable {
         List<String> activePlayers = this.getActivePlayers();
         List<String> turnsOrder = this.getUsersList().stream().map(User::getNickname).toList();
 
-        return String.valueOf(turnsOrder.stream().filter(activePlayers::contains).findFirst());
+        return turnsOrder.stream().filter(activePlayers::contains).findFirst().orElse(null);
     }
 
     /**
@@ -137,7 +137,7 @@ public class Game implements Serializable {
         ArrayList<String> turnsOrder = new ArrayList<>(this.getUsersList().stream().map(User::getNickname).toList());
         Collections.reverse(turnsOrder);
 
-        return String.valueOf(turnsOrder.stream().filter(activePlayers::contains).findFirst());
+        return turnsOrder.stream().filter(activePlayers::contains).findFirst().orElse(null);
     }
 
     /**
@@ -153,8 +153,26 @@ public class Game implements Serializable {
         }
     }
 
+    /**
+     * @return a Map that maps to each user nickName their points earned
+     */
     public Map<String, Integer> getPointPerPlayerMap(){
         return gameParty.getPointPerPlayerMap();
+    }
+
+    /**
+     * @return a List containing the ranking of the game, with the winner as first and
+     * the others following the order
+     */
+    public List<String> getRankingList(){
+        List<Map.Entry<String, Integer>> pointsPerPlayerList = new ArrayList<>(this.getPointPerPlayerMap().entrySet());
+        pointsPerPlayerList.sort(Map.Entry.comparingByValue(Comparator.reverseOrder()));
+
+        List<String> ranking = new ArrayList<>();
+        for(Map.Entry<String, Integer> pointsOfPlayer : pointsPerPlayerList){
+            ranking.add(pointsOfPlayer.getKey());
+        }
+        return ranking;
     }
     /**
      * This method is used to get the user from its nickname
@@ -253,8 +271,8 @@ public class Game implements Serializable {
         gameMediator.notifyPlacement(placer, newPlacement, placerCodex, playability);
     }
 
-    public void notifyGameEnded(Map<String, Integer> pointsPerPlayerMap){
-        gameMediator.notifyGameEnded(pointsPerPlayerMap);
+    public void notifyGameEnded(Map<String, Integer> pointsPerPlayerMap, List<String> ranking){
+        gameMediator.notifyGameEnded(pointsPerPlayerMap, ranking);
     }
     /**
      * @return true if the players in game are choosing the startCard
