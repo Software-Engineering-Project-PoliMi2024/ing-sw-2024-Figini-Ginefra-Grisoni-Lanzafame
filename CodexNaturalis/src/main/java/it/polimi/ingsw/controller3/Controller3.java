@@ -187,7 +187,7 @@ public class Controller3 implements ControllerInterface, TurnTaker, GameJoiner {
      */
     @Override
     public synchronized void leaveLobby() {
-        if (isNotLogged()) {
+        if (isNotLogged() || (!multiGame.isInGameParty(this.nickname) && !multiGame.isInLobby(this.nickname))) {
             malevolentConsequences();
             return;
         }
@@ -340,68 +340,69 @@ public class Controller3 implements ControllerInterface, TurnTaker, GameJoiner {
     }
 
     private void leaveGame() {
-        if(!multiGame.isInGameParty(this.nickname))
-            return;
+        if(multiGame.isInGameParty(this.nickname)) {
 
-        //TODO timer
-        //TODO check concurrency with lobby creation
-        Game gameToLeave = multiGame.getGameFromUserNick(this.nickname);
-        gameToLeave.unsubscribe(this.nickname);
-        User you = gameToLeave.getUserFromNick(this.nickname);
 
-        if (gameToLeave.isInStartCardState()) {
-            if (gameToLeave.othersHadAllPlacedStartCard(this.nickname) && !you.hasPlacedStartCard()) {
-                gameToLeave.removeUser(this.nickname);
-                gameToLeave.notifyMoveToSelectObjState();
-            }
-        } else if (gameToLeave.inInSecretObjState()) {
+            //TODO timer
+            //TODO check concurrency with lobby creation
+            Game gameToLeave = multiGame.getGameFromUserNick(this.nickname);
+            gameToLeave.unsubscribe(this.nickname);
+            User you = gameToLeave.getUserFromNick(this.nickname);
 
-            if (gameToLeave.othersHadAllChooseSecretObjective(this.nickname) && !you.hasChosenObjective()) {
-                gameToLeave.removeUser(this.nickname);
-                User currentUserPlayer = gameToLeave.getCurrentPlayer();
-                int nextPlayerIndex = getNextActivePlayerIndex();
-                String nextPlayerNick = gameToLeave.getPlayerFromIndex(nextPlayerIndex).getNickname();
-                if (Objects.equals(currentUserPlayer.getNickname(), this.nickname)) {
+            if (gameToLeave.isInStartCardState()) {
+                if (gameToLeave.othersHadAllPlacedStartCard(this.nickname) && !you.hasPlacedStartCard()) {
+                    gameToLeave.removeUser(this.nickname);
+                    gameToLeave.notifyMoveToSelectObjState();
+                }
+            } else if (gameToLeave.inInSecretObjState()) {
+
+                if (gameToLeave.othersHadAllChooseSecretObjective(this.nickname) && !you.hasChosenObjective()) {
+                    gameToLeave.removeUser(this.nickname);
+                    User currentUserPlayer = gameToLeave.getCurrentPlayer();
+                    int nextPlayerIndex = getNextActivePlayerIndex();
+                    String nextPlayerNick = gameToLeave.getPlayerFromIndex(nextPlayerIndex).getNickname();
+                    if (Objects.equals(currentUserPlayer.getNickname(), this.nickname)) {
+                        gameToLeave.setPlayerIndex(nextPlayerIndex);
+                    }
+                    gameToLeave.notifyTurn(nextPlayerNick);
+                    gameToLeave.notifyEndSetupStartActualGame();
+                }
+
+            } else if (!gameToLeave.isInSetup()) { //if the game is in the actual game phase
+                if (gameToLeave.getCurrentPlayer().getNickname().equals(this.nickname)) { //if current player leaves
+
+                    int nextPlayerIndex = getNextActivePlayerIndex();
+                    String nextPlayerNick = gameToLeave.getPlayerFromIndex(nextPlayerIndex).getNickname();
+                    //check if the user has disconnected after placing
+                    if (you.getHandSize() < 3 && !gameToLeave.areDeckEmpty()) {
+                        CardInHand cardDrawn;
+                        CardInHand cardReplacement;
+                        DrawableCard deckType;
+                        int pos;
+                        do {
+                            deckType = randomDeckType();
+                            pos = randomDeckPosition();
+                            Pair<CardInHand, CardInHand> drawnAndReplacement = drawAndGetReplacement(gameToLeave.getResourceCardDeck(), gameToLeave.getGoldCardDeck(), deckType, pos);
+                            cardDrawn = drawnAndReplacement.first();
+                            cardReplacement = drawnAndReplacement.second();
+                        } while (cardDrawn == null);
+
+                        you.getUserHand().addCard(cardDrawn);
+                        boolean playability = cardDrawn.canBePlaced(you.getUserCodex());
+                        gameToLeave.notifyDraw(deckType, pos, Lightifier.lightifyToCard(cardDrawn), Lightifier.lightifyToCard(cardReplacement), you.getNickname(), playability);
+                    }
+                    //move on with the turns for the other players
                     gameToLeave.setPlayerIndex(nextPlayerIndex);
+                    gameToLeave.notifyTurn(nextPlayerNick);
                 }
-                gameToLeave.notifyTurn(nextPlayerNick);
-                gameToLeave.notifyEndSetupStartActualGame();
+            } else
+                throw new IllegalStateException("Controller.leaveGame: Game is in an invalid state");
+            //If the game is empty, remove it from the MultiGame
+            if (gameToLeave.getGameLoopController().getActivePlayers().isEmpty()) {
+                multiGame.removeGame(gameToLeave);
             }
-
-        } else if (!gameToLeave.isInSetup()) { //if the game is in the actual game phase
-            if (gameToLeave.getCurrentPlayer().getNickname().equals(this.nickname)) { //if current player leaves
-
-                int nextPlayerIndex = getNextActivePlayerIndex();
-                String nextPlayerNick = gameToLeave.getPlayerFromIndex(nextPlayerIndex).getNickname();
-                //check if the user has disconnected after placing
-                if (you.getHandSize() < 3 && !gameToLeave.areDeckEmpty()) {
-                    CardInHand cardDrawn;
-                    CardInHand cardReplacement;
-                    DrawableCard deckType;
-                    int pos;
-                    do {
-                        deckType = randomDeckType();
-                        pos = randomDeckPosition();
-                        Pair<CardInHand, CardInHand> drawnAndReplacement= drawAndGetReplacement(gameToLeave.getResourceCardDeck(), gameToLeave.getGoldCardDeck(), deckType, pos);
-                        cardDrawn = drawnAndReplacement.first();
-                        cardReplacement = drawnAndReplacement.second();
-                    } while (cardDrawn == null);
-
-                    you.getUserHand().addCard(cardDrawn);
-                    boolean playability = cardDrawn.canBePlaced(you.getUserCodex());
-                    gameToLeave.notifyDraw(deckType, pos, Lightifier.lightifyToCard(cardDrawn), Lightifier.lightifyToCard(cardReplacement), you.getNickname(), playability);
-                }
-                //move on with the turns for the other players
-                gameToLeave.setPlayerIndex(nextPlayerIndex);
-                gameToLeave.notifyTurn(nextPlayerNick);
-            }
-        } else
-            throw new IllegalStateException("Controller.leaveGame: Game is in an invalid state");
-        //If the game is empty, remove it from the MultiGame
-        if (gameToLeave.getGameLoopController().getActivePlayers().isEmpty()) {
-            multiGame.removeGame(gameToLeave);
         }
-        multiGame.removeUser(this.nickname);
+        this.disconnect();
     }
 
     /**
@@ -430,16 +431,15 @@ public class Controller3 implements ControllerInterface, TurnTaker, GameJoiner {
         return game.getUsersList().indexOf(nextPlayer);
     }
 
-    public synchronized void leaveLobbyList(){
-
-    }
     @Override
     public synchronized void disconnect() {
         if(this.nickname == null){
             System.out.println("User disconnected before logging in");
         }else{
-            leaveLobby();
-            leaveGame();
+            if(multiGame.isInLobby(this.nickname) || multiGame.isInGameParty(this.nickname)) {
+                leaveLobby();
+                leaveGame();
+            }
             multiGame.removeUser(this.nickname);
             System.out.println(this.nickname + " has disconnected");
         }
@@ -449,8 +449,6 @@ public class Controller3 implements ControllerInterface, TurnTaker, GameJoiner {
     @Override
     public synchronized void joinGame() {
         System.out.println(this.nickname + " joined the game");
-        if(multiGame.getUserLobby(this.nickname) != null)
-            multiGame.getUserLobby(this.nickname).unsubscribe(this.nickname);
         Game gameToJoin = multiGame.getGameFromUserNick(this.nickname);
         User user = gameToJoin.getUserFromNick(this.nickname);
         if (user.getUserHand().getStartCard() == null && !user.hasPlacedStartCard()) {
