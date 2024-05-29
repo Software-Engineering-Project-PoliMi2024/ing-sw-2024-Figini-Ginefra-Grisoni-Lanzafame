@@ -4,7 +4,6 @@ package it.polimi.ingsw.controller.ConnectionLayer;
 import it.polimi.ingsw.connectionLayer.Socket.ClientHandler;
 import it.polimi.ingsw.connectionLayer.Socket.ServerMsg.*;
 import it.polimi.ingsw.connectionLayer.VirtualSocket.VirtualViewSocket;
-import it.polimi.ingsw.lightModel.diffs.game.HandDiffAdd;
 import it.polimi.ingsw.view.ViewState;
 import org.junit.jupiter.api.Test;
 
@@ -14,9 +13,7 @@ import java.io.ObjectOutputStream;
 import java.net.ServerSocket;
 import java.net.Socket;
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.*;

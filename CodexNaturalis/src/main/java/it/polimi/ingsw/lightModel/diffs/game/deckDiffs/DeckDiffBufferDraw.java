@@ -1,4 +1,4 @@
-package it.polimi.ingsw.lightModel.diffs.game;
+package it.polimi.ingsw.lightModel.diffs.game.deckDiffs;
 
 import it.polimi.ingsw.lightModel.lightPlayerRelated.LightCard;
 import it.polimi.ingsw.lightModel.lightTableRelated.LightGame;

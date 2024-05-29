@@ -1,5 +1,10 @@
-package it.polimi.ingsw.lightModel.diffs.game;
+package it.polimi.ingsw.lightModel.diffs.game.joinDiffs;
 
+import it.polimi.ingsw.lightModel.diffs.game.gamePartyDiffs.GameDiffPlayerActivity;
+import it.polimi.ingsw.lightModel.diffs.game.handDiffs.HandDiff;
+import it.polimi.ingsw.lightModel.diffs.game.handDiffOther.HandOtherDiff;
+import it.polimi.ingsw.lightModel.diffs.game.codexDiffs.CodexDiffPlacement;
+import it.polimi.ingsw.lightModel.diffs.game.deckDiffs.DeckDiff;
 import it.polimi.ingsw.lightModel.lightTableRelated.LightGame;
 
 import java.util.List;

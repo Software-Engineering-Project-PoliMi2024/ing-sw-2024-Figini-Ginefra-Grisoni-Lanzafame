@@ -1,10 +1,15 @@
-package it.polimi.ingsw.lightModel.diffs.game;
+package it.polimi.ingsw.lightModel.diffs.game.joinDiffs;
 
+import it.polimi.ingsw.lightModel.diffs.game.GameDiff;
+import it.polimi.ingsw.lightModel.diffs.game.gamePartyDiffs.GameDiffPlayerActivity;
+import it.polimi.ingsw.lightModel.diffs.game.handDiffs.HandDiff;
+import it.polimi.ingsw.lightModel.diffs.game.codexDiffs.CodexDiffPlacement;
+import it.polimi.ingsw.lightModel.diffs.game.deckDiffs.DeckDiff;
 import it.polimi.ingsw.lightModel.lightTableRelated.LightGame;
 
 import java.util.List;
 
-public class GameDiffJoinStartCard extends GameDiff{
+public class GameDiffJoinStartCard extends GameDiff {
     private final GameDiffInitialization initialization;
     private final GameDiffPlayerActivity playerActivity;
     private final List<DeckDiff> decks;

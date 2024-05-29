@@ -2,6 +2,22 @@ package it.polimi.ingsw.lightModel;
 
 
 import it.polimi.ingsw.lightModel.diffs.game.*;
+import it.polimi.ingsw.lightModel.diffs.game.codexDiffs.CodexDiffPlacement;
+import it.polimi.ingsw.lightModel.diffs.game.deckDiffs.DeckDiff;
+import it.polimi.ingsw.lightModel.diffs.game.deckDiffs.DeckDiffBufferDraw;
+import it.polimi.ingsw.lightModel.diffs.game.deckDiffs.DeckDiffDeckDraw;
+import it.polimi.ingsw.lightModel.diffs.game.gamePartyDiffs.GameDiffCurrentPlayer;
+import it.polimi.ingsw.lightModel.diffs.game.gamePartyDiffs.GameDiffPlayerActivity;
+import it.polimi.ingsw.lightModel.diffs.game.handDiffOther.HandOtherDiff;
+import it.polimi.ingsw.lightModel.diffs.game.handDiffOther.HandOtherDiffAdd;
+import it.polimi.ingsw.lightModel.diffs.game.handDiffs.HandDiff;
+import it.polimi.ingsw.lightModel.diffs.game.handDiffs.HandDiffAdd;
+import it.polimi.ingsw.lightModel.diffs.game.handDiffs.HandDiffAddOneSecretObjectiveOption;
+import it.polimi.ingsw.lightModel.diffs.game.handDiffs.HandDiffSetObj;
+import it.polimi.ingsw.lightModel.diffs.game.joinDiffs.GameDiffInitialization;
+import it.polimi.ingsw.lightModel.diffs.game.joinDiffs.GameDiffJoinMidGame;
+import it.polimi.ingsw.lightModel.diffs.game.joinDiffs.GameDiffJoinSecretObj;
+import it.polimi.ingsw.lightModel.diffs.game.joinDiffs.GameDiffJoinStartCard;
 import it.polimi.ingsw.lightModel.diffs.lobby_lobbyList.LobbyDiffEdit;
 import it.polimi.ingsw.lightModel.diffs.lobby_lobbyList.LobbyDiffEditLogin;
 import it.polimi.ingsw.lightModel.diffs.lobby_lobbyList.LobbyListDiff;

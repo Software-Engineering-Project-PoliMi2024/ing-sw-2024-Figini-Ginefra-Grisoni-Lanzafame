@@ -1,6 +1,19 @@
 package it.polimi.ingsw.lightModel.diffPublishers;
 
 import it.polimi.ingsw.lightModel.DiffGenerator;
+import it.polimi.ingsw.lightModel.diffs.game.codexDiffs.CodexDiffPlacement;
+import it.polimi.ingsw.lightModel.diffs.game.deckDiffs.DeckDiff;
+import it.polimi.ingsw.lightModel.diffs.game.deckDiffs.DeckDiffBufferDraw;
+import it.polimi.ingsw.lightModel.diffs.game.deckDiffs.DeckDiffDeckDraw;
+import it.polimi.ingsw.lightModel.diffs.game.gamePartyDiffs.GameDiffCurrentPlayer;
+import it.polimi.ingsw.lightModel.diffs.game.gamePartyDiffs.GameDiffPlayerActivity;
+import it.polimi.ingsw.lightModel.diffs.game.handDiffOther.HandOtherDiff;
+import it.polimi.ingsw.lightModel.diffs.game.handDiffOther.HandOtherDiffAdd;
+import it.polimi.ingsw.lightModel.diffs.game.handDiffs.HandDiff;
+import it.polimi.ingsw.lightModel.diffs.game.handDiffs.HandDiffAdd;
+import it.polimi.ingsw.lightModel.diffs.game.handDiffs.HandDiffSetObj;
+import it.polimi.ingsw.lightModel.diffs.game.joinDiffs.GameDiffInitialization;
+import it.polimi.ingsw.lightModel.diffs.game.joinDiffs.GameDiffJoinMidGame;
 import it.polimi.ingsw.lightModel.lightPlayerRelated.*;
 import it.polimi.ingsw.lightModel.Lightifier;
 import it.polimi.ingsw.lightModel.diffs.game.*;

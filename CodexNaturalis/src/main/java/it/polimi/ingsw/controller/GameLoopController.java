@@ -1,6 +1,10 @@
 package it.polimi.ingsw.controller;
 
 import it.polimi.ingsw.Configs;
+import it.polimi.ingsw.lightModel.diffs.game.gamePartyDiffs.GameDiffCurrentPlayer;
+import it.polimi.ingsw.lightModel.diffs.game.handDiffOther.HandOtherDiffAdd;
+import it.polimi.ingsw.lightModel.diffs.game.handDiffs.HandDiffAdd;
+import it.polimi.ingsw.lightModel.diffs.game.handDiffs.HandDiffAddOneSecretObjectiveOption;
 import it.polimi.ingsw.lightModel.lightPlayerRelated.LightBack;
 import it.polimi.ingsw.lightModel.lightPlayerRelated.LightCard;
 import it.polimi.ingsw.lightModel.Lightifier;

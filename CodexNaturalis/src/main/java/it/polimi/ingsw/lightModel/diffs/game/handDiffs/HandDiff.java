@@ -1,8 +1,9 @@
-package it.polimi.ingsw.lightModel.diffs.game;
+package it.polimi.ingsw.lightModel.diffs.game.handDiffs;
+import it.polimi.ingsw.lightModel.diffs.game.GameDiff;
 import it.polimi.ingsw.lightModel.lightPlayerRelated.LightCard;
 import it.polimi.ingsw.lightModel.lightTableRelated.LightGame;
 
-public abstract class HandDiff extends GameDiff{
+public abstract class HandDiff extends GameDiff {
     protected final LightCard card;
     /**
      * @param card the LightCard to which the diff applies

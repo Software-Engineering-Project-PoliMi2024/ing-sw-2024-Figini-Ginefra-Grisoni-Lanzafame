@@ -1,5 +1,6 @@
-package it.polimi.ingsw.lightModel.diffs.game;
+package it.polimi.ingsw.lightModel.diffs.game.codexDiffs;
 
+import it.polimi.ingsw.lightModel.diffs.game.GameDiff;
 import it.polimi.ingsw.lightModel.lightPlayerRelated.LightFrontier;
 import it.polimi.ingsw.lightModel.lightTableRelated.LightGame;
 import it.polimi.ingsw.lightModel.lightPlayerRelated.LightPlacement;
@@ -9,7 +10,7 @@ import it.polimi.ingsw.model.playerReleted.Position;
 import java.util.List;
 import java.util.Map;
 
-public class CodexDiffPlacement extends GameDiff{
+public class CodexDiffPlacement extends GameDiff {
     private final String owner;
     private final int setPoints;
     private final Map<Collectable, Integer> collectables;

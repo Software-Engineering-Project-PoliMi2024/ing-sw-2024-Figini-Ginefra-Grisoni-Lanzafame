@@ -1,9 +1,9 @@
-package it.polimi.ingsw.lightModel.diffs.game;
+package it.polimi.ingsw.lightModel.diffs.game.handDiffOther;
 
+import it.polimi.ingsw.lightModel.diffs.game.GameDiff;
 import it.polimi.ingsw.lightModel.lightPlayerRelated.LightBack;
-import it.polimi.ingsw.model.cardReleted.utilityEnums.Resource;
 
-public abstract class HandOtherDiff extends GameDiff{
+public abstract class HandOtherDiff extends GameDiff {
     protected final LightBack card;
     protected final String owner;
 

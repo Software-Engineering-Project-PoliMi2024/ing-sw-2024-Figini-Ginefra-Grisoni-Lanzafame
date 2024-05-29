@@ -1,4 +1,4 @@
-package it.polimi.ingsw.lightModel.diffs.game;
+package it.polimi.ingsw.lightModel.diffs.game.codexDiffs;
 
 import it.polimi.ingsw.lightModel.diffs.ModelDiffs;
 import it.polimi.ingsw.lightModel.lightPlayerRelated.LightFrontier;

@@ -3,11 +3,10 @@ package it.polimi.ingsw.lightModel.lightPlayerRelated;
 import it.polimi.ingsw.designPatterns.Observed;
 import it.polimi.ingsw.designPatterns.Observer;
 import it.polimi.ingsw.lightModel.Differentiable;
-import it.polimi.ingsw.lightModel.diffs.game.FrontierDiff;
+import it.polimi.ingsw.lightModel.diffs.game.codexDiffs.FrontierDiff;
 import it.polimi.ingsw.model.cardReleted.utilityEnums.Collectable;
 import it.polimi.ingsw.model.cardReleted.utilityEnums.Resource;
 import it.polimi.ingsw.model.cardReleted.utilityEnums.WritingMaterial;
-import it.polimi.ingsw.model.playerReleted.Placement;
 import it.polimi.ingsw.model.playerReleted.Position;
 
 import java.util.*;

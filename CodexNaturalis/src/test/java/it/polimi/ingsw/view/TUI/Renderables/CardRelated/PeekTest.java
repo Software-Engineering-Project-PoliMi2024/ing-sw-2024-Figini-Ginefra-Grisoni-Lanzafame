@@ -1,6 +1,11 @@
 package it.polimi.ingsw.view.TUI.Renderables.CardRelated;
 
 import it.polimi.ingsw.Configs;
+import it.polimi.ingsw.lightModel.diffs.game.codexDiffs.CodexDiffPlacement;
+import it.polimi.ingsw.lightModel.diffs.game.gamePartyDiffs.GameDiffCurrentPlayer;
+import it.polimi.ingsw.lightModel.diffs.game.gamePartyDiffs.GameDiffPlayerActivity;
+import it.polimi.ingsw.lightModel.diffs.game.handDiffOther.HandOtherDiffAdd;
+import it.polimi.ingsw.lightModel.diffs.game.joinDiffs.GameDiffInitialization;
 import it.polimi.ingsw.lightModel.lightPlayerRelated.LightBack;
 import it.polimi.ingsw.lightModel.lightPlayerRelated.LightCard;
 import it.polimi.ingsw.lightModel.diffs.game.*;

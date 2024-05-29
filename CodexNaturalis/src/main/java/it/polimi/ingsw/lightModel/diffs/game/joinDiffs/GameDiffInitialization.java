@@ -1,11 +1,12 @@
-package it.polimi.ingsw.lightModel.diffs.game;
+package it.polimi.ingsw.lightModel.diffs.game.joinDiffs;
 
+import it.polimi.ingsw.lightModel.diffs.game.GameDiff;
+import it.polimi.ingsw.lightModel.diffs.game.gamePartyDiffs.GameDiffCurrentPlayer;
 import it.polimi.ingsw.lightModel.lightTableRelated.LightGame;
 
 import java.util.List;
-import java.util.SimpleTimeZone;
 
-public class GameDiffInitialization extends GameDiff{
+public class GameDiffInitialization extends GameDiff {
     private final String gameName;
     private final String yourName;
     private final List<String> players;

@@ -1,8 +1,7 @@
-package it.polimi.ingsw.lightModel.diffs.game;
+package it.polimi.ingsw.lightModel.diffs.game.handDiffOther;
 
 import it.polimi.ingsw.lightModel.lightPlayerRelated.LightBack;
 import it.polimi.ingsw.lightModel.lightTableRelated.LightGame;
-import it.polimi.ingsw.model.cardReleted.utilityEnums.Resource;
 
 public class HandOtherDiffRemove extends HandOtherDiff{
     public HandOtherDiffRemove(LightBack card, String owner) {

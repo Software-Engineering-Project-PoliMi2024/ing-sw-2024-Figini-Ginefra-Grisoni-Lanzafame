@@ -3,7 +3,7 @@ package it.polimi.ingsw.view.TUI.Renderables;
 import it.polimi.ingsw.Configs;
 import it.polimi.ingsw.lightModel.lightPlayerRelated.LightCard;
 import it.polimi.ingsw.lightModel.diffs.game.GameDiff;
-import it.polimi.ingsw.lightModel.diffs.game.HandDiffAdd;
+import it.polimi.ingsw.lightModel.diffs.game.handDiffs.HandDiffAdd;
 import it.polimi.ingsw.lightModel.lightTableRelated.LightGame;
 import it.polimi.ingsw.view.TUI.Renderables.CardRelated.ChooseStartCardRenderable;
 import it.polimi.ingsw.view.TUI.cardDrawing.CardMuseum;
