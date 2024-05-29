@@ -1,5 +1,8 @@
 package it.polimi.ingsw.model.tableReleted;
 
+import it.polimi.ingsw.Configs;
+import it.polimi.ingsw.model.cardReleted.cards.CardInHand;
+
 import java.io.Serializable;
 import java.lang.reflect.Array;
 import java.util.*;
@@ -107,5 +110,29 @@ public class Deck<Element> implements Serializable {
 
     public boolean isEmpty(){
         return actualDeck.isEmpty() && buffer.isEmpty();
+    }
+
+    public Element peekCardInDecks(int cardID){
+        Element card;
+        if (cardID == Configs.actualDeckPos) {
+            card = showTopCardOfDeck();
+        } else {
+            card = showCardFromBuffer(cardID);
+        }
+        return card;
+    }
+
+    /**
+     * @param cardID the position from where draw the card (buffer/deck)
+     * @return the card drawn
+     */
+    public Element drawACard(int cardID) {
+        Element drawCard;
+        if (cardID == Configs.actualDeckPos) {
+            drawCard = drawFromDeck();
+        } else {
+            drawCard = drawFromBuffer(cardID);
+        }
+        return drawCard;
     }
 }

@@ -262,15 +262,18 @@ public class Controller3 implements ControllerInterface, TurnTaker, GameJoiner {
             //model: place startCard
             user.placeStartCard(heavyPlacement);
             //model: add cards to hand
+            CardInHand resourceDeck = null;
             for (int i = 0; i < 2; i++) {
-                CardInHand resourceCard = game.getResourceCardDeck().drawFromDeck();
-                user.getUserHand().addCard(resourceCard);
+                Pair<CardInHand, CardInHand> resourceDrawnAndReplacement = game.drawAndGetReplacement(DrawableCard.RESOURCECARD, Configs.actualDeckPos);
+                user.getUserHand().addCard(resourceDrawnAndReplacement.first());
+                resourceDeck = resourceDrawnAndReplacement.second();
             }
-            CardInHand goldCard = game.getGoldCardDeck().drawFromDeck();
-            user.getUserHand().addCard(goldCard);
+            Pair<CardInHand, CardInHand> goldDrawnAndReplacement = game.drawAndGetReplacement(DrawableCard.GOLDCARD, Configs.actualDeckPos);
+            user.getUserHand().addCard(goldDrawnAndReplacement.first());
             //notify everyone and update my lightModel
-            LightBack resourceBack = new LightBack(game.getResourceCardDeck().showTopCardOfDeck().getIdBack());
-            LightBack goldBack = new LightBack(game.getGoldCardDeck().showTopCardOfDeck().getIdBack());
+            LightBack resourceBack = new LightBack(resourceDeck.getIdBack());
+            LightBack goldBack = new LightBack(goldDrawnAndReplacement.second().getIdBack());
+
             game.notifyStartCardFaceChoice(this.nickname, user, placement, resourceBack, goldBack);
 
             //check if lastToPlace
@@ -325,7 +328,7 @@ public class Controller3 implements ControllerInterface, TurnTaker, GameJoiner {
         if(!game.areDeckEmpty()) {
             CardInHand drawnCard;
             CardInHand cardReplacement;
-            Pair<CardInHand, CardInHand> drawnAndReplacement = drawAndGetReplacement(game.getResourceCardDeck(), game.getGoldCardDeck(), deckType, cardID);
+            Pair<CardInHand, CardInHand> drawnAndReplacement = game.drawAndGetReplacement(deckType, cardID);
             drawnCard = drawnAndReplacement.first();
             cardReplacement = drawnAndReplacement.second();
 
@@ -334,7 +337,7 @@ public class Controller3 implements ControllerInterface, TurnTaker, GameJoiner {
             game.notifyDraw(deckType, cardID, Lightifier.lightifyToCard(drawnCard), Lightifier.lightifyToCard(cardReplacement), this.nickname, drawnCard.canBePlaced(user.getUserCodex()));
         }
 
-        if(checkForChickenDinner() && Objects.equals(game.getFirstActivePlayer(), this.nickname) && !game.isLastTurn()){
+        if(game.checkForChickenDinner() && Objects.equals(game.getFirstActivePlayer(), this.nickname) && !game.isLastTurn()){
             game.setLastTurn(true);
             game.notifyLastTurn();
         }
@@ -346,7 +349,7 @@ public class Controller3 implements ControllerInterface, TurnTaker, GameJoiner {
             game.notifyGameEnded(game.getPointPerPlayerMap(), game.getRankingList());
         }else{
             //turn
-            game.setPlayerIndex(getNextActivePlayerIndex());
+            game.setPlayerIndex(game.getNextActivePlayerIndex());
             game.notifyTurn(game.getCurrentPlayer().getNickname());
         }
     }
@@ -355,7 +358,6 @@ public class Controller3 implements ControllerInterface, TurnTaker, GameJoiner {
 
     private void leaveGame() {
         if(multiGame.isInGameParty(this.nickname)) {
-
 
             //TODO timer
             //TODO check concurrency with lobby creation
@@ -374,7 +376,7 @@ public class Controller3 implements ControllerInterface, TurnTaker, GameJoiner {
                 if (gameToLeave.othersHadAllChooseSecretObjective(this.nickname) && !you.hasChosenObjective()) {
                     gameToLeave.removeUser(this.nickname);
                     User currentUserPlayer = gameToLeave.getCurrentPlayer();
-                    int nextPlayerIndex = getNextActivePlayerIndex();
+                    int nextPlayerIndex = gameToLeave.getNextPlayerIndex();
                     String nextPlayerNick = gameToLeave.getPlayerFromIndex(nextPlayerIndex).getNickname();
                     if (Objects.equals(currentUserPlayer.getNickname(), this.nickname)) {
                         gameToLeave.setPlayerIndex(nextPlayerIndex);
@@ -386,7 +388,7 @@ public class Controller3 implements ControllerInterface, TurnTaker, GameJoiner {
             } else if (!gameToLeave.isInSetup()) { //if the game is in the actual game phase
                 if (gameToLeave.getCurrentPlayer().getNickname().equals(this.nickname)) { //if current player leaves
 
-                    int nextPlayerIndex = getNextActivePlayerIndex();
+                    int nextPlayerIndex = gameToLeave.getNextActivePlayerIndex();
                     String nextPlayerNick = gameToLeave.getPlayerFromIndex(nextPlayerIndex).getNickname();
                     //check if the user has disconnected after placing
                     if (you.getHandSize() < 3 && !gameToLeave.areDeckEmpty()) {
@@ -397,7 +399,7 @@ public class Controller3 implements ControllerInterface, TurnTaker, GameJoiner {
                         do {
                             deckType = randomDeckType();
                             pos = randomDeckPosition();
-                            Pair<CardInHand, CardInHand> drawnAndReplacement = drawAndGetReplacement(gameToLeave.getResourceCardDeck(), gameToLeave.getGoldCardDeck(), deckType, pos);
+                            Pair<CardInHand, CardInHand> drawnAndReplacement = gameToLeave.drawAndGetReplacement(deckType, pos);
                             cardDrawn = drawnAndReplacement.first();
                             cardReplacement = drawnAndReplacement.second();
                         } while (cardDrawn == null);
@@ -434,16 +436,7 @@ public class Controller3 implements ControllerInterface, TurnTaker, GameJoiner {
         return random.nextInt(3);
     }
 
-    private int getNextActivePlayerIndex(){
-        Game game = multiGame.getGameFromUserNick(this.nickname);
 
-        User nextPlayer = game.getUsersList().get(game.getNextPlayerIndex());
-        while(!game.isPlayerActive(nextPlayer.getNickname())){
-            nextPlayer = game.getUsersList().get(game.getNextPlayerIndex());
-        }
-
-        return game.getUsersList().indexOf(nextPlayer);
-    }
 
     @Override
     public synchronized void disconnect() {
@@ -466,7 +459,7 @@ public class Controller3 implements ControllerInterface, TurnTaker, GameJoiner {
         Game gameToJoin = multiGame.getGameFromUserNick(this.nickname);
         User user = gameToJoin.getUserFromNick(this.nickname);
         if (user.getUserHand().getStartCard() == null && !user.hasPlacedStartCard()) {
-            StartCard startCard = gameToJoin.getStartingCardDeck().drawFromDeck();
+            StartCard startCard = gameToJoin.drawStartCard();
             user.getUserHand().setStartCard(startCard);
         }
         gameToJoin.subscribe(nickname, view, this, false);
@@ -502,66 +495,6 @@ public class Controller3 implements ControllerInterface, TurnTaker, GameJoiner {
             objectiveCards.add(multiGame.getGameFromUserNick(this.nickname).getObjectiveCardDeck().drawFromDeck());
         }
         user.getUserHand().setSecretObjectiveChoice(objectiveCards);
-    }
-
-     /**
-     * @param deck from which drawn a Card
-     * @param cardID the position from where draw the card (buffer/deck)
-     * @return the card drawn
-     * @param <T> a CardInHand (GoldCard/ResourceCard)
-     */
-    private <T extends CardInHand> T drawACard(Deck<T> deck, int cardID) {
-        T drawCard;
-        if (cardID == Configs.actualDeckPos) {
-            drawCard = deck.drawFromDeck();
-        } else {
-            drawCard = deck.drawFromBuffer(cardID);
-        }
-        return drawCard;
-    }
-
-    /**
-     * endGame triggered if anyPlayer have at least 20 points or decks are empty
-     * @return true if the conditions for triggering the last turn are met
-     */
-    private boolean checkForChickenDinner() {
-        Game gameToCheck = multiGame.getGameFromUserNick(this.nickname);
-        List<Integer> playerPoints = gameToCheck.getUsersList().stream().map(User::getUserCodex).map(Codex::getPoints).toList();
-
-        return gameToCheck.areDeckEmpty() || playerPoints.stream().anyMatch(p->p>=Configs.pointsToStartGameEnding);
-    }
-
-    /**
-     * draw a card from one deck (depending on the type passed as parameter) and returns a
-     * pair containing the card drawn and the card that took its place in the decks
-     * @param resourceDeck the deck of resource cards
-     * @param goldDeck the deck of gold cards
-     * @param deckType the deckType (resource or gold)
-     * @param cardID the position from which the user draws
-     * @return the pair <drawnCard, newCard> where the drawn card is
-     * the card drawn and new card is the card replacing it
-     */
-    private Pair<CardInHand, CardInHand> drawAndGetReplacement(Deck<ResourceCard> resourceDeck, Deck<GoldCard> goldDeck, DrawableCard deckType, int cardID){
-        CardInHand drawnCard;
-        CardInHand cardReplacement;
-        if(deckType == DrawableCard.GOLDCARD){
-            drawnCard = drawACard(goldDeck, cardID);
-            cardReplacement = peekCardInDecks(goldDeck, cardID);
-        }else {
-            drawnCard = drawACard(resourceDeck, cardID);
-            cardReplacement = peekCardInDecks(resourceDeck, cardID);
-        }
-        return new Pair<>(drawnCard, cardReplacement);
-    }
-
-    private <T extends CardInHand> T peekCardInDecks(Deck<T> deck, int cardID){
-        T card;
-        if (cardID == Configs.actualDeckPos) {
-            card = deck.showTopCardOfDeck();
-        } else {
-            card = deck.getBuffer().stream().toList().get(cardID);
-        }
-        return card;
     }
 
     @Override
