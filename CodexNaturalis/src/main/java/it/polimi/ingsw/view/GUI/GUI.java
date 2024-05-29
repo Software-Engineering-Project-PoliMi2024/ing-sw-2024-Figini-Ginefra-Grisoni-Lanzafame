@@ -20,6 +20,7 @@ import javafx.scene.Node;
 import javafx.scene.Scene;
 import javafx.scene.layout.AnchorPane;
 import javafx.stage.Stage;
+import javafx.stage.WindowEvent;
 
 import java.rmi.RemoteException;
 import java.util.Arrays;
@@ -64,7 +65,13 @@ public class GUI extends Application implements ActualView {
         AnchorPane.setLeftAnchor(stackRoot, 0.0);
         AnchorPane.setRightAnchor(stackRoot, 0.0);
 
-        primaryStage.show();
+        primaryStage.setOnCloseRequest((WindowEvent event) -> {
+            try {
+                controller.disconnect();
+            }catch (Exception e){}
+        });
+
+            primaryStage.show();
 
         //set stackRoot background and style
         //stackRoot.setStyle("-fx-background-color: #1e1f22;");
