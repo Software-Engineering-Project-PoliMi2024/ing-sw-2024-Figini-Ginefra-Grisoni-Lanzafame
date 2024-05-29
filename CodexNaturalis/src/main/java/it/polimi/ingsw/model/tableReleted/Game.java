@@ -179,18 +179,34 @@ public class Game implements Serializable {
     }
 
     /**
-     * @return a List containing the ranking of the game, with the winner as first and
-     * the others following the order
+     * @return a List containing the winner(s) of the game
      */
-    public List<String> getRankingList(){
-        List<Map.Entry<String, Integer>> pointsPerPlayerList = new ArrayList<>(this.getPointPerPlayerMap().entrySet());
-        pointsPerPlayerList.sort(Map.Entry.comparingByValue(Comparator.reverseOrder()));
+    public List<String> getWinners(){
+        Map<String, Integer> pointsPerPlayer = getPointPerPlayerMap();
+        //Calculate all possibleWinners player(s) who scored the max amount of points in the game
+        int maxPoint = pointsPerPlayer.values().stream().max(Integer::compareTo).orElse(0);
+        List<String> playerMaxPoint = new ArrayList<>(pointsPerPlayer.keySet().stream().filter(nick -> pointsPerPlayer.get(nick) == maxPoint).toList());
+        //calculate the number of objective cards completed
+        Map<String, Integer> objectiveCompleted = new HashMap<>();
+        if(playerMaxPoint.size() > 1){
+            getUsersList().forEach(user ->{
+                if(playerMaxPoint.contains(user.getNickname())){
+                    int completedObj = 0;
+                    for(ObjectiveCard obj : commonObjective){
+                        completedObj += obj.getPoints(user.getUserCodex()) / obj.getPoints();
+                    }
+                    completedObj += user.getUserHand().getSecretObjective().getPoints(user.getUserCodex()) / user.getUserHand().getSecretObjective().getPoints();
+                    objectiveCompleted.put(user.getNickname(), completedObj);
+                }
+            });
+            int maxObj = objectiveCompleted.values().stream().max(Integer::compareTo).orElse(0);
+            List<String> playerMaxObj = objectiveCompleted.keySet().stream().filter(nick -> objectiveCompleted.get(nick) == maxObj).toList();
 
-        List<String> ranking = new ArrayList<>();
-        for(Map.Entry<String, Integer> pointsOfPlayer : pointsPerPlayerList){
-            ranking.add(pointsOfPlayer.getKey());
+            //intersect the two lists to get the winner(s)
+            playerMaxPoint.retainAll(playerMaxObj);
         }
-        return ranking;
+
+        return playerMaxPoint;
     }
     /**
      * This method is used to get the user from its nickname
