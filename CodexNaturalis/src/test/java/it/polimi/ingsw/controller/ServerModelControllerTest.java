@@ -6,22 +6,18 @@ import it.polimi.ingsw.lightModel.Lightifier;
 import it.polimi.ingsw.lightModel.diffPublishers.ViewTest;
 import it.polimi.ingsw.lightModel.lightPlayerRelated.*;
 import it.polimi.ingsw.lightModel.lightTableRelated.LightDeck;
-import it.polimi.ingsw.lightModel.lightTableRelated.LightGameParty;
 import it.polimi.ingsw.lightModel.lightTableRelated.LightLobby;
 import it.polimi.ingsw.model.MultiGame;
 import it.polimi.ingsw.model.cardReleted.cards.Card;
 import it.polimi.ingsw.model.cardReleted.cards.CardInHand;
 import it.polimi.ingsw.model.cardReleted.utilityEnums.CardFace;
-import it.polimi.ingsw.model.cardReleted.utilityEnums.Collectable;
 import it.polimi.ingsw.model.cardReleted.utilityEnums.DrawableCard;
 import it.polimi.ingsw.model.playerReleted.Hand;
-import it.polimi.ingsw.model.playerReleted.Placement;
 import it.polimi.ingsw.model.playerReleted.Position;
 import it.polimi.ingsw.model.playerReleted.User;
 import it.polimi.ingsw.model.tableReleted.Game;
 import it.polimi.ingsw.model.tableReleted.Lobby;
 import it.polimi.ingsw.view.ViewState;
-import javafx.geometry.Pos;
 import org.junit.jupiter.api.Test;
 
 import java.util.ArrayList;
@@ -774,11 +770,14 @@ class ServerModelControllerTest {
         }
         //lightModel2
         LightCodex lightCodex1on2 = view2.lightGame.getCodexMap().get(view1.name);
-        assert !Arrays.stream(view2.lightGame.getHandOthers().get(view1.name).getCards()).toList().contains(Lightifier.lightifyToBack(cardPlaced));
+        List<LightBack> lightHand1on2 = new ArrayList<>(Arrays.stream(view2.lightGame.getHandOthers().get(view1.name).getCards()).toList());
+        System.out.println(lightHand1on2);
+        assert lightHand1on2.contains(null);
+        lightHand1on2.remove(null);
+        assert !lightHand1on2.contains(null);
         assert lightCodex1on2.getPlacementHistory().contains(placement);
         assert !lightCodex1on2.getFrontier().frontier().contains(position);
     }
-
     @Test
     void drawFromDeck() {
         MultiGame multiGame = new MultiGame();
