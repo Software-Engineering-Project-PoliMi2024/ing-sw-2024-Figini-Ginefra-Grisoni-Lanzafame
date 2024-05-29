@@ -20,24 +20,12 @@ public class MultiGame implements Serializable {
     private final Set<Game> games;
     private final LobbyList lobbies; //users that are currently connected to the server
     private final List<String> usernames;
-    private final CardLookUp<ObjectiveCard> cardLookUpObjective;
-    private final CardLookUp<StartCard> cardLookUpStartCard;
-    private final CardLookUp<ResourceCard> cardLookUpResourceCard;
-    private final CardLookUp<GoldCard> cardLookUpGoldCard;
+    private final CardTable cardTable;
     public MultiGame() {
         this.games = PersistenceFactory.load();
         this.usernames = new ArrayList<>();
         lobbies = new LobbyList();
-        String filePath = Configs.CardFolder;
-        String sourceFileName = Configs.CardFile;
-        cardLookUpObjective =
-                new CardLookUp<>(new ObjectiveCardFactory(filePath+sourceFileName, filePath).getCards(Configs.objectiveCardBinFileName));
-        cardLookUpStartCard =
-                new CardLookUp<>(new StartCardFactory(filePath+sourceFileName, filePath).getCards(Configs.startCardBinFileName));
-        cardLookUpResourceCard =
-                new CardLookUp<>(new ResourceCardFactory(filePath+sourceFileName, filePath).getCards(Configs.resourceCardBinFileName));
-        cardLookUpGoldCard =
-                new CardLookUp<>(new GoldCardFactory(filePath+sourceFileName, filePath).getCards(Configs.goldCardBinFileName));
+        this.cardTable = new CardTable(Configs.CardFolder, Configs.CardFile);
     }
 
     /**
@@ -289,23 +277,7 @@ public class MultiGame implements Serializable {
      * @return the game created
      */
     public Game createGame(Lobby lobby){
-        return new Game(lobby, cardLookUpObjective, cardLookUpResourceCard, cardLookUpStartCard, cardLookUpGoldCard);
-    }
-
-    public CardLookUp<ObjectiveCard> getCardLookUpObjective() {
-        return cardLookUpObjective;
-    }
-
-    public CardLookUp<StartCard> getCardLookUpStartCard() {
-        return cardLookUpStartCard;
-    }
-
-    public CardLookUp<ResourceCard> getCardLookUpResourceCard() {
-        return cardLookUpResourceCard;
-    }
-
-    public CardLookUp<GoldCard> getCardLookUpGoldCard() {
-        return cardLookUpGoldCard;
+        return new Game(lobby, cardTable.getCardLookUpObjective(), cardTable.getCardLookUpResourceCard(), cardTable.getCardLookUpStartCard(), cardTable.getCardLookUpGoldCard());
     }
 
     /**
@@ -334,7 +306,9 @@ public class MultiGame implements Serializable {
         }
     }
 
-
+    public CardTable getCardTable() {
+        return cardTable;
+    }
 
     @Override
     public String toString() {

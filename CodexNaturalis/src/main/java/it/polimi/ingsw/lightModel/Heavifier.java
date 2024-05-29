@@ -2,36 +2,34 @@ package it.polimi.ingsw.lightModel;
 import it.polimi.ingsw.lightModel.lightPlayerRelated.LightCard;
 import it.polimi.ingsw.lightModel.lightPlayerRelated.LightPlacement;
 import it.polimi.ingsw.model.MultiGame;
-import it.polimi.ingsw.model.cardReleted.cards.CardInHand;
-import it.polimi.ingsw.model.cardReleted.cards.ObjectiveCard;
-import it.polimi.ingsw.model.cardReleted.cards.StartCard;
+import it.polimi.ingsw.model.cardReleted.cards.*;
 import it.polimi.ingsw.model.playerReleted.Placement;
 
 import java.io.Serializable;
 
 public class Heavifier implements Serializable {
 
-    public static ObjectiveCard heavifyObjectCard(LightCard lightCard, MultiGame games) {
-       return games.getCardLookUpObjective().lookUp(lightCard.idFront());
+    public static ObjectiveCard heavifyObjectCard(LightCard lightCard, CardTable cardTable) {
+        return cardTable.getCardLookUpObjective().lookUp(lightCard.idFront());
     }
 
-    public static StartCard heavifyStartCard(LightCard lightCard, MultiGame games){
-        return games.getCardLookUpStartCard().lookUp(lightCard.idFront());
+    public static StartCard heavifyStartCard(LightCard lightCard, CardTable cardTable){
+        return cardTable.getCardLookUpStartCard().lookUp(lightCard.idFront());
     }
 
-    public static CardInHand heavifyCardInHand(LightCard lightCard, MultiGame games){
-        if(games.getCardLookUpGoldCard().isPresent(lightCard.idFront())){
-            return games.getCardLookUpGoldCard().lookUp(lightCard.idFront());
+    public static CardInHand heavifyCardInHand(LightCard lightCard, CardTable cardTable){
+        if(cardTable.getCardLookUpGoldCard().isPresent(lightCard.idFront())){
+            return cardTable.getCardLookUpGoldCard().lookUp(lightCard.idFront());
         }else{
-            return games.getCardLookUpResourceCard().lookUp(lightCard.idFront());
+            return cardTable.getCardLookUpResourceCard().lookUp(lightCard.idFront());
         }
     }
 
-    public static Placement heavify(LightPlacement lightPlacement, MultiGame games){
-        return new Placement(lightPlacement.position(), heavifyCardInHand(lightPlacement.card(), games), lightPlacement.face());
+    public static Placement heavify(LightPlacement lightPlacement, CardTable cardTable){
+        return new Placement(lightPlacement.position(), heavifyCardInHand(lightPlacement.card(), cardTable), lightPlacement.face());
     }
 
-    public static Placement heavifyStartCardPlacement(LightPlacement lightPlacement, MultiGame games){
-        return new Placement(lightPlacement.position(), heavifyStartCard(lightPlacement.card(), games), lightPlacement.face());
+    public static Placement heavifyStartCardPlacement(LightPlacement lightPlacement, CardTable cardTable){
+        return new Placement(lightPlacement.position(), heavifyStartCard(lightPlacement.card(), cardTable), lightPlacement.face());
     }
 }

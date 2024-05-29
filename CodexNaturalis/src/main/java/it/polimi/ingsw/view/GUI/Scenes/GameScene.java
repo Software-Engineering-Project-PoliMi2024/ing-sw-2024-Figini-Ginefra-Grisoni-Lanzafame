@@ -15,7 +15,6 @@ public class GameScene extends SceneGUI{
     private CollectedCollectablesGUI collectedCollectables;
     private LeaderboardGUI leaderboard;
     private ObjectiveChoice objectiveChoice;
-    private final LogsGUI logs = new LogsGUI();
 
     public GameScene() {
         super();
@@ -41,8 +40,6 @@ public class GameScene extends SceneGUI{
         this.add(codex.getCodex());
 
         //main.getChildren().add(hand.getHand());
-
-        this.add(logs.getLogsDisplay());
 
 //        Peeker peeker = new Peeker(getContent(), "Player2");
 //        Button button = new Button("Open Codex Others");
