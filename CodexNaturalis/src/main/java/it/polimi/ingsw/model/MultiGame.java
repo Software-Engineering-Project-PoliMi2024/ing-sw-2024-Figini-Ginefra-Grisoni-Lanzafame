@@ -213,7 +213,9 @@ public class MultiGame implements Serializable {
      * @return true if the nick is already present in a game (e.g. the user disconnected while still playing a match)
      */
     public Boolean isInGameParty(String nickname){
-        return getGameFromUserNick(nickname) != null;
+        synchronized (games) {
+            return getGameFromUserNick(nickname) != null;
+        }
     }
 
     /**
@@ -254,7 +256,9 @@ public class MultiGame implements Serializable {
      * @return true if the user is in a lobby, false otherwise
      */
     public boolean isInLobby(String nickname){
-        return getUserLobby(nickname)!=null;
+        synchronized (lobbies) {
+            return getUserLobby(nickname) != null;
+        }
     }
 
     /**
