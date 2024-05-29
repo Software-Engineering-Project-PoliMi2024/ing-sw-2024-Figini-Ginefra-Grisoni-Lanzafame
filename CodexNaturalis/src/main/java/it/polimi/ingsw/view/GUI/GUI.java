@@ -68,8 +68,8 @@ public class GUI extends Application implements ActualView {
         AnchorPane.setRightAnchor(stackRoot, 0.0);
 
         primaryStage.setOnCloseRequest((WindowEvent event) -> {
-            try {
-                controller.disconnect();
+            try{
+                System.exit(0);
             }catch (Exception e){}
         });
 
