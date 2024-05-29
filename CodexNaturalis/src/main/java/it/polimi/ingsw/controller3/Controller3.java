@@ -155,27 +155,26 @@ public class Controller3 implements ControllerInterface, TurnTaker, GameJoiner {
         if (lobbyToJoin == null) {
             logErr(LogsOnClientStatic.LOBBY_NONEXISTENT);
             transitionTo(ViewState.JOIN_LOBBY);
-        } else if (lobbyToJoin.getLobbyPlayerList().size() == lobbyToJoin.getNumberOfMaxPlayer()) {
+        } else if (multiGame.isLobbyFull(lobbyName)) {
             logErr(LogsOnClientStatic.LOBBY_IS_FULL);
             transitionTo(ViewState.JOIN_LOBBY);
         } else {
             System.out.println(this.nickname + " joined " + lobbyName + " lobby");
+
             //add the player to the lobby, updated model
             multiGame.addPlayerToLobby(lobbyName, this.nickname);
             //disconnect from lobbyList mediator and subscribe to the new lobby
             multiGame.unsubscribe(this.nickname);
             lobbyToJoin.subscribe(this.nickname, this.view, this);
-            lobbyToJoin.lock();
-            if (lobbyToJoin.getLobbyPlayerList().size() != lobbyToJoin.getNumberOfMaxPlayer()) {
+
+            if (!multiGame.isLobbyFull(lobbyToJoin.getLobbyName())) {
                 transitionTo(ViewState.LOBBY);
             }else{
-                Game createdGame = multiGame.createGame(lobbyToJoin);
-                multiGame.addGame(createdGame);
-                multiGame.notifyLobbyRemoved(this.nickname, lobbyToJoin);
-                lobbyToJoin.notifyGameStart();
-                multiGame.removeLobby(lobbyToJoin);
+                if(multiGame.createGameFromLobby(lobbyToJoin)) {
+                    multiGame.notifyLobbyRemoved(this.nickname, lobbyToJoin);
+                    lobbyToJoin.notifyGameStart();
+                }
             }
-            lobbyToJoin.unlock();
         }
     }
 
@@ -188,26 +187,22 @@ public class Controller3 implements ControllerInterface, TurnTaker, GameJoiner {
      */
     @Override
     public synchronized void leaveLobby() {
-        if (isNotLogged() || !multiGame.isInLobby(this.nickname)) {
+        if (isNotLogged()) {
             malevolentConsequences();
             return;
         }
+        Lobby lobbyToLeave = multiGame.leaveLobby(this.nickname);
+        if(lobbyToLeave!=null) {
+            System.out.println(this.nickname + " left lobby");
+            //update the model
+            if(multiGame.checkIfLobbyToRemove(lobbyToLeave.getLobbyName())){
+                multiGame.notifyLobbyRemoved(this.nickname, lobbyToLeave);
+            }
+            lobbyToLeave.unsubscribe(this.nickname);
+            multiGame.subscribe(this.nickname, view);
 
-
-        Lobby lobbyToLeave = multiGame.getUserLobby(this.nickname);
-        System.out.println(this.nickname + " left" + lobbyToLeave.getLobbyName() + " lobby");
-        //update the model
-        lobbyToLeave.removeUserName(this.nickname);
-
-
-        if (lobbyToLeave.getLobbyPlayerList().isEmpty()) {
-            multiGame.removeLobby(lobbyToLeave);
-            multiGame.notifyLobbyRemoved(this.nickname, lobbyToLeave);
+            transitionTo(ViewState.JOIN_LOBBY);
         }
-        lobbyToLeave.unsubscribe(this.nickname);
-        multiGame.subscribe(this.nickname, view);
-
-        transitionTo(ViewState.JOIN_LOBBY);
     }
 
     @Override
@@ -345,6 +340,9 @@ public class Controller3 implements ControllerInterface, TurnTaker, GameJoiner {
     }
 
     private void leaveGame() {
+        if(!multiGame.isInGameParty(this.nickname))
+            return;
+
         //TODO timer
         //TODO check concurrency with lobby creation
         Game gameToLeave = multiGame.getGameFromUserNick(this.nickname);
@@ -432,30 +430,19 @@ public class Controller3 implements ControllerInterface, TurnTaker, GameJoiner {
         return game.getUsersList().indexOf(nextPlayer);
     }
 
+    public synchronized void leaveLobbyList(){
+
+    }
     @Override
     public synchronized void disconnect() {
         if(this.nickname == null){
             System.out.println("User disconnected before logging in");
-            return;
-        }
-        if(multiGame.getUserLobby(this.nickname) != null){
-            Lobby lobbyToLeave = multiGame.getUserLobby(this.nickname);
-            lobbyToLeave.lock();
-            lobbyToLeave = multiGame.getUserLobby(this.nickname);
-            if(lobbyToLeave != null){
-                try{leaveLobby();}
-                finally {lobbyToLeave.unlock();}
-            }else{
-                this.disconnect();
-            }
-        }else if(multiGame.isInGameParty(this.nickname)) {
-            leaveGame();
         }else{
+            leaveLobby();
+            leaveGame();
             multiGame.removeUser(this.nickname);
+            System.out.println(this.nickname + " has disconnected");
         }
-
-        multiGame.removeUser(this.nickname);
-        System.out.println(this.nickname + " has disconnected");
     }
 
     //turnTaker methods

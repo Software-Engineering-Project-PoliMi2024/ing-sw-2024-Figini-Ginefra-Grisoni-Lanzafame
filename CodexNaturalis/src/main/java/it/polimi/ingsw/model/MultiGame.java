@@ -45,11 +45,15 @@ public class MultiGame implements Serializable {
 
     /**
      * Adds a game to the list of games in the MultiGame
-     * @param game the game to be added
+     * @param lobby the game to be added
      */
-    public void addGame(Game game) {
-        synchronized (games) {
-            games.add(game);
+    public boolean createGameFromLobby(Lobby lobby) {
+        synchronized (lobbies) {
+            synchronized (games) {
+                Game createdGame = this.createGame(lobby);
+                lobbies.remove(lobby);
+                return games.add(createdGame);
+            }
         }
     }
 
@@ -236,6 +240,57 @@ public class MultiGame implements Serializable {
             }
             return null;
         }
+    }
+
+    /**
+     * method to check if the lobby number of player is the same as the lobby
+     * number of maxPlayer.
+     * synchronized on the lobbyList in MultiGame
+     * @param lobbyName the name of the lobby to check
+     * @return true if the lobby is full
+     */
+    public boolean isLobbyFull(String lobbyName){
+        synchronized (lobbies){
+            Lobby lobbyToCheck = this.getLobbyByName(lobbyName);
+            return lobbyToCheck.getLobbyPlayerList().size() == lobbyToCheck.getNumberOfMaxPlayer();
+        }
+    }
+
+    /**
+     * if the user is in a lobby, the user is removed from it
+     * synchronized on the lobbyList in multiGame
+     * @param userName the name of the user
+     * @return the lobbyLeft if the user was in a lobby, null otherwise
+     */
+    public Lobby leaveLobby(String userName){
+        Lobby lobbyLeft = null;
+        synchronized (lobbies){
+            if(this.isInLobby(userName)) {
+                lobbyLeft = this.getUserLobby(userName);
+                lobbyLeft.removeUserName(userName);
+            }
+        }
+        return lobbyLeft;
+    }
+
+    /**
+     * if the lobby is empty it removes it from the lobbyList in multiGame.
+     * synchronized on the lobbyList in multiGame
+     * @param lobbyName the name of the lobby to check if empty
+     * @return true if the lobby was removed, false otherwise
+     */
+    public boolean checkIfLobbyToRemove(String lobbyName){
+        boolean removed;
+        synchronized (lobbies) {
+            Lobby lobbyToCheck = this.getLobbyByName(lobbyName);
+            if (lobbyToCheck.getLobbyPlayerList().isEmpty()) {
+                lobbies.remove(lobbyToCheck);
+                removed = true;
+            }else{
+                removed = false;
+            }
+        }
+        return removed;
     }
 
     /**

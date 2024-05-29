@@ -40,10 +40,12 @@ public class Lobby implements Serializable {
      * @throws IllegalCallerException if the number of player currently in the lobby is equal to the number of max player allowed.
      */
     public Boolean addUserName(String userName) throws IllegalCallerException {
-        if (lobbyPlayerList.size() == numberOfMaxPlayer) {
-            return false;
-        } else {
-            return lobbyPlayerList.add(userName);
+        synchronized (lobbyPlayerList) {
+            if (lobbyPlayerList.size() == numberOfMaxPlayer) {
+                return false;
+            } else {
+                return lobbyPlayerList.add(userName);
+            }
         }
     }
     /**
@@ -52,8 +54,10 @@ public class Lobby implements Serializable {
      * @throws IllegalArgumentException if the specified user is not found in the userList of this lobby.
      */
     public void removeUserName(String userName) throws IllegalArgumentException{
-        if(!lobbyPlayerList.remove(userName)){
-            throw new IllegalArgumentException("The user is not in this game");
+        synchronized (lobbyPlayerList) {
+            if (!lobbyPlayerList.remove(userName)) {
+                throw new IllegalArgumentException("The user is not in this game");
+            }
         }
     }
 
@@ -68,7 +72,9 @@ public class Lobby implements Serializable {
      * @return a list containing all the players' nick in the lobby
      */
     public List<String> getLobbyPlayerList() {
-        return lobbyPlayerList;
+        synchronized (lobbyPlayerList) {
+            return lobbyPlayerList;
+        }
     }
 
     /**

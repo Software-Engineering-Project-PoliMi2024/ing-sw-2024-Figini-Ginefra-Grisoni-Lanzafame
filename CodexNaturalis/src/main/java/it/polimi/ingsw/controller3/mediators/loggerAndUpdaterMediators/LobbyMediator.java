@@ -8,6 +8,8 @@ import it.polimi.ingsw.lightModel.lightTableRelated.LightLobby;
 import it.polimi.ingsw.model.tableReleted.Lobby;
 import it.polimi.ingsw.view.ViewInterface;
 
+import java.util.Objects;
+
 public class LobbyMediator extends LoggerAndUpdaterMediator<LightLobbyUpdater, LightLobby> {
     /**
      * Subscribes the updater and the logger to the mediator (both interfaces are implemented by viewInterface)
@@ -56,7 +58,7 @@ public class LobbyMediator extends LoggerAndUpdaterMediator<LightLobbyUpdater, L
         }
 
         subscribers.forEach((nick, pair)->{
-            if(nick != nickname) {
+            if(!Objects.equals(nick, nickname)) {
                 try {
                     pair.first().updateLobby(DiffGenerator.diffRemoveUserFromLobby(nickname));
                     pair.second().logOthers(nickname + LogsOnClientStatic.LOBBY_LEFT_OTHER);
@@ -75,6 +77,18 @@ public class LobbyMediator extends LoggerAndUpdaterMediator<LightLobbyUpdater, L
                 pair.second().logGame(LogsOnClientStatic.GAME_CREATED);
             } catch (Exception e) {
                 System.out.println("LobbyMediator: error in notifying about the game starting" + e.getMessage());
+            }
+        });
+
+        this.unsubscribeAll();
+    }
+
+    private synchronized void unsubscribeAll(){
+        subscribers.forEach((nick, pair)->{
+            try {
+                subscribers.get(nick).first().updateLobby(new LittleBoyLobby());
+            }catch (Exception e){
+                System.out.println("LobbyMediator: error while unsubscribing everyone" + e.getMessage());
             }
         });
     }
