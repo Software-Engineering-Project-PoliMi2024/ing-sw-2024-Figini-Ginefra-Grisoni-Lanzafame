@@ -882,7 +882,7 @@ class ServerModelControllerTest {
         Position position = user1.getUserCodex().getFrontier().getFrontier().getFirst();
         LightPlacement placement = new LightPlacement(position, Lightifier.lightifyToCard(cardPlaced), CardFace.FRONT);
         serverModelController1.place(placement);
-        CardInHand card = game.getGoldCardDeck().showTopCardOfDeck();
+        CardInHand card = game.getGoldCardDeck().showCardFromBuffer(0);
         serverModelController1.draw(DrawableCard.GOLDCARD, 0);
 
         //model
