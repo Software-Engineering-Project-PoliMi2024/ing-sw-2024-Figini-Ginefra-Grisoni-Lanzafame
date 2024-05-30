@@ -214,7 +214,7 @@ public class GameMaster {
     private synchronized void drawObjectiveCard(User user){
         List<ObjectiveCard> objectiveCards = new ArrayList<>();
         for(int i=0;i<2;i++){
-            objectiveCards.add(game.getObjectiveCardDeck().drawFromDeck());
+            objectiveCards.add(game.drawObjectiveCard());
         }
         user.getUserHand().setSecretObjectiveChoice(objectiveCards);
     }

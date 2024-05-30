@@ -1,6 +1,7 @@
 package it.polimi.ingsw.controller;
 
 import it.polimi.ingsw.Configs;
+import it.polimi.ingsw.OSRelated;
 import it.polimi.ingsw.lightModel.LightModelConfig;
 import it.polimi.ingsw.lightModel.Lightifier;
 import it.polimi.ingsw.lightModel.diffPublishers.ViewTest;
@@ -19,11 +20,17 @@ import it.polimi.ingsw.model.playerReleted.User;
 import it.polimi.ingsw.model.tableReleted.Game;
 import it.polimi.ingsw.model.tableReleted.Lobby;
 import it.polimi.ingsw.view.ViewState;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
 import java.util.*;
 
 class ServerModelControllerTest {
+    @BeforeEach
+    public void setUp(){
+        OSRelated.checkOrCreateDataFolderServer(); //Create the dataFolder if necessary. Normally this is done in the Server class
+    }
+
     @Test
     void badLogins(){
         MultiGame multiGame = new MultiGame();
@@ -550,9 +557,14 @@ class ServerModelControllerTest {
         LightHand lightHand1 = view1.lightGame.getHand();
         List<LightCard> cardsOnClient1 = Arrays.stream(lightHand1.getCards()).toList();
         List<LightCard> cardsOnServer1 = hand1.getHand().stream().map(Lightifier::lightifyToCard).toList();
+        List<LightCard> secretObjOnLight = Arrays.stream(lightHand1.getSecretObjectiveOptions()).toList();
+        List<LightCard> secretObjOnServer = hand1.getSecretObjectiveChoices().stream().map(Lightifier::lightifyToCard).toList();
+        System.out.println(secretObjOnServer);
+        System.out.println(secretObjOnLight);
 
         assert cardsOnServer1.size() == 3;
         assert cardsOnServer1.stream().allMatch(Objects::nonNull);
+        assert secretObjOnLight.equals(secretObjOnServer);
         assert Arrays.stream(lightHand1.getSecretObjectiveOptions()).allMatch(Objects::nonNull);
         assert cardsOnClient1.containsAll(cardsOnServer1);
         assert cardsOnServer1.containsAll(cardsOnClient1);
@@ -570,7 +582,11 @@ class ServerModelControllerTest {
         assert goldDeckBufferOnViewID1.containsAll(game.getGoldCardDeck().getBuffer().stream().map(Card::getIdFront).toList());
 
         //view 2 lightModel updated correctly
-        LightHand lightHand2 = view1.lightGame.getHand();
+        LightHand lightHand2 = view2.lightGame.getHand();
+        List<LightCard> secretObjOnLight2 = Arrays.stream(lightHand2.getSecretObjectiveOptions()).toList();
+        List<LightCard> secretObjOnServer2 = hand2.getSecretObjectiveChoices().stream().map(Lightifier::lightifyToCard).toList();
+
+        assert secretObjOnServer2.equals(secretObjOnLight2);
         List<LightCard> cardsOnClient2 = Arrays.stream(lightHand1.getCards()).toList();
         List<LightCard> cardsOnServer2 = hand1.getHand().stream().map(Lightifier::lightifyToCard).toList();
         assert cardsOnClient1.containsAll(cardsOnServer2);

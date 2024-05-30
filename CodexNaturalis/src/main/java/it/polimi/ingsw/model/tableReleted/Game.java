@@ -106,6 +106,12 @@ public class Game implements Serializable {
         }
     }
 
+    public ObjectiveCard drawObjectiveCard(){
+        synchronized (objectiveCardDeck) {
+            return objectiveCardDeck.drawFromDeck();
+        }
+    }
+
     public String getName() {
         return name;
     }
@@ -612,7 +618,4 @@ public class Game implements Serializable {
         this.gameParty.removeUser(user.getNickname());
     }
 
-    public User nextPlayer(){
-        return  this.gameParty.nextPlayer();
-    }
 }

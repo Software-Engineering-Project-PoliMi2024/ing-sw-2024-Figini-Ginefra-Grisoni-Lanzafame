@@ -13,12 +13,10 @@ import it.polimi.ingsw.model.cardReleted.pointMultiplyer.CollectableCardPointMul
 import it.polimi.ingsw.model.cardReleted.pointMultiplyer.DiagonalCardPointMultiplier;
 import it.polimi.ingsw.model.cardReleted.pointMultiplyer.LCardPointMultiplier;
 import it.polimi.ingsw.model.cardReleted.utilityEnums.CardFace;
-import it.polimi.ingsw.model.cardReleted.utilityEnums.Resource;
 import it.polimi.ingsw.model.utilities.Pair;
 import it.polimi.ingsw.view.TUI.Renderables.drawables.Drawable;
 
 import java.io.*;
-import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.Queue;
 import java.util.Set;
@@ -30,28 +28,32 @@ public class CardMuseumFactory {
     /** The card museum to create. */
     private final CardMuseum cardMuseum;
 
-    /** The folder path where the binary file is stored. */
-    private final String folderPath;
-
+    /** The folder path where the json file is stored. */
+    private final String inFolderResourcePath;
+    private final String outFolderPath;
     /** The name of the binary file. */
     public static final String fileName = Configs.CardMuseumFileName;
 
     /**
      * Creates a new CardMuseumFactory.
-     * @param folderPath The folder path where the binary file is stored.
+     * @param inFolderResourcePath The folder path where the binary file is stored in the resources folder.
+     * @param outFolderPath The folder path where the binary file will be saved.
      */
-    public CardMuseumFactory(String folderPath) {
-        this.folderPath = folderPath;
+    public CardMuseumFactory(String inFolderResourcePath, String outFolderPath) {
+        this.inFolderResourcePath = inFolderResourcePath;
+        this.outFolderPath = outFolderPath;
         cardMuseum = buildMuseum(false);
     }
 
     /**
      * Creates a new CardMuseumFactory.
-     * @param folderPath The folder path where the binary file is stored.
+     * @param inFolderResourcePath The folder path where the binary file is stored.
+     * @param outFolderPath The folder path where the binary file will be saved.
      * @param forceReload True if the CardMuseum must be reloaded from the json file.
      */
-    public CardMuseumFactory(String folderPath, boolean forceReload) {
-        this.folderPath = folderPath;
+    public CardMuseumFactory(String inFolderResourcePath, String outFolderPath, boolean forceReload) {
+        this.inFolderResourcePath = inFolderResourcePath;
+        this.outFolderPath = outFolderPath;
         cardMuseum = buildMuseum(forceReload);
     }
 
@@ -61,7 +63,7 @@ public class CardMuseumFactory {
      * @throws IOException If an I/O error occurs.
      */
     private void saveMuseum(CardMuseum cardMuseum) throws IOException {
-        FileOutputStream file = new FileOutputStream(this.folderPath + fileName);
+        FileOutputStream file = new FileOutputStream(this.outFolderPath + fileName);
         ObjectOutputStream out = new ObjectOutputStream(file);
 
         out.writeObject(cardMuseum);
@@ -70,13 +72,13 @@ public class CardMuseumFactory {
     }
 
     /**
-     * Loads the CardMuseum from a binary file.
+     * Loads the CardMuseum from a binary file saved in the DataFolder.
      * @return The CardMuseum loaded.
      * @throws IOException If an I/O error occurs.
      * @throws ClassNotFoundException If the class of a serialized object cannot be found.
      */
     private CardMuseum loadMuseum() throws IOException, ClassNotFoundException {
-        FileInputStream file = new FileInputStream(this.folderPath + fileName);
+        FileInputStream file = new FileInputStream(this.outFolderPath + fileName);
         ObjectInputStream in = new ObjectInputStream(file);
 
         CardMuseum museum = (CardMuseum) in.readObject();
@@ -104,28 +106,29 @@ public class CardMuseumFactory {
             return loadMuseum();
 
         } catch (IOException | ClassNotFoundException e) {
+            System.out.println("CardMuseum not found, creating a new one...");
             // If the CardMuseum cannot be loaded, create a new CardMuseum
 
-            String sourceFileName = Configs.CardFile;
+            String sourceFileName = Configs.CardJSONFileName;
 
             CardMuseum cardMuseum = new CardMuseum();
 
-            Queue<ResourceCard> resourceCards = new ResourceCardFactory(folderPath+sourceFileName, folderPath).getCards(Configs.resourceCardBinFileName);
+            Queue<ResourceCard> resourceCards = new ResourceCardFactory(inFolderResourcePath + sourceFileName, outFolderPath).getCards(Configs.resourceCardBinFileName);
             resourceCards.forEach(card -> cardMuseum.set(card.getIdFront(), CardPainter.drawResourceCard(card)));
 
             System.out.println("Resource cards loaded: " + resourceCards.size());
 
-            Queue<GoldCard> goldCards = new GoldCardFactory(folderPath+sourceFileName, folderPath).getCards(Configs.goldCardBinFileName);
+            Queue<GoldCard> goldCards = new GoldCardFactory(inFolderResourcePath +sourceFileName, outFolderPath).getCards(Configs.goldCardBinFileName);
             goldCards.forEach(card -> cardMuseum.set(card.getIdFront(), CardPainter.drawGoldCard(card)));
 
             System.out.println("Gold cards loaded: " + goldCards.size());
 
-            Queue<StartCard> startCards = new StartCardFactory(folderPath+sourceFileName, folderPath).getCards(Configs.startCardBinFileName);
+            Queue<StartCard> startCards = new StartCardFactory(inFolderResourcePath +sourceFileName, outFolderPath).getCards(Configs.startCardBinFileName);
             startCards.forEach(card -> cardMuseum.set(card.getIdFront(), CardPainter.drawStartCard(card)));
 
             System.out.println("Start cards loaded: " + startCards.size());
 
-            ObjectiveCardFactory objectiveCardFactory = new ObjectiveCardFactory(folderPath+sourceFileName, folderPath);
+            ObjectiveCardFactory objectiveCardFactory = new ObjectiveCardFactory(inFolderResourcePath +sourceFileName, outFolderPath);
 
             Queue<Pair<ObjectiveCard, CollectableCardPointMultiplier>> objectiveCardsWithCollectableMultiplier = objectiveCardFactory.getCardsWithCollectableMultiplier();
             objectiveCardsWithCollectableMultiplier.forEach(pair -> cardMuseum.set(pair.first().getIdFront(), CardPainter.drawObjectiveCardCollectableMultiplier(pair.first(), pair.second())));

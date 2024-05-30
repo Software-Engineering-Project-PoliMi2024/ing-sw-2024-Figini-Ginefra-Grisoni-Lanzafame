@@ -1,6 +1,7 @@
 package it.polimi.ingsw.view.TUI.Renderables.CardRelated;
 
 import it.polimi.ingsw.Configs;
+import it.polimi.ingsw.OSRelated;
 import it.polimi.ingsw.lightModel.lightPlayerRelated.LightCard;
 import it.polimi.ingsw.lightModel.diffs.game.GameDiff;
 import it.polimi.ingsw.lightModel.diffs.game.handDiffs.HandDiffAdd;
@@ -17,7 +18,7 @@ class HandRenderableTest {
     HandRenderable renderable;
     @BeforeEach
     void setUp() {
-        CardMuseum museum = new CardMuseumFactory(Configs.CardFolder).getCardMuseum();
+        CardMuseum museum = new CardMuseumFactory(Configs.CardResourcesFolderPath, OSRelated.cardFolderDataPath).getCardMuseum();
         LightGame lightGame = new LightGame();
         renderable = new HandRenderable("name", museum, lightGame, new CommandPrompt[]{}, null);
         GameDiff diff = new HandDiffAdd(new LightCard(5, 1), true);

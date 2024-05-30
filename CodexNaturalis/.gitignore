@@ -94,3 +94,4 @@ fabric.properties
 target/
 
 gameSaves/
+src/main/resources/META-INF/

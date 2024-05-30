@@ -1,6 +1,7 @@
 package it.polimi.ingsw.view.TUI.Renderables.CardRelated;
 
 import it.polimi.ingsw.Configs;
+import it.polimi.ingsw.OSRelated;
 import it.polimi.ingsw.lightModel.diffs.game.codexDiffs.CodexDiffPlacement;
 import it.polimi.ingsw.lightModel.diffs.game.gamePartyDiffs.GameDiffCurrentPlayer;
 import it.polimi.ingsw.lightModel.diffs.game.gamePartyDiffs.GameDiffPlayerActivity;
@@ -30,7 +31,7 @@ class PeekTest {
     HandOthersRenderable handRenderable;
     @BeforeEach
     void setUp() {
-        CardMuseum museum = new CardMuseumFactory(Configs.CardFolder).getCardMuseum();
+        CardMuseum museum = new CardMuseumFactory(Configs.CardResourcesFolderPath, OSRelated.cardFolderDataPath).getCardMuseum();
         LightGame lightGame = new LightGame();
 
         codexRenderable = new CodexRenderableOthers("name", null, lightGame, museum, new CommandPrompt[]{});
@@ -69,6 +70,7 @@ class PeekTest {
 
     @Test
     void render() {
+        OSRelated.checkOrCreateDataFolderClient(); //Create the dataFolder if necessary. Normally this is done in the Client class
         CommandPromptResult answer = new CommandPromptResult(CommandPrompt.PEEK, new String[]{"Player2"});
         handRenderable.updateCommand(answer);
         codexRenderable.updateCommand(answer);

@@ -4,6 +4,7 @@ import com.google.gson.Gson;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
+import it.polimi.ingsw.Client;
 import it.polimi.ingsw.Configs;
 import it.polimi.ingsw.Server;
 import it.polimi.ingsw.model.cardReleted.utilityEnums.*;
@@ -44,7 +45,11 @@ public abstract class AbstractCardFactory<Element> {
         final Gson gson = new Gson();
         InputStream inputStream = Server.class.getClassLoader().getResourceAsStream(inFileFromResources);
         if(inputStream == null){
-            throw new RuntimeException("File " + Configs.CardFile + " not found");
+            inputStream = Client.class.getClassLoader().getResourceAsStream(inFileFromResources);
+        }
+        if(inputStream == null){
+            System.out.println(inFileFromResources);
+            throw new RuntimeException("File " + Configs.CardJSONFileName + " not found");
         }else{
             return gson.fromJson(new InputStreamReader(inputStream), JsonObject.class).getAsJsonArray(cardType);
         }
@@ -98,6 +103,7 @@ public abstract class AbstractCardFactory<Element> {
      * @throws RuntimeException if an error occurs during the opening/writing
      */
     public void serializeQueue(String filePath, Queue<Element> queue){
+        //System.out.println("Serializing " + filePath);
         FileOutputStream fileOut;
         ObjectOutputStream objOut;
         try {

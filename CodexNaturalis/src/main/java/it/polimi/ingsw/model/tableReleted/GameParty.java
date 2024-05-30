@@ -122,26 +122,4 @@ public class GameParty implements Serializable {
             return playerList.get(index);
         }
     }
-
-    //TODO to remove
-    public User getFirstPlayerInOrder() {
-        synchronized (playerList) {
-            return (playerList.getFirst());
-        }
-    }
-    /**
-     * This method advances the game to the next player in the rotation sequence.
-     * if there is no currentPlayer, it creates it by launching the chooseStartingOrder method
-     * @throws IllegalCallerException if the game is empty.
-     */
-    public User nextPlayer() {
-        synchronized (playerList) {
-            if (playerList.isEmpty()) {
-                throw new IllegalCallerException("The game is empty, there is no next player");
-            } else {
-                currentPlayerIndex = getNextPlayerIndex();
-                return playerList.get(currentPlayerIndex);
-            }
-        }
-    }
 }

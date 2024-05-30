@@ -154,6 +154,7 @@ public class HandGUI implements Observer {
                                 if((GUI.getStateProperty().get() != StateGUI.PLACE_CARD && GUI.getStateProperty().get() != StateGUI.CHOOSE_START_CARD) || card.getFace() == CardFace.FRONT && !card.isPlayable())
                                     return;
 
+        System.out.println("HandGUI.update " + this.handCards);
 
                                 handPopUp.open();
                                 codex.toggleFrontier(false);
