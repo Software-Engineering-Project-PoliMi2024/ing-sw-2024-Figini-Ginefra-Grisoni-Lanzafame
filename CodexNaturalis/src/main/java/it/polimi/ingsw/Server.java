@@ -96,19 +96,17 @@ public class Server {
     }
 
     private static void checkOrCreateDataFolder() {
-        File dataFolder = new File(Configs.gameDataFolderPath);
+        File dataFolder = new File(OSRelated.dataFolderPath);
         if (!dataFolder.exists()) {
             dataFolder.mkdirs();
         }
-
         // Create Cards folder
-        File cardsFolder = new File(Configs.gameDataFolderPath + Configs.cardDataFolderName);
+        File cardsFolder = new File(OSRelated.cardFolderDataPath);
         if (!cardsFolder.exists()) {
             cardsFolder.mkdirs();
         }
-
         // Create gameSaved folder
-        File gameSavedFolder = new File(Configs.gameDataFolderPath + Configs.gameSaveFolderName);
+        File gameSavedFolder = new File(OSRelated.gameDataFolderPath);
         if (!gameSavedFolder.exists()) {
             gameSavedFolder.mkdirs();
         }
