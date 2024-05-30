@@ -4,7 +4,11 @@ import it.polimi.ingsw.lightModel.lightPlayerRelated.LightCard;
 import it.polimi.ingsw.lightModel.lightPlayerRelated.LightPlacement;
 import it.polimi.ingsw.model.cardReleted.utilityEnums.DrawableCard;
 
-public interface ControllerInterface {
+import java.io.Serial;
+import java.io.Serializable;
+import java.rmi.Remote;
+
+public interface ControllerInterface extends Remote, Serializable {
     void login(String nickname) throws Exception;
     void createLobby(String gameName, int maxPlayerCount) throws Exception;
     void joinLobby(String lobbyName) throws Exception;
