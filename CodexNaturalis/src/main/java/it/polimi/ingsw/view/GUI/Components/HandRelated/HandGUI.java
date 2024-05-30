@@ -219,29 +219,31 @@ public class HandGUI implements Observer {
 
         int freeSpots = Arrays.stream(GUI.getLightGame().getHand().getCards()).filter(Objects::isNull).toArray().length;
 
-        if(freeSpots == Arrays.stream(handCards).filter(Objects::isNull).toArray().length){
-            return;
-        }
+        if(freeSpots == Arrays.stream(handCards).filter(Objects::isNull).toArray().length) {
+            for (int i = 0; i < handCards.length; i++) {
+                if (handCards[i] == null && GUI.getLightGame().getHand().getCards()[i] != null) {
+                    LightCard target = GUI.getLightGame().getHand().getCards()[i];
+                    boolean playability = GUI.getLightGame().getHand().getCardPlayability().get(target);
+                    FlippablePlayableCard newCard = new FlippablePlayableCard(target, playability);
 
-        for (int i = 0; i < handCards.length; i++) {
-            if(handCards[i] == null && GUI.getLightGame().getHand().getCards()[i] != null){
-                LightCard target = GUI.getLightGame().getHand().getCards()[i];
-                boolean playability = GUI.getLightGame().getHand().getCardPlayability().get(target);
-                FlippablePlayableCard newCard = new FlippablePlayableCard(target, playability);
-
-                newCard.addThisByFlippablePlayable(card -> addCardToHand(card, true));
-            }else if(handCards[i] != null && GUI.getLightGame().getHand().getCards()[i] != null &&
-                    handCards[i].getTarget().equals(GUI.getLightGame().getHand().getCards()[i])){
-                LightCard flippableCardTarget = handCards[i].getTarget();
-                boolean oldPlayability = handCards[i].isPlayable();
-                boolean newPlayability = GUI.getLightGame().getHand().getCardPlayability().get(flippableCardTarget);
-                if(oldPlayability != newPlayability)
-                    handCards[i].setPlayable(newPlayability);
-            }
+                    newCard.addThisByFlippablePlayable(card -> addCardToHand(card, true));
+                }
 //            else if (handCards[i] != null && GUI.getLightGame().getHand().getCards()[i] == null){
 //                handCards[i].removeThisByFlippablePlayable(this::removeCardFromHand);
 //                handCards[i] = null;
 //            }
+            }
+        }
+
+        for (int i = 0; i < handCards.length; i++) {
+            if (handCards[i] != null && GUI.getLightGame().getHand().getCards()[i] != null &&
+                    handCards[i].getTarget().equals(GUI.getLightGame().getHand().getCards()[i])) {
+                LightCard flippableCardTarget = handCards[i].getTarget();
+                boolean oldPlayability = handCards[i].isPlayable();
+                boolean newPlayability = GUI.getLightGame().getHand().getCardPlayability().get(flippableCardTarget);
+                if (oldPlayability != newPlayability)
+                    handCards[i].setPlayable(newPlayability);
+            }
         }
     }
 

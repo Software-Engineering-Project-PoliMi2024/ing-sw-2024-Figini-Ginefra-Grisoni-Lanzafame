@@ -28,7 +28,6 @@ public class LeaderboardGUI implements Observer {
     }
 
     public void attach() {
-
         GUI.getLightGame().getCodexMap().values().forEach(codex -> codex.attach(this));
     }
 
