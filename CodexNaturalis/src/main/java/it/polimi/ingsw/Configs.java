@@ -1,5 +1,9 @@
 package it.polimi.ingsw;
 
+import java.io.File;
+
+import static java.lang.System.getenv;
+
 public class Configs {
     public static Boolean debugMode = true;
     public static String gameSavesDir = "./gameSaves/";
@@ -20,4 +24,20 @@ public class Configs {
     public static String startCardBinFileName = "startCards.bin";
     public static String invalidNicknameRegex = "^\\s*$";
     public static String invalidLobbyNameRegex = "^\\s*$";
+    public static String dataFolderName = "CodexNaturalis";
+    public static String cardDataFolderName = "Cards";
+    public static String gameSaveFolderName = "GameSaved";
+    public static String gameDataFolderPath = getOSDataFolderPath() + dataFolderName + File.separator;
+    private static String getOSDataFolderPath(){
+        String OS = (System.getProperty("os.name")).toUpperCase();
+        if (OS.contains("WIN")) {
+            return System.getenv("APPDATA") + File.separator;
+        } else if (OS.contains("MAC")) {
+            //well-known hardcoded paths, used in the appDirs library
+            return System.getProperty("user.home") + "/Library/Application Support/";
+        } else {
+            //In a Unix system, data will be saved in the home directory as a hidden folder
+            return System.getProperty("user.home") + File.separator + ".";
+        }
+    }
 }
