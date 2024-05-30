@@ -19,6 +19,6 @@ public class GameJoinerMediator extends GenericJoinAndTurnMediator<GameJoiner> {
     }
 
     public synchronized void notifyGameStart() {
-        subscribers.values().forEach(GameJoiner::joinGame);
+        subscribers.values().forEach(GameJoiner::joinStartGame);
     }
 }

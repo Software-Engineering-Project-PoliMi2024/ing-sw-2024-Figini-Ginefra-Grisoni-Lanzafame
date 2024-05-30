@@ -3,6 +3,7 @@ package it.polimi.ingsw.model.tableReleted;
 
 import it.polimi.ingsw.Configs;
 import it.polimi.ingsw.controller.GameLoopController;
+import it.polimi.ingsw.controller3.Controller3;
 import it.polimi.ingsw.controller3.mediators.gameJoinerAndTurnTakerMediators.TurnTakerMediator;
 import it.polimi.ingsw.controller3.mediators.loggerAndUpdaterMediators.GameMediator;
 import it.polimi.ingsw.controller3.mediators.gameJoinerAndTurnTakerMediators.TurnTaker;
@@ -17,6 +18,7 @@ import it.polimi.ingsw.model.cardReleted.cards.*;
 import it.polimi.ingsw.model.cardReleted.utilityEnums.DrawableCard;
 import it.polimi.ingsw.model.playerReleted.Codex;
 import it.polimi.ingsw.model.playerReleted.Hand;
+import it.polimi.ingsw.model.playerReleted.Placement;
 import it.polimi.ingsw.model.playerReleted.User;
 import it.polimi.ingsw.model.utilities.Pair;
 import it.polimi.ingsw.view.ViewInterface;
@@ -49,6 +51,7 @@ public class Game implements Serializable {
 
     private final TurnTakerMediator activeTurnTakerMediator = new TurnTakerMediator();
     private final GameMediator gameMediator;
+    private final GameMaster gameMaster = new GameMaster(this);
 
     private Timer countdownTimer;
     /**
@@ -263,7 +266,9 @@ public class Game implements Serializable {
      * @param nickname of the user being removed
      */
     public void removeUser(String nickname){
-        gameParty.removeUser(nickname);
+        synchronized (turnLock){
+            gameParty.removeUser(nickname);
+        }
     }
 
     /**
@@ -291,6 +296,32 @@ public class Game implements Serializable {
         return new Pair<>(drawnCard, cardReplacement);
     }
 
+    public void join(String nickname, ViewInterface view, TurnTaker turnTaker, Controller3 controller){
+        gameMaster.join(nickname, view, turnTaker, controller);
+    }
+        public void joinStartGame(String nickname, ViewInterface view, TurnTaker turnTaker){
+        gameMaster.joinStartGame(nickname, view, turnTaker);
+    }
+
+    public void placeStartCard(String nickname, Placement startCardPlacement){
+        gameMaster.placeStartCard(nickname, startCardPlacement);
+    }
+
+    public void chooseSecretObjective(String nickname, ObjectiveCard objChoice){
+        gameMaster.chooseSecretObjective(nickname, objChoice);
+    }
+
+    public void place(String nickname, Placement placement){
+        gameMaster.place(nickname, placement);
+    }
+
+    public void draw(String nickname, DrawableCard deckType, int cardID){
+        gameMaster.draw(nickname, deckType, cardID);
+    }
+
+    public void leave(String nickname){
+        //gameMaster.leave(nickname);
+    }
     /**
      * subscribe a turnTaker to the activeTurnTakerMediator in order to receive notification
      * on when it is their turn to play
@@ -311,8 +342,8 @@ public class Game implements Serializable {
         gameMediator.updateJoinObjectiveSelect(joiner, game);
     }
 
-    public void joinMidGame(String joiner, Game game){
-        gameMediator.updateJoinActualGame(joiner, game);
+    public void joinMidGame(String joiner){
+        gameMediator.updateJoinActualGame(joiner, this);
     }
     /**
      * unsubscribe a player from the activeTurnTakerMediator
@@ -395,6 +426,10 @@ public class Game implements Serializable {
         activeTurnTakerMediator.notifyTurn();
     }
 
+    public void notifyFirstTurn(String nicknameOfNextPlayer){
+        gameMediator.notifyTurnChange(nicknameOfNextPlayer);
+    }
+
     /**
      * This method is used to notify all players a change in the decks
      * @param deckType the type of the deck that has changed (GOLD, RESOURCE)
@@ -456,16 +491,37 @@ public class Game implements Serializable {
         return gameParty.getPlayerFromIndex(index);
     }
 
-    public boolean othersHadAllPlacedStartCard(String nicknamePerspective){
-        boolean check = true;
+    /**
+     * this method checks if all other players have placed their startCard
+     * other with respect to the player with the nickname passed as parameter
+     * if so it removes the inactive players from the game
+     * @param nicknamePerspective the nickname of the player that is checking
+     * @return true if all other players have placed their startCard, false otherwise
+     * true means that is time to move on to secret objective choice phase
+     */
+    public boolean checkAndMoveToSecretObjectiveChoicePhase(String nicknamePerspective){
+        boolean allPlaced = true;
         synchronized (turnLock) {
-            for (User user : gameParty.getUsersList()) {
-                if (!user.getNickname().equals(nicknamePerspective) && !user.hasPlacedStartCard()) {
-                    check = false;
+            for (String nick : getActivePlayers()) {
+                if (!nick.equals(nicknamePerspective) && !getUserFromNick(nick).hasPlacedStartCard()) {
+                    allPlaced = false;
+                }
+            }
+            if(allPlaced){
+                removeInactivePlayers();
+            }
+        }
+        return allPlaced;
+    }
+
+    private void removeInactivePlayers(){
+        synchronized (turnLock) {
+            for(User user : getUsersList()){
+                if(!getActivePlayers().contains(user.getNickname())){
+                    gameParty.removeUser(user.getNickname());
                 }
             }
         }
-        return check;
     }
 
     public boolean othersHadAllChooseSecretObjective(String nicknamePerspective){

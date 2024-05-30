@@ -111,7 +111,6 @@ public class Deck<Element> implements Serializable {
     public boolean isEmpty(){
         return actualDeck.isEmpty() && buffer.isEmpty();
     }
-
     public Element peekCardInDecks(int cardID){
         Element card;
         if (cardID == Configs.actualDeckPos) {

@@ -482,7 +482,7 @@ class ServerModelControllerTest {
         User user2 = game.getUserFromNick(view2.name);
         //user1
         assert user1.hasPlacedStartCard();
-        assert !game.othersHadAllPlacedStartCard(view1.name);
+        assert !game.checkAndMoveToSecretObjectiveChoicePhase(view1.name);
         assert user1.getUserCodex().getPlacementAt(new Position(0,0)) != null;
         assert user1.getUserHand().getHand().stream().allMatch(Objects::nonNull);
         assert user1.hasPlacedStartCard();
@@ -500,7 +500,7 @@ class ServerModelControllerTest {
         //view 2 lightModel isn't updated
         assert view2.lightGame.getCodexMap().get(view1.name).getPlacementHistory().isEmpty();
         assert Arrays.stream(view2.lightGame.getHandOthers().get(view1.name).getCards()).allMatch(Objects::isNull);
-        assert game.othersHadAllPlacedStartCard(view2.name);
+        assert game.checkAndMoveToSecretObjectiveChoicePhase(view2.name);
     }
 
     @Test
