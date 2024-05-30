@@ -1,10 +1,7 @@
 package it.polimi.ingsw;
 
-import it.polimi.ingsw.connectionLayer.VirtualLayer.VirtualController;
 import it.polimi.ingsw.view.GUI.GUI;
 import it.polimi.ingsw.view.TUI.TUI;
-
-import java.io.File;
 import java.util.Scanner;
 
 public class Client {

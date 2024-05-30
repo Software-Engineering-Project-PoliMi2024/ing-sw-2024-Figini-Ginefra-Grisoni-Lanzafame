@@ -60,11 +60,6 @@ public class ServerHandlerTest {
     }
 
     @Test
-    public void remoteServer(){
-        ServerSocket serverSocket = null;
-    }
-
-    @Test
     public void testOutOfOrderMessage() throws IOException, InterruptedException, NoSuchMethodException {
         ServerHandlerTestSetup setup = setupServerHandler();
 

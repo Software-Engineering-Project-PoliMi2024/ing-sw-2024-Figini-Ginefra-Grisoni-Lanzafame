@@ -19,6 +19,7 @@ public class OSRelated {
         }
     }
 
+    @SuppressWarnings("ResultOfMethodCallIgnored")
     public static void checkOrCreateDataFolderServer() {
         File dataFolder = new File(OSRelated.dataFolderPath);
         if (!dataFolder.exists()) {
@@ -35,7 +36,7 @@ public class OSRelated {
             gameSavedFolder.mkdirs();
         }
     }
-
+    @SuppressWarnings("ResultOfMethodCallIgnored")
     public static void checkOrCreateDataFolderClient() {
         File dataFolder = new File(OSRelated.dataFolderPath);
         if (!dataFolder.exists()) {
