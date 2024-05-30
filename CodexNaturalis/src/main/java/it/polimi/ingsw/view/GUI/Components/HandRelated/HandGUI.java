@@ -61,7 +61,7 @@ public class HandGUI implements Observer {
         return hand;
     }
 
-    public void addHandTo(AnchorPane parent){
+    public synchronized void addHandTo(AnchorPane parent){
         handPopUp = new AnchoredPopUp(parent, 0.8f, 0.2f, Pos.BOTTOM_CENTER, 0.25f);
         handPopUp.getContent().getChildren().add(hand);
         //handPopUp.getContent().setStyle(handPopUp.getContent().getStyle() +  "-fx-background-color: transparent");
@@ -163,13 +163,15 @@ public class HandGUI implements Observer {
                                     positioningCard.enable();
                                 else{
                                     //System.out.println("Controller.placeCard");
+                                    positioningCard.removeThisByFlippablePlayable(this::removeCardFromHand);
+
                                     if(GUI.getStateProperty().get() == StateGUI.PLACE_CARD || GUI.getStateProperty().get() == StateGUI.CHOOSE_START_CARD){
                                         try {
                                             //System.out.println(positioningCard.getTarget());
-                                            GUI.getControllerStatic().place(new LightPlacement(closestFrontier.getGridPosition(), positioningCard.getTarget(), positioningCard.getFace()));
                                             CardGUI newCard = new CardGUI(positioningCard);
-
                                             codex.addCard(newCard, closestFrontier.getGridPosition());
+
+                                            GUI.getControllerStatic().place(new LightPlacement(closestFrontier.getGridPosition(), positioningCard.getTarget(), positioningCard.getFace()));
 
                                         } catch (Exception ex) {
                                             throw new RuntimeException(ex);
@@ -178,7 +180,6 @@ public class HandGUI implements Observer {
                                     else
                                         throw new IllegalStateException("Invalid state");
 
-                                    positioningCard.removeThisByFlippablePlayable(this::removeCardFromHand);
                                     positioningCard = null;
                                     this.closestFrontier = null;
                                 }
@@ -193,7 +194,7 @@ public class HandGUI implements Observer {
         throw new IllegalStateException("Hand is full");
     }
 
-    public void removeCardFromHand(FlippablePlayableCard card){
+    synchronized public void removeCardFromHand(FlippablePlayableCard card){
         for (int i = 0; i < handCards.length; i++) {
             if(card.equals(handCards[i])){
                 hand.getChildren().remove(card.getImageView());
@@ -205,7 +206,7 @@ public class HandGUI implements Observer {
         throw new IllegalArgumentException("Card not found");
     }
 
-    public void update(){
+    synchronized public void update(){
         if(secretObjective == null && GUI.getLightGame().getHand().getSecretObjective() != null){
             secretObjective = new FlippableCardGUI(GUI.getLightGame().getHand().getSecretObjective());
             setSizeBindings(secretObjective);
