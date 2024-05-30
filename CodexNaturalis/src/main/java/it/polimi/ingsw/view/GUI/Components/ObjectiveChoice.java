@@ -65,8 +65,6 @@ public class ObjectiveChoice implements Observer {
 
     private void checkAndShow(){
         LightCard[] objectives = GUI.getLightGame().getHand().getSecretObjectiveOptions();
-        System.out.println("Recieved Objectives " + Arrays.toString(objectives));
-        System.out.println("Current state " + GUI.getStateProperty().get());
         int nonNull = (int) Arrays.stream(objectives).filter(Objects::nonNull).count();
         if(nonNull == 2){
             setFlippableCard(objectives);
