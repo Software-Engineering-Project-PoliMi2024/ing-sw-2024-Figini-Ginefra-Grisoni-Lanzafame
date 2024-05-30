@@ -43,7 +43,7 @@ public class ObjectiveCardFactory extends AbstractCardFactory<ObjectiveCard>{
      */
     @Override
     public Queue<ObjectiveCard> getCards(String binFileName) {
-        String filePath = OSRelated.cardFolderDataPath + binFileName;
+        String filePath = outDirPath + binFileName;
         File fileSerialized = new File(filePath);
         if (!fileSerialized.exists()) {
             serializeQueue(filePath, getCardsFromJson()); //create the .bin file
