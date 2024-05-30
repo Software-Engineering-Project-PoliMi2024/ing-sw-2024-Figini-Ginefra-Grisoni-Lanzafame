@@ -1,7 +1,7 @@
 package it.polimi.ingsw.view.TUI;
 
 import it.polimi.ingsw.Configs;
-import it.polimi.ingsw.connectionLayer.VirtualLayer.VirtualController;
+import it.polimi.ingsw.OSRelated;
 import it.polimi.ingsw.controller.ControllerInterface;
 import it.polimi.ingsw.lightModel.diffs.ModelDiffs;
 import it.polimi.ingsw.lightModel.lightTableRelated.LightGame;
@@ -29,7 +29,6 @@ import it.polimi.ingsw.view.ViewState;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
-import java.util.Map;
 
 public class TUI implements ActualView {
     private ControllerInterface controller;
@@ -37,7 +36,7 @@ public class TUI implements ActualView {
     private final InputHandler inputHandler = new InputHandler();
     private final CommandDisplayRenderable commandDisplay;
     private final List<Renderable> renderables;
-    private final CardMuseum cardMuseum = new CardMuseumFactory(Configs.CardFolder).getCardMuseum();
+    private final CardMuseum cardMuseum = new CardMuseumFactory(Configs.CardResourcesFolderPath, OSRelated.cardFolderDataPath).getCardMuseum();
     private final ConnectFormRenderable connectForm;
     private LoginFormRenderable loginForm;
     private GameListRenderable gameList;

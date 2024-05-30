@@ -1,13 +1,12 @@
 package it.polimi.ingsw;
 
-import java.io.File;
 public class Configs {
     public static Boolean debugMode = true;
     public static String gameSavesDir = "./gameSaves/";
     public static long gameSaveExpirationTimeMinutes = 30;
     public static String connectionLabelRMI = "connect";
-    public static String CardFolder = "Cards" + File.separator;
-    public static String CardFile = "cards.json";
+    public static String CardResourcesFolderPath = "Cards/";
+    public static String CardJSONFileName = "cards.json";
     public static int rmiPort = 1234;
     public static int socketPort = 12345;
     public static int secondsTimeOut = 3;

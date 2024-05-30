@@ -12,7 +12,7 @@ public class AbstractCardFactoryTest {
     public void getCardArrayShouldNotBeNullOrEmptyForAllCardTypes() {
         //getCardArray is a common method between all concrete factory,
         //the concrete factory that is chosen does not matter
-        AbstractCardFactory<GoldCard> abstractCardFactory = new GoldCardFactory(Configs.CardFolder+Configs.CardFile, Configs.CardFolder);
+        AbstractCardFactory<GoldCard> abstractCardFactory = new GoldCardFactory(Configs.CardResourcesFolderPath +Configs.CardJSONFileName, Configs.CardResourcesFolderPath);
         String[] CardTypes = {"GoldCards", "StartingCard", "ObjectiveCard", "ResourcesCards"};
         for(String s : CardTypes){
             JsonArray jsonArrayTest = abstractCardFactory.getCardArray(s);
@@ -25,7 +25,7 @@ public class AbstractCardFactoryTest {
     public void getFrontCornerMapNotNull(){
         //getCardArray is a common method between all concrete factory,
         //the concrete factory that is chosen does not matter
-        AbstractCardFactory<GoldCard> abstractCardFactory = new GoldCardFactory(Configs.CardFolder+Configs.CardFile, Configs.CardFolder);
+        AbstractCardFactory<GoldCard> abstractCardFactory = new GoldCardFactory(Configs.CardResourcesFolderPath +Configs.CardJSONFileName, Configs.CardResourcesFolderPath);
         //ObjectiveCard have no FrontCorner
         String[] CardTypes = {"GoldCards", "StartingCard", "ResourcesCards"};
         for(String s : CardTypes){

@@ -3,10 +3,6 @@ package it.polimi.ingsw.model;
 import it.polimi.ingsw.Configs;
 import it.polimi.ingsw.OSRelated;
 import it.polimi.ingsw.controller.persistence.PersistenceFactory;
-import it.polimi.ingsw.model.cardReleted.cardFactories.GoldCardFactory;
-import it.polimi.ingsw.model.cardReleted.cardFactories.ObjectiveCardFactory;
-import it.polimi.ingsw.model.cardReleted.cardFactories.ResourceCardFactory;
-import it.polimi.ingsw.model.cardReleted.cardFactories.StartCardFactory;
 import it.polimi.ingsw.model.cardReleted.cards.*;
 import it.polimi.ingsw.model.playerReleted.User;
 import it.polimi.ingsw.model.tableReleted.Game;
@@ -26,7 +22,7 @@ public class MultiGame implements Serializable {
         this.games = PersistenceFactory.load();
         this.usernames = new ArrayList<>();
         lobbies = new LobbyList();
-        this.cardTable = new CardTable(Configs.CardFolder, Configs.CardFile, OSRelated.cardFolderDataPath);
+        this.cardTable = new CardTable(Configs.CardResourcesFolderPath, Configs.CardJSONFileName, OSRelated.cardFolderDataPath);
     }
 
     /**

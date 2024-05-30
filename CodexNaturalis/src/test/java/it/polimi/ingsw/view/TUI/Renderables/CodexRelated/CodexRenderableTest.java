@@ -1,6 +1,7 @@
 package it.polimi.ingsw.view.TUI.Renderables.CodexRelated;
 
 import it.polimi.ingsw.Configs;
+import it.polimi.ingsw.OSRelated;
 import it.polimi.ingsw.lightModel.diffs.game.codexDiffs.CodexDiffPlacement;
 import it.polimi.ingsw.lightModel.diffs.game.gamePartyDiffs.GameDiffCurrentPlayer;
 import it.polimi.ingsw.lightModel.diffs.game.gamePartyDiffs.GameDiffPlayerActivity;
@@ -26,7 +27,7 @@ class CodexRenderableTest {
     CodexRenderable renderable;
     @BeforeEach
     void setUp() {
-        CardMuseum museum = new CardMuseumFactory(Configs.CardFolder).getCardMuseum();
+        CardMuseum museum = new CardMuseumFactory(Configs.CardResourcesFolderPath, OSRelated.cardFolderDataPath).getCardMuseum();
         LightGame lightGame = new LightGame();
         renderable = new CodexRenderable("name", lightGame, museum, new CommandPrompt[]{}, null);
 
