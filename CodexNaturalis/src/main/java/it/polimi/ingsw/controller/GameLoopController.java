@@ -375,12 +375,12 @@ public class GameLoopController implements Serializable {
      */
     private void gameLoop(ServerModelController oldCurrentPlayerController){
         User nextPlayer = calculateNextPlayer();
-        if(game.isLastTurn() && nextPlayer.equals(game.getGameParty().getFirstPlayerInOrder())){
-            this.endGame();
-        } else if (checkForChickenDinner() && nextPlayer.equals(game.getGameParty().getFirstPlayerInOrder()) && !game.isLastTurn()){
-            game.setLastTurn(true);
-            this.logAll(LogsOnClient.LAST_TURN);
-        }
+//        if(game.isLastTurn() && nextPlayer.equals(game.getGameParty().getFirstPlayerInOrder())){
+//            this.endGame();
+//        } else if (checkForChickenDinner() && nextPlayer.equals(game.getGameParty().getFirstPlayerInOrder()) && !game.isLastTurn()){
+//            game.setLastTurn(true);
+//            this.logAll(LogsOnClient.LAST_TURN);
+//        }
         this.logYouAndOther(activePlayers.get(nextPlayer.getNickname()), LogsOnClient.YOUR_TURN, LogsOnClient.PLAYER_TURN);
         oldCurrentPlayerController.transitionTo(ViewState.IDLE);
         activePlayers.get(nextPlayer.getNickname()).transitionTo(ViewState.PLACE_CARD);
@@ -393,12 +393,12 @@ public class GameLoopController implements Serializable {
      */
     private void gameLoop(){
         User nextPlayer = calculateNextPlayer();
-        if(game.isLastTurn() && nextPlayer.equals(game.getGameParty().getFirstPlayerInOrder())){
-            this.endGame();
-        } else if (checkForChickenDinner() && nextPlayer.equals(game.getGameParty().getFirstPlayerInOrder()) && !game.isLastTurn()){
-            game.setLastTurn(true);
-            this.logAll(LogsOnClient.LAST_TURN);
-        }
+//        if(game.isLastTurn() && nextPlayer.equals(game.getGameParty().getFirstPlayerInOrder())){
+//            this.endGame();
+//        } else if (checkForChickenDinner() && nextPlayer.equals(game.getGameParty().getFirstPlayerInOrder()) && !game.isLastTurn()){
+//            game.setLastTurn(true);
+//            this.logAll(LogsOnClient.LAST_TURN);
+//        }
         this.logYouAndOther(activePlayers.get(nextPlayer.getNickname()), LogsOnClient.YOUR_TURN, LogsOnClient.PLAYER_TURN);
         activePlayers.get(nextPlayer.getNickname()).transitionTo(ViewState.PLACE_CARD);
     }

@@ -81,6 +81,7 @@ public abstract class AbstractCardFactory<Element> {
     }
 
     protected int getIdFront(JsonObject card){
+        System.out.println(card.get("frontID").getAsInt());
         return card.get("frontID").getAsInt();
     }
 
