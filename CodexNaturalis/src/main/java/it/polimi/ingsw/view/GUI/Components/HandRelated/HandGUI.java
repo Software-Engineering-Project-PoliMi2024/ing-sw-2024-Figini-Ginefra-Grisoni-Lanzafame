@@ -219,7 +219,7 @@ public class HandGUI implements Observer {
 
         int freeSpots = Arrays.stream(GUI.getLightGame().getHand().getCards()).filter(Objects::isNull).toArray().length;
 
-        if(freeSpots == Arrays.stream(handCards).filter(Objects::isNull).toArray().length) {
+        if(freeSpots != Arrays.stream(handCards).filter(Objects::isNull).toArray().length) {
             for (int i = 0; i < handCards.length; i++) {
                 if (handCards[i] == null && GUI.getLightGame().getHand().getCards()[i] != null) {
                     LightCard target = GUI.getLightGame().getHand().getCards()[i];
