@@ -18,6 +18,7 @@ class ChooseObjectiveCardRenderableTest {
     ChooseObjectiveCardRenderable renderable;
     @BeforeEach
     void setUp() {
+        OSRelated.checkOrCreateDataFolderClient(); //Create the dataFolder if necessary. Normally this is done in the Client class
         CardMuseum museum = new CardMuseumFactory(Configs.CardResourcesFolderPath, OSRelated.cardFolderDataPath).getCardMuseum();
         LightGame lightGame = new LightGame();
         renderable = new ChooseObjectiveCardRenderable("name", museum, lightGame, new CommandPrompt[]{}, null);

@@ -24,9 +24,11 @@ import java.util.HashMap;
 import java.util.List;
 
 class CodexRenderableTest {
+
     CodexRenderable renderable;
     @BeforeEach
     void setUp() {
+        OSRelated.checkOrCreateDataFolderClient(); //Create the dataFolder if necessary. Normally this is done in the Client class
         CardMuseum museum = new CardMuseumFactory(Configs.CardResourcesFolderPath, OSRelated.cardFolderDataPath).getCardMuseum();
         LightGame lightGame = new LightGame();
         renderable = new CodexRenderable("name", lightGame, museum, new CommandPrompt[]{}, null);

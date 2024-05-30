@@ -11,6 +11,7 @@ import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 
 import java.io.*;
+import java.net.InetSocketAddress;
 import java.net.ServerSocket;
 import java.net.Socket;
 import java.util.*;
@@ -56,6 +57,11 @@ public class ServerHandlerTest {
         serverHandler.run();
         //If the exception is correctly thrown and catch, a Connection_Error message should be logged to the view
         verify(mockView, times(1)).logErr(LogsOnClient.CONNECTION_ERROR.getMessage());
+    }
+
+    @Test
+    public void remoteServer(){
+        ServerSocket serverSocket = null;
     }
 
     @Test

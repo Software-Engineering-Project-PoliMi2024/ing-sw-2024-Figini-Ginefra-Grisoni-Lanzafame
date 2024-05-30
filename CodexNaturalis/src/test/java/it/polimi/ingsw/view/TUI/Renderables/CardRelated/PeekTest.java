@@ -70,6 +70,7 @@ class PeekTest {
 
     @Test
     void render() {
+        OSRelated.checkOrCreateDataFolderClient(); //Create the dataFolder if necessary. Normally this is done in the Client class
         CommandPromptResult answer = new CommandPromptResult(CommandPrompt.PEEK, new String[]{"Player2"});
         handRenderable.updateCommand(answer);
         codexRenderable.updateCommand(answer);
