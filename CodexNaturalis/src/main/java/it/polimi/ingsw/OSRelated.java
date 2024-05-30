@@ -18,4 +18,21 @@ public class OSRelated {
             return System.getProperty("user.home") + File.separator + ".";
         }
     }
+
+    public static void checkOrCreateDataFolder() {
+        File dataFolder = new File(OSRelated.dataFolderPath);
+        if (!dataFolder.exists()) {
+            dataFolder.mkdirs();
+        }
+        // Create Cards folder
+        File cardsFolder = new File(OSRelated.cardFolderDataPath);
+        if (!cardsFolder.exists()) {
+            cardsFolder.mkdirs();
+        }
+        // Create gameSaved folder
+        File gameSavedFolder = new File(OSRelated.gameDataFolderPath);
+        if (!gameSavedFolder.exists()) {
+            gameSavedFolder.mkdirs();
+        }
+    }
 }
