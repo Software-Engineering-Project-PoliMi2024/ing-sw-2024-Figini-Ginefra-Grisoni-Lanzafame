@@ -19,7 +19,7 @@ public class OSRelated {
         }
     }
 
-    public static void checkOrCreateDataFolder() {
+    public static void checkOrCreateDataFolderServer() {
         File dataFolder = new File(OSRelated.dataFolderPath);
         if (!dataFolder.exists()) {
             dataFolder.mkdirs();
@@ -33,6 +33,18 @@ public class OSRelated {
         File gameSavedFolder = new File(OSRelated.gameDataFolderPath);
         if (!gameSavedFolder.exists()) {
             gameSavedFolder.mkdirs();
+        }
+    }
+
+    public static void checkOrCreateDataFolderClient() {
+        File dataFolder = new File(OSRelated.dataFolderPath);
+        if (!dataFolder.exists()) {
+            dataFolder.mkdirs();
+        }
+        // Create Cards folder
+        File cardsFolder = new File(OSRelated.cardFolderDataPath);
+        if (!cardsFolder.exists()) {
+            cardsFolder.mkdirs();
         }
     }
 }

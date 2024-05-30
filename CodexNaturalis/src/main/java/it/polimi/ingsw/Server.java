@@ -25,7 +25,7 @@ import java.rmi.server.UnicastRemoteObject;
  */
 public class Server {
     public static void main(String[] args) {
-        OSRelated.checkOrCreateDataFolder();
+        OSRelated.checkOrCreateDataFolderServer();
         try (Socket socket = new Socket()) {
             socket.connect(new InetSocketAddress("google.com", 80));
             Printer.println("IP: " + socket.getLocalAddress().getHostAddress());

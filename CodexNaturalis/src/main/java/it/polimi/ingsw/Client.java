@@ -9,8 +9,7 @@ import java.util.Scanner;
 
 public class Client {
     public static void main(String[] args) {
-        OSRelated.checkOrCreateDataFolder();
-        VirtualController controller;
+        OSRelated.checkOrCreateDataFolderClient();
         System.out.println("Hi there 👋!");
 
 
