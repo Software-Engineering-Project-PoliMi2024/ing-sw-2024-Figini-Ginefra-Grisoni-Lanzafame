@@ -19,6 +19,7 @@ public class Configs {
     public static String objectiveCardBinFileName = "objectiveCards.bin";
     public static String resourceCardBinFileName = "resourceCards.bin";
     public static String startCardBinFileName = "startCards.bin";
+    public static String CardMuseumFileName = "CardMuseum.bin";
     public static String invalidNicknameRegex = "^\\s*$";
     public static String invalidLobbyNameRegex = "^\\s*$";
     public static String dataFolderName = "CodexNaturalis";

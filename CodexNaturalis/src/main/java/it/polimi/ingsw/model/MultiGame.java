@@ -1,6 +1,7 @@
 package it.polimi.ingsw.model;
 
 import it.polimi.ingsw.Configs;
+import it.polimi.ingsw.OSRelated;
 import it.polimi.ingsw.controller.persistence.PersistenceFactory;
 import it.polimi.ingsw.model.cardReleted.cardFactories.GoldCardFactory;
 import it.polimi.ingsw.model.cardReleted.cardFactories.ObjectiveCardFactory;
@@ -25,7 +26,7 @@ public class MultiGame implements Serializable {
         this.games = PersistenceFactory.load();
         this.usernames = new ArrayList<>();
         lobbies = new LobbyList();
-        this.cardTable = new CardTable(Configs.CardFolder, Configs.CardFile);
+        this.cardTable = new CardTable(Configs.CardFolder, Configs.CardFile, OSRelated.cardFolderDataPath);
     }
 
     /**
