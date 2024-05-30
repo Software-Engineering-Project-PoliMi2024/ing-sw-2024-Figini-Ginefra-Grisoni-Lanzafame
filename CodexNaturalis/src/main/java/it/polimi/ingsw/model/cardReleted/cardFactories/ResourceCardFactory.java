@@ -20,7 +20,7 @@ public class ResourceCardFactory extends AbstractCardFactory<ResourceCard>{
      */
     public ResourceCardFactory(String inFile, String outDirPath) {
         super(inFile, outDirPath);
-    };
+    }
     /**
      * Retrieves a queue of Resource cards from JSON file
      * It calls StartCard() for building the actual card

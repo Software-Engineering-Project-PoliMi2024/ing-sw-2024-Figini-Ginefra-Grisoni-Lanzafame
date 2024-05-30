@@ -1,9 +1,6 @@
 package it.polimi.ingsw;
 
 import java.io.File;
-
-import static java.lang.System.getenv;
-
 public class Configs {
     public static Boolean debugMode = true;
     public static String gameSavesDir = "./gameSaves/";

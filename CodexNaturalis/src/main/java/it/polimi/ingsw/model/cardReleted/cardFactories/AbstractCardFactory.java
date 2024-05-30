@@ -41,7 +41,6 @@ public abstract class AbstractCardFactory<Element> {
      * @throws RuntimeException if cards.json is not present
      */
     protected JsonArray getCardArray(String cardType){
-        //TODO change file path
         final Gson gson = new Gson();
         InputStream inputStream = Server.class.getClassLoader().getResourceAsStream(inFileFromResources);
         if(inputStream == null){
