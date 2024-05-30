@@ -33,8 +33,6 @@ public class CodexGUI implements Observer {
 
     private boolean isFrontierVisible = false;
 
-    private boolean attached = false;
-
 
     public CodexGUI() {
         AnchorPane.setBottomAnchor(codex, 0.0);
@@ -114,7 +112,7 @@ public class CodexGUI implements Observer {
     }
 
 
-    public void addCard(CardGUI card, Position position) {
+    public synchronized void addCard(CardGUI card, Position position) {
         cards.add(card);
         codex.getChildren().add(card.getImageView());
 
@@ -137,7 +135,7 @@ public class CodexGUI implements Observer {
         this.center = center;
     }
 
-    public void update(){
+    public synchronized void update(){
         int n = this.getLightCodex().getPlacementHistory().size();
 
         if(n > this.cards.size()){
@@ -197,7 +195,7 @@ public class CodexGUI implements Observer {
         return scale * scale;
     }
 
-    public void removeCard(CardGUI card){
+    public synchronized void removeCard(CardGUI card){
         codex.getChildren().remove(card.getImageView());
         cards.remove(card);
     }
