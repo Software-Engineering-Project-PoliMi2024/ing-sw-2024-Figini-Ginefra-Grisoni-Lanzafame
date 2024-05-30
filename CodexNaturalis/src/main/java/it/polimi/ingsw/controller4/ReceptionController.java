@@ -8,8 +8,8 @@ import it.polimi.ingsw.controller4.Interfaces.ReceptionControllerInterface;
 public class ReceptionController implements ReceptionControllerInterface {
 
     @Override
-    public void login(String nickname) {
-
+    public boolean login(String nickname) {
+        return false;
     }
 
     @Override
