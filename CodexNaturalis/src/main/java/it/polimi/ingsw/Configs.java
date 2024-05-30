@@ -9,7 +9,7 @@ public class Configs {
     public static String gameSavesDir = "./gameSaves/";
     public static long gameSaveExpirationTimeMinutes = 30;
     public static String connectionLabelRMI = "connect";
-    public static String CardFolder = "src/main/resources/Cards/";
+    public static String CardFolder = "Cards" + File.separator;
     public static String CardFile = "cards.json";
     public static int rmiPort = 1234;
     public static int socketPort = 12345;

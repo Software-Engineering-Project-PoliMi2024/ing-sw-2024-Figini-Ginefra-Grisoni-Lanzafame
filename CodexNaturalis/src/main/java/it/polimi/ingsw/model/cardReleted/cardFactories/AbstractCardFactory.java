@@ -21,16 +21,16 @@ public abstract class AbstractCardFactory<Element> {
     public abstract Queue<Element> getCards(String binFileName);
 
     public abstract Queue<Element> getCardsFromJson();
-    private final String inFile;
+    private final String inFileFromResources;
     protected final String outDirPath;
 
     /**
      * The constructor of the class
-     * @param inFile the path of the card.json file
+     * @param inFileFromResources the path of the card.json file in the resources folder
      * @param outDirPath the path of the directory where the .bin file will be saved
      */
-    public AbstractCardFactory(String inFile, String outDirPath) {
-        this.inFile = inFile;
+    public AbstractCardFactory(String inFileFromResources, String outDirPath) {
+        this.inFileFromResources = inFileFromResources;
         this.outDirPath = outDirPath;
     }
 
@@ -43,7 +43,7 @@ public abstract class AbstractCardFactory<Element> {
     protected JsonArray getCardArray(String cardType){
         //TODO change file path
         final Gson gson = new Gson();
-        InputStream inputStream = Server.class.getClassLoader().getResourceAsStream("Cards/cards.json");
+        InputStream inputStream = Server.class.getClassLoader().getResourceAsStream(inFileFromResources);
         if(inputStream == null){
             throw new RuntimeException("File " + Configs.CardFile + " not found");
         }else{
