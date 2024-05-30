@@ -13,8 +13,7 @@ public class CardTable {
     private final CardLookUp<GoldCard> cardLookUpGoldCard;
 
     public CardTable(String filePath, String sourceFileName){
-        this.cardLookUpObjective =
-                new CardLookUp<>(new ObjectiveCardFactory(filePath+sourceFileName, filePath).getCards(Configs.objectiveCardBinFileName));
+        this.cardLookUpObjective = new CardLookUp<>(new ObjectiveCardFactory(filePath+sourceFileName, filePath).getCards(Configs.objectiveCardBinFileName));
         this.cardLookUpStartCard = new CardLookUp<>(new StartCardFactory(filePath+sourceFileName, filePath).getCards(Configs.startCardBinFileName));
         this.cardLookUpResourceCard = new CardLookUp<>(new ResourceCardFactory(filePath+sourceFileName, filePath).getCards(Configs.resourceCardBinFileName));
         this.cardLookUpGoldCard = new CardLookUp<>(new GoldCardFactory(filePath+sourceFileName, filePath).getCards(Configs.goldCardBinFileName));
