@@ -39,7 +39,6 @@ public class ServerHandler implements Runnable{
     /**
      * Initialized the input and output streams and starts the listening thread
      */
-    //todo remove print used for debugging
     @Override
     public void run(){
         ExecutorService executor = Executors.newSingleThreadExecutor();

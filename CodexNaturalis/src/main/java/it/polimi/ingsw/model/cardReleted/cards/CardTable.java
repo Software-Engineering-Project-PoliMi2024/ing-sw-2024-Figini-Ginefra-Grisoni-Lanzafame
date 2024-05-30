@@ -12,12 +12,11 @@ public class CardTable {
     private final CardLookUp<ResourceCard> cardLookUpResourceCard;
     private final CardLookUp<GoldCard> cardLookUpGoldCard;
 
-    public CardTable(String filePath, String sourceFileName){
-        this.cardLookUpObjective =
-                new CardLookUp<>(new ObjectiveCardFactory(filePath+sourceFileName, filePath).getCards(Configs.objectiveCardBinFileName));
-        this.cardLookUpStartCard = new CardLookUp<>(new StartCardFactory(filePath+sourceFileName, filePath).getCards(Configs.startCardBinFileName));
-        this.cardLookUpResourceCard = new CardLookUp<>(new ResourceCardFactory(filePath+sourceFileName, filePath).getCards(Configs.resourceCardBinFileName));
-        this.cardLookUpGoldCard = new CardLookUp<>(new GoldCardFactory(filePath+sourceFileName, filePath).getCards(Configs.goldCardBinFileName));
+    public CardTable(String cardJsonPath, String cardJsonName, String outDirPath){
+        this.cardLookUpObjective = new CardLookUp<>(new ObjectiveCardFactory(cardJsonPath+cardJsonName, outDirPath).getCards(Configs.objectiveCardBinFileName));
+        this.cardLookUpStartCard = new CardLookUp<>(new StartCardFactory(cardJsonPath+cardJsonName, outDirPath).getCards(Configs.startCardBinFileName));
+        this.cardLookUpResourceCard = new CardLookUp<>(new ResourceCardFactory(cardJsonPath+cardJsonName, outDirPath).getCards(Configs.resourceCardBinFileName));
+        this.cardLookUpGoldCard = new CardLookUp<>(new GoldCardFactory(cardJsonPath+cardJsonName, outDirPath).getCards(Configs.goldCardBinFileName));
     }
 
     public CardLookUp<ObjectiveCard> getCardLookUpObjective() {

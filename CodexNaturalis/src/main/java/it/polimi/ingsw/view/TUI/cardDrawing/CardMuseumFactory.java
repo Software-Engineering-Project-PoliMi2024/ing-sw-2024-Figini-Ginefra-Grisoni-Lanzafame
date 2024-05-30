@@ -34,7 +34,7 @@ public class CardMuseumFactory {
     private final String folderPath;
 
     /** The name of the binary file. */
-    public static final String fileName = "CardMuseum.bin";
+    public static final String fileName = Configs.CardMuseumFileName;
 
     /**
      * Creates a new CardMuseumFactory.

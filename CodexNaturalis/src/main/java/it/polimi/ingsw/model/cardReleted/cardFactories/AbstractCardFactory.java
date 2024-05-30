@@ -4,6 +4,8 @@ import com.google.gson.Gson;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
+import it.polimi.ingsw.Configs;
+import it.polimi.ingsw.Server;
 import it.polimi.ingsw.model.cardReleted.utilityEnums.*;
 
 import java.io.*;
@@ -19,16 +21,16 @@ public abstract class AbstractCardFactory<Element> {
     public abstract Queue<Element> getCards(String binFileName);
 
     public abstract Queue<Element> getCardsFromJson();
-    private final String inFile;
+    private final String inFileFromResources;
     protected final String outDirPath;
 
     /**
      * The constructor of the class
-     * @param inFile the path of the card.json file
+     * @param inFileFromResources the path of the card.json file in the resources folder
      * @param outDirPath the path of the directory where the .bin file will be saved
      */
-    public AbstractCardFactory(String inFile, String outDirPath) {
-        this.inFile = inFile;
+    public AbstractCardFactory(String inFileFromResources, String outDirPath) {
+        this.inFileFromResources = inFileFromResources;
         this.outDirPath = outDirPath;
     }
 
@@ -40,13 +42,11 @@ public abstract class AbstractCardFactory<Element> {
      */
     protected JsonArray getCardArray(String cardType){
         final Gson gson = new Gson();
-        FileReader fileReader;
-        try {
-            fileReader = new FileReader(inFile);
-            JsonObject jsonObject = gson.fromJson(fileReader, JsonObject.class);
-            return  jsonObject.getAsJsonArray(cardType);
-        } catch (FileNotFoundException e) {
-            throw new RuntimeException(e);
+        InputStream inputStream = Server.class.getClassLoader().getResourceAsStream(inFileFromResources);
+        if(inputStream == null){
+            throw new RuntimeException("File " + Configs.CardFile + " not found");
+        }else{
+            return gson.fromJson(new InputStreamReader(inputStream), JsonObject.class).getAsJsonArray(cardType);
         }
     }
 
@@ -94,15 +94,15 @@ public abstract class AbstractCardFactory<Element> {
 
     /**
      * serialize a Queue of card and create the appropriate serialized file
-     * @param filename the name of the final file
-     * @param queue the queue of card that need to be serialized
+     * @param filePath the path including the name of the final file
+     * @param queue the queue of card that needs to be serialized
      * @throws RuntimeException if an error occurs during the opening/writing
      */
-    public void serializeQueue(String filename, Queue<Element> queue){
+    public void serializeQueue(String filePath, Queue<Element> queue){
         FileOutputStream fileOut;
         ObjectOutputStream objOut;
         try {
-            fileOut = new FileOutputStream(filename);
+            fileOut = new FileOutputStream(filePath);
             objOut = new ObjectOutputStream(fileOut);
             objOut.writeObject(queue);
             objOut.close();

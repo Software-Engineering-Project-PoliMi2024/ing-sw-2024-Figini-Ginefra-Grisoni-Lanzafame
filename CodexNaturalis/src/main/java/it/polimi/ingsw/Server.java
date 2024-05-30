@@ -11,6 +11,7 @@ import it.polimi.ingsw.model.MultiGame;
 import it.polimi.ingsw.view.TUI.Printing.Printer;
 import it.polimi.ingsw.view.ViewState;
 
+import java.io.File;
 import java.io.IOException;
 import java.net.InetSocketAddress;
 import java.net.ServerSocket;
@@ -24,7 +25,7 @@ import java.rmi.server.UnicastRemoteObject;
  */
 public class Server {
     public static void main(String[] args) {
-
+        checkOrCreateDataFolder();
         try (Socket socket = new Socket()) {
             socket.connect(new InetSocketAddress("google.com", 80));
             Printer.println("IP: " + socket.getLocalAddress().getHostAddress());
@@ -92,5 +93,22 @@ public class Server {
 //        Thread serverRMIThread = new Thread(serverRMI, "RMI Server Listening Thread");
 //        serverSocketThread.start();
 //        serverRMIThread.start();
+    }
+
+    private static void checkOrCreateDataFolder() {
+        File dataFolder = new File(OSRelated.dataFolderPath);
+        if (!dataFolder.exists()) {
+            dataFolder.mkdirs();
+        }
+        // Create Cards folder
+        File cardsFolder = new File(OSRelated.cardFolderDataPath);
+        if (!cardsFolder.exists()) {
+            cardsFolder.mkdirs();
+        }
+        // Create gameSaved folder
+        File gameSavedFolder = new File(OSRelated.gameDataFolderPath);
+        if (!gameSavedFolder.exists()) {
+            gameSavedFolder.mkdirs();
+        }
     }
 }

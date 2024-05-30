@@ -2,23 +2,20 @@ package it.polimi.ingsw.view.GUI.Components;
 
 import it.polimi.ingsw.designPatterns.Observer;
 import it.polimi.ingsw.lightModel.lightPlayerRelated.LightCard;
-import it.polimi.ingsw.model.playerReleted.Placement;
 import it.polimi.ingsw.view.GUI.Components.CardRelated.FlippableCardGUI;
 import it.polimi.ingsw.view.GUI.GUI;
 import it.polimi.ingsw.view.GUI.StateGUI;
 import javafx.application.Platform;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
-import javafx.scene.control.TextField;
 import javafx.scene.layout.*;
 import javafx.scene.text.Text;
 import javafx.scene.text.TextAlignment;
 
 import java.util.*;
-import java.util.stream.Collectors;
 
 public class ObjectiveChoice implements Observer {
-    private FlippableCardGUI[] objectivesCard = new FlippableCardGUI[2];
+    private FlippableCardGUI[] objectiveCards = new FlippableCardGUI[2];
 
     private final VBox container = new VBox();
 
@@ -69,9 +66,12 @@ public class ObjectiveChoice implements Observer {
     private void checkAndShow(){
         LightCard[] objectives = GUI.getLightGame().getHand().getSecretObjectiveOptions();
         int nonNull = (int) Arrays.stream(objectives).filter(Objects::nonNull).count();
-        if(nonNull == 2 && GUI.getStateProperty().get() == StateGUI.SELECT_OBJECTIVE){
+        if(nonNull == 2){
             setFlippableCard(objectives);
-            choiceBox.getChildren().addAll(Arrays.stream(objectivesCard).map(FlippableCardGUI::getImageView).toList());
+            Platform.runLater(
+                    () -> choiceBox.getChildren().addAll(Arrays.stream(objectiveCards).map(FlippableCardGUI::getImageView).toList())
+            );
+
         }
     }
 
@@ -92,11 +92,11 @@ public class ObjectiveChoice implements Observer {
             objectivesList.add(card);
         }
 
-        objectivesCard = objectivesList.toArray(new FlippableCardGUI[0]);
+        objectiveCards = objectivesList.toArray(new FlippableCardGUI[0]);
     }
 
     @Override
-    public void update() {
+    public synchronized void update() {
         checkAndShow();
     }
 }

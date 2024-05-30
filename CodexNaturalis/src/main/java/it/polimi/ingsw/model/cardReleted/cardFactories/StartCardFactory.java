@@ -4,6 +4,7 @@ import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import it.polimi.ingsw.Configs;
+import it.polimi.ingsw.OSRelated;
 import it.polimi.ingsw.model.cardReleted.cards.StartCard;
 import it.polimi.ingsw.model.cardReleted.utilityEnums.*;
 
@@ -34,12 +35,10 @@ public class StartCardFactory extends AbstractCardFactory<StartCard>{
     public Queue<StartCard> getCards(String binFileName) {
         String filePath = outDirPath + binFileName;
         File fileSerialized = new File(filePath);
-        if(fileSerialized.exists()){
-            return deserializeQueue(fileSerialized);
-        }else{
+        if (!fileSerialized.exists()) {
             serializeQueue(filePath, getCardsFromJson()); //create the .bin file
-            return deserializeQueue(fileSerialized);
         }
+        return deserializeQueue(fileSerialized);
     }
 
     @SuppressWarnings("unchecked")

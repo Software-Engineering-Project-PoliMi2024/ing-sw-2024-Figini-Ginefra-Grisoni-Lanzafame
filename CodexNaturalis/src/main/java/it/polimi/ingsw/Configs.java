@@ -1,11 +1,12 @@
 package it.polimi.ingsw;
 
+import java.io.File;
 public class Configs {
     public static Boolean debugMode = true;
     public static String gameSavesDir = "./gameSaves/";
     public static long gameSaveExpirationTimeMinutes = 30;
     public static String connectionLabelRMI = "connect";
-    public static String CardFolder = "./cards/";
+    public static String CardFolder = "Cards" + File.separator;
     public static String CardFile = "cards.json";
     public static int rmiPort = 1234;
     public static int socketPort = 12345;
@@ -18,6 +19,11 @@ public class Configs {
     public static String objectiveCardBinFileName = "objectiveCards.bin";
     public static String resourceCardBinFileName = "resourceCards.bin";
     public static String startCardBinFileName = "startCards.bin";
+    public static String CardMuseumFileName = "CardMuseum.bin";
     public static String invalidNicknameRegex = "^\\s*$";
     public static String invalidLobbyNameRegex = "^\\s*$";
+    public static String dataFolderName = "CodexNaturalis";
+    public static String cardDataFolderName = "Cards";
+    public static String gameSaveFolderName = "GameSaved";
+
 }

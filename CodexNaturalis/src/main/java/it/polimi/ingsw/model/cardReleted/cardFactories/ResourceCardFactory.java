@@ -3,6 +3,7 @@ package it.polimi.ingsw.model.cardReleted.cardFactories;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
 import it.polimi.ingsw.Configs;
+import it.polimi.ingsw.OSRelated;
 import it.polimi.ingsw.model.cardReleted.cards.ResourceCard;
 
 import java.io.*;
@@ -19,7 +20,7 @@ public class ResourceCardFactory extends AbstractCardFactory<ResourceCard>{
      */
     public ResourceCardFactory(String inFile, String outDirPath) {
         super(inFile, outDirPath);
-    };
+    }
     /**
      * Retrieves a queue of Resource cards from JSON file
      * It calls StartCard() for building the actual card
@@ -48,12 +49,10 @@ public class ResourceCardFactory extends AbstractCardFactory<ResourceCard>{
     public Queue<ResourceCard> getCards(String binFileName) {
         String filePath = outDirPath + binFileName;
         File fileSerialized = new File(filePath);
-        if(fileSerialized.exists()){
-            return deserializeQueue(fileSerialized);
-        }else{
+        if (!fileSerialized.exists()) {
             serializeQueue(filePath, getCardsFromJson()); //create the .bin file
-            return deserializeQueue(fileSerialized);
         }
+        return deserializeQueue(fileSerialized);
     }
 
     @SuppressWarnings("unchecked")
