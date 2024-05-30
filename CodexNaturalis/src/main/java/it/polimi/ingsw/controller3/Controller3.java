@@ -5,7 +5,6 @@ import it.polimi.ingsw.controller.ControllerInterface;
 import it.polimi.ingsw.controller3.mediators.gameJoinerAndTurnTakerMediators.GameJoiner;
 import it.polimi.ingsw.controller3.mediators.gameJoinerAndTurnTakerMediators.TurnTaker;
 import it.polimi.ingsw.lightModel.Heavifier;
-import it.polimi.ingsw.lightModel.Lightifier;
 import it.polimi.ingsw.lightModel.lightPlayerRelated.LightCard;
 import it.polimi.ingsw.lightModel.lightPlayerRelated.LightPlacement;
 import it.polimi.ingsw.model.MultiGame;
