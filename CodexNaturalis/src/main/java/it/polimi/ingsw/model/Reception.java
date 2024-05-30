@@ -13,12 +13,12 @@ import it.polimi.ingsw.view.ViewInterface;
 import java.io.Serializable;
 import java.util.*;
 
-public class MultiGame implements Serializable {
+public class Reception implements Serializable {
     private final Set<Game> games;
     private final LobbyList lobbies; //users that are currently connected to the server
     private final List<String> usernames;
     private final CardTable cardTable;
-    public MultiGame() {
+    public Reception() {
         this.games = PersistenceFactory.load();
         this.usernames = new ArrayList<>();
         lobbies = new LobbyList();

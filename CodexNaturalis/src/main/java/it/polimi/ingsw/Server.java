@@ -7,7 +7,7 @@ import it.polimi.ingsw.connectionLayer.VirtualLayer.VirtualView;
 import it.polimi.ingsw.connectionLayer.VirtualSocket.VirtualViewSocket;
 import it.polimi.ingsw.controller.LogsOnClient;
 import it.polimi.ingsw.controller.ServerModelController;
-import it.polimi.ingsw.model.MultiGame;
+import it.polimi.ingsw.model.Reception;
 import it.polimi.ingsw.view.TUI.Printing.Printer;
 import it.polimi.ingsw.view.ViewState;
 
@@ -31,12 +31,12 @@ public class Server {
         } catch (IOException e) {
             System.out.println("No internet connection, can't get IP address");
         }
-        MultiGame multiGame = new MultiGame();
+        Reception reception = new Reception();
 
         Registry registry;
         try {
             registry = (LocateRegistry.createRegistry(Configs.rmiPort));
-            ConnectionLayerServer connection = new ConnectionServerRMI(multiGame);
+            ConnectionLayerServer connection = new ConnectionServerRMI(reception);
             ConnectionLayerServer stub = (ConnectionLayerServer) UnicastRemoteObject.exportObject(connection, 0);
             registry.rebind(Configs.connectionLabelRMI, stub);
             System.out.println("RMI Server started on port " + Configs.rmiPort + "🚔!");
@@ -64,7 +64,7 @@ public class Server {
                     Thread clientHandlerThread = new Thread(clientHandler, "clientHandler of" + client.getInetAddress());
                     clientHandlerThread.start();
                     VirtualView virtualView = new VirtualViewSocket(clientHandler);
-                    ServerModelController controller = new ServerModelController(multiGame, virtualView);
+                    ServerModelController controller = new ServerModelController(reception, virtualView);
                     virtualView.setController(controller);
                     while(!clientHandler.isReady()) {
                         try {

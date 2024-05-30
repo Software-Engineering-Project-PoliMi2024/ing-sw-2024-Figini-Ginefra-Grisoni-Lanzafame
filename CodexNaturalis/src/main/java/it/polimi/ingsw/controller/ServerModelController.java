@@ -10,7 +10,7 @@ import it.polimi.ingsw.lightModel.diffPublishers.DiffSubscriber;
 import it.polimi.ingsw.lightModel.lightTableRelated.LightGame;
 import it.polimi.ingsw.lightModel.lightTableRelated.LightLobby;
 import it.polimi.ingsw.lightModel.lightTableRelated.LightLobbyList;
-import it.polimi.ingsw.model.MultiGame;
+import it.polimi.ingsw.model.Reception;
 import it.polimi.ingsw.model.cardReleted.utilityEnums.DrawableCard;
 import it.polimi.ingsw.view.ViewInterface;
 import it.polimi.ingsw.view.ViewState;
@@ -18,7 +18,7 @@ import it.polimi.ingsw.view.ViewState;
 import java.util.List;
 
 public class ServerModelController implements ControllerInterface, DiffSubscriber, ViewInterface {
-    private final MultiGame games;
+    private final Reception games;
     private final ViewInterface view;
     private final Controller3 controller3;
     private final Object freezeDisconnect = new Object();
@@ -28,7 +28,7 @@ public class ServerModelController implements ControllerInterface, DiffSubscribe
      * @param games the reference to the Multi-game on the server
      * @param view The client's view interface associated with this controller.
      */
-    public ServerModelController(MultiGame games, ViewInterface view) {
+    public ServerModelController(Reception games, ViewInterface view) {
         this.games = games;
         this.view = view;
         controller3 = new Controller3(games, view);
