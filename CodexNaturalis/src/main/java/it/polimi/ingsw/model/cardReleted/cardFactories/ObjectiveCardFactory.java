@@ -4,6 +4,7 @@ import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import it.polimi.ingsw.Configs;
+import it.polimi.ingsw.OSRelated;
 import it.polimi.ingsw.model.cardReleted.cards.ObjectiveCard;
 import it.polimi.ingsw.model.cardReleted.pointMultiplyer.CollectableCardPointMultiplier;
 import it.polimi.ingsw.model.cardReleted.pointMultiplyer.DiagonalCardPointMultiplier;
@@ -42,14 +43,12 @@ public class ObjectiveCardFactory extends AbstractCardFactory<ObjectiveCard>{
      */
     @Override
     public Queue<ObjectiveCard> getCards(String binFileName) {
-        String filePath = outDirPath + binFileName;
+        String filePath = OSRelated.cardFolderDataPath + binFileName;
         File fileSerialized = new File(filePath);
-        if(fileSerialized.exists()){
-            return deserializeQueue(fileSerialized);
-        }else{
+        if (!fileSerialized.exists()) {
             serializeQueue(filePath, getCardsFromJson()); //create the .bin file
-            return deserializeQueue(fileSerialized);
         }
+        return deserializeQueue(fileSerialized);
     }
 
     /**
