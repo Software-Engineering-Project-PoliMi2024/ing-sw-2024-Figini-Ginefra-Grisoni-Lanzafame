@@ -360,12 +360,12 @@ public class GameLoopController implements Serializable {
      * @return the User of the next activePlayer in the game
      */
     private User calculateNextPlayer(){
-        User nextPlayer;
-        do{
+        User nextPlayer = null;
+        /*do{
             nextPlayer = game.nextPlayer();
         }while(!activePlayers.containsKey(nextPlayer.getNickname()));
-        System.out.println("the next player is: " + nextPlayer.getNickname());
-        return nextPlayer;
+        System.out.println("the next player is: " + nextPlayer.getNickname());*/
+        return null;
     }
 
     /**

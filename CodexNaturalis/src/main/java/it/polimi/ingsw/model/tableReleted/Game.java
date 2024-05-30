@@ -618,7 +618,4 @@ public class Game implements Serializable {
         this.gameParty.removeUser(user.getNickname());
     }
 
-    public User nextPlayer(){
-        return  this.gameParty.nextPlayer();
-    }
 }
