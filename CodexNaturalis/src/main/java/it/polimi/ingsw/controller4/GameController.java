@@ -3,6 +3,8 @@ package it.polimi.ingsw.controller4;
 import it.polimi.ingsw.Configs;
 import it.polimi.ingsw.controller3.Controller3;
 import it.polimi.ingsw.controller3.mediators.gameJoinerAndTurnTakerMediators.TurnTaker;
+import it.polimi.ingsw.controller4.Interfaces.GameControllerInterface;
+import it.polimi.ingsw.lightModel.Heavifier;
 import it.polimi.ingsw.lightModel.Lightifier;
 import it.polimi.ingsw.lightModel.lightPlayerRelated.LightBack;
 import it.polimi.ingsw.lightModel.lightPlayerRelated.LightCard;
@@ -20,7 +22,7 @@ import it.polimi.ingsw.view.ViewInterface;
 import java.util.*;
 import java.util.function.Predicate;
 
-public class GameController {
+public class GameController implements GameControllerInterface {
     private final Game game;
 
     public GameController(Game game){
@@ -75,7 +77,8 @@ public class GameController {
         }
     }
 
-    public synchronized void chooseSecretObjective(String nickname, ObjectiveCard objChoice){
+    public synchronized void chooseSecretObjective(String nickname, LightCard lightObjChoice){
+        ObjectiveCard objChoice = Heavifier.heavifyObjectCard(lightObjChoice);
         User user = game.getUserFromNick(nickname);
 
         user.setSecretObjective(objChoice);

@@ -624,7 +624,7 @@ class ServerModelControllerTest {
         serverModelController2.place(startPlacement2);
         //choose secret objective
         LightCard secretObjective = view1.lightGame.getHand().getSecretObjectiveOptions()[0];
-        serverModelController1.choseSecretObjective(secretObjective);
+        serverModelController1.chooseSecretObjective(secretObjective);
 
         //model
         Game game = multiGame.getGameFromUserNick(view1.name);
@@ -683,9 +683,9 @@ class ServerModelControllerTest {
         serverModelController2.place(startPlacement2);
         //choose secret objective
         LightCard secretObjective1 = view1.lightGame.getHand().getSecretObjectiveOptions()[0];
-        serverModelController1.choseSecretObjective(secretObjective1);
+        serverModelController1.chooseSecretObjective(secretObjective1);
         LightCard secretObjective2 = view2.lightGame.getHand().getSecretObjectiveOptions()[0];
-        serverModelController2.choseSecretObjective(secretObjective2);
+        serverModelController2.chooseSecretObjective(secretObjective2);
         //model
         Game game = multiGame.getGameFromUserNick(view1.name);
         User user1 = game.getUserFromNick(view1.name);
@@ -751,9 +751,9 @@ class ServerModelControllerTest {
         serverModelController2.place(startPlacement2);
         //choose secret objective
         LightCard secretObjective1 = view1.lightGame.getHand().getSecretObjectiveOptions()[0];
-        serverModelController1.choseSecretObjective(secretObjective1);
+        serverModelController1.chooseSecretObjective(secretObjective1);
         LightCard secretObjective2 = view2.lightGame.getHand().getSecretObjectiveOptions()[0];
-        serverModelController2.choseSecretObjective(secretObjective2);
+        serverModelController2.chooseSecretObjective(secretObjective2);
         //place
         Game game = multiGame.getGameFromUserNick(view1.name);
         User user1 = game.getUserFromNick(view1.name);
@@ -819,9 +819,9 @@ class ServerModelControllerTest {
         serverModelController2.place(startPlacement2);
         //choose secret objective
         LightCard secretObjective1 = view1.lightGame.getHand().getSecretObjectiveOptions()[0];
-        serverModelController1.choseSecretObjective(secretObjective1);
+        serverModelController1.chooseSecretObjective(secretObjective1);
         LightCard secretObjective2 = view2.lightGame.getHand().getSecretObjectiveOptions()[0];
-        serverModelController2.choseSecretObjective(secretObjective2);
+        serverModelController2.chooseSecretObjective(secretObjective2);
         //place
         Game game = multiGame.getGameFromUserNick(view1.name);
         User user1 = game.getUserFromNick(view1.name);
@@ -882,9 +882,9 @@ class ServerModelControllerTest {
         serverModelController2.place(startPlacement2);
         //choose secret objective
         LightCard secretObjective1 = view1.lightGame.getHand().getSecretObjectiveOptions()[0];
-        serverModelController1.choseSecretObjective(secretObjective1);
+        serverModelController1.chooseSecretObjective(secretObjective1);
         LightCard secretObjective2 = view2.lightGame.getHand().getSecretObjectiveOptions()[0];
-        serverModelController2.choseSecretObjective(secretObjective2);
+        serverModelController2.chooseSecretObjective(secretObjective2);
         //place
         Game game = multiGame.getGameFromUserNick(view1.name);
         User user1 = game.getUserFromNick(view1.name);
@@ -949,9 +949,9 @@ class ServerModelControllerTest {
         serverModelController2.place(startPlacement2);
         //choose secret objective
         LightCard secretObjective1 = view1.lightGame.getHand().getSecretObjectiveOptions()[0];
-        serverModelController1.choseSecretObjective(secretObjective1);
+        serverModelController1.chooseSecretObjective(secretObjective1);
         LightCard secretObjective2 = view2.lightGame.getHand().getSecretObjectiveOptions()[0];
-        serverModelController2.choseSecretObjective(secretObjective2);
+        serverModelController2.chooseSecretObjective(secretObjective2);
         //place
         Game game = multiGame.getGameFromUserNick(view1.name);
         User user1 = game.getUserFromNick(view1.name);

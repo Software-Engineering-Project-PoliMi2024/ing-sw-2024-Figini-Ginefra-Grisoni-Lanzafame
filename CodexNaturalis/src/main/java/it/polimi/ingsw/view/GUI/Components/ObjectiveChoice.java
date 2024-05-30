@@ -83,7 +83,7 @@ public class ObjectiveChoice implements Observer {
             card.setOnHold(
                     e -> {
                         try {
-                            GUI.getControllerStatic().choseSecretObjective(card.getTarget());
+                            GUI.getControllerStatic().chooseSecretObjective(card.getTarget());
                             parent.getChildren().remove(container);
                         }catch (Exception ex){
                         }

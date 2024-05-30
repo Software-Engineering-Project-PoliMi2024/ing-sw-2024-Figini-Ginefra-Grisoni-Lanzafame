@@ -54,7 +54,7 @@ public class ChooseObjectiveCardRenderable extends CardRenderable {
             case CommandPrompt.CHOOSE_OBJECTIVE_CARD:
                 try {
                     int cardIndex = Integer.parseInt(command.getAnswer(0)) - 1;
-                    view.getController().choseSecretObjective(getLightGame().getHand().getSecretObjectiveOptions()[cardIndex]);
+                    view.getController().chooseSecretObjective(getLightGame().getHand().getSecretObjectiveOptions()[cardIndex]);
                 }
                 catch (Exception e) {
                     e.printStackTrace();

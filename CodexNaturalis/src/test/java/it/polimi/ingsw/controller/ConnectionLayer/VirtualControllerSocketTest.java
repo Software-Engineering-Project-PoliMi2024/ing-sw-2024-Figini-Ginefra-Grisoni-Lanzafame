@@ -10,7 +10,6 @@ import org.junit.jupiter.api.Test;
 
 import java.io.IOException;
 import java.net.ServerSocket;
-import java.util.Random;
 
 import static org.mockito.Mockito.*;
 
@@ -112,7 +111,7 @@ public class VirtualControllerSocketTest {
         ServerHandler mockServerHandler = mock(ServerHandler.class);
 
         virtualControllerSocket.setServerHanlder(mockServerHandler);
-        virtualControllerSocket.choseSecretObjective(null);
+        virtualControllerSocket.chooseSecretObjective(null);
 
         verify(mockServerHandler, times(1)).sendServerMessage(any(ChoseSecretObjectiveMsg.class));
     }

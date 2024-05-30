@@ -2,31 +2,20 @@ package it.polimi.ingsw.controller;
 
 
 import it.polimi.ingsw.controller3.Controller3;
-import it.polimi.ingsw.lightModel.Heavifier;
-import it.polimi.ingsw.lightModel.lightPlayerRelated.LightBack;
+import it.polimi.ingsw.controller4.Interfaces.ControllerInterface;
 import it.polimi.ingsw.lightModel.lightPlayerRelated.LightCard;
-import it.polimi.ingsw.lightModel.Lightifier;
 import it.polimi.ingsw.lightModel.diffs.*;
-import it.polimi.ingsw.lightModel.diffs.game.*;
 import it.polimi.ingsw.lightModel.lightPlayerRelated.LightPlacement;
 import it.polimi.ingsw.lightModel.diffPublishers.DiffSubscriber;
 import it.polimi.ingsw.lightModel.lightTableRelated.LightGame;
 import it.polimi.ingsw.lightModel.lightTableRelated.LightLobby;
 import it.polimi.ingsw.lightModel.lightTableRelated.LightLobbyList;
 import it.polimi.ingsw.model.MultiGame;
-import it.polimi.ingsw.model.cardReleted.cards.CardInHand;
-import it.polimi.ingsw.model.cardReleted.cards.GoldCard;
-import it.polimi.ingsw.model.cardReleted.cards.ResourceCard;
 import it.polimi.ingsw.model.cardReleted.utilityEnums.DrawableCard;
-import it.polimi.ingsw.model.playerReleted.*;
-import it.polimi.ingsw.model.tableReleted.Deck;
-import it.polimi.ingsw.model.tableReleted.Game;
 import it.polimi.ingsw.view.ViewInterface;
 import it.polimi.ingsw.view.ViewState;
 
-import java.util.ArrayList;
 import java.util.List;
-import java.util.Map;
 
 public class ServerModelController implements ControllerInterface, DiffSubscriber, ViewInterface {
     private final MultiGame games;
@@ -71,8 +60,8 @@ public class ServerModelController implements ControllerInterface, DiffSubscribe
      * @param card which represent the secret objective choose by the user
      */
     @Override
-    public void choseSecretObjective(LightCard card){
-        controller3.choseSecretObjective(card);
+    public void chooseSecretObjective(LightCard card){
+        controller3.chooseSecretObjective(card);
     }
 
     /**

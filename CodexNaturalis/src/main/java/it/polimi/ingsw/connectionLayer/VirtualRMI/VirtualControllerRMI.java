@@ -4,14 +4,13 @@ import it.polimi.ingsw.Configs;
 import it.polimi.ingsw.connectionLayer.ConnectionLayerServer;
 import it.polimi.ingsw.connectionLayer.PingPongInterface;
 import it.polimi.ingsw.connectionLayer.VirtualLayer.VirtualController;
-import it.polimi.ingsw.controller.ControllerInterface;
+import it.polimi.ingsw.controller4.Interfaces.ControllerInterface;
 import it.polimi.ingsw.controller.LogsOnClient;
 import it.polimi.ingsw.lightModel.lightPlayerRelated.LightCard;
 import it.polimi.ingsw.lightModel.diffs.nuclearDiffs.FatManLobbyList;
 import it.polimi.ingsw.lightModel.diffs.nuclearDiffs.GadgetGame;
 import it.polimi.ingsw.lightModel.diffs.nuclearDiffs.LittleBoyLobby;
 import it.polimi.ingsw.lightModel.lightPlayerRelated.LightPlacement;
-import it.polimi.ingsw.model.cardReleted.utilityEnums.CardFace;
 import it.polimi.ingsw.model.cardReleted.utilityEnums.DrawableCard;
 import it.polimi.ingsw.view.ViewInterface;
 import it.polimi.ingsw.view.ViewState;
@@ -98,10 +97,10 @@ public class VirtualControllerRMI implements VirtualController {
     }
 
     @Override
-    public void choseSecretObjective(LightCard objectiveCard) {
+    public void chooseSecretObjective(LightCard objectiveCard) {
         Future<Void> choseSecretObjectiveFuture = controllerExecutor.submit(()->{
             try {
-                controllerStub.choseSecretObjective(objectiveCard);
+                controllerStub.chooseSecretObjective(objectiveCard);
                 return null;
             } catch (Exception e) {
                 throw new RuntimeException();

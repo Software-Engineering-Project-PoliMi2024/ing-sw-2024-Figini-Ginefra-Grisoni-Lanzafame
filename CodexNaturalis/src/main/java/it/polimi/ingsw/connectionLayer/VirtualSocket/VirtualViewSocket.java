@@ -4,7 +4,7 @@ import it.polimi.ingsw.connectionLayer.PingPongInterface;
 import it.polimi.ingsw.connectionLayer.Socket.ClientHandler;
 import it.polimi.ingsw.connectionLayer.Socket.ServerMsg.*;
 import it.polimi.ingsw.connectionLayer.VirtualLayer.VirtualView;
-import it.polimi.ingsw.controller.ControllerInterface;
+import it.polimi.ingsw.controller4.Interfaces.ControllerInterface;
 import it.polimi.ingsw.lightModel.diffs.ModelDiffs;
 import it.polimi.ingsw.lightModel.lightTableRelated.LightGame;
 import it.polimi.ingsw.lightModel.lightTableRelated.LightLobby;
@@ -13,7 +13,6 @@ import it.polimi.ingsw.view.ViewState;
 
 import java.rmi.RemoteException;
 import java.util.List;
-import java.util.Map;
 
 public class VirtualViewSocket implements VirtualView {
     private ControllerInterface controller;

@@ -12,6 +12,6 @@ public class ChoseSecretObjectiveMsg extends ClientMsg {
 
     @Override
     public void processMsg(ClientHandler clientHandler) throws Exception {
-        clientHandler.getController().choseSecretObjective(secretObjective);
+        clientHandler.getController().chooseSecretObjective(secretObjective);
     }
 }

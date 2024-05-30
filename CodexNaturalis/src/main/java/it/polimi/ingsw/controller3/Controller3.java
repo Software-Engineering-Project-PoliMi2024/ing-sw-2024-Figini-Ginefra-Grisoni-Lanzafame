@@ -1,7 +1,7 @@
 package it.polimi.ingsw.controller3;
 
 import it.polimi.ingsw.Configs;
-import it.polimi.ingsw.controller.ControllerInterface;
+import it.polimi.ingsw.controller4.Interfaces.ControllerInterface;
 import it.polimi.ingsw.controller3.mediators.gameJoinerAndTurnTakerMediators.GameJoiner;
 import it.polimi.ingsw.controller3.mediators.gameJoinerAndTurnTakerMediators.TurnTaker;
 import it.polimi.ingsw.lightModel.Heavifier;
@@ -15,7 +15,6 @@ import it.polimi.ingsw.model.playerReleted.Position;
 import it.polimi.ingsw.model.playerReleted.User;
 import it.polimi.ingsw.model.tableReleted.Game;
 import it.polimi.ingsw.model.tableReleted.Lobby;
-import it.polimi.ingsw.model.utilities.Pair;
 import it.polimi.ingsw.view.ViewInterface;
 import it.polimi.ingsw.view.ViewState;
 
@@ -194,7 +193,7 @@ public class Controller3 implements ControllerInterface, TurnTaker, GameJoiner {
     }
 
     @Override
-    public synchronized void choseSecretObjective(LightCard objectiveCard) {
+    public synchronized void chooseSecretObjective(LightCard objectiveCard) {
         if(objectiveCard == null || isNotLogged() || !multiGame.isInGameParty(this.nickname) ||
                 !multiGame.getGameFromUserNick(this.nickname).inInSecretObjState() &&
                         multiGame.getUserFromNick(this.nickname).hasChosenObjective()){
