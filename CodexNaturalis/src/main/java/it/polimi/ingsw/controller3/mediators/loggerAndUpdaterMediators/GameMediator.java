@@ -6,7 +6,7 @@ import it.polimi.ingsw.lightModel.LightModelUpdaterInterfaces.LightGameUpdater;
 import it.polimi.ingsw.lightModel.Lightifier;
 import it.polimi.ingsw.lightModel.diffs.game.*;
 import it.polimi.ingsw.lightModel.diffs.game.codexDiffs.CodexDiffPlacement;
-import it.polimi.ingsw.lightModel.diffs.game.codexDiffs.CodexDiffSetFinalPoints;
+import it.polimi.ingsw.lightModel.diffs.game.CodexDiffSetFinalPoints;
 import it.polimi.ingsw.lightModel.diffs.game.deckDiffs.DeckDiffDeckDraw;
 import it.polimi.ingsw.lightModel.diffs.game.gamePartyDiffs.GameDiffCurrentPlayer;
 import it.polimi.ingsw.lightModel.diffs.game.gamePartyDiffs.GameDiffPlayerActivity;
@@ -311,13 +311,13 @@ public class GameMediator extends LoggerAndUpdaterMediator<LightGameUpdater, Lig
      * update the codex on lightGame with the points given by the objective points
      * @param pointsPerPlayerMap the map containing for ech player their name and the point earned
      */
-    public synchronized void notifyGameEnded(Map<String, Integer> pointsPerPlayerMap, List<String> finalRanking){
+    public synchronized void notifyGameEnded(Map<String, Integer> pointsPerPlayerMap, List<String> ranking){
         subscribers.forEach((nick, pair)->{
             LoggerInterface logger = pair.second();
             LightGameUpdater updater = pair.first();
             try{
                 updater.updateGame(new CodexDiffSetFinalPoints(pointsPerPlayerMap));
-                updater.setFinalRanking(finalRanking);
+                updater.updateGame(new GameDiffWinner(ranking));
                 logger.logGame(LogsOnClientStatic.GAME_END);
             }catch (Exception e){
                 System.out.println("GameMediator.notifyGameEnded: subscriber " + nick + " not reachable" + e.getMessage());

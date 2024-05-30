@@ -10,9 +10,10 @@ import it.polimi.ingsw.lightModel.lightTableRelated.LightLobby;
 import it.polimi.ingsw.model.MultiGame;
 import it.polimi.ingsw.model.cardReleted.cards.Card;
 import it.polimi.ingsw.model.cardReleted.cards.CardInHand;
-import it.polimi.ingsw.model.cardReleted.utilityEnums.CardFace;
-import it.polimi.ingsw.model.cardReleted.utilityEnums.DrawableCard;
+import it.polimi.ingsw.model.cardReleted.cards.ResourceCard;
+import it.polimi.ingsw.model.cardReleted.utilityEnums.*;
 import it.polimi.ingsw.model.playerReleted.Hand;
+import it.polimi.ingsw.model.playerReleted.Placement;
 import it.polimi.ingsw.model.playerReleted.Position;
 import it.polimi.ingsw.model.playerReleted.User;
 import it.polimi.ingsw.model.tableReleted.Game;
@@ -20,11 +21,7 @@ import it.polimi.ingsw.model.tableReleted.Lobby;
 import it.polimi.ingsw.view.ViewState;
 import org.junit.jupiter.api.Test;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
-import java.util.Objects;
-import java.util.stream.Collectors;
+import java.util.*;
 
 class ServerModelControllerTest {
     @Test
@@ -323,7 +320,7 @@ class ServerModelControllerTest {
         System.out.println(Arrays.toString(view1.lightGame.getPublicObjective()));
         assert Arrays.stream(view1.lightGame.getPublicObjective()).allMatch(Objects::isNull);
         //winners are empty
-        assert view1.lightGame.getWinners().isEmpty();
+        assert view1.lightGame.getRanking().isEmpty();
 
         //lightLobbyList on view is empty
         assert view2.lightLobbyList.getLobbies().isEmpty();
@@ -385,7 +382,7 @@ class ServerModelControllerTest {
         System.out.println(Arrays.toString(view2.lightGame.getPublicObjective()));
         assert Arrays.stream(view2.lightGame.getPublicObjective()).allMatch(Objects::isNull);
         //winners are empty
-        assert view2.lightGame.getWinners().isEmpty();
+        assert view2.lightGame.getRanking().isEmpty();
     }
 
     @Test
@@ -485,7 +482,7 @@ class ServerModelControllerTest {
         User user2 = game.getUserFromNick(view2.name);
         //user1
         assert user1.hasPlacedStartCard();
-        assert !game.othersHadAllPlacedStartCard(view1.name);
+        assert !game.checkAndMoveToSecretObjectiveChoicePhase(view1.name);
         assert user1.getUserCodex().getPlacementAt(new Position(0,0)) != null;
         assert user1.getUserHand().getHand().stream().allMatch(Objects::nonNull);
         assert user1.hasPlacedStartCard();
@@ -503,7 +500,7 @@ class ServerModelControllerTest {
         //view 2 lightModel isn't updated
         assert view2.lightGame.getCodexMap().get(view1.name).getPlacementHistory().isEmpty();
         assert Arrays.stream(view2.lightGame.getHandOthers().get(view1.name).getCards()).allMatch(Objects::isNull);
-        assert game.othersHadAllPlacedStartCard(view2.name);
+        assert game.checkAndMoveToSecretObjectiveChoicePhase(view2.name);
     }
 
     @Test
@@ -902,6 +899,81 @@ class ServerModelControllerTest {
         assert view1.lightGame.getCurrentPlayer().equals(view2.name);
         assert heavyBuffer.containsAll(lightBuffer2) && lightBuffer2.containsAll(heavyBuffer);
         assert view2.lightGame.getGoldDeck().getDeckBack().idBack() == game.getGoldCardDeck().showCardFromBuffer(0).getIdBack();
+
+    }
+
+    @Test
+    void gameEndingCausePoints(){
+        MultiGame multiGame = new MultiGame();
+
+        ViewTest view1 = new ViewTest();
+        ViewTest view2 = new ViewTest();
+
+        view1.name = "pippo";
+        view2.name = "pluto";
+
+        ServerModelController serverModelController1 = new ServerModelController(multiGame, view1);
+        ServerModelController serverModelController2 = new ServerModelController(multiGame, view2);
+
+        Map<String, ServerModelController> serverModelControllerMap = new HashMap<>();
+        serverModelControllerMap.put(view1.name, serverModelController1);
+        serverModelControllerMap.put(view2.name, serverModelController2);
+        String lobbyName1 = "test1";
+
+        serverModelController1.login(view1.name);
+        serverModelController1.createLobby(lobbyName1, 2);
+        serverModelController2.login(view2.name);
+        serverModelController2.joinLobby(lobbyName1);
+        //choose StartCard
+        LightCard startCard = view1.lightGame.getHand().getCards()[0];
+        LightPlacement startPlacement1 = new LightPlacement(new Position(0,0), startCard, CardFace.FRONT);
+        serverModelController1.place(startPlacement1);
+        startCard = view2.lightGame.getHand().getCards()[0];
+        LightPlacement startPlacement2 = new LightPlacement(new Position(0,0), startCard, CardFace.FRONT);
+        serverModelController2.place(startPlacement2);
+        //choose secret objective
+        LightCard secretObjective1 = view1.lightGame.getHand().getSecretObjectiveOptions()[0];
+        serverModelController1.choseSecretObjective(secretObjective1);
+        LightCard secretObjective2 = view2.lightGame.getHand().getSecretObjectiveOptions()[0];
+        serverModelController2.choseSecretObjective(secretObjective2);
+        //place
+        Game game = multiGame.getGameFromUserNick(view1.name);
+        User user1 = game.getUserFromNick(view1.name);
+        User user2 = game.getUserFromNick(view2.name);
+
+
+        User firstUserInTurn = game.getUserFromNick(game.getFirstActivePlayer());
+        CardInHand cardPlaced1 = firstUserInTurn.getUserHand().getHand().stream().filter(Objects::nonNull).toList().getFirst();
+        Position position1 = firstUserInTurn.getUserCodex().getFrontier().getFrontier().getFirst();
+        LightPlacement placement1 = new LightPlacement(position1, Lightifier.lightifyToCard(cardPlaced1), CardFace.FRONT);
+        serverModelControllerMap.get(firstUserInTurn.getNickname()).place(placement1);
+        //place a fake card that adds 20 points
+        HashMap<CardCorner, Collectable> cornerMap1 = new HashMap<>();
+        for(CardCorner corner : CardCorner.values()){
+            cornerMap1.put(corner, SpecialCollectable.EMPTY);
+        }
+        ResourceCard exodiaTheForbidden = new ResourceCard(1,1, Resource.PLANT, 20, cornerMap1);
+        firstUserInTurn.getUserCodex().playCard(new Placement(firstUserInTurn.getUserCodex().getFrontier().getFrontier().getFirst(), exodiaTheForbidden, CardFace.FRONT));
+        serverModelControllerMap.get(firstUserInTurn.getNickname()).draw(DrawableCard.GOLDCARD, 0);
+
+        assert game.isLastTurn();
+
+        User nextPlayer = game.getCurrentPlayer();
+        CardInHand cardPlaced2 = nextPlayer.getUserHand().getHand().stream().filter(Objects::nonNull).toList().getFirst();
+        Position position2 = nextPlayer.getUserCodex().getFrontier().getFrontier().getFirst();
+        LightPlacement placement2 = new LightPlacement(position2, Lightifier.lightifyToCard(cardPlaced2), CardFace.FRONT);
+        serverModelControllerMap.get(nextPlayer.getNickname()).place(placement2);
+        serverModelControllerMap.get(nextPlayer.getNickname()).draw(DrawableCard.GOLDCARD, 0);
+
+        assert firstUserInTurn.getUserCodex().getPoints() >= 20;
+        assert game.getCurrentPlayer().equals(nextPlayer);
+        System.out.println(game.getWinners());
+        assert !view1.lightGame.getRanking().isEmpty();
+        assert !view2.lightGame.getRanking().isEmpty();
+        assert view1.lightGame.getRanking().contains(firstUserInTurn.getNickname());
+        assert view2.lightGame.getRanking().contains(firstUserInTurn.getNickname());
+        assert view1.lightGame.getCodexMap().get(firstUserInTurn.getNickname()).getPoints()>=20;
+        assert view2.lightGame.getCodexMap().get(firstUserInTurn.getNickname()).getPoints()>=20;
 
     }
 }

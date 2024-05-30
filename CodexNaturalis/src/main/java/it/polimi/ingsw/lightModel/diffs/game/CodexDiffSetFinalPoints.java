@@ -1,6 +1,5 @@
-package it.polimi.ingsw.lightModel.diffs.game.codexDiffs;
+package it.polimi.ingsw.lightModel.diffs.game;
 
-import it.polimi.ingsw.lightModel.diffs.game.GameDiff;
 import it.polimi.ingsw.lightModel.lightTableRelated.LightGame;
 
 import java.util.Map;
