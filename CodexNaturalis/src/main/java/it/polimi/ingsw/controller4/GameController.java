@@ -1,4 +1,4 @@
-package it.polimi.ingsw.model.tableReleted;
+package it.polimi.ingsw.controller4;
 
 import it.polimi.ingsw.Configs;
 import it.polimi.ingsw.controller3.Controller3;
@@ -13,16 +13,17 @@ import it.polimi.ingsw.model.cardReleted.utilityEnums.DrawableCard;
 import it.polimi.ingsw.model.playerReleted.Codex;
 import it.polimi.ingsw.model.playerReleted.Placement;
 import it.polimi.ingsw.model.playerReleted.User;
+import it.polimi.ingsw.model.tableReleted.Game;
 import it.polimi.ingsw.model.utilities.Pair;
 import it.polimi.ingsw.view.ViewInterface;
 
 import java.util.*;
 import java.util.function.Predicate;
 
-public class GameMaster {
+public class GameController {
     private final Game game;
 
-    public GameMaster(Game game){
+    public GameController(Game game){
         this.game = game;
     }
 

@@ -7,6 +7,7 @@ import it.polimi.ingsw.controller3.Controller3;
 import it.polimi.ingsw.controller3.mediators.gameJoinerAndTurnTakerMediators.TurnTakerMediator;
 import it.polimi.ingsw.controller3.mediators.loggerAndUpdaterMediators.GameMediator;
 import it.polimi.ingsw.controller3.mediators.gameJoinerAndTurnTakerMediators.TurnTaker;
+import it.polimi.ingsw.controller4.GameController;
 import it.polimi.ingsw.lightModel.Lightifier;
 import it.polimi.ingsw.lightModel.diffs.game.GameDiff;
 import it.polimi.ingsw.lightModel.diffPublishers.DiffSubscriber;
@@ -51,7 +52,7 @@ public class Game implements Serializable {
 
     private final TurnTakerMediator activeTurnTakerMediator = new TurnTakerMediator();
     private final GameMediator gameMediator;
-    private final GameMaster gameMaster = new GameMaster(this);
+    private final GameController gameController = new GameController(this);
 
     private Timer countdownTimer;
     /**
@@ -303,26 +304,26 @@ public class Game implements Serializable {
     }
 
     public void join(String nickname, ViewInterface view, TurnTaker turnTaker, Controller3 controller){
-        gameMaster.join(nickname, view, turnTaker, controller);
+        gameController.join(nickname, view, turnTaker, controller);
     }
         public void joinStartGame(String nickname, ViewInterface view, TurnTaker turnTaker){
-        gameMaster.joinStartGame(nickname, view, turnTaker);
+        gameController.joinStartGame(nickname, view, turnTaker);
     }
 
     public void placeStartCard(String nickname, Placement startCardPlacement){
-        gameMaster.placeStartCard(nickname, startCardPlacement);
+        gameController.placeStartCard(nickname, startCardPlacement);
     }
 
     public void chooseSecretObjective(String nickname, ObjectiveCard objChoice){
-        gameMaster.chooseSecretObjective(nickname, objChoice);
+        gameController.chooseSecretObjective(nickname, objChoice);
     }
 
     public void place(String nickname, Placement placement){
-        gameMaster.place(nickname, placement);
+        gameController.place(nickname, placement);
     }
 
     public void draw(String nickname, DrawableCard deckType, int cardID){
-        gameMaster.draw(nickname, deckType, cardID);
+        gameController.draw(nickname, deckType, cardID);
     }
 
     public void leave(String nickname){
