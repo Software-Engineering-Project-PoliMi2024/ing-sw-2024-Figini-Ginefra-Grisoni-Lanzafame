@@ -52,7 +52,6 @@ public class Game implements Serializable {
 
     private final TurnTakerMediator activeTurnTakerMediator = new TurnTakerMediator();
     private final GameMediator gameMediator;
-    private final GameController gameController = new GameController(this);
 
     private Timer countdownTimer;
     /**

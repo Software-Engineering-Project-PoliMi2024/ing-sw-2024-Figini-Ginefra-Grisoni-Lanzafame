@@ -7,15 +7,18 @@ import it.polimi.ingsw.lightModel.DiffGenerator;
 import it.polimi.ingsw.lightModel.Heavifier;
 import it.polimi.ingsw.lightModel.LightModelUpdaterInterfaces.LightGameUpdater;
 import it.polimi.ingsw.lightModel.Lightifier;
+import it.polimi.ingsw.lightModel.diffs.game.GameDiffPublicObj;
 import it.polimi.ingsw.lightModel.diffs.game.codexDiffs.CodexDiffPlacement;
 import it.polimi.ingsw.lightModel.diffs.game.deckDiffs.DeckDiffDeckDraw;
 import it.polimi.ingsw.lightModel.diffs.game.gamePartyDiffs.GameDiffPlayerActivity;
 import it.polimi.ingsw.lightModel.diffs.game.handDiffs.HandDiff;
 import it.polimi.ingsw.lightModel.diffs.game.handDiffs.HandDiffRemove;
+import it.polimi.ingsw.lightModel.diffs.game.handDiffs.HandDiffSetObj;
 import it.polimi.ingsw.lightModel.lightPlayerRelated.LightBack;
 import it.polimi.ingsw.lightModel.lightPlayerRelated.LightCard;
 import it.polimi.ingsw.lightModel.lightPlayerRelated.LightPlacement;
 import it.polimi.ingsw.model.cardReleted.cards.CardInHand;
+import it.polimi.ingsw.model.cardReleted.cards.CardTable;
 import it.polimi.ingsw.model.cardReleted.cards.ObjectiveCard;
 import it.polimi.ingsw.model.cardReleted.cards.StartCard;
 import it.polimi.ingsw.model.cardReleted.utilityEnums.DrawableCard;
@@ -30,13 +33,16 @@ import it.polimi.ingsw.view.ViewState;
 
 import java.util.*;
 import java.util.function.Predicate;
+import java.util.stream.Collectors;
 
 public class GameController implements GameControllerInterface {
+    private final CardTable cardTable;
     private final Game game;
     private final Map<String, ViewInterface> playerViewMap = new HashMap<>();
 
-    public GameController(Game game){
+    public GameController(Game game, CardTable cardTable){
         this.game = game;
+        this.cardTable = cardTable;
     }
 
     public synchronized void join(String joinerNickname, ViewInterface view){
@@ -92,7 +98,7 @@ public class GameController implements GameControllerInterface {
                         playerViewMap.getValue().logOthers(joinerNickname + LogsOnClientStatic.PLAYER_REJOINED);
                     }
                 } catch (Exception e) {
-                    System.out.println("GameMediator: subscriber " + joinerNickname + " not reachable" + e.getMessage());
+                    System.out.println("GameController.notifyJoinGame: subscriber " + playerViewMap.getKey() + " unreachable" + e.getMessage());
                 }
             }
         }
@@ -140,29 +146,73 @@ public class GameController implements GameControllerInterface {
                     playerViewMap.getValue().logOthers(placer + LogsOnClientStatic.PLAYER_PLACE_STARTCARD);
                 }
             }catch (Exception e){
-                System.out.println("GameMediator: subscriber " + user.getNickname() + " not reachable" + e.getMessage());
+                System.out.println("GameController.notifyStartCardFaceChoice: subscriber " + playerViewMap.getKey() + " unreachable" + e.getMessage());
             }
         }
     }
 
     //TODO continue
     public synchronized void chooseSecretObjective(String nickname, LightCard lightObjChoice){
-        ObjectiveCard objChoice = Heavifier.heavifyObjectCard(lightObjChoice);
+        ObjectiveCard objChoice = Heavifier.heavifyObjectCard(lightObjChoice, cardTable);
         User user = game.getUserFromNick(nickname);
 
         user.setSecretObjective(objChoice);
-        game.notifySecretObjectiveChoice(nickname, Lightifier.lightifyToCard(objChoice));
+        this.notifySecretObjectiveChoice(nickname, lightObjChoice);
 
         if(otherHaveAllChosen(nickname)) {
             this.removeInactivePlayers(User::hasChosenObjective);
-            game.notifyEndSetupStartActualGame();
+            List<LightCard> lightCommonObj = game.getCommonObjective().stream().map(Lightifier::lightifyToCard).toList();
+            this.notifyAllChoseSecretObjective(lightCommonObj);
+            this.takeTurn();
+        }
+    }
+
+    private synchronized void  notifySecretObjectiveChoice(String chooser, LightCard objChoice){
+        for(Map.Entry<String, ViewInterface> playerViewMap : playerViewMap.entrySet()){
+            try {
+                ViewInterface playerView = playerViewMap.getValue();
+                String playerNick = playerViewMap.getKey();
+                if(playerNick.equals(chooser)) {
+                    playerView.updateGame(new HandDiffSetObj(objChoice));
+                    playerView.log(LogsOnClientStatic.YOU_CHOSE);
+                    playerView.logGame(LogsOnClientStatic.WAIT_SECRET_OBJECTIVE);
+                }else{
+                    playerView.logOthers(chooser + LogsOnClientStatic.PLAYER_CHOSE);
+                }
+            } catch (Exception e) {
+                System.out.println("GameController.notifySecretObjectiveChoice: subscriber " + playerViewMap.getKey() + " unreachable" + e.getMessage());
+            }
+        }
+    }
+
+    private synchronized void notifyAllChoseSecretObjective(List<LightCard> commonObjectives){
+        for(Map.Entry<String, ViewInterface> playerViewMap : playerViewMap.entrySet()){
+            try {
+                ViewInterface view = playerViewMap.getValue();
+                view.updateGame(new GameDiffPublicObj(commonObjectives.toArray(new LightCard[0])));
+                view.logGame(LogsOnClientStatic.EVERYONE_CHOSE);
+            } catch (Exception e) {
+                System.out.println("GameController.notifyAllChoseSecretObjective: subscriber " + playerViewMap.getKey() + " unreachable" + e.getMessage());
+            }
+        }
+    }
+
+    private synchronized void takeTurn(){
+        for(Map.Entry<String, ViewInterface> playerViewMap : playerViewMap.entrySet()) {
+            ViewInterface view = playerViewMap.getValue();
+            String nickname = playerViewMap.getKey();
+            if (game.getCurrentPlayer().getNickname().equals(nickname)) {
+                try{view.transitionTo(ViewState.PLACE_CARD);}catch (Exception e){}
+            } else {
+                try{view.transitionTo(ViewState.IDLE);}catch (Exception e){}
+            }
         }
     }
 
     public synchronized void place(String nickname, LightPlacement placement){
         User user = game.getUserFromNick(nickname);
         Codex codexBeforePlacement = new Codex(user.getUserCodex());
-        user.playCard(placement);
+        user.playCard(Heavifier.heavify(placement, cardTable));
         Set<CardInHand> hand = user.getUserHand().getHand();
         Codex codexAfterPlacement = user.getUserCodex();
         //update playability
@@ -176,7 +226,7 @@ public class GameController implements GameControllerInterface {
         }
 
         //notify everyone
-        game.notifyPlacement(nickname, Lightifier.lightify(placement), user.getUserCodex(), FrontIdToPlayability);
+        game.notifyPlacement(nickname, placement, user.getUserCodex(), FrontIdToPlayability);
 
     }
 
