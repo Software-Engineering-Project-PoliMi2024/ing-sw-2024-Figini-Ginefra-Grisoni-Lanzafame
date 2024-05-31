@@ -70,6 +70,11 @@ public class HandOthersRenderable extends CardRenderable{
                 if(nickname.equals(this.getLightGame().getLightGameParty().getYourName())){
                     return;
                 }
+
+                if(!getLightGame().getCodexMap().containsKey(nickname)){
+                    return;
+                }
+
                 this.setTargetPlayer(nickname);
                 this.render();
                 break;
