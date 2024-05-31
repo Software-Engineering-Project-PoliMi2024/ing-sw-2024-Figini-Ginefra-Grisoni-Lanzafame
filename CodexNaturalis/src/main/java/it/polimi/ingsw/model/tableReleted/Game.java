@@ -235,6 +235,10 @@ public class Game implements Serializable {
         return gameParty.getCurrentPlayer();
     }
 
+    public int getCurrentPlayerIndex() {
+        return gameParty.getCurrentPlayerIndex();
+    }
+
     public int getNextActivePlayerIndex(){
         synchronized (turnLock) {
             User nextPlayer = getUsersList().get(getNextPlayerIndex());

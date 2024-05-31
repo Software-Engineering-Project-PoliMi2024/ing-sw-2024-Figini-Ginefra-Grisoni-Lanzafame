@@ -7,9 +7,12 @@ import it.polimi.ingsw.lightModel.DiffGenerator;
 import it.polimi.ingsw.lightModel.Heavifier;
 import it.polimi.ingsw.lightModel.LightModelUpdaterInterfaces.LightGameUpdater;
 import it.polimi.ingsw.lightModel.Lightifier;
+import it.polimi.ingsw.lightModel.diffs.game.CodexDiffSetFinalPoints;
 import it.polimi.ingsw.lightModel.diffs.game.GameDiffPublicObj;
+import it.polimi.ingsw.lightModel.diffs.game.GameDiffWinner;
 import it.polimi.ingsw.lightModel.diffs.game.codexDiffs.CodexDiffPlacement;
 import it.polimi.ingsw.lightModel.diffs.game.deckDiffs.DeckDiffDeckDraw;
+import it.polimi.ingsw.lightModel.diffs.game.gamePartyDiffs.GameDiffCurrentPlayer;
 import it.polimi.ingsw.lightModel.diffs.game.gamePartyDiffs.GameDiffPlayerActivity;
 import it.polimi.ingsw.lightModel.diffs.game.handDiffOther.HandOtherDiffAdd;
 import it.polimi.ingsw.lightModel.diffs.game.handDiffOther.HandOtherDiffRemove;
@@ -33,7 +36,6 @@ import it.polimi.ingsw.view.ViewState;
 
 import java.util.*;
 import java.util.function.Predicate;
-import java.util.stream.Collectors;
 
 public class GameController implements GameControllerInterface {
     private final CardTable cardTable;
@@ -85,23 +87,25 @@ public class GameController implements GameControllerInterface {
         try {
             playerViewMap.get(joiner).updateGame(DiffGenerator.diffJoinStartCard(game, joiner, activePlayers));
             playerViewMap.get(joiner).logGame(LogsOnClientStatic.GAME_JOINED);
-        }catch (Exception e){}
+        }catch (Exception e){
+            System.out.println("GameController.notifyJoinGame: subscriber " + joiner + " unreachable" + e.getMessage());
+        }
     }
 
     private synchronized void notifyJoinGame(String joinerNickname, boolean rejoining){
         GameDiffPlayerActivity communicateJoin = new GameDiffPlayerActivity(List.of(joinerNickname), new ArrayList<>());
-        for (Map.Entry<String, ViewInterface> playerViewMap : playerViewMap.entrySet()) {
-            if(!playerViewMap.getKey().equals(joinerNickname)) {
+        playerViewMap.forEach((nickname, view)->{
+            if(!nickname.equals(joinerNickname)) {
                 try {
-                    playerViewMap.getValue().updateGame(communicateJoin);
+                    view.updateGame(communicateJoin);
                     if(rejoining){
-                        playerViewMap.getValue().logOthers(joinerNickname + LogsOnClientStatic.PLAYER_REJOINED);
+                        view.logOthers(joinerNickname + LogsOnClientStatic.PLAYER_REJOINED);
                     }
                 } catch (Exception e) {
-                    System.out.println("GameController.notifyJoinGame: subscriber " + playerViewMap.getKey() + " unreachable" + e.getMessage());
+                    System.out.println("GameController.notifyJoinGame: subscriber " + nickname + " unreachable" + e.getMessage());
                 }
             }
-        }
+        });
     }
 
     public synchronized void placeStartCard(String nickname, Placement startCardPlacement){
@@ -129,9 +133,7 @@ public class GameController implements GameControllerInterface {
     }
 
     private synchronized void notifyStartCardFaceChoice(String placer, User user, LightPlacement placement, LightBack resourceBack, LightBack goldBack){
-        for(Map.Entry<String, ViewInterface> playerViewMap : playerViewMap.entrySet()){
-            ViewInterface view = playerViewMap.getValue();
-            String nickname = playerViewMap.getKey();
+        playerViewMap.forEach((nickname, view)->{
             try {
                 view.updateGame(new DeckDiffDeckDraw(DrawableCard.RESOURCECARD, resourceBack));
                 view.updateGame(new DeckDiffDeckDraw(DrawableCard.GOLDCARD, goldBack));
@@ -150,7 +152,7 @@ public class GameController implements GameControllerInterface {
             }catch (Exception e){
                 System.out.println("GameController.notifyStartCardFaceChoice: subscriber " + nickname + " unreachable" + e.getMessage());
             }
-        }
+        });
     }
 
     //TODO continue
@@ -170,45 +172,45 @@ public class GameController implements GameControllerInterface {
     }
 
     private synchronized void  notifySecretObjectiveChoice(String chooser, LightCard objChoice){
-        for(Map.Entry<String, ViewInterface> playerViewMap : playerViewMap.entrySet()){
-            ViewInterface playerView = playerViewMap.getValue();
-            String playerNick = playerViewMap.getKey();
+        playerViewMap.forEach((nickname, view)->{
             try {
-                if(playerNick.equals(chooser)) {
-                    playerView.updateGame(new HandDiffSetObj(objChoice));
-                    playerView.log(LogsOnClientStatic.YOU_CHOSE);
-                    playerView.logGame(LogsOnClientStatic.WAIT_SECRET_OBJECTIVE);
+                if(nickname.equals(chooser)) {
+                    view.updateGame(new HandDiffSetObj(objChoice));
+                    view.log(LogsOnClientStatic.YOU_CHOSE);
+                    view.logGame(LogsOnClientStatic.WAIT_SECRET_OBJECTIVE);
                 }else{
-                    playerView.logOthers(chooser + LogsOnClientStatic.PLAYER_CHOSE);
+                    view.logOthers(chooser + LogsOnClientStatic.PLAYER_CHOSE);
                 }
             } catch (Exception e) {
-                System.out.println("GameController.notifySecretObjectiveChoice: subscriber " + playerNick + " unreachable" + e.getMessage());
+                System.out.println("GameController.notifySecretObjectiveChoice: subscriber " + nickname + " unreachable" + e.getMessage());
             }
-        }
+        });
     }
 
     private synchronized void notifyAllChoseSecretObjective(List<LightCard> commonObjectives){
-        for(Map.Entry<String, ViewInterface> playerViewMap : playerViewMap.entrySet()){
+        playerViewMap.forEach((nickname, view)->{
             try {
-                ViewInterface view = playerViewMap.getValue();
                 view.updateGame(new GameDiffPublicObj(commonObjectives.toArray(new LightCard[0])));
                 view.logGame(LogsOnClientStatic.EVERYONE_CHOSE);
             } catch (Exception e) {
-                System.out.println("GameController.notifyAllChoseSecretObjective: subscriber " + playerViewMap.getKey() + " unreachable" + e.getMessage());
+                System.out.println("GameController.notifyAllChoseSecretObjective: subscriber " + nickname + " unreachable" + e.getMessage());
             }
-        }
+        });
     }
 
-    private synchronized void takeTurn(){
-        for(Map.Entry<String, ViewInterface> playerViewMap : playerViewMap.entrySet()) {
-            ViewInterface view = playerViewMap.getValue();
-            String nickname = playerViewMap.getKey();
-            if (game.getCurrentPlayer().getNickname().equals(nickname)) {
-                try{view.transitionTo(ViewState.PLACE_CARD);}catch (Exception e){}
-            } else {
-                try{view.transitionTo(ViewState.IDLE);}catch (Exception e){}
+    private synchronized void takeTurn() {
+        playerViewMap.forEach((nickname, view) -> {
+            try {
+                if (game.getCurrentPlayer().getNickname().equals(nickname)) {
+                    view.transitionTo(ViewState.PLACE_CARD);
+                } else {
+                    view.transitionTo(ViewState.IDLE);
+                }
+            } catch (Exception e) {
+                System.out.println("GameController.takeTurn: subscriber " + nickname + " not reachable" + e.getMessage());
             }
-        }
+        });
+
     }
 
     public synchronized void place(String nickname, LightPlacement placement){
@@ -233,9 +235,7 @@ public class GameController implements GameControllerInterface {
     }
 
     private synchronized void notifyPlacement(String placer, LightPlacement newPlacement, Codex placerCodex, Map<LightCard, Boolean> playability){
-        for(Map.Entry<String, ViewInterface> playerViewMap : playerViewMap.entrySet()){
-            String nickname = playerViewMap.getKey();
-            ViewInterface view = playerViewMap.getValue();
+        playerViewMap.forEach((nickname, view)->{
             try {
                 view.updateGame(DiffGenerator.placeCodexDiff(placer, newPlacement, placerCodex));
 
@@ -252,7 +252,7 @@ public class GameController implements GameControllerInterface {
             } catch (Exception e) {
                 System.out.println("GameController.notifyPlacement: subscriber " + nickname + " unreachable" + e.getMessage());
             }
-        }
+        });
     }
 
     public synchronized void draw(String nickname, DrawableCard deckType, int cardID){
@@ -267,21 +267,22 @@ public class GameController implements GameControllerInterface {
 
             user.getUserHand().addCard(drawnCard);
 
-            game.notifyDraw(deckType, cardID, Lightifier.lightifyToCard(drawnCard),
-                    Lightifier.lightifyToCard(cardReplacement), nickname,
+            this.notifyDraw(nickname, deckType, cardID, Lightifier.lightifyToCard(drawnCard),
+                    Lightifier.lightifyToCard(cardReplacement),
                     drawnCard.canBePlaced(user.getUserCodex()));
         }
 
-        if(game.checkForChickenDinner() && Objects.equals(game.getFirstActivePlayer(), nickname) && !game.isLastTurn()){
+        if(game.checkForChickenDinner() && Objects.equals(this.getFirstActivePlayer(), nickname) && !game.isLastTurn()){
             game.setLastTurn(true);
-            game.notifyLastTurn();
+            this.notifyLastTurn();
         }
 
-        if(Objects.equals(game.getLastActivePlayer(), nickname) && game.isLastTurn()){
+        if(Objects.equals(this.getLastActivePlayer(), nickname) && game.isLastTurn()){
             //model update with points
             game.addObjectivePoints();
             //notify
-            game.notifyGameEnded(game.getPointPerPlayerMap(), game.getWinners());
+            List<String> activePlayers = playerViewMap.keySet().stream().toList();
+            this.notifyGameEnded(game.getPointPerPlayerMap(), game.getWinners());
         }else{
             //turn
             int nextPlayerIndex = game.getNextActivePlayerIndex();
@@ -289,10 +290,94 @@ public class GameController implements GameControllerInterface {
             if(nextPlayer.getNickname().equals(nickname)){
                 //TODO timer
             }else {
-                game.setPlayerIndex(nextPlayerIndex);
+                game.setPlayerIndex(this.getNextActivePlayerIndex());
+                this.notifyTurnChange(game.getCurrentPlayer().getNickname());
+                this.takeTurn();
                 game.notifyTurn(game.getCurrentPlayer().getNickname());
             }
         }
+    }
+
+    private synchronized void notifyDraw(String drawerNickname, DrawableCard deckType, int pos, LightCard drawnCard, LightCard drawnReplace, boolean playability){
+        playerViewMap.forEach((nickname, view)->{
+            try {
+                if (!nickname.equals(drawerNickname)) {
+                    view.logOthers(drawerNickname + LogsOnClientStatic.PLAYER_DRAW);
+                    LightBack backOfDrawnCard = new LightBack(drawnCard.idBack());
+                    view.updateGame(new HandOtherDiffAdd(backOfDrawnCard, drawerNickname));
+                } else {
+                    view.log(LogsOnClientStatic.YOU_DRAW);
+                    view.updateGame(new HandDiffAdd(drawnCard, playability));
+                }
+                view.updateGame(DiffGenerator.draw(deckType, pos, drawnReplace));
+            } catch (Exception e) {
+                System.out.println("GameMediator: subscriber " + nickname + " not reachable" + e.getMessage());
+            }
+        });
+    }
+
+    private synchronized String getFirstActivePlayer(){
+        List<String> activePlayers = playerViewMap.keySet().stream().toList();
+        List<String> turnsOrder = game.getUsersList().stream().map(User::getNickname).toList();
+
+        return turnsOrder.stream().filter(activePlayers::contains).findFirst().orElse(null);
+    }
+
+    private synchronized String getLastActivePlayer(){
+        List<String> activePlayers = playerViewMap.keySet().stream().toList();
+        ArrayList<String> turnsOrder = new ArrayList<>(game.getUsersList().stream().map(User::getNickname).toList());
+        Collections.reverse(turnsOrder);
+
+        return turnsOrder.stream().filter(activePlayers::contains).findFirst().orElse(null);
+    }
+
+    private synchronized void notifyGameEnded(Map<String, Integer> pointsPerPlayerMap, List<String> ranking){
+        playerViewMap.forEach((nickname, view)->{
+            try{
+                view.updateGame(new CodexDiffSetFinalPoints(pointsPerPlayerMap));
+                view.updateGame(new GameDiffWinner(ranking));
+                view.logGame(LogsOnClientStatic.GAME_END);
+            }catch (Exception e){
+                System.out.println("GameController.notifyGameEnded: subscriber " + nickname + " not reachable" + e.getMessage());
+            }
+        });
+    }
+
+    private synchronized void notifyLastTurn(){
+        playerViewMap.forEach((nickname, view)->{
+            try {
+                view.logGame(LogsOnClientStatic.LAST_TURN);
+            }catch (Exception e){
+                System.out.println("GameController.notifyLastTurn: subscriber " + nickname + " not reachable" + e.getMessage());
+            }
+        });
+    }
+
+    private synchronized int getNextActivePlayerIndex() {
+        List<String> userList = game.getUsersList().stream().map(User::getNickname).toList();
+        List<String> activePlayer = playerViewMap.keySet().stream().toList();
+        int currentPlayerIndex = game.getCurrentPlayerIndex();
+        int nextPlayerIndex;
+        do{
+            nextPlayerIndex = (currentPlayerIndex + 1) % userList.size();
+        }while (!activePlayer.contains(userList.get(nextPlayerIndex)));
+
+        return nextPlayerIndex;
+    }
+
+    private synchronized void notifyTurnChange(String nextPlayer){
+        playerViewMap.forEach((nickname, view)->{
+            try {
+                view.updateGame(new GameDiffCurrentPlayer(nextPlayer));
+                if (!nickname.equals(nextPlayer)) {
+                    view.logOthers(nextPlayer + LogsOnClientStatic.PLAYER_TURN);
+                } else {
+                    view.log(LogsOnClientStatic.YOUR_TURN);
+                }
+            } catch (Exception e) {
+                System.out.println("GameController.notifyTurnChange: subscriber " + nickname + " not reachable" + e.getMessage());
+            }
+        });
     }
     /*
     public synchronized void leave(String nickname){
@@ -376,15 +461,15 @@ public class GameController implements GameControllerInterface {
             } catch (Exception e) {}
         }
 
-        for(Map.Entry<String, ViewInterface> playerViewMap : playerViewMap.entrySet()) {
-            User user = game.getUserFromNick(playerViewMap.getKey());
+        playerViewMap.forEach((nickname, view)->{
+            User user = game.getUserFromNick(nickname);
             try {
                 if (!user.hasChosenObjective()) {
-                    playerViewMap.getValue().transitionTo(ViewState.SELECT_OBJECTIVE);
+                    view.transitionTo(ViewState.SELECT_OBJECTIVE);
                 } else
-                    playerViewMap.getValue().transitionTo(ViewState.WAITING_STATE);
+                    view.transitionTo(ViewState.WAITING_STATE);
             }catch (Exception e){}
-        }
+        });
     }
 
     private synchronized void removeInactivePlayers(Predicate<User> check) {

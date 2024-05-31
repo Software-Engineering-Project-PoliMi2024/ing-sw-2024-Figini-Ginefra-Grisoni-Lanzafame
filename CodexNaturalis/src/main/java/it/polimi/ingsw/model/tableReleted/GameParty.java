@@ -122,4 +122,10 @@ public class GameParty implements Serializable {
             return playerList.get(index);
         }
     }
+
+    public int getCurrentPlayerIndex() {
+        synchronized (currentPlayerLock){
+            return currentPlayerIndex;
+        }
+    }
 }
