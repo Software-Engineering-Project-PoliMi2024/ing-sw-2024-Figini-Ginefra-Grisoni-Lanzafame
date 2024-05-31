@@ -11,9 +11,9 @@ import it.polimi.ingsw.lightModel.diffs.game.GameDiffPublicObj;
 import it.polimi.ingsw.lightModel.diffs.game.codexDiffs.CodexDiffPlacement;
 import it.polimi.ingsw.lightModel.diffs.game.deckDiffs.DeckDiffDeckDraw;
 import it.polimi.ingsw.lightModel.diffs.game.gamePartyDiffs.GameDiffPlayerActivity;
-import it.polimi.ingsw.lightModel.diffs.game.handDiffs.HandDiff;
-import it.polimi.ingsw.lightModel.diffs.game.handDiffs.HandDiffRemove;
-import it.polimi.ingsw.lightModel.diffs.game.handDiffs.HandDiffSetObj;
+import it.polimi.ingsw.lightModel.diffs.game.handDiffOther.HandOtherDiffAdd;
+import it.polimi.ingsw.lightModel.diffs.game.handDiffOther.HandOtherDiffRemove;
+import it.polimi.ingsw.lightModel.diffs.game.handDiffs.*;
 import it.polimi.ingsw.lightModel.lightPlayerRelated.LightBack;
 import it.polimi.ingsw.lightModel.lightPlayerRelated.LightCard;
 import it.polimi.ingsw.lightModel.lightPlayerRelated.LightPlacement;
@@ -130,23 +130,25 @@ public class GameController implements GameControllerInterface {
 
     private synchronized void notifyStartCardFaceChoice(String placer, User user, LightPlacement placement, LightBack resourceBack, LightBack goldBack){
         for(Map.Entry<String, ViewInterface> playerViewMap : playerViewMap.entrySet()){
+            ViewInterface view = playerViewMap.getValue();
+            String nickname = playerViewMap.getKey();
             try {
-                playerViewMap.getValue().updateGame(new DeckDiffDeckDraw(DrawableCard.RESOURCECARD, resourceBack));
-                playerViewMap.getValue().updateGame(new DeckDiffDeckDraw(DrawableCard.GOLDCARD, goldBack));
-                if (playerViewMap.getKey().equals(placer)) {
-                    playerViewMap.getValue().log(LogsOnClientStatic.YOU_PLACE_STARTCARD);
-                    playerViewMap.getValue().logGame(LogsOnClientStatic.WAIT_STARTCARD);
-                    playerViewMap.getValue().updateGame(new HandDiffRemove(placement.card()));
-                    playerViewMap.getValue().updateGame(new CodexDiffPlacement(placer, user.getUserCodex().getPoints(),
+                view.updateGame(new DeckDiffDeckDraw(DrawableCard.RESOURCECARD, resourceBack));
+                view.updateGame(new DeckDiffDeckDraw(DrawableCard.GOLDCARD, goldBack));
+                if (nickname.equals(placer)) {
+                    view.log(LogsOnClientStatic.YOU_PLACE_STARTCARD);
+                    view.logGame(LogsOnClientStatic.WAIT_STARTCARD);
+                    view.updateGame(new HandDiffRemove(placement.card()));
+                    view.updateGame(new CodexDiffPlacement(placer, user.getUserCodex().getPoints(),
                             user.getUserCodex().getEarnedCollectables(), List.of(placement), user.getUserCodex().getFrontier().getFrontier()));
                     for(HandDiff handDiff : DiffGenerator.getHandYourCurrentState(user)){
-                        playerViewMap.getValue().updateGame(handDiff);
+                        view.updateGame(handDiff);
                     }
                 }else {
-                    playerViewMap.getValue().logOthers(placer + LogsOnClientStatic.PLAYER_PLACE_STARTCARD);
+                    view.logOthers(placer + LogsOnClientStatic.PLAYER_PLACE_STARTCARD);
                 }
             }catch (Exception e){
-                System.out.println("GameController.notifyStartCardFaceChoice: subscriber " + playerViewMap.getKey() + " unreachable" + e.getMessage());
+                System.out.println("GameController.notifyStartCardFaceChoice: subscriber " + nickname + " unreachable" + e.getMessage());
             }
         }
     }
@@ -169,9 +171,9 @@ public class GameController implements GameControllerInterface {
 
     private synchronized void  notifySecretObjectiveChoice(String chooser, LightCard objChoice){
         for(Map.Entry<String, ViewInterface> playerViewMap : playerViewMap.entrySet()){
+            ViewInterface playerView = playerViewMap.getValue();
+            String playerNick = playerViewMap.getKey();
             try {
-                ViewInterface playerView = playerViewMap.getValue();
-                String playerNick = playerViewMap.getKey();
                 if(playerNick.equals(chooser)) {
                     playerView.updateGame(new HandDiffSetObj(objChoice));
                     playerView.log(LogsOnClientStatic.YOU_CHOSE);
@@ -180,7 +182,7 @@ public class GameController implements GameControllerInterface {
                     playerView.logOthers(chooser + LogsOnClientStatic.PLAYER_CHOSE);
                 }
             } catch (Exception e) {
-                System.out.println("GameController.notifySecretObjectiveChoice: subscriber " + playerViewMap.getKey() + " unreachable" + e.getMessage());
+                System.out.println("GameController.notifySecretObjectiveChoice: subscriber " + playerNick + " unreachable" + e.getMessage());
             }
         }
     }
@@ -228,6 +230,29 @@ public class GameController implements GameControllerInterface {
         //notify everyone
         game.notifyPlacement(nickname, placement, user.getUserCodex(), FrontIdToPlayability);
 
+    }
+
+    private synchronized void notifyPlacement(String placer, LightPlacement newPlacement, Codex placerCodex, Map<LightCard, Boolean> playability){
+        for(Map.Entry<String, ViewInterface> playerViewMap : playerViewMap.entrySet()){
+            String nickname = playerViewMap.getKey();
+            ViewInterface view = playerViewMap.getValue();
+            try {
+                view.updateGame(DiffGenerator.placeCodexDiff(placer, newPlacement, placerCodex));
+
+                if(nickname.equals(placer)){
+                    view.updateGame(new HandDiffRemove(newPlacement.card()));
+                    for(LightCard card : playability.keySet())
+                        view.updateGame(new HandDiffUpdatePlayability(card, playability.get(card)));
+                    view.log(LogsOnClientStatic.YOU_PLACED);
+                }else {
+                    LightBack newPlacementBack = new LightBack(newPlacement.card().idBack());
+                    view.updateGame(new HandOtherDiffRemove(newPlacementBack, placer));
+                    view.logOthers(placer + LogsOnClientStatic.PLAYER_PLACED);
+                }
+            } catch (Exception e) {
+                System.out.println("GameController.notifyPlacement: subscriber " + nickname + " unreachable" + e.getMessage());
+            }
+        }
     }
 
     public synchronized void draw(String nickname, DrawableCard deckType, int cardID){
