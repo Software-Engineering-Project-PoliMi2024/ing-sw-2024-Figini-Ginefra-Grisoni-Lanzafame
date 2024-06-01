@@ -4,13 +4,14 @@ import it.polimi.ingsw.model.playerReleted.User;
 
 import java.io.Serializable;
 import java.util.*;
+import java.util.concurrent.locks.ReentrantLock;
 import java.util.stream.Collectors;
 
 public class GameParty implements Serializable {
     final private List<User> playerList; //the player that were in the lobby pre game
     private int currentPlayerIndex;
 
-    private final Object currentPlayerLock = new Object();
+    private final ReentrantLock currentPlayerLock = new ReentrantLock();
 
     /**
      * The constructor of the class
@@ -30,8 +31,11 @@ public class GameParty implements Serializable {
      * @param index the index of the player that is playing
      */
     public void setPlayerIndex(int index){
-        synchronized (currentPlayerLock) {
+        currentPlayerLock.lock();
+        try {
             currentPlayerIndex = index;
+        } finally {
+            currentPlayerLock.unlock();
         }
     }
 
@@ -40,17 +44,23 @@ public class GameParty implements Serializable {
      * @return the current player
      */
     public User getCurrentPlayer() {
-        synchronized (currentPlayerLock){
+        currentPlayerLock.lock();
+        try {
             return playerList.get(currentPlayerIndex);
+        } finally {
+            currentPlayerLock.unlock();
         }
     }
 
     public Map<String, Integer> getPointPerPlayerMap(){
         Map<String, Integer> userPointsMap = new HashMap<>();
-        synchronized (playerList) {
+        currentPlayerLock.lock();
+        try {
             playerList.forEach(user ->{
                 userPointsMap.put(user.getNickname(), user.getUserCodex().getPoints());
             });
+        } finally {
+            currentPlayerLock.unlock();
         }
         return userPointsMap;
     }
@@ -61,15 +71,33 @@ public class GameParty implements Serializable {
      * @return the index of the next player
      */
     public int getNextPlayerIndex() {
-        synchronized (currentPlayerLock){
+        currentPlayerLock.lock();
+        try{
             return (currentPlayerIndex + 1) % getNumberOfMaxPlayer();
+        } finally {
+            currentPlayerLock.unlock();
         }
     }
 
     /** @return list of the users in this match*/
     public List<User> getUsersList() {
-        synchronized (playerList) {
-            return playerList;
+        currentPlayerLock.lock();
+        try{
+            return new ArrayList<>(playerList);
+        } finally {
+            currentPlayerLock.unlock();
+        }
+    }
+
+    /***
+     * @return the number Of Player needed to start the game
+     */
+    public int getNumberOfMaxPlayer() {
+        currentPlayerLock.lock();
+        try{
+            return playerList.size();
+        } finally {
+            currentPlayerLock.unlock();
         }
     }
 
@@ -81,20 +109,16 @@ public class GameParty implements Serializable {
      */
     public User getUserFromNick(String nickname){
         synchronized (playerList) {
-            if(!playerList.stream().map(User::getNickname).toList().contains(nickname))
-                return null;
-            else{
-                return playerList.stream().filter(u -> u.getNickname().equals(nickname)).findFirst().orElse(null);
+            currentPlayerLock.lock();
+            try{
+                if(!playerList.stream().map(User::getNickname).toList().contains(nickname))
+                    return null;
+                else{
+                    return playerList.stream().filter(u -> u.getNickname().equals(nickname)).findFirst().orElse(null);
+                }
+            }finally {
+                currentPlayerLock.unlock();
             }
-        }
-    }
-
-    /***
-     * @return the number Of Player needed to start the game
-     */
-    public int getNumberOfMaxPlayer() {
-        synchronized (playerList) {
-            return playerList.size();
         }
     }
 
@@ -103,12 +127,15 @@ public class GameParty implements Serializable {
      * @param user being removed
      */
     public void removeUser(String user){
-        synchronized (playerList) {
+        currentPlayerLock.lock();
+        try{
             User userToRemove = playerList.stream().filter(u -> u.getNickname().equals(user)).findFirst().orElse(null);
             if (userToRemove != null)
                 playerList.remove(userToRemove);
             else
                 throw new IllegalArgumentException("User not in this gameParty");
+        }finally {
+            currentPlayerLock.unlock();
         }
     }
 
@@ -118,8 +145,11 @@ public class GameParty implements Serializable {
      * @return the player with the given index
      */
     public User getPlayerFromIndex(int index){
-        synchronized (playerList) {
+        currentPlayerLock.lock();
+        try{
             return playerList.get(index);
+        }finally {
+            currentPlayerLock.unlock();
         }
     }
 }
