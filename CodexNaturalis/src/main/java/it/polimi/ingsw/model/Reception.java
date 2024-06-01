@@ -2,7 +2,7 @@ package it.polimi.ingsw.model;
 
 import it.polimi.ingsw.Configs;
 import it.polimi.ingsw.OSRelated;
-import it.polimi.ingsw.controller.persistence.PersistenceFactory;
+import it.polimi.ingsw.controller.persistence.PersistenceFactory2;
 import it.polimi.ingsw.model.cardReleted.cards.*;
 import it.polimi.ingsw.model.playerReleted.User;
 import it.polimi.ingsw.model.tableReleted.Game;
@@ -19,7 +19,7 @@ public class Reception implements Serializable {
     private final List<String> usernames;
     private final CardTable cardTable;
     public Reception() {
-        this.games = PersistenceFactory.load();
+        this.games = PersistenceFactory2.load();
         this.usernames = new ArrayList<>();
         lobbies = new LobbyList();
         this.cardTable = new CardTable(Configs.CardResourcesFolderPath, Configs.CardJSONFileName, OSRelated.cardFolderDataPath);

@@ -27,6 +27,7 @@ import it.polimi.ingsw.view.ViewInterface;
 import java.io.Serializable;
 import java.util.*;
 import java.util.List;
+import java.util.concurrent.locks.ReentrantLock;
 
 
 /**
@@ -48,8 +49,7 @@ public class Game implements Serializable {
     private final List<ObjectiveCard> commonObjective;
 
     private boolean isLastTurn;
-    private final Object turnLock = new Object();
-
+    private final ReentrantLock turnLock = new ReentrantLock();
     private final TurnTakerMediator activeTurnTakerMediator = new TurnTakerMediator();
     private final GameMediator gameMediator;
     private final GameController gameController = new GameController(this);
@@ -314,9 +314,9 @@ public class Game implements Serializable {
         gameController.placeStartCard(nickname, startCardPlacement);
     }
 
-    public void chooseSecretObjective(String nickname, ObjectiveCard objChoice){
+    /*public void chooseSecretObjective(String nickname, ObjectiveCard objChoice){
         gameController.chooseSecretObjective(nickname, objChoice);
-    }
+    }*/
 
     public void place(String nickname, Placement placement){
         gameController.place(nickname, placement);

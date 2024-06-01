@@ -25,7 +25,6 @@ public class PersistenceFactory2 {
         ObjectOutputStream outStream = null;
         try {
             newSave= new File(gameDataFolderPath + LocalDateTime.now().format(windowSucks) + dateGameNameSeparator + game.getName() + _bin);
-            System.out.println(newSave.getAbsolutePath());
             outStream = new ObjectOutputStream(new FileOutputStream(newSave));
             outStream.writeObject(game);
             outStream.close();
@@ -66,7 +65,9 @@ public class PersistenceFactory2 {
         File dataFolder = new File(gameDataFolderPath);
 
         File[] saves = dataFolder.listFiles();
-        if (saves == null) {
+        if(saves == null){
+            throw new IllegalArgumentException("The gameDataFolderPath is not a valid directory, check the path in the OSRelated class");
+        }else if (saves.length == 0) {
             System.out.println("No games saves found");
         } else {
             for (File gameSave : saves) {
@@ -113,10 +114,12 @@ public class PersistenceFactory2 {
             fileIn = new FileInputStream(gameDataFolderPath + file.getName());
             ObjectInputStream streamIn = new ObjectInputStream(fileIn);
             Object readObject = streamIn.readObject();
-            if (readObject instanceof Game)
+            if (readObject instanceof Game){
                 game = (Game) readObject;
-            else
+            } else {
                 throw new IllegalArgumentException("the file given as input is not a valid game file");
+            }
+            fileIn.close();
         } catch (ClassNotFoundException | IOException e) {
             System.out.println("file path: " + file.getAbsoluteFile());
             System.out.println("file:" + file.getName() + " corrupted, deleting it");
