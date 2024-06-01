@@ -346,9 +346,9 @@ public class Game implements Serializable {
         gameController.placeStartCard(nickname, startCardPlacement);
     }
 
-    public void chooseSecretObjective(String nickname, ObjectiveCard objChoice){
+    /*public void chooseSecretObjective(String nickname, ObjectiveCard objChoice){
         gameController.chooseSecretObjective(nickname, objChoice);
-    }
+    }*/
 
     public void place(String nickname, Placement placement) {
         gameController.place(nickname, placement);
