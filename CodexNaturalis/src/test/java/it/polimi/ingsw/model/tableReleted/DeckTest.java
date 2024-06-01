@@ -1,10 +1,9 @@
 package it.polimi.ingsw.model.tableReleted;
 
-import it.polimi.ingsw.model.MultiGame;
+import it.polimi.ingsw.model.Reception;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
-import java.nio.channels.MulticastChannel;
 import java.util.LinkedList;
 import java.util.List;
 
@@ -27,7 +26,7 @@ class DeckTest {
 
     @Test
     public void deckTest(){
-        MultiGame multiGame = new MultiGame();
+        Reception reception = new Reception();
     }
 
 }

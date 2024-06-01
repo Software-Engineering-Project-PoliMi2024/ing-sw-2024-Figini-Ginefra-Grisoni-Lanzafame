@@ -245,8 +245,6 @@ public class Controller3 implements ControllerInterface, TurnTaker, GameJoiner {
         }
         System.out.println(this.nickname + " drew a card");
 
-        Game game = multiGame.getGameFromUserNick(this.nickname);
-
     }
 
     private void leaveGame() {

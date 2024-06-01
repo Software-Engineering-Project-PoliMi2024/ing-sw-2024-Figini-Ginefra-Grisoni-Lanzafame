@@ -4,7 +4,6 @@ import it.polimi.ingsw.lightModel.lightPlayerRelated.LightCard;
 import it.polimi.ingsw.lightModel.lightPlayerRelated.LightPlacement;
 import it.polimi.ingsw.model.cardReleted.utilityEnums.DrawableCard;
 
-import java.io.Serial;
 import java.io.Serializable;
 import java.rmi.Remote;
 

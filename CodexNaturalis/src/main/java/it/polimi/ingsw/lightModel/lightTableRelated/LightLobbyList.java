@@ -16,7 +16,7 @@ import java.util.List;
  */
 public class LightLobbyList implements Differentiable, Observed {
     private final List<Observer> observers = new LinkedList<>();
-    private transient List<LightLobby> lobbies;
+    private List<LightLobby> lobbies;
 
     /**
      * Creates a LightLobbyList object.

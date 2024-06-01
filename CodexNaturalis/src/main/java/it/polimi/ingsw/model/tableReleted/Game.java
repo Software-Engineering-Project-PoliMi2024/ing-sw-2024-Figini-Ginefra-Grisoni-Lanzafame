@@ -18,6 +18,7 @@ import it.polimi.ingsw.model.utilities.Pair;
 import java.io.Serializable;
 import java.util.*;
 import java.util.List;
+import java.util.concurrent.locks.ReentrantLock;
 
 
 /**
@@ -39,7 +40,7 @@ public class Game implements Serializable {
     private final List<ObjectiveCard> commonObjective;
 
     private Integer lastTurnsCounter = null;
-    private final Object turnLock = new Object();
+    private final ReentrantLock turnLock = new ReentrantLock();
 
     private final TurnTakerMediator activeTurnTakerMediator = new TurnTakerMediator();
     private final GameMediator gameMediator;
@@ -81,7 +82,7 @@ public class Game implements Serializable {
 
     /** @return the Gold Card Deck*/
     public Deck<GoldCard> getGoldCardDeck() {
-        synchronized (goldCardDeck){
+        synchronized (goldCardDeck) {
             return new Deck<>(goldCardDeck);
         }
     }
@@ -93,13 +94,13 @@ public class Game implements Serializable {
         }
     }
 
-    public StartCard drawStartCard(){
+    public StartCard drawStartCard() {
         synchronized (startingCardDeck) {
             return startingCardDeck.drawFromDeck();
         }
     }
 
-    public ObjectiveCard drawObjectiveCard(){
+    public ObjectiveCard drawObjectiveCard() {
         synchronized (objectiveCardDeck) {
             return objectiveCardDeck.drawFromDeck();
         }
@@ -141,18 +142,21 @@ public class Game implements Serializable {
      * @return the active player that is the first in order in the game turn
      */
     public String getFirstActivePlayer() {
-        synchronized (turnLock) {
+        turnLock.lock();
+        try {
             List<String> activePlayers = this.getActivePlayers();
             List<String> turnsOrder = this.getUsersList().stream().map(User::getNickname).toList();
 
             return turnsOrder.stream().filter(activePlayers::contains).findFirst().orElse(null);
+        } finally {
+            turnLock.unlock();
         }
     }
 
     /**
      * @return the active player that is the last in order in the game turn
      */
-    public String getLastActivePlayer(){
+    public String getLastActivePlayer() {
         List<String> activePlayers = this.getActivePlayers();
         ArrayList<String> turnsOrder = new ArrayList<>(this.getUsersList().stream().map(User::getNickname).toList());
         Collections.reverse(turnsOrder);
@@ -164,9 +168,9 @@ public class Game implements Serializable {
      * adds points given by common objective and by the secret objective of the user
      * to the codex of the user
      */
-    public void addObjectivePoints(){
-        for(User user : getUsersList()){
-            for(ObjectiveCard commonObj : commonObjective){
+    public void addObjectivePoints() {
+        for (User user : getUsersList()) {
+            for (ObjectiveCard commonObj : commonObjective) {
                 user.getUserCodex().pointsFromObjective(commonObj);
             }
             user.getUserCodex().pointsFromObjective(user.getUserHand().getSecretObjective());
@@ -176,25 +180,25 @@ public class Game implements Serializable {
     /**
      * @return a Map that maps to each user nickName their points earned
      */
-    public Map<String, Integer> getPointPerPlayerMap(){
+    public Map<String, Integer> getPointPerPlayerMap() {
         return gameParty.getPointPerPlayerMap();
     }
 
     /**
      * @return a List containing the winner(s) of the game
      */
-    public List<String> getWinners(){
+    public List<String> getWinners() {
         Map<String, Integer> pointsPerPlayer = getPointPerPlayerMap();
         //Calculate all possibleWinners player(s) who scored the max amount of points in the game
         int maxPoint = pointsPerPlayer.values().stream().max(Integer::compareTo).orElse(0);
         List<String> playerMaxPoint = new ArrayList<>(pointsPerPlayer.keySet().stream().filter(nick -> pointsPerPlayer.get(nick) == maxPoint).toList());
         //calculate the number of objective cards completed
         Map<String, Integer> objectiveCompleted = new HashMap<>();
-        if(playerMaxPoint.size() > 1){
-            getUsersList().forEach(user ->{
-                if(playerMaxPoint.contains(user.getNickname())){
+        if (playerMaxPoint.size() > 1) {
+            getUsersList().forEach(user -> {
+                if (playerMaxPoint.contains(user.getNickname())) {
                     int completedObj = 0;
-                    for(ObjectiveCard obj : commonObjective){
+                    for (ObjectiveCard obj : commonObjective) {
                         completedObj += obj.getPoints(user.getUserCodex()) / obj.getPoints();
                     }
                     completedObj += user.getUserHand().getSecretObjective().getPoints(user.getUserCodex()) / user.getUserHand().getSecretObjective().getPoints();
@@ -216,7 +220,7 @@ public class Game implements Serializable {
      * @param nickname the nickname of the user
      * @return the user with the given nickname; returns null if the user is not in the gameParty
      */
-    public User getUserFromNick(String nickname){
+    public User getUserFromNick(String nickname) {
         return gameParty.getUserFromNick(nickname);
     }
 
@@ -233,13 +237,16 @@ public class Game implements Serializable {
     }
 
     public int getNextActivePlayerIndex(){
-        synchronized (turnLock) {
+        turnLock.lock();
+        try{
             User nextPlayer = getUsersList().get(getNextPlayerIndex());
             while (!isPlayerActive(nextPlayer.getNickname())) {
                 nextPlayer = getUsersList().get(getNextPlayerIndex());
             }
 
             return getUsersList().indexOf(nextPlayer);
+        } finally {
+            turnLock.unlock();
         }
     }
 
@@ -255,22 +262,28 @@ public class Game implements Serializable {
      * @return true if the conditions for triggering the last turn are met
      */
     public boolean checkForChickenDinner() {
-        synchronized (turnLock) {
+        turnLock.lock();
+        try {
             List<Integer> playerPoints = getUsersList().stream().map(User::getUserCodex).map(Codex::getPoints).toList();
             synchronized (goldCardDeck) {
                 synchronized (resourceCardDeck) {
                     return areDeckEmpty() || playerPoints.stream().anyMatch(p -> p >= Configs.pointsToStartGameEnding);
                 }
             }
+        } finally {
+            turnLock.unlock();
         }
     }
     /**
      * Remove a user from the gameParty preventing them from joining the game later
      * @param nickname of the user being removed
      */
-    public void removeUser(String nickname){
-        synchronized (turnLock){
+    public void removeUser(String nickname) {
+        turnLock.lock();
+        try {
             gameParty.removeUser(nickname);
+        } finally {
+            turnLock.unlock();
         }
     }
 
@@ -278,19 +291,19 @@ public class Game implements Serializable {
      * draw a card from one deck (depending on the type passed as parameter) and returns a
      * pair containing the card drawn and the card that took its place in the decks
      * @param deckType the deckType (resource or gold)
-     * @param cardID the position from which the user draws buffer pos or deck
+     * @param cardID   the position from which the user draws buffer pos or deck
      * @return the pair <drawnCard, newCard> where the drawn card is
      * the card drawn and new card is the card replacing it
      */
-    public Pair<CardInHand, CardInHand> drawAndGetReplacement(DrawableCard deckType, int cardID){
+    public Pair<CardInHand, CardInHand> drawAndGetReplacement(DrawableCard deckType, int cardID) {
         CardInHand drawnCard;
         CardInHand cardReplacement;
-        if(deckType == DrawableCard.GOLDCARD){
+        if (deckType == DrawableCard.GOLDCARD) {
             synchronized (goldCardDeck) {
                 drawnCard = goldCardDeck.drawACard(cardID);
                 cardReplacement = goldCardDeck.peekCardInDecks(cardID);
             }
-        }else {
+        } else {
             synchronized (resourceCardDeck) {
                 drawnCard = resourceCardDeck.drawACard(cardID);
                 cardReplacement = resourceCardDeck.peekCardInDecks(cardID);
@@ -303,7 +316,7 @@ public class Game implements Serializable {
         //gameMaster.leave(nickname);
     }
 
-    public void joinSecretObjective(String joiner, Game game){
+    public void joinSecretObjective(String joiner, Game game) {
         gameMediator.updateJoinObjectiveSelect(joiner, game);
     }
 
@@ -313,18 +326,24 @@ public class Game implements Serializable {
     /**
      * @return true if the players in game are choosing the startCard
      */
-    public boolean isInStartCardState(){
-        synchronized (turnLock) {
+    public boolean isInStartCardState() {
+        turnLock.lock();
+        try {
             return gameParty.getUsersList().stream().map(User::getUserHand).map(Hand::getStartCard).anyMatch(Objects::nonNull);
+        } finally {
+            turnLock.unlock();
         }
     }
 
     /**
      * @return true if the players in game are choosing the secretObjective
      */
-    public boolean inInSecretObjState(){
-        synchronized (turnLock){
+    public boolean inInSecretObjState() {
+        turnLock.lock();
+        try{
             return gameParty.getUsersList().stream().map(User::getUserHand).map(Hand::getSecretObjectiveChoices).anyMatch(Objects::nonNull);
+        }finally {
+            turnLock.unlock();
         }
     }
 
@@ -333,7 +352,7 @@ public class Game implements Serializable {
      * calling the takeTurnMediator method of the subscriber
      * @param nicknameOfNextPlayer the nickname of the player that is goint to play next
      */
-    public void notifyTurn(String nicknameOfNextPlayer){
+    public void notifyTurn(String nicknameOfNextPlayer) {
         gameMediator.notifyTurnChange(nicknameOfNextPlayer);
         activeTurnTakerMediator.notifyTurn();
     }
@@ -342,7 +361,7 @@ public class Game implements Serializable {
      * This method is used to check if the decks are empty
      * @return true if the decks are empty, false otherwise
      */
-    public boolean areDeckEmpty(){
+    public boolean areDeckEmpty() {
         return goldCardDeck.isEmpty() && resourceCardDeck.isEmpty();
     }
 
@@ -350,7 +369,7 @@ public class Game implements Serializable {
      * get the list of active players
      * @return the list of active players
      */
-    public List<String> getActivePlayers(){
+    public List<String> getActivePlayers() {
         return activeTurnTakerMediator.getActivePlayers();
     }
 
@@ -359,7 +378,7 @@ public class Game implements Serializable {
      * @param nickname the nickname of the player that wants to check if it is active
      * @return true if the player is active, false otherwise
      */
-    public boolean isPlayerActive(String nickname){
+    public boolean isPlayerActive(String nickname) {
         return activeTurnTakerMediator.isPlayerActive(nickname);
     }
 
@@ -371,51 +390,64 @@ public class Game implements Serializable {
      * @return true if all other players have placed their startCard, false otherwise
      * true means that is time to move on to secret objective choice phase
      */
-    public boolean checkAndMoveToSecretObjectiveChoicePhase(String nicknamePerspective){
+    public boolean checkAndMoveToSecretObjectiveChoicePhase(String nicknamePerspective) {
         boolean allPlaced = true;
-        synchronized (turnLock) {
+        turnLock.lock();
+        try {
             for (String nick : getActivePlayers()) {
                 if (!nick.equals(nicknamePerspective) && !getUserFromNick(nick).hasPlacedStartCard()) {
                     allPlaced = false;
                 }
             }
-            if(allPlaced){
+            if (allPlaced) {
                 removeInactivePlayers();
             }
+        } finally {
+            turnLock.unlock();
         }
         return allPlaced;
     }
 
-    private void removeInactivePlayers(){
-        synchronized (turnLock) {
-            for(User user : getUsersList()){
-                if(!getActivePlayers().contains(user.getNickname())){
+    private void removeInactivePlayers() {
+        turnLock.lock();
+        try{
+            for (User user : getUsersList()) {
+                if (!getActivePlayers().contains(user.getNickname())) {
                     gameParty.removeUser(user.getNickname());
                 }
             }
+        }finally {
+            turnLock.unlock();
         }
     }
 
-    public boolean othersHadAllChooseSecretObjective(String nicknamePerspective){
+    public boolean othersHadAllChooseSecretObjective(String nicknamePerspective) {
         boolean check = true;
-        synchronized (turnLock) {
+        turnLock.lock();
+        try {
             for (User user : gameParty.getUsersList()) {
                 if (!user.getNickname().equals(nicknamePerspective) && !user.hasChosenObjective()) {
                     check = false;
                 }
             }
+        }finally {
+            turnLock.unlock();
         }
         return check;
     }
 
-    public boolean isYourTurnToPlace(String nickname){
+    public boolean isYourTurnToPlace(String nickname) {
         User you = getUserFromNick(nickname);
-        synchronized (turnLock) {
+        turnLock.lock();
+        try {
             return (isInStartCardState() && !you.hasPlacedStartCard()) || (
                     getCurrentPlayer().getNickname().equals(nickname)
                             && you.getUserHand().getHand().size() == 3);
+        }finally {
+            turnLock.unlock();
         }
     }
+
     @Override
     public String toString() {
 
@@ -427,18 +459,19 @@ public class Game implements Serializable {
                 '}';
     }
 
-    public void subscribe(DiffSubscriber diffSubscriber, String nickname){
+    public void subscribe(DiffSubscriber diffSubscriber, String nickname) {
         gameDiffPublisher.subscribe(diffSubscriber, nickname);
     }
 
-    public void subscribe(GameDiff gameDiff){
+    public void subscribe(GameDiff gameDiff) {
         gameDiffPublisher.subscribe(gameDiff);
     }
 
-    public void subscribe(DiffSubscriber diffSubscriber, GameDiff gameDiffYou, GameDiff gameDiffOther){
+    public void subscribe(DiffSubscriber diffSubscriber, GameDiff gameDiffYou, GameDiff gameDiffOther) {
         gameDiffPublisher.subscribe(diffSubscriber, gameDiffYou, gameDiffOther);
     }
-    public void unsubscribe(DiffSubscriber diffSubscriber){
+
+    public void unsubscribe(DiffSubscriber diffSubscriber) {
         gameDiffPublisher.unsubscribe(diffSubscriber);
     }
 
@@ -451,13 +484,16 @@ public class Game implements Serializable {
         return gameLoopController;
     }
 
-    public boolean decksAreEmpty(){
+    public boolean decksAreEmpty() {
         return goldCardDeck.isEmpty() && resourceCardDeck.isEmpty();
     }
 
     public void startLastTurnsCounter() {
-        synchronized (turnLock) {
+        turnLock.lock();
+        try {
             lastTurnsCounter = 2;
+        }finally {
+            turnLock.unlock();
         }
     }
 
@@ -482,13 +518,14 @@ public class Game implements Serializable {
         }
     }
 
-    private void populateCommonObjective(){
+    private void populateCommonObjective() {
         synchronized (commonObjective) {
             for (int i = 0; i < 2; i++) {
                 commonObjective.add(objectiveCardDeck.drawFromDeck());
             }
         }
     }
+
     public List<ObjectiveCard> getCommonObjective() {
         synchronized (commonObjective) {
             return new ArrayList<>(commonObjective);

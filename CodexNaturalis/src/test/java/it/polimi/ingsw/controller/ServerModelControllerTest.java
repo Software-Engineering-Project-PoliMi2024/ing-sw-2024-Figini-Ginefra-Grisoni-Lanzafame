@@ -8,7 +8,7 @@ import it.polimi.ingsw.lightModel.diffPublishers.ViewTest;
 import it.polimi.ingsw.lightModel.lightPlayerRelated.*;
 import it.polimi.ingsw.lightModel.lightTableRelated.LightDeck;
 import it.polimi.ingsw.lightModel.lightTableRelated.LightLobby;
-import it.polimi.ingsw.model.MultiGame;
+import it.polimi.ingsw.model.Reception;
 import it.polimi.ingsw.model.cardReleted.cards.Card;
 import it.polimi.ingsw.model.cardReleted.cards.CardInHand;
 import it.polimi.ingsw.model.cardReleted.cards.ResourceCard;
@@ -33,7 +33,7 @@ class ServerModelControllerTest {
 
     @Test
     void badLogins(){
-        MultiGame multiGame = new MultiGame();
+        Reception reception = new Reception();
         ViewTest view1 = new ViewTest();
         view1.name = "pippo";
         ViewTest view2 = new ViewTest();
@@ -44,10 +44,10 @@ class ServerModelControllerTest {
         view4.name = "                ";
         String LobbyCreatorName = "lobbyCreator";
         List<ViewTest> views = Arrays.stream(new ViewTest[]{view2, view3, view4}).toList();
-        ServerModelController serverModelController1 = new ServerModelController(multiGame, view1);
-        ServerModelController serverModelController2 = new ServerModelController(multiGame, view2);
-        ServerModelController serverModelController3 = new ServerModelController(multiGame, view3);
-        ServerModelController serverModelController4 = new ServerModelController(multiGame, view4);
+        ServerModelController serverModelController1 = new ServerModelController(reception, view1);
+        ServerModelController serverModelController2 = new ServerModelController(reception, view2);
+        ServerModelController serverModelController3 = new ServerModelController(reception, view3);
+        ServerModelController serverModelController4 = new ServerModelController(reception, view4);
 
         serverModelController1.login(view1.name);
         serverModelController2.login(view2.name);
@@ -62,44 +62,44 @@ class ServerModelControllerTest {
 
     @Test
     void loginJoiningLobbyList() {
-        MultiGame multiGame = new MultiGame();
+        Reception reception = new Reception();
         ViewTest view1 = new ViewTest();
         view1.name = "pippo";
         ViewTest view2 = new ViewTest();
         view2.name = "pluto";
         String LobbyCreatorName = "lobbyCreator";
         List<ViewTest> views = Arrays.stream(new ViewTest[]{view1, view2}).toList();
-        ServerModelController serverModelController1 = new ServerModelController(multiGame, view1);
-        ServerModelController serverModelController2 = new ServerModelController(multiGame, view2);
+        ServerModelController serverModelController1 = new ServerModelController(reception, view1);
+        ServerModelController serverModelController2 = new ServerModelController(reception, view2);
 
         //view joins before adding lobbies
         serverModelController1.login(view1.name);
         //add lobby
         Lobby lobby1 = new Lobby(2, LobbyCreatorName, "lobby1");
-        multiGame.addLobby(lobby1);
-        multiGame.notifyNewLobby(LobbyCreatorName, lobby1);
+        reception.addLobby(lobby1);
+        reception.notifyNewLobby(LobbyCreatorName, lobby1);
         //view joins after adding lobbies
         serverModelController2.login(view2.name);
 
         for(ViewTest view : views) {
             System.out.println(view.name);
             assert view.lightLobbyList.getLobbies().contains(Lightifier.lightify(lobby1));
-            assert multiGame.getUsernames().contains(view.name);
+            assert reception.getUsernames().contains(view.name);
             assert view.state.equals(ViewState.JOIN_LOBBY);
         }
     }
 
     @Test
     void createLobby() {
-        MultiGame multiGame = new MultiGame();
+        Reception reception = new Reception();
 
         ViewTest view1 = new ViewTest();
         ViewTest view2 = new ViewTest();
         ViewTest view3 = new ViewTest();
 
-        ServerModelController serverModelController1 = new ServerModelController(multiGame, view1);
-        ServerModelController serverModelController2 = new ServerModelController(multiGame, view2);
-        ServerModelController serverModelController3 = new ServerModelController(multiGame, view3);
+        ServerModelController serverModelController1 = new ServerModelController(reception, view1);
+        ServerModelController serverModelController2 = new ServerModelController(reception, view2);
+        ServerModelController serverModelController3 = new ServerModelController(reception, view3);
 
         view1.name = "pippo";
         view2.name = "pluto";
@@ -113,8 +113,8 @@ class ServerModelControllerTest {
         serverModelController2.login(view2.name);
         serverModelController2.createLobby(lobbyName2, 2);
 
-        assert multiGame.getLobbyByName(lobbyName1) != null;
-        assert multiGame.getLobbyByName(lobbyName2) != null;
+        assert reception.getLobbyByName(lobbyName1) != null;
+        assert reception.getLobbyByName(lobbyName2) != null;
         assert view1.lightLobbyList.getLobbies().isEmpty();
         assert view2.lightLobbyList.getLobbies().isEmpty();
         assert view3.lightLobbyList.getLobbies().stream().map(LightLobby::name).toList().contains(lobbyName1);
@@ -123,15 +123,15 @@ class ServerModelControllerTest {
 
     @Test
     void malevolentCreateLobby(){
-        MultiGame multiGame = new MultiGame();
+        Reception reception = new Reception();
 
         ViewTest view1 = new ViewTest();
         ViewTest view2 = new ViewTest();
         ViewTest view3 = new ViewTest();
 
-        ServerModelController serverModelController1 = new ServerModelController(multiGame, view1);
-        ServerModelController serverModelController2 = new ServerModelController(multiGame, view2);
-        ServerModelController serverModelController3 = new ServerModelController(multiGame, view3);
+        ServerModelController serverModelController1 = new ServerModelController(reception, view1);
+        ServerModelController serverModelController2 = new ServerModelController(reception, view2);
+        ServerModelController serverModelController3 = new ServerModelController(reception, view3);
 
         view1.name = "pippo";
         view2.name = "pluto";
@@ -148,22 +148,22 @@ class ServerModelControllerTest {
         serverModelController2.createLobby(lobbyName2, 2);
         serverModelController2.createLobby(lobbyName1, 2);
 
-        assert multiGame.getLobbyByName(lobbyName1) == null;
-        assert multiGame.getLobbyByName(lobbyName2) == null;
+        assert reception.getLobbyByName(lobbyName1) == null;
+        assert reception.getLobbyByName(lobbyName2) == null;
         assert view3.lightLobbyList.getLobbies().isEmpty();
     }
 
     @Test
     void malevolentJoinLobby(){
-        MultiGame multiGame = new MultiGame();
+        Reception reception = new Reception();
 
         ViewTest view1 = new ViewTest();
         ViewTest view2 = new ViewTest();
         ViewTest view3 = new ViewTest();
 
-        ServerModelController serverModelController1 = new ServerModelController(multiGame, view1);
-        ServerModelController serverModelController2 = new ServerModelController(multiGame, view2);
-        ServerModelController serverModelController3 = new ServerModelController(multiGame, view3);
+        ServerModelController serverModelController1 = new ServerModelController(reception, view1);
+        ServerModelController serverModelController2 = new ServerModelController(reception, view2);
+        ServerModelController serverModelController3 = new ServerModelController(reception, view3);
 
         view1.name = "pippo";
         view2.name = "pluto";
@@ -186,14 +186,14 @@ class ServerModelControllerTest {
 
     @Test
     void joinLobby() {
-        MultiGame multiGame = new MultiGame();
+        Reception reception = new Reception();
 
         ViewTest view1 = new ViewTest();
         ViewTest view2 = new ViewTest();
 
 
-        ServerModelController serverModelController1 = new ServerModelController(multiGame, view1);
-        ServerModelController serverModelController2 = new ServerModelController(multiGame, view2);
+        ServerModelController serverModelController1 = new ServerModelController(reception, view1);
+        ServerModelController serverModelController2 = new ServerModelController(reception, view2);
 
         view1.name = "pippo";
         view2.name = "pluto";
@@ -205,11 +205,11 @@ class ServerModelControllerTest {
         serverModelController2.login(view2.name);
         serverModelController2.joinLobby(lobbyName1);
 
-        assert multiGame.getGameFromUserNick(view1.name) == null;
-        assert multiGame.getLobbyByName(lobbyName1) != null;
-        assert multiGame.getLobbyByName(lobbyName1).getLobbyPlayerList().contains(view1.name);
-        assert multiGame.getLobbyByName(lobbyName1).getLobbyPlayerList().contains(view2.name);
-        assert multiGame.getLobbyByName(lobbyName1).getLobbyPlayerList().size() == 2;
+        assert reception.getGameFromUserNick(view1.name) == null;
+        assert reception.getLobbyByName(lobbyName1) != null;
+        assert reception.getLobbyByName(lobbyName1).getLobbyPlayerList().contains(view1.name);
+        assert reception.getLobbyByName(lobbyName1).getLobbyPlayerList().contains(view2.name);
+        assert reception.getLobbyByName(lobbyName1).getLobbyPlayerList().size() == 2;
 
         for(ViewTest view : Arrays.stream(new ViewTest[]{view1, view2}).toList()){
             System.out.println(view.name);
@@ -225,15 +225,15 @@ class ServerModelControllerTest {
 
     @Test
     void joinLobbyAndStartGame(){
-        MultiGame multiGame = new MultiGame();
+        Reception reception = new Reception();
 
         ViewTest view1 = new ViewTest();
         ViewTest view2 = new ViewTest();
         ViewTest view3 = new ViewTest();
 
-        ServerModelController serverModelController1 = new ServerModelController(multiGame, view1);
-        ServerModelController serverModelController2 = new ServerModelController(multiGame, view2);
-        ServerModelController serverModelController3 = new ServerModelController(multiGame, view3);
+        ServerModelController serverModelController1 = new ServerModelController(reception, view1);
+        ServerModelController serverModelController2 = new ServerModelController(reception, view2);
+        ServerModelController serverModelController3 = new ServerModelController(reception, view3);
 
         view1.name = "pippo";
         view2.name = "pluto";
@@ -248,9 +248,9 @@ class ServerModelControllerTest {
         serverModelController2.joinLobby(lobbyName1);
 
         //game created and created correctly
-        assert multiGame.getGameByName(lobbyName1) != null;
-        Game game = multiGame.getGameByName(lobbyName1);
-        assert multiGame.getLobbyByName(lobbyName1) == null;
+        assert reception.getGameByName(lobbyName1) != null;
+        Game game = reception.getGameByName(lobbyName1);
+        assert reception.getLobbyByName(lobbyName1) == null;
         assert game.getGameParty().getNumberOfMaxPlayer() == 2;
         assert game.getGameParty().getUsersList().stream().map(User::getNickname).toList().contains(view1.name);
         assert game.getGameParty().getUsersList().stream().map(User::getNickname).toList().contains(view2.name);
@@ -296,8 +296,8 @@ class ServerModelControllerTest {
         assert Arrays.stream(view1.lightGame.getHand().getCards()).toList().containsAll(Arrays.asList(null, null));
         LightCard cardInHandThatIsNotNull = Arrays.stream(view1.lightGame.getHand().getCards()).filter(Objects::nonNull).toList().getFirst();
         assert cardInHandThatIsNotNull != null;
-        assert cardInHandThatIsNotNull.idFront() == multiGame.getUserFromNick(view1.name).getUserHand().getStartCard().getIdFront();
-        assert cardInHandThatIsNotNull.idBack() == multiGame.getUserFromNick(view1.name).getUserHand().getStartCard().getIdBack();
+        assert cardInHandThatIsNotNull.idFront() == reception.getUserFromNick(view1.name).getUserHand().getStartCard().getIdFront();
+        assert cardInHandThatIsNotNull.idBack() == reception.getUserFromNick(view1.name).getUserHand().getStartCard().getIdBack();
         assert view1.lightGame.getHand().getCardPlayability().values().size() == 1;
         assert view1.lightGame.getHand().getCardPlayability().get(cardInHandThatIsNotNull) == true;
         //handOthers correctly set
@@ -358,8 +358,8 @@ class ServerModelControllerTest {
         assert Arrays.stream(view2.lightGame.getHand().getCards()).toList().containsAll(Arrays.asList(null, null));
         cardInHandThatIsNotNull = Arrays.stream(view2.lightGame.getHand().getCards()).filter(Objects::nonNull).toList().getFirst();
         assert cardInHandThatIsNotNull != null;
-        assert cardInHandThatIsNotNull.idFront() == multiGame.getUserFromNick(view2.name).getUserHand().getStartCard().getIdFront();
-        assert cardInHandThatIsNotNull.idBack() == multiGame.getUserFromNick(view2.name).getUserHand().getStartCard().getIdBack();
+        assert cardInHandThatIsNotNull.idFront() == reception.getUserFromNick(view2.name).getUserHand().getStartCard().getIdFront();
+        assert cardInHandThatIsNotNull.idBack() == reception.getUserFromNick(view2.name).getUserHand().getStartCard().getIdBack();
         assert view2.lightGame.getHand().getCardPlayability().values().size() == 1;
         assert view2.lightGame.getHand().getCardPlayability().get(cardInHandThatIsNotNull) == true;
         //handOthers correctly set
@@ -394,7 +394,7 @@ class ServerModelControllerTest {
 
     @Test
     void leaveLobby() {
-        MultiGame multiGame = new MultiGame();
+        Reception reception = new Reception();
 
         ViewTest view1 = new ViewTest();
         ViewTest view2 = new ViewTest();
@@ -402,10 +402,10 @@ class ServerModelControllerTest {
         ViewTest view4 = new ViewTest();
         ViewTest view5 = new ViewTest();
 
-        ServerModelController serverModelController1 = new ServerModelController(multiGame, view1);
-        ServerModelController serverModelController2 = new ServerModelController(multiGame, view2);
-        ServerModelController serverModelController3 = new ServerModelController(multiGame, view3);
-        ServerModelController serverModelController4 = new ServerModelController(multiGame, view4);
+        ServerModelController serverModelController1 = new ServerModelController(reception, view1);
+        ServerModelController serverModelController2 = new ServerModelController(reception, view2);
+        ServerModelController serverModelController3 = new ServerModelController(reception, view3);
+        ServerModelController serverModelController4 = new ServerModelController(reception, view4);
 
         view1.name = "giorgia";
         view2.name = "meloni";
@@ -453,15 +453,15 @@ class ServerModelControllerTest {
         assert view4.lightLobby.numberMaxPlayer() == LightModelConfig.defaultNumberMaxPlayer;
         assert Objects.equals(view4.lightLobby.name(), LightModelConfig.defaultLobbyName);
 
-        assert multiGame.getLobbyByName(lobbyName1).getLobbyPlayerList().contains(view1.name);
-        assert multiGame.getLobbyByName(lobbyName1).getLobbyPlayerList().contains(view3.name);
-        assert !multiGame.getLobbyByName(lobbyName1).getLobbyPlayerList().contains(view2.name);
-        assert multiGame.getGameByName(lobbyName2) == null;
+        assert reception.getLobbyByName(lobbyName1).getLobbyPlayerList().contains(view1.name);
+        assert reception.getLobbyByName(lobbyName1).getLobbyPlayerList().contains(view3.name);
+        assert !reception.getLobbyByName(lobbyName1).getLobbyPlayerList().contains(view2.name);
+        assert reception.getGameByName(lobbyName2) == null;
     }
 
     @Test
     void selectStartCardFace() {
-        MultiGame multiGame = new MultiGame();
+        Reception reception = new Reception();
 
         ViewTest view1 = new ViewTest();
         ViewTest view2 = new ViewTest();
@@ -469,8 +469,8 @@ class ServerModelControllerTest {
         view1.name = "pippo";
         view2.name = "pluto";
 
-        ServerModelController serverModelController1 = new ServerModelController(multiGame, view1);
-        ServerModelController serverModelController2 = new ServerModelController(multiGame, view2);
+        ServerModelController serverModelController1 = new ServerModelController(reception, view1);
+        ServerModelController serverModelController2 = new ServerModelController(reception, view2);
 
         String lobbyName1 = "test1";
 
@@ -484,7 +484,7 @@ class ServerModelControllerTest {
         serverModelController1.place(startPlacement);
 
         //check model
-        Game game = multiGame.getGameFromUserNick(view1.name);
+        Game game = reception.getGameFromUserNick(view1.name);
         User user1 = game.getUserFromNick(view1.name);
         User user2 = game.getUserFromNick(view2.name);
         //user1
@@ -512,7 +512,7 @@ class ServerModelControllerTest {
 
     @Test
     void lastPlayerSelectStartCard(){
-        MultiGame multiGame = new MultiGame();
+        Reception reception = new Reception();
 
         ViewTest view1 = new ViewTest();
         ViewTest view2 = new ViewTest();
@@ -520,8 +520,8 @@ class ServerModelControllerTest {
         view1.name = "pippo";
         view2.name = "pluto";
 
-        ServerModelController serverModelController1 = new ServerModelController(multiGame, view1);
-        ServerModelController serverModelController2 = new ServerModelController(multiGame, view2);
+        ServerModelController serverModelController1 = new ServerModelController(reception, view1);
+        ServerModelController serverModelController2 = new ServerModelController(reception, view2);
 
         String lobbyName1 = "test1";
 
@@ -538,7 +538,7 @@ class ServerModelControllerTest {
         serverModelController2.place(startPlacement2);
 
         //check model
-        Game game = multiGame.getGameFromUserNick(view1.name);
+        Game game = reception.getGameFromUserNick(view1.name);
         User user1 = game.getUserFromNick(view1.name);
         User user2 = game.getUserFromNick(view2.name);
         Hand hand1 = user1.getUserHand();
@@ -598,7 +598,7 @@ class ServerModelControllerTest {
 
     @Test
     void choseSecretObjective() {
-        MultiGame multiGame = new MultiGame();
+        Reception reception = new Reception();
 
         ViewTest view1 = new ViewTest();
         ViewTest view2 = new ViewTest();
@@ -606,8 +606,8 @@ class ServerModelControllerTest {
         view1.name = "pippo";
         view2.name = "pluto";
 
-        ServerModelController serverModelController1 = new ServerModelController(multiGame, view1);
-        ServerModelController serverModelController2 = new ServerModelController(multiGame, view2);
+        ServerModelController serverModelController1 = new ServerModelController(reception, view1);
+        ServerModelController serverModelController2 = new ServerModelController(reception, view2);
 
         String lobbyName1 = "test1";
 
@@ -627,7 +627,7 @@ class ServerModelControllerTest {
         serverModelController1.chooseSecretObjective(secretObjective);
 
         //model
-        Game game = multiGame.getGameFromUserNick(view1.name);
+        Game game = reception.getGameFromUserNick(view1.name);
         User user1 = game.getUserFromNick(view1.name);
         Hand hand1 = user1.getUserHand();
         User user2 = game.getUserFromNick(view2.name);
@@ -657,7 +657,7 @@ class ServerModelControllerTest {
 
     @Test
     void lastToChoseSecretObjective() {
-        MultiGame multiGame = new MultiGame();
+        Reception reception = new Reception();
 
         ViewTest view1 = new ViewTest();
         ViewTest view2 = new ViewTest();
@@ -665,8 +665,8 @@ class ServerModelControllerTest {
         view1.name = "pippo";
         view2.name = "pluto";
 
-        ServerModelController serverModelController1 = new ServerModelController(multiGame, view1);
-        ServerModelController serverModelController2 = new ServerModelController(multiGame, view2);
+        ServerModelController serverModelController1 = new ServerModelController(reception, view1);
+        ServerModelController serverModelController2 = new ServerModelController(reception, view2);
 
         String lobbyName1 = "test1";
 
@@ -687,7 +687,7 @@ class ServerModelControllerTest {
         LightCard secretObjective2 = view2.lightGame.getHand().getSecretObjectiveOptions()[0];
         serverModelController2.chooseSecretObjective(secretObjective2);
         //model
-        Game game = multiGame.getGameFromUserNick(view1.name);
+        Game game = reception.getGameFromUserNick(view1.name);
         User user1 = game.getUserFromNick(view1.name);
         Hand hand1 = user1.getUserHand();
         User user2 = game.getUserFromNick(view2.name);
@@ -725,7 +725,7 @@ class ServerModelControllerTest {
 
     @Test
     void place() {
-        MultiGame multiGame = new MultiGame();
+        Reception reception = new Reception();
 
         ViewTest view1 = new ViewTest();
         ViewTest view2 = new ViewTest();
@@ -733,8 +733,8 @@ class ServerModelControllerTest {
         view1.name = "pippo";
         view2.name = "pluto";
 
-        ServerModelController serverModelController1 = new ServerModelController(multiGame, view1);
-        ServerModelController serverModelController2 = new ServerModelController(multiGame, view2);
+        ServerModelController serverModelController1 = new ServerModelController(reception, view1);
+        ServerModelController serverModelController2 = new ServerModelController(reception, view2);
 
         String lobbyName1 = "test1";
 
@@ -755,7 +755,7 @@ class ServerModelControllerTest {
         LightCard secretObjective2 = view2.lightGame.getHand().getSecretObjectiveOptions()[0];
         serverModelController2.chooseSecretObjective(secretObjective2);
         //place
-        Game game = multiGame.getGameFromUserNick(view1.name);
+        Game game = reception.getGameFromUserNick(view1.name);
         User user1 = game.getUserFromNick(view1.name);
         User user2 = game.getUserFromNick(view2.name);
         game.setPlayerIndex(game.getUsersList().lastIndexOf(user1));
@@ -793,7 +793,7 @@ class ServerModelControllerTest {
     }
     @Test
     void drawFromDeck() {
-        MultiGame multiGame = new MultiGame();
+        Reception reception = new Reception();
 
         ViewTest view1 = new ViewTest();
         ViewTest view2 = new ViewTest();
@@ -801,8 +801,8 @@ class ServerModelControllerTest {
         view1.name = "pippo";
         view2.name = "pluto";
 
-        ServerModelController serverModelController1 = new ServerModelController(multiGame, view1);
-        ServerModelController serverModelController2 = new ServerModelController(multiGame, view2);
+        ServerModelController serverModelController1 = new ServerModelController(reception, view1);
+        ServerModelController serverModelController2 = new ServerModelController(reception, view2);
 
         String lobbyName1 = "test1";
 
@@ -823,7 +823,7 @@ class ServerModelControllerTest {
         LightCard secretObjective2 = view2.lightGame.getHand().getSecretObjectiveOptions()[0];
         serverModelController2.chooseSecretObjective(secretObjective2);
         //place
-        Game game = multiGame.getGameFromUserNick(view1.name);
+        Game game = reception.getGameFromUserNick(view1.name);
         User user1 = game.getUserFromNick(view1.name);
         User user2 = game.getUserFromNick(view2.name);
         game.setPlayerIndex(game.getUsersList().lastIndexOf(user1));
@@ -856,7 +856,7 @@ class ServerModelControllerTest {
     }
     @Test
     void drawFromBuffer() {
-        MultiGame multiGame = new MultiGame();
+        Reception reception = new Reception();
 
         ViewTest view1 = new ViewTest();
         ViewTest view2 = new ViewTest();
@@ -864,8 +864,8 @@ class ServerModelControllerTest {
         view1.name = "pippo";
         view2.name = "pluto";
 
-        ServerModelController serverModelController1 = new ServerModelController(multiGame, view1);
-        ServerModelController serverModelController2 = new ServerModelController(multiGame, view2);
+        ServerModelController serverModelController1 = new ServerModelController(reception, view1);
+        ServerModelController serverModelController2 = new ServerModelController(reception, view2);
 
         String lobbyName1 = "test1";
 
@@ -886,7 +886,7 @@ class ServerModelControllerTest {
         LightCard secretObjective2 = view2.lightGame.getHand().getSecretObjectiveOptions()[0];
         serverModelController2.chooseSecretObjective(secretObjective2);
         //place
-        Game game = multiGame.getGameFromUserNick(view1.name);
+        Game game = reception.getGameFromUserNick(view1.name);
         User user1 = game.getUserFromNick(view1.name);
         User user2 = game.getUserFromNick(view2.name);
         game.setPlayerIndex(game.getUsersList().lastIndexOf(user1));
@@ -920,7 +920,7 @@ class ServerModelControllerTest {
 
     @Test
     void gameEndingCausePoints(){
-        MultiGame multiGame = new MultiGame();
+        Reception reception = new Reception();
 
         ViewTest view1 = new ViewTest();
         ViewTest view2 = new ViewTest();
@@ -928,8 +928,8 @@ class ServerModelControllerTest {
         view1.name = "pippo";
         view2.name = "pluto";
 
-        ServerModelController serverModelController1 = new ServerModelController(multiGame, view1);
-        ServerModelController serverModelController2 = new ServerModelController(multiGame, view2);
+        ServerModelController serverModelController1 = new ServerModelController(reception, view1);
+        ServerModelController serverModelController2 = new ServerModelController(reception, view2);
 
         Map<String, ServerModelController> serverModelControllerMap = new HashMap<>();
         serverModelControllerMap.put(view1.name, serverModelController1);
@@ -953,7 +953,7 @@ class ServerModelControllerTest {
         LightCard secretObjective2 = view2.lightGame.getHand().getSecretObjectiveOptions()[0];
         serverModelController2.chooseSecretObjective(secretObjective2);
         //place
-        Game game = multiGame.getGameFromUserNick(view1.name);
+        Game game = reception.getGameFromUserNick(view1.name);
         User user1 = game.getUserFromNick(view1.name);
         User user2 = game.getUserFromNick(view2.name);
 

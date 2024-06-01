@@ -1,7 +1,7 @@
 package it.polimi.ingsw.controller.persistence;
 
 import it.polimi.ingsw.Configs;
-import it.polimi.ingsw.model.MultiGame;
+import it.polimi.ingsw.model.Reception;
 import it.polimi.ingsw.model.playerReleted.User;
 import it.polimi.ingsw.model.tableReleted.Game;
 import it.polimi.ingsw.model.tableReleted.Lobby;
@@ -10,15 +10,15 @@ import org.junit.jupiter.api.Test;
 import java.io.File;
 import java.util.Objects;
 
-class persistenceFactoryTest {
+class PersistenceFactoryTest {
 
     @Test
     void save() {
-        MultiGame multiGame = new MultiGame();
+        Reception reception = new Reception();
         Lobby lobby = new Lobby(3, "gianni", "testGame");
         lobby.addUserName("gianni1");
         lobby.addUserName("gianni2");
-        PersistenceFactory.save(multiGame.createGame(lobby));
+        PersistenceFactory.save(reception.createGame(lobby));
 
         File folder = new File(Configs.gameSavesDir);
         File[] saves = folder.listFiles();
@@ -34,15 +34,15 @@ class persistenceFactoryTest {
 
     @Test
     void load() {
-        MultiGame multiGame = new MultiGame();
+        Reception reception = new Reception();
         Lobby lobby = new Lobby(3, "gianni", "testGame");
         lobby.addUserName("gianni1");
         lobby.addUserName("gianni2");
-        PersistenceFactory.save(multiGame.createGame(lobby));
+        PersistenceFactory.save(reception.createGame(lobby));
 
-        MultiGame multiGame1 = new MultiGame();
+        Reception reception1 = new Reception();
 
-        Game gameLoadedFromSave = multiGame1.getGameByName("testGame");
+        Game gameLoadedFromSave = reception1.getGameByName("testGame");
         System.out.println(gameLoadedFromSave);
 
         assert Objects.equals(gameLoadedFromSave.getName(), "testGame");
@@ -54,11 +54,11 @@ class persistenceFactoryTest {
 
     @Test
     void deleteGameSave() {
-        MultiGame multiGame = new MultiGame();
+        Reception reception = new Reception();
         Lobby lobby = new Lobby(3, "gianni", "testGame");
         lobby.addUserName("gianni1");
         lobby.addUserName("gianni2");
-        Game gameCreated = multiGame.createGame(lobby);
+        Game gameCreated = reception.createGame(lobby);
         PersistenceFactory.save(gameCreated);
         PersistenceFactory.deleteGameSave(gameCreated);
 

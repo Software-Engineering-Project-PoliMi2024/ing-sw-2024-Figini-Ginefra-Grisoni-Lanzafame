@@ -7,7 +7,7 @@ import it.polimi.ingsw.controller.ServerModelController;
 import it.polimi.ingsw.connectionLayer.VirtualLayer.VirtualController;
 import it.polimi.ingsw.connectionLayer.VirtualLayer.VirtualView;
 import it.polimi.ingsw.view.ViewInterface;
-import it.polimi.ingsw.model.MultiGame;
+import it.polimi.ingsw.model.Reception;
 import it.polimi.ingsw.view.ViewState;
 
 import java.rmi.RemoteException;
@@ -18,17 +18,17 @@ import java.util.concurrent.Future;
 import java.util.concurrent.TimeUnit;
 
 public class ConnectionServerRMI implements ConnectionLayerServer {
-    private final MultiGame multiGame;
+    private final Reception reception;
     private final ExecutorService serverExecutor = Executors.newSingleThreadExecutor();
     int secondsTimeOut = 5;
 
     /**
      * The constructor of the class
      *
-     * @param multiGame the wrapper for the Model present in the server
+     * @param reception the wrapper for the Model present in the server
      */
-    public ConnectionServerRMI(MultiGame multiGame) {
-        this.multiGame = multiGame;
+    public ConnectionServerRMI(Reception reception) {
+        this.reception = reception;
     }
 
     /**
@@ -43,7 +43,7 @@ public class ConnectionServerRMI implements ConnectionLayerServer {
         //expose the controller to the client
         Future<Void> connect = serverExecutor.submit(() -> {
             VirtualView virtualView = new VirtualViewRMI(view);
-            ControllerInterface controllerOnServer = new ServerModelController(multiGame, virtualView);
+            ControllerInterface controllerOnServer = new ServerModelController(reception, virtualView);
             virtualView.setController(controllerOnServer);
             virtualView.setPingPongStub(pingPong);
             ControllerInterface controllerStub = (ControllerInterface) UnicastRemoteObject.exportObject(controllerOnServer, 0);

@@ -4,13 +4,14 @@ import it.polimi.ingsw.model.playerReleted.User;
 
 import java.io.Serializable;
 import java.util.*;
+import java.util.concurrent.locks.ReentrantLock;
 import java.util.stream.Collectors;
 
 public class GameParty implements Serializable {
     final private List<User> playerList; //the player that were in the lobby pre game
     private int currentPlayerIndex;
 
-    private final Object currentPlayerLock = new Object();
+    private final ReentrantLock currentPlayerLock = new ReentrantLock();
 
     /**
      * The constructor of the class
@@ -29,9 +30,12 @@ public class GameParty implements Serializable {
      * This method is used to set the player index in the game
      * @param index the index of the player that is playing
      */
-    public void setCurrentPlayerIndex(int index){
-        synchronized (currentPlayerLock) {
+    public void setPlayerIndex(int index){
+        currentPlayerLock.lock();
+        try {
             currentPlayerIndex = index;
+        } finally {
+            currentPlayerLock.unlock();
         }
     }
 
@@ -40,8 +44,11 @@ public class GameParty implements Serializable {
      * @return the current player
      */
     public User getCurrentPlayer() {
-        synchronized (currentPlayerLock){
+        currentPlayerLock.lock();
+        try {
             return playerList.get(currentPlayerIndex);
+        } finally {
+            currentPlayerLock.unlock();
         }
     }
 
@@ -61,8 +68,11 @@ public class GameParty implements Serializable {
      * @return the index of the next player
      */
     public int getNextPlayerIndex() {
-        synchronized (currentPlayerLock){
+        currentPlayerLock.lock();
+        try{
             return (currentPlayerIndex + 1) % getNumberOfMaxPlayer();
+        } finally {
+            currentPlayerLock.unlock();
         }
     }
 

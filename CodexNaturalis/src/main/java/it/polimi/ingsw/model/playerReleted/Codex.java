@@ -1,26 +1,28 @@
 package it.polimi.ingsw.model.playerReleted;
 
-import it.polimi.ingsw.model.cardReleted.cards.Card;
 import it.polimi.ingsw.model.cardReleted.cards.CardWithCorners;
 import it.polimi.ingsw.model.cardReleted.cards.ObjectiveCard;
 import it.polimi.ingsw.model.cardReleted.utilityEnums.*;
 
-import java.io.*;
+import java.io.Serializable;
 import java.util.*;
+import java.util.concurrent.locks.ReentrantLock;
 
 public class Codex implements Serializable {
     private int points;
     private final Map<Collectable, Integer> collectables;
     private final Map<Position, Placement> placementHistory;
     private final Frontier frontier;
-    private final Object pointsLock = new Object();
-    /** Constructor of the Codex class
+    private final ReentrantLock pointsLock = new ReentrantLock();
+
+    /**
+     * Constructor of the Codex class
      * initializes the points to 0
      * initializes the collectables to 0 for each collectable
      * initializes the frontier
      * initializes the placement history
-     * */
-    public Codex(){
+     */
+    public Codex() {
         this.points = 0;
 
         this.collectables = new HashMap<>();
@@ -34,68 +36,83 @@ public class Codex implements Serializable {
         this.placementHistory = new LinkedHashMap<>();
     }
 
-    public Codex(Codex other){
+    public Codex(Codex other) {
         this.points = other.points;
         this.collectables = new HashMap<>(other.collectables);
         this.frontier = new Frontier(other.frontier);
         this.placementHistory = new LinkedHashMap<>(other.placementHistory);
     }
-    /** @return points of the related codex*/
+
+    /**
+     * @return points of the related codex
+     */
     public int getPoints() {
-        synchronized (pointsLock){
+        pointsLock.lock();
+        try {
             return this.points;
+        } finally {
+            pointsLock.unlock();
         }
     }
 
-    /** returns the map describing for each collectable (writing material or resource)
+    /**
+     * returns the map describing for each collectable (writing material or resource)
      * the amount present in the codex
-     * @return th map of collectables */
-    public Map<Collectable, Integer> getEarnedCollectables(){
-        synchronized (collectables){
+     *
+     * @return th map of collectables
+     */
+    public Map<Collectable, Integer> getEarnedCollectables() {
+        synchronized (collectables) {
             return this.collectables;
         }
 
     }
 
-    /** update the hash with the current writing material or resources contained in the codex
+    /**
+     * update the hash with the current writing material or resources contained in the codex
+     *
      * @param collectable determines what collectable's value to update
+     * @param number      define the amount of that type of collectable present in the codex
      * @throws IllegalArgumentException if the collectable is not int ones present in the key
-     * @param number define the amount of that type of collectable present in the codex
      * @throws IllegalArgumentException if tries to set a collectable to less than 0
-     * */
-    public void setEarnedCollectables(Collectable collectable, int number){
+     */
+    public void setEarnedCollectables(Collectable collectable, int number) {
         if (!Arrays.stream(Resource.values()).anyMatch(res -> res == collectable) &&
                 !Arrays.stream(WritingMaterial.values()).anyMatch(res -> res == collectable))
             throw new IllegalArgumentException("collectable must be a writing material or a resource");
         if (number < 0)
             throw new IllegalArgumentException("the number of collectables " +
                     "                           in the codex cannot be less than 0");
-        synchronized (collectables){
+        synchronized (collectables) {
             this.collectables.put(collectable, number);
         }
     }
+
     public Frontier getFrontier() {
-        synchronized (frontier){
+        synchronized (frontier) {
             return new Frontier(frontier);
         }
     }
 
-    /** @return all the placement history of the codex */
+    /**
+     * @return all the placement history of the codex
+     */
     public ArrayList<Placement> getPlacementHistory() {
-        synchronized (placementHistory){
+        synchronized (placementHistory) {
             return new ArrayList<>(this.placementHistory.values());
         }
     }
 
-    /** @return the placement at a certain position, null if there is no placement at that position
-     * @throws IllegalArgumentException if the position is null
+    /**
      * @param position is the position of the placement to get
-     * */
-    public Placement getPlacementAt(Position position){
+     * @return the placement at a certain position, null if there is no placement at that position
+     * @throws IllegalArgumentException if the position is null
+     */
+    public Placement getPlacementAt(Position position) {
         if (position == null)
             throw new IllegalArgumentException("position cannot be null");
         Placement p;
-        synchronized (placementHistory){
+        synchronized (placementHistory) {
             p = this.placementHistory.get(position);
         }
 
@@ -103,10 +120,13 @@ public class Codex implements Serializable {
         return p == null ? null : new Placement(p);
     }
 
-    /** method to add a placement to the placements history in the codex
+    /**
+     * method to add a placement to the placements history in the codex
+     *
      * @param placement the placement to insert in the history
-     * @throws IllegalArgumentException if placement is null*/
-    private void addPlacement(Placement placement){
+     * @throws IllegalArgumentException if placement is null
+     */
+    private void addPlacement(Placement placement) {
         if (placement == null)
             throw new IllegalArgumentException("placement cannot be null");
         placement = new Placement(placement);
@@ -115,77 +135,93 @@ public class Codex implements Serializable {
         }
     }
 
-    /** method that given a placement calculates the consequences on codex collectables of the placement
+    /**
+     * method that given a placement calculates the consequences on codex collectables of the placement
+     *
      * @param placement requires placement != null, the placement that adds the collectables
-     * @throws IllegalArgumentException if placement == null */
-    private void calculateConsequencesCollectables(Placement placement){
+     * @throws IllegalArgumentException if placement == null
+     */
+    private void calculateConsequencesCollectables(Placement placement) {
         if (placement == null)
             throw new IllegalArgumentException("placement cannot be null");
 
         CardWithCorners card = placement.card();
         // collectables from the corners
-        for (CardCorner corner : CardCorner.values()){
+        for (CardCorner corner : CardCorner.values()) {
             //Adding collectables from the corners
-            if(card.isCorner(corner, placement.face())){
+            if (card.isCorner(corner, placement.face())) {
                 Collectable cornerCollectable = card.getCollectableAt(corner, placement.face());
-                if(cornerCollectable != SpecialCollectable.EMPTY)
+                if (cornerCollectable != SpecialCollectable.EMPTY)
                     synchronized (collectables) {
                         this.collectables.put(cornerCollectable, this.collectables.get(cornerCollectable) + 1);
                     }
-                }
+            }
 
             //Removing covered collectables
             Placement neighbour = this.getPlacementAt(placement.position().add(corner.getOffset()));
-            if(neighbour != null){
-                if(neighbour.card().isCorner(corner.getOpposite(), neighbour.face())) {
+            if (neighbour != null) {
+                if (neighbour.card().isCorner(corner.getOpposite(), neighbour.face())) {
                     Collectable cornerCollectable = neighbour.card().getCollectableAt(corner.getOpposite(), neighbour.face());
                     if (cornerCollectable != SpecialCollectable.EMPTY)
                         synchronized (collectables) {
                             this.collectables.put(cornerCollectable, this.collectables.get(cornerCollectable) - 1);
                         }
-                    }
+                }
             }
         }
 
         // collectables from the permanent resources
-        if(placement.face() == CardFace.BACK)
+        if (placement.face() == CardFace.BACK)
             for (Collectable c : placement.card().getPermanentResources(placement.face()))
-                if(c != SpecialCollectable.EMPTY)
-                    synchronized (collectables){
+                if (c != SpecialCollectable.EMPTY)
+                    synchronized (collectables) {
                         this.collectables.put(c, this.collectables.get(c) + 1);
                     }
 
     }
 
-    /** Method that, given a placement, calculates the points that the placement gives to the codex. The points are added only if the card is placed on the front
+    /**
+     * Method that, given a placement, calculates the points that the placement gives to the codex. The points are added only if the card is placed on the front
+     *
      * @param placement the placement that contains the card of which calculates the points
-     * @throws IllegalArgumentException if placement == null */
+     * @throws IllegalArgumentException if placement == null
+     */
     private void calculateConsequencesPoints(Placement placement) {
         if (placement == null)
             throw new IllegalArgumentException("placement cannot be null");
-        if (placement.face() == CardFace.FRONT)
-            synchronized (pointsLock) {
+        if (placement.face() == CardFace.FRONT) {
+            pointsLock.lock();
+            try {
                 this.points += placement.card().getPoints(this);
+            } finally {
+                pointsLock.unlock();
             }
+        }
     }
 
-    /** method that given a placement updates the codex Collectables and Points
+    /**
+     * method that given a placement updates the codex Collectables and Points
+     *
      * @param placement requires placement != null, the placement added to the codex
-     * @throws IllegalArgumentException if placement == null */
-    private void updateCodexConsequences(Placement placement){
+     * @throws IllegalArgumentException if placement == null
+     */
+    private void updateCodexConsequences(Placement placement) {
         if (placement == null)
             throw new IllegalArgumentException("placement cannot be null");
         calculateConsequencesCollectables(placement);
         calculateConsequencesPoints(placement);
     }
 
-    /** method that
+    /**
+     * method that
      * 1) adds the placement to the placement history if valid
      * 2) update the frontier
      * 3) calculate and updates the consequences given a placement
+     *
      * @param placement contains the card to be played
-     * @throws IllegalArgumentException if placement == null*/
-    public void playCard(Placement placement){
+     * @throws IllegalArgumentException if placement == null
+     */
+    public void playCard(Placement placement) {
         if (placement == null)
             throw new IllegalArgumentException("placement cannot be null");
         addPlacement(placement);
@@ -194,14 +230,18 @@ public class Codex implements Serializable {
         }
         updateCodexConsequences(placement);
     }
+
     public void pointsFromObjective(ObjectiveCard card) {
-        synchronized (pointsLock) {
+        pointsLock.lock();
+        try{
             this.points += card.getPoints(this);
+        } finally {
+            pointsLock.unlock();
         }
     }
 
     @Override
-    public String toString(){
+    public String toString() {
         return "{" + "\n" +
                 "\"Codex\" : [ " + ",\n" +
                 "\"points\" : " + this.points + ",\n" +

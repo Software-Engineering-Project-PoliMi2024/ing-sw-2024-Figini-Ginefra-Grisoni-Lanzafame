@@ -6,6 +6,7 @@ import it.polimi.ingsw.model.cardReleted.cards.StartCard;
 
 import java.io.Serializable;
 import java.util.*;
+import java.util.concurrent.locks.ReentrantLock;
 
 /**The class constructor*/
 public class Hand implements Serializable {
@@ -13,9 +14,9 @@ public class Hand implements Serializable {
     private StartCard startCard;
     private List<ObjectiveCard> secretObjectiveChoices;
     final private Set<CardInHand> playableHand;
-    final private Object startCardLock = new Object();
-    final private Object secretObjectiveChoicesLock = new Object();
-    final private Object secretObjectiveLock = new Object();
+    final private ReentrantLock startCardLock = new ReentrantLock();
+    final private ReentrantLock secretObjectiveChoicesLock = new ReentrantLock();
+    final private ReentrantLock secretObjectiveLock = new ReentrantLock();
 
     public Hand(){
         this.playableHand = new HashSet<>();
@@ -47,9 +48,12 @@ public class Hand implements Serializable {
     /** sets the secret objective chosen and sets the secretObjectiveOptions to Null
      * @param objective is set to being the player secret objective*/
     public void setSecretObjective(ObjectiveCard objective){
-        synchronized (secretObjectiveLock) {
-            this.setSecretObjectiveChoice(null);
-            this.secretObjective = objective;
+        secretObjectiveLock.lock();
+        try{
+            this.secretObjective = objective == null ? null : new ObjectiveCard(objective);
+            this.secretObjectiveChoices = null;
+        } finally {
+            secretObjectiveLock.unlock();
         }
     }
     /** @return the user nickname*/
@@ -58,8 +62,11 @@ public class Hand implements Serializable {
     }
     /** @return the secretObjective nickname*/
     public ObjectiveCard getSecretObjective(){
-        synchronized (secretObjectiveLock) {
+        secretObjectiveLock.lock();
+        try{
             return secretObjective == null ? null : new ObjectiveCard(secretObjective);
+        } finally {
+            secretObjectiveLock.unlock();
         }
     }
 
@@ -76,35 +83,50 @@ public class Hand implements Serializable {
     }
 
     public void setStartCard(StartCard startCard) {
-        synchronized (startCardLock) {
+        startCardLock.lock();
+        try{
             this.startCard = startCard == null ? null : new StartCard(startCard);
+        } finally {
+            startCardLock.unlock();
         }
     }
 
     public StartCard getStartCard() {
-        synchronized (startCardLock) {
+        startCardLock.lock();
+        try{
             return startCard == null ? null : new StartCard(startCard);
+        } finally {
+            startCardLock.unlock();
         }
     }
 
     public void setSecretObjectiveChoice(List<ObjectiveCard> secretObjectiveChoices) {
-        synchronized (secretObjectiveChoicesLock) {
+        secretObjectiveChoicesLock.lock();
+        try{
             this.secretObjectiveChoices = secretObjectiveChoices == null ? null : new LinkedList<>(secretObjectiveChoices);
+        } finally {
+            secretObjectiveChoicesLock.unlock();
         }
     }
 
     public List<ObjectiveCard> getSecretObjectiveChoices() {
-        synchronized (secretObjectiveChoicesLock) {
-            return secretObjectiveChoices == null ? null : new ArrayList<>(secretObjectiveChoices);
+        secretObjectiveChoicesLock.lock();
+        try{
+            return secretObjectiveChoices == null ? null : new LinkedList<>(secretObjectiveChoices);
+        } finally {
+            secretObjectiveChoicesLock.unlock();
         }
     }
 
     public void addSecretObjectiveChoice(ObjectiveCard objectiveCard){
-        synchronized (secretObjectiveChoicesLock) {
+        secretObjectiveChoicesLock.lock();
+        try{
             if (secretObjectiveChoices == null) {
                 secretObjectiveChoices = new LinkedList<>();
             }
             secretObjectiveChoices.add(objectiveCard);
+        } finally {
+            secretObjectiveChoicesLock.unlock();
         }
     }
 

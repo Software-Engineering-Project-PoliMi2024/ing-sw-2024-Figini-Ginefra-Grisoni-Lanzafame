@@ -1,7 +1,7 @@
 package it.polimi.ingsw.lightModel.diffPublishers;
 
 import it.polimi.ingsw.controller.ServerModelController;
-import it.polimi.ingsw.model.MultiGame;
+import it.polimi.ingsw.model.Reception;
 import it.polimi.ingsw.model.tableReleted.Game;
 import it.polimi.ingsw.model.tableReleted.Lobby;
 import org.junit.jupiter.api.Test;
@@ -12,7 +12,7 @@ class GameDiffPublisherTest {
 
     @Test
     void subscribe() {
-        MultiGame games = new MultiGame();
+        Reception games = new Reception();
 
         ViewTest view1 = new ViewTest();
         ViewTest view2 = new ViewTest();
@@ -37,7 +37,7 @@ class GameDiffPublisherTest {
 
     @Test
     void unsubscribe() {
-        MultiGame games = new MultiGame();
+        Reception games = new Reception();
         ViewTest view1 = new ViewTest();
         ViewTest view2 = new ViewTest();
         ViewTest view3 = new ViewTest();

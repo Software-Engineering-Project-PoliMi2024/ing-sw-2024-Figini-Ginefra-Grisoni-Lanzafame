@@ -19,7 +19,6 @@ import it.polimi.ingsw.lightModel.diffs.game.handDiffOther.HandOtherDiffRemove;
 import it.polimi.ingsw.lightModel.diffs.game.handDiffs.*;
 import it.polimi.ingsw.lightModel.lightPlayerRelated.LightBack;
 import it.polimi.ingsw.lightModel.lightPlayerRelated.LightCard;
-import it.polimi.ingsw.lightModel.lightPlayerRelated.LightPlacement;
 import it.polimi.ingsw.model.cardReleted.cards.CardInHand;
 import it.polimi.ingsw.model.cardReleted.cards.CardTable;
 import it.polimi.ingsw.model.cardReleted.cards.ObjectiveCard;
