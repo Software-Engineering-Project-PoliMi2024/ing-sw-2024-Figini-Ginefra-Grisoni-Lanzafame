@@ -226,12 +226,16 @@ public class GameController implements GameControllerInterface {
                 if(!user.getUserHand().getStartCard().equals(heavyPlacement.card())){
                     throw new IllegalArgumentException("The card in the placement in position (0,0) is not the start card in hand");
                 }
+
+                this.placeStartCard(nickname, heavyPlacement);
             }else {
                 heavyPlacement = Heavifier.heavify(placement, cardTable);
                 List<Integer> handCardIds = user.getUserHand().getHand().stream().map(CardInHand::getIdFront).toList();
                 if(!handCardIds.contains(heavyPlacement.card().getIdFront()) || !user.getUserCodex().getFrontier().isInFrontier(placement.position())){
                     throw new IllegalArgumentException("The card in the placement is not in the hand or the position is not in the frontier");
                 }
+
+                this.placeCard(nickname, placement);
             }
         }catch (Exception e) {
             throw new IllegalArgumentException("The placement is not valid");
