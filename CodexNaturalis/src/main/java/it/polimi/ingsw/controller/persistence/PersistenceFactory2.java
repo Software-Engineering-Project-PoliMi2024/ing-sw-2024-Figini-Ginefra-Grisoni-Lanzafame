@@ -8,10 +8,7 @@ import java.io.*;
 import java.time.Duration;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
-import java.util.Comparator;
-import java.util.HashSet;
-import java.util.PriorityQueue;
-import java.util.Queue;
+import java.util.*;
 
 public class PersistenceFactory2 {
     private static final String _bin = ".bin";
@@ -20,7 +17,7 @@ public class PersistenceFactory2 {
     private static final String gameDataFolderPath = OSRelated.gameDataFolderPath;
 
     public static void save(Game game) {
-        File oldSave = foundLatestGameSave(game);
+        File oldSave = latestGameSave(game);
         File newSave = null;
         ObjectOutputStream outStream = null;
         try {
@@ -28,7 +25,7 @@ public class PersistenceFactory2 {
             outStream = new ObjectOutputStream(new FileOutputStream(newSave));
             outStream.writeObject(game);
             outStream.close();
-            System.out.println("Game saved successfully");
+            System.out.println("Game: " + game.getName() + " saved successfully");
             if (oldSave != null) {
                 boolean successfulDeletion = oldSave.delete();
                 if (successfulDeletion) {
@@ -72,11 +69,14 @@ public class PersistenceFactory2 {
         } else {
             for (File gameSave : saves) {
                 if (checkTimeIsToDelete(gameSave)) {
-                    delete(gameSave);
+                    delete(gameSave); //delete the expired saves
                 } else {
-                    Game game = getGameFromFile(gameSave);
-                    if (game != null)
+                    String gameName = getGameNameFromFile(gameSave);
+                    Game game = latestGame(Arrays.stream(saves).filter(file -> file.getName().contains(gameName)).toList());
+                    saves = dataFolder.listFiles(); //update the list of saves after possible deletion from latestGame
+                    if (game != null ){
                         gameList.add(game);
+                    }
                 }
             }
         }
@@ -137,11 +137,11 @@ public class PersistenceFactory2 {
 
     /**
      * Return the latest gameSave file of a given game if it exists.
-     * If more gameSaves of the same game are found, return the latest one and try to delete the others
+     * If more gameSaves of the same game are found (e.g., there was a problem during deletion), return the latest one and try to delete the others
      * @param game the game of which the method is looking for the save
      * @return the latest gameSave file of the given game if it exists, null otherwise
      */
-    private static File foundLatestGameSave(Game game) {
+    private static File latestGameSave(Game game) {
         File dataFolder = new File(PersistenceFactory2.gameDataFolderPath);
         File[] saves = dataFolder.listFiles();
         Queue<File> savesOfGame = new PriorityQueue<>(gameSaveComparator);
@@ -156,13 +156,30 @@ public class PersistenceFactory2 {
         if (savesOfGame.isEmpty()) {
             return null;
         } else if (savesOfGame.size() == 1) {
+            System.out.println("Game: " + game.getName() + " loaded successfully");
             return savesOfGame.poll();
         } else {
             System.out.println("Multiple saves of the same game found");
             File latestGameSave = savesOfGame.poll();
             deleteMultipleGameSave(savesOfGame);
+            System.out.println("Game: " + game.getName() + " loaded successfully");
             return latestGameSave;
         }
+    }
+
+    /**
+     * Return the latest game from a list of gameSaves of that game
+     * @param gamesSave the list of gameSaves of the gamen that need to be loaded
+     * @return the game loaded from the latest gameSave file in the list or null if the list is empty
+     */
+    private static Game latestGame(List<File> gamesSave) {
+        Queue<File> sortedGameSaves = new PriorityQueue<>(gameSaveComparator);
+        sortedGameSaves.addAll(gamesSave);
+        File latestGameSave = sortedGameSaves.poll();
+        if(!sortedGameSaves.isEmpty()){
+            deleteMultipleGameSave(sortedGameSaves);
+        }
+        return getGameFromFile(latestGameSave);
     }
 
     /**
@@ -194,5 +211,9 @@ public class PersistenceFactory2 {
         if(!file.delete()) {
             System.out.println("file:" + file.getName() + " could not be deleted");
         }
+    }
+
+    private static String getGameNameFromFile(File file) {
+        return file.getName().split(dateGameNameSeparator)[1].split(_bin)[0];
     }
 }
