@@ -5,7 +5,6 @@ import it.polimi.ingsw.controller3.LogsOnClientStatic;
 import it.polimi.ingsw.controller4.Interfaces.GameControllerInterface;
 import it.polimi.ingsw.lightModel.DiffGenerator;
 import it.polimi.ingsw.lightModel.Heavifier;
-import it.polimi.ingsw.lightModel.LightModelUpdaterInterfaces.LightGameUpdater;
 import it.polimi.ingsw.lightModel.Lightifier;
 import it.polimi.ingsw.lightModel.diffs.game.CodexDiffSetFinalPoints;
 import it.polimi.ingsw.lightModel.diffs.game.GameDiffPublicObj;
@@ -14,6 +13,7 @@ import it.polimi.ingsw.lightModel.diffs.game.codexDiffs.CodexDiffPlacement;
 import it.polimi.ingsw.lightModel.diffs.game.deckDiffs.DeckDiffDeckDraw;
 import it.polimi.ingsw.lightModel.diffs.game.gamePartyDiffs.GameDiffCurrentPlayer;
 import it.polimi.ingsw.lightModel.diffs.game.gamePartyDiffs.GameDiffPlayerActivity;
+import it.polimi.ingsw.lightModel.diffs.game.handDiffOther.HandOtherDiff;
 import it.polimi.ingsw.lightModel.diffs.game.handDiffOther.HandOtherDiffAdd;
 import it.polimi.ingsw.lightModel.diffs.game.handDiffOther.HandOtherDiffRemove;
 import it.polimi.ingsw.lightModel.diffs.game.handDiffs.*;
@@ -27,10 +27,10 @@ import it.polimi.ingsw.model.cardReleted.cards.StartCard;
 import it.polimi.ingsw.model.cardReleted.utilityEnums.DrawableCard;
 import it.polimi.ingsw.model.playerReleted.Codex;
 import it.polimi.ingsw.model.playerReleted.Placement;
+import it.polimi.ingsw.model.playerReleted.Position;
 import it.polimi.ingsw.model.playerReleted.User;
 import it.polimi.ingsw.model.tableReleted.Game;
 import it.polimi.ingsw.model.utilities.Pair;
-import it.polimi.ingsw.view.LoggerInterface;
 import it.polimi.ingsw.view.ViewInterface;
 import it.polimi.ingsw.view.ViewState;
 
@@ -47,25 +47,48 @@ public class GameController implements GameControllerInterface {
         this.cardTable = cardTable;
     }
 
+    //TODO test deck (when drawing all cards it remains a card)
+    //TODO test when the decks finish the cards
+
     public synchronized void join(String joinerNickname, ViewInterface view){
         playerViewMap.put(joinerNickname, view);
 
+        if(!isCurrentPlayerActive()){
+            int currentPlayerIndex = game.getUsersList().indexOf(game.getUserFromNick(joinerNickname));
+            game.setCurrentPlayerIndex(currentPlayerIndex);
+        }
+
         if(game.isInStartCardState()) {
             this.notifyJoinGame(joinerNickname, false);
-            this.joinStartGame(joinerNickname);
-        }else if(game.inInSecretObjState()){
-            this.notifyJoinGame(joinerNickname, true);
-            game.joinSecretObjective(joinerNickname, game);
-            controller.chooseObjective();
-        }else if(/*TODO check game ending*/){
+            this.updateJoinStartGame(joinerNickname);
+            startCardStateTransition(joinerNickname);
         }else {
             notifyJoinGame(joinerNickname, true);
-            game.joinMidGame(joinerNickname);
-            controller.takeTurn();
+            if (game.inInSecretObjState()) {
+                this.updateJoinSecretObjective(joinerNickname, game);
+                this.objectiveChoiceStateTransition(joinerNickname);
+            } else if (game.hasEnded()) {
+                //this.updateJoinActualGame(joinerNickname, game); if other information are necessary
+                try {
+                    view.updateGame(new CodexDiffSetFinalPoints(game.getPointPerPlayerMap()));
+                    view.updateGame(new GameDiffWinner(game.getWinners()));
+                    view.transitionTo(ViewState.GAME_ENDING);
+                }catch (Exception e){
+                    System.out.println("GameController.join: subscriber " + joinerNickname + " unreachable" + e.getMessage());
+                }
+            } else {
+                this.updateJoinActualGame(joinerNickname, game);
+                this.takeTurn(joinerNickname);
+            }
         }
     }
 
-    public void joinStartGame(String joinerNickname){
+    private boolean isCurrentPlayerActive(){
+        String currentPlayerNick = game.getCurrentPlayer().getNickname();
+        return playerViewMap.containsKey(currentPlayerNick);
+    }
+
+    private void updateJoinStartGame(String joinerNickname){
         User user = game.getUserFromNick(joinerNickname);
         ViewInterface view = playerViewMap.get(joinerNickname);
 
@@ -74,12 +97,40 @@ public class GameController implements GameControllerInterface {
             user.getUserHand().setStartCard(startCard);
         }
         this.updateJoinStartCard(joinerNickname);
-        System.out.println(joinerNickname + " joined the game");
+    }
 
-        if(!user.hasPlacedStartCard())
-            try{view.transitionTo(ViewState.CHOOSE_START_CARD);}catch (Exception e){}
-        else
-            try{view.transitionTo(ViewState.WAITING_STATE);}catch (Exception e){}
+    private synchronized void startCardStateTransition(String nickname){
+        ViewInterface view = playerViewMap.get(nickname);
+        try {
+            if (!game.getUserFromNick(nickname).hasPlacedStartCard())
+                view.transitionTo(ViewState.CHOOSE_START_CARD);
+            else
+                view.transitionTo(ViewState.WAITING_STATE);
+        }catch (Exception e){
+            System.out.println("GameController.startCardStateTransition: subscriber " + nickname + " unreachable" + e.getMessage());
+        }
+    }
+
+    private synchronized void updateJoinSecretObjective(String joiner, Game game){
+        List<String> activePlayers = new ArrayList<>(playerViewMap.keySet().stream().toList());
+        try{
+            playerViewMap.get(joiner).updateGame(DiffGenerator.diffJoinSecretObj(game, joiner, activePlayers));
+            playerViewMap.get(joiner).logGame(LogsOnClientStatic.GAME_JOINED);
+        } catch (Exception e) {
+            System.out.println("GameController.updateJoinObjectiveSelect: subscriber " + joiner + " unreachable" + e.getMessage());
+        }
+    }
+
+    private synchronized void objectiveChoiceStateTransition(String nickname){
+        User user = game.getUserFromNick(nickname);
+        try {
+            if (!user.hasChosenObjective()) {
+                playerViewMap.get(nickname).transitionTo(ViewState.SELECT_OBJECTIVE);
+            } else
+                playerViewMap.get(nickname).transitionTo(ViewState.WAITING_STATE);
+        }catch (Exception e){
+            System.out.println("GameController.objectiveChoiceStateTransition: subscriber " + nickname + " unreachable" + e.getMessage());
+        }
     }
 
     private synchronized void updateJoinStartCard(String joiner){
@@ -129,6 +180,8 @@ public class GameController implements GameControllerInterface {
         if(otherHaveAllSelected(nickname)){
             this.removeInactivePlayers(User::hasPlacedStartCard);
             this.moveToSecretObjectivePhase();
+        }else{
+            try{playerViewMap.get(nickname).transitionTo(ViewState.WAITING_STATE);}catch (Exception e){}
         }
     }
 
@@ -155,7 +208,6 @@ public class GameController implements GameControllerInterface {
         });
     }
 
-    //TODO continue
     public synchronized void chooseSecretObjective(String nickname, LightCard lightObjChoice){
         ObjectiveCard objChoice = Heavifier.heavifyObjectCard(lightObjChoice, cardTable);
         User user = game.getUserFromNick(nickname);
@@ -165,9 +217,11 @@ public class GameController implements GameControllerInterface {
 
         if(otherHaveAllChosen(nickname)) {
             this.removeInactivePlayers(User::hasChosenObjective);
-            List<LightCard> lightCommonObj = game.getCommonObjective().stream().map(Lightifier::lightifyToCard).toList();
-            this.notifyAllChoseSecretObjective(lightCommonObj);
-            this.takeTurn();
+            this.notifySecretObjectiveSetup();
+            for(String players : playerViewMap.keySet())
+                this.takeTurn(players);
+        }else{
+            this.objectiveChoiceStateTransition(nickname);
         }
     }
 
@@ -187,30 +241,17 @@ public class GameController implements GameControllerInterface {
         });
     }
 
-    private synchronized void notifyAllChoseSecretObjective(List<LightCard> commonObjectives){
-        playerViewMap.forEach((nickname, view)->{
-            try {
-                view.updateGame(new GameDiffPublicObj(commonObjectives.toArray(new LightCard[0])));
-                view.logGame(LogsOnClientStatic.EVERYONE_CHOSE);
-            } catch (Exception e) {
-                System.out.println("GameController.notifyAllChoseSecretObjective: subscriber " + nickname + " unreachable" + e.getMessage());
+    private synchronized void takeTurn(String nickname) {
+        ViewInterface view = playerViewMap.get(nickname);
+        try {
+            if (game.getCurrentPlayer().getNickname().equals(nickname)) {
+                view.transitionTo(ViewState.PLACE_CARD);
+            } else {
+                view.transitionTo(ViewState.IDLE);
             }
-        });
-    }
-
-    private synchronized void takeTurn() {
-        playerViewMap.forEach((nickname, view) -> {
-            try {
-                if (game.getCurrentPlayer().getNickname().equals(nickname)) {
-                    view.transitionTo(ViewState.PLACE_CARD);
-                } else {
-                    view.transitionTo(ViewState.IDLE);
-                }
-            } catch (Exception e) {
-                System.out.println("GameController.takeTurn: subscriber " + nickname + " not reachable" + e.getMessage());
-            }
-        });
-
+        } catch (Exception e) {
+            System.out.println("GameController.takeTurn: subscriber " + nickname + " not reachable" + e.getMessage());
+        }
     }
 
     public synchronized void place(String nickname, LightPlacement placement){
@@ -230,8 +271,8 @@ public class GameController implements GameControllerInterface {
         }
 
         //notify everyone
-        game.notifyPlacement(nickname, placement, user.getUserCodex(), FrontIdToPlayability);
-
+        this.notifyPlacement(nickname, placement, user.getUserCodex(), FrontIdToPlayability);
+        try{playerViewMap.get(nickname).transitionTo(ViewState.DRAW_CARD);}catch (Exception e){}
     }
 
     private synchronized void notifyPlacement(String placer, LightPlacement newPlacement, Codex placerCodex, Map<LightCard, Boolean> playability){
@@ -272,28 +313,31 @@ public class GameController implements GameControllerInterface {
                     drawnCard.canBePlaced(user.getUserCodex()));
         }
 
-        if(game.checkForChickenDinner() && Objects.equals(this.getFirstActivePlayer(), nickname) && !game.isLastTurn()){
-            game.setLastTurn(true);
+        if(game.checkForChickenDinner() && !game.duringLastTurns()){
+            game.startLastTurnsCounter();
             this.notifyLastTurn();
         }
 
-        if(Objects.equals(this.getLastActivePlayer(), nickname) && game.isLastTurn()){
+        if(Objects.equals(nickname, getLastActivePlayer())){
+            game.decrementLastTurnsCounter();
+        }
+
+        if(Objects.equals(this.getLastActivePlayer(), nickname) && game.hasEnded()){
             //model update with points
             game.addObjectivePoints();
             //notify
-            List<String> activePlayers = playerViewMap.keySet().stream().toList();
             this.notifyGameEnded(game.getPointPerPlayerMap(), game.getWinners());
         }else{
             //turn
             int nextPlayerIndex = game.getNextActivePlayerIndex();
-            User nextPlayer = game.getUsersList().get(nextPlayerIndex);
-            if(nextPlayer.getNickname().equals(nickname)){
+            String nextPlayer = game.getUsersList().get(nextPlayerIndex).getNickname();
+            if(nextPlayer.equals(nickname)){
                 //TODO timer
             }else {
-                game.setPlayerIndex(this.getNextActivePlayerIndex());
-                this.notifyTurnChange(game.getCurrentPlayer().getNickname());
-                this.takeTurn();
-                game.notifyTurn(game.getCurrentPlayer().getNickname());
+                game.setCurrentPlayerIndex(this.getNextActivePlayerIndex());
+                this.notifyTurnChange(nextPlayer);
+                this.takeTurn(nickname);
+                this.takeTurn(nextPlayer);
             }
         }
     }
@@ -311,16 +355,9 @@ public class GameController implements GameControllerInterface {
                 }
                 view.updateGame(DiffGenerator.draw(deckType, pos, drawnReplace));
             } catch (Exception e) {
-                System.out.println("GameMediator: subscriber " + nickname + " not reachable" + e.getMessage());
+                System.out.println("GameController.notifyDraw: subscriber " + nickname + " not reachable" + e.getMessage());
             }
         });
-    }
-
-    private synchronized String getFirstActivePlayer(){
-        List<String> activePlayers = playerViewMap.keySet().stream().toList();
-        List<String> turnsOrder = game.getUsersList().stream().map(User::getNickname).toList();
-
-        return turnsOrder.stream().filter(activePlayers::contains).findFirst().orElse(null);
     }
 
     private synchronized String getLastActivePlayer(){
@@ -379,69 +416,71 @@ public class GameController implements GameControllerInterface {
             }
         });
     }
-    /*
+
     public synchronized void leave(String nickname){
-        game.unsubscribe(nickname);
+        ViewInterface view = playerViewMap.get(nickname);
+        playerViewMap.remove(nickname);
         User you = game.getUserFromNick(nickname);
 
         if (game.isInStartCardState()) {
-
             if(otherHaveAllSelected(nickname) && !you.hasPlacedStartCard()){
                 this.removeInactivePlayers(User::hasPlacedStartCard);
-                moveToSecretObjectivePhase(game);
+                this.moveToSecretObjectivePhase();
             }
         } else if (game.inInSecretObjState()) {
             if (otherHaveAllChosen(nickname) && !you.hasChosenObjective()) {
                 this.removeInactivePlayers(User::hasChosenObjective);
-                User currentUserPlayer = game.getCurrentPlayer();
-                if(currentUserPlayer.getNickname().equals(nickname)) {
-                    int nextPlayerIndex = game.getNextPlayerIndex();
-                    String nextPlayerNick = game.getUsersList().get(nextPlayerIndex).getNickname();
 
-                    game.setPlayerIndex(nextPlayerIndex);
-                    game.notifyFirstTurn(nextPlayerNick);
+                String currentPlayer = game.getCurrentPlayer().getNickname();
+                if(currentPlayer.equals(nickname)) {
+                    game.setCurrentPlayerIndex(getNextActivePlayerIndex());
                 }
-                game.notifyEndSetupStartActualGame();
+                this.notifySecretObjectiveSetup();
+                for(String players : playerViewMap.keySet())
+                    this.takeTurn(players);
             }
-        } else if (!game.isInSetup()) { //if the game is in the actual game phase
+        } else if(!game.hasEnded()) { //if the game is in the actual game phase
             if (game.getCurrentPlayer().getNickname().equals(nickname)) { //if current player leaves
-                //check if the user haven't placed
-
                 //check if the user has disconnected after placing
-                if (you.getHandSize() < 3) {
+                if (you.getHandSize() < 3 && !game.areDeckEmpty()) {
                     DrawableCard deckType;
                     int pos;
+                    CardInHand cardDrawn;
+                    CardInHand cardReplacement;
                     do {
                         deckType = randomDeckType();
                         pos = randomDeckPosition();
 
-                        cardDrawn = drawnAndReplacement.first();
-                        cardReplacement = drawnAndReplacement.second();
+                        Pair<CardInHand, CardInHand> cardDrawnAndReplacement = game.drawAndGetReplacement(deckType, pos);
+                        cardDrawn = cardDrawnAndReplacement.first();
+                        cardReplacement = cardDrawnAndReplacement.second();
                     } while (cardDrawn == null);
 
                     this.draw(nickname, this.randomDeckType(), this.randomDeckPosition());
                 }
-                int nextPlayerIndex = game.getNextActivePlayerIndex();
-                String nextPlayerNick = game.getPlayerFromIndex(nextPlayerIndex).getNickname();
                 //move on with the turns for the other players
-                game.setPlayerIndex(nextPlayerIndex);
-                game.notifyTurn(nextPlayerNick);
+                if(!this.playerViewMap.keySet().isEmpty()) {
+                    int nextPlayerIndex = this.getNextActivePlayerIndex();
+                    String nextPlayerNick = game.getUsersList().get(nextPlayerIndex).getNickname();
+                    game.setCurrentPlayerIndex(nextPlayerIndex);
+                    this.notifyTurnChange(nextPlayerNick);
+                    this.takeTurn(nextPlayerNick);
+                }//TODO else stop timer
             }
-        } else //TODO if game is in EndGame state
-            throw new IllegalStateException("Controller.leaveGame: Game is in an invalid state");
-        //If the game is empty, remove it from the MultiGame
-
-        if (gameToLeave.getGameLoopController().getActivePlayers().isEmpty()) {
-            multiGame.removeGame(gameToLeave);
         }
-    }*/
+
+        try {
+            view.transitionTo(ViewState.LOGIN_FORM);
+        }catch (Exception e){
+            System.out.println("GameController.leave: subscriber " + nickname + " not reachable" + e.getMessage());
+        }
+    }
 
 
     private synchronized void drawForAllSecretObjective(){
         for(User user : game.getUsersList()){
             this.drawObjectiveCard(user);
         }
-        game.secretObjectiveSetup();
     }
 
     private synchronized void drawObjectiveCard(User user){
@@ -455,26 +494,45 @@ public class GameController implements GameControllerInterface {
     private synchronized void moveToSecretObjectivePhase(){
         this.drawForAllSecretObjective();
 
-        for(ViewInterface playerView : playerViewMap.values()){
-            try {
-                playerView.logGame(LogsOnClientStatic.EVERYONE_PLACED_STARTCARD);
-            } catch (Exception e) {}
-        }
 
         playerViewMap.forEach((nickname, view)->{
-            User user = game.getUserFromNick(nickname);
             try {
-                if (!user.hasChosenObjective()) {
-                    view.transitionTo(ViewState.SELECT_OBJECTIVE);
-                } else
-                    view.transitionTo(ViewState.WAITING_STATE);
+                view.logGame(LogsOnClientStatic.EVERYONE_PLACED_STARTCARD);
+                view.transitionTo(ViewState.SELECT_OBJECTIVE);
             }catch (Exception e){}
+        });
+    }
+
+    private synchronized void notifySecretObjectiveSetup() {
+        playerViewMap.forEach((nickname, view) -> {
+            try {
+                List<ObjectiveCard> secretObjChoices = game.getUserFromNick(nickname).getUserHand().getSecretObjectiveChoices();
+                List<LightCard> lightSecretObjChoices = secretObjChoices.stream().map(Lightifier::lightifyToCard).toList();
+                for (LightCard secretObj : lightSecretObjChoices) {
+                    view.updateGame(new HandDiffAddOneSecretObjectiveOption(secretObj));
+                }
+                for (HandOtherDiff handDiff : DiffGenerator.getHandOtherCurrentState(game, nickname)) {
+                    view.updateGame(handDiff);
+                }
+                for (User user : game.getUsersList()) {
+                    //update with the diff of the startCard placement
+                    if (!user.getNickname().equals(nickname)) {
+                        Placement startCardPlacement = user.getUserCodex().getPlacementAt(new Position(0, 0));
+                        view.updateGame(DiffGenerator.placeCodexDiff(user.getNickname(), Lightifier.lightify(startCardPlacement), user.getUserCodex()));
+                    }
+                }
+                view.updateGame(new GameDiffPublicObj(game.getCommonObjective().stream().map(Lightifier::lightifyToCard).toArray(LightCard[]::new)));
+                view.logGame(LogsOnClientStatic.EVERYONE_CHOSE);
+            } catch (Exception e) {
+                System.out.println("GameController.notifySecretObjectiveSetup: subscriber " + nickname + " not reachable" + e.getMessage());
+            }
         });
     }
 
     private synchronized void removeInactivePlayers(Predicate<User> check) {
         for (User user : game.getUsersList()) {
-            if (!game.getActivePlayers().contains(user.getNickname())) {
+            List<String> activePlayer = playerViewMap.keySet().stream().toList();
+            if (!activePlayer.contains(user.getNickname())) {
                 if(check.test(user)){
                     game.removeUser(user.getNickname());
                 }
@@ -484,12 +542,25 @@ public class GameController implements GameControllerInterface {
 
     private synchronized boolean otherHaveAllSelected(String nicknamePerspective){
         boolean allPlaced = true;
-        for (String nick : game.getActivePlayers()) {
+        List<String> activePlayer = playerViewMap.keySet().stream().toList();
+        for (String nick : activePlayer) {
             if (!nick.equals(nicknamePerspective) && !game.getUserFromNick(nick).hasPlacedStartCard()) {
                 allPlaced = false;
             }
         }
         return allPlaced;
+    }
+
+    public synchronized void updateJoinActualGame(String joiner, Game game){
+        List<String> activePlayer = playerViewMap.keySet().stream().toList();
+        try{
+            ViewInterface joinerView = playerViewMap.get(joiner);
+            joinerView.updateGame(DiffGenerator.diffJoinMidGame(game, joiner, activePlayer));
+            joinerView.logGame(LogsOnClientStatic.GAME_JOINED);
+        } catch (Exception e){
+            System.out.println("GameController.updateJoinActualGame: subscriber " + joiner + " unreachable" + e.getMessage());
+        }
+
     }
 
     private synchronized boolean otherHaveAllChosen(String nicknamePerspective){

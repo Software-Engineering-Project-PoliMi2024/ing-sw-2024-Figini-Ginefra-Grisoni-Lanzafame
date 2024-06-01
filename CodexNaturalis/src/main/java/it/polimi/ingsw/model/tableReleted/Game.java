@@ -3,26 +3,17 @@ package it.polimi.ingsw.model.tableReleted;
 
 import it.polimi.ingsw.Configs;
 import it.polimi.ingsw.controller.GameLoopController;
-import it.polimi.ingsw.controller3.Controller3;
 import it.polimi.ingsw.controller3.mediators.gameJoinerAndTurnTakerMediators.TurnTakerMediator;
 import it.polimi.ingsw.controller3.mediators.loggerAndUpdaterMediators.GameMediator;
-import it.polimi.ingsw.controller3.mediators.gameJoinerAndTurnTakerMediators.TurnTaker;
-import it.polimi.ingsw.controller4.GameController;
-import it.polimi.ingsw.lightModel.Lightifier;
 import it.polimi.ingsw.lightModel.diffs.game.GameDiff;
 import it.polimi.ingsw.lightModel.diffPublishers.DiffSubscriber;
 import it.polimi.ingsw.lightModel.diffPublishers.GameDiffPublisher;
-import it.polimi.ingsw.lightModel.lightPlayerRelated.LightBack;
-import it.polimi.ingsw.lightModel.lightPlayerRelated.LightCard;
-import it.polimi.ingsw.lightModel.lightPlayerRelated.LightPlacement;
 import it.polimi.ingsw.model.cardReleted.cards.*;
 import it.polimi.ingsw.model.cardReleted.utilityEnums.DrawableCard;
 import it.polimi.ingsw.model.playerReleted.Codex;
 import it.polimi.ingsw.model.playerReleted.Hand;
-import it.polimi.ingsw.model.playerReleted.Placement;
 import it.polimi.ingsw.model.playerReleted.User;
 import it.polimi.ingsw.model.utilities.Pair;
-import it.polimi.ingsw.view.ViewInterface;
 
 import java.io.Serializable;
 import java.util.*;
@@ -47,7 +38,7 @@ public class Game implements Serializable {
     private final GameParty gameParty;
     private final List<ObjectiveCard> commonObjective;
 
-    private boolean isLastTurn;
+    private Integer lastTurnsCounter = null;
     private final Object turnLock = new Object();
 
     private final TurnTakerMediator activeTurnTakerMediator = new TurnTakerMediator();
@@ -126,8 +117,8 @@ public class Game implements Serializable {
      * This method is used to set the player index in the game
      * @param index the index of the player that is playing
      */
-    public void setPlayerIndex(int index){
-        gameParty.setPlayerIndex(index);
+    public void setCurrentPlayerIndex(int index){
+        gameParty.setCurrentPlayerIndex(index);
     }
 
     /**
@@ -306,98 +297,16 @@ public class Game implements Serializable {
         return new Pair<>(drawnCard, cardReplacement);
     }
 
-    public void join(String nickname, ViewInterface view, TurnTaker turnTaker, Controller3 controller){
-        gameController.join(nickname, view, turnTaker, controller);
-    }
-        public void joinStartGame(String nickname, ViewInterface view, TurnTaker turnTaker){
-        gameController.joinStartGame(nickname, view, turnTaker);
-    }
-
-    public void placeStartCard(String nickname, Placement startCardPlacement){
-        gameController.placeStartCard(nickname, startCardPlacement);
-    }
-
-    public void chooseSecretObjective(String nickname, ObjectiveCard objChoice){
-        gameController.chooseSecretObjective(nickname, objChoice);
-    }
-
-    public void place(String nickname, Placement placement){
-        gameController.place(nickname, placement);
-    }
-
-    public void draw(String nickname, DrawableCard deckType, int cardID){
-        gameController.draw(nickname, deckType, cardID);
-    }
-
     public void leave(String nickname){
         //gameMaster.leave(nickname);
-    }
-    /**
-     * subscribe a turnTaker to the activeTurnTakerMediator in order to receive notification
-     * on when it is their turn to play
-     * @param nickname the nickname of the player that is subscribing
-     * @param LoggerAndUpdater the view that is subscribing
-     * @param turnTaker the turnTaker that is subscribing
-     */
-    public void subscribe(String nickname, ViewInterface LoggerAndUpdater, TurnTaker turnTaker, boolean rejoining){
-        this.gameMediator.subscribe(nickname, LoggerAndUpdater, rejoining);
-        activeTurnTakerMediator.subscribe(nickname, turnTaker);
-    }
-
-    public void joinStartCard(String joiner, Game game){
-        gameMediator.updateJoinStartCard(joiner, game);
     }
 
     public void joinSecretObjective(String joiner, Game game){
         gameMediator.updateJoinObjectiveSelect(joiner, game);
     }
 
-    public void joinMidGame(String joiner){
+    public void joinActualGame(String joiner){
         gameMediator.updateJoinActualGame(joiner, this);
-    }
-    /**
-     * unsubscribe a player from the activeTurnTakerMediator
-     * removing them from the list of players that will receive notifications
-     * @param nickname the nickname of the player that is unsubscribing
-     */
-    public void unsubscribe(String nickname){
-        this.gameMediator.unsubscribe(nickname);
-        activeTurnTakerMediator.unsubscribe(nickname);
-    }
-
-    /**
-     * notify all players that the startCardFace selection phase has finished
-     * and move to the next phase
-     */
-    public void notifyMoveToSelectObjState(){
-        gameMediator.notifyAllChoseStartCardFace();
-        activeTurnTakerMediator.notifyChooseObjective();
-    }
-
-    /**
-     * notify all players that the secretObjective selection phase has finished
-     * and move to the next phase
-     */
-    public void notifyEndSetupStartActualGame(){
-        List<LightCard> lightCommonObjective = commonObjective.stream().map(Lightifier::lightifyToCard).toList();
-        gameMediator.notifyAllChoseSecretObjective(lightCommonObjective);
-        activeTurnTakerMediator.notifyTurn();
-    }
-
-    public void notifyStartCardFaceChoice(String placer, User user, LightPlacement placement, LightBack resourceBack, LightBack goldBack){
-        gameMediator.notifyStartCardFaceChoice(placer, user, placement, resourceBack, goldBack);
-    }
-
-    public void notifySecretObjectiveChoice(String choice, LightCard objCard){
-        gameMediator.notifySecretObjectiveChoice(choice, objCard);
-    }
-
-    public void notifyPlacement(String placer, LightPlacement newPlacement, Codex placerCodex, Map<LightCard, Boolean> playability){
-        gameMediator.notifyPlacement(placer, newPlacement, placerCodex, playability);
-    }
-
-    public void notifyGameEnded(Map<String, Integer> pointsPerPlayerMap, List<String> ranking){
-        gameMediator.notifyGameEnded(pointsPerPlayerMap, ranking);
     }
     /**
      * @return true if the players in game are choosing the startCard
@@ -418,15 +327,6 @@ public class Game implements Serializable {
     }
 
     /**
-     * @return true if the players in game are in the setup phase
-     * (choosing StartCardFace or SecretObjective)
-     */
-    public boolean isInSetup(){
-        synchronized (turnLock) {
-            return inInSecretObjState() || isInStartCardState();
-        }
-    }
-    /**
      * notify a player that it is their turn to play by
      * calling the takeTurnMediator method of the subscriber
      * @param nicknameOfNextPlayer the nickname of the player that is goint to play next
@@ -436,25 +336,6 @@ public class Game implements Serializable {
         activeTurnTakerMediator.notifyTurn();
     }
 
-    public void notifyFirstTurn(String nicknameOfNextPlayer){
-        gameMediator.notifyTurnChange(nicknameOfNextPlayer);
-    }
-
-    /**
-     * This method is used to notify all players a change in the decks
-     * @param deckType the type of the deck that has changed (GOLD, RESOURCE)
-     * @param pos the position of the card that has changed (2 = from deck, 1,0 = buffer)
-     * @param drawnCard the card drawn by the user
-     * @param drawnReplaceCard the card that has replaced the drawn card in the decks/buffers
-     * @param drawerNickname the nickname of the player that has drawn the card
-     */
-    public void notifyDraw(DrawableCard deckType, int pos, LightCard drawnCard, LightCard drawnReplaceCard, String drawerNickname, boolean playability){
-        gameMediator.notifyDraw(drawerNickname, deckType, pos, drawnCard, drawnReplaceCard, playability);
-    }
-
-    public void notifyLastTurn(){
-        gameMediator.notifyLastTurn();
-    }
     /**
      * This method is used to check if the decks are empty
      * @return true if the decks are empty, false otherwise
@@ -463,18 +344,6 @@ public class Game implements Serializable {
         return goldCardDeck.isEmpty() && resourceCardDeck.isEmpty();
     }
 
-
-    /**
-     * This method is used to notify all players that
-     * it is his turn to choose the objective
-     */
-    public void notifyChooseObjective(){
-        activeTurnTakerMediator.notifyChooseObjective();
-    }
-
-    public void secretObjectiveSetup(){
-        gameMediator.secretObjectiveSetup(this);
-    }
     /**
      * get the list of active players
      * @return the list of active players
@@ -490,15 +359,6 @@ public class Game implements Serializable {
      */
     public boolean isPlayerActive(String nickname){
         return activeTurnTakerMediator.isPlayerActive(nickname);
-    }
-
-    /**
-     * This method is used to get the player from its index
-     * @param index the index of the player
-     * @return the player with the given index
-     */
-    public User getPlayerFromIndex(int index){
-        return gameParty.getPlayerFromIndex(index);
     }
 
     /**
@@ -593,15 +453,30 @@ public class Game implements Serializable {
         return goldCardDeck.isEmpty() && resourceCardDeck.isEmpty();
     }
 
-    public void setLastTurn(boolean lastTurn) {
+    public void startLastTurnsCounter() {
         synchronized (turnLock) {
-            isLastTurn = lastTurn;
+            lastTurnsCounter = 2;
         }
     }
 
-    public boolean isLastTurn() {
+    public void decrementLastTurnsCounter(){
+        synchronized (turnLock){
+            if(lastTurnsCounter>0){
+                lastTurnsCounter -= 1;
+            }else
+                throw new IllegalStateException("game.decrementLastTurnsCounter: the counter cannot be decremented under 0");
+        }
+    }
+
+    public boolean duringLastTurns() {
         synchronized (turnLock) {
-            return isLastTurn;
+            return lastTurnsCounter !=null;
+        }
+    }
+
+    public boolean hasEnded(){
+        synchronized (turnLock){
+            return lastTurnsCounter == 0;
         }
     }
 

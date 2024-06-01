@@ -29,7 +29,7 @@ public class GameParty implements Serializable {
      * This method is used to set the player index in the game
      * @param index the index of the player that is playing
      */
-    public void setPlayerIndex(int index){
+    public void setCurrentPlayerIndex(int index){
         synchronized (currentPlayerLock) {
             currentPlayerIndex = index;
         }
