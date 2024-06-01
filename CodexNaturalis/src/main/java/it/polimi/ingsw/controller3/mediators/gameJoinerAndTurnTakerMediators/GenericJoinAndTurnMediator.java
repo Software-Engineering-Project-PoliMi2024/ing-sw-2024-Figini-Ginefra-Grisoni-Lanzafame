@@ -1,10 +1,12 @@
 package it.polimi.ingsw.controller3.mediators.gameJoinerAndTurnTakerMediators;
 
+import java.io.Serializable;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
 
-public abstract class GenericJoinAndTurnMediator<subscriberType> {
+public abstract class GenericJoinAndTurnMediator<subscriberType> implements Serializable {
     protected final Map<String, subscriberType> subscribers = new ConcurrentHashMap<>();
 
     protected void subscribe(String nickname, subscriberType subscriber){

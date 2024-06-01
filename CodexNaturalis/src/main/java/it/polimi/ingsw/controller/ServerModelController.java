@@ -21,7 +21,6 @@ public class ServerModelController implements ControllerInterface, DiffSubscribe
     private final Reception games;
     private final ViewInterface view;
     private final Controller3 controller3;
-    private final Object freezeDisconnect = new Object();
     private String nickname;
     /**
      * The constructor of the class
