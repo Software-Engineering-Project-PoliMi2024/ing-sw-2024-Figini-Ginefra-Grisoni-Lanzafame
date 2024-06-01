@@ -1,16 +1,11 @@
 package it.polimi.ingsw.model.tableReleted;
 
-import it.polimi.ingsw.controller3.mediators.loggerAndUpdaterMediators.LobbyMediator;
-import it.polimi.ingsw.controller3.mediators.gameJoinerAndTurnTakerMediators.GameJoiner;
-import it.polimi.ingsw.controller3.mediators.gameJoinerAndTurnTakerMediators.GameJoinerMediator;
 import it.polimi.ingsw.view.ViewInterface;
 
 import java.io.Serializable;
 import java.util.*;
 
 public class Lobby implements Serializable {
-    private final LobbyMediator lobbyMediator;
-    private final GameJoinerMediator gameJoinerMediator;
     private final String lobbyName;
     final private List<String> lobbyPlayerList;
     private final int numberOfMaxPlayer;
@@ -26,16 +21,12 @@ public class Lobby implements Serializable {
         this.numberOfMaxPlayer = numberOfMaxPlayer;
         lobbyPlayerList = new ArrayList<>();
         this.lobbyName = lobbyName;
-        lobbyMediator = new LobbyMediator();
-        gameJoinerMediator = new GameJoinerMediator();
     }
 
     public Lobby(Lobby other){
         this.numberOfMaxPlayer = other.numberOfMaxPlayer;
         this.lobbyPlayerList = new ArrayList<>(other.lobbyPlayerList);
         this.lobbyName = other.lobbyName;
-        this.lobbyMediator = new LobbyMediator();
-        this.gameJoinerMediator = new GameJoinerMediator();
     }
     /**
      * Handles the adding of a user to the current lobby.
@@ -91,38 +82,4 @@ public class Lobby implements Serializable {
         return obj instanceof Lobby && ((Lobby) obj).lobbyName.equals(lobbyName);
     }
 
-    /**
-     * Subscribes the viewInterface to the mediator
-     * Updates the lobby of the subscriber with the lobby passed as parameter
-     * Logs the event on the view
-     * Notifies all the other subscribers that a new user has joined the lobby
-     * adds the subscriber to the LoggerAndUpdater mediator
-     * adds the subscriber to the turnTakersMediator
-     * @param nickname the subscriber's nickname
-     * @param loggerAndUpdater the logger and updater connected to the subscriber
-     * @param gameJoiner the gameJoiner connected to the subscriber, used to notify the subscriber when the game starts
-     */
-    public void subscribe(String nickname, ViewInterface loggerAndUpdater, GameJoiner gameJoiner){
-        lobbyMediator.subscribe(nickname, loggerAndUpdater, this);
-        gameJoinerMediator.subscribe(nickname, gameJoiner);
-    }
-
-    /**
-     * Unsubscribes the subscriber with the nickname passed as parameter
-     * erases the lobby of the unSubscriber
-     * notifies all the other subscribers that the unSubscriber has left the lobby
-     * logs the event on the unSubscriber
-     * removes the unSubscriber from the LoggerAndUpdaterMediator
-     * removes the unSubscriber from the turnTakersMediator
-     * @param nickname the unSubscriber's nickname
-     */
-    public void unsubscribe(String nickname){
-        lobbyMediator.unsubscribe(nickname);
-        gameJoinerMediator.unsubscribe(nickname);
-    }
-
-    public void notifyGameStart() {
-        lobbyMediator.notifyGameStart();
-        gameJoinerMediator.notifyGameStart();
-    }
 }

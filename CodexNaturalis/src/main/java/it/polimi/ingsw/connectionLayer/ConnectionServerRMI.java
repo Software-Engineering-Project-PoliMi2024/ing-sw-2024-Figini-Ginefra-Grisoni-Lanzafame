@@ -1,13 +1,13 @@
 package it.polimi.ingsw.connectionLayer;
 
 import it.polimi.ingsw.connectionLayer.VirtualRMI.VirtualViewRMI;
+import it.polimi.ingsw.controller4.Controller;
 import it.polimi.ingsw.controller4.Interfaces.ControllerInterface;
-import it.polimi.ingsw.controller.LogsOnClient;
-import it.polimi.ingsw.controller.ServerModelController;
 import it.polimi.ingsw.connectionLayer.VirtualLayer.VirtualController;
 import it.polimi.ingsw.connectionLayer.VirtualLayer.VirtualView;
+import it.polimi.ingsw.controller4.LogsOnClientStatic;
+import it.polimi.ingsw.controller4.ReceptionController;
 import it.polimi.ingsw.view.ViewInterface;
-import it.polimi.ingsw.model.Reception;
 import it.polimi.ingsw.view.ViewState;
 
 import java.rmi.RemoteException;
@@ -18,17 +18,17 @@ import java.util.concurrent.Future;
 import java.util.concurrent.TimeUnit;
 
 public class ConnectionServerRMI implements ConnectionLayerServer {
-    private final Reception reception;
+    private final ReceptionController receptionController;
     private final ExecutorService serverExecutor = Executors.newSingleThreadExecutor();
     int secondsTimeOut = 5;
 
     /**
      * The constructor of the class
      *
-     * @param reception the wrapper for the Model present in the server
+     * @param receptionController the wrapper for the Model present in the server
      */
-    public ConnectionServerRMI(Reception reception) {
-        this.reception = reception;
+    public ConnectionServerRMI(ReceptionController receptionController) {
+        this.receptionController = receptionController;
     }
 
     /**
@@ -43,7 +43,7 @@ public class ConnectionServerRMI implements ConnectionLayerServer {
         //expose the controller to the client
         Future<Void> connect = serverExecutor.submit(() -> {
             VirtualView virtualView = new VirtualViewRMI(view);
-            ControllerInterface controllerOnServer = new ServerModelController(reception, virtualView);
+            ControllerInterface controllerOnServer = new Controller(receptionController, virtualView);
             virtualView.setController(controllerOnServer);
             virtualView.setPingPongStub(pingPong);
             ControllerInterface controllerStub = (ControllerInterface) UnicastRemoteObject.exportObject(controllerOnServer, 0);
@@ -52,7 +52,7 @@ public class ConnectionServerRMI implements ConnectionLayerServer {
             controller.setControllerStub(controllerStub);
             controller.pingPong();
             virtualView.pingPong();
-            virtualView.log(LogsOnClient.CONNECTION_SUCCESS.getMessage());
+            virtualView.log(LogsOnClientStatic.CONNECTION_SUCCESS);
             virtualView.transitionTo(ViewState.LOGIN_FORM);
             return null;
         });

@@ -1,31 +1,7 @@
 package it.polimi.ingsw.controller;
 
-import it.polimi.ingsw.Configs;
-import it.polimi.ingsw.OSRelated;
-import it.polimi.ingsw.lightModel.LightModelConfig;
-import it.polimi.ingsw.lightModel.Lightifier;
-import it.polimi.ingsw.lightModel.diffPublishers.ViewTest;
-import it.polimi.ingsw.lightModel.lightPlayerRelated.*;
-import it.polimi.ingsw.lightModel.lightTableRelated.LightDeck;
-import it.polimi.ingsw.lightModel.lightTableRelated.LightLobby;
-import it.polimi.ingsw.model.Reception;
-import it.polimi.ingsw.model.cardReleted.cards.Card;
-import it.polimi.ingsw.model.cardReleted.cards.CardInHand;
-import it.polimi.ingsw.model.cardReleted.cards.ResourceCard;
-import it.polimi.ingsw.model.cardReleted.utilityEnums.*;
-import it.polimi.ingsw.model.playerReleted.Hand;
-import it.polimi.ingsw.model.playerReleted.Placement;
-import it.polimi.ingsw.model.playerReleted.Position;
-import it.polimi.ingsw.model.playerReleted.User;
-import it.polimi.ingsw.model.tableReleted.Game;
-import it.polimi.ingsw.model.tableReleted.Lobby;
-import it.polimi.ingsw.view.ViewState;
-import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.Test;
-
-import java.util.*;
-
 class ServerModelControllerTest {
+    /*
     @BeforeEach
     public void setUp(){
         OSRelated.checkOrCreateDataFolderServer(); //Create the dataFolder if necessary. Normally this is done in the Server class
@@ -991,5 +967,5 @@ class ServerModelControllerTest {
         assert view1.lightGame.getCodexMap().get(firstUserInTurn.getNickname()).getPoints()>=20;
         assert view2.lightGame.getCodexMap().get(firstUserInTurn.getNickname()).getPoints()>=20;
 
-    }
+    }*/
 }

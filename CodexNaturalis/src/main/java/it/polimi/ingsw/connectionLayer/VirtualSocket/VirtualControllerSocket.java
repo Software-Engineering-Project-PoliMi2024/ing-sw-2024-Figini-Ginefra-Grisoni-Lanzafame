@@ -5,7 +5,7 @@ import it.polimi.ingsw.connectionLayer.Socket.ClientMsg.*;
 import it.polimi.ingsw.connectionLayer.Socket.ServerHandler;
 import it.polimi.ingsw.connectionLayer.VirtualLayer.VirtualController;
 import it.polimi.ingsw.controller4.Interfaces.ControllerInterface;
-import it.polimi.ingsw.controller.LogsOnClient;
+import it.polimi.ingsw.controller4.LogsOnClientStatic;
 import it.polimi.ingsw.lightModel.lightPlayerRelated.LightCard;
 import it.polimi.ingsw.lightModel.lightPlayerRelated.LightPlacement;
 import it.polimi.ingsw.model.cardReleted.utilityEnums.DrawableCard;
@@ -34,7 +34,7 @@ public class VirtualControllerSocket implements VirtualController {
             server = new Socket(ip, port);
         } catch (IOException e) { //catch a "UnknownHostException" or a "ConnectException"
             System.out.println("Server unreachable, check the port and the ip address");
-            this.view.logErr(LogsOnClient.CONNECTION_ERROR.getMessage());
+            this.view.logErr(LogsOnClientStatic.CONNECTION_ERROR);
             return;
         }
         //If the connection goes well

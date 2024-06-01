@@ -1,6 +1,5 @@
 package it.polimi.ingsw.model.tableReleted;
 
-import it.polimi.ingsw.model.Reception;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
@@ -23,10 +22,4 @@ class DeckTest {
         }
         System.out.println(deck.getActualDeck().size());
     }
-
-    @Test
-    public void deckTest(){
-        Reception reception = new Reception();
-    }
-
 }

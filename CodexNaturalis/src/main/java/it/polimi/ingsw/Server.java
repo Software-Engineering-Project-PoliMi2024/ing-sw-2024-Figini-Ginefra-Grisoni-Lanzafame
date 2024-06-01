@@ -5,9 +5,9 @@ import it.polimi.ingsw.connectionLayer.ConnectionServerRMI;
 import it.polimi.ingsw.connectionLayer.Socket.ClientHandler;
 import it.polimi.ingsw.connectionLayer.VirtualLayer.VirtualView;
 import it.polimi.ingsw.connectionLayer.VirtualSocket.VirtualViewSocket;
-import it.polimi.ingsw.controller.LogsOnClient;
-import it.polimi.ingsw.controller.ServerModelController;
-import it.polimi.ingsw.model.Reception;
+import it.polimi.ingsw.controller4.Controller;
+import it.polimi.ingsw.controller4.LogsOnClientStatic;
+import it.polimi.ingsw.controller4.ReceptionController;
 import it.polimi.ingsw.view.TUI.Printing.Printer;
 import it.polimi.ingsw.view.ViewState;
 
@@ -31,12 +31,12 @@ public class Server {
         } catch (IOException e) {
             System.out.println("No internet connection, can't get IP address");
         }
-        Reception reception = new Reception();
+        ReceptionController receptionController = new ReceptionController();
 
         Registry registry;
         try {
             registry = (LocateRegistry.createRegistry(Configs.rmiPort));
-            ConnectionLayerServer connection = new ConnectionServerRMI(reception);
+            ConnectionLayerServer connection = new ConnectionServerRMI(receptionController);
             ConnectionLayerServer stub = (ConnectionLayerServer) UnicastRemoteObject.exportObject(connection, 0);
             registry.rebind(Configs.connectionLabelRMI, stub);
             System.out.println("RMI Server started on port " + Configs.rmiPort + "🚔!");
@@ -64,7 +64,7 @@ public class Server {
                     Thread clientHandlerThread = new Thread(clientHandler, "clientHandler of" + client.getInetAddress());
                     clientHandlerThread.start();
                     VirtualView virtualView = new VirtualViewSocket(clientHandler);
-                    ServerModelController controller = new ServerModelController(reception, virtualView);
+                    Controller controller = new Controller(receptionController, virtualView);
                     virtualView.setController(controller);
                     while(!clientHandler.isReady()) {
                         try {
@@ -75,7 +75,7 @@ public class Server {
                     }
                     clientHandler.setOwner(virtualView);
                     clientHandler.setController(controller);
-                    virtualView.log(LogsOnClient.SERVER_JOINED.getMessage());
+                    virtualView.log(LogsOnClientStatic.SERVER_JOINED);
                     virtualView.transitionTo(ViewState.LOGIN_FORM);
                 } catch (IOException e) {
                     System.out.println("connection dropped");

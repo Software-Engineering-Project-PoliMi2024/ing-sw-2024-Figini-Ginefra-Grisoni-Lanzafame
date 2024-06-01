@@ -16,7 +16,7 @@ public class Controller implements ControllerInterface, GameControllerReceiver {
     private final ViewInterface view;
     private GameController gameController;
 
-    Controller(ReceptionController receptionController, ViewInterface view){
+    public Controller(ReceptionController receptionController, ViewInterface view){
         this.receptionController = receptionController;
         this.view = view;
     }

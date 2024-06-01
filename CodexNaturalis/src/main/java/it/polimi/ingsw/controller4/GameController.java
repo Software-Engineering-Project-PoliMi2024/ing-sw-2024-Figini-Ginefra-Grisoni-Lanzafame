@@ -1,7 +1,6 @@
 package it.polimi.ingsw.controller4;
 
 import it.polimi.ingsw.Configs;
-import it.polimi.ingsw.controller3.LogsOnClientStatic;
 import it.polimi.ingsw.controller4.Interfaces.GameControllerInterface;
 import it.polimi.ingsw.lightModel.DiffGenerator;
 import it.polimi.ingsw.lightModel.Heavifier;
@@ -19,6 +18,7 @@ import it.polimi.ingsw.lightModel.diffs.game.handDiffOther.HandOtherDiffRemove;
 import it.polimi.ingsw.lightModel.diffs.game.handDiffs.*;
 import it.polimi.ingsw.lightModel.lightPlayerRelated.LightBack;
 import it.polimi.ingsw.lightModel.lightPlayerRelated.LightCard;
+import it.polimi.ingsw.lightModel.lightPlayerRelated.LightPlacement;
 import it.polimi.ingsw.model.cardReleted.cards.CardInHand;
 import it.polimi.ingsw.model.cardReleted.cards.CardTable;
 import it.polimi.ingsw.model.cardReleted.cards.ObjectiveCard;
@@ -216,6 +216,28 @@ public class GameController implements GameControllerInterface {
         }
     }
 
+    @Override
+    public void place(String nickname, LightPlacement placement) {
+        Placement heavyPlacement;
+        User user = game.getUserFromNick(nickname);
+        try{
+            if(placement.position().equals(new Position(0,0))){
+                heavyPlacement = Heavifier.heavifyStartCardPlacement(placement, cardTable);
+                if(!user.getUserHand().getStartCard().equals(heavyPlacement.card())){
+                    throw new IllegalArgumentException("The card in the placement in position (0,0) is not the start card in hand");
+                }
+            }else {
+                heavyPlacement = Heavifier.heavify(placement, cardTable);
+                List<Integer> handCardIds = user.getUserHand().getHand().stream().map(CardInHand::getIdFront).toList();
+                if(!handCardIds.contains(heavyPlacement.card().getIdFront()) || !user.getUserCodex().getFrontier().isInFrontier(placement.position())){
+                    throw new IllegalArgumentException("The card in the placement is not in the hand or the position is not in the frontier");
+                }
+            }
+        }catch (Exception e) {
+            throw new IllegalArgumentException("The placement is not valid");
+        }
+    }
+
     private synchronized void  notifySecretObjectiveChoice(String chooser, LightCard objChoice){
         playerViewMap.forEach((nickname, view)->{
             try {
@@ -241,7 +263,7 @@ public class GameController implements GameControllerInterface {
         } catch (Exception ignored) {}
     }
 
-    public synchronized void place(String nickname, LightPlacement placement){
+    public synchronized void placeCard(String nickname, LightPlacement placement){
         User user = game.getUserFromNick(nickname);
         Codex codexBeforePlacement = new Codex(user.getUserCodex());
         user.playCard(Heavifier.heavify(placement, cardTable));
@@ -314,7 +336,7 @@ public class GameController implements GameControllerInterface {
             this.notifyGameEnded(game.getPointPerPlayerMap(), game.getWinners());
         }else{
             //turn
-            int nextPlayerIndex = game.getNextActivePlayerIndex();
+            int nextPlayerIndex = this.getNextActivePlayerIndex();
             String nextPlayer = game.getUsersList().get(nextPlayerIndex).getNickname();
             if(nextPlayer.equals(nickname)){
                 //TODO timer

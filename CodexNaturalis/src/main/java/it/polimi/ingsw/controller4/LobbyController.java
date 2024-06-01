@@ -1,6 +1,5 @@
 package it.polimi.ingsw.controller4;
 
-import it.polimi.ingsw.controller3.LogsOnClientStatic;
 import it.polimi.ingsw.controller4.Interfaces.GameControllerReceiver;
 import it.polimi.ingsw.lightModel.DiffGenerator;
 import it.polimi.ingsw.lightModel.diffs.nuclearDiffs.LittleBoyLobby;

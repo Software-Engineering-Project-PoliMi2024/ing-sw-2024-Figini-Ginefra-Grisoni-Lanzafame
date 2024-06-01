@@ -1,4 +1,4 @@
-package it.polimi.ingsw.controller.persistence;
+package it.polimi.ingsw.controller4.persistence;
 
 import it.polimi.ingsw.Configs;
 import it.polimi.ingsw.OSRelated;
@@ -10,7 +10,7 @@ import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.*;
 
-public class PersistenceFactory2 {
+public class PersistenceFactory {
     private static final String _bin = ".bin";
     private static final String dateGameNameSeparator = "--";
     private static final DateTimeFormatter windowSucks = DateTimeFormatter.ofPattern("yyyy-MM-dd_HH-mm-ss");
@@ -142,7 +142,7 @@ public class PersistenceFactory2 {
      * @return the latest gameSave file of the given game if it exists, null otherwise
      */
     private static File latestGameSave(Game game) {
-        File dataFolder = new File(PersistenceFactory2.gameDataFolderPath);
+        File dataFolder = new File(PersistenceFactory.gameDataFolderPath);
         File[] saves = dataFolder.listFiles();
         Queue<File> savesOfGame = new PriorityQueue<>(gameSaveComparator);
         if (saves != null) {

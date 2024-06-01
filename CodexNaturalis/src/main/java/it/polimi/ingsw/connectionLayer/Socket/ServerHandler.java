@@ -4,7 +4,7 @@ import it.polimi.ingsw.Configs;
 import it.polimi.ingsw.connectionLayer.Socket.ClientMsg.ClientMsg;
 import it.polimi.ingsw.connectionLayer.Socket.ServerMsg.ServerMsg;
 import it.polimi.ingsw.connectionLayer.VirtualLayer.VirtualController;
-import it.polimi.ingsw.controller.LogsOnClient;
+import it.polimi.ingsw.controller4.LogsOnClientStatic;
 import it.polimi.ingsw.view.ViewInterface;
 
 import java.io.IOException;
@@ -56,7 +56,7 @@ public class ServerHandler implements Runnable{
                     this.waitForOwnerAndView();
                     try {
                         System.out.println("Error while creating the input and output streams");
-                        view.logErr(LogsOnClient.CONNECTION_ERROR.getMessage());
+                        view.logErr(LogsOnClientStatic.CONNECTION_ERROR);
                     } catch (Exception ex) {
                         //This is socket, RemoteException should not be thrown
                         throw new RuntimeException(ex);
@@ -69,7 +69,7 @@ public class ServerHandler implements Runnable{
             this.waitForOwnerAndView();
             try {
                 System.out.println("Error while connecting to the server, the server exists but did not expect this protocol");
-                view.logErr(LogsOnClient.CONNECTION_ERROR.getMessage());
+                view.logErr(LogsOnClientStatic.CONNECTION_ERROR);
             } catch (Exception ex) {
                 //This is socket, RemoteException should not be thrown
                 throw new RuntimeException(ex);
@@ -80,7 +80,7 @@ public class ServerHandler implements Runnable{
             this.waitForOwnerAndView();
             try {
                 System.out.println("Unknown error while connecting to the server");
-                view.logErr(LogsOnClient.CONNECTION_ERROR.getMessage());
+                view.logErr(LogsOnClientStatic.CONNECTION_ERROR);
             } catch (Exception ex) {
                 //This is socket, RemoteException should not be thrown
                 throw new RuntimeException(ex);
@@ -122,7 +122,7 @@ public class ServerHandler implements Runnable{
             }catch (IOException e){ //This will catch a SocketException("Connection reset") when the server crashes
                 try{
                     server.close();
-                    view.logErr(LogsOnClient.CONNECTION_LOST_CLIENT_SIDE.getMessage());
+                    view.logErr(LogsOnClientStatic.CONNECTION_LOST_CLIENT_SIDE);
                 }catch (Exception ex){
                     System.out.println("Error while closing the Socket of the Server");
                     e.printStackTrace();

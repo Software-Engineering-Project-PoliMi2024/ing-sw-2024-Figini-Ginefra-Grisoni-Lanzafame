@@ -1,4 +1,4 @@
-package it.polimi.ingsw.lightModel.diffPublishers;
+package it.polimi.ingsw.lightModel;
 
 import it.polimi.ingsw.lightModel.diffs.ModelDiffs;
 import it.polimi.ingsw.lightModel.lightTableRelated.LightGame;

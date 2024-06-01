@@ -138,4 +138,10 @@ public class GameParty implements Serializable {
             return currentPlayerIndex;
         }
     }
+
+    public void setCurrentPlayerIndex(int currentPlayerIndex) {
+        synchronized (currentPlayerLock){
+            this.currentPlayerIndex = currentPlayerIndex;
+        }
+    }
 }

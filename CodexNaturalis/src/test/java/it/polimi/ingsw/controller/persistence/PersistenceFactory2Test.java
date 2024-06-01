@@ -2,7 +2,10 @@ package it.polimi.ingsw.controller.persistence;
 
 import it.polimi.ingsw.Configs;
 import it.polimi.ingsw.OSRelated;
-import it.polimi.ingsw.model.Reception;
+import it.polimi.ingsw.controller4.Controller;
+import it.polimi.ingsw.controller4.ReceptionController;
+import it.polimi.ingsw.controller4.persistence.PersistenceFactory;
+import it.polimi.ingsw.lightModel.ViewTest;
 import it.polimi.ingsw.model.playerReleted.User;
 import it.polimi.ingsw.model.tableReleted.Game;
 import it.polimi.ingsw.model.tableReleted.Lobby;
@@ -31,12 +34,18 @@ public class PersistenceFactory2Test {
 
     @Test
     void saveTest(){
-        Reception reception = new Reception();
-        Lobby lobby = new Lobby(3, "gianni", "saveGameTest");
-        lobby.addUserName("gianni1");
-        lobby.addUserName("gianni2");
+        ReceptionController reception = new ReceptionController();
+        ViewTest view1 = new ViewTest();
+        ViewTest view2 = new ViewTest();
+        view1.name = "gianni1";
+        view2.name = "gianni2";
+        Controller controller1 = new Controller(reception, view1);
+        Controller controller2 = new Controller(reception, view2);
+
+        reception.createLobby("gianni1", "saveGameTest", 3, controller1);
+        reception.joinLobby("gianni2", "saveGameTest", controller2);
         Game gameToSave = reception.createGame(lobby);
-        PersistenceFactory2.save(gameToSave);
+        PersistenceFactory.save(gameToSave);
 
         List<File> gameSaves = Arrays.asList(Objects.requireNonNull(new File(OSRelated.gameDataFolderPath).listFiles()));
         Assertions.assertEquals(1, gameSaves.stream().filter(file -> file.getName().contains("saveGameTest")).count());
@@ -49,7 +58,7 @@ public class PersistenceFactory2Test {
         lobby.addUserName("gianni1");
         lobby.addUserName("gianni2");
         Game gameToSave = reception.createGame(lobby);
-        PersistenceFactory2.save(gameToSave);
+        PersistenceFactory.save(gameToSave);
 
         Reception reception1 = new Reception();
         Game gameLoadedFromSave = reception1.getGameByName("loadGameTest");
@@ -69,7 +78,7 @@ public class PersistenceFactory2Test {
         lobby.addUserName("gianni1");
         lobby.addUserName("gianni2");
         Game gameToSave = reception.createGame(lobby);
-        PersistenceFactory2.save(gameToSave);
+        PersistenceFactory.save(gameToSave);
 
         //Create a new gameSaveFile and set the timeStamp to NOW-(gameSaveExpirationTimeMinutes*2) time so it will be expired
         this.createMockGameSaves(gameToSave, LocalDateTime.now().minusMinutes(Configs.gameSaveExpirationTimeMinutes*2));
@@ -93,7 +102,7 @@ public class PersistenceFactory2Test {
         lobby.addUserName("gianni1");
         lobby.addUserName("gianni2");
         Game gameToSave = reception.createGame(lobby);
-        PersistenceFactory2.save(gameToSave);
+        PersistenceFactory.save(gameToSave);
 
         //Create a new gameSaveFile and set the timeStamp to NOW-(gameSaveExpirationTimeMinutes/2) time, so it will be NOT expired
         this.createMockGameSaves(gameToSave, LocalDateTime.now().minusMinutes(Configs.gameSaveExpirationTimeMinutes/2));

@@ -2,7 +2,6 @@ package it.polimi.ingsw.controller4;
 
 import it.polimi.ingsw.Configs;
 import it.polimi.ingsw.OSRelated;
-import it.polimi.ingsw.controller3.LogsOnClientStatic;
 import it.polimi.ingsw.controller4.Interfaces.GameControllerReceiver;
 import it.polimi.ingsw.controller4.Interfaces.ReceptionControllerInterface;
 import it.polimi.ingsw.lightModel.DiffGenerator;
@@ -25,9 +24,6 @@ public class ReceptionController implements ReceptionControllerInterface {
     private final Map<String, LobbyController> lobbyMap = new HashMap<>();
     private final Map<String, GameController> gameMap = new HashMap<>();
 
-    private ReceptionController(){
-
-    }
 
     @Override
     public synchronized void login(String nickname, ViewInterface view) {
@@ -59,12 +55,37 @@ public class ReceptionController implements ReceptionControllerInterface {
     }
 
     @Override
-    public void createLobby(String nickname, String gameName, int maxPlayerCount) {
+    public synchronized void createLobby(String creator, String lobbyName, int maxPlayerCount, GameControllerReceiver gameReceiver) {
+        //check if the lobby name is already taken
+        ViewInterface view = viewMap.get(creator);
+        if(lobbyMap.get(lobbyName)!=null || gameMap.get(lobbyName)!=null) {
+            try {
+                view.logErr(LogsOnClientStatic.LOBBY_NAME_TAKEN);
+                view.transitionTo(ViewState.JOIN_LOBBY);
+            }catch (Exception ignored){}
+            //check if the lobby name is valid
+        }else if(lobbyName.matches(Configs.invalidLobbyNameRegex)) {
+            try {
+                view.logErr(LogsOnClientStatic.NOT_VALID_LOBBY_NAME);
+                view.transitionTo(ViewState.JOIN_LOBBY);
+            }catch (Exception ignored){}
+        }else if(maxPlayerCount < 2 || maxPlayerCount > 4){
+            try {
+                view.logErr(LogsOnClientStatic.INVALID_MAX_PLAYER_COUNT);
+                view.transitionTo(ViewState.JOIN_LOBBY);
+            }catch (Exception ignored){}
+        }else { //create the lobby
+            System.out.println(creator + " create" + lobbyName + " lobby");
+            Lobby lobbyCreated = new Lobby(maxPlayerCount, lobbyName);
+
+            //add the lobby to the model
+            lobbyMap.put(lobbyName, new LobbyController(lobbyCreated));
+            lobbyMap.get(lobbyName).addPlayer(creator, view, gameReceiver);
 
             this.notifyNewLobby(creator, lobbyCreated); //notify the lobbyList mediator of the new lobby creation
 
             try{view.transitionTo(ViewState.LOBBY);}catch (Exception ignored){}
-            viewMap.remove(creator);
+            leaveLobbyList(creator);
         }
     }
 
@@ -93,7 +114,7 @@ public class ReceptionController implements ReceptionControllerInterface {
             }catch (Exception ignored){}
         } else {
             System.out.println(joiner + " joined " + lobbyName + " lobby");
-            viewMap.remove(joiner);
+            leaveLobbyList(joiner);
             //add the player to the lobby, updated model
             lobbyToJoin.addPlayer(joiner, view, gameReceiver);
 
