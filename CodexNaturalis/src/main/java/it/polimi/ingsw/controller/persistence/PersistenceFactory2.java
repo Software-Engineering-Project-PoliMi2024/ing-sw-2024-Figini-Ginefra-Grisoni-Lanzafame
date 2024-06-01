@@ -21,14 +21,14 @@ public class PersistenceFactory2 {
 
     public static void save(Game game) {
         File oldSave = foundLatestGameSave(game);
+        File newSave = null;
+        ObjectOutputStream outStream = null;
         try {
-            File file = new File(gameDataFolderPath + LocalDateTime.now().format(windowSucks) + dateGameNameSeparator + game.getName() + _bin);
-            System.out.println(file.getAbsolutePath());
-            FileOutputStream fileOut = new FileOutputStream(file);
-            ObjectOutputStream outStream = new ObjectOutputStream(fileOut);
+            newSave= new File(gameDataFolderPath + LocalDateTime.now().format(windowSucks) + dateGameNameSeparator + game.getName() + _bin);
+            System.out.println(newSave.getAbsolutePath());
+            outStream = new ObjectOutputStream(new FileOutputStream(newSave));
             outStream.writeObject(game);
             outStream.close();
-            fileOut.close();
             System.out.println("Game saved successfully");
             if (oldSave != null) {
                 boolean successfulDeletion = oldSave.delete();
@@ -39,6 +39,15 @@ public class PersistenceFactory2 {
                 }
             }
         } catch (IOException e) {
+            //I can't delete the new save if the stream is not closed
+            if(outStream != null){
+                try {
+                    outStream.close();
+                } catch (IOException ex) {
+                    throw new RuntimeException(ex);
+                }
+            }
+            delete(newSave);
             if (oldSave != null) {
                 System.out.println("Error while saving the game. Keeping the previous save: " + oldSave.getName());
             } else {
@@ -167,19 +176,15 @@ public class PersistenceFactory2 {
      * Comparator to compare two gameSave files by their date-time in the name
      * File are compared in descending order
      */
-    private static final Comparator<File> gameSaveComparator = new Comparator<File>() {
-        @Override
-        public int compare(File File1, File File2) {
-            String dateTimeFile1 = File1.getName().split(dateGameNameSeparator)[0];
-            String dateTimeFile2 = File2.getName().split(dateGameNameSeparator)[0];
+    private static final Comparator<File> gameSaveComparator = (File1, File2) -> {
+        String dateTimeFile1 = File1.getName().split(dateGameNameSeparator)[0];
+        String dateTimeFile2 = File2.getName().split(dateGameNameSeparator)[0];
 
-            // Parse the date-time strings to LocalDateTime objects
-            LocalDateTime dateTime1 = LocalDateTime.parse(dateTimeFile1, windowSucks);
-            LocalDateTime dateTime2 = LocalDateTime.parse(dateTimeFile2, windowSucks);
+        LocalDateTime dateTime1 = LocalDateTime.parse(dateTimeFile1, windowSucks);
+        LocalDateTime dateTime2 = LocalDateTime.parse(dateTimeFile2, windowSucks);
 
-            // Compare the LocalDateTime objects in descending order
-            return dateTime2.compareTo(dateTime1);
-        }
+        // Compare the LocalDateTime objects in descending order
+        return dateTime2.compareTo(dateTime1);
     };
 
     private static void delete(File file) {
