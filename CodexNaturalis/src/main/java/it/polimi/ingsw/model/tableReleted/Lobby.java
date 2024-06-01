@@ -7,7 +7,6 @@ import it.polimi.ingsw.view.ViewInterface;
 
 import java.io.Serializable;
 import java.util.*;
-import java.util.concurrent.locks.ReentrantLock;
 
 public class Lobby implements Serializable {
     private final LobbyMediator lobbyMediator;
@@ -18,19 +17,25 @@ public class Lobby implements Serializable {
 
     /**
      * @param numberOfMaxPlayer the number of player that can join the lobby
-     * @param creatorNickname the diffSubscriber of the user that created the lobby
      * @param lobbyName the name of the lobby
      */
-    public Lobby(int numberOfMaxPlayer, String creatorNickname, String lobbyName) {
+    public Lobby(int numberOfMaxPlayer, String lobbyName) {
         if(numberOfMaxPlayer < 2 || numberOfMaxPlayer > 4){
             throw new IllegalArgumentException("The number of player must be at least 1 and at most 4");
         }
         this.numberOfMaxPlayer = numberOfMaxPlayer;
         lobbyPlayerList = new ArrayList<>();
         this.lobbyName = lobbyName;
-        lobbyPlayerList.add(creatorNickname);
         lobbyMediator = new LobbyMediator();
         gameJoinerMediator = new GameJoinerMediator();
+    }
+
+    public Lobby(Lobby other){
+        this.numberOfMaxPlayer = other.numberOfMaxPlayer;
+        this.lobbyPlayerList = new ArrayList<>(other.lobbyPlayerList);
+        this.lobbyName = other.lobbyName;
+        this.lobbyMediator = new LobbyMediator();
+        this.gameJoinerMediator = new GameJoinerMediator();
     }
     /**
      * Handles the adding of a user to the current lobby.
@@ -83,7 +88,7 @@ public class Lobby implements Serializable {
     }
     @Override
     public boolean equals(Object obj){
-            return obj instanceof Lobby && ((Lobby) obj).lobbyName.equals(lobbyName);
+        return obj instanceof Lobby && ((Lobby) obj).lobbyName.equals(lobbyName);
     }
 
     /**

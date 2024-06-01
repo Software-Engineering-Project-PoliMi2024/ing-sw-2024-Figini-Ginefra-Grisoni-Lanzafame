@@ -47,11 +47,11 @@ public class MultiGame implements Serializable {
     public boolean createGameFromLobby(Lobby lobby) {
         synchronized (lobbies) {
             synchronized (games) {
-                Game createdGame = this.createGame(lobby);
+
                 lobbies.remove(lobby);
-                return games.add(createdGame);
             }
         }
+        return true;
     }
 
     /**
@@ -324,15 +324,6 @@ public class MultiGame implements Serializable {
     }
 
     /**
-     * Create a new game from the lobby
-     * @param lobby the lobby from which the game is created
-     * @return the game created
-     */
-    public Game createGame(Lobby lobby){
-        return new Game(lobby, cardTable.getCardLookUpObjective(), cardTable.getCardLookUpResourceCard(), cardTable.getCardLookUpStartCard(), cardTable.getCardLookUpGoldCard());
-    }
-
-    /**
      * Get the user from the nickname
      * @param nickname of the user
      * @return the user with the given nickname
@@ -341,7 +332,7 @@ public class MultiGame implements Serializable {
         User returnUser = null;
         List<User> userList;
         synchronized (games) {
-             userList = this.getGames().stream()
+            userList = this.getGames().stream()
                     .map(Game::getGameParty)
                     .flatMap(gameParty -> gameParty.getUsersList().stream()).toList();
         }

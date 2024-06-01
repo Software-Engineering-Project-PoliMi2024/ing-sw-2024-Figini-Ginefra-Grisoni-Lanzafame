@@ -48,16 +48,18 @@ public class Game implements Serializable {
     /**
      * Constructs a new Game instance with a specified maximum number of players.
      */
-    public Game(Lobby lobby, CardLookUp<ObjectiveCard> objectiveCardCardLookUp, CardLookUp<ResourceCard> resourceCardCardLookUp,
-                CardLookUp<StartCard> startCardCardLookUp, CardLookUp<GoldCard> goldCardCardLookUp) {
+    public Game(Lobby lobby, Deck<ObjectiveCard> objectiveCardDeck, Deck<ResourceCard> resourceCardDeck,
+                Deck<GoldCard> goldCardDeck, Deck<StartCard> startingCardDeck) {
         this.name = lobby.getLobbyName();
         this.gameParty = new GameParty(lobby.getLobbyPlayerList());
-        objectiveCardDeck = new Deck<>(0,objectiveCardCardLookUp.getQueue());
-        resourceCardDeck = new Deck<>(2, resourceCardCardLookUp.getQueue());
-        startingCardDeck = new Deck<>(0, startCardCardLookUp.getQueue());
-        goldCardDeck = new Deck<>(2, goldCardCardLookUp.getQueue());
+        this.objectiveCardDeck = objectiveCardDeck;
+        this.resourceCardDeck = resourceCardDeck;
+        this.startingCardDeck = startingCardDeck;
+        this.goldCardDeck = goldCardDeck;
         this.commonObjective = new ArrayList<>();
         this.populateCommonObjective();
+        this.setupStartCard();
+
         gameDiffPublisher = new GameDiffPublisher(this);
         this.gameLoopController = new GameLoopController(this);
         gameMediator = new GameMediator();
@@ -493,8 +495,12 @@ public class Game implements Serializable {
         }
     }
 
-    public void removeUser(User user){
-        this.gameParty.removeUser(user.getNickname());
+    private void setupStartCard(){
+        gameParty.getUsersList().forEach(user-> {
+            if (user.getUserHand().getStartCard() == null && !user.hasPlacedStartCard()) {
+                StartCard startCard = drawStartCard();
+                user.getUserHand().setStartCard(startCard);
+            }
+        });
     }
-
 }

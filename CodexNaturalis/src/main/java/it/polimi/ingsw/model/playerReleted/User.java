@@ -7,8 +7,8 @@ import java.io.Serializable;
 
 public class User implements Serializable {
     private final String nickname;
-    private Codex userCodex;
-    private Hand userHand;
+    private final Codex userCodex;
+    private final Hand userHand;
 
     public User(String nickname){
         this.nickname = nickname;

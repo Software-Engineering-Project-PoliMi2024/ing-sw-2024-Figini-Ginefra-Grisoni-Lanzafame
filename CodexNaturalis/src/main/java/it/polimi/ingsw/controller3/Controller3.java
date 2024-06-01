@@ -20,16 +20,9 @@ import it.polimi.ingsw.view.ViewState;
 
 import java.util.*;
 
-/*
-TODO test deck (when drawing all cards it remains a card)
-TODO test when the decks finish the cards
-TODO saveGame
-*/
-
 public class Controller3 implements ControllerInterface, TurnTaker, GameJoiner {
     private final ViewInterface view;
     private final MultiGame multiGame;
-
     private String nickname;
 
     public Controller3(MultiGame multiGame, ViewInterface view) {
@@ -70,7 +63,7 @@ public class Controller3 implements ControllerInterface, TurnTaker, GameJoiner {
             if(multiGame.isInGameParty(nickname)){
                 Game gameToJoin = multiGame.getGameFromUserNick(nickname);
 
-                gameToJoin.join(nickname, view, this, this);
+                //gameToJoin.join(nickname, view, this, this);
             }else{
                 //subscribe the view to the lobbyList mediator
                 multiGame.subscribe(nickname, view);
@@ -109,7 +102,7 @@ public class Controller3 implements ControllerInterface, TurnTaker, GameJoiner {
             transitionTo(ViewState.JOIN_LOBBY);
         }else { //create the lobby
             System.out.println(this.nickname + " create" + gameName + " lobby");
-            Lobby lobbyCreated = new Lobby(maxPlayerCount, this.nickname, gameName);
+            Lobby lobbyCreated = new Lobby(maxPlayerCount, gameName);
             //add the lobby to the model
             multiGame.addLobby(lobbyCreated);
             //disconnect from lobbyList mediator and subscribe to the new lobby
@@ -204,10 +197,8 @@ public class Controller3 implements ControllerInterface, TurnTaker, GameJoiner {
         System.out.println(this.nickname + " chose secret objective");
         Game game = multiGame.getGameFromUserNick(this.nickname);
 
-        transitionTo(ViewState.WAITING_STATE);
-        ObjectiveCard objChoice = Heavifier.heavifyObjectCard(objectiveCard, multiGame.getCardTable());
 
-        game.chooseSecretObjective(this.nickname, objChoice);
+
     }
 
     @Override
@@ -240,25 +231,10 @@ public class Controller3 implements ControllerInterface, TurnTaker, GameJoiner {
 
         if(!user.hasPlacedStartCard()) {
             transitionTo(ViewState.WAITING_STATE);
-            game.placeStartCard(nickname, heavyPlacement);
         }else{
-            game.place(nickname, heavyPlacement);
             transitionTo(ViewState.DRAW_CARD);
         }
 
-    }
-
-    private void setupSecretObjectives(){
-        Game game = multiGame.getGameFromUserNick(this.nickname);
-        for(User user : game.getUsersList()){
-            drawObjectiveCard(user);
-        }
-        game.secretObjectiveSetup();
-    }
-
-    private void moveToSecretObjectivePhase(Game game){
-        this.setupSecretObjectives();
-        game.notifyMoveToSelectObjState();
     }
 
     @Override
@@ -271,7 +247,6 @@ public class Controller3 implements ControllerInterface, TurnTaker, GameJoiner {
 
         Game game = multiGame.getGameFromUserNick(this.nickname);
 
-        game.draw(this.nickname, deckType, cardID);
     }
 
     private void leaveGame() {
@@ -302,7 +277,7 @@ public class Controller3 implements ControllerInterface, TurnTaker, GameJoiner {
     public synchronized void joinStartGame() {
         Game gameToJoin = multiGame.getGameFromUserNick(this.nickname);
 
-        gameToJoin.joinStartGame(this.nickname, this.view, this);
+        //gameToJoin.joinStartGame(this.nickname, this.view, this);
 
         User user = gameToJoin.getUserFromNick(this.nickname);
         System.out.println(this.nickname + " joined the game");
