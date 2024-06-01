@@ -10,7 +10,7 @@ import org.junit.jupiter.api.Test;
 import java.io.File;
 import java.util.Objects;
 
-class persistenceFactoryTest {
+class PersistenceFactoryTest {
 
     @Test
     void save() {

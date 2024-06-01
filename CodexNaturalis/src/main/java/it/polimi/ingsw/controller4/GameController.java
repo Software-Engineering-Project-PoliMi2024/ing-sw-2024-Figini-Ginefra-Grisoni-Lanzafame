@@ -8,6 +8,7 @@ import it.polimi.ingsw.lightModel.Heavifier;
 import it.polimi.ingsw.lightModel.Lightifier;
 import it.polimi.ingsw.lightModel.lightPlayerRelated.LightBack;
 import it.polimi.ingsw.lightModel.lightPlayerRelated.LightCard;
+import it.polimi.ingsw.lightModel.lightPlayerRelated.LightPlacement;
 import it.polimi.ingsw.model.cardReleted.cards.CardInHand;
 import it.polimi.ingsw.model.cardReleted.cards.ObjectiveCard;
 import it.polimi.ingsw.model.cardReleted.cards.StartCard;
@@ -77,7 +78,7 @@ public class GameController implements GameControllerInterface {
         }
     }
 
-    public synchronized void chooseSecretObjective(String nickname, LightCard lightObjChoice){
+    /*public synchronized void chooseSecretObjective(String nickname, LightCard lightObjChoice){
         ObjectiveCard objChoice = Heavifier.heavifyObjectCard(lightObjChoice);
         User user = game.getUserFromNick(nickname);
 
@@ -88,6 +89,16 @@ public class GameController implements GameControllerInterface {
             this.removeInactivePlayers(User::hasChosenObjective);
             game.notifyEndSetupStartActualGame();
         }
+    }*/
+
+    @Override
+    public void chooseSecretObjective(String nickname, LightCard objectiveCard) {
+
+    }
+
+    @Override
+    public void place(String nickname, LightPlacement placement) {
+        //TODO
     }
 
     public synchronized void place(String nickname, Placement placement){

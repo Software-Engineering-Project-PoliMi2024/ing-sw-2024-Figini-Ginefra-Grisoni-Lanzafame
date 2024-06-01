@@ -207,7 +207,7 @@ public class Controller3 implements ControllerInterface, TurnTaker, GameJoiner {
         transitionTo(ViewState.WAITING_STATE);
         ObjectiveCard objChoice = Heavifier.heavifyObjectCard(objectiveCard, reception.getCardTable());
 
-        game.chooseSecretObjective(this.nickname, objChoice);
+        //game.chooseSecretObjective(this.nickname, objChoice);
     }
 
     @Override
