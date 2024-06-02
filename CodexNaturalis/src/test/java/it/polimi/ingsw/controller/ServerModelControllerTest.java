@@ -1,81 +1,82 @@
 package it.polimi.ingsw.controller;
 
+import it.polimi.ingsw.Configs;
+import it.polimi.ingsw.OSRelated;
+import it.polimi.ingsw.controller.PublicController.ControllerPublic;
+import it.polimi.ingsw.controller.PublicController.GameControllerPublic;
+import it.polimi.ingsw.controller.PublicController.LobbyListControllerPublic;
+import it.polimi.ingsw.controller4.Controller;
+import it.polimi.ingsw.controller4.GameController;
+import it.polimi.ingsw.controller4.LobbyGameListController;
+import it.polimi.ingsw.lightModel.LightModelConfig;
+import it.polimi.ingsw.lightModel.Lightifier;
+import it.polimi.ingsw.lightModel.ViewTest;
+import it.polimi.ingsw.lightModel.lightPlayerRelated.*;
+import it.polimi.ingsw.lightModel.lightTableRelated.LightDeck;
+import it.polimi.ingsw.lightModel.lightTableRelated.LightLobby;
+import it.polimi.ingsw.model.cardReleted.cards.Card;
+import it.polimi.ingsw.model.cardReleted.cards.CardInHand;
+import it.polimi.ingsw.model.cardReleted.cards.ResourceCard;
+import it.polimi.ingsw.model.cardReleted.utilityEnums.*;
+import it.polimi.ingsw.model.playerReleted.Hand;
+import it.polimi.ingsw.model.playerReleted.Placement;
+import it.polimi.ingsw.model.playerReleted.Position;
+import it.polimi.ingsw.model.playerReleted.User;
+import it.polimi.ingsw.model.tableReleted.Game;
+import it.polimi.ingsw.model.tableReleted.Lobby;
+import it.polimi.ingsw.view.ViewState;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+
+import java.util.*;
+
 class ServerModelControllerTest {
-    /*
+
     @BeforeEach
     public void setUp(){
         OSRelated.checkOrCreateDataFolderServer(); //Create the dataFolder if necessary. Normally this is done in the Server class
     }
 
     @Test
-    void badLogins(){
-        Reception reception = new Reception();
-        ViewTest view1 = new ViewTest();
-        view1.name = "pippo";
-        ViewTest view2 = new ViewTest();
-        view2.name = "pippo";
-        ViewTest view3 = new ViewTest();
-        view3.name = "";
-        ViewTest view4 = new ViewTest();
-        view4.name = "                ";
-        String LobbyCreatorName = "lobbyCreator";
-        List<ViewTest> views = Arrays.stream(new ViewTest[]{view2, view3, view4}).toList();
-        ServerModelController serverModelController1 = new ServerModelController(reception, view1);
-        ServerModelController serverModelController2 = new ServerModelController(reception, view2);
-        ServerModelController serverModelController3 = new ServerModelController(reception, view3);
-        ServerModelController serverModelController4 = new ServerModelController(reception, view4);
-
-        serverModelController1.login(view1.name);
-        serverModelController2.login(view2.name);
-        serverModelController3.login(view3.name);
-        serverModelController4.login(view4.name);
-
-        for(ViewTest view : views){
-            System.out.println(view.name);
-            assert view.state.equals(ViewState.LOGIN_FORM);
-        }
-    }
-
-    @Test
     void loginJoiningLobbyList() {
-        Reception reception = new Reception();
+        LobbyListControllerPublic lobbyGameListController = new LobbyListControllerPublic();
         ViewTest view1 = new ViewTest();
         view1.name = "pippo";
         ViewTest view2 = new ViewTest();
         view2.name = "pluto";
         String LobbyCreatorName = "lobbyCreator";
         List<ViewTest> views = Arrays.stream(new ViewTest[]{view1, view2}).toList();
-        ServerModelController serverModelController1 = new ServerModelController(reception, view1);
-        ServerModelController serverModelController2 = new ServerModelController(reception, view2);
+        ControllerPublic controller1 = new ControllerPublic(lobbyGameListController, view1);
+        ControllerPublic controller2 = new ControllerPublic(lobbyGameListController, view2);
 
         //view joins before adding lobbies
-        serverModelController1.login(view1.name);
+        controller1.login(view1.name);
         //add lobby
-        Lobby lobby1 = new Lobby(2, LobbyCreatorName, "lobby1");
-        reception.addLobby(lobby1);
-        reception.notifyNewLobby(LobbyCreatorName, lobby1);
+        Lobby lobby = new Lobby(2, "test1");
+        controller1.createLobby(lobby.getLobbyName(), lobby.getNumberOfMaxPlayer());
         //view joins after adding lobbies
-        serverModelController2.login(view2.name);
+        controller2.login(view2.name);
 
-        for(ViewTest view : views) {
-            System.out.println(view.name);
-            assert view.lightLobbyList.getLobbies().contains(Lightifier.lightify(lobby1));
-            assert reception.getUsernames().contains(view.name);
-            assert view.state.equals(ViewState.JOIN_LOBBY);
-        }
+        System.out.println(view1.name);
+        assert !view1.lightLobbyList.getLobbies().contains(Lightifier.lightify(lobby));
+        assert !lobbyGameListController.viewMap.containsKey(view1.name);
+        assert view1.state.equals(ViewState.LOBBY);
+        assert view2.lightLobbyList.getLobbies().contains(Lightifier.lightify(lobby));
+        assert lobbyGameListController.viewMap.containsKey(view2.name);
+        assert view2.state.equals(ViewState.JOIN_LOBBY);
+
     }
-
     @Test
     void createLobby() {
-        Reception reception = new Reception();
-
+        LobbyListControllerPublic lobbyGameListController = new LobbyListControllerPublic();
         ViewTest view1 = new ViewTest();
         ViewTest view2 = new ViewTest();
         ViewTest view3 = new ViewTest();
-
-        ServerModelController serverModelController1 = new ServerModelController(reception, view1);
-        ServerModelController serverModelController2 = new ServerModelController(reception, view2);
-        ServerModelController serverModelController3 = new ServerModelController(reception, view3);
+        String LobbyCreatorName = "lobbyCreator";
+        List<ViewTest> views = Arrays.stream(new ViewTest[]{view1, view2}).toList();
+        ControllerPublic controller1 = new ControllerPublic(lobbyGameListController, view1);
+        ControllerPublic controller2 = new ControllerPublic(lobbyGameListController, view2);
+        ControllerPublic controller3 = new ControllerPublic(lobbyGameListController, view3);
 
         view1.name = "pippo";
         view2.name = "pluto";
@@ -83,14 +84,14 @@ class ServerModelControllerTest {
         String lobbyName1 = "test1";
         String lobbyName2 = "test2";
 
-        serverModelController1.login(view1.name);
-        serverModelController1.createLobby(lobbyName1, 2);
-        serverModelController3.login(view3.name);
-        serverModelController2.login(view2.name);
-        serverModelController2.createLobby(lobbyName2, 2);
+        lobbyGameListController.login(view1.name, view1);
+        lobbyGameListController.createLobby(view1.name, lobbyName1, 2, controller1);
+        lobbyGameListController.login(view2.name, view2);
+        lobbyGameListController.login(view3.name, view3);
+        lobbyGameListController.createLobby(view2.name, lobbyName2, 2, controller2);
 
-        assert reception.getLobbyByName(lobbyName1) != null;
-        assert reception.getLobbyByName(lobbyName2) != null;
+        assert lobbyGameListController.lobbyMap.containsKey(lobbyName1);
+        assert lobbyGameListController.lobbyMap.containsKey(lobbyName2);
         assert view1.lightLobbyList.getLobbies().isEmpty();
         assert view2.lightLobbyList.getLobbies().isEmpty();
         assert view3.lightLobbyList.getLobbies().stream().map(LightLobby::name).toList().contains(lobbyName1);
@@ -98,100 +99,34 @@ class ServerModelControllerTest {
     }
 
     @Test
-    void malevolentCreateLobby(){
-        Reception reception = new Reception();
-
-        ViewTest view1 = new ViewTest();
-        ViewTest view2 = new ViewTest();
-        ViewTest view3 = new ViewTest();
-
-        ServerModelController serverModelController1 = new ServerModelController(reception, view1);
-        ServerModelController serverModelController2 = new ServerModelController(reception, view2);
-        ServerModelController serverModelController3 = new ServerModelController(reception, view3);
-
-        view1.name = "pippo";
-        view2.name = "pluto";
-        view3.name = "topolino";
-        String lobbyName1 = "test1";
-        String lobbyName2 = "test2";
-
-        serverModelController3.login(view3.name);
-        //create a lobby without logginIn
-        System.out.println(serverModelController1.getNickname());
-        serverModelController1.createLobby(lobbyName1, 2);
-        //the same user creates two lobbies
-        serverModelController2.login(view2.name);
-        serverModelController2.createLobby(lobbyName2, 2);
-        serverModelController2.createLobby(lobbyName1, 2);
-
-        assert reception.getLobbyByName(lobbyName1) == null;
-        assert reception.getLobbyByName(lobbyName2) == null;
-        assert view3.lightLobbyList.getLobbies().isEmpty();
-    }
-
-    @Test
-    void malevolentJoinLobby(){
-        Reception reception = new Reception();
-
-        ViewTest view1 = new ViewTest();
-        ViewTest view2 = new ViewTest();
-        ViewTest view3 = new ViewTest();
-
-        ServerModelController serverModelController1 = new ServerModelController(reception, view1);
-        ServerModelController serverModelController2 = new ServerModelController(reception, view2);
-        ServerModelController serverModelController3 = new ServerModelController(reception, view3);
-
-        view1.name = "pippo";
-        view2.name = "pluto";
-        view3.name = "topolino";
-
-        String lobbyName1 = "test1";
-        String lobbyName2 = "test2";
-
-        serverModelController1.login(view1.name);
-        serverModelController1.createLobby(lobbyName1, 3);
-        serverModelController2.login(view2.name);
-        serverModelController2.createLobby(lobbyName2, 3);
-        serverModelController2.joinLobby(lobbyName1);
-        serverModelController3.joinLobby(lobbyName1);
-
-        assert view1.lightLobby.nicknames().contains(view1.name);
-        assert !view1.lightLobby.nicknames().contains(view2.name);
-        assert !view1.lightLobby.nicknames().contains(view3.name);
-    }
-
-    @Test
     void joinLobby() {
-        Reception reception = new Reception();
-
+        LobbyListControllerPublic lobbyGameListController = new LobbyListControllerPublic();
         ViewTest view1 = new ViewTest();
         ViewTest view2 = new ViewTest();
-
-
-        ServerModelController serverModelController1 = new ServerModelController(reception, view1);
-        ServerModelController serverModelController2 = new ServerModelController(reception, view2);
+        String LobbyCreatorName = "lobbyCreator";
+        ControllerPublic controller1 = new ControllerPublic(lobbyGameListController, view1);
+        ControllerPublic controller2 = new ControllerPublic(lobbyGameListController, view2);
 
         view1.name = "pippo";
         view2.name = "pluto";
-
         String lobbyName1 = "test1";
+        controller1.login(view1.name);
+        controller1.createLobby(lobbyName1, 3);
+        controller2.login(view2.name);
+        controller2.joinLobby(lobbyName1);
 
-        serverModelController1.login(view1.name);
-        serverModelController1.createLobby(lobbyName1, 3);
-        serverModelController2.login(view2.name);
-        serverModelController2.joinLobby(lobbyName1);
-
-        assert reception.getGameFromUserNick(view1.name) == null;
-        assert reception.getLobbyByName(lobbyName1) != null;
-        assert reception.getLobbyByName(lobbyName1).getLobbyPlayerList().contains(view1.name);
-        assert reception.getLobbyByName(lobbyName1).getLobbyPlayerList().contains(view2.name);
-        assert reception.getLobbyByName(lobbyName1).getLobbyPlayerList().size() == 2;
+        assert !lobbyGameListController.viewMap.containsKey(view1.name);
+        assert lobbyGameListController.lobbyMap.containsKey(lobbyName1);
+        assert lobbyGameListController.lobbyMap.get(lobbyName1).getLobby().getLobbyPlayerList().contains(view1.name);
+        assert lobbyGameListController.lobbyMap.get(lobbyName1).getLobby().getLobbyPlayerList().contains(view2.name);
+        assert lobbyGameListController.lobbyMap.get(lobbyName1).getLobby().getLobbyPlayerList().size() == 2;
 
         for(ViewTest view : Arrays.stream(new ViewTest[]{view1, view2}).toList()){
             System.out.println(view.name);
             assert view.lightLobbyList.getLobbies().isEmpty();
             assert view.lightLobby.nicknames().contains(view1.name);
             assert view.lightLobby.nicknames().contains(view2.name);
+            System.out.println(view.lightLobby.nicknames());
             assert view.lightLobby.nicknames().size() == 2;
             assert view.lightLobby.numberMaxPlayer() == 3;
             assert view.lightLobby.name().equals(lobbyName1);
@@ -201,32 +136,28 @@ class ServerModelControllerTest {
 
     @Test
     void joinLobbyAndStartGame(){
-        Reception reception = new Reception();
-
+        LobbyListControllerPublic lobbyGameListController = new LobbyListControllerPublic();
         ViewTest view1 = new ViewTest();
         ViewTest view2 = new ViewTest();
         ViewTest view3 = new ViewTest();
-
-        ServerModelController serverModelController1 = new ServerModelController(reception, view1);
-        ServerModelController serverModelController2 = new ServerModelController(reception, view2);
-        ServerModelController serverModelController3 = new ServerModelController(reception, view3);
-
         view1.name = "pippo";
         view2.name = "pluto";
         view3.name = "topolino";
-
         String lobbyName1 = "test1";
+        ControllerPublic controller1 = new ControllerPublic(lobbyGameListController, view1);
+        ControllerPublic controller2 = new ControllerPublic(lobbyGameListController, view2);
+        ControllerPublic controller3 = new ControllerPublic(lobbyGameListController, view3);
 
-        serverModelController3.login(view3.name);
-        serverModelController1.login(view1.name);
-        serverModelController1.createLobby(lobbyName1, 2);
-        serverModelController2.login(view2.name);
-        serverModelController2.joinLobby(lobbyName1);
+        controller3.login(view3.name);
+        controller1.login(view1.name);
+        controller1.createLobby(lobbyName1, 2);
+        controller2.login(view2.name);
+        controller2.joinLobby(lobbyName1);
 
         //game created and created correctly
-        assert reception.getGameByName(lobbyName1) != null;
-        Game game = reception.getGameByName(lobbyName1);
-        assert reception.getLobbyByName(lobbyName1) == null;
+        assert !lobbyGameListController.lobbyMap.containsKey(lobbyName1);
+        assert lobbyGameListController.gameMap.containsKey(lobbyName1);
+        Game game = lobbyGameListController.gameMap.get(lobbyName1).game;
         assert game.getGameParty().getNumberOfMaxPlayer() == 2;
         assert game.getGameParty().getUsersList().stream().map(User::getNickname).toList().contains(view1.name);
         assert game.getGameParty().getUsersList().stream().map(User::getNickname).toList().contains(view2.name);
@@ -272,8 +203,8 @@ class ServerModelControllerTest {
         assert Arrays.stream(view1.lightGame.getHand().getCards()).toList().containsAll(Arrays.asList(null, null));
         LightCard cardInHandThatIsNotNull = Arrays.stream(view1.lightGame.getHand().getCards()).filter(Objects::nonNull).toList().getFirst();
         assert cardInHandThatIsNotNull != null;
-        assert cardInHandThatIsNotNull.idFront() == reception.getUserFromNick(view1.name).getUserHand().getStartCard().getIdFront();
-        assert cardInHandThatIsNotNull.idBack() == reception.getUserFromNick(view1.name).getUserHand().getStartCard().getIdBack();
+        assert cardInHandThatIsNotNull.idFront() == game.getUserFromNick(view1.name).getUserHand().getStartCard().getIdFront();
+        assert cardInHandThatIsNotNull.idBack() == game.getUserFromNick(view1.name).getUserHand().getStartCard().getIdBack();
         assert view1.lightGame.getHand().getCardPlayability().values().size() == 1;
         assert view1.lightGame.getHand().getCardPlayability().get(cardInHandThatIsNotNull) == true;
         //handOthers correctly set
@@ -289,6 +220,7 @@ class ServerModelControllerTest {
         LightDeck goldDeck = view1.lightGame.getGoldDeck();
         assert goldDeck.getDeckBack().idBack() == Objects.requireNonNull(game.getGoldCardDeck().showTopCardOfDeck()).getIdBack();
         assert goldDeck.getCardBuffer().length == 2;
+        System.out.println(game.getGoldCardDeck().getBuffer());
         assert Arrays.stream(goldDeck.getCardBuffer()).allMatch(Objects::nonNull);
         assert game.getGoldCardDeck().getBuffer().stream().map(Card::getIdBack).toList().containsAll(Arrays.stream(goldDeck.getCardBuffer()).map(LightCard::idBack).toList());
         assert game.getGoldCardDeck().getBuffer().stream().map(Card::getIdFront).toList().containsAll(Arrays.stream(goldDeck.getCardBuffer()).map(LightCard::idFront).toList());
@@ -334,8 +266,8 @@ class ServerModelControllerTest {
         assert Arrays.stream(view2.lightGame.getHand().getCards()).toList().containsAll(Arrays.asList(null, null));
         cardInHandThatIsNotNull = Arrays.stream(view2.lightGame.getHand().getCards()).filter(Objects::nonNull).toList().getFirst();
         assert cardInHandThatIsNotNull != null;
-        assert cardInHandThatIsNotNull.idFront() == reception.getUserFromNick(view2.name).getUserHand().getStartCard().getIdFront();
-        assert cardInHandThatIsNotNull.idBack() == reception.getUserFromNick(view2.name).getUserHand().getStartCard().getIdBack();
+        assert cardInHandThatIsNotNull.idFront() == game.getUserFromNick(view2.name).getUserHand().getStartCard().getIdFront();
+        assert cardInHandThatIsNotNull.idBack() == game.getUserFromNick(view2.name).getUserHand().getStartCard().getIdBack();
         assert view2.lightGame.getHand().getCardPlayability().values().size() == 1;
         assert view2.lightGame.getHand().getCardPlayability().get(cardInHandThatIsNotNull) == true;
         //handOthers correctly set
@@ -368,39 +300,36 @@ class ServerModelControllerTest {
         assert view2.lightGame.getRanking().isEmpty();
     }
 
+
     @Test
     void leaveLobby() {
-        Reception reception = new Reception();
 
+        LobbyListControllerPublic lobbyGameListController = new LobbyListControllerPublic();
         ViewTest view1 = new ViewTest();
         ViewTest view2 = new ViewTest();
         ViewTest view3 = new ViewTest();
         ViewTest view4 = new ViewTest();
-        ViewTest view5 = new ViewTest();
-
-        ServerModelController serverModelController1 = new ServerModelController(reception, view1);
-        ServerModelController serverModelController2 = new ServerModelController(reception, view2);
-        ServerModelController serverModelController3 = new ServerModelController(reception, view3);
-        ServerModelController serverModelController4 = new ServerModelController(reception, view4);
-
-        view1.name = "giorgia";
-        view2.name = "meloni";
-        view3.name = "salvini";
-        view4.name = "renzi";
-        view5.name = "draghi";
+        view1.name = "pippo";
+        view2.name = "pluto";
+        view3.name = "topolino";
+        view4.name = "gianni";
         String lobbyName1 = "test1";
         String lobbyName2 = "test2";
+        ControllerPublic controller1 = new ControllerPublic(lobbyGameListController, view1);
+        ControllerPublic controller2 = new ControllerPublic(lobbyGameListController, view2);
+        ControllerPublic controller3 = new ControllerPublic(lobbyGameListController, view3);
+        ControllerPublic controller4 = new ControllerPublic(lobbyGameListController, view4);
 
-        serverModelController1.login(view1.name);
-        serverModelController1.createLobby(lobbyName1, 3);
-        serverModelController2.login(view2.name);
-        serverModelController2.joinLobby(lobbyName1);
-        serverModelController2.leaveLobby();
-        serverModelController3.login(view3.name);
-        serverModelController3.joinLobby(lobbyName1);
-        serverModelController4.login(view4.name);
-        serverModelController4.createLobby(lobbyName2, 2);
-        serverModelController4.leaveLobby();
+        controller1.login(view1.name);
+        controller1.createLobby(lobbyName1, 3);
+        controller2.login(view2.name);
+        controller2.joinLobby(lobbyName1);
+        controller2.leaveLobby();
+        controller3.login(view3.name);
+        controller3.joinLobby(lobbyName1);
+        controller4.login(view4.name);
+        controller4.createLobby(lobbyName2, 2);
+        controller4.leaveLobby();
 
         assert view1.lightLobbyList.getLobbies().isEmpty();
         assert view2.lightLobbyList.getLobbies().stream().map(LightLobby::name).toList().contains(lobbyName1);
@@ -429,43 +358,50 @@ class ServerModelControllerTest {
         assert view4.lightLobby.numberMaxPlayer() == LightModelConfig.defaultNumberMaxPlayer;
         assert Objects.equals(view4.lightLobby.name(), LightModelConfig.defaultLobbyName);
 
-        assert reception.getLobbyByName(lobbyName1).getLobbyPlayerList().contains(view1.name);
-        assert reception.getLobbyByName(lobbyName1).getLobbyPlayerList().contains(view3.name);
-        assert !reception.getLobbyByName(lobbyName1).getLobbyPlayerList().contains(view2.name);
-        assert reception.getGameByName(lobbyName2) == null;
+        Lobby lobby1 = lobbyGameListController.lobbyMap.get(lobbyName1).lobby;
+
+        assert lobby1.getLobbyPlayerList().contains(view1.name);
+        assert lobby1.getLobbyPlayerList().contains(view3.name);
+        assert !lobby1.getLobbyPlayerList().contains(view2.name);
+        assert lobbyGameListController.gameMap.get(lobbyName2) == null;
     }
 
     @Test
     void selectStartCardFace() {
-        Reception reception = new Reception();
-
+        LobbyListControllerPublic lobbyGameListController = new LobbyListControllerPublic();
         ViewTest view1 = new ViewTest();
         ViewTest view2 = new ViewTest();
-
+        ViewTest view3 = new ViewTest();
+        ViewTest view4 = new ViewTest();
         view1.name = "pippo";
         view2.name = "pluto";
-
-        ServerModelController serverModelController1 = new ServerModelController(reception, view1);
-        ServerModelController serverModelController2 = new ServerModelController(reception, view2);
-
+        view3.name = "topolino";
+        view4.name = "gianni";
         String lobbyName1 = "test1";
+        String lobbyName2 = "test2";
+        ControllerPublic controller1 = new ControllerPublic(lobbyGameListController, view1);
+        ControllerPublic controller2 = new ControllerPublic(lobbyGameListController, view2);
+        ControllerPublic controller3 = new ControllerPublic(lobbyGameListController, view3);
+        ControllerPublic controller4 = new ControllerPublic(lobbyGameListController, view4);
 
-        serverModelController1.login(view1.name);
-        serverModelController1.createLobby(lobbyName1, 2);
-        serverModelController2.login(view2.name);
-        serverModelController2.joinLobby(lobbyName1);
+        controller1.login(view1.name);
+        controller1.createLobby(lobbyName1, 2);
+        controller2.login(view2.name);
+        controller2.joinLobby(lobbyName1);
         //game started
         LightCard startCard = view1.lightGame.getHand().getCards()[0];
         LightPlacement startPlacement = new LightPlacement(new Position(0,0), startCard, CardFace.FRONT);
-        serverModelController1.place(startPlacement);
+        controller1.place(startPlacement);
 
         //check model
-        Game game = reception.getGameFromUserNick(view1.name);
+        Game game = lobbyGameListController.gameMap.get(lobbyName1).game;
+        assert game != null;
         User user1 = game.getUserFromNick(view1.name);
         User user2 = game.getUserFromNick(view2.name);
+        assert game.isInStartCardState();
+
         //user1
         assert user1.hasPlacedStartCard();
-        assert !game.checkAndMoveToSecretObjectiveChoicePhase(view1.name);
         assert user1.getUserCodex().getPlacementAt(new Position(0,0)) != null;
         assert user1.getUserHand().getHand().stream().allMatch(Objects::nonNull);
         assert user1.hasPlacedStartCard();
@@ -483,38 +419,37 @@ class ServerModelControllerTest {
         //view 2 lightModel isn't updated
         assert view2.lightGame.getCodexMap().get(view1.name).getPlacementHistory().isEmpty();
         assert Arrays.stream(view2.lightGame.getHandOthers().get(view1.name).getCards()).allMatch(Objects::isNull);
-        assert game.checkAndMoveToSecretObjectiveChoicePhase(view2.name);
     }
 
     @Test
     void lastPlayerSelectStartCard(){
-        Reception reception = new Reception();
-
+        LobbyListControllerPublic lobbyGameListController = new LobbyListControllerPublic();
         ViewTest view1 = new ViewTest();
         ViewTest view2 = new ViewTest();
-
+        ViewTest view3 = new ViewTest();
+        ViewTest view4 = new ViewTest();
         view1.name = "pippo";
         view2.name = "pluto";
-
-        ServerModelController serverModelController1 = new ServerModelController(reception, view1);
-        ServerModelController serverModelController2 = new ServerModelController(reception, view2);
-
+        view3.name = "topolino";
+        view4.name = "gianni";
         String lobbyName1 = "test1";
+        ControllerPublic controller1 = new ControllerPublic(lobbyGameListController, view1);
+        ControllerPublic controller2 = new ControllerPublic(lobbyGameListController, view2);
 
-        serverModelController1.login(view1.name);
-        serverModelController1.createLobby(lobbyName1, 2);
-        serverModelController2.login(view2.name);
-        serverModelController2.joinLobby(lobbyName1);
+        controller1.login(view1.name);
+        controller1.createLobby(lobbyName1, 2);
+        controller2.login(view2.name);
+        controller2.joinLobby(lobbyName1);
         //game started
         LightCard startCard = view1.lightGame.getHand().getCards()[0];
         LightPlacement startPlacement1 = new LightPlacement(new Position(0,0), startCard, CardFace.FRONT);
-        serverModelController1.place(startPlacement1);
+        controller1.place(startPlacement1);
         startCard = view2.lightGame.getHand().getCards()[0];
         LightPlacement startPlacement2 = new LightPlacement(new Position(0,0), startCard, CardFace.FRONT);
-        serverModelController2.place(startPlacement2);
+        controller2.place(startPlacement2);
 
         //check model
-        Game game = reception.getGameFromUserNick(view1.name);
+        Game game = lobbyGameListController.gameMap.get(lobbyName1).game;
         User user1 = game.getUserFromNick(view1.name);
         User user2 = game.getUserFromNick(view2.name);
         Hand hand1 = user1.getUserHand();
@@ -574,36 +509,36 @@ class ServerModelControllerTest {
 
     @Test
     void choseSecretObjective() {
-        Reception reception = new Reception();
-
+        LobbyListControllerPublic lobbyGameListController = new LobbyListControllerPublic();
         ViewTest view1 = new ViewTest();
         ViewTest view2 = new ViewTest();
-
+        ViewTest view3 = new ViewTest();
+        ViewTest view4 = new ViewTest();
         view1.name = "pippo";
         view2.name = "pluto";
-
-        ServerModelController serverModelController1 = new ServerModelController(reception, view1);
-        ServerModelController serverModelController2 = new ServerModelController(reception, view2);
-
+        view3.name = "topolino";
+        view4.name = "gianni";
         String lobbyName1 = "test1";
+        ControllerPublic controller1 = new ControllerPublic(lobbyGameListController, view1);
+        ControllerPublic controller2 = new ControllerPublic(lobbyGameListController, view2);
 
-        serverModelController1.login(view1.name);
-        serverModelController1.createLobby(lobbyName1, 2);
-        serverModelController2.login(view2.name);
-        serverModelController2.joinLobby(lobbyName1);
+        controller1.login(view1.name);
+        controller1.createLobby(lobbyName1, 2);
+        controller2.login(view2.name);
+        controller2.joinLobby(lobbyName1);
         //choose StartCard
         LightCard startCard = view1.lightGame.getHand().getCards()[0];
         LightPlacement startPlacement1 = new LightPlacement(new Position(0,0), startCard, CardFace.FRONT);
-        serverModelController1.place(startPlacement1);
+        controller1.place(startPlacement1);
         startCard = view2.lightGame.getHand().getCards()[0];
         LightPlacement startPlacement2 = new LightPlacement(new Position(0,0), startCard, CardFace.FRONT);
-        serverModelController2.place(startPlacement2);
+        controller2.place(startPlacement2);
         //choose secret objective
         LightCard secretObjective = view1.lightGame.getHand().getSecretObjectiveOptions()[0];
-        serverModelController1.chooseSecretObjective(secretObjective);
+        controller1.chooseSecretObjective(secretObjective);
 
         //model
-        Game game = reception.getGameFromUserNick(view1.name);
+        Game game = lobbyGameListController.gameMap.get(lobbyName1).game;
         User user1 = game.getUserFromNick(view1.name);
         Hand hand1 = user1.getUserHand();
         User user2 = game.getUserFromNick(view2.name);
@@ -633,37 +568,38 @@ class ServerModelControllerTest {
 
     @Test
     void lastToChoseSecretObjective() {
-        Reception reception = new Reception();
-
+        LobbyListControllerPublic lobbyGameListController = new LobbyListControllerPublic();
         ViewTest view1 = new ViewTest();
         ViewTest view2 = new ViewTest();
-
+        ViewTest view3 = new ViewTest();
+        ViewTest view4 = new ViewTest();
         view1.name = "pippo";
         view2.name = "pluto";
-
-        ServerModelController serverModelController1 = new ServerModelController(reception, view1);
-        ServerModelController serverModelController2 = new ServerModelController(reception, view2);
-
+        view3.name = "topolino";
+        view4.name = "gianni";
         String lobbyName1 = "test1";
+        ControllerPublic controller1 = new ControllerPublic(lobbyGameListController, view1);
+        ControllerPublic controller2 = new ControllerPublic(lobbyGameListController, view2);
 
-        serverModelController1.login(view1.name);
-        serverModelController1.createLobby(lobbyName1, 2);
-        serverModelController2.login(view2.name);
-        serverModelController2.joinLobby(lobbyName1);
+
+        controller1.login(view1.name);
+        controller1.createLobby(lobbyName1, 2);
+        controller2.login(view2.name);
+        controller2.joinLobby(lobbyName1);
         //choose StartCard
         LightCard startCard = view1.lightGame.getHand().getCards()[0];
         LightPlacement startPlacement1 = new LightPlacement(new Position(0,0), startCard, CardFace.FRONT);
-        serverModelController1.place(startPlacement1);
+        controller1.place(startPlacement1);
         startCard = view2.lightGame.getHand().getCards()[0];
         LightPlacement startPlacement2 = new LightPlacement(new Position(0,0), startCard, CardFace.FRONT);
-        serverModelController2.place(startPlacement2);
+        controller2.place(startPlacement2);
         //choose secret objective
         LightCard secretObjective1 = view1.lightGame.getHand().getSecretObjectiveOptions()[0];
-        serverModelController1.chooseSecretObjective(secretObjective1);
+        controller1.chooseSecretObjective(secretObjective1);
         LightCard secretObjective2 = view2.lightGame.getHand().getSecretObjectiveOptions()[0];
-        serverModelController2.chooseSecretObjective(secretObjective2);
+        controller2.chooseSecretObjective(secretObjective2);
         //model
-        Game game = reception.getGameFromUserNick(view1.name);
+        Game game = lobbyGameListController.gameMap.get(lobbyName1).game;
         User user1 = game.getUserFromNick(view1.name);
         Hand hand1 = user1.getUserHand();
         User user2 = game.getUserFromNick(view2.name);
@@ -701,44 +637,44 @@ class ServerModelControllerTest {
 
     @Test
     void place() {
-        Reception reception = new Reception();
-
+        LobbyListControllerPublic lobbyGameListController = new LobbyListControllerPublic();
         ViewTest view1 = new ViewTest();
         ViewTest view2 = new ViewTest();
-
+        ViewTest view3 = new ViewTest();
+        ViewTest view4 = new ViewTest();
         view1.name = "pippo";
         view2.name = "pluto";
-
-        ServerModelController serverModelController1 = new ServerModelController(reception, view1);
-        ServerModelController serverModelController2 = new ServerModelController(reception, view2);
-
+        view3.name = "topolino";
+        view4.name = "gianni";
         String lobbyName1 = "test1";
+        ControllerPublic controller1 = new ControllerPublic(lobbyGameListController, view1);
+        ControllerPublic controller2 = new ControllerPublic(lobbyGameListController, view2);
 
-        serverModelController1.login(view1.name);
-        serverModelController1.createLobby(lobbyName1, 2);
-        serverModelController2.login(view2.name);
-        serverModelController2.joinLobby(lobbyName1);
+        controller1.login(view1.name);
+        controller1.createLobby(lobbyName1, 2);
+        controller2.login(view2.name);
+        controller2.joinLobby(lobbyName1);
         //choose StartCard
         LightCard startCard = view1.lightGame.getHand().getCards()[0];
         LightPlacement startPlacement1 = new LightPlacement(new Position(0,0), startCard, CardFace.FRONT);
-        serverModelController1.place(startPlacement1);
+        controller1.place(startPlacement1);
         startCard = view2.lightGame.getHand().getCards()[0];
         LightPlacement startPlacement2 = new LightPlacement(new Position(0,0), startCard, CardFace.FRONT);
-        serverModelController2.place(startPlacement2);
+        controller2.place(startPlacement2);
         //choose secret objective
         LightCard secretObjective1 = view1.lightGame.getHand().getSecretObjectiveOptions()[0];
-        serverModelController1.chooseSecretObjective(secretObjective1);
+        controller1.chooseSecretObjective(secretObjective1);
         LightCard secretObjective2 = view2.lightGame.getHand().getSecretObjectiveOptions()[0];
-        serverModelController2.chooseSecretObjective(secretObjective2);
+        controller2.chooseSecretObjective(secretObjective2);
         //place
-        Game game = reception.getGameFromUserNick(view1.name);
+        Game game = lobbyGameListController.gameMap.get(lobbyName1).game;
         User user1 = game.getUserFromNick(view1.name);
         User user2 = game.getUserFromNick(view2.name);
-        game.setPlayerIndex(game.getUsersList().lastIndexOf(user1));
+        game.setCurrentPlayerIndex(game.getUsersList().lastIndexOf(user1));
         CardInHand cardPlaced = user1.getUserHand().getHand().stream().filter(Objects::nonNull).toList().getFirst();
         Position position = user1.getUserCodex().getFrontier().getFrontier().getFirst();
         LightPlacement placement = new LightPlacement(position, Lightifier.lightifyToCard(cardPlaced), CardFace.FRONT);
-        serverModelController1.place(placement);
+        controller1.place(placement);
 
         //model
         assert !user1.getUserHand().getHand().contains(cardPlaced);
@@ -767,48 +703,49 @@ class ServerModelControllerTest {
         assert lightCodex1on2.getPlacementHistory().contains(placement);
         assert !lightCodex1on2.getFrontier().frontier().contains(position);
     }
+
     @Test
     void drawFromDeck() {
-        Reception reception = new Reception();
-
+        LobbyListControllerPublic lobbyGameListController = new LobbyListControllerPublic();
         ViewTest view1 = new ViewTest();
         ViewTest view2 = new ViewTest();
-
+        ViewTest view3 = new ViewTest();
+        ViewTest view4 = new ViewTest();
         view1.name = "pippo";
         view2.name = "pluto";
-
-        ServerModelController serverModelController1 = new ServerModelController(reception, view1);
-        ServerModelController serverModelController2 = new ServerModelController(reception, view2);
-
+        view3.name = "topolino";
+        view4.name = "gianni";
         String lobbyName1 = "test1";
+        ControllerPublic controller1 = new ControllerPublic(lobbyGameListController, view1);
+        ControllerPublic controller2 = new ControllerPublic(lobbyGameListController, view2);
 
-        serverModelController1.login(view1.name);
-        serverModelController1.createLobby(lobbyName1, 2);
-        serverModelController2.login(view2.name);
-        serverModelController2.joinLobby(lobbyName1);
+        controller1.login(view1.name);
+        controller1.createLobby(lobbyName1, 2);
+        controller2.login(view2.name);
+        controller2.joinLobby(lobbyName1);
         //choose StartCard
         LightCard startCard = view1.lightGame.getHand().getCards()[0];
         LightPlacement startPlacement1 = new LightPlacement(new Position(0,0), startCard, CardFace.FRONT);
-        serverModelController1.place(startPlacement1);
+        controller1.place(startPlacement1);
         startCard = view2.lightGame.getHand().getCards()[0];
         LightPlacement startPlacement2 = new LightPlacement(new Position(0,0), startCard, CardFace.FRONT);
-        serverModelController2.place(startPlacement2);
+        controller2.place(startPlacement2);
         //choose secret objective
         LightCard secretObjective1 = view1.lightGame.getHand().getSecretObjectiveOptions()[0];
-        serverModelController1.chooseSecretObjective(secretObjective1);
+        controller1.chooseSecretObjective(secretObjective1);
         LightCard secretObjective2 = view2.lightGame.getHand().getSecretObjectiveOptions()[0];
-        serverModelController2.chooseSecretObjective(secretObjective2);
+        controller2.chooseSecretObjective(secretObjective2);
         //place
-        Game game = reception.getGameFromUserNick(view1.name);
+        Game game = lobbyGameListController.gameMap.get(lobbyName1).game;
         User user1 = game.getUserFromNick(view1.name);
         User user2 = game.getUserFromNick(view2.name);
-        game.setPlayerIndex(game.getUsersList().lastIndexOf(user1));
+        game.setCurrentPlayerIndex(game.getUsersList().lastIndexOf(user1));
         CardInHand cardPlaced = user1.getUserHand().getHand().stream().filter(Objects::nonNull).toList().getFirst();
         Position position = user1.getUserCodex().getFrontier().getFrontier().getFirst();
         LightPlacement placement = new LightPlacement(position, Lightifier.lightifyToCard(cardPlaced), CardFace.FRONT);
-        serverModelController1.place(placement);
+        controller1.place(placement);
         CardInHand card = game.getGoldCardDeck().showTopCardOfDeck();
-        serverModelController1.draw(DrawableCard.GOLDCARD, Configs.actualDeckPos);
+        controller1.draw(DrawableCard.GOLDCARD, Configs.actualDeckPos);
 
         //model
         List<Integer> heavyBuffer = game.getGoldCardDeck().getBuffer().stream().map(Card::getIdFront).toList();
@@ -830,48 +767,49 @@ class ServerModelControllerTest {
         assert view2.lightGame.getGoldDeck().getDeckBack().idBack() == game.getGoldCardDeck().showTopCardOfDeck().getIdBack();
 
     }
+
     @Test
     void drawFromBuffer() {
-        Reception reception = new Reception();
-
+        LobbyListControllerPublic lobbyGameListController = new LobbyListControllerPublic();
         ViewTest view1 = new ViewTest();
         ViewTest view2 = new ViewTest();
-
+        ViewTest view3 = new ViewTest();
+        ViewTest view4 = new ViewTest();
         view1.name = "pippo";
         view2.name = "pluto";
-
-        ServerModelController serverModelController1 = new ServerModelController(reception, view1);
-        ServerModelController serverModelController2 = new ServerModelController(reception, view2);
-
+        view3.name = "topolino";
+        view4.name = "gianni";
         String lobbyName1 = "test1";
+        ControllerPublic controller1 = new ControllerPublic(lobbyGameListController, view1);
+        ControllerPublic controller2 = new ControllerPublic(lobbyGameListController, view2);
 
-        serverModelController1.login(view1.name);
-        serverModelController1.createLobby(lobbyName1, 2);
-        serverModelController2.login(view2.name);
-        serverModelController2.joinLobby(lobbyName1);
+        controller1.login(view1.name);
+        controller1.createLobby(lobbyName1, 2);
+        controller2.login(view2.name);
+        controller2.joinLobby(lobbyName1);
         //choose StartCard
         LightCard startCard = view1.lightGame.getHand().getCards()[0];
         LightPlacement startPlacement1 = new LightPlacement(new Position(0,0), startCard, CardFace.FRONT);
-        serverModelController1.place(startPlacement1);
+        controller1.place(startPlacement1);
         startCard = view2.lightGame.getHand().getCards()[0];
         LightPlacement startPlacement2 = new LightPlacement(new Position(0,0), startCard, CardFace.FRONT);
-        serverModelController2.place(startPlacement2);
+        controller2.place(startPlacement2);
         //choose secret objective
         LightCard secretObjective1 = view1.lightGame.getHand().getSecretObjectiveOptions()[0];
-        serverModelController1.chooseSecretObjective(secretObjective1);
+        controller1.chooseSecretObjective(secretObjective1);
         LightCard secretObjective2 = view2.lightGame.getHand().getSecretObjectiveOptions()[0];
-        serverModelController2.chooseSecretObjective(secretObjective2);
+        controller2.chooseSecretObjective(secretObjective2);
         //place
-        Game game = reception.getGameFromUserNick(view1.name);
+        Game game = lobbyGameListController.gameMap.get(lobbyName1).game;
         User user1 = game.getUserFromNick(view1.name);
         User user2 = game.getUserFromNick(view2.name);
-        game.setPlayerIndex(game.getUsersList().lastIndexOf(user1));
+        game.setCurrentPlayerIndex(game.getUsersList().lastIndexOf(user1));
         CardInHand cardPlaced = user1.getUserHand().getHand().stream().filter(Objects::nonNull).toList().getFirst();
         Position position = user1.getUserCodex().getFrontier().getFrontier().getFirst();
         LightPlacement placement = new LightPlacement(position, Lightifier.lightifyToCard(cardPlaced), CardFace.FRONT);
-        serverModelController1.place(placement);
+        controller1.place(placement);
         CardInHand card = game.getGoldCardDeck().showCardFromBuffer(0);
-        serverModelController1.draw(DrawableCard.GOLDCARD, 0);
+        controller1.draw(DrawableCard.GOLDCARD, 0);
 
         //model
         List<Integer> heavyBuffer = game.getGoldCardDeck().getBuffer().stream().map(Card::getIdFront).toList();
@@ -895,46 +833,95 @@ class ServerModelControllerTest {
     }
 
     @Test
-    void gameEndingCausePoints(){
-        Reception reception = new Reception();
-
+    void completeTurn() {
+        LobbyListControllerPublic lobbyGameListController = new LobbyListControllerPublic();
         ViewTest view1 = new ViewTest();
         ViewTest view2 = new ViewTest();
-
         view1.name = "pippo";
         view2.name = "pluto";
 
-        ServerModelController serverModelController1 = new ServerModelController(reception, view1);
-        ServerModelController serverModelController2 = new ServerModelController(reception, view2);
-
-        Map<String, ServerModelController> serverModelControllerMap = new HashMap<>();
-        serverModelControllerMap.put(view1.name, serverModelController1);
-        serverModelControllerMap.put(view2.name, serverModelController2);
         String lobbyName1 = "test1";
+        ControllerPublic controller1 = new ControllerPublic(lobbyGameListController, view1);
+        ControllerPublic controller2 = new ControllerPublic(lobbyGameListController, view2);
 
-        serverModelController1.login(view1.name);
-        serverModelController1.createLobby(lobbyName1, 2);
-        serverModelController2.login(view2.name);
-        serverModelController2.joinLobby(lobbyName1);
+        controller1.login(view1.name);
+        controller2.login(view2.name);
+        controller1.createLobby(lobbyName1, 2);
+        controller2.joinLobby(lobbyName1);
+
+        LightCard startCard1 = view1.lightGame.getHand().getCards()[0];
+        LightPlacement startPlacement1 = new LightPlacement(new Position(0,0), startCard1, CardFace.FRONT);
+        LightCard startCard2 = view2.lightGame.getHand().getCards()[0];
+        LightPlacement startPlacement2 = new LightPlacement(new Position(0,0), startCard2, CardFace.FRONT);
+
+        controller1.place(startPlacement1);
+        controller2.place(startPlacement2);
+
+        LightCard secretObjective1 = view1.lightGame.getHand().getSecretObjectiveOptions()[0];
+        LightCard secretObjective2 = view2.lightGame.getHand().getSecretObjectiveOptions()[0];
+
+        controller1.chooseSecretObjective(secretObjective1);
+        controller2.chooseSecretObjective(secretObjective2);
+
+        Game game = lobbyGameListController.gameMap.get(lobbyName1).game;
+        ControllerPublic firstPlayerController = view1.name.equals(game.getCurrentPlayer().getNickname()) ? controller1 : controller2;
+        ControllerPublic secondPlayerController = view1.name.equals(game.getCurrentPlayer().getNickname()) ? controller2 : controller1;
+        User firstPlayer = game.getUserFromNick(firstPlayerController.nickname);
+        User secondPlayer = game.getUserFromNick(secondPlayerController.nickname);
+
+        LightCard cardPlaced1 = Lightifier.lightifyToCard(firstPlayer.getUserHand().getHand().stream().toList().getFirst());
+        Position position1 = firstPlayer.getUserCodex().getFrontier().getFrontier().getFirst();
+        LightPlacement placement1 = new LightPlacement(position1, cardPlaced1, CardFace.FRONT);
+
+        firstPlayerController.place(placement1);
+        firstPlayerController.draw(DrawableCard.GOLDCARD, 0);
+    }
+
+/*
+    @Test
+    void gameEndingCausePoints(){
+        LobbyListControllerPublic lobbyGameListController = new LobbyListControllerPublic();
+        ViewTest view1 = new ViewTest();
+        ViewTest view2 = new ViewTest();
+        ViewTest view3 = new ViewTest();
+        ViewTest view4 = new ViewTest();
+        view1.name = "pippo";
+        view2.name = "pluto";
+        view3.name = "topolino";
+        view4.name = "gianni";
+        String lobbyName1 = "test1";
+        ControllerPublic controller1 = new ControllerPublic(lobbyGameListController, view1);
+        ControllerPublic controller2 = new ControllerPublic(lobbyGameListController, view2);
+
+        Map<String, ControllerPublic> serverModelControllerMap = new HashMap<>();
+        serverModelControllerMap.put(view1.name, controller1);
+        serverModelControllerMap.put(view2.name, controller2);
+
+        controller1.login(view1.name);
+        controller1.createLobby(lobbyName1, 2);
+        controller2.login(view2.name);
+        controller2.joinLobby(lobbyName1);
+
+        System.out.println(lobbyGameListController.gameMap.get(lobbyName1).playerViewMap.keySet());
         //choose StartCard
         LightCard startCard = view1.lightGame.getHand().getCards()[0];
         LightPlacement startPlacement1 = new LightPlacement(new Position(0,0), startCard, CardFace.FRONT);
-        serverModelController1.place(startPlacement1);
+        controller1.place(startPlacement1);
         startCard = view2.lightGame.getHand().getCards()[0];
         LightPlacement startPlacement2 = new LightPlacement(new Position(0,0), startCard, CardFace.FRONT);
-        serverModelController2.place(startPlacement2);
+        controller2.place(startPlacement2);
         //choose secret objective
         LightCard secretObjective1 = view1.lightGame.getHand().getSecretObjectiveOptions()[0];
-        serverModelController1.chooseSecretObjective(secretObjective1);
+        controller1.chooseSecretObjective(secretObjective1);
         LightCard secretObjective2 = view2.lightGame.getHand().getSecretObjectiveOptions()[0];
-        serverModelController2.chooseSecretObjective(secretObjective2);
+        controller2.chooseSecretObjective(secretObjective2);
         //place
-        Game game = reception.getGameFromUserNick(view1.name);
+        Game game = lobbyGameListController.gameMap.get(lobbyName1).game;
         User user1 = game.getUserFromNick(view1.name);
         User user2 = game.getUserFromNick(view2.name);
 
 
-        User firstUserInTurn = game.getUserFromNick(game.getFirstActivePlayer());
+        User firstUserInTurn = game.getUsersList().getFirst();
         CardInHand cardPlaced1 = firstUserInTurn.getUserHand().getHand().stream().filter(Objects::nonNull).toList().getFirst();
         Position position1 = firstUserInTurn.getUserCodex().getFrontier().getFrontier().getFirst();
         LightPlacement placement1 = new LightPlacement(position1, Lightifier.lightifyToCard(cardPlaced1), CardFace.FRONT);
@@ -948,7 +935,8 @@ class ServerModelControllerTest {
         firstUserInTurn.getUserCodex().playCard(new Placement(firstUserInTurn.getUserCodex().getFrontier().getFrontier().getFirst(), exodiaTheForbidden, CardFace.FRONT));
         serverModelControllerMap.get(firstUserInTurn.getNickname()).draw(DrawableCard.GOLDCARD, 0);
 
-        assert game.isLastTurn();
+        assert game.duringLastTurns();
+        assert lobbyGameListController.gameMap.get(lobbyName1).playerViewMap.containsKey(view2.name);
 
         User nextPlayer = game.getCurrentPlayer();
         CardInHand cardPlaced2 = nextPlayer.getUserHand().getHand().stream().filter(Objects::nonNull).toList().getFirst();

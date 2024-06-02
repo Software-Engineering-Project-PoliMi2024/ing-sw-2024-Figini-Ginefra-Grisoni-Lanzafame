@@ -6,7 +6,7 @@ import it.polimi.ingsw.controller4.Interfaces.ControllerInterface;
 import it.polimi.ingsw.connectionLayer.VirtualLayer.VirtualController;
 import it.polimi.ingsw.connectionLayer.VirtualLayer.VirtualView;
 import it.polimi.ingsw.controller4.LogsOnClientStatic;
-import it.polimi.ingsw.controller4.ReceptionController;
+import it.polimi.ingsw.controller4.LobbyGameListController;
 import it.polimi.ingsw.view.ViewInterface;
 import it.polimi.ingsw.view.ViewState;
 
@@ -18,17 +18,17 @@ import java.util.concurrent.Future;
 import java.util.concurrent.TimeUnit;
 
 public class ConnectionServerRMI implements ConnectionLayerServer {
-    private final ReceptionController receptionController;
+    private final LobbyGameListController lobbyGameListController;
     private final ExecutorService serverExecutor = Executors.newSingleThreadExecutor();
     int secondsTimeOut = 5;
 
     /**
      * The constructor of the class
      *
-     * @param receptionController the wrapper for the Model present in the server
+     * @param lobbyGameListController the wrapper for the Model present in the server
      */
-    public ConnectionServerRMI(ReceptionController receptionController) {
-        this.receptionController = receptionController;
+    public ConnectionServerRMI(LobbyGameListController lobbyGameListController) {
+        this.lobbyGameListController = lobbyGameListController;
     }
 
     /**
@@ -43,7 +43,7 @@ public class ConnectionServerRMI implements ConnectionLayerServer {
         //expose the controller to the client
         Future<Void> connect = serverExecutor.submit(() -> {
             VirtualView virtualView = new VirtualViewRMI(view);
-            ControllerInterface controllerOnServer = new Controller(receptionController, virtualView);
+            ControllerInterface controllerOnServer = new Controller(lobbyGameListController, virtualView);
             virtualView.setController(controllerOnServer);
             virtualView.setPingPongStub(pingPong);
             ControllerInterface controllerStub = (ControllerInterface) UnicastRemoteObject.exportObject(controllerOnServer, 0);

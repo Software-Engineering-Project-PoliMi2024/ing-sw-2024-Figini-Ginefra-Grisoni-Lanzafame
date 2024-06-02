@@ -1,22 +1,21 @@
-package it.polimi.ingsw.controller4;
+package it.polimi.ingsw.controller.PublicController;
 
+import it.polimi.ingsw.controller4.GameController;
 import it.polimi.ingsw.controller4.Interfaces.ControllerInterface;
 import it.polimi.ingsw.controller4.Interfaces.GameControllerReceiver;
+import it.polimi.ingsw.controller4.LobbyGameListController;
 import it.polimi.ingsw.lightModel.lightPlayerRelated.LightCard;
 import it.polimi.ingsw.lightModel.lightPlayerRelated.LightPlacement;
 import it.polimi.ingsw.model.cardReleted.utilityEnums.DrawableCard;
 import it.polimi.ingsw.view.ViewInterface;
 
-/**
- * This class is the controller linked to every client
- */
-public class Controller implements ControllerInterface, GameControllerReceiver {
-    private String nickname;
-    private final LobbyGameListController lobbyGameListController;
-    private final ViewInterface view;
-    private GameController gameController;
+public class ControllerPublic implements ControllerInterface, GameControllerReceiverPublicInterface {
+    public String nickname;
+    public final LobbyListControllerPublic lobbyGameListController;
+    public final ViewInterface view;
+    public GameControllerPublic gameController;
 
-    public Controller(LobbyGameListController lobbyGameListController, ViewInterface view){
+    public ControllerPublic(LobbyListControllerPublic lobbyGameListController, ViewInterface view) {
         this.lobbyGameListController = lobbyGameListController;
         this.view = view;
     }
@@ -63,7 +62,7 @@ public class Controller implements ControllerInterface, GameControllerReceiver {
     }
 
     @Override
-    public void setGameController(GameController gameController) {
+    public void setGameController(GameControllerPublic gameController) {
         this.gameController = gameController;
     }
 }

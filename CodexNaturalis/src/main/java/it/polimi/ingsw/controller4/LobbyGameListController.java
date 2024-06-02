@@ -18,7 +18,7 @@ import java.util.Map;
 /**
  * This class is the controller that handles the reception of the clients. It manages the lobbies, the nicknames and the offline games
  */
-public class ReceptionController implements ReceptionControllerInterface {
+public class LobbyGameListController implements ReceptionControllerInterface {
     private final CardTable cardTable = new CardTable(Configs.CardResourcesFolderPath, Configs.CardJSONFileName, OSRelated.cardFolderDataPath);
     private final Map<String, ViewInterface> viewMap = new HashMap<>();
     private final Map<String, LobbyController> lobbyMap = new HashMap<>();

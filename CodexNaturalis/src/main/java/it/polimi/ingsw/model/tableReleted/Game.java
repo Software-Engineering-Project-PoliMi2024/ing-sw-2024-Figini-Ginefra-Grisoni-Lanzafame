@@ -2,7 +2,6 @@ package it.polimi.ingsw.model.tableReleted;
 
 
 import it.polimi.ingsw.Configs;
-import it.polimi.ingsw.lightModel.diffs.game.GameDiff;
 import it.polimi.ingsw.model.cardReleted.cards.*;
 import it.polimi.ingsw.model.cardReleted.utilityEnums.DrawableCard;
 import it.polimi.ingsw.model.playerReleted.Codex;
@@ -334,7 +333,9 @@ public class Game implements Serializable {
 
     public boolean hasEnded(){
         synchronized (turnLock){
-            return lastTurnsCounter == 0;
+            if(lastTurnsCounter != null)
+                return lastTurnsCounter == 0;
+            return false;
         }
     }
 

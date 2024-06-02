@@ -1,6 +1,8 @@
-package it.polimi.ingsw.controller4;
+package it.polimi.ingsw.controller.PublicController;
 
+import it.polimi.ingsw.controller4.GameController;
 import it.polimi.ingsw.controller4.Interfaces.GameControllerReceiver;
+import it.polimi.ingsw.controller4.LogsOnClientStatic;
 import it.polimi.ingsw.lightModel.DiffGenerator;
 import it.polimi.ingsw.lightModel.diffs.nuclearDiffs.LittleBoyLobby;
 import it.polimi.ingsw.model.cardReleted.cards.*;
@@ -12,31 +14,31 @@ import it.polimi.ingsw.view.ViewInterface;
 import java.util.HashMap;
 import java.util.Map;
 
-public class LobbyController {
-    private final Lobby lobby;
-    private final Map<String, ViewInterface> viewMap = new HashMap<>();
-    private final Map<String, GameControllerReceiver> gameReceiverMap = new HashMap<>();
+public class LobbyControllerPublic {
+    public final Lobby lobby;
+    public final Map<String, ViewInterface> viewMap = new HashMap<>();
+    public final Map<String, GameControllerReceiverPublicInterface> gameReceiverMap = new HashMap<>();
 
-    public LobbyController(Lobby lobby){
+    public LobbyControllerPublic(Lobby lobby) {
         this.lobby = lobby;
     }
 
-    public synchronized Map<String, ViewInterface> getViewMap(){
+    public synchronized Map<String, ViewInterface> getViewMap() {
         return new HashMap<>(viewMap);
     }
 
-    public synchronized Lobby getLobby(){
+    public synchronized Lobby getLobby() {
         return new Lobby(lobby);
     }
 
-    public synchronized void addPlayer(String nickname, ViewInterface view, GameControllerReceiver gameControllerReceiver){
+    public synchronized void addPlayer(String nickname, ViewInterface view, GameControllerReceiverPublicInterface gameControllerReceiver) {
         lobby.addUserName(nickname);
         viewMap.put(nickname, view);
         gameReceiverMap.put(nickname, gameControllerReceiver);
         this.notifyJoin(nickname);
     }
 
-    public synchronized ViewInterface removePlayer(String nickname){
+    public synchronized ViewInterface removePlayer(String nickname) {
         ViewInterface view = viewMap.get(nickname);
         this.notifyLeft(nickname);
         lobby.removeUserName(nickname);
@@ -45,26 +47,26 @@ public class LobbyController {
         return view;
     }
 
-    public synchronized GameController startGame(CardTable cardTable){
-        Deck<ObjectiveCard> objectiveCardDeck = new Deck<>(0,cardTable.getCardLookUpObjective().getQueue());
+    public synchronized GameControllerPublic startGame(CardTable cardTable) {
+        Deck<ObjectiveCard> objectiveCardDeck = new Deck<>(0, cardTable.getCardLookUpObjective().getQueue());
         Deck<ResourceCard> resourceCardDeck = new Deck<>(2, cardTable.getCardLookUpResourceCard().getQueue());
         Deck<GoldCard> goldCardDeck = new Deck<>(2, cardTable.getCardLookUpGoldCard().getQueue());
         Deck<StartCard> startingCardDeck = new Deck<>(0, cardTable.getCardLookUpStartCard().getQueue());
         Game createdGame = new Game(lobby, objectiveCardDeck, resourceCardDeck, goldCardDeck, startingCardDeck);
-        GameController gameController = new GameController(createdGame, cardTable);
+        GameControllerPublic gameController = new GameControllerPublic(createdGame, cardTable);
 
         notifyGameStart();
-        gameReceiverMap.forEach((nick, receiver)->receiver.setGameController(gameController));
+        gameReceiverMap.forEach((nick, receiver) -> receiver.setGameController(gameController));
         viewMap.forEach(gameController::join);
 
         return gameController;
     }
 
-    public synchronized boolean isLobbyFull(){
+    public synchronized boolean isLobbyFull() {
         return lobby.getLobbyPlayerList().size() == lobby.getNumberOfMaxPlayer();
     }
 
-    public synchronized boolean isLobbyEmpty(){
+    public synchronized boolean isLobbyEmpty() {
         return lobby.getLobbyPlayerList().isEmpty();
     }
 
@@ -83,13 +85,13 @@ public class LobbyController {
         });
     }
 
-    private synchronized void notifyLeft(String nickname){
+    private synchronized void notifyLeft(String nickname) {
         viewMap.forEach((nick, view) -> {
             try {
-                if(nick.equals(nickname)){
+                if (nick.equals(nickname)) {
                     view.updateLobby(new LittleBoyLobby());
                     view.log(LogsOnClientStatic.LOBBY_LEFT);
-                }else {
+                } else {
                     view.updateLobby(DiffGenerator.diffRemoveUserFromLobby(nickname));
                     view.logOthers(nickname + LogsOnClientStatic.LOBBY_LEFT_OTHER);
                 }
@@ -98,7 +100,7 @@ public class LobbyController {
         });
     }
 
-    private synchronized void notifyGameStart(){
+    private synchronized void notifyGameStart() {
         viewMap.forEach((nick, view) -> {
             try {
                 view.updateLobby(new LittleBoyLobby());
@@ -109,3 +111,4 @@ public class LobbyController {
 
     }
 }
+

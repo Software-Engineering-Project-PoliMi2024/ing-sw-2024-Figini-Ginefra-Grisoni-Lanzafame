@@ -4,7 +4,7 @@ import it.polimi.ingsw.connectionLayer.Socket.ClientMsg.*;
 import it.polimi.ingsw.connectionLayer.Socket.ServerHandler;
 import it.polimi.ingsw.connectionLayer.VirtualLayer.VirtualView;
 import it.polimi.ingsw.connectionLayer.VirtualSocket.VirtualControllerSocket;
-import it.polimi.ingsw.controller.LogsOnClient;
+import it.polimi.ingsw.controller4.LogsOnClientStatic;
 import it.polimi.ingsw.view.ViewInterface;
 import org.junit.jupiter.api.Test;
 
@@ -20,7 +20,7 @@ public class VirtualControllerSocketTest {
         VirtualControllerSocket virtualControllerSocket = new VirtualControllerSocket();
         ViewInterface mockView = mock(ViewInterface.class);
         virtualControllerSocket.connect("0.0.0.0", 4321, mockView);
-        verify(mockView, times(1)).logErr(LogsOnClient.CONNECTION_ERROR.getMessage());
+        verify(mockView, times(1)).logErr(LogsOnClientStatic.CONNECTION_ERROR);
     }
 
     @Test
