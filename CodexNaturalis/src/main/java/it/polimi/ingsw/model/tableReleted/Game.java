@@ -12,6 +12,7 @@ import it.polimi.ingsw.model.utilities.Pair;
 import java.io.Serializable;
 import java.util.*;
 import java.util.List;
+import java.util.concurrent.locks.ReentrantLock;
 
 
 /**
@@ -31,9 +32,7 @@ public class Game implements Serializable {
     private final List<ObjectiveCard> commonObjective;
 
     private Integer lastTurnsCounter = null;
-    private final Object turnLock = new Object();
-
-    private Timer countdownTimer;
+    private final ReentrantLock turnLock = new ReentrantLock();
     /**
      * Constructs a new Game instance with a specified maximum number of players.
      */

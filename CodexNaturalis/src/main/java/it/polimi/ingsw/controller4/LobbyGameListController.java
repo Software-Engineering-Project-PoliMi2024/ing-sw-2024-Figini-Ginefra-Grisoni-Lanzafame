@@ -142,10 +142,17 @@ public class LobbyGameListController implements ReceptionControllerInterface {
 
     @Override
     public synchronized void disconnect(String nickname) {
-        /*//If the game is empty, remove it from the MultiGame
-        if (gameToLeave.getGameLoopController().getActivePlayers().isEmpty()) {
-            multiGame.removeGame(gameToLeave);
-        }*/
+        if(this.isActiveInGame(nickname)) {
+            GameController gameToLeave = this.getGameFromUserNick(nickname);
+            gameToLeave.leave(nickname);
+            if(gameToLeave.getPlayerViewMap().keySet().isEmpty()) {
+                gameToLeave.save();
+            }
+        }else if(this.isActiveInLobby(nickname)){
+            this.leaveLobby(nickname);
+        }else{
+            viewMap.remove(nickname);
+        }
     }
 
     @Override
@@ -164,6 +171,15 @@ public class LobbyGameListController implements ReceptionControllerInterface {
 
             try{leaverView.transitionTo(ViewState.JOIN_LOBBY);}catch (Exception ignored){}
         }
+    }
+
+    private synchronized Boolean isActiveInLobby(String nickname){
+        return getLobbyFromUserNick(nickname) != null;
+    }
+
+    private synchronized Boolean isActiveInGame(String nickname){
+        GameController game = getGameFromUserNick(nickname);
+        return game.getPlayerViewMap().containsKey(nickname);
     }
 
     private synchronized Boolean isInGameParty(String nickname){

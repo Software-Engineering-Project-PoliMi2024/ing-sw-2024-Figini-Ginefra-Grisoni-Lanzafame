@@ -2,6 +2,7 @@ package it.polimi.ingsw.controller4;
 
 import it.polimi.ingsw.Configs;
 import it.polimi.ingsw.controller4.Interfaces.GameControllerInterface;
+import it.polimi.ingsw.controller4.persistence.PersistenceFactory;
 import it.polimi.ingsw.lightModel.DiffGenerator;
 import it.polimi.ingsw.lightModel.Heavifier;
 import it.polimi.ingsw.lightModel.Lightifier;
@@ -42,6 +43,8 @@ public class GameController implements GameControllerInterface {
     private final Game game;
     private final Map<String, ViewInterface> playerViewMap = new HashMap<>();
 
+    private Timer countdownTimer = null;
+
     public GameController(Game game, CardTable cardTable){
         this.game = game;
         this.cardTable = cardTable;
@@ -58,6 +61,7 @@ public class GameController implements GameControllerInterface {
     //TODO test when the decks finish the cards
 
     public synchronized void join(String joinerNickname, ViewInterface view){
+        countdownTimer = null;
         playerViewMap.put(joinerNickname, view);
 
         if(!isCurrentPlayerActive()){
@@ -228,6 +232,7 @@ public class GameController implements GameControllerInterface {
 
                 this.placeCard(nickname, placement);
             }
+            System.out.println(nickname + " placed card");
         }catch (Exception e) {
             throw new IllegalArgumentException("The placement is not valid");
         }
@@ -300,7 +305,7 @@ public class GameController implements GameControllerInterface {
 
     public synchronized void draw(String nickname, DrawableCard deckType, int cardID){
         User user = game.getUserFromNick(nickname);
-
+        System.out.println(nickname + " drew card");
         if(!game.areDeckEmpty()) {
             CardInHand drawnCard;
             CardInHand cardReplacement;
@@ -326,23 +331,46 @@ public class GameController implements GameControllerInterface {
 
         if(Objects.equals(this.getLastActivePlayer(), nickname) && game.hasEnded()){
             //model update with points
-            game.addObjectivePoints();
-            //notify
-            this.notifyGameEnded(game.getPointPerPlayerMap(), game.getWinners());
+            declareWinners();
+            //TODO delete when game finishes
         }else{
             //turn
             int nextPlayerIndex = this.getNextActivePlayerIndex();
             String nextPlayer = game.getUsersList().get(nextPlayerIndex).getNickname();
             if(nextPlayer.equals(nickname)){
-                throw new IllegalArgumentException("The next player is the same as the current player");
+                System.out.println("aaaaaaaaAAAAAAAAAAAAAAAAaaaaaaaa");
                 //TODO timer
+                countdownTimer = new Timer();
+                countdownTimer.schedule(new TimerTask() {
+                    @Override
+                    public void run() {
+                        declareWinners();
+                    }
+                }, Configs.lastInGameTimerSeconds* 1000L);
             }else {
+                this.save();
                 game.setCurrentPlayerIndex(this.getNextActivePlayerIndex());
                 this.notifyTurnChange(nextPlayer);
                 this.takeTurn(nickname);
                 this.takeTurn(nextPlayer);
             }
         }
+    }
+
+    private void declareWinners(){
+        game.addObjectivePoints();
+        //notify
+        this.notifyGameEnded(game.getPointPerPlayerMap(), game.getWinners());
+
+        playerViewMap.forEach((nickname, view)->{
+            try {
+                view.transitionTo(ViewState.GAME_ENDING);
+            }catch(Exception e){e.printStackTrace();}
+        });
+    }
+
+    public void save(){
+        PersistenceFactory.save(game);
     }
 
     private synchronized void notifyDraw(String drawerNickname, DrawableCard deckType, int pos, LightCard drawnCard, LightCard drawnReplace, boolean playability){
@@ -532,6 +560,7 @@ public class GameController implements GameControllerInterface {
                 }
             }
         }
+        this.save();
     }
 
     private synchronized boolean otherHaveAllSelected(String nicknamePerspective){

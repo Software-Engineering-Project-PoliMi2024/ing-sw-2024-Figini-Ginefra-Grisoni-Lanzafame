@@ -67,6 +67,6 @@ public class LogsOnClientStatic {
     public static String LAST_PLAYER = "You are the last player in the game";
 
     //gameCountDown related
-    public static String COUNTDOWN_START = "A CountDown of " +Configs.timerDurationSeconds + " seconds is starting now";
+    public static String COUNTDOWN_START = "A CountDown of " +Configs.lastInGameTimerSeconds + " seconds is starting now";
     public static String COUNTDOWN_INTERRUPTED = "The CountDown has been stopped";
 }
