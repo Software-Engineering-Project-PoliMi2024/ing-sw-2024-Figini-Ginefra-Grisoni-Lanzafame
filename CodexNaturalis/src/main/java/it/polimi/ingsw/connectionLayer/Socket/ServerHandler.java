@@ -6,6 +6,7 @@ import it.polimi.ingsw.connectionLayer.Socket.ServerMsg.ServerMsg;
 import it.polimi.ingsw.connectionLayer.VirtualLayer.VirtualController;
 import it.polimi.ingsw.controller.LogsOnClient;
 import it.polimi.ingsw.view.ViewInterface;
+import it.polimi.ingsw.view.ViewState;
 
 import java.io.IOException;
 import java.io.ObjectInputStream;
@@ -57,6 +58,7 @@ public class ServerHandler implements Runnable{
                     try {
                         System.out.println("Error while creating the input and output streams");
                         view.logErr(LogsOnClient.CONNECTION_ERROR.getMessage());
+                        view.transitionTo(ViewState.SERVER_CONNECTION);
                     } catch (Exception ex) {
                         //This is socket, RemoteException should not be thrown
                         throw new RuntimeException(ex);
@@ -70,6 +72,7 @@ public class ServerHandler implements Runnable{
             try {
                 System.out.println("Error while connecting to the server, the server exists but did not expect this protocol");
                 view.logErr(LogsOnClient.CONNECTION_ERROR.getMessage());
+                view.transitionTo(ViewState.SERVER_CONNECTION);
             } catch (Exception ex) {
                 //This is socket, RemoteException should not be thrown
                 throw new RuntimeException(ex);
@@ -81,6 +84,7 @@ public class ServerHandler implements Runnable{
             try {
                 System.out.println("Unknown error while connecting to the server");
                 view.logErr(LogsOnClient.CONNECTION_ERROR.getMessage());
+                view.transitionTo(ViewState.SERVER_CONNECTION);
             } catch (Exception ex) {
                 //This is socket, RemoteException should not be thrown
                 throw new RuntimeException(ex);
