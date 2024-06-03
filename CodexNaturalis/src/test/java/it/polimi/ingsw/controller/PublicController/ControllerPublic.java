@@ -7,15 +7,19 @@ import it.polimi.ingsw.controller4.LobbyGameListController;
 import it.polimi.ingsw.lightModel.lightPlayerRelated.LightCard;
 import it.polimi.ingsw.lightModel.lightPlayerRelated.LightPlacement;
 import it.polimi.ingsw.model.cardReleted.utilityEnums.DrawableCard;
+import it.polimi.ingsw.model.playerReleted.PawnColors;
 import it.polimi.ingsw.view.ViewInterface;
 
+/**
+ * This class is the controller linked to every client
+ */
 public class ControllerPublic implements ControllerInterface, GameControllerReceiverPublicInterface {
     public String nickname;
     public final LobbyListControllerPublic lobbyGameListController;
     public final ViewInterface view;
     public GameControllerPublic gameController;
 
-    public ControllerPublic(LobbyListControllerPublic lobbyGameListController, ViewInterface view) {
+    public ControllerPublic(LobbyListControllerPublic lobbyGameListController, ViewInterface view){
         this.lobbyGameListController = lobbyGameListController;
         this.view = view;
     }
@@ -44,6 +48,11 @@ public class ControllerPublic implements ControllerInterface, GameControllerRece
     @Override
     public void chooseSecretObjective(LightCard objectiveCard) {
         gameController.chooseSecretObjective(nickname, objectiveCard);
+    }
+
+    @Override
+    public void choosePawn(PawnColors color) {
+        gameController.choosePawn(nickname, color);
     }
 
     @Override

@@ -18,42 +18,39 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+/**
+ * This class is the controller that handles the reception of the clients. It manages the lobbies, the nicknames and the offline games
+ */
 public class LobbyListControllerPublic {
     public final CardTable cardTable = new CardTable(Configs.CardResourcesFolderPath, Configs.CardJSONFileName, OSRelated.cardFolderDataPath);
     public final Map<String, ViewInterface> viewMap = new HashMap<>();
     public final Map<String, LobbyControllerPublic> lobbyMap = new HashMap<>();
     public final Map<String, GameControllerPublic> gameMap = new HashMap<>();
 
-
     public synchronized void login(String nickname, ViewInterface view) {
         //check if the nickname is already taken
-        if (allConnectedUsers().containsKey(nickname)) {
+        if(allConnectedUsers().containsKey(nickname)) {
             try {
                 view.logErr(LogsOnClientStatic.NAME_TAKEN);
                 view.transitionTo(ViewState.LOGIN_FORM);
-            } catch (Exception ignored) {
-            }
+            }catch (Exception ignored){}
             //check if the nickname is valid
-        } else if (nickname.matches(Configs.invalidNicknameRegex)) {
+        }else if(nickname.matches(Configs.invalidNicknameRegex)){
             try {
                 view.logErr(LogsOnClientStatic.NOT_VALID_NICKNAME);
                 view.transitionTo(ViewState.LOGIN_FORM);
-            } catch (Exception ignored) {
-            }
-        } else {
+            }catch (Exception ignored){}
+        }else{
             //Client is now logged-In. If he disconnects we have to update the model
             System.out.println(nickname + " has connected");
 
             //check if the player was playing a game before disconnecting
-            if (isInGameParty(nickname)) {
+            if(isInGameParty(nickname)){
                 GameControllerPublic gameToJoin = this.getGameFromUserNick(nickname);
                 gameToJoin.join(nickname, view);
-            } else {
+            }else{
                 joinLobbyList(nickname, view);
-                try {
-                    view.transitionTo(ViewState.JOIN_LOBBY);
-                } catch (Exception ignored) {
-                }
+                try{view.transitionTo(ViewState.JOIN_LOBBY);}catch (Exception ignored){}
             }
         }
     }
@@ -61,26 +58,23 @@ public class LobbyListControllerPublic {
     public synchronized void createLobby(String creator, String lobbyName, int maxPlayerCount, GameControllerReceiverPublicInterface gameReceiver) {
         //check if the lobby name is already taken
         ViewInterface view = viewMap.get(creator);
-        if (lobbyMap.get(lobbyName) != null || gameMap.get(lobbyName) != null) {
+        if(lobbyMap.get(lobbyName)!=null || gameMap.get(lobbyName)!=null) {
             try {
                 view.logErr(LogsOnClientStatic.LOBBY_NAME_TAKEN);
                 view.transitionTo(ViewState.JOIN_LOBBY);
-            } catch (Exception ignored) {
-            }
+            }catch (Exception ignored){}
             //check if the lobby name is valid
-        } else if (lobbyName.matches(Configs.invalidLobbyNameRegex)) {
+        }else if(lobbyName.matches(Configs.invalidLobbyNameRegex)) {
             try {
                 view.logErr(LogsOnClientStatic.NOT_VALID_LOBBY_NAME);
                 view.transitionTo(ViewState.JOIN_LOBBY);
-            } catch (Exception ignored) {
-            }
-        } else if (maxPlayerCount < 2 || maxPlayerCount > 4) {
+            }catch (Exception ignored){}
+        }else if(maxPlayerCount < 2 || maxPlayerCount > 4){
             try {
                 view.logErr(LogsOnClientStatic.INVALID_MAX_PLAYER_COUNT);
                 view.transitionTo(ViewState.JOIN_LOBBY);
-            } catch (Exception ignored) {
-            }
-        } else { //create the lobby
+            }catch (Exception ignored){}
+        }else { //create the lobby
             System.out.println(creator + " create" + lobbyName + " lobby");
             Lobby lobbyCreated = new Lobby(maxPlayerCount, lobbyName);
 
@@ -90,26 +84,22 @@ public class LobbyListControllerPublic {
 
             this.notifyNewLobby(creator, lobbyCreated); //notify the lobbyList mediator of the new lobby creation
 
-            try {
-                view.transitionTo(ViewState.LOBBY);
-            } catch (Exception ignored) {
-            }
+            try{view.transitionTo(ViewState.LOBBY);}catch (Exception ignored){}
             leaveLobbyList(creator);
         }
     }
 
-    private synchronized void notifyNewLobby(String creator, Lobby addedLobby) {
+    private synchronized void notifyNewLobby(String creator, Lobby addedLobby){
         viewMap.forEach((nickname, view) -> {
             try {
                 view.updateLobbyList(DiffGenerator.addLobbyDiff(addedLobby));
-                if (!nickname.equals(creator)) {
+                if(!nickname.equals(creator)) {
                     view.log(LogsOnClientStatic.LOBBY_CREATED_OTHERS);
-                } else {
+                }else{
                     view.log(LogsOnClientStatic.LOBBY_CREATED_YOU);
                     view.log(LogsOnClientStatic.LOBBY_JOIN_YOU);
                 }
-            } catch (Exception ignored) {
-            }
+            } catch (Exception ignored) {}
         });
     }
 
@@ -120,8 +110,7 @@ public class LobbyListControllerPublic {
             try {
                 view.logErr(LogsOnClientStatic.LOBBY_NONEXISTENT);
                 view.transitionTo(ViewState.JOIN_LOBBY);
-            } catch (Exception ignored) {
-            }
+            }catch (Exception ignored){}
         } else {
             System.out.println(joiner + " joined " + lobbyName + " lobby");
             leaveLobbyList(joiner);
@@ -129,11 +118,8 @@ public class LobbyListControllerPublic {
             lobbyToJoin.addPlayer(joiner, view, gameReceiver);
 
             if (!lobbyToJoin.isLobbyFull()) {
-                try {
-                    view.transitionTo(ViewState.LOBBY);
-                } catch (Exception ignored) {
-                }
-            } else {
+                try{view.transitionTo(ViewState.LOBBY);}catch (Exception ignored){}
+            }else{
                 System.out.println(lobbyName + " lobby is full, game started");
                 GameControllerPublic gameController = lobbyToJoin.startGame(cardTable);
                 lobbyMap.remove(lobbyName);
@@ -143,45 +129,57 @@ public class LobbyListControllerPublic {
         }
     }
 
-    private synchronized void notifyLobbyRemoved(String destroyer, Lobby removedLobby) {
+    private synchronized void notifyLobbyRemoved(String destroyer, Lobby removedLobby){
         viewMap.forEach((nickname, view) -> {
             try {
                 view.updateLobbyList(DiffGenerator.removeLobbyDiff(removedLobby));
-                if (nickname.equals(destroyer))
+                if(nickname.equals(destroyer))
                     view.log(LogsOnClientStatic.LOBBY_REMOVED_YOU);
-            } catch (Exception ignored) {
-            }
+            } catch (Exception ignored) {}
         });
     }
 
     public synchronized void disconnect(String nickname) {
-        /*//If the game is empty, remove it from the MultiGame
-        if (gameToLeave.getGameLoopController().getActivePlayers().isEmpty()) {
-            multiGame.removeGame(gameToLeave);
-        }*/
+        if(this.isActiveInGame(nickname)) {
+            GameControllerPublic gameToLeave = this.getGameFromUserNick(nickname);
+            gameToLeave.leave(nickname);
+            if(gameToLeave.getPlayerViewMap().keySet().isEmpty()) {
+                gameToLeave.save();
+            }
+        }else if(this.isActiveInLobby(nickname)){
+            this.leaveLobby(nickname);
+        }else{
+            viewMap.remove(nickname);
+        }
     }
 
     public synchronized void leaveLobby(String leaverNick) {
         LobbyControllerPublic lobbyToLeave = this.getLobbyFromUserNick(leaverNick);
 
-        if (lobbyToLeave != null) {
+        if(lobbyToLeave!=null) {
             System.out.println(leaverNick + " left lobby");
             ViewInterface leaverView = lobbyToLeave.removePlayer(leaverNick);
             //update the model
-            if (lobbyToLeave.isLobbyEmpty()) {
+            if(lobbyToLeave.isLobbyEmpty()) {
                 lobbyMap.remove(lobbyToLeave.getLobby().getLobbyName());
                 this.notifyLobbyRemoved(leaverNick, lobbyToLeave.getLobby());
             }
             this.joinLobbyList(leaverNick, leaverView);
 
-            try {
-                leaverView.transitionTo(ViewState.JOIN_LOBBY);
-            } catch (Exception ignored) {
-            }
+            try{leaverView.transitionTo(ViewState.JOIN_LOBBY);}catch (Exception ignored){}
         }
     }
 
-    private synchronized Boolean isInGameParty(String nickname) {
+    private synchronized Boolean isActiveInLobby(String nickname){
+        return getLobbyFromUserNick(nickname) != null;
+    }
+
+    private synchronized Boolean isActiveInGame(String nickname){
+        GameControllerPublic game = getGameFromUserNick(nickname);
+        return game.getPlayerViewMap().containsKey(nickname);
+    }
+
+    private synchronized Boolean isInGameParty(String nickname){
         return getGameFromUserNick(nickname) != null;
     }
 
@@ -199,41 +197,37 @@ public class LobbyListControllerPublic {
                 .orElse(null);
     }
 
-    private synchronized Map<String, ViewInterface> allConnectedUsers() {
+    private synchronized Map<String, ViewInterface> allConnectedUsers(){
         Map<String, ViewInterface> allConnectedUsers = new HashMap<>(viewMap);
         gameMap.forEach((s, gameController) -> allConnectedUsers.putAll(gameController.getPlayerViewMap()));
         lobbyMap.forEach((s, gameController) -> allConnectedUsers.putAll(gameController.getViewMap()));
         return allConnectedUsers;
     }
 
-    private synchronized void joinLobbyList(String nickname, ViewInterface view) {
+    private synchronized void joinLobbyList(String nickname, ViewInterface view){
         viewMap.put(nickname, view);
         updateJoinLobbyList(view);
     }
 
-    private synchronized void updateJoinLobbyList(ViewInterface joinerView) {
+    private synchronized void updateJoinLobbyList(ViewInterface joinerView){
         List<Lobby> lobbyHistory = lobbyMap.values().stream().map(LobbyControllerPublic::getLobby).toList();
         try {
             joinerView.updateLobbyList(DiffGenerator.lobbyListHistory(lobbyHistory));
             joinerView.log(LogsOnClientStatic.JOIN_LOBBY_LIST);
-        } catch (Exception ignored) {
-        }
+        }catch (Exception ignored){}
     }
 
-    private synchronized ViewInterface leaveLobbyList(String nickname) {
+    private synchronized ViewInterface leaveLobbyList(String nickname){
         ViewInterface view = viewMap.get(nickname);
         viewMap.remove(nickname);
         updateLeaveLobbyList(view);
         return view;
     }
 
-    private synchronized void updateLeaveLobbyList(ViewInterface leaverView) {
+    private synchronized void updateLeaveLobbyList(ViewInterface leaverView){
         try {
             leaverView.updateLobbyList(new FatManLobbyList());
             leaverView.log(LogsOnClientStatic.LEFT_LOBBY_LIST);
-        } catch (Exception ignored) {
-        }
+        }catch (Exception ignored){}
     }
 }
-
-
