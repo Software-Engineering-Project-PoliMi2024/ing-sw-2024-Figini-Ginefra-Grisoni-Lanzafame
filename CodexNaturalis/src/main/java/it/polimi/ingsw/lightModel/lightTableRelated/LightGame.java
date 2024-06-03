@@ -4,6 +4,7 @@ import it.polimi.ingsw.lightModel.*;
 import it.polimi.ingsw.lightModel.lightPlayerRelated.*;
 import it.polimi.ingsw.model.cardReleted.utilityEnums.Collectable;
 import it.polimi.ingsw.model.cardReleted.utilityEnums.DrawableCard;
+import it.polimi.ingsw.model.playerReleted.PawnColors;
 
 import java.util.*;
 
@@ -124,6 +125,18 @@ public class LightGame implements Differentiable {
     }
     public void setPoint(int points, String nickname){
         codexMap.get(nickname).setPoints(points);
+    }
+
+    public void setFirstPlayerName(String firstPlayer){
+        lightGameParty.setFirstPlayerName(firstPlayer);
+    }
+
+    public void addPlayerColor(String nickname, PawnColors color){
+        lightGameParty.addPlayerColor(nickname, color);
+    }
+
+    public void setPawnChoices(List<PawnColors> pawnColorsList){
+        lightGameParty.setPawnChoices(pawnColorsList);
     }
 
     public void setFrontier(LightFrontier lightFrontier, String nickname){

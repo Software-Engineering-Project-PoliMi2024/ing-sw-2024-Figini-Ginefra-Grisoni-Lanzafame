@@ -1,7 +1,6 @@
 package it.polimi.ingsw.controller.PublicController;
 
 import it.polimi.ingsw.Configs;
-import it.polimi.ingsw.controller4.Interfaces.GameControllerInterface;
 import it.polimi.ingsw.controller4.LogsOnClientStatic;
 import it.polimi.ingsw.lightModel.DiffGenerator;
 import it.polimi.ingsw.lightModel.Heavifier;
@@ -24,7 +23,6 @@ import it.polimi.ingsw.lightModel.lightPlayerRelated.LightPlacement;
 import it.polimi.ingsw.model.cardReleted.cards.CardInHand;
 import it.polimi.ingsw.model.cardReleted.cards.CardTable;
 import it.polimi.ingsw.model.cardReleted.cards.ObjectiveCard;
-import it.polimi.ingsw.model.cardReleted.cards.StartCard;
 import it.polimi.ingsw.model.cardReleted.utilityEnums.DrawableCard;
 import it.polimi.ingsw.model.playerReleted.Codex;
 import it.polimi.ingsw.model.playerReleted.Placement;
@@ -238,10 +236,10 @@ public class GameControllerPublic {
             try {
                 if(nickname.equals(chooser)) {
                     view.updateGame(new HandDiffSetObj(objChoice));
-                    view.log(LogsOnClientStatic.YOU_CHOSE);
+                    view.log(LogsOnClientStatic.YOU_CHOSE_SECRET_OBJ);
                     view.logGame(LogsOnClientStatic.WAIT_SECRET_OBJECTIVE);
                 }else{
-                    view.logOthers(chooser + LogsOnClientStatic.PLAYER_CHOSE);
+                    view.logOthers(chooser + LogsOnClientStatic.PLAYER_CHOSE_SECRET_OBJ);
                 }
             } catch (Exception ignored) {}
         });
@@ -519,7 +517,7 @@ public class GameControllerPublic {
         playerViewMap.forEach((nickname, view)->{
             try {
                 view.updateGame(new GameDiffPublicObj(game.getCommonObjective().stream().map(Lightifier::lightifyToCard).toArray(LightCard[]::new)));
-                view.logGame(LogsOnClientStatic.EVERYONE_CHOSE);
+                view.logGame(LogsOnClientStatic.EVERYONE_CHOSE_OBJ);
             }catch (Exception ignored){}
         });
     }

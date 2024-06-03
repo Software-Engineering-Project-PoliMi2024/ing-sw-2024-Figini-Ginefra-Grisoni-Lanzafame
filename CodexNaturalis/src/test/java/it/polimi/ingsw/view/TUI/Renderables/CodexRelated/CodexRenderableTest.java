@@ -4,6 +4,7 @@ import it.polimi.ingsw.Configs;
 import it.polimi.ingsw.OSRelated;
 import it.polimi.ingsw.lightModel.diffs.game.codexDiffs.CodexDiffPlacement;
 import it.polimi.ingsw.lightModel.diffs.game.gamePartyDiffs.GameDiffCurrentPlayer;
+import it.polimi.ingsw.lightModel.diffs.game.gamePartyDiffs.GameDiffFirstPlayer;
 import it.polimi.ingsw.lightModel.diffs.game.gamePartyDiffs.GameDiffPlayerActivity;
 import it.polimi.ingsw.lightModel.diffs.game.joinDiffs.GameDiffInitialization;
 import it.polimi.ingsw.lightModel.lightPlayerRelated.LightCard;
@@ -33,7 +34,7 @@ class CodexRenderableTest {
         LightGame lightGame = new LightGame();
         renderable = new CodexRenderable("name", lightGame, museum, new CommandPrompt[]{}, null);
 
-        GameDiff diff = new GameDiffInitialization(List.of(new String[]{"Player1"}), "TestGame", "Player1", new GameDiffCurrentPlayer("Player1"));
+        GameDiff diff = new GameDiffInitialization(List.of(new String[]{"Player1"}), "TestGame", "Player1", new GameDiffCurrentPlayer("Player1"), new GameDiffFirstPlayer("Player1"));
         diff.apply(lightGame);
 
         diff = new GameDiffPlayerActivity(List.of(new String[]{"Player1"}), new ArrayList<>());

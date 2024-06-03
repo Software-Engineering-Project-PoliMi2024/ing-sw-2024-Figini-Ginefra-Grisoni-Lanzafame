@@ -1,7 +1,9 @@
 package it.polimi.ingsw.lightModel.lightTableRelated;
 
 import it.polimi.ingsw.lightModel.Differentiable;
+import it.polimi.ingsw.model.playerReleted.PawnColors;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -11,6 +13,9 @@ public class LightGameParty implements Differentiable {
     private String gameName;
     final private Map<String,Boolean> playerActiveList;
     private String currentPlayer;
+    private String firstPlayerName;
+    private List<PawnColors> pawnChoices = new ArrayList<>();
+    private Map<String, PawnColors> playersColor = new HashMap<>();
 
     public LightGameParty() {
         this.playerActiveList = new HashMap<>();
@@ -18,6 +23,18 @@ public class LightGameParty implements Differentiable {
 
     public void setGameName(String gameName) {
         this.gameName = gameName;
+    }
+
+    public void setPawnChoices(List<PawnColors> pawnColors){
+        this.pawnChoices = pawnColors;
+    }
+
+    public List<PawnColors> getPawnChoices(){
+        return pawnChoices;
+    }
+
+    public void addPlayerColor(String nickname, PawnColors color){
+        playersColor.put(nickname, color);
     }
 
     /**
@@ -54,6 +71,14 @@ public class LightGameParty implements Differentiable {
      */
     public String getCurrentPlayer() {
         return currentPlayer;
+    }
+
+    public String getFirstPlayerName() {
+        return firstPlayerName;
+    }
+
+    public void setFirstPlayerName(String firstPlayerName) {
+        this.firstPlayerName = firstPlayerName;
     }
 
     /**

@@ -4,6 +4,7 @@ import it.polimi.ingsw.Configs;
 import it.polimi.ingsw.OSRelated;
 import it.polimi.ingsw.lightModel.diffs.game.codexDiffs.CodexDiffPlacement;
 import it.polimi.ingsw.lightModel.diffs.game.gamePartyDiffs.GameDiffCurrentPlayer;
+import it.polimi.ingsw.lightModel.diffs.game.gamePartyDiffs.GameDiffFirstPlayer;
 import it.polimi.ingsw.lightModel.diffs.game.gamePartyDiffs.GameDiffPlayerActivity;
 import it.polimi.ingsw.lightModel.diffs.game.handDiffOther.HandOtherDiffAdd;
 import it.polimi.ingsw.lightModel.diffs.game.joinDiffs.GameDiffInitialization;
@@ -38,7 +39,7 @@ class PeekTest {
         handRenderable = new HandOthersRenderable("name", museum, lightGame, new CommandPrompt[]{}, null);
 
 
-        GameDiff diff = new GameDiffInitialization(List.of(new String[]{"Player1","Player2"}), "TestGame", "Player1", new GameDiffCurrentPlayer("Player1") );
+        GameDiff diff = new GameDiffInitialization(List.of(new String[]{"Player1","Player2"}), "TestGame", "Player1", new GameDiffCurrentPlayer("Player1"), new GameDiffFirstPlayer("Player1") );
         diff.apply(lightGame);
         diff = new GameDiffPlayerActivity(List.of(new String[]{"Player1", "Player2"}), new ArrayList<>());
         diff.apply(lightGame);

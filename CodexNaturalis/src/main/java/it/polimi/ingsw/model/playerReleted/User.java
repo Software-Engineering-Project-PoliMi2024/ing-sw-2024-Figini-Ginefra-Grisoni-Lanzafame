@@ -9,11 +9,24 @@ public class User implements Serializable {
     private final String nickname;
     private final Codex userCodex;
     private final Hand userHand;
+    private PawnColors pawnColor = null;
 
     public User(String nickname){
         this.nickname = nickname;
         this.userCodex = new Codex();
         this.userHand = new Hand();
+    }
+
+    public void setPawnColor(PawnColors pawnColor){
+        this.pawnColor = pawnColor;
+    }
+
+    public PawnColors getPawnColor(){
+        return this.pawnColor;
+    }
+
+    public boolean hasChosenPawnColor(){
+        return this.pawnColor != null;
     }
 
     /** @return the user nickname*/

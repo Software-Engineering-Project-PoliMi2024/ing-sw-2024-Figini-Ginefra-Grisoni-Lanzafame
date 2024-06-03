@@ -7,6 +7,7 @@ import it.polimi.ingsw.lightModel.diffs.game.deckDiffs.DeckDiff;
 import it.polimi.ingsw.lightModel.diffs.game.deckDiffs.DeckDiffBufferDraw;
 import it.polimi.ingsw.lightModel.diffs.game.deckDiffs.DeckDiffDeckDraw;
 import it.polimi.ingsw.lightModel.diffs.game.gamePartyDiffs.GameDiffCurrentPlayer;
+import it.polimi.ingsw.lightModel.diffs.game.gamePartyDiffs.GameDiffFirstPlayer;
 import it.polimi.ingsw.lightModel.diffs.game.gamePartyDiffs.GameDiffPlayerActivity;
 import it.polimi.ingsw.lightModel.diffs.game.handDiffOther.HandOtherDiff;
 import it.polimi.ingsw.lightModel.diffs.game.handDiffOther.HandOtherDiffAdd;
@@ -188,7 +189,8 @@ public class DiffGenerator {
                 game.getUsersList().stream().map(User::getNickname).toList(),
                 game.getName(),
                 nickname,
-                new GameDiffCurrentPlayer(game.getCurrentPlayer().getNickname())
+                new GameDiffCurrentPlayer(game.getCurrentPlayer().getNickname()),
+                new GameDiffFirstPlayer(game.getUsersList().getFirst().getNickname())
         );
     }
 

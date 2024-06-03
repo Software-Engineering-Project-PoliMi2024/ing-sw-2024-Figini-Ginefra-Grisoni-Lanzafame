@@ -5,6 +5,7 @@ import it.polimi.ingsw.controller4.Interfaces.GameControllerReceiver;
 import it.polimi.ingsw.lightModel.lightPlayerRelated.LightCard;
 import it.polimi.ingsw.lightModel.lightPlayerRelated.LightPlacement;
 import it.polimi.ingsw.model.cardReleted.utilityEnums.DrawableCard;
+import it.polimi.ingsw.model.playerReleted.PawnColors;
 import it.polimi.ingsw.view.ViewInterface;
 
 /**
@@ -45,6 +46,11 @@ public class Controller implements ControllerInterface, GameControllerReceiver {
     @Override
     public void chooseSecretObjective(LightCard objectiveCard) {
         gameController.chooseSecretObjective(nickname, objectiveCard);
+    }
+
+    @Override
+    public void choosePawn(PawnColors color) {
+        gameController.choosePawn(nickname, color);
     }
 
     @Override

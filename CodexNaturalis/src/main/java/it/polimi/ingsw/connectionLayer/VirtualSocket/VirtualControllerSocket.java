@@ -9,6 +9,7 @@ import it.polimi.ingsw.controller4.LogsOnClientStatic;
 import it.polimi.ingsw.lightModel.lightPlayerRelated.LightCard;
 import it.polimi.ingsw.lightModel.lightPlayerRelated.LightPlacement;
 import it.polimi.ingsw.model.cardReleted.utilityEnums.DrawableCard;
+import it.polimi.ingsw.model.playerReleted.PawnColors;
 import it.polimi.ingsw.view.ViewInterface;
 
 import java.io.IOException;
@@ -102,6 +103,11 @@ public class VirtualControllerSocket implements VirtualController {
     @Override
     public void chooseSecretObjective(LightCard objectiveCard){
         serverHandler.sendServerMessage(new ChoseSecretObjectiveMsg(objectiveCard));
+    }
+
+    @Override
+    public void choosePawn(PawnColors color) {
+
     }
 
     @Override

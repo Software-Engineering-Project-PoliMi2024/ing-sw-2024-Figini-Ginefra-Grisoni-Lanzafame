@@ -6,6 +6,7 @@ import it.polimi.ingsw.model.cardReleted.cards.*;
 import it.polimi.ingsw.model.cardReleted.utilityEnums.DrawableCard;
 import it.polimi.ingsw.model.playerReleted.Codex;
 import it.polimi.ingsw.model.playerReleted.Hand;
+import it.polimi.ingsw.model.playerReleted.PawnColors;
 import it.polimi.ingsw.model.playerReleted.User;
 import it.polimi.ingsw.model.utilities.Pair;
 
@@ -30,6 +31,7 @@ public class Game implements Serializable {
     private final String name;
     private final GameParty gameParty;
     private final List<ObjectiveCard> commonObjective;
+    private final List<PawnColors> pawnChoices;
 
     private Integer lastTurnsCounter = null;
     private final ReentrantLock turnLock = new ReentrantLock();
@@ -45,6 +47,8 @@ public class Game implements Serializable {
         this.startingCardDeck = startingCardDeck;
         this.goldCardDeck = goldCardDeck;
         this.commonObjective = new ArrayList<>();
+        this.pawnChoices = new ArrayList<>(Arrays.stream(PawnColors.values()).toList());
+
         this.populateCommonObjective();
         this.setupStartCard();
     }
@@ -106,6 +110,19 @@ public class Game implements Serializable {
     public void setCurrentPlayerIndex(int index){
         gameParty.setCurrentPlayerIndex(index);
     }
+
+    public List<PawnColors> getPawnChoices(){
+        return pawnChoices;
+    }
+
+    public void removeChoice(PawnColors color){
+        if(pawnChoices.contains(color)){
+            pawnChoices.remove(color);
+        }else {
+            throw new RuntimeException("Game.removeChoice pawnColor is not present in the list");
+        }
+    }
+
 
     /**
      * This method is used to get the index of the next player that is supposed to play

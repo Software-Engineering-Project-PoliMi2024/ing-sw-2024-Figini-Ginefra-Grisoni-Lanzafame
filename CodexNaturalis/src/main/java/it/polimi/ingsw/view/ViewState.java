@@ -8,6 +8,7 @@ public enum ViewState implements Serializable {
     JOIN_LOBBY,
     LOBBY,
     CHOOSE_START_CARD,
+    CHOOSE_PAWN,
     SELECT_OBJECTIVE,
     WAITING_STATE,
     IDLE,

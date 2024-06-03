@@ -12,6 +12,7 @@ import it.polimi.ingsw.lightModel.diffs.nuclearDiffs.GadgetGame;
 import it.polimi.ingsw.lightModel.diffs.nuclearDiffs.LittleBoyLobby;
 import it.polimi.ingsw.lightModel.lightPlayerRelated.LightPlacement;
 import it.polimi.ingsw.model.cardReleted.utilityEnums.DrawableCard;
+import it.polimi.ingsw.model.playerReleted.PawnColors;
 import it.polimi.ingsw.view.ViewInterface;
 import it.polimi.ingsw.view.ViewState;
 
@@ -101,6 +102,23 @@ public class VirtualControllerRMI implements VirtualController {
         Future<Void> choseSecretObjectiveFuture = controllerExecutor.submit(()->{
             try {
                 controllerStub.chooseSecretObjective(objectiveCard);
+                return null;
+            } catch (Exception e) {
+                throw new RuntimeException();
+            }
+        });
+        try {
+            choseSecretObjectiveFuture.get(Configs.secondsTimeOut, TimeUnit.SECONDS);
+        }catch (Exception e){
+            this.disconnect();
+        }
+    }
+
+    @Override
+    public void choosePawn(PawnColors color) {
+        Future<Void> choseSecretObjectiveFuture = controllerExecutor.submit(()->{
+            try {
+                controllerStub.choosePawn(color);
                 return null;
             } catch (Exception e) {
                 throw new RuntimeException();

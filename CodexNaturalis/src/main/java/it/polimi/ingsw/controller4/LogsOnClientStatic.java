@@ -38,12 +38,16 @@ public class LogsOnClientStatic {
 
     //gameSetup related  = startCard face and SecretObjective option selection)
     public static String YOU_PLACE_STARTCARD = "Successfully placed your Start Card.";
-    public static String YOU_CHOSE = "Successfully chose your Secret Objective.";
+    public static String YOU_CHOSE_PAWN = "Successfully chose your Pawn.";
+    public static String PLAYER_CHOSE_PAWN = " chose their Pawn.";
+    public static String EVERYONE_CHOSE_PAWN = "All players have chosen their Pawn.";
+    public static String PAWN_TAKEN = "The pawn chose is already taken.";
+    public static String YOU_CHOSE_SECRET_OBJ = "Successfully chose your Secret Objective.";
     public static String PLAYER_PLACE_STARTCARD = " placed their Start Card.";
-    public static String PLAYER_CHOSE = " chose their Secret Objective.";
+    public static String PLAYER_CHOSE_SECRET_OBJ = " chose their Secret Objective.";
     public static String EVERYONE_PLACED_STARTCARD = "All players have placed their Start Cards.";
     public static String WAIT_SECRET_OBJECTIVE = "Waiting for other players to choose their Secret Objectives.";
-    public static String EVERYONE_CHOSE = "All players have chosen their Secret Objectives.";
+    public static String EVERYONE_CHOSE_OBJ = "All players have chosen their Secret Objectives.";
 
     //gameCards related  = card place or draw)
     public static String CARD_PLACED = "Card successfully placed.";
@@ -59,6 +63,7 @@ public class LogsOnClientStatic {
     public static String PLAYER_TURN = "'s turn";
     public static String WAIT_STARTCARD = "Waiting for other players to place their Start Cards.";
     public static String LAST_TURN = "The final round of turns has begun.";
+    public static String WAIT_PAWN = "Waiting for other players to choose their pawn.";
     public static String GAME_END = "The game has ended.";
 
     //gameParty related
