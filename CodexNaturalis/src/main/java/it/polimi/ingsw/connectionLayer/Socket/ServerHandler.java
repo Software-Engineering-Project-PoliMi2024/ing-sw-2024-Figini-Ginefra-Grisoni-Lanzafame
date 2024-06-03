@@ -72,7 +72,7 @@ public class ServerHandler implements Runnable{
             this.waitForOwnerAndView();
             try {
                 System.out.println("Error while connecting to the server, the server exists but did not expect this protocol");
-                view.logErr(LogsOnClientStatic.CONNECTION_ERROR.getMessage());
+                view.logErr(LogsOnClientStatic.CONNECTION_ERROR);
                 view.transitionTo(ViewState.SERVER_CONNECTION);
             } catch (Exception ex) {
                 //This is socket, RemoteException should not be thrown
