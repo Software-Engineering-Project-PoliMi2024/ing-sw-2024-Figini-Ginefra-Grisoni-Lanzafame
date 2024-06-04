@@ -551,6 +551,7 @@ public class GameController implements GameControllerInterface {
                     } while (cardDrawn == null);
 
                     this.draw(nickname, this.randomDeckType(), this.randomDeckPosition());
+                    this.notifyDraw(nickname, deckType, pos, Lightifier.lightifyToCard(cardDrawn), Lightifier.lightifyToCard(cardReplacement), cardDrawn.canBePlaced(game.getUserFromNick(nickname).getUserCodex()));
                 }
                 //move on with the turns for the other players
                 if(!this.playerViewMap.keySet().isEmpty()) {
@@ -629,13 +630,11 @@ public class GameController implements GameControllerInterface {
     private synchronized void removeInactivePlayers(Predicate<User> check) {
         for (User user : game.getUsersList()) {
             List<String> activePlayer = playerViewMap.keySet().stream().toList();
-            if (!activePlayer.contains(user.getNickname())) {
-                if(check.test(user)){
+            if (!activePlayer.contains(user.getNickname()) && check.test(user)) {
                     boolean isFirst = game.getUsersList().getFirst().equals(user);
                     game.removeUser(user.getNickname());
                     if(isFirst){
                         this.notifyFirstPlayerChange(game.getUsersList().getFirst().getNickname());
-                    }
                 }
             }
         }

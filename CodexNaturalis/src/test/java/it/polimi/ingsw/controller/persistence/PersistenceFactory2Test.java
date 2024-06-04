@@ -6,7 +6,9 @@ import it.polimi.ingsw.controller4.Controller;
 import it.polimi.ingsw.controller4.LobbyGameListController;
 import it.polimi.ingsw.controller4.persistence.PersistenceFactory;
 import it.polimi.ingsw.lightModel.ViewTest;
+import it.polimi.ingsw.model.cardReleted.cards.*;
 import it.polimi.ingsw.model.playerReleted.User;
+import it.polimi.ingsw.model.tableReleted.Deck;
 import it.polimi.ingsw.model.tableReleted.Game;
 import it.polimi.ingsw.model.tableReleted.Lobby;
 import org.junit.jupiter.api.AfterEach;
@@ -22,7 +24,6 @@ import java.util.List;
 import java.util.Objects;
 
 public class PersistenceFactory2Test {
-    /*
     @BeforeEach
     void setUp() { //emulate the serverStartUP
         OSRelated.checkOrCreateDataFolderServer();
@@ -35,23 +36,20 @@ public class PersistenceFactory2Test {
 
     @Test
     void saveTest(){
-        LobbyGameListController reception = new LobbyGameListController();
-        ViewTest view1 = new ViewTest();
-        ViewTest view2 = new ViewTest();
-        view1.name = "gianni1";
-        view2.name = "gianni2";
-        Controller controller1 = new Controller(reception, view1);
-        Controller controller2 = new Controller(reception, view2);
+        CardTable cardTable = new CardTable(Configs.CardResourcesFolderPath, Configs.CardJSONFileName, OSRelated.cardFolderDataPath);
+        Deck<ObjectiveCard> objectiveCardDeck = new Deck<>(0,cardTable.getCardLookUpObjective().getQueue());
+        Deck<ResourceCard> resourceCardDeck = new Deck<>(2, cardTable.getCardLookUpResourceCard().getQueue());
+        Deck<GoldCard> goldCardDeck = new Deck<>(2, cardTable.getCardLookUpGoldCard().getQueue());
+        Deck<StartCard> startingCardDeck = new Deck<>(0, cardTable.getCardLookUpStartCard().getQueue());
+        Lobby lobby = new Lobby(3, "saveGameTest");
 
-        reception.createLobby("gianni1", "saveGameTest", 3, controller1);
-        reception.joinLobby("gianni2", "saveGameTest", controller2);
-        Game gameToSave = reception.createGame(lobby);
+        Game gameToSave = new Game(lobby, objectiveCardDeck, resourceCardDeck, goldCardDeck, startingCardDeck);
         PersistenceFactory.save(gameToSave);
 
         List<File> gameSaves = Arrays.asList(Objects.requireNonNull(new File(OSRelated.gameDataFolderPath).listFiles()));
         Assertions.assertEquals(1, gameSaves.stream().filter(file -> file.getName().contains("saveGameTest")).count());
     }
-
+    /*
     @Test
     void load() {
         Reception reception = new Reception();
@@ -126,5 +124,6 @@ public class PersistenceFactory2Test {
         outStream.writeObject(gameToSave);
         outStream.close();
     }
-     */
+    */
+
 }

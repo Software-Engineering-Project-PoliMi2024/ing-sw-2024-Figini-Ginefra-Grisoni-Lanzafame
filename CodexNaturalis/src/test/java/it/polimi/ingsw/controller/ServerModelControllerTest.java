@@ -2,11 +2,8 @@ package it.polimi.ingsw.controller;
 
 import it.polimi.ingsw.Configs;
 import it.polimi.ingsw.OSRelated;
-import it.polimi.ingsw.controller.PublicController.ControllerPublic;
-import it.polimi.ingsw.controller.PublicController.GameControllerPublic;
 import it.polimi.ingsw.controller.PublicController.LobbyListControllerPublic;
 import it.polimi.ingsw.controller4.Controller;
-import it.polimi.ingsw.controller4.GameController;
 import it.polimi.ingsw.controller4.LobbyGameListController;
 import it.polimi.ingsw.lightModel.LightModelConfig;
 import it.polimi.ingsw.lightModel.Lightifier;
@@ -16,10 +13,8 @@ import it.polimi.ingsw.lightModel.lightTableRelated.LightDeck;
 import it.polimi.ingsw.lightModel.lightTableRelated.LightLobby;
 import it.polimi.ingsw.model.cardReleted.cards.Card;
 import it.polimi.ingsw.model.cardReleted.cards.CardInHand;
-import it.polimi.ingsw.model.cardReleted.cards.ResourceCard;
 import it.polimi.ingsw.model.cardReleted.utilityEnums.*;
 import it.polimi.ingsw.model.playerReleted.Hand;
-import it.polimi.ingsw.model.playerReleted.Placement;
 import it.polimi.ingsw.model.playerReleted.Position;
 import it.polimi.ingsw.model.playerReleted.User;
 import it.polimi.ingsw.model.tableReleted.Game;
@@ -31,23 +26,24 @@ import org.junit.jupiter.api.Test;
 import java.util.*;
 
 class ServerModelControllerTest {
-
+    private LobbyGameListController realLobbyGameListController;
+    private LobbyListControllerPublic lobbyGameListController;
     @BeforeEach
     public void setUp(){
+        realLobbyGameListController = new LobbyGameListController();
+        lobbyGameListController = new LobbyListControllerPublic(realLobbyGameListController);
+
         OSRelated.checkOrCreateDataFolderServer(); //Create the dataFolder if necessary. Normally this is done in the Server class
-    }
+        }
 
     @Test
     void loginJoiningLobbyList() {
-        LobbyListControllerPublic lobbyGameListController = new LobbyListControllerPublic();
         ViewTest view1 = new ViewTest();
         view1.name = "pippo";
         ViewTest view2 = new ViewTest();
         view2.name = "pluto";
-        String LobbyCreatorName = "lobbyCreator";
-        List<ViewTest> views = Arrays.stream(new ViewTest[]{view1, view2}).toList();
-        ControllerPublic controller1 = new ControllerPublic(lobbyGameListController, view1);
-        ControllerPublic controller2 = new ControllerPublic(lobbyGameListController, view2);
+        Controller controller1 = new Controller(realLobbyGameListController, view1);
+        Controller controller2 = new Controller(realLobbyGameListController, view2);
 
         //view joins before adding lobbies
         controller1.login(view1.name);
@@ -59,24 +55,24 @@ class ServerModelControllerTest {
 
         System.out.println(view1.name);
         assert !view1.lightLobbyList.getLobbies().contains(Lightifier.lightify(lobby));
-        assert !lobbyGameListController.viewMap.containsKey(view1.name);
+        assert !lobbyGameListController.getViewMap().containsKey(view1.name);
         assert view1.state.equals(ViewState.LOBBY);
         assert view2.lightLobbyList.getLobbies().contains(Lightifier.lightify(lobby));
-        assert lobbyGameListController.viewMap.containsKey(view2.name);
+        assert lobbyGameListController.getViewMap().containsKey(view2.name);
         assert view2.state.equals(ViewState.JOIN_LOBBY);
 
     }
+
     @Test
     void createLobby() {
-        LobbyListControllerPublic lobbyGameListController = new LobbyListControllerPublic();
         ViewTest view1 = new ViewTest();
         ViewTest view2 = new ViewTest();
         ViewTest view3 = new ViewTest();
         String LobbyCreatorName = "lobbyCreator";
         List<ViewTest> views = Arrays.stream(new ViewTest[]{view1, view2}).toList();
-        ControllerPublic controller1 = new ControllerPublic(lobbyGameListController, view1);
-        ControllerPublic controller2 = new ControllerPublic(lobbyGameListController, view2);
-        ControllerPublic controller3 = new ControllerPublic(lobbyGameListController, view3);
+        Controller controller1 = new Controller(realLobbyGameListController, view1);
+        Controller controller2 = new Controller(realLobbyGameListController, view2);
+        Controller controller3 = new Controller(realLobbyGameListController, view3);
 
         view1.name = "pippo";
         view2.name = "pluto";
@@ -84,14 +80,14 @@ class ServerModelControllerTest {
         String lobbyName1 = "test1";
         String lobbyName2 = "test2";
 
-        lobbyGameListController.login(view1.name, view1);
-        lobbyGameListController.createLobby(view1.name, lobbyName1, 2, controller1);
-        lobbyGameListController.login(view2.name, view2);
-        lobbyGameListController.login(view3.name, view3);
-        lobbyGameListController.createLobby(view2.name, lobbyName2, 2, controller2);
+        controller1.login(view1.name);
+        controller1.createLobby(lobbyName1, 2);
+        controller2.login(view2.name);
+        controller3.login(view3.name);
+        controller2.createLobby(lobbyName2, 2);
 
-        assert lobbyGameListController.lobbyMap.containsKey(lobbyName1);
-        assert lobbyGameListController.lobbyMap.containsKey(lobbyName2);
+        assert lobbyGameListController.getLobbyMap().containsKey(lobbyName1);
+        assert lobbyGameListController.getLobbyMap().containsKey(lobbyName2);
         assert view1.lightLobbyList.getLobbies().isEmpty();
         assert view2.lightLobbyList.getLobbies().isEmpty();
         assert view3.lightLobbyList.getLobbies().stream().map(LightLobby::name).toList().contains(lobbyName1);
@@ -100,12 +96,11 @@ class ServerModelControllerTest {
 
     @Test
     void joinLobby() {
-        LobbyListControllerPublic lobbyGameListController = new LobbyListControllerPublic();
         ViewTest view1 = new ViewTest();
         ViewTest view2 = new ViewTest();
         String LobbyCreatorName = "lobbyCreator";
-        ControllerPublic controller1 = new ControllerPublic(lobbyGameListController, view1);
-        ControllerPublic controller2 = new ControllerPublic(lobbyGameListController, view2);
+        Controller controller1 = new Controller(realLobbyGameListController, view1);
+        Controller controller2 = new Controller(realLobbyGameListController, view2);
 
         view1.name = "pippo";
         view2.name = "pluto";
@@ -115,11 +110,11 @@ class ServerModelControllerTest {
         controller2.login(view2.name);
         controller2.joinLobby(lobbyName1);
 
-        assert !lobbyGameListController.viewMap.containsKey(view1.name);
-        assert lobbyGameListController.lobbyMap.containsKey(lobbyName1);
-        assert lobbyGameListController.lobbyMap.get(lobbyName1).getLobby().getLobbyPlayerList().contains(view1.name);
-        assert lobbyGameListController.lobbyMap.get(lobbyName1).getLobby().getLobbyPlayerList().contains(view2.name);
-        assert lobbyGameListController.lobbyMap.get(lobbyName1).getLobby().getLobbyPlayerList().size() == 2;
+        assert !lobbyGameListController.getViewMap().containsKey(view1.name);
+        assert lobbyGameListController.getLobbyMap().containsKey(lobbyName1);
+        assert lobbyGameListController.getLobbyMap().get(lobbyName1).getLobby().getLobbyPlayerList().contains(view1.name);
+        assert lobbyGameListController.getLobbyMap().get(lobbyName1).getLobby().getLobbyPlayerList().contains(view2.name);
+        assert lobbyGameListController.getLobbyMap().get(lobbyName1).getLobby().getLobbyPlayerList().size() == 2;
 
         for(ViewTest view : Arrays.stream(new ViewTest[]{view1, view2}).toList()){
             System.out.println(view.name);
@@ -136,7 +131,6 @@ class ServerModelControllerTest {
 
     @Test
     void joinLobbyAndStartGame(){
-        LobbyListControllerPublic lobbyGameListController = new LobbyListControllerPublic();
         ViewTest view1 = new ViewTest();
         ViewTest view2 = new ViewTest();
         ViewTest view3 = new ViewTest();
@@ -144,9 +138,9 @@ class ServerModelControllerTest {
         view2.name = "pluto";
         view3.name = "topolino";
         String lobbyName1 = "test1";
-        ControllerPublic controller1 = new ControllerPublic(lobbyGameListController, view1);
-        ControllerPublic controller2 = new ControllerPublic(lobbyGameListController, view2);
-        ControllerPublic controller3 = new ControllerPublic(lobbyGameListController, view3);
+        Controller controller1 = new Controller(lobbyGameListController, view1);
+        Controller controller2 = new Controller(lobbyGameListController, view2);
+        Controller controller3 = new Controller(lobbyGameListController, view3);
 
         controller3.login(view3.name);
         controller1.login(view1.name);
@@ -303,8 +297,6 @@ class ServerModelControllerTest {
 
     @Test
     void leaveLobby() {
-
-        LobbyListControllerPublic lobbyGameListController = new LobbyListControllerPublic();
         ViewTest view1 = new ViewTest();
         ViewTest view2 = new ViewTest();
         ViewTest view3 = new ViewTest();
@@ -315,10 +307,10 @@ class ServerModelControllerTest {
         view4.name = "gianni";
         String lobbyName1 = "test1";
         String lobbyName2 = "test2";
-        ControllerPublic controller1 = new ControllerPublic(lobbyGameListController, view1);
-        ControllerPublic controller2 = new ControllerPublic(lobbyGameListController, view2);
-        ControllerPublic controller3 = new ControllerPublic(lobbyGameListController, view3);
-        ControllerPublic controller4 = new ControllerPublic(lobbyGameListController, view4);
+        Controller controller1 = new Controller(lobbyGameListController, view1);
+        Controller controller2 = new Controller(lobbyGameListController, view2);
+        Controller controller3 = new Controller(lobbyGameListController, view3);
+        Controller controller4 = new Controller(lobbyGameListController, view4);
 
         controller1.login(view1.name);
         controller1.createLobby(lobbyName1, 3);
@@ -368,7 +360,6 @@ class ServerModelControllerTest {
 
     @Test
     void selectStartCardFace() {
-        LobbyListControllerPublic lobbyGameListController = new LobbyListControllerPublic();
         ViewTest view1 = new ViewTest();
         ViewTest view2 = new ViewTest();
         ViewTest view3 = new ViewTest();
@@ -379,10 +370,10 @@ class ServerModelControllerTest {
         view4.name = "gianni";
         String lobbyName1 = "test1";
         String lobbyName2 = "test2";
-        ControllerPublic controller1 = new ControllerPublic(lobbyGameListController, view1);
-        ControllerPublic controller2 = new ControllerPublic(lobbyGameListController, view2);
-        ControllerPublic controller3 = new ControllerPublic(lobbyGameListController, view3);
-        ControllerPublic controller4 = new ControllerPublic(lobbyGameListController, view4);
+        Controller controller1 = new Controller(lobbyGameListController, view1);
+        Controller controller2 = new Controller(lobbyGameListController, view2);
+        Controller controller3 = new Controller(lobbyGameListController, view3);
+        Controller controller4 = new Controller(lobbyGameListController, view4);
 
         controller1.login(view1.name);
         controller1.createLobby(lobbyName1, 2);
@@ -423,7 +414,6 @@ class ServerModelControllerTest {
 
     @Test
     void lastPlayerSelectStartCard(){
-        LobbyListControllerPublic lobbyGameListController = new LobbyListControllerPublic();
         ViewTest view1 = new ViewTest();
         ViewTest view2 = new ViewTest();
         ViewTest view3 = new ViewTest();
@@ -433,8 +423,8 @@ class ServerModelControllerTest {
         view3.name = "topolino";
         view4.name = "gianni";
         String lobbyName1 = "test1";
-        ControllerPublic controller1 = new ControllerPublic(lobbyGameListController, view1);
-        ControllerPublic controller2 = new ControllerPublic(lobbyGameListController, view2);
+        Controller controller1 = new Controller(lobbyGameListController, view1);
+        Controller controller2 = new Controller(lobbyGameListController, view2);
 
         controller1.login(view1.name);
         controller1.createLobby(lobbyName1, 2);
@@ -509,7 +499,6 @@ class ServerModelControllerTest {
 
     @Test
     void choseSecretObjective() {
-        LobbyListControllerPublic lobbyGameListController = new LobbyListControllerPublic();
         ViewTest view1 = new ViewTest();
         ViewTest view2 = new ViewTest();
         ViewTest view3 = new ViewTest();
@@ -519,8 +508,8 @@ class ServerModelControllerTest {
         view3.name = "topolino";
         view4.name = "gianni";
         String lobbyName1 = "test1";
-        ControllerPublic controller1 = new ControllerPublic(lobbyGameListController, view1);
-        ControllerPublic controller2 = new ControllerPublic(lobbyGameListController, view2);
+        Controller controller1 = new Controller(lobbyGameListController, view1);
+        Controller controller2 = new Controller(lobbyGameListController, view2);
 
         controller1.login(view1.name);
         controller1.createLobby(lobbyName1, 2);
@@ -568,7 +557,6 @@ class ServerModelControllerTest {
 
     @Test
     void lastToChoseSecretObjective() {
-        LobbyListControllerPublic lobbyGameListController = new LobbyListControllerPublic();
         ViewTest view1 = new ViewTest();
         ViewTest view2 = new ViewTest();
         ViewTest view3 = new ViewTest();
@@ -578,8 +566,8 @@ class ServerModelControllerTest {
         view3.name = "topolino";
         view4.name = "gianni";
         String lobbyName1 = "test1";
-        ControllerPublic controller1 = new ControllerPublic(lobbyGameListController, view1);
-        ControllerPublic controller2 = new ControllerPublic(lobbyGameListController, view2);
+        Controller controller1 = new Controller(lobbyGameListController, view1);
+        Controller controller2 = new Controller(lobbyGameListController, view2);
 
 
         controller1.login(view1.name);
@@ -637,7 +625,6 @@ class ServerModelControllerTest {
 
     @Test
     void place() {
-        LobbyListControllerPublic lobbyGameListController = new LobbyListControllerPublic();
         ViewTest view1 = new ViewTest();
         ViewTest view2 = new ViewTest();
         ViewTest view3 = new ViewTest();
@@ -647,8 +634,8 @@ class ServerModelControllerTest {
         view3.name = "topolino";
         view4.name = "gianni";
         String lobbyName1 = "test1";
-        ControllerPublic controller1 = new ControllerPublic(lobbyGameListController, view1);
-        ControllerPublic controller2 = new ControllerPublic(lobbyGameListController, view2);
+        Controller controller1 = new Controller(lobbyGameListController, view1);
+        Controller controller2 = new Controller(lobbyGameListController, view2);
 
         controller1.login(view1.name);
         controller1.createLobby(lobbyName1, 2);
@@ -706,7 +693,6 @@ class ServerModelControllerTest {
 
     @Test
     void drawFromDeck() {
-        LobbyListControllerPublic lobbyGameListController = new LobbyListControllerPublic();
         ViewTest view1 = new ViewTest();
         ViewTest view2 = new ViewTest();
         ViewTest view3 = new ViewTest();
@@ -716,8 +702,8 @@ class ServerModelControllerTest {
         view3.name = "topolino";
         view4.name = "gianni";
         String lobbyName1 = "test1";
-        ControllerPublic controller1 = new ControllerPublic(lobbyGameListController, view1);
-        ControllerPublic controller2 = new ControllerPublic(lobbyGameListController, view2);
+        Controller controller1 = new Controller(lobbyGameListController, view1);
+        Controller controller2 = new Controller(lobbyGameListController, view2);
 
         controller1.login(view1.name);
         controller1.createLobby(lobbyName1, 2);
@@ -770,7 +756,6 @@ class ServerModelControllerTest {
 
     @Test
     void drawFromBuffer() {
-        LobbyListControllerPublic lobbyGameListController = new LobbyListControllerPublic();
         ViewTest view1 = new ViewTest();
         ViewTest view2 = new ViewTest();
         ViewTest view3 = new ViewTest();
@@ -780,8 +765,8 @@ class ServerModelControllerTest {
         view3.name = "topolino";
         view4.name = "gianni";
         String lobbyName1 = "test1";
-        ControllerPublic controller1 = new ControllerPublic(lobbyGameListController, view1);
-        ControllerPublic controller2 = new ControllerPublic(lobbyGameListController, view2);
+        Controller controller1 = new Controller(lobbyGameListController, view1);
+        Controller controller2 = new Controller(lobbyGameListController, view2);
 
         controller1.login(view1.name);
         controller1.createLobby(lobbyName1, 2);
@@ -834,15 +819,14 @@ class ServerModelControllerTest {
 
     @Test
     void completeTurn() {
-        LobbyListControllerPublic lobbyGameListController = new LobbyListControllerPublic();
         ViewTest view1 = new ViewTest();
         ViewTest view2 = new ViewTest();
         view1.name = "pippo";
         view2.name = "pluto";
 
         String lobbyName1 = "test1";
-        ControllerPublic controller1 = new ControllerPublic(lobbyGameListController, view1);
-        ControllerPublic controller2 = new ControllerPublic(lobbyGameListController, view2);
+        Controller controller1 = new Controller(lobbyGameListController, view1);
+        Controller controller2 = new Controller(lobbyGameListController, view2);
 
         controller1.login(view1.name);
         controller2.login(view2.name);
@@ -864,8 +848,8 @@ class ServerModelControllerTest {
         controller2.chooseSecretObjective(secretObjective2);
 
         Game game = lobbyGameListController.gameMap.get(lobbyName1).game;
-        ControllerPublic firstPlayerController = view1.name.equals(game.getCurrentPlayer().getNickname()) ? controller1 : controller2;
-        ControllerPublic secondPlayerController = view1.name.equals(game.getCurrentPlayer().getNickname()) ? controller2 : controller1;
+        Controller firstPlayerController = view1.name.equals(game.getCurrentPlayer().getNickname()) ? controller1 : controller2;
+        Controller secondPlayerController = view1.name.equals(game.getCurrentPlayer().getNickname()) ? controller2 : controller1;
         User firstPlayer = game.getUserFromNick(firstPlayerController.nickname);
         User secondPlayer = game.getUserFromNick(secondPlayerController.nickname);
 
