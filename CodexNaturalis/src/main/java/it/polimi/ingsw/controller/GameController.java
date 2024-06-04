@@ -1,8 +1,8 @@
-package it.polimi.ingsw.controller4;
+package it.polimi.ingsw.controller;
 
 import it.polimi.ingsw.Configs;
-import it.polimi.ingsw.controller4.Interfaces.GameControllerInterface;
-import it.polimi.ingsw.controller4.persistence.PersistenceFactory;
+import it.polimi.ingsw.controller.Interfaces.GameControllerInterface;
+import it.polimi.ingsw.controller.persistence.PersistenceFactory;
 import it.polimi.ingsw.lightModel.DiffGenerator;
 import it.polimi.ingsw.lightModel.Heavifier;
 import it.polimi.ingsw.lightModel.Lightifier;

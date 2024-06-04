@@ -1,4 +1,4 @@
-package it.polimi.ingsw.controller4.Interfaces;
+package it.polimi.ingsw.controller.Interfaces;
 
 import it.polimi.ingsw.lightModel.lightPlayerRelated.LightCard;
 import it.polimi.ingsw.lightModel.lightPlayerRelated.LightPlacement;
@@ -6,7 +6,6 @@ import it.polimi.ingsw.model.cardReleted.utilityEnums.DrawableCard;
 import it.polimi.ingsw.model.playerReleted.PawnColors;
 
 import java.io.Serializable;
-import java.rmi.Remote;
 
 public interface GameControllerInterface extends Serializable {
     void chooseSecretObjective(String nickname, LightCard objectiveCard);

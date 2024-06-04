@@ -1,4 +1,4 @@
-package it.polimi.ingsw.controller4;
+package it.polimi.ingsw.controller;
 
 import it.polimi.ingsw.Configs;
 

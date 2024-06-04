@@ -5,9 +5,9 @@ import it.polimi.ingsw.connectionLayer.ConnectionServerRMI;
 import it.polimi.ingsw.connectionLayer.Socket.ClientHandler;
 import it.polimi.ingsw.connectionLayer.VirtualLayer.VirtualView;
 import it.polimi.ingsw.connectionLayer.VirtualSocket.VirtualViewSocket;
-import it.polimi.ingsw.controller4.Controller;
-import it.polimi.ingsw.controller4.LogsOnClientStatic;
-import it.polimi.ingsw.controller4.LobbyGameListController;
+import it.polimi.ingsw.controller.Controller;
+import it.polimi.ingsw.controller.LogsOnClientStatic;
+import it.polimi.ingsw.controller.LobbyGameListController;
 import it.polimi.ingsw.view.TUI.Printing.Printer;
 import it.polimi.ingsw.view.ViewState;
 

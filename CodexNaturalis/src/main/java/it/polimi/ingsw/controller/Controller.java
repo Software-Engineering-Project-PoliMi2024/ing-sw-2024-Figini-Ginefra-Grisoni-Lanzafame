@@ -1,7 +1,7 @@
-package it.polimi.ingsw.controller4;
+package it.polimi.ingsw.controller;
 
-import it.polimi.ingsw.controller4.Interfaces.ControllerInterface;
-import it.polimi.ingsw.controller4.Interfaces.GameControllerReceiver;
+import it.polimi.ingsw.controller.Interfaces.ControllerInterface;
+import it.polimi.ingsw.controller.Interfaces.GameControllerReceiver;
 import it.polimi.ingsw.lightModel.lightPlayerRelated.LightCard;
 import it.polimi.ingsw.lightModel.lightPlayerRelated.LightPlacement;
 import it.polimi.ingsw.model.cardReleted.utilityEnums.DrawableCard;

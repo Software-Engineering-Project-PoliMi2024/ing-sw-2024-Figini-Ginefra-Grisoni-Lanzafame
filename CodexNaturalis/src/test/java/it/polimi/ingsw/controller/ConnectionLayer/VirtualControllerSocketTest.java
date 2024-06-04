@@ -4,7 +4,7 @@ import it.polimi.ingsw.connectionLayer.Socket.ClientMsg.*;
 import it.polimi.ingsw.connectionLayer.Socket.ServerHandler;
 import it.polimi.ingsw.connectionLayer.VirtualLayer.VirtualView;
 import it.polimi.ingsw.connectionLayer.VirtualSocket.VirtualControllerSocket;
-import it.polimi.ingsw.controller4.LogsOnClientStatic;
+import it.polimi.ingsw.controller.LogsOnClientStatic;
 import it.polimi.ingsw.view.ViewInterface;
 import org.junit.jupiter.api.Test;
 

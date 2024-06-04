@@ -1,7 +1,7 @@
 package it.polimi.ingsw.connectionLayer.VirtualLayer;
 
 import it.polimi.ingsw.connectionLayer.PingPongInterface;
-import it.polimi.ingsw.controller4.Interfaces.ControllerInterface;
+import it.polimi.ingsw.controller.Interfaces.ControllerInterface;
 import it.polimi.ingsw.lightModel.diffs.ModelDiffs;
 import it.polimi.ingsw.lightModel.lightTableRelated.LightGame;
 import it.polimi.ingsw.lightModel.lightTableRelated.LightLobby;

@@ -1,6 +1,6 @@
 package it.polimi.ingsw.connectionLayer.Socket.ClientMsg;
 
-import it.polimi.ingsw.controller4.Interfaces.ControllerInterface;
+import it.polimi.ingsw.controller.Interfaces.ControllerInterface;
 import it.polimi.ingsw.connectionLayer.Socket.ClientHandler;
 public class CreateLobbyMsg extends ClientMsg {
     private final String gameName;

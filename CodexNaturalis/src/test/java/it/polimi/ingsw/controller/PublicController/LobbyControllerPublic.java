@@ -1,19 +1,11 @@
 package it.polimi.ingsw.controller.PublicController;
 
-import it.polimi.ingsw.controller4.GameController;
-import it.polimi.ingsw.controller4.Interfaces.GameControllerReceiver;
-import it.polimi.ingsw.controller4.LobbyController;
-import it.polimi.ingsw.controller4.LogsOnClientStatic;
-import it.polimi.ingsw.lightModel.DiffGenerator;
-import it.polimi.ingsw.lightModel.diffs.nuclearDiffs.LittleBoyLobby;
-import it.polimi.ingsw.model.cardReleted.cards.*;
-import it.polimi.ingsw.model.tableReleted.Deck;
-import it.polimi.ingsw.model.tableReleted.Game;
+import it.polimi.ingsw.controller.Interfaces.GameControllerReceiver;
+import it.polimi.ingsw.controller.LobbyController;
 import it.polimi.ingsw.model.tableReleted.Lobby;
 import it.polimi.ingsw.view.ViewInterface;
 
 import java.lang.reflect.Field;
-import java.util.HashMap;
 import java.util.Map;
 
 public class LobbyControllerPublic {

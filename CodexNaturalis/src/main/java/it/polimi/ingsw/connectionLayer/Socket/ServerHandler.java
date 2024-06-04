@@ -4,8 +4,7 @@ import it.polimi.ingsw.Configs;
 import it.polimi.ingsw.connectionLayer.Socket.ClientMsg.ClientMsg;
 import it.polimi.ingsw.connectionLayer.Socket.ServerMsg.ServerMsg;
 import it.polimi.ingsw.connectionLayer.VirtualLayer.VirtualController;
-import it.polimi.ingsw.controller4.LogsOnClientStatic;
-import it.polimi.ingsw.controller4.LogsOnClientStatic;
+import it.polimi.ingsw.controller.LogsOnClientStatic;
 import it.polimi.ingsw.view.ViewInterface;
 import it.polimi.ingsw.view.ViewState;
 

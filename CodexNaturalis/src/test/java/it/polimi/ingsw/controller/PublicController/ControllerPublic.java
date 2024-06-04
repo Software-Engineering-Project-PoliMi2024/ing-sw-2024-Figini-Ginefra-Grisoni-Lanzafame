@@ -1,12 +1,9 @@
 package it.polimi.ingsw.controller.PublicController;
 
-import it.polimi.ingsw.controller4.Controller;
-import it.polimi.ingsw.controller4.GameController;
-import it.polimi.ingsw.controller4.LobbyGameListController;
-import it.polimi.ingsw.view.ViewInterface;
+import it.polimi.ingsw.controller.Controller;
+import it.polimi.ingsw.controller.GameController;
 
 import java.lang.reflect.Field;
-import java.util.Map;
 
 public class ControllerPublic {
     public Controller controller;

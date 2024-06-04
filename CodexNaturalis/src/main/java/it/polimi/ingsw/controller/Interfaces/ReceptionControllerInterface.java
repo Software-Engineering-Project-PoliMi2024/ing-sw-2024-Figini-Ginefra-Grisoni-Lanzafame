@@ -1,4 +1,4 @@
-package it.polimi.ingsw.controller4.Interfaces;
+package it.polimi.ingsw.controller.Interfaces;
 
 import it.polimi.ingsw.view.ViewInterface;
 

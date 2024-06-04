@@ -1,12 +1,12 @@
 package it.polimi.ingsw.connectionLayer;
 
 import it.polimi.ingsw.connectionLayer.VirtualRMI.VirtualViewRMI;
-import it.polimi.ingsw.controller4.Controller;
-import it.polimi.ingsw.controller4.Interfaces.ControllerInterface;
+import it.polimi.ingsw.controller.Controller;
+import it.polimi.ingsw.controller.Interfaces.ControllerInterface;
 import it.polimi.ingsw.connectionLayer.VirtualLayer.VirtualController;
 import it.polimi.ingsw.connectionLayer.VirtualLayer.VirtualView;
-import it.polimi.ingsw.controller4.LogsOnClientStatic;
-import it.polimi.ingsw.controller4.LobbyGameListController;
+import it.polimi.ingsw.controller.LogsOnClientStatic;
+import it.polimi.ingsw.controller.LobbyGameListController;
 import it.polimi.ingsw.view.ViewInterface;
 import it.polimi.ingsw.view.ViewState;
 
