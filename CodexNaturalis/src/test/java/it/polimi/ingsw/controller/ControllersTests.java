@@ -27,7 +27,7 @@ import org.junit.jupiter.api.Test;
 
 import java.util.*;
 
-class ServerModelControllerTest {
+class ControllersTests {
     private LobbyGameListController realLobbyGameListController;
     private LobbyListControllerPublic lobbyGameListController;
     @BeforeEach
