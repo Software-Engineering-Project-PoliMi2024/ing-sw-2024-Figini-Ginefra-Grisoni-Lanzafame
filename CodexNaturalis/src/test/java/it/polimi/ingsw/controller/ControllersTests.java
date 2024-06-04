@@ -22,6 +22,7 @@ import it.polimi.ingsw.model.tableReleted.Game;
 import it.polimi.ingsw.model.tableReleted.Lobby;
 import it.polimi.ingsw.view.ViewState;
 import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
@@ -30,13 +31,18 @@ import java.util.*;
 class ControllersTests {
     private LobbyGameListController realLobbyGameListController;
     private LobbyListControllerPublic lobbyGameListController;
+
+    @BeforeAll
+    public static void setUpAll(){
+        OSRelated.checkOrCreateDataFolderServer(); //Create the dataFolder if necessary. Normally this is done in the Server class
+    }
+
     @BeforeEach
     public void setUp(){
         realLobbyGameListController = new LobbyGameListController();
         lobbyGameListController = new LobbyListControllerPublic(realLobbyGameListController);
 
-        OSRelated.checkOrCreateDataFolderServer(); //Create the dataFolder if necessary. Normally this is done in the Server class
-        }
+    }
 
     @Test
     void loginJoiningLobbyList() {
