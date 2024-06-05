@@ -5,12 +5,12 @@ import it.polimi.ingsw.controller.GameController;
 
 import java.lang.reflect.Field;
 
-public class ControllerPublic {
+public class PublicController {
     public Controller controller;
 
     private String nickname;
 
-    public ControllerPublic(Controller controller) {
+    public PublicController(Controller controller) {
         this.controller = controller;
     }
 

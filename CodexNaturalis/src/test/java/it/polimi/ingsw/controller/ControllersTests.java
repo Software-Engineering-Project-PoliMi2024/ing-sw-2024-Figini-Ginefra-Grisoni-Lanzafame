@@ -2,10 +2,10 @@ package it.polimi.ingsw.controller;
 
 import it.polimi.ingsw.Configs;
 import it.polimi.ingsw.OSRelated;
-import it.polimi.ingsw.controller.PublicController.ControllerPublic;
-import it.polimi.ingsw.controller.PublicController.GameControllerPublic;
-import it.polimi.ingsw.controller.PublicController.LobbyControllerPublic;
-import it.polimi.ingsw.controller.PublicController.LobbyListControllerPublic;
+import it.polimi.ingsw.controller.PublicController.PublicController;
+import it.polimi.ingsw.controller.PublicController.PublicGameController;
+import it.polimi.ingsw.controller.PublicController.PublicLobbyController;
+import it.polimi.ingsw.controller.PublicController.PublicLobbyGameListController;
 import it.polimi.ingsw.lightModel.LightModelConfig;
 import it.polimi.ingsw.lightModel.Lightifier;
 import it.polimi.ingsw.lightModel.ViewTest;
@@ -30,7 +30,7 @@ import java.util.*;
 
 class ControllersTests {
     private LobbyGameListController realLobbyGameListController;
-    private LobbyListControllerPublic lobbyGameListController;
+    private PublicLobbyGameListController lobbyGameListController;
 
     @BeforeAll
     public static void setUpAll(){
@@ -40,7 +40,7 @@ class ControllersTests {
     @BeforeEach
     public void setUp(){
         realLobbyGameListController = new LobbyGameListController();
-        lobbyGameListController = new LobbyListControllerPublic(realLobbyGameListController);
+        lobbyGameListController = new PublicLobbyGameListController(realLobbyGameListController);
 
     }
 
@@ -161,7 +161,7 @@ class ControllersTests {
         assert lobbyGameListController.getGameMap().containsKey(lobbyName1);
 
         GameController gameController = lobbyGameListController.getGameMap().get(lobbyName1);
-        GameControllerPublic publicController = new GameControllerPublic(gameController);
+        PublicGameController publicController = new PublicGameController(gameController);
         Game game = publicController.getGame();
         assert game.getGameParty().getNumberOfMaxPlayer() == 2;
         assert game.getGameParty().getUsersList().stream().map(User::getNickname).toList().contains(view1.name);
@@ -362,7 +362,7 @@ class ControllersTests {
         assert Objects.equals(view4.lightLobby.name(), LightModelConfig.defaultLobbyName);
 
         LobbyController lobbyController = lobbyGameListController.getLobbyMap().get(lobbyName1);
-        LobbyControllerPublic publicController = new LobbyControllerPublic(lobbyController);
+        PublicLobbyController publicController = new PublicLobbyController(lobbyController);
         Lobby lobby1 = publicController.getLobby();
 
         assert lobby1.getLobbyPlayerList().contains(view1.name);
@@ -399,7 +399,7 @@ class ControllersTests {
 
         //check model
         GameController gameController = lobbyGameListController.getGameMap().get(lobbyName1);
-        GameControllerPublic publicController = new GameControllerPublic(gameController);
+        PublicGameController publicController = new PublicGameController(gameController);
         Game game = publicController.getGame();
 
         assert game != null;
@@ -456,7 +456,7 @@ class ControllersTests {
 
         //check model
         GameController gameController = lobbyGameListController.getGameMap().get(lobbyName1);
-        GameControllerPublic publicController = new GameControllerPublic(gameController);
+        PublicGameController publicController = new PublicGameController(gameController);
         Game game = publicController.getGame();
 
         User user1 = game.getUserFromNick(view1.name);
@@ -547,7 +547,7 @@ class ControllersTests {
 
         //model
         GameController gameController = lobbyGameListController.getGameMap().get(lobbyName1);
-        GameControllerPublic publicController = new GameControllerPublic(gameController);
+        PublicGameController publicController = new PublicGameController(gameController);
         Game game = publicController.getGame();
 
         User user1 = game.getUserFromNick(view1.name);
@@ -610,7 +610,7 @@ class ControllersTests {
         controller2.chooseSecretObjective(secretObjective2);
         //model
         GameController gameController = lobbyGameListController.getGameMap().get(lobbyName1);
-        GameControllerPublic publicController = new GameControllerPublic(gameController);
+        PublicGameController publicController = new PublicGameController(gameController);
         Game game = publicController.getGame();
 
         User user1 = game.getUserFromNick(view1.name);
@@ -680,7 +680,7 @@ class ControllersTests {
         controller2.chooseSecretObjective(secretObjective2);
         //place
         GameController gameController = lobbyGameListController.getGameMap().get(lobbyName1);
-        GameControllerPublic publicController = new GameControllerPublic(gameController);
+        PublicGameController publicController = new PublicGameController(gameController);
         Game game = publicController.getGame();
 
         User user1 = game.getUserFromNick(view1.name);
@@ -751,7 +751,7 @@ class ControllersTests {
         controller2.chooseSecretObjective(secretObjective2);
         //place
         GameController gameController = lobbyGameListController.getGameMap().get(lobbyName1);
-        GameControllerPublic publicController = new GameControllerPublic(gameController);
+        PublicGameController publicController = new PublicGameController(gameController);
         Game game = publicController.getGame();
 
         User user1 = game.getUserFromNick(view1.name);
@@ -817,7 +817,7 @@ class ControllersTests {
         controller2.chooseSecretObjective(secretObjective2);
         //place
         GameController gameController = lobbyGameListController.getGameMap().get(lobbyName1);
-        GameControllerPublic publicController = new GameControllerPublic(gameController);
+        PublicGameController publicController = new PublicGameController(gameController);
         Game game = publicController.getGame();
 
         User user1 = game.getUserFromNick(view1.name);
@@ -882,11 +882,11 @@ class ControllersTests {
         controller2.chooseSecretObjective(secretObjective2);
 
         GameController gameController = lobbyGameListController.getGameMap().get(lobbyName1);
-        GameControllerPublic publicController = new GameControllerPublic(gameController);
+        PublicGameController publicController = new PublicGameController(gameController);
         Game game = publicController.getGame();
 
-        ControllerPublic firstPlayerController = new ControllerPublic(view1.name.equals(game.getCurrentPlayer().getNickname()) ? controller1 : controller2);
-        ControllerPublic secondPlayerController = new ControllerPublic(view1.name.equals(game.getCurrentPlayer().getNickname()) ? controller2 : controller1);
+        PublicController firstPlayerController = new PublicController(view1.name.equals(game.getCurrentPlayer().getNickname()) ? controller1 : controller2);
+        PublicController secondPlayerController = new PublicController(view1.name.equals(game.getCurrentPlayer().getNickname()) ? controller2 : controller1);
         User firstPlayer = game.getUserFromNick(firstPlayerController.getNickname());
         User secondPlayer = game.getUserFromNick(secondPlayerController.getNickname());
 

@@ -8,10 +8,10 @@ import it.polimi.ingsw.view.ViewInterface;
 import java.lang.reflect.Field;
 import java.util.*;
 
-public class GameControllerPublic {
+public class PublicGameController {
     public GameController gameController;
 
-    public GameControllerPublic(GameController gameController) {
+    public PublicGameController(GameController gameController) {
         this.gameController = gameController;
     }
 

@@ -8,10 +8,10 @@ import it.polimi.ingsw.view.ViewInterface;
 import java.lang.reflect.Field;
 import java.util.Map;
 
-public class LobbyControllerPublic {
+public class PublicLobbyController {
     public LobbyController lobbyController;
 
-    public LobbyControllerPublic(LobbyController lobbyController) {
+    public PublicLobbyController(LobbyController lobbyController) {
         this.lobbyController = lobbyController;
     }
 

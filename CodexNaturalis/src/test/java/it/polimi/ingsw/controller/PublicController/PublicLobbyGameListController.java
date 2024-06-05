@@ -12,10 +12,10 @@ import java.util.Map;
 /**
  * This class is the controller that handles the reception of the clients. It manages the lobbies, the nicknames and the offline games
  */
-public class LobbyListControllerPublic {
+public class PublicLobbyGameListController {
     public LobbyGameListController lobbyGameListController;
 
-    public LobbyListControllerPublic(LobbyGameListController lobbyGameListController) {
+    public PublicLobbyGameListController(LobbyGameListController lobbyGameListController) {
         this.lobbyGameListController = lobbyGameListController;
     }
 
