@@ -2,6 +2,10 @@ package it.polimi.ingsw.controller.persistence;
 
 import it.polimi.ingsw.Configs;
 import it.polimi.ingsw.OSRelated;
+import it.polimi.ingsw.controller.GameController;
+import it.polimi.ingsw.controller.LobbyGameListController;
+import it.polimi.ingsw.controller.PublicController.PublicGameController;
+import it.polimi.ingsw.controller.PublicController.PublicLobbyGameListController;
 import it.polimi.ingsw.model.cardReleted.cards.*;
 import it.polimi.ingsw.model.tableReleted.Deck;
 import it.polimi.ingsw.model.tableReleted.Game;
@@ -12,11 +16,13 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
 import java.io.*;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Objects;
 
-public class PersistenceFactory2Test {
+public class PersistenceFactoryTest {
     @BeforeEach
     void setUp() { //emulate the serverStartUP
         OSRelated.checkOrCreateDataFolderServer();
@@ -42,34 +48,38 @@ public class PersistenceFactory2Test {
         List<File> gameSaves = Arrays.asList(Objects.requireNonNull(new File(OSRelated.gameDataFolderPath).listFiles()));
         Assertions.assertEquals(1, gameSaves.stream().filter(file -> file.getName().contains("saveGameTest")).count());
     }
-    /*
+
     @Test
     void load() {
-        Reception reception = new Reception();
-        Lobby lobby = new Lobby(3, "gianni", "loadGameTest");
-        lobby.addUserName("gianni1");
-        lobby.addUserName("gianni2");
-        Game gameToSave = reception.createGame(lobby);
+        CardTable cardTable = new CardTable(Configs.CardResourcesFolderPath, Configs.CardJSONFileName, OSRelated.cardFolderDataPath);
+        Deck<ObjectiveCard> objectiveCardDeck = new Deck<>(0,cardTable.getCardLookUpObjective().getQueue());
+        Deck<ResourceCard> resourceCardDeck = new Deck<>(2, cardTable.getCardLookUpResourceCard().getQueue());
+        Deck<GoldCard> goldCardDeck = new Deck<>(2, cardTable.getCardLookUpGoldCard().getQueue());
+        Deck<StartCard> startingCardDeck = new Deck<>(0, cardTable.getCardLookUpStartCard().getQueue());
+        Lobby lobby = new Lobby(3, "loadGameTest");
+
+        Game gameToSave = new Game(lobby, objectiveCardDeck, resourceCardDeck, goldCardDeck, startingCardDeck);
         PersistenceFactory.save(gameToSave);
 
-        Reception reception1 = new Reception();
-        Game gameLoadedFromSave = reception1.getGameByName("loadGameTest");
+        LobbyGameListController realLobbyGameListController = new LobbyGameListController();
+        PublicLobbyGameListController publicController = new PublicLobbyGameListController(realLobbyGameListController);
+        GameController gameController = publicController.getGameMap().get("loadGameTest");
+        Game gameLoadedFromSave = new PublicGameController(gameController).getGame();
 
         assert Objects.equals(gameLoadedFromSave.getName(), "loadGameTest");
-        assert gameLoadedFromSave.getGameParty().getUsersList().size() == 3;
-        assert gameLoadedFromSave.getGameParty().getUsersList().stream().map(User::getNickname).toList().contains("gianni");
-        assert gameLoadedFromSave.getGameParty().getUsersList().stream().map(User::getNickname).toList().contains("gianni1");
-        assert gameLoadedFromSave.getGameParty().getUsersList().stream().map(User::getNickname).toList().contains("gianni2");
     }
 
     @Test
     void loadWithExpired() throws IOException {
         //create a game and save it
-        Reception reception = new Reception();
-        Lobby lobby = new Lobby(3, "gianni", "loadGameExpiredTest");
-        lobby.addUserName("gianni1");
-        lobby.addUserName("gianni2");
-        Game gameToSave = reception.createGame(lobby);
+        CardTable cardTable = new CardTable(Configs.CardResourcesFolderPath, Configs.CardJSONFileName, OSRelated.cardFolderDataPath);
+        Deck<ObjectiveCard> objectiveCardDeck = new Deck<>(0,cardTable.getCardLookUpObjective().getQueue());
+        Deck<ResourceCard> resourceCardDeck = new Deck<>(2, cardTable.getCardLookUpResourceCard().getQueue());
+        Deck<GoldCard> goldCardDeck = new Deck<>(2, cardTable.getCardLookUpGoldCard().getQueue());
+        Deck<StartCard> startingCardDeck = new Deck<>(0, cardTable.getCardLookUpStartCard().getQueue());
+        Lobby lobby = new Lobby(3, "loadGameExpiredTest");
+
+        Game gameToSave = new Game(lobby, objectiveCardDeck, resourceCardDeck, goldCardDeck, startingCardDeck);
         PersistenceFactory.save(gameToSave);
 
         //Create a new gameSaveFile and set the timeStamp to NOW-(gameSaveExpirationTimeMinutes*2) time so it will be expired
@@ -78,8 +88,11 @@ public class PersistenceFactory2Test {
         List<File> gameSaves = Arrays.asList(Objects.requireNonNull(new File(OSRelated.gameDataFolderPath).listFiles()));
         assert gameSaves.stream().filter(file -> file.getName().contains("loadGameExpiredTest")).count() == 2;
 
-        Reception reception1 = new Reception();
-        Game gameLoadedFromSave = reception1.getGameByName("loadGameExpiredTest");
+        LobbyGameListController realLobbyGameListController = new LobbyGameListController();
+        PublicLobbyGameListController publicController = new PublicLobbyGameListController(realLobbyGameListController);
+        GameController gameController = publicController.getGameMap().get("loadGameTest");
+        Game gameLoadedFromSave = new PublicGameController(gameController).getGame();
+
         System.out.println(gameLoadedFromSave);
         gameSaves = Arrays.asList(Objects.requireNonNull(new File(OSRelated.gameDataFolderPath).listFiles()));
         //The load method should have deleted the expired saves(s)
@@ -89,11 +102,14 @@ public class PersistenceFactory2Test {
     @Test
     void loadWithNonDeleted() throws IOException {
         //create a game and save it
-        Reception reception = new Reception();
-        Lobby lobby = new Lobby(3, "gianni", "loadGameNotDeletedTest");
-        lobby.addUserName("gianni1");
-        lobby.addUserName("gianni2");
-        Game gameToSave = reception.createGame(lobby);
+        CardTable cardTable = new CardTable(Configs.CardResourcesFolderPath, Configs.CardJSONFileName, OSRelated.cardFolderDataPath);
+        Deck<ObjectiveCard> objectiveCardDeck = new Deck<>(0,cardTable.getCardLookUpObjective().getQueue());
+        Deck<ResourceCard> resourceCardDeck = new Deck<>(2, cardTable.getCardLookUpResourceCard().getQueue());
+        Deck<GoldCard> goldCardDeck = new Deck<>(2, cardTable.getCardLookUpGoldCard().getQueue());
+        Deck<StartCard> startingCardDeck = new Deck<>(0, cardTable.getCardLookUpStartCard().getQueue());
+        Lobby lobby = new Lobby(3, "loadGameNotDeletedTest");
+
+        Game gameToSave = new Game(lobby, objectiveCardDeck, resourceCardDeck, goldCardDeck, startingCardDeck);
         PersistenceFactory.save(gameToSave);
 
         //Create a new gameSaveFile and set the timeStamp to NOW-(gameSaveExpirationTimeMinutes/2) time, so it will be NOT expired
@@ -102,9 +118,9 @@ public class PersistenceFactory2Test {
         List<File> gameSaves = Arrays.asList(Objects.requireNonNull(new File(OSRelated.gameDataFolderPath).listFiles()));
         assert gameSaves.stream().filter(file -> file.getName().contains("loadGameNotDeletedTest")).count() == 2;
 
-        Reception reception1 = new Reception();
+        PersistenceFactory.load();
         gameSaves = Arrays.asList(Objects.requireNonNull(new File(OSRelated.gameDataFolderPath).listFiles()));
-        //The load method should have deleted the oldest saves(s)
+        //The load method should have deleted the oldest saves(s)assertEquals
         Assertions.assertEquals(1, gameSaves.stream().filter(file -> file.getName().contains("loadGameNotDeletedTest")).count());
     }
 
@@ -117,6 +133,6 @@ public class PersistenceFactory2Test {
         outStream.writeObject(gameToSave);
         outStream.close();
     }
-    */
+
 
 }
