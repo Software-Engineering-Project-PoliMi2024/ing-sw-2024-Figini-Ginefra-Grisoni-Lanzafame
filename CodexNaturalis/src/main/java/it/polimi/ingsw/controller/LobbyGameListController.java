@@ -152,7 +152,7 @@ public class LobbyGameListController implements ReceptionControllerInterface {
 
     @Override
     public synchronized void disconnect(String nickname) {
-        if(this.isActiveInGame(nickname)) {
+        if(this.isInGameParty(nickname)) {
             GameController gameToLeave = this.getGameFromUserNick(nickname);
             gameToLeave.leave(nickname);
             if(gameToLeave.getPlayerViewMap().keySet().isEmpty()) {
@@ -160,8 +160,9 @@ public class LobbyGameListController implements ReceptionControllerInterface {
             }
         }else if(this.isActiveInLobby(nickname)){
             this.leaveLobby(nickname);
-        }else{
-            viewMap.remove(nickname);
+            this.leaveLobbyList(nickname);
+        }else {
+            this.leaveLobbyList(nickname);
         }
     }
 
@@ -185,11 +186,6 @@ public class LobbyGameListController implements ReceptionControllerInterface {
 
     private synchronized Boolean isActiveInLobby(String nickname){
         return getLobbyFromUserNick(nickname) != null;
-    }
-
-    private synchronized Boolean isActiveInGame(String nickname){
-        GameController game = getGameFromUserNick(nickname);
-        return game.getPlayerViewMap().containsKey(nickname);
     }
 
     private synchronized Boolean isInGameParty(String nickname){
