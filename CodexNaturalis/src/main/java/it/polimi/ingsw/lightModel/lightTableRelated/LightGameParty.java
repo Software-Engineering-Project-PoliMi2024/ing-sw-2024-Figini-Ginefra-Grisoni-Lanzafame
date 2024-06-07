@@ -15,7 +15,7 @@ public class LightGameParty implements Differentiable {
     private String currentPlayer;
     private String firstPlayerName;
     private List<PawnColors> pawnChoices = new ArrayList<>();
-    private Map<String, PawnColors> playersColor = new HashMap<>();
+    private final Map<String, PawnColors> playersColor = new HashMap<>();
 
     public LightGameParty() {
         this.playerActiveList = new HashMap<>();
@@ -27,6 +27,10 @@ public class LightGameParty implements Differentiable {
 
     public void setPawnChoices(List<PawnColors> pawnColors){
         this.pawnChoices = pawnColors;
+    }
+
+    public Map<String, PawnColors> getPlayersColor(){
+        return playersColor;
     }
 
     public List<PawnColors> getPawnChoices(){
