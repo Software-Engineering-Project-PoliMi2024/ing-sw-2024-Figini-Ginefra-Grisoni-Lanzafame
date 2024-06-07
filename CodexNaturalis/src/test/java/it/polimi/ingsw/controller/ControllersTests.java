@@ -6,6 +6,7 @@ import it.polimi.ingsw.controller.PublicController.PublicController;
 import it.polimi.ingsw.controller.PublicController.PublicGameController;
 import it.polimi.ingsw.controller.PublicController.PublicLobbyController;
 import it.polimi.ingsw.controller.PublicController.PublicLobbyGameListController;
+import it.polimi.ingsw.controller.persistence.PersistenceFactory;
 import it.polimi.ingsw.lightModel.LightModelConfig;
 import it.polimi.ingsw.lightModel.Lightifier;
 import it.polimi.ingsw.lightModel.ViewTest;
@@ -16,6 +17,7 @@ import it.polimi.ingsw.model.cardReleted.cards.Card;
 import it.polimi.ingsw.model.cardReleted.cards.CardInHand;
 import it.polimi.ingsw.model.cardReleted.utilityEnums.*;
 import it.polimi.ingsw.model.playerReleted.Hand;
+import it.polimi.ingsw.model.playerReleted.PawnColors;
 import it.polimi.ingsw.model.playerReleted.Position;
 import it.polimi.ingsw.model.playerReleted.User;
 import it.polimi.ingsw.model.tableReleted.Game;
@@ -38,10 +40,10 @@ class ControllersTests {
     }
 
     @BeforeEach
-    public void setUp(){
+    public void setUp() {
+        PersistenceFactory.eraseAllSaves();
         realLobbyGameListController = new LobbyGameListController();
         lobbyGameListController = new PublicLobbyGameListController(realLobbyGameListController);
-
     }
 
     @Test
@@ -55,15 +57,19 @@ class ControllersTests {
 
         //view joins before adding lobbies
         controller1.login(view1.name);
+        System.out.println(view1.state);
         //add lobby
         Lobby lobby = new Lobby(2, "test1");
         controller1.createLobby(lobby.getLobbyName(), lobby.getNumberOfMaxPlayer());
+        System.out.println(view1.state);
         //view joins after adding lobbies
         controller2.login(view2.name);
+        System.out.println(view1.state);
 
         System.out.println(view1.name);
         assert !view1.lightLobbyList.getLobbies().contains(Lightifier.lightify(lobby));
         assert !lobbyGameListController.getViewMap().containsKey(view1.name);
+        System.out.println(view1.state);
         assert view1.state.equals(ViewState.LOBBY);
         assert view2.lightLobbyList.getLobbies().contains(Lightifier.lightify(lobby));
         assert lobbyGameListController.getViewMap().containsKey(view2.name);
@@ -106,7 +112,6 @@ class ControllersTests {
     void joinLobby() {
         ViewTest view1 = new ViewTest();
         ViewTest view2 = new ViewTest();
-        String LobbyCreatorName = "lobbyCreator";
         Controller controller1 = new Controller(realLobbyGameListController, view1);
         Controller controller2 = new Controller(realLobbyGameListController, view2);
 
@@ -420,7 +425,7 @@ class ControllersTests {
 
         //view 1 lightModel updated correctly
         assert view1.lightGame.getCodexMap().get(view1.name).getPlacementHistory().contains(startPlacement);
-        assert Arrays.stream(view1.lightGame.getHand().getCards()).allMatch(Objects::nonNull);
+        assert Arrays.stream(view1.lightGame.getHand().getCards()).allMatch(Objects::isNull);
         assert Arrays.stream(view1.lightGame.getHand().getSecretObjectiveOptions()).allMatch(Objects::isNull);
         assert Arrays.stream(view1.lightGame.getHandOthers().get(view2.name).getCards()).allMatch(Objects::isNull);
         //view 2 lightModel isn't updated
@@ -432,12 +437,8 @@ class ControllersTests {
     void lastPlayerSelectStartCard(){
         ViewTest view1 = new ViewTest();
         ViewTest view2 = new ViewTest();
-        ViewTest view3 = new ViewTest();
-        ViewTest view4 = new ViewTest();
         view1.name = "pippo";
         view2.name = "pluto";
-        view3.name = "topolino";
-        view4.name = "gianni";
         String lobbyName1 = "test1";
         Controller controller1 = new Controller(realLobbyGameListController, view1);
         Controller controller2 = new Controller(realLobbyGameListController, view2);
@@ -466,30 +467,23 @@ class ControllersTests {
 
         //user1
         assert user1.hasPlacedStartCard();
-        assert user1.getUserHand().getSecretObjectiveChoices().stream().allMatch(Objects::nonNull);
-        assert !user1.hasChosenObjective();
+        assert !user1.hasChosenPawnColor();
+        Assertions.assertNull(user1.getUserHand().getSecretObjectiveChoices());
         //user2
         assert user2.hasPlacedStartCard();
-        assert user2.getUserHand().getSecretObjectiveChoices().stream().allMatch(Objects::nonNull);
-        assert !user2.hasChosenObjective();
+        assert !user2.hasChosenPawnColor();
+        Assertions.assertNull(user2.getUserHand().getSecretObjectiveChoices());
 
         //view 1 lightModel updated correctly
         LightHand lightHand1 = view1.lightGame.getHand();
         List<LightCard> cardsOnClient1 = Arrays.stream(lightHand1.getCards()).toList();
         List<LightCard> cardsOnServer1 = hand1.getHand().stream().map(Lightifier::lightifyToCard).toList();
-        List<LightCard> secretObjOnLight = Arrays.stream(lightHand1.getSecretObjectiveOptions()).toList();
-        List<LightCard> secretObjOnServer = hand1.getSecretObjectiveChoices().stream().map(Lightifier::lightifyToCard).toList();
-        System.out.println(secretObjOnServer);
-        System.out.println(secretObjOnLight);
 
-        assert cardsOnServer1.size() == 3;
-        assert cardsOnServer1.stream().allMatch(Objects::nonNull);
-        assert secretObjOnLight.equals(secretObjOnServer);
-        assert Arrays.stream(lightHand1.getSecretObjectiveOptions()).allMatch(Objects::nonNull);
-        assert cardsOnClient1.containsAll(cardsOnServer1);
-        assert cardsOnServer1.containsAll(cardsOnClient1);
-        assert Arrays.stream(view1.lightGame.getHandOthers().get(view2.name).getCards()).allMatch(Objects::nonNull);
-        assert view1.lightGame.getCodexMap().get(view2.name).getPlacementHistory().contains(startPlacement2);
+
+        assert view1.lightGame.getCodexMap().get(view2.name).getPlacementHistory().isEmpty();
+        assert cardsOnServer1.stream().allMatch(Objects::isNull);
+        assert cardsOnClient1.stream().anyMatch(Objects::isNull);
+        assert Arrays.stream(view1.lightGame.getHandOthers().get(view2.name).getCards()).allMatch(Objects::isNull);
 
         int resourceActualDeckOnViewBackID1 = view1.lightGame.getResourceDeck().getDeckBack().idBack();
         int goldActualDeckBackOnViewID1 = view1.lightGame.getGoldDeck().getDeckBack().idBack();
@@ -501,19 +495,137 @@ class ControllersTests {
         assert resourceDeckBufferOnViewID1.containsAll(game.getResourceCardDeck().getBuffer().stream().map(Card::getIdFront).toList());
         assert goldDeckBufferOnViewID1.containsAll(game.getGoldCardDeck().getBuffer().stream().map(Card::getIdFront).toList());
 
+        Assertions.assertNull(view1.lightGame.getHand().getSecretObjectiveOptions()[0]);
+        Assertions.assertNull(view1.lightGame.getHand().getSecretObjectiveOptions()[1]);
+
         //view 2 lightModel updated correctly
         LightHand lightHand2 = view2.lightGame.getHand();
-        List<LightCard> secretObjOnLight2 = Arrays.stream(lightHand2.getSecretObjectiveOptions()).toList();
-        List<LightCard> secretObjOnServer2 = hand2.getSecretObjectiveChoices().stream().map(Lightifier::lightifyToCard).toList();
 
-        assert secretObjOnServer2.equals(secretObjOnLight2);
-        List<LightCard> cardsOnClient2 = Arrays.stream(lightHand1.getCards()).toList();
-        List<LightCard> cardsOnServer2 = hand1.getHand().stream().map(Lightifier::lightifyToCard).toList();
-        assert cardsOnClient1.containsAll(cardsOnServer2);
-        assert cardsOnServer1.containsAll(cardsOnClient2);
-        assert Arrays.stream(lightHand2.getSecretObjectiveOptions()).allMatch(Objects::nonNull);
-        assert Arrays.stream(view2.lightGame.getHandOthers().get(view1.name).getCards()).allMatch(Objects::nonNull);
-        assert view2.lightGame.getCodexMap().get(view1.name).getPlacementHistory().contains(startPlacement1);
+        List<LightCard> cardsOnClient2 = Arrays.stream(lightHand2.getCards()).toList();
+        List<LightCard> cardsOnServer2 = hand2.getHand().stream().map(Lightifier::lightifyToCard).toList();
+
+        assert view2.lightGame.getCodexMap().get(view1.name).getPlacementHistory().isEmpty();
+        assert cardsOnServer2.stream().allMatch(Objects::isNull);
+        assert cardsOnClient2.stream().anyMatch(Objects::isNull);
+        assert Arrays.stream(view2.lightGame.getHandOthers().get(view1.name).getCards()).allMatch(Objects::isNull);
+
+
+        Assertions.assertNull(view2.lightGame.getHand().getSecretObjectiveOptions()[0]);
+        Assertions.assertNull(view2.lightGame.getHand().getSecretObjectiveOptions()[1]);
+
+        assert Arrays.stream(view2.lightGame.getHandOthers().get(view1.name).getCards()).allMatch(Objects::isNull);
+        assert !view2.lightGame.getCodexMap().get(view1.name).getPlacementHistory().contains(startPlacement1);
+
+        //pawns arrives correctly
+        assert game.getPawnChoices().containsAll(Arrays.stream(PawnColors.values()).toList());
+        Assertions.assertNull(user1.getPawnColor());
+        Assertions.assertNull(user2.getPawnColor());
+
+        assert view1.lightGame.getLightGameParty().getPlayersColor().values().isEmpty();
+    }
+
+    @Test
+    void choosePawn(){
+        ViewTest view1 = new ViewTest();
+        ViewTest view2 = new ViewTest();
+        view1.name = "pippo";
+        view2.name = "pluto";
+        String lobbyName1 = "test1";
+        Controller controller1 = new Controller(realLobbyGameListController, view1);
+        Controller controller2 = new Controller(realLobbyGameListController, view2);
+
+        controller1.login(view1.name);
+        controller1.createLobby(lobbyName1, 2);
+        controller2.login(view2.name);
+        controller2.joinLobby(lobbyName1);
+        //game started
+        LightCard startCard = view1.lightGame.getHand().getCards()[0];
+        LightPlacement startPlacement1 = new LightPlacement(new Position(0,0), startCard, CardFace.FRONT);
+        controller1.place(startPlacement1);
+        startCard = view2.lightGame.getHand().getCards()[0];
+        LightPlacement startPlacement2 = new LightPlacement(new Position(0,0), startCard, CardFace.FRONT);
+        controller2.place(startPlacement2);
+        controller1.choosePawn(PawnColors.BLUE);
+
+        GameController gameController = lobbyGameListController.getGameMap().get(lobbyName1);
+        PublicGameController publicController = new PublicGameController(gameController);
+        Game game = publicController.getGame();
+
+        User user1 = game.getUserFromNick(view1.name);
+        User user2 = game.getUserFromNick(view2.name);
+        Hand hand1 = user1.getUserHand();
+        Hand hand2 = user2.getUserHand();
+
+        assert !game.getPawnChoices().contains(PawnColors.BLUE);
+        assert user1.getPawnColor() == PawnColors.BLUE;
+        assert user2.getPawnColor() == null;
+
+        //view 1 lightModel updated correctly
+        assert view1.lightGame.getLightGameParty().getPlayersColor().get(view1.name) == PawnColors.BLUE;
+        assert view1.lightGame.getLightGameParty().getPlayersColor().get(view2.name) == null;
+
+        //view 2 lightModel updated correctly
+        assert view2.lightGame.getLightGameParty().getPlayersColor().get(view1.name) == PawnColors.BLUE;
+        assert view2.lightGame.getLightGameParty().getPlayersColor().get(view2.name) == null;
+    }
+
+    @Test
+    void lastPlayerChoosePawn(){
+        ViewTest view1 = new ViewTest();
+        ViewTest view2 = new ViewTest();
+        view1.name = "pippo";
+        view2.name = "pluto";
+        String lobbyName1 = "test1";
+        Controller controller1 = new Controller(realLobbyGameListController, view1);
+        Controller controller2 = new Controller(realLobbyGameListController, view2);
+
+        controller1.login(view1.name);
+        controller1.createLobby(lobbyName1, 2);
+        controller2.login(view2.name);
+        controller2.joinLobby(lobbyName1);
+        //game started
+        LightCard startCard = view1.lightGame.getHand().getCards()[0];
+        LightPlacement startPlacement1 = new LightPlacement(new Position(0,0), startCard, CardFace.FRONT);
+        controller1.place(startPlacement1);
+        startCard = view2.lightGame.getHand().getCards()[0];
+        LightPlacement startPlacement2 = new LightPlacement(new Position(0,0), startCard, CardFace.FRONT);
+        controller2.place(startPlacement2);
+        controller1.choosePawn(PawnColors.BLUE);
+        controller2.choosePawn(PawnColors.RED);
+
+        GameController gameController = lobbyGameListController.getGameMap().get(lobbyName1);
+        PublicGameController publicController = new PublicGameController(gameController);
+        Game game = publicController.getGame();
+
+        User user1 = game.getUserFromNick(view1.name);
+        User user2 = game.getUserFromNick(view2.name);
+
+        //pawnChoices settedUp
+        assert user1.getPawnColor() == PawnColors.BLUE;
+        assert user2.getPawnColor() == PawnColors.RED;
+
+        //view 1 lightModel updated correctly
+        assert view1.lightGame.getLightGameParty().getPlayersColor().get(view1.name) == PawnColors.BLUE;
+        assert view1.lightGame.getLightGameParty().getPlayersColor().get(view2.name) == PawnColors.RED;
+
+        //view 2 lightModel updated correctly
+        assert view2.lightGame.getLightGameParty().getPlayersColor().get(view1.name) == PawnColors.BLUE;
+        assert view2.lightGame.getLightGameParty().getPlayersColor().get(view2.name) == PawnColors.RED;
+
+        //check transition to secret objective choice state
+        assert game.getPawnChoices().isEmpty();
+
+        assert user1.hasChosenPawnColor();
+        assert user2.hasChosenPawnColor();
+
+        assert user1.getUserHand().getSecretObjectiveChoices().stream().allMatch(Objects::nonNull);
+        assert user2.getUserHand().getSecretObjectiveChoices().stream().allMatch(Objects::nonNull);
+        assert user1.getUserHand().getSecretObjectiveChoices().size() == 2;
+        assert user2.getUserHand().getSecretObjectiveChoices().size() == 2;
+
+        assert view1.lightGame.getHand().getSecretObjectiveOptions().length == 2;
+        assert view2.lightGame.getHand().getSecretObjectiveOptions().length == 2;
+
     }
 
     @Test
@@ -541,6 +653,8 @@ class ControllersTests {
         startCard = view2.lightGame.getHand().getCards()[0];
         LightPlacement startPlacement2 = new LightPlacement(new Position(0,0), startCard, CardFace.FRONT);
         controller2.place(startPlacement2);
+        controller1.choosePawn(PawnColors.BLUE);
+        controller2.choosePawn(PawnColors.RED);
         //choose secret objective
         LightCard secretObjective = view1.lightGame.getHand().getSecretObjectiveOptions()[0];
         controller1.chooseSecretObjective(secretObjective);
@@ -603,6 +717,8 @@ class ControllersTests {
         startCard = view2.lightGame.getHand().getCards()[0];
         LightPlacement startPlacement2 = new LightPlacement(new Position(0,0), startCard, CardFace.FRONT);
         controller2.place(startPlacement2);
+        controller1.choosePawn(PawnColors.BLUE);
+        controller2.choosePawn(PawnColors.RED);
         //choose secret objective
         LightCard secretObjective1 = view1.lightGame.getHand().getSecretObjectiveOptions()[0];
         controller1.chooseSecretObjective(secretObjective1);
@@ -673,6 +789,8 @@ class ControllersTests {
         startCard = view2.lightGame.getHand().getCards()[0];
         LightPlacement startPlacement2 = new LightPlacement(new Position(0,0), startCard, CardFace.FRONT);
         controller2.place(startPlacement2);
+        controller1.choosePawn(PawnColors.BLUE);
+        controller2.choosePawn(PawnColors.RED);
         //choose secret objective
         LightCard secretObjective1 = view1.lightGame.getHand().getSecretObjectiveOptions()[0];
         controller1.chooseSecretObjective(secretObjective1);
@@ -744,6 +862,8 @@ class ControllersTests {
         startCard = view2.lightGame.getHand().getCards()[0];
         LightPlacement startPlacement2 = new LightPlacement(new Position(0,0), startCard, CardFace.FRONT);
         controller2.place(startPlacement2);
+        controller1.choosePawn(PawnColors.BLUE);
+        controller2.choosePawn(PawnColors.RED);
         //choose secret objective
         LightCard secretObjective1 = view1.lightGame.getHand().getSecretObjectiveOptions()[0];
         controller1.chooseSecretObjective(secretObjective1);
@@ -810,6 +930,8 @@ class ControllersTests {
         startCard = view2.lightGame.getHand().getCards()[0];
         LightPlacement startPlacement2 = new LightPlacement(new Position(0,0), startCard, CardFace.FRONT);
         controller2.place(startPlacement2);
+        controller1.choosePawn(PawnColors.BLUE);
+        controller2.choosePawn(PawnColors.RED);
         //choose secret objective
         LightCard secretObjective1 = view1.lightGame.getHand().getSecretObjectiveOptions()[0];
         controller1.chooseSecretObjective(secretObjective1);
@@ -874,6 +996,8 @@ class ControllersTests {
 
         controller1.place(startPlacement1);
         controller2.place(startPlacement2);
+        controller1.choosePawn(PawnColors.BLUE);
+        controller2.choosePawn(PawnColors.RED);
 
         LightCard secretObjective1 = view1.lightGame.getHand().getSecretObjectiveOptions()[0];
         LightCard secretObjective2 = view2.lightGame.getHand().getSecretObjectiveOptions()[0];
