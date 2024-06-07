@@ -269,6 +269,12 @@ public class Game implements Serializable {
         }
     }
 
+    public boolean isInPawnChoiceState(){
+        synchronized (turnLock) {
+            return !pawnChoices.isEmpty();
+        }
+    }
+
     /**
      * @return true if the players in game are choosing the secretObjective
      */
