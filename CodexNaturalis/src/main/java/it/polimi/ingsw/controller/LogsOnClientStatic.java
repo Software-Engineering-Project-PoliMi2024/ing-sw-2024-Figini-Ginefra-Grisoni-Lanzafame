@@ -67,7 +67,7 @@ public class LogsOnClientStatic {
     public static String GAME_END = "The game has ended.";
 
     //gameParty related
-    public static String PLAYER_REJOINED = " rejoined the game";
+    public static String PLAYER_JOINED = " joined the game";
     public static String PLAYER_GAME_LEFT = " left the game";
     public static String LAST_PLAYER = "You are the last player in the game";
 
