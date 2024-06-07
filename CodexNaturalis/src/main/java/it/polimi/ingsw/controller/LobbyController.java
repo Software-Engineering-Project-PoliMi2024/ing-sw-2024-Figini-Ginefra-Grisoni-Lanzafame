@@ -1,6 +1,7 @@
 package it.polimi.ingsw.controller;
 
 import it.polimi.ingsw.controller.Interfaces.GameControllerReceiver;
+import it.polimi.ingsw.controller.Interfaces.LobbyControllerInterface;
 import it.polimi.ingsw.lightModel.DiffGenerator;
 import it.polimi.ingsw.lightModel.diffs.nuclearDiffs.LittleBoyLobby;
 import it.polimi.ingsw.model.cardReleted.cards.*;
@@ -12,7 +13,7 @@ import it.polimi.ingsw.view.ViewInterface;
 import java.util.HashMap;
 import java.util.Map;
 
-public class LobbyController {
+public class LobbyController implements LobbyControllerInterface {
     private final Lobby lobby;
     private final Map<String, ViewInterface> viewMap = new HashMap<>();
     private final Map<String, GameControllerReceiver> gameReceiverMap = new HashMap<>();
