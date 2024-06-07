@@ -1,11 +1,12 @@
-package it.polimi.ingsw.lightModel.diffs.game;
+package it.polimi.ingsw.lightModel.diffs.game.pawnChoiceDiffs;
 
+import it.polimi.ingsw.lightModel.diffs.game.GameDiff;
 import it.polimi.ingsw.lightModel.lightTableRelated.LightGame;
 import it.polimi.ingsw.model.playerReleted.PawnColors;
 
 import java.util.List;
 
-public class GameDiffSetPawns extends GameDiff{
+public class GameDiffSetPawns extends GameDiff {
     private final List<PawnColors> pawnColors;
 
     public GameDiffSetPawns(List<PawnColors> pawnColors){

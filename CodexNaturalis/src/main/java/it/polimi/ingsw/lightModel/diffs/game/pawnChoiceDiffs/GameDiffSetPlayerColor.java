@@ -1,9 +1,10 @@
-package it.polimi.ingsw.lightModel.diffs.game;
+package it.polimi.ingsw.lightModel.diffs.game.pawnChoiceDiffs;
 
+import it.polimi.ingsw.lightModel.diffs.game.GameDiff;
 import it.polimi.ingsw.lightModel.lightTableRelated.LightGame;
 import it.polimi.ingsw.model.playerReleted.PawnColors;
 
-public class GameDiffSetPlayerColor extends GameDiff{
+public class GameDiffSetPlayerColor extends GameDiff {
     private final PawnColors color;
     private final String nickname;
 
