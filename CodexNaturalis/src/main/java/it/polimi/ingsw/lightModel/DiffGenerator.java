@@ -15,10 +15,9 @@ import it.polimi.ingsw.lightModel.diffs.game.handDiffs.HandDiff;
 import it.polimi.ingsw.lightModel.diffs.game.handDiffs.HandDiffAdd;
 import it.polimi.ingsw.lightModel.diffs.game.handDiffs.HandDiffAddOneSecretObjectiveOption;
 import it.polimi.ingsw.lightModel.diffs.game.handDiffs.HandDiffSetObj;
-import it.polimi.ingsw.lightModel.diffs.game.joinDiffs.GameDiffInitialization;
-import it.polimi.ingsw.lightModel.diffs.game.joinDiffs.GameDiffJoinMidGame;
-import it.polimi.ingsw.lightModel.diffs.game.joinDiffs.GameDiffJoinSecretObj;
-import it.polimi.ingsw.lightModel.diffs.game.joinDiffs.GameDiffJoinStartCard;
+import it.polimi.ingsw.lightModel.diffs.game.joinDiffs.*;
+import it.polimi.ingsw.lightModel.diffs.game.pawnChoiceDiffs.GameDiffSetPawns;
+import it.polimi.ingsw.lightModel.diffs.game.pawnChoiceDiffs.GameDiffSetPlayerColor;
 import it.polimi.ingsw.lightModel.diffs.lobby_lobbyList.LobbyDiffEdit;
 import it.polimi.ingsw.lightModel.diffs.lobby_lobbyList.LobbyDiffEditLogin;
 import it.polimi.ingsw.lightModel.diffs.lobby_lobbyList.LobbyListDiff;
@@ -32,6 +31,7 @@ import it.polimi.ingsw.model.cardReleted.cards.StartCard;
 import it.polimi.ingsw.model.cardReleted.utilityEnums.DrawableCard;
 import it.polimi.ingsw.model.playerReleted.Codex;
 import it.polimi.ingsw.model.playerReleted.Hand;
+import it.polimi.ingsw.model.playerReleted.PawnColors;
 import it.polimi.ingsw.model.playerReleted.User;
 import it.polimi.ingsw.model.tableReleted.Deck;
 import it.polimi.ingsw.model.tableReleted.Game;
@@ -135,53 +135,50 @@ public class DiffGenerator {
         return new CodexDiffPlacement(placer, codex.getPoints(),
                 codex.getEarnedCollectables(), List.of(placement), codex.getFrontier().getFrontier());
     }
-    /**
-     * Generates a diff that updates the lightGame with the current state of the game
-     * for users that join the game for the first time
-     * @param game the game to get the current state from and that the user is joining
-     * @param nickname the nickname of the user joining the game
-     * @param activePlayers a list containing the nickname of the active players
-     * @return the diff that updates the lightGame with the current state of the game
-     */
-    public static GameDiffJoinStartCard diffJoinStartCard(Game game, String nickname, List<String> activePlayers){
-        return new GameDiffJoinStartCard(
-                getInitialization(game, nickname),
-                getPlayerActivity(activePlayers),
-                getDeckCurrentState(game),
-                getCodexCurrentState(game),
-                getHandYourCurrentState(game.getUserFromNick(nickname))
-        );
+
+    public static GameDiffJoin updateJoinStartCard(Game game, List<String> activePlayers, String nickname){
+        GameDiffJoin joinDiff = new GameDiffJoin(getInitialization(game, nickname));
+        joinDiff.put(getPlayerActivity(activePlayers));
+        joinDiff.put(new ArrayList<>(getDeckCurrentState(game)));
+        joinDiff.put(new ArrayList<>(getCodexCurrentState(game)));
+        joinDiff.put(new ArrayList<>(getHandYourCurrentState(game.getUserFromNick(nickname))));
+
+        return joinDiff;
     }
 
-    /**
-     * Generates a diff that updates the lightGame with the current state of the game
-     * for users that rejoin the game after a disconnection
-     * @param game the game to get the current state from and that the user is rejoining
-     * @param nickname the nickname of the user rejoining the game
-     * @param activePlayers a list containing the nickname of the active players
-     * @return the diff that updates the lightGame with the current state of the game
-     */
-    public static GameDiffJoinMidGame diffJoinMidGame(Game game, String nickname, List<String> activePlayers){
-        return new GameDiffJoinMidGame(
-                getInitialization(game, nickname),
-                getPlayerActivity(activePlayers),
-                getDeckCurrentState(game),
-                getCodexCurrentState(game),
-                getHandYourCurrentState(game.getUserFromNick(nickname)),
-                getHandOtherCurrentState(game, nickname),
-                getPublicObjectiveCurrentState(game)
-        );
+    public static GameDiffJoin updateChosePawn(Game game, List<String> activePlayers, String nickname){
+        GameDiffJoin joinDiff = updateJoinStartCard(game, activePlayers, nickname);
+        joinDiff.put(new ArrayList<>(getHandOtherCurrentState(game, nickname)));
+        joinDiff.put(new ArrayList<>(getPawnCurrentState(game)));
+
+        return joinDiff;
     }
 
-    public static GameDiffJoinSecretObj diffJoinSecretObj(Game game, String nickname, List<String> activePlayers){
-        return new GameDiffJoinSecretObj(
-                getInitialization(game, nickname),
-                getPlayerActivity(activePlayers),
-                getDeckCurrentState(game),
-                getCodexCurrentState(game),
-                getHandYourCurrentState(game.getUserFromNick(nickname)),
-                getHandOtherCurrentState(game, nickname)
-                );
+    public static GameDiffJoin updateJoinSecretObj(Game game, List<String> activePlayers, String nickname){
+        GameDiffJoin joinDiff = updateChosePawn(game, activePlayers, nickname);
+
+        return joinDiff;
+    }
+
+    public static GameDiffJoin updateJoinActualGame(Game game, List<String> activePlayers, String nickname){
+        GameDiffJoin joinDiff = updateJoinSecretObj(game, activePlayers, nickname);
+        joinDiff.put(getPublicObjectiveCurrentState(game));
+
+        return joinDiff;
+    }
+
+    public static List<GameDiff> getPawnCurrentState(Game game){
+        List<GameDiff> pawnsDiff = new ArrayList<>();
+        List<PawnColors> pawnChoices = game.getPawnChoices();
+        if(pawnChoices != null)
+            pawnsDiff.add(new GameDiffSetPawns(pawnChoices));
+        for(User player : game.getUsersList()) {
+            PawnColors playerColor = player.getPawnColor();
+            if(playerColor != null)
+                pawnsDiff.add(new GameDiffSetPlayerColor(player.getNickname(), playerColor));
+        }
+
+        return pawnsDiff;
     }
 
     private static GameDiffInitialization getInitialization(Game game, String nickname){

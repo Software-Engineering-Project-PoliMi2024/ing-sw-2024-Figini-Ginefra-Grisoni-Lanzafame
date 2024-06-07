@@ -72,8 +72,10 @@ public class GameController implements GameControllerInterface {
             this.updateJoinStartCard(joinerNickname);
             startCardStateTransition(joinerNickname);
         }else if (game.inInSecretObjState()) {
-                this.updateJoinSecretObjective(joinerNickname, game);
-                this.objectiveChoiceStateTransition(joinerNickname);
+            this.updateJoinSecretObjective(joinerNickname, game);
+            this.objectiveChoiceStateTransition(joinerNickname);
+        } else if (game.isInPawnChoiceState()) {
+
         } else if (game.hasEnded()) {
                 //this.updateJoinActualGame(joinerNickname, game); if other information are necessary
                 try {
@@ -339,7 +341,7 @@ public class GameController implements GameControllerInterface {
     private synchronized void updateJoinSecretObjective(String joiner, Game game){
         List<String> activePlayers = new ArrayList<>(playerViewMap.keySet().stream().toList());
         try{
-            playerViewMap.get(joiner).updateGame(DiffGenerator.diffJoinSecretObj(game, joiner, activePlayers));
+            playerViewMap.get(joiner).updateGame(DiffGenerator.updateJoinStartCard(game, activePlayers, joiner));
             playerViewMap.get(joiner).logGame(LogsOnClientStatic.GAME_JOINED);
         } catch(Exception ignored){}
     }
@@ -354,10 +356,18 @@ public class GameController implements GameControllerInterface {
         }catch(Exception ignored){}
     }
 
+    private synchronized void updateJoinPawnChoice(String joiner){
+        List<String> activePlayers = new ArrayList<>(playerViewMap.keySet().stream().toList());
+        try {
+            playerViewMap.get(joiner).updateGame(DiffGenerator.updateChosePawn(game, activePlayers, joiner));
+            playerViewMap.get(joiner).logGame(LogsOnClientStatic.GAME_JOINED);
+        }catch(Exception ignored){}
+    }
+
     private synchronized void updateJoinStartCard(String joiner){
         List<String> activePlayers = new ArrayList<>(playerViewMap.keySet().stream().toList());
         try {
-            playerViewMap.get(joiner).updateGame(DiffGenerator.diffJoinStartCard(game, joiner, activePlayers));
+            playerViewMap.get(joiner).updateGame(DiffGenerator.updateJoinStartCard(game, activePlayers, joiner));
             playerViewMap.get(joiner).logGame(LogsOnClientStatic.GAME_JOINED);
         }catch(Exception ignored){}
     }
@@ -664,10 +674,10 @@ public class GameController implements GameControllerInterface {
     }
 
     public synchronized void updateJoinActualGame(String joiner, Game game){
-        List<String> activePlayer = playerViewMap.keySet().stream().toList();
+        List<String> activePlayers = playerViewMap.keySet().stream().toList();
         try{
             ViewInterface joinerView = playerViewMap.get(joiner);
-            joinerView.updateGame(DiffGenerator.diffJoinMidGame(game, joiner, activePlayer));
+            joinerView.updateGame(DiffGenerator.updateJoinActualGame(game, activePlayers, joiner));
             joinerView.logGame(LogsOnClientStatic.GAME_JOINED);
         } catch(Exception ignored){}
 
