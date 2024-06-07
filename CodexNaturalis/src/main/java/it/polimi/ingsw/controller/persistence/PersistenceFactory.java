@@ -213,6 +213,16 @@ public class PersistenceFactory {
         }
     }
 
+    public static void eraseAllSaves() {
+        File dataFolder = new File(gameDataFolderPath);
+        File[] saves = dataFolder.listFiles();
+        if (saves != null) {
+            for (File gameSave : saves) {
+                delete(gameSave);
+            }
+        }
+    }
+
     private static String getGameNameFromFile(File file) {
         return file.getName().split(dateGameNameSeparator)[1].split(_bin)[0];
     }
