@@ -1,5 +1,6 @@
 package it.polimi.ingsw.controller;
 
+import it.polimi.ingsw.controller.Interfaces.FinishedGameDeleter;
 import it.polimi.ingsw.controller.Interfaces.GameControllerReceiver;
 import it.polimi.ingsw.controller.Interfaces.LobbyControllerInterface;
 import it.polimi.ingsw.lightModel.DiffGenerator;
@@ -46,13 +47,13 @@ public class LobbyController implements LobbyControllerInterface {
         return view;
     }
 
-    public synchronized GameController startGame(CardTable cardTable){
+    public synchronized GameController startGame(CardTable cardTable, FinishedGameDeleter finishedGameDeleter){
         Deck<ObjectiveCard> objectiveCardDeck = new Deck<>(0,cardTable.getCardLookUpObjective().getQueue());
         Deck<ResourceCard> resourceCardDeck = new Deck<>(2, cardTable.getCardLookUpResourceCard().getQueue());
         Deck<GoldCard> goldCardDeck = new Deck<>(2, cardTable.getCardLookUpGoldCard().getQueue());
         Deck<StartCard> startingCardDeck = new Deck<>(0, cardTable.getCardLookUpStartCard().getQueue());
         Game createdGame = new Game(lobby, objectiveCardDeck, resourceCardDeck, goldCardDeck, startingCardDeck);
-        GameController gameController = new GameController(createdGame, cardTable);
+        GameController gameController = new GameController(createdGame, cardTable, finishedGameDeleter);
 
         notifyGameStart();
         gameReceiverMap.forEach((nick, receiver)->receiver.setGameController(gameController));

@@ -29,7 +29,7 @@ public class LobbyGameListsController implements it.polimi.ingsw.controller.Inte
     public LobbyGameListsController(){
         Set<Game> loadedGames = PersistenceFactory.load();
         for(Game game : loadedGames){
-            GameController gameController = new GameController(game, cardTable);
+            GameController gameController = new GameController(game, cardTable, this);
             gameMap.put(game.getName(), gameController);
         }
     }
@@ -131,7 +131,7 @@ public class LobbyGameListsController implements it.polimi.ingsw.controller.Inte
                 try{view.transitionTo(ViewState.LOBBY);}catch (Exception ignored){}
             }else{
                 System.out.println(lobbyName + " lobby is full, game started");
-                GameController gameController = lobbyToJoin.startGame(cardTable);
+                GameController gameController = lobbyToJoin.startGame(cardTable, this);
                 lobbyMap.remove(lobbyName);
                 gameMap.put(lobbyName, gameController);
                 this.notifyLobbyRemoved(joiner, lobbyToJoin.getLobby());
@@ -181,6 +181,12 @@ public class LobbyGameListsController implements it.polimi.ingsw.controller.Inte
 
             try{leaverView.transitionTo(ViewState.JOIN_LOBBY);}catch (Exception ignored){}
         }
+    }
+
+    @Override
+    public void deleteGame(String gameName) {
+        gameMap.remove(gameName);
+        PersistenceFactory.delete(gameName);
     }
 
     private synchronized Boolean isActiveInLobby(String nickname){

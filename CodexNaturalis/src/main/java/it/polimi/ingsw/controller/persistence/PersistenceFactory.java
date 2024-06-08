@@ -207,6 +207,20 @@ public class PersistenceFactory {
         return dateTime2.compareTo(dateTime1);
     };
 
+    public static void delete(String gameName){
+        File dataFolder = new File(gameDataFolderPath);
+        File[] saves = dataFolder.listFiles();
+        File gameToDelete = null;
+        if (saves != null) {
+            gameToDelete = Arrays.stream(saves).filter(file -> file.getName().contains(gameName)).findFirst().orElse(null);
+        }
+        if(gameToDelete != null){
+            delete(gameToDelete);
+        } else {
+            System.out.println("No game save found for the game: " + gameName);
+        }
+    }
+
     private static void delete(File file) {
         if(!file.delete()) {
             System.out.println("file:" + file.getName() + " could not be deleted");

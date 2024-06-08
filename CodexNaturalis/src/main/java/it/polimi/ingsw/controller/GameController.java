@@ -1,6 +1,7 @@
 package it.polimi.ingsw.controller;
 
 import it.polimi.ingsw.Configs;
+import it.polimi.ingsw.controller.Interfaces.FinishedGameDeleter;
 import it.polimi.ingsw.controller.Interfaces.GameControllerInterface;
 import it.polimi.ingsw.controller.persistence.PersistenceFactory;
 import it.polimi.ingsw.lightModel.DiffGenerator;
@@ -39,14 +40,16 @@ import java.util.function.Predicate;
 
 public class GameController implements GameControllerInterface {
     private final transient CardTable cardTable;
+    private final FinishedGameDeleter finishedGameDeleter;
     private final Game game;
     private final Map<String, ViewInterface> playerViewMap = new HashMap<>();
 
     private transient Timer countdownTimer = null;
 
-    public GameController(Game game, CardTable cardTable){
+    public GameController(Game game, CardTable cardTable, FinishedGameDeleter finishedGameDeleter){
         this.game = game;
         this.cardTable = cardTable;
+        this.finishedGameDeleter = finishedGameDeleter;
         this.save();
     }
 
@@ -265,8 +268,6 @@ public class GameController implements GameControllerInterface {
         if(Objects.equals(this.getLastActivePlayer(), nickname) && game.hasEnded()){
             //model update with points
             declareWinners();
-
-            //TODO delete when game finishes
         }else{
             //turn
             int nextPlayerIndex = this.getNextActivePlayerIndex();
@@ -580,6 +581,8 @@ public class GameController implements GameControllerInterface {
                 view.transitionTo(ViewState.GAME_ENDING);
             }catch(Exception ignored){}
         });
+
+        finishedGameDeleter.deleteGame(game.getName());
     }
 
     public void save(){
