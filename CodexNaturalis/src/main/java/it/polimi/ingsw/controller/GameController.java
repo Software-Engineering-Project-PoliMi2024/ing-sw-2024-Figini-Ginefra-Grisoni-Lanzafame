@@ -47,6 +47,7 @@ public class GameController implements GameControllerInterface {
     public GameController(Game game, CardTable cardTable){
         this.game = game;
         this.cardTable = cardTable;
+        this.save();
     }
 
     public synchronized Map<String, ViewInterface> getPlayerViewMap(){
@@ -63,10 +64,7 @@ public class GameController implements GameControllerInterface {
         countdownTimer = null;
         playerViewMap.put(joinerNickname, view);
 
-        if(!isCurrentPlayerActive()){
-            int currentPlayerIndex = game.getUsersList().indexOf(game.getUserFromNick(joinerNickname));
-            game.setCurrentPlayerIndex(currentPlayerIndex);
-        }
+        //TODO everyone lefts; the first user to rejoin is the current player
 
         this.notifyJoinGame(joinerNickname);
 
@@ -272,8 +270,14 @@ public class GameController implements GameControllerInterface {
         this.notifyGameLeft(nickname);
 
         if (game.isInStartCardState()) {
-            if(otherHaveAllSelectedStartCard(nickname) && !you.hasPlacedStartCard()){
+            if (otherHaveAllSelectedStartCard(nickname) && !you.hasPlacedStartCard()) {
                 this.removeInactivePlayers(User::hasPlacedStartCard);
+                this.moveToChoosePawn();
+            }
+        } else if (game.isInPawnChoiceState()) {
+            if (otherHaveAllChoosePawn(nickname)) {
+                game.getPawnChoices().clear();
+                this.removeInactivePlayers(User::hasChosenPawnColor);
                 this.moveToSecretObjectivePhase();
             }
         } else if (game.inInSecretObjState()) {
