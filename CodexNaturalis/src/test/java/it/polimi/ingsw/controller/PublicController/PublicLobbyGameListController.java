@@ -2,7 +2,7 @@ package it.polimi.ingsw.controller.PublicController;
 
 import it.polimi.ingsw.controller.GameController;
 import it.polimi.ingsw.controller.LobbyController;
-import it.polimi.ingsw.controller.LobbyGameListController;
+import it.polimi.ingsw.controller.LobbyGameListsController;
 import it.polimi.ingsw.model.cardReleted.cards.CardTable;
 import it.polimi.ingsw.view.ViewInterface;
 
@@ -13,9 +13,9 @@ import java.util.Map;
  * This class is the controller that handles the reception of the clients. It manages the lobbies, the nicknames and the offline games
  */
 public class PublicLobbyGameListController {
-    public LobbyGameListController lobbyGameListController;
+    public LobbyGameListsController lobbyGameListController;
 
-    public PublicLobbyGameListController(LobbyGameListController lobbyGameListController) {
+    public PublicLobbyGameListController(LobbyGameListsController lobbyGameListController) {
         this.lobbyGameListController = lobbyGameListController;
     }
 

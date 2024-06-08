@@ -13,11 +13,11 @@ import it.polimi.ingsw.view.ViewInterface;
  */
 public class Controller implements ControllerInterface, GameControllerReceiver {
     private String nickname;
-    private final LobbyGameListController lobbyGameListController;
+    private final LobbyGameListsController lobbyGameListController;
     private final ViewInterface view;
     private GameController gameController;
 
-    public Controller(LobbyGameListController lobbyGameListController, ViewInterface view){
+    public Controller(LobbyGameListsController lobbyGameListController, ViewInterface view){
         this.lobbyGameListController = lobbyGameListController;
         this.view = view;
     }

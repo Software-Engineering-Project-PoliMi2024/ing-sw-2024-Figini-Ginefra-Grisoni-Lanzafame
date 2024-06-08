@@ -31,7 +31,7 @@ import org.junit.jupiter.api.Test;
 import java.util.*;
 
 class ControllersTests {
-    private LobbyGameListController realLobbyGameListController;
+    private LobbyGameListsController realLobbyGameListController;
     private PublicLobbyGameListController lobbyGameListController;
 
     @BeforeAll
@@ -42,7 +42,7 @@ class ControllersTests {
     @BeforeEach
     public void setUp() {
         PersistenceFactory.eraseAllSaves();
-        realLobbyGameListController = new LobbyGameListController();
+        realLobbyGameListController = new LobbyGameListsController();
         lobbyGameListController = new PublicLobbyGameListController(realLobbyGameListController);
     }
 

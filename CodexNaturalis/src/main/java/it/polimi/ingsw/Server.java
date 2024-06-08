@@ -7,7 +7,7 @@ import it.polimi.ingsw.connectionLayer.VirtualLayer.VirtualView;
 import it.polimi.ingsw.connectionLayer.VirtualSocket.VirtualViewSocket;
 import it.polimi.ingsw.controller.Controller;
 import it.polimi.ingsw.controller.LogsOnClientStatic;
-import it.polimi.ingsw.controller.LobbyGameListController;
+import it.polimi.ingsw.controller.LobbyGameListsController;
 import it.polimi.ingsw.view.TUI.Printing.Printer;
 import it.polimi.ingsw.view.ViewState;
 
@@ -31,7 +31,7 @@ public class Server {
         } catch (IOException e) {
             System.out.println("No internet connection, can't get IP address");
         }
-        LobbyGameListController lobbyGameListController = new LobbyGameListController();
+        LobbyGameListsController lobbyGameListController = new LobbyGameListsController();
 
         Registry registry;
         try {

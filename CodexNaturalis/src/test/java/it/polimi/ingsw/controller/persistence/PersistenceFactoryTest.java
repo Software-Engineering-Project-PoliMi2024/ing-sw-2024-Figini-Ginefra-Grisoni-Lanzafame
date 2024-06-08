@@ -3,7 +3,7 @@ package it.polimi.ingsw.controller.persistence;
 import it.polimi.ingsw.Configs;
 import it.polimi.ingsw.OSRelated;
 import it.polimi.ingsw.controller.GameController;
-import it.polimi.ingsw.controller.LobbyGameListController;
+import it.polimi.ingsw.controller.LobbyGameListsController;
 import it.polimi.ingsw.controller.PublicController.PublicGameController;
 import it.polimi.ingsw.controller.PublicController.PublicLobbyGameListController;
 import it.polimi.ingsw.model.cardReleted.cards.*;
@@ -61,7 +61,7 @@ public class PersistenceFactoryTest {
         Game gameToSave = new Game(lobby, objectiveCardDeck, resourceCardDeck, goldCardDeck, startingCardDeck);
         PersistenceFactory.save(gameToSave);
 
-        LobbyGameListController realLobbyGameListController = new LobbyGameListController();
+        LobbyGameListsController realLobbyGameListController = new LobbyGameListsController();
         PublicLobbyGameListController publicController = new PublicLobbyGameListController(realLobbyGameListController);
         GameController gameController = publicController.getGameMap().get("loadGameTest");
         Game gameLoadedFromSave = new PublicGameController(gameController).getGame();
@@ -88,7 +88,7 @@ public class PersistenceFactoryTest {
         List<File> gameSaves = Arrays.asList(Objects.requireNonNull(new File(OSRelated.gameDataFolderPath).listFiles()));
         assert gameSaves.stream().filter(file -> file.getName().contains("loadGameExpiredTest")).count() == 2;
 
-        LobbyGameListController realLobbyGameListController = new LobbyGameListController();
+        LobbyGameListsController realLobbyGameListController = new LobbyGameListsController();
         PublicLobbyGameListController publicController = new PublicLobbyGameListController(realLobbyGameListController);
         GameController gameController = publicController.getGameMap().get("loadGameTest");
         Game gameLoadedFromSave = new PublicGameController(gameController).getGame();

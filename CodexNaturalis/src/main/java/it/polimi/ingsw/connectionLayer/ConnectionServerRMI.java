@@ -6,7 +6,7 @@ import it.polimi.ingsw.controller.Interfaces.ControllerInterface;
 import it.polimi.ingsw.connectionLayer.VirtualLayer.VirtualController;
 import it.polimi.ingsw.connectionLayer.VirtualLayer.VirtualView;
 import it.polimi.ingsw.controller.LogsOnClientStatic;
-import it.polimi.ingsw.controller.LobbyGameListController;
+import it.polimi.ingsw.controller.LobbyGameListsController;
 import it.polimi.ingsw.view.ViewInterface;
 import it.polimi.ingsw.view.ViewState;
 
@@ -18,7 +18,7 @@ import java.util.concurrent.Future;
 import java.util.concurrent.TimeUnit;
 
 public class ConnectionServerRMI implements ConnectionLayerServer {
-    private final LobbyGameListController lobbyGameListController;
+    private final LobbyGameListsController lobbyGameListController;
     private final ExecutorService serverExecutor = Executors.newSingleThreadExecutor();
     int secondsTimeOut = 5;
 
@@ -27,7 +27,7 @@ public class ConnectionServerRMI implements ConnectionLayerServer {
      *
      * @param lobbyGameListController the wrapper for the Model present in the server
      */
-    public ConnectionServerRMI(LobbyGameListController lobbyGameListController) {
+    public ConnectionServerRMI(LobbyGameListsController lobbyGameListController) {
         this.lobbyGameListController = lobbyGameListController;
     }
 

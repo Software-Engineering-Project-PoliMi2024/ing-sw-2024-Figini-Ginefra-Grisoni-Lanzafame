@@ -3,7 +3,6 @@ package it.polimi.ingsw.controller;
 import it.polimi.ingsw.Configs;
 import it.polimi.ingsw.OSRelated;
 import it.polimi.ingsw.controller.Interfaces.GameControllerReceiver;
-import it.polimi.ingsw.controller.Interfaces.ReceptionControllerInterface;
 import it.polimi.ingsw.controller.persistence.PersistenceFactory;
 import it.polimi.ingsw.lightModel.DiffGenerator;
 import it.polimi.ingsw.lightModel.diffs.nuclearDiffs.FatManLobbyList;
@@ -21,13 +20,13 @@ import java.util.Set;
 /**
  * This class is the controller that handles the reception of the clients. It manages the lobbies, the nicknames and the offline games
  */
-public class LobbyGameListController implements ReceptionControllerInterface {
+public class LobbyGameListsController implements it.polimi.ingsw.controller.Interfaces.LobbyGameListsController {
     private final CardTable cardTable = new CardTable(Configs.CardResourcesFolderPath, Configs.CardJSONFileName, OSRelated.cardFolderDataPath);
     private final Map<String, ViewInterface> viewMap = new HashMap<>();
     private final Map<String, LobbyController> lobbyMap = new HashMap<>();
     private final Map<String, GameController> gameMap = new HashMap<>();
 
-    public LobbyGameListController(){
+    public LobbyGameListsController(){
         Set<Game> loadedGames = PersistenceFactory.load();
         for(Game game : loadedGames){
             GameController gameController = new GameController(game, cardTable);
