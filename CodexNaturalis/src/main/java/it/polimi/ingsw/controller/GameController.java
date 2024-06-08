@@ -71,13 +71,25 @@ public class GameController implements GameControllerInterface {
         if(game.isInStartCardState()) {
             this.updateJoinStartCard(joinerNickname);
             startCardStateTransition(joinerNickname);
+            if(playerViewMap.size() == 2){
+                String otherPlayer = playerViewMap.keySet().stream().filter(nick->!nick.equals(joinerNickname)).findFirst().orElse(null);
+                startCardStateTransition(otherPlayer);
+            }
         }else if (game.inInSecretObjState()) {
             this.updateJoinSecretObjective(joinerNickname, game);
             this.objectiveChoiceStateTransition(joinerNickname);
+            if(playerViewMap.size() == 2){
+                String otherPlayer = playerViewMap.keySet().stream().filter(nick->!nick.equals(joinerNickname)).findFirst().orElse(null);
+                objectiveChoiceStateTransition(otherPlayer);
+            }
         } else if (game.isInPawnChoiceState()) {
             this.updateJoinPawnChoice(joinerNickname);
             this.pawnChoiceStateTransition(joinerNickname);
-        } else if (game.hasEnded()) {
+            if(playerViewMap.size() == 2){
+                String otherPlayer = playerViewMap.keySet().stream().filter(nick->!nick.equals(joinerNickname)).findFirst().orElse(null);
+                pawnChoiceStateTransition(otherPlayer);
+            }
+        } else if (game.hasEnded() && game.getCurrentPlayer().getNickname().equals(getLastActivePlayer())) {
                 //this.updateJoinActualGame(joinerNickname, game); if other information are necessary
                 try {
                     view.updateGame(new CodexDiffSetFinalPoints(game.getPointPerPlayerMap()));
@@ -87,6 +99,11 @@ public class GameController implements GameControllerInterface {
         } else {
             this.updateJoinActualGame(joinerNickname, game);
             this.takeTurn(joinerNickname);
+            if(playerViewMap.size() == 2){
+
+                String otherPlayer = playerViewMap.keySet().stream().filter(nick->!nick.equals(joinerNickname)).findFirst().orElse(null);
+                pawnChoiceStateTransition(otherPlayer);
+            }
         }
     }
 
@@ -178,12 +195,19 @@ public class GameController implements GameControllerInterface {
 
         this.notifyStartCardFaceChoice(nickname, Lightifier.lightify(startCardPlacement));
 
-
-        if(otherHaveAllSelectedStartCard(nickname)){
-            this.removeInactivePlayers(User::hasPlacedStartCard);
-            this.moveToChoosePawn();
-        }else{
-            try{playerViewMap.get(nickname).transitionTo(ViewState.WAITING_STATE);}catch (Exception ignored){}
+        if(playerViewMap.size() == 1){
+            this.notifyLastInGameTimer();
+            this.startLastPlayerTimer();
+        }else {
+            if (otherHaveAllSelectedStartCard(nickname)) {
+                this.removeInactivePlayers(User::hasPlacedStartCard);
+                this.moveToChoosePawn();
+            } else {
+                try {
+                    playerViewMap.get(nickname).transitionTo(ViewState.WAITING_STATE);
+                } catch (Exception ignored) {
+                }
+            }
         }
     }
 
@@ -245,21 +269,17 @@ public class GameController implements GameControllerInterface {
             String nextPlayer = game.getUsersList().get(nextPlayerIndex).getNickname();
             if(nextPlayer.equals(nickname)){
                 System.out.println(game.getName() + "started countdown timer");
-                countdownTimer = new Timer();
-                countdownTimer.schedule(new TimerTask() {
-                    @Override
-                    public void run() {
-                        declareWinners();
-                    }
-                }, Configs.lastInGameTimerSeconds* 1000L);
+                this.notifyLastInGameTimer();
+                this.startLastPlayerTimer();
             }else {
-                this.save();
                 game.setCurrentPlayerIndex(this.getNextActivePlayerIndex());
                 this.notifyTurnChange(nextPlayer);
                 this.takeTurn(nickname);
                 this.takeTurn(nextPlayer);
             }
         }
+
+        this.save();
     }
 
     public synchronized void leave(String nickname){
@@ -410,6 +430,24 @@ public class GameController implements GameControllerInterface {
                     view.logOthers(leaver + LogsOnClientStatic.PLAYER_GAME_LEFT);
                 }catch (Exception ignored){}
             }
+        });
+    }
+
+    private synchronized void startLastPlayerTimer(){
+        countdownTimer = new Timer();
+        countdownTimer.schedule(new TimerTask() {
+            @Override
+            public void run() {
+                declareWinners();
+            }
+        }, Configs.lastInGameTimerSeconds* 1000L);
+    }
+
+    private synchronized void notifyLastInGameTimer(){
+        playerViewMap.forEach((nickname, view)->{
+            try {
+                view.logGame(LogsOnClientStatic.LAST_PLAYER);
+            }catch(Exception ignored){}
         });
     }
 
