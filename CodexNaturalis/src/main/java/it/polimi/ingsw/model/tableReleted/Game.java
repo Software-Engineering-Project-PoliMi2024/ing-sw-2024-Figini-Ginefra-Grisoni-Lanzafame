@@ -271,7 +271,8 @@ public class Game implements Serializable {
 
     public boolean isInPawnChoiceState(){
         synchronized (turnLock) {
-            return !pawnChoices.isEmpty();
+            return !isInStartCardState() && gameParty.getUsersList().stream().map(User::getPawnColor).anyMatch(Objects::isNull)
+                    && pawnChoices.stream().anyMatch(Objects::nonNull);
         }
     }
 
