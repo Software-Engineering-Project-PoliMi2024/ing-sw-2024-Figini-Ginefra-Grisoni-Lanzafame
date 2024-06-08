@@ -139,6 +139,12 @@ public class LightGame implements Differentiable {
         lightGameParty.setPawnChoices(pawnColorsList);
     }
 
+    public void removePlayer(String nickname){
+        codexMap.remove(nickname);
+        handOthers.remove(nickname);
+        lightGameParty.removePlayer(nickname);
+    }
+
     public void setFrontier(LightFrontier lightFrontier, String nickname){
         codexMap.get(nickname).setFrontier(lightFrontier);
     }

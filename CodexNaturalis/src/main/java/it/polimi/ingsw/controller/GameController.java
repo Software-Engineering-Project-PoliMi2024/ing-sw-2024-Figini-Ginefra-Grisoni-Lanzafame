@@ -13,6 +13,7 @@ import it.polimi.ingsw.lightModel.diffs.game.deckDiffs.DeckDiffDeckDraw;
 import it.polimi.ingsw.lightModel.diffs.game.gamePartyDiffs.GameDiffCurrentPlayer;
 import it.polimi.ingsw.lightModel.diffs.game.gamePartyDiffs.GameDiffFirstPlayer;
 import it.polimi.ingsw.lightModel.diffs.game.gamePartyDiffs.GameDiffPlayerActivity;
+import it.polimi.ingsw.lightModel.diffs.game.gamePartyDiffs.GameDiffRemovePlayers;
 import it.polimi.ingsw.lightModel.diffs.game.handDiffOther.HandOtherDiff;
 import it.polimi.ingsw.lightModel.diffs.game.handDiffOther.HandOtherDiffAdd;
 import it.polimi.ingsw.lightModel.diffs.game.handDiffOther.HandOtherDiffRemove;
@@ -670,15 +671,28 @@ public class GameController implements GameControllerInterface {
                 playersToRemove.add(user.getNickname());
             }
         }
-        String oldFirstPlayer = game.getUsersList().getFirst().getNickname();
-        for (String playerNick : playersToRemove) {
-            game.removeUser(playerNick);
-        }
-        String newFirstPlayer = game.getUsersList().getFirst().getNickname();
-        if(!oldFirstPlayer.equals(newFirstPlayer)){
-            this.notifyFirstPlayerChange(newFirstPlayer);
+
+        if(!playersToRemove.isEmpty()) {
+            String oldFirstPlayer = game.getUsersList().getFirst().getNickname();
+            for (String playerNick : playersToRemove) {
+                game.removeUser(playerNick);
+            }
+            this.updateRemovedPlayers(playersToRemove);
+
+            String newFirstPlayer = game.getUsersList().getFirst().getNickname();
+            if (!oldFirstPlayer.equals(newFirstPlayer)) {
+                this.notifyFirstPlayerChange(newFirstPlayer);
+            }
         }
         this.save();
+    }
+
+    private synchronized void updateRemovedPlayers(List<String> playersToRemove){
+        playerViewMap.forEach((nickname, view)->{
+            try {
+                view.updateGame(new GameDiffRemovePlayers(playersToRemove));
+            }catch(Exception ignored){}
+        });
     }
 
     private synchronized void notifyFirstPlayerChange(String newFirstPlayer){
