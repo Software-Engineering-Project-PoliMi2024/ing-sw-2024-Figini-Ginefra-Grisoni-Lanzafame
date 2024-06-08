@@ -147,7 +147,8 @@ public class Game implements Serializable {
             for(ObjectiveCard commonObj : commonObjective){
                 user.getUserCodex().pointsFromObjective(commonObj);
             }
-            user.getUserCodex().pointsFromObjective(user.getUserHand().getSecretObjective());
+            if(user.getUserHand().getSecretObjective() != null)
+                user.getUserCodex().pointsFromObjective(user.getUserHand().getSecretObjective());
         }
     }
 
@@ -265,13 +266,13 @@ public class Game implements Serializable {
      */
     public boolean isInStartCardState(){
         synchronized (turnLock) {
-            return gameParty.getUsersList().stream().map(User::getUserHand).map(Hand::getStartCard).anyMatch(Objects::nonNull);
+            return !this.hasEnded() && gameParty.getUsersList().stream().map(User::getUserHand).map(Hand::getStartCard).anyMatch(Objects::nonNull);
         }
     }
 
     public boolean isInPawnChoiceState(){
         synchronized (turnLock) {
-            return !isInStartCardState() && gameParty.getUsersList().stream().map(User::getPawnColor).anyMatch(Objects::isNull)
+            return !this.hasEnded() && !isInStartCardState() && gameParty.getUsersList().stream().map(User::getPawnColor).anyMatch(Objects::isNull)
                     && pawnChoices.stream().anyMatch(Objects::nonNull);
         }
     }

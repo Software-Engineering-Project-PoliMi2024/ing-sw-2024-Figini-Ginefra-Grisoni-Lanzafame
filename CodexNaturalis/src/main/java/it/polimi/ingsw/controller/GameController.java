@@ -97,13 +97,15 @@ public class GameController implements GameControllerInterface {
                     view.transitionTo(ViewState.GAME_ENDING);
                 }catch(Exception ignored){}
         } else {
+            if(playerViewMap.size() == 2){
+                //set as current player the joining player
+                game.setCurrentPlayerIndex(game.getUsersList().indexOf(game.getUserFromNick(joinerNickname)));
+                this.notifyTurnChange(joinerNickname);
+                String otherPlayer = playerViewMap.keySet().stream().filter(nick->!nick.equals(joinerNickname)).findFirst().orElse(null);
+                this.takeTurn(otherPlayer);
+            }
             this.updateJoinActualGame(joinerNickname, game);
             this.takeTurn(joinerNickname);
-            if(playerViewMap.size() == 2){
-
-                String otherPlayer = playerViewMap.keySet().stream().filter(nick->!nick.equals(joinerNickname)).findFirst().orElse(null);
-                pawnChoiceStateTransition(otherPlayer);
-            }
         }
     }
 
@@ -189,26 +191,27 @@ public class GameController implements GameControllerInterface {
         }
     }
 
-    private synchronized void placeStartCard(String nickname, Placement startCardPlacement){
+    private synchronized void placeStartCard(String nickname, Placement startCardPlacement) {
         User user = game.getUserFromNick(nickname);
         user.placeStartCard(startCardPlacement);
 
         this.notifyStartCardFaceChoice(nickname, Lightifier.lightify(startCardPlacement));
 
-        if(playerViewMap.size() == 1){
-            this.notifyLastInGameTimer();
-            this.startLastPlayerTimer();
-        }else {
-            if (otherHaveAllSelectedStartCard(nickname)) {
-                this.removeInactivePlayers(User::hasPlacedStartCard);
-                this.moveToChoosePawn();
-            } else {
-                try {
-                    playerViewMap.get(nickname).transitionTo(ViewState.WAITING_STATE);
-                } catch (Exception ignored) {
-                }
+        if (otherHaveAllSelectedStartCard(nickname)) {
+            this.removeInactivePlayers(User::hasPlacedStartCard);
+            this.moveToChoosePawn();
+
+            if(playerViewMap.size() == 1) {
+                this.notifyLastInGameTimer();
+                this.startLastPlayerTimer();
+            }
+        } else {
+            try {
+                playerViewMap.get(nickname).transitionTo(ViewState.WAITING_STATE);
+            } catch (Exception ignored) {
             }
         }
+
     }
 
     private synchronized void placeCard(String nickname, LightPlacement placement){
@@ -262,6 +265,7 @@ public class GameController implements GameControllerInterface {
         if(Objects.equals(this.getLastActivePlayer(), nickname) && game.hasEnded()){
             //model update with points
             declareWinners();
+
             //TODO delete when game finishes
         }else{
             //turn

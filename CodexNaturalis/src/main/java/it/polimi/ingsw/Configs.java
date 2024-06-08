@@ -11,7 +11,7 @@ public class Configs {
     public static int socketPort = 12345;
     public static int secondsTimeOut = 3;
     public static int pingPongFrequency = 3;
-    public static int lastInGameTimerSeconds = 60;
+    public static int lastInGameTimerSeconds = 10;
     public static int pointsToStartGameEnding = 20;
     public static int actualDeckPos = 2;
     public static String goldCardBinFileName = "goldCards.bin";
