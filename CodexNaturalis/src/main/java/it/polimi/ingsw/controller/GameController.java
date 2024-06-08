@@ -66,6 +66,7 @@ public class GameController implements GameControllerInterface {
             int currentPlayerIndex = game.getUsersList().indexOf(game.getUserFromNick(joinerNickname));
             game.setCurrentPlayerIndex(currentPlayerIndex);
         }
+
         this.notifyJoinGame(joinerNickname);
 
         if(game.isInStartCardState()) {
@@ -75,7 +76,8 @@ public class GameController implements GameControllerInterface {
             this.updateJoinSecretObjective(joinerNickname, game);
             this.objectiveChoiceStateTransition(joinerNickname);
         } else if (game.isInPawnChoiceState()) {
-
+            this.updateJoinPawnChoice(joinerNickname);
+            this.pawnChoiceStateTransition(joinerNickname);
         } else if (game.hasEnded()) {
                 //this.updateJoinActualGame(joinerNickname, game); if other information are necessary
                 try {
@@ -135,9 +137,7 @@ public class GameController implements GameControllerInterface {
                 this.removeInactivePlayers(User::hasChosenPawnColor);
                 this.moveToSecretObjectivePhase();
             } else {
-                try {;
-                    view.transitionTo(ViewState.WAITING_STATE);
-                } catch (Exception ignored) {}
+                this.pawnChoiceStateTransition(nickname);
             }
         }else{
             try {
@@ -168,8 +168,8 @@ public class GameController implements GameControllerInterface {
                 this.placeCard(nickname, placement);
             }
             System.out.println(nickname + " placed card");
-        }catch (Exception ignored) {
-            throw new IllegalArgumentException("The placement is not valid");
+        }catch (Exception e) {
+            throw new IllegalArgumentException("The placement is not valid " + e.getMessage());
         }
     }
 
@@ -358,6 +358,16 @@ public class GameController implements GameControllerInterface {
         }catch(Exception ignored){}
     }
 
+    private synchronized void pawnChoiceStateTransition(String nickname){
+        User user = game.getUserFromNick(nickname);
+        try {
+            if (!user.hasChosenObjective()) {
+                playerViewMap.get(nickname).transitionTo(ViewState.CHOOSE_PAWN);
+            } else
+                playerViewMap.get(nickname).transitionTo(ViewState.WAITING_STATE);
+        }catch(Exception ignored){}
+    }
+
     private synchronized void updateJoinPawnChoice(String joiner){
         List<String> activePlayers = new ArrayList<>(playerViewMap.keySet().stream().toList());
         try {
@@ -399,7 +409,6 @@ public class GameController implements GameControllerInterface {
     }
 
     private synchronized void moveToChoosePawn(){
-
         this.notifyPawnChoiceSetup();
 
         playerViewMap.forEach((nickname, view)->{
@@ -653,16 +662,21 @@ public class GameController implements GameControllerInterface {
         });
     }
 
-    private synchronized void removeInactivePlayers(Predicate<User> check) {
+    private synchronized void removeInactivePlayers(Predicate<User> checkProperInactive) {
+        List<String> activePlayer = playerViewMap.keySet().stream().toList();
+        List<String> playersToRemove = new ArrayList<>();
         for (User user : game.getUsersList()) {
-            List<String> activePlayer = playerViewMap.keySet().stream().toList();
-            if (!activePlayer.contains(user.getNickname()) && check.test(user)) {
-                    boolean isFirst = game.getUsersList().getFirst().equals(user);
-                    game.removeUser(user.getNickname());
-                    if(isFirst){
-                        this.notifyFirstPlayerChange(game.getUsersList().getFirst().getNickname());
-                }
+            if (!activePlayer.contains(user.getNickname()) && !checkProperInactive.test(user)) {
+                playersToRemove.add(user.getNickname());
             }
+        }
+        String oldFirstPlayer = game.getUsersList().getFirst().getNickname();
+        for (String playerNick : playersToRemove) {
+            game.removeUser(playerNick);
+        }
+        String newFirstPlayer = game.getUsersList().getFirst().getNickname();
+        if(!oldFirstPlayer.equals(newFirstPlayer)){
+            this.notifyFirstPlayerChange(newFirstPlayer);
         }
         this.save();
     }
