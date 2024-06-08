@@ -268,6 +268,8 @@ public class GameController implements GameControllerInterface {
         playerViewMap.remove(nickname);
         User you = game.getUserFromNick(nickname);
 
+        this.notifyGameLeft(nickname);
+
         if (game.isInStartCardState()) {
             if(otherHaveAllSelectedStartCard(nickname) && !you.hasPlacedStartCard()){
                 this.removeInactivePlayers(User::hasPlacedStartCard);
@@ -381,6 +383,17 @@ public class GameController implements GameControllerInterface {
                     view.logOthers(joinerNickname + LogsOnClientStatic.PLAYER_JOINED);
 
                 } catch(Exception ignored){}
+            }
+        });
+    }
+
+    private synchronized void notifyGameLeft(String leaver){
+        playerViewMap.forEach((nickname, view)->{
+            if(!nickname.equals(leaver)){
+                try{
+                    view.updateGame(new GameDiffPlayerActivity(new ArrayList<>(), List.of(leaver)));
+                    view.logOthers(leaver + LogsOnClientStatic.PLAYER_GAME_LEFT);
+                }catch (Exception ignored){}
             }
         });
     }
