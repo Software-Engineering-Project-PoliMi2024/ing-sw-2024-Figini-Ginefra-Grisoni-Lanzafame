@@ -4,6 +4,7 @@ import it.polimi.ingsw.Configs;
 import it.polimi.ingsw.OSRelated;
 import it.polimi.ingsw.controller.Interfaces.ControllerInterface;
 import it.polimi.ingsw.lightModel.diffs.ModelDiffs;
+import it.polimi.ingsw.lightModel.lightPlayerRelated.LightChat;
 import it.polimi.ingsw.lightModel.lightTableRelated.LightGame;
 import it.polimi.ingsw.lightModel.lightTableRelated.LightLobby;
 import it.polimi.ingsw.lightModel.lightTableRelated.LightLobbyList;
@@ -217,7 +218,7 @@ public class TUI implements ActualView {
 
         chatRenderable = new ChatRenderable("Chat Options",
                 new CommandPrompt[]{CommandPrompt.SEND_PUBLIC_MESSAGE, CommandPrompt.SEND_PRIVATE_MESSAGE, CommandPrompt.VIEW_MESSAGE},
-                lightGame,
+                new LightChat(lightGame.getLightGameParty().getYourName()),
                 this);
         StateTUI.JOIN_LOBBY.attach(chatRenderable);
         renderables.add(chatRenderable);

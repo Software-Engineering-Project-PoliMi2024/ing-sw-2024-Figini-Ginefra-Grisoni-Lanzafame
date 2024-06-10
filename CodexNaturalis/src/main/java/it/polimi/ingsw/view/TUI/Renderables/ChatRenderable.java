@@ -1,6 +1,8 @@
 package it.polimi.ingsw.view.TUI.Renderables;
 
+import it.polimi.ingsw.lightModel.lightPlayerRelated.LightChat;
 import it.polimi.ingsw.lightModel.lightTableRelated.LightGame;
+import it.polimi.ingsw.model.playerReleted.ChatMessage;
 import it.polimi.ingsw.view.ControllerProvider;
 import it.polimi.ingsw.view.TUI.Printing.Printer;
 import it.polimi.ingsw.view.TUI.Styles.PromptStyle;
@@ -8,29 +10,30 @@ import it.polimi.ingsw.view.TUI.Styles.StringStyle;
 import it.polimi.ingsw.view.TUI.inputs.CommandPrompt;
 import it.polimi.ingsw.view.TUI.inputs.CommandPromptResult;
 
+import java.util.List;
 import java.util.PriorityQueue;
 import java.util.Queue;
 
 public class ChatRenderable extends Renderable {
-    private Queue<String> chatHistory = new PriorityQueue<>();
+    private List<ChatMessage> chatHistory;
+    private final LightChat lightChat;
 
     /**
      * Constructor
      * @param name            the name of the renderable
      * @param relatedCommands the commands that are related to this renderable
-     * @param lightGame       the light game from which to get the message
+     * @param lightChat       the lightChat history of this player
      * @param view            the controller provider
      */
-    public ChatRenderable(String name, CommandPrompt[] relatedCommands, LightGame lightGame, ControllerProvider view) {
+    public ChatRenderable(String name, CommandPrompt[] relatedCommands, LightChat lightChat, ControllerProvider view) {
         super(name, relatedCommands, view);
-        chatHistory.add("Welcome to the chat");
-        chatHistory.add("hi");
+        this.lightChat = lightChat;
     }
 
     @Override
     public void render() {
-        for (String message : chatHistory) {
-            PromptStyle.printInABox(message, 30, StringStyle.ITALIC);
+        for (ChatMessage message : chatHistory) {
+            PromptStyle.printInABox(message.getSender() + ": " + message.getMessage(), 30, StringStyle.ITALIC);
         }
     }
 
@@ -39,10 +42,27 @@ public class ChatRenderable extends Renderable {
         switch (answer.getCommand()) {
             case CommandPrompt.VIEW_MESSAGE:
                 int optionChose = Integer.parseInt(answer.getAnswer(0));
-                if (optionChose == 2) {
-                    //TODO: implement filtering of only private message
-                } else if (optionChose == 3) {
-                    //TODO implement filtering of only sent message
+                this.chatHistory = lightChat.getChatHistory();
+                if(optionChose == 0){
+                    //Show all messages
+                    if(chatHistory.isEmpty()){
+                        PromptStyle.printInABox("No message received yet", 30, StringStyle.ITALIC);
+                        return;
+                    }
+                }else if (optionChose == 1) {
+                    //Show only received private messages
+                    chatHistory.removeIf(message -> message.getPrivacy() != ChatMessage.MessagePrivacy.PRIVATE);
+                    if(chatHistory.isEmpty()){
+                        PromptStyle.printInABox("No private message received yet", 30, StringStyle.ITALIC);
+                        return;
+                    }
+                } else if (optionChose == 2) {
+                    //Show only sent messages
+                    chatHistory.removeIf(message -> !message.getSender().equals(lightChat.getSenderName()));
+                    if(chatHistory.isEmpty()){
+                        PromptStyle.printInABox("No message sent yet", 30, StringStyle.ITALIC);
+                        return;
+                    }
                 }
                 this.render();
                 break;
