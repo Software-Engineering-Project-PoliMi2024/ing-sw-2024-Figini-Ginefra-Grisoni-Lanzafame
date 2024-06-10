@@ -183,7 +183,33 @@ public enum CommandPrompt implements Iterator<String>, CommandObserved {
 
     DISPLAY_DECKS("Display decks", true),
 
-    DISPLAY_POSTGAME("Display decks", true);
+    DISPLAY_POSTGAME("Display decks", true),
+
+    SEND_PUBLIC_MESSAGE("Send public message",
+            new String[]{
+                    "What do you want to say?",
+            },
+            new Predicate[]{
+                    s -> true,
+            },
+            false),
+
+    SEND_PRIVATE_MESSAGE("Send private message",
+            new String[]{
+                    "Who do you want to send the message to?",
+                    "What do you want to say?",
+            },
+            new Predicate[]{
+                    s -> true,
+                    s -> true,
+            }, false),
+
+    VIEW_MESSAGE("View message",
+        new String[]{
+                "View chat history - View private messages - View sent messages (0/1/2)",
+        }, new Predicate[]{
+                s -> s.equals("0") || s.equals("1") || s.equals("2"),
+        }, true);
 
     /** The questions to ask the user. */
     private final String[] questions;

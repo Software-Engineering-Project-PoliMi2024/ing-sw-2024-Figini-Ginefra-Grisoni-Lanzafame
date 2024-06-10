@@ -13,10 +13,7 @@ import it.polimi.ingsw.view.TUI.Renderables.*;
 import it.polimi.ingsw.view.TUI.Renderables.CardRelated.*;
 import it.polimi.ingsw.view.TUI.Renderables.CodexRelated.CodexRenderable;
 import it.polimi.ingsw.view.TUI.Renderables.CodexRelated.CodexRenderableOthers;
-import it.polimi.ingsw.view.TUI.Renderables.Forms.ConnectFormRenderable;
-import it.polimi.ingsw.view.TUI.Renderables.Forms.DrawCardForm;
-import it.polimi.ingsw.view.TUI.Renderables.Forms.LoginFormRenderable;
-import it.polimi.ingsw.view.TUI.Renderables.Forms.PlaceCardForm;
+import it.polimi.ingsw.view.TUI.Renderables.Forms.*;
 import it.polimi.ingsw.view.TUI.States.StateTUI;
 import it.polimi.ingsw.view.TUI.Styles.PromptStyle;
 import it.polimi.ingsw.view.TUI.Styles.StringStyle;
@@ -52,6 +49,7 @@ public class TUI implements ActualView {
     private PostGameStateRenderable postGameStateRenderable;
     private DrawCardForm drawCardForm;
     private LeaderboardRenderable leaderboardRenderable;
+    private ChatRenderable chatRenderable;
 
     private SecretObjectiveRenderable secretObjectiveRenderable;
     private final LightGame lightGame = new LightGame();
@@ -216,6 +214,13 @@ public class TUI implements ActualView {
 
         StateTUI.GAME_ENDING.attach(postGameStateRenderable);
         renderables.add(postGameStateRenderable);
+
+        chatRenderable = new ChatRenderable("Chat Options",
+                new CommandPrompt[]{CommandPrompt.SEND_PUBLIC_MESSAGE, CommandPrompt.SEND_PRIVATE_MESSAGE, CommandPrompt.VIEW_MESSAGE},
+                lightGame,
+                this);
+        StateTUI.JOIN_LOBBY.attach(chatRenderable);
+        renderables.add(chatRenderable);
 
         this.transitionTo(ViewState.SERVER_CONNECTION);
     }
