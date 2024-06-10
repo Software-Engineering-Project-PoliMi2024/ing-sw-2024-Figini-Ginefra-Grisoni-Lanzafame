@@ -1,18 +1,13 @@
 package it.polimi.ingsw.view.TUI.Renderables;
 
 import it.polimi.ingsw.lightModel.lightPlayerRelated.LightChat;
-import it.polimi.ingsw.lightModel.lightTableRelated.LightGame;
 import it.polimi.ingsw.model.playerReleted.ChatMessage;
 import it.polimi.ingsw.view.ControllerProvider;
-import it.polimi.ingsw.view.TUI.Printing.Printer;
 import it.polimi.ingsw.view.TUI.Styles.PromptStyle;
 import it.polimi.ingsw.view.TUI.Styles.StringStyle;
 import it.polimi.ingsw.view.TUI.inputs.CommandPrompt;
 import it.polimi.ingsw.view.TUI.inputs.CommandPromptResult;
-
 import java.util.List;
-import java.util.PriorityQueue;
-import java.util.Queue;
 
 public class ChatRenderable extends Renderable {
     private List<ChatMessage> chatHistory;
@@ -63,19 +58,27 @@ public class ChatRenderable extends Renderable {
                         PromptStyle.printInABox("No message sent yet", 30, StringStyle.ITALIC);
                         return;
                     }
+                    for(ChatMessage message : chatHistory){
+                        if(message.getPrivacy() == ChatMessage.MessagePrivacy.PUBLIC){
+                            PromptStyle.printInABox("To everyone: " + message.getMessage(), 30, StringStyle.ITALIC);
+                        }else{
+                            PromptStyle.printInABox("To " + message.getReceiver() + ": " + message.getMessage(), 30, StringStyle.ITALIC);
+                        }
+                    }
+                    return;
                 }
                 this.render();
                 break;
             case CommandPrompt.SEND_PUBLIC_MESSAGE:
                 try {
-                    //view.getController().sendMessage(answer.getAnswer(0));
+                    view.getController().sendChatMessage(new ChatMessage(lightChat.getSenderName(), answer.getAnswer(0)));
                 } catch (Exception e) {
                     throw new RuntimeException(e);
                 }
                 break;
             case CommandPrompt.SEND_PRIVATE_MESSAGE:
                 try {
-                    //view.getController().sendMessage(answer.getAnswer(0), answer.getAnswer(1));
+                    view.getController().sendChatMessage(new ChatMessage(lightChat.getSenderName(), answer.getAnswer(0), answer.getAnswer(1)));
                 } catch (Exception e) {
                     throw new RuntimeException(e);
                 }

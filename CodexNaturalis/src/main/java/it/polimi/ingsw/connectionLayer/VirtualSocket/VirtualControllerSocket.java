@@ -9,6 +9,7 @@ import it.polimi.ingsw.controller.LogsOnClientStatic;
 import it.polimi.ingsw.lightModel.lightPlayerRelated.LightCard;
 import it.polimi.ingsw.lightModel.lightPlayerRelated.LightPlacement;
 import it.polimi.ingsw.model.cardReleted.utilityEnums.DrawableCard;
+import it.polimi.ingsw.model.playerReleted.ChatMessage;
 import it.polimi.ingsw.model.playerReleted.PawnColors;
 import it.polimi.ingsw.view.ViewInterface;
 
@@ -118,6 +119,11 @@ public class VirtualControllerSocket implements VirtualController {
     @Override
     public void draw(DrawableCard deckID, int cardID){
         serverHandler.sendServerMessage(new DrawMsg(deckID, cardID));
+    }
+
+    @Override
+    public void sendChatMessage(ChatMessage message){
+        serverHandler.sendServerMessage(new ChatMsg(message));
     }
 
     public void setServerHanlder(ServerHandler serverHandler) {

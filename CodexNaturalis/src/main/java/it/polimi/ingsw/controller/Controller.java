@@ -5,6 +5,7 @@ import it.polimi.ingsw.controller.Interfaces.GameControllerReceiver;
 import it.polimi.ingsw.lightModel.lightPlayerRelated.LightCard;
 import it.polimi.ingsw.lightModel.lightPlayerRelated.LightPlacement;
 import it.polimi.ingsw.model.cardReleted.utilityEnums.DrawableCard;
+import it.polimi.ingsw.model.playerReleted.ChatMessage;
 import it.polimi.ingsw.model.playerReleted.PawnColors;
 import it.polimi.ingsw.view.ViewInterface;
 
@@ -61,6 +62,11 @@ public class Controller implements ControllerInterface, GameControllerReceiver {
     @Override
     public void draw(DrawableCard deckID, int cardID) {
         gameController.draw(nickname, deckID, cardID);
+    }
+
+    @Override
+    public void sendChatMessage(ChatMessage message) throws Exception {
+        //TODO: implement
     }
 
     @Override
