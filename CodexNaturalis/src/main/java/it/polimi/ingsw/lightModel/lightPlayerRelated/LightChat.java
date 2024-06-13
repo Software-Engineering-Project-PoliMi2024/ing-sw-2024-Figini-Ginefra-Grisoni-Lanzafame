@@ -9,13 +9,11 @@ import java.util.LinkedList;
 import java.util.List;
 
 public class LightChat implements Differentiable, Observed{
-    private final String senderName;
     private final LinkedList<ChatMessage> chatHistory;
     private final List<Observer> observers = new LinkedList<>();
 
-    public LightChat(String senderName){
+    public LightChat(){
         this.chatHistory = new LinkedList<>();
-        this.senderName = senderName;
     }
 
     public LinkedList<ChatMessage> getChatHistory() {
@@ -25,10 +23,6 @@ public class LightChat implements Differentiable, Observed{
     public void addMessage(ChatMessage message){
         this.chatHistory.add(message);
         notifyObservers();
-    }
-
-    public String getSenderName() {
-        return senderName;
     }
 
     @Override

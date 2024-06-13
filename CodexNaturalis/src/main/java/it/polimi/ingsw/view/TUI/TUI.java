@@ -218,9 +218,9 @@ public class TUI implements ActualView {
 
         chatRenderable = new ChatRenderable("Chat Options",
                 new CommandPrompt[]{CommandPrompt.SEND_PUBLIC_MESSAGE, CommandPrompt.SEND_PRIVATE_MESSAGE, CommandPrompt.VIEW_MESSAGE},
-                new LightChat(lightGame.getLightGameParty().getYourName()),
+                lightGame,
                 this);
-        StateTUI.JOIN_LOBBY.attach(chatRenderable);
+        StateTUI.CHOOSE_START_CARD.attach(chatRenderable);
         renderables.add(chatRenderable);
 
         this.transitionTo(ViewState.SERVER_CONNECTION);

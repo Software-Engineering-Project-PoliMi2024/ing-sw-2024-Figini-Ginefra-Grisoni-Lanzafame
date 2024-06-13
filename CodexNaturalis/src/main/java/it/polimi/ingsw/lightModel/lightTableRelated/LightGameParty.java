@@ -1,6 +1,7 @@
 package it.polimi.ingsw.lightModel.lightTableRelated;
 
 import it.polimi.ingsw.lightModel.Differentiable;
+import it.polimi.ingsw.lightModel.lightPlayerRelated.LightChat;
 import it.polimi.ingsw.model.playerReleted.PawnColors;
 
 import java.util.ArrayList;
@@ -16,7 +17,7 @@ public class LightGameParty implements Differentiable {
     private String firstPlayerName;
     private List<PawnColors> pawnChoices = new ArrayList<>();
     private final Map<String, PawnColors> playersColor = new HashMap<>();
-
+    private final LightChat lightChat = new LightChat();
     public LightGameParty() {
         this.playerActiveList = new HashMap<>();
     }
@@ -110,5 +111,9 @@ public class LightGameParty implements Differentiable {
     }
     public String getYourName() {
         return this.yourName ;
+    }
+
+    public LightChat getLightChat() {
+        return lightChat;
     }
 }

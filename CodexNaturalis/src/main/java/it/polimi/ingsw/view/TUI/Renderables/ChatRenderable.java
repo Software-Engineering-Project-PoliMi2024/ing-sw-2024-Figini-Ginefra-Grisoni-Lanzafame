@@ -1,6 +1,7 @@
 package it.polimi.ingsw.view.TUI.Renderables;
 
 import it.polimi.ingsw.lightModel.lightPlayerRelated.LightChat;
+import it.polimi.ingsw.lightModel.lightTableRelated.LightGame;
 import it.polimi.ingsw.model.playerReleted.ChatMessage;
 import it.polimi.ingsw.view.ControllerProvider;
 import it.polimi.ingsw.view.TUI.Styles.PromptStyle;
@@ -11,18 +12,20 @@ import java.util.List;
 
 public class ChatRenderable extends Renderable {
     private List<ChatMessage> chatHistory;
+    private final LightGame lightGame;
     private final LightChat lightChat;
 
     /**
      * Constructor
      * @param name            the name of the renderable
      * @param relatedCommands the commands that are related to this renderable
-     * @param lightChat       the lightChat history of this player
+     * @param lightGame       the light game of the player
      * @param view            the controller provider
      */
-    public ChatRenderable(String name, CommandPrompt[] relatedCommands, LightChat lightChat, ControllerProvider view) {
+    public ChatRenderable(String name, CommandPrompt[] relatedCommands, LightGame lightGame, ControllerProvider view) {
         super(name, relatedCommands, view);
-        this.lightChat = lightChat;
+        this.lightGame = lightGame;
+        this.lightChat = lightGame.getLightGameParty().getLightChat();
     }
 
     @Override
@@ -53,7 +56,7 @@ public class ChatRenderable extends Renderable {
                     }
                 } else if (optionChose == 2) {
                     //Show only sent messages
-                    chatHistory.removeIf(message -> !message.getSender().equals(lightChat.getSenderName()));
+                    chatHistory.removeIf(message -> !message.getSender().equals(lightGame.getLightGameParty().getYourName()));
                     if(chatHistory.isEmpty()){
                         PromptStyle.printInABox("No message sent yet", 30, StringStyle.ITALIC);
                         return;
@@ -71,14 +74,14 @@ public class ChatRenderable extends Renderable {
                 break;
             case CommandPrompt.SEND_PUBLIC_MESSAGE:
                 try {
-                    view.getController().sendChatMessage(new ChatMessage(lightChat.getSenderName(), answer.getAnswer(0)));
+                    view.getController().sendChatMessage(new ChatMessage(lightGame.getLightGameParty().getYourName(), answer.getAnswer(0)));
                 } catch (Exception e) {
                     throw new RuntimeException(e);
                 }
                 break;
             case CommandPrompt.SEND_PRIVATE_MESSAGE:
                 try {
-                    view.getController().sendChatMessage(new ChatMessage(lightChat.getSenderName(), answer.getAnswer(0), answer.getAnswer(1)));
+                    view.getController().sendChatMessage(new ChatMessage(lightGame.getLightGameParty().getYourName(), answer.getAnswer(0), answer.getAnswer(1)));
                 } catch (Exception e) {
                     throw new RuntimeException(e);
                 }
