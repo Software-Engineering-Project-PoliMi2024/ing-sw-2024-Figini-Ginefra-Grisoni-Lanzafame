@@ -64,7 +64,7 @@ public class GameController implements GameControllerInterface {
     //TODO test when the decks finish the cards
 
     public synchronized void join(String joinerNickname, ViewInterface view){
-        countdownTimer = null;
+        this.resetLastPlayerTimer();
         playerViewMap.put(joinerNickname, view);
 
         //TODO everyone lefts; the first user to rejoin is the current player
@@ -344,7 +344,7 @@ public class GameController implements GameControllerInterface {
                     this.notifyTurnChange(nextPlayerNick);
                     this.takeTurn(nextPlayerNick);
                 }else{
-                    countdownTimer = null;
+                    this.resetLastPlayerTimer();
                 }
             }
         }
@@ -431,6 +431,13 @@ public class GameController implements GameControllerInterface {
                 }catch (Exception ignored){}
             }
         });
+    }
+
+    private synchronized void resetLastPlayerTimer(){
+        if(countdownTimer != null){
+            countdownTimer.cancel();
+            countdownTimer = null;
+        }
     }
 
     private synchronized void startLastPlayerTimer(){
