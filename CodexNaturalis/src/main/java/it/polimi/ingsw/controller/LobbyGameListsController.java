@@ -152,10 +152,10 @@ public class LobbyGameListsController implements it.polimi.ingsw.controller.Inte
     @Override
     public synchronized void disconnect(String nickname) {
         if(this.isInGameParty(nickname)) {
-            GameController gameToLeave = this.getGameFromUserNick(nickname);
-            gameToLeave.leave(nickname);
-            if(gameToLeave.getPlayerViewMap().keySet().isEmpty()) {
-                gameToLeave.save();
+            GameController gameToLeaveController = this.getGameFromUserNick(nickname);
+            gameToLeaveController.leave(nickname);
+            if(gameToLeaveController.getPlayerViewMap().keySet().isEmpty()) {
+                gameToLeaveController.save();
             }
         }else if(this.isActiveInLobby(nickname)){
             this.leaveLobby(nickname);
