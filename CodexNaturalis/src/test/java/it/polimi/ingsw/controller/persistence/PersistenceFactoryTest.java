@@ -26,6 +26,7 @@ public class PersistenceFactoryTest {
     @BeforeEach
     void setUp() { //emulate the serverStartUP
         OSRelated.checkOrCreateDataFolderServer();
+        PersistenceFactory.eraseAllSaves();
     }
 
     @AfterEach
@@ -91,6 +92,7 @@ public class PersistenceFactoryTest {
 
         PersistenceFactory.load();
         gameSaves = Arrays.asList(Objects.requireNonNull(new File(OSRelated.gameDataFolderPath).listFiles()));
+        System.out.println(gameSaves);
         //The load method should have deleted the expired saves(s)
         Assertions.assertEquals(1, gameSaves.stream().filter(file -> file.getName().contains("loadGameExpiredTest")).count());
     }

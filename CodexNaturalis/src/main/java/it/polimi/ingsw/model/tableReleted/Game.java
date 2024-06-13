@@ -31,7 +31,6 @@ public class Game implements Serializable {
     private final String name;
     private final GameParty gameParty;
     private final List<ObjectiveCard> commonObjective;
-    private final List<PawnColors> pawnChoices;
 
     private Integer lastTurnsCounter = null;
     private final ReentrantLock turnLock = new ReentrantLock();
@@ -47,7 +46,6 @@ public class Game implements Serializable {
         this.startingCardDeck = startingCardDeck;
         this.goldCardDeck = goldCardDeck;
         this.commonObjective = new ArrayList<>();
-        this.pawnChoices = new ArrayList<>(Arrays.stream(PawnColors.values()).toList());
 
         this.populateCommonObjective();
         this.setupStartCard();
@@ -112,15 +110,11 @@ public class Game implements Serializable {
     }
 
     public List<PawnColors> getPawnChoices(){
-        return pawnChoices;
+        return gameParty.getPawnChoices();
     }
 
     public void removeChoice(PawnColors color){
-        if(pawnChoices.contains(color)){
-            pawnChoices.remove(color);
-        }else {
-            throw new RuntimeException("Game.removeChoice pawnColor is not present in the list");
-        }
+        gameParty.removeChoice(color);
     }
 
 
@@ -273,7 +267,7 @@ public class Game implements Serializable {
     public boolean isInPawnChoiceState(){
         synchronized (turnLock) {
             return !this.hasEnded() && !isInStartCardState() && gameParty.getUsersList().stream().map(User::getPawnColor).anyMatch(Objects::isNull)
-                    && pawnChoices.stream().anyMatch(Objects::nonNull);
+                    && gameParty.getPawnChoices().stream().anyMatch(Objects::nonNull);
         }
     }
 

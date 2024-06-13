@@ -1,5 +1,6 @@
 package it.polimi.ingsw.model.tableReleted;
 
+import it.polimi.ingsw.model.playerReleted.PawnColors;
 import it.polimi.ingsw.model.playerReleted.User;
 
 import java.io.Serializable;
@@ -11,6 +12,8 @@ public class GameParty implements Serializable {
     final private List<User> playerList; //the player that were in the lobby pre game
     private int currentPlayerIndex;
     final private ChatManager chatManager;
+    private final List<PawnColors> pawnChoices;
+
     private final ReentrantLock currentPlayerLock = new ReentrantLock();
 
     /**
@@ -22,6 +25,7 @@ public class GameParty implements Serializable {
     public GameParty(List<String> playerNames) {
         ArrayList<String> players = new ArrayList<>(playerNames);
         Collections.shuffle(players);
+        this.pawnChoices = new ArrayList<>(Arrays.stream(PawnColors.values()).toList());
         playerList = players.stream().map(User::new).collect(Collectors.toList());
         currentPlayerIndex = 0;
         chatManager = new ChatManager(playerNames);
@@ -50,6 +54,22 @@ public class GameParty implements Serializable {
             return playerList.get(currentPlayerIndex);
         } finally {
             currentPlayerLock.unlock();
+        }
+    }
+
+    public List<PawnColors> getPawnChoices() {
+        synchronized (pawnChoices) {
+            return pawnChoices;
+        }
+    }
+
+    public void removeChoice(PawnColors color){
+        synchronized (pawnChoices) {
+            if (pawnChoices.contains(color)) {
+                pawnChoices.remove(color);
+            } else {
+                throw new RuntimeException("Game.removeChoice pawnColor is not present in the list");
+            }
         }
     }
 
