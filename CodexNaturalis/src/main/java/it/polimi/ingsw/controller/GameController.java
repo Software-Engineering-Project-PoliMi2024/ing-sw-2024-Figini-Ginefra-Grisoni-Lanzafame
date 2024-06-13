@@ -355,11 +355,6 @@ public class GameController implements GameControllerInterface {
         }catch(Exception ignored){}
     }
 
-    private synchronized boolean isCurrentPlayerActive(){
-        String currentPlayerNick = game.getCurrentPlayer().getNickname();
-        return playerViewMap.containsKey(currentPlayerNick);
-    }
-
     private synchronized void startCardStateTransition(String nickname){
         ViewInterface view = playerViewMap.get(nickname);
         try {
@@ -775,7 +770,8 @@ public class GameController implements GameControllerInterface {
 
     private synchronized boolean otherHaveAllChosen(String nicknamePerspective){
         boolean allChosen = true;
-        for (User user : game.getUsersList()) {
+        for (String nickname : playerViewMap.keySet()) {
+            User user = game.getUserFromNick(nickname);
             if (!user.getNickname().equals(nicknamePerspective) && !user.hasChosenObjective()) {
                 allChosen = false;
             }
