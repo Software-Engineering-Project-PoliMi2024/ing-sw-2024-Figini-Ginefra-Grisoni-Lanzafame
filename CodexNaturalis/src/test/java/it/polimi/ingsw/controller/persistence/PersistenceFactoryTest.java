@@ -61,6 +61,7 @@ public class PersistenceFactoryTest {
         Game gameToSave = new Game(lobby, objectiveCardDeck, resourceCardDeck, goldCardDeck, startingCardDeck);
         PersistenceFactory.save(gameToSave);
 
+        //realLobbyGameListController call PersistenceFactory.load() in his constructor
         LobbyGameListsController realLobbyGameListController = new LobbyGameListsController();
         PublicLobbyGameListController publicController = new PublicLobbyGameListController(realLobbyGameListController);
         GameController gameController = publicController.getGameMap().get("loadGameTest");
@@ -88,12 +89,7 @@ public class PersistenceFactoryTest {
         List<File> gameSaves = Arrays.asList(Objects.requireNonNull(new File(OSRelated.gameDataFolderPath).listFiles()));
         assert gameSaves.stream().filter(file -> file.getName().contains("loadGameExpiredTest")).count() == 2;
 
-        LobbyGameListsController realLobbyGameListController = new LobbyGameListsController();
-        PublicLobbyGameListController publicController = new PublicLobbyGameListController(realLobbyGameListController);
-        GameController gameController = publicController.getGameMap().get("loadGameTest");
-        Game gameLoadedFromSave = new PublicGameController(gameController).getGame();
-
-        System.out.println(gameLoadedFromSave);
+        PersistenceFactory.load();
         gameSaves = Arrays.asList(Objects.requireNonNull(new File(OSRelated.gameDataFolderPath).listFiles()));
         //The load method should have deleted the expired saves(s)
         Assertions.assertEquals(1, gameSaves.stream().filter(file -> file.getName().contains("loadGameExpiredTest")).count());

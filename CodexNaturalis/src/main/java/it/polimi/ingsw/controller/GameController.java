@@ -794,4 +794,7 @@ public class GameController implements GameControllerInterface {
         return random.nextInt(3);
     }
 
+    public void sendChatMessage(ChatMessage chatMessage){
+        this.game.getGameParty().getChatManager().addMessage(chatMessage);
+    }
 }

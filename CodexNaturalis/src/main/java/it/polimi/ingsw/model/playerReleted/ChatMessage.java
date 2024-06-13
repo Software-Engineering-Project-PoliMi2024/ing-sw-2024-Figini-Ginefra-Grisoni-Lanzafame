@@ -1,6 +1,8 @@
 package it.polimi.ingsw.model.playerReleted;
 
-public class ChatMessage {
+import java.io.Serializable;
+
+public class ChatMessage implements Serializable {
     private final String message;
     private final String sender;
     private final String receiver;

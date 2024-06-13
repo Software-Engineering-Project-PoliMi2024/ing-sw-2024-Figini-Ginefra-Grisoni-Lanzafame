@@ -65,8 +65,8 @@ public class Controller implements ControllerInterface, GameControllerReceiver {
     }
 
     @Override
-    public void sendChatMessage(ChatMessage message) throws Exception {
-        //TODO: implement
+    public void sendChatMessage(ChatMessage message){
+        gameController.sendChatMessage(message);
     }
 
     @Override

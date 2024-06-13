@@ -10,7 +10,7 @@ import java.util.stream.Collectors;
 public class GameParty implements Serializable {
     final private List<User> playerList; //the player that were in the lobby pre game
     private int currentPlayerIndex;
-
+    final private ChatManager chatManager;
     private final ReentrantLock currentPlayerLock = new ReentrantLock();
 
     /**
@@ -24,6 +24,7 @@ public class GameParty implements Serializable {
         Collections.shuffle(players);
         playerList = players.stream().map(User::new).collect(Collectors.toList());
         currentPlayerIndex = 0;
+        chatManager = new ChatManager(playerNames);
     }
 
     /**
@@ -143,5 +144,9 @@ public class GameParty implements Serializable {
         synchronized (currentPlayerLock){
             this.currentPlayerIndex = currentPlayerIndex;
         }
+    }
+
+    public ChatManager getChatManager() {
+        return chatManager;
     }
 }
