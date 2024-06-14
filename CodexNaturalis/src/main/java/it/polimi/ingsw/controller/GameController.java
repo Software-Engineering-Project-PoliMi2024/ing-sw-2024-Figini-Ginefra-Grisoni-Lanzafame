@@ -67,8 +67,6 @@ public class GameController implements GameControllerInterface {
         this.resetLastPlayerTimer();
         playerViewMap.put(joinerNickname, view);
 
-        //TODO everyone lefts; the first user to rejoin is the current player
-
         this.notifyJoinGame(joinerNickname);
 
         if(game.isInStartCardState()) {
@@ -100,7 +98,8 @@ public class GameController implements GameControllerInterface {
                     view.transitionTo(ViewState.GAME_ENDING);
                 }catch(Exception ignored){}
         } else {
-            if(playerViewMap.size() == 2){
+            if(playerViewMap.size() <= 2){
+                //TODO test this
                 //set as current player the joining player
                 game.setCurrentPlayerIndex(game.getUsersList().indexOf(game.getUserFromNick(joinerNickname)));
                 this.notifyTurnChange(joinerNickname);
@@ -110,6 +109,12 @@ public class GameController implements GameControllerInterface {
             this.updateJoinActualGame(joinerNickname, game);
             this.takeTurn(joinerNickname);
         }
+
+        if(playerViewMap.size() == 1){
+            this.notifyLastInGameTimer();
+            this.startLastPlayerTimer();
+        }
+
     }
 
     @Override
@@ -204,10 +209,6 @@ public class GameController implements GameControllerInterface {
             this.removeInactivePlayers(User::hasPlacedStartCard);
             this.moveToChoosePawn();
 
-            if(playerViewMap.size() == 1) {
-                this.notifyLastInGameTimer();
-                this.startLastPlayerTimer();
-            }
         } else {
             try {
                 playerViewMap.get(nickname).transitionTo(ViewState.WAITING_STATE);
@@ -272,11 +273,7 @@ public class GameController implements GameControllerInterface {
             //turn
             int nextPlayerIndex = this.getNextActivePlayerIndex();
             String nextPlayer = game.getUsersList().get(nextPlayerIndex).getNickname();
-            if(nextPlayer.equals(nickname)){
-                System.out.println(game.getName() + "started countdown timer");
-                this.notifyLastInGameTimer();
-                this.startLastPlayerTimer();
-            }else {
+            if(!nextPlayer.equals(nickname)) {
                 game.setCurrentPlayerIndex(this.getNextActivePlayerIndex());
                 this.notifyTurnChange(nextPlayer);
                 this.takeTurn(nickname);
@@ -347,6 +344,11 @@ public class GameController implements GameControllerInterface {
                     this.resetLastPlayerTimer();
                 }
             }
+        }
+
+        if(playerViewMap.size() == 1) {
+            this.notifyLastInGameTimer();
+            this.startLastPlayerTimer();
         }
 
         try {
@@ -447,7 +449,7 @@ public class GameController implements GameControllerInterface {
             public void run() {
                 declareWinners();
             }
-        }, Configs.lastInGameTimerSeconds* 1000L);
+        }, Configs.lastInGameTimerSeconds * 1000L);
     }
 
     private synchronized void notifyLastInGameTimer(){
@@ -574,6 +576,7 @@ public class GameController implements GameControllerInterface {
     }
 
     private void declareWinners(){
+        System.out.println(game.getName() + " ended");
         game.addObjectivePoints();
         //notify
         this.notifyGameEnded(game.getPointPerPlayerMap(), game.getWinners());
