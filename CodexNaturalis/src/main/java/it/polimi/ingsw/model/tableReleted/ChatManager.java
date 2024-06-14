@@ -17,7 +17,6 @@ public class ChatManager implements Serializable {
     }
     
     public void addMessage(ChatMessage message){
-        //todo add diff generation
         if(message.getPrivacy() == ChatMessage.MessagePrivacy.PUBLIC){
             for(String playerName : playerChatHistories.keySet()){
                 playerChatHistories.get(playerName).add(message);
@@ -26,5 +25,4 @@ public class ChatManager implements Serializable {
             playerChatHistories.get(message.getReceiver()).add(message);
         }
     }
-    
 }

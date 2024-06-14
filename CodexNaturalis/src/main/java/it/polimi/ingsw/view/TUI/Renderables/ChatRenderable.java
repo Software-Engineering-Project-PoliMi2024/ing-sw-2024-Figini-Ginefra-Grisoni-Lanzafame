@@ -83,7 +83,8 @@ public class ChatRenderable extends Renderable {
                 break;
 
             case CommandPrompt.SEND_PRIVATE_MESSAGE:
-                //todo if the player does not exist, it should force the reprint of the commads
+                //todo if the player does not exist, it should force the reprint of the commands.
+                // Atm, isLocal is set to true, but the send option actually interact with the controller
                 String receiver = answer.getAnswer(0);
                 if(!lightGame.getCodexMap().containsKey(receiver)){
                     try {
@@ -93,7 +94,7 @@ public class ChatRenderable extends Renderable {
                     }
                 }else{
                     try {
-                        view.getController().sendChatMessage(new ChatMessage(lightGame.getLightGameParty().getYourName(), receiver, answer.getAnswer(1)));
+                        view.getController().sendChatMessage(new ChatMessage(lightGame.getLightGameParty().getYourName(), answer.getAnswer(1), receiver));
                     } catch (Exception e) {
                         throw new RuntimeException(e);
                     }

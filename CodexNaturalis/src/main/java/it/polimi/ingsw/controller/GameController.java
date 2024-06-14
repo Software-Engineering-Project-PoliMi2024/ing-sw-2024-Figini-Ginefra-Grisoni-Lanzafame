@@ -8,6 +8,7 @@ import it.polimi.ingsw.lightModel.DiffGenerator;
 import it.polimi.ingsw.lightModel.Heavifier;
 import it.polimi.ingsw.lightModel.Lightifier;
 import it.polimi.ingsw.lightModel.diffs.game.*;
+import it.polimi.ingsw.lightModel.diffs.game.chatDiffs.ChatDiffs;
 import it.polimi.ingsw.lightModel.diffs.game.codexDiffs.CodexDiffPlacement;
 import it.polimi.ingsw.lightModel.diffs.game.codexDiffs.CodexDiffSetFinalPoints;
 import it.polimi.ingsw.lightModel.diffs.game.deckDiffs.DeckDiffDeckDraw;
@@ -796,5 +797,26 @@ public class GameController implements GameControllerInterface {
 
     public void sendChatMessage(ChatMessage chatMessage){
         this.game.getGameParty().getChatManager().addMessage(chatMessage);
+        if(chatMessage.getPrivacy() == ChatMessage.MessagePrivacy.PUBLIC) {
+            this.updateGlobalChat(chatMessage);
+        }else{
+            this.updatePrivateChat(chatMessage);
+        }
+    }
+
+    private void updateGlobalChat(ChatMessage chatMessage){
+        playerViewMap.forEach((nickname, view) -> {
+            try {
+                view.updateGame(new ChatDiffs(List.of(chatMessage)));
+            } catch (Exception ignored) {
+            }
+        });
+    }
+
+    private void updatePrivateChat(ChatMessage chatMessage){
+        try {
+            playerViewMap.get(chatMessage.getSender()).updateGame(new ChatDiffs(List.of(chatMessage)));
+            playerViewMap.get(chatMessage.getReceiver()).updateGame(new ChatDiffs(List.of(chatMessage)));
+        }catch (Exception ignored){}
     }
 }

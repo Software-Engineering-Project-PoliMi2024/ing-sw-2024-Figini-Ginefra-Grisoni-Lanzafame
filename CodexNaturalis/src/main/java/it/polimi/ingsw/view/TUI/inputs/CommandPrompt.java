@@ -192,7 +192,7 @@ public enum CommandPrompt implements Iterator<String>, CommandObserved {
             new Predicate[]{
                     s -> true,
             },
-            false),
+            true),
 
     SEND_PRIVATE_MESSAGE("Send private message",
             new String[]{
@@ -202,7 +202,7 @@ public enum CommandPrompt implements Iterator<String>, CommandObserved {
             new Predicate[]{
                     s -> true,
                     s -> true,
-            }, false),
+            }, true),
 
     VIEW_MESSAGE("View message",
         new String[]{
