@@ -1,6 +1,7 @@
 package it.polimi.ingsw.lightModel;
 
 
+import it.polimi.ingsw.Configs;
 import it.polimi.ingsw.lightModel.diffs.game.*;
 import it.polimi.ingsw.lightModel.diffs.game.codexDiffs.CodexDiffPlacement;
 import it.polimi.ingsw.lightModel.diffs.game.deckDiffs.DeckDiff;
@@ -24,10 +25,7 @@ import it.polimi.ingsw.lightModel.diffs.lobby_lobbyList.LobbyListDiff;
 import it.polimi.ingsw.lightModel.diffs.lobby_lobbyList.LobbyListDiffEdit;
 import it.polimi.ingsw.lightModel.lightPlayerRelated.*;
 import it.polimi.ingsw.lightModel.lightTableRelated.LightLobby;
-import it.polimi.ingsw.model.cardReleted.cards.GoldCard;
-import it.polimi.ingsw.model.cardReleted.cards.ObjectiveCard;
-import it.polimi.ingsw.model.cardReleted.cards.ResourceCard;
-import it.polimi.ingsw.model.cardReleted.cards.StartCard;
+import it.polimi.ingsw.model.cardReleted.cards.*;
 import it.polimi.ingsw.model.cardReleted.utilityEnums.DrawableCard;
 import it.polimi.ingsw.model.playerReleted.Codex;
 import it.polimi.ingsw.model.playerReleted.Hand;
@@ -118,16 +116,29 @@ public class DiffGenerator {
      * Generates a diff that updates the deck with a new card after one is drawn
      * @param deckType the type of the deck
      * @param pos the position of the card (2 = deck; 0,1 = buffer)
-     * @param card the card that replaces the card drawn
      * @return the diff that replace the buffer or the deck card drawn on the lightModel
      */
-    public static DeckDiff draw(DrawableCard deckType, int pos, LightCard card){
-        DeckDiff diff;
-        if(pos == 2)
-            diff = new DeckDiffDeckDraw(deckType, new LightBack(card.idBack()));
-        else
-            diff = new DeckDiffBufferDraw(card, pos, deckType);
-
+    public static List<DeckDiff> draw(DrawableCard deckType, int pos, Game game){
+        List<DeckDiff> diff = new ArrayList<>();
+        CardInHand replacement;
+        if(pos == Configs.actualDeckPos) {
+            if (deckType == DrawableCard.RESOURCECARD)
+                replacement = game.getResourceCardDeck().showTopCardOfDeck();
+            else
+                replacement = game.getGoldCardDeck().showTopCardOfDeck();
+            diff.add(new DeckDiffDeckDraw(deckType, Lightifier.lightifyToBack(replacement)));
+        }else {
+            CardInHand deckReplacement;
+            if(deckType == DrawableCard.RESOURCECARD) {
+                replacement = game.getResourceCardDeck().showCardFromBuffer(pos);
+                deckReplacement = game.getResourceCardDeck().showTopCardOfDeck();
+            }else{
+                replacement = game.getGoldCardDeck().showCardFromBuffer(pos);
+                deckReplacement = game.getGoldCardDeck().showTopCardOfDeck();
+            }
+            diff.add(new DeckDiffBufferDraw(Lightifier.lightifyToCard(replacement), pos, deckType));
+            diff.add(new DeckDiffDeckDraw(deckType, Lightifier.lightifyToBack(deckReplacement)));
+        }
         return diff;
     }
 

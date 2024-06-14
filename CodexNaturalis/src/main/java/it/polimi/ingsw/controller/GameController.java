@@ -10,6 +10,7 @@ import it.polimi.ingsw.lightModel.Lightifier;
 import it.polimi.ingsw.lightModel.diffs.game.*;
 import it.polimi.ingsw.lightModel.diffs.game.codexDiffs.CodexDiffPlacement;
 import it.polimi.ingsw.lightModel.diffs.game.codexDiffs.CodexDiffSetFinalPoints;
+import it.polimi.ingsw.lightModel.diffs.game.deckDiffs.DeckDiff;
 import it.polimi.ingsw.lightModel.diffs.game.deckDiffs.DeckDiffDeckDraw;
 import it.polimi.ingsw.lightModel.diffs.game.gamePartyDiffs.GameDiffCurrentPlayer;
 import it.polimi.ingsw.lightModel.diffs.game.gamePartyDiffs.GameDiffFirstPlayer;
@@ -245,15 +246,12 @@ public class GameController implements GameControllerInterface {
         System.out.println(nickname + " drew card");
         if(!game.areDeckEmpty()) {
             CardInHand drawnCard;
-            CardInHand cardReplacement;
             Pair<CardInHand, CardInHand> drawnAndReplacement = game.drawAndGetReplacement(deckType, cardID);
             drawnCard = drawnAndReplacement.first();
-            cardReplacement = drawnAndReplacement.second();
 
             user.getUserHand().addCard(drawnCard);
 
             this.notifyDraw(nickname, deckType, cardID, Lightifier.lightifyToCard(drawnCard),
-                    Lightifier.lightifyToCard(cardReplacement),
                     drawnCard.canBePlaced(user.getUserCodex()));
         }
 
@@ -320,18 +318,15 @@ public class GameController implements GameControllerInterface {
                     DrawableCard deckType;
                     int pos;
                     CardInHand cardDrawn;
-                    CardInHand cardReplacement;
                     do {
                         deckType = randomDeckType();
                         pos = randomDeckPosition();
-
                         Pair<CardInHand, CardInHand> cardDrawnAndReplacement = game.drawAndGetReplacement(deckType, pos);
                         cardDrawn = cardDrawnAndReplacement.first();
-                        cardReplacement = cardDrawnAndReplacement.second();
                     } while (cardDrawn == null);
 
                     this.draw(nickname, this.randomDeckType(), this.randomDeckPosition());
-                    this.notifyDraw(nickname, deckType, pos, Lightifier.lightifyToCard(cardDrawn), Lightifier.lightifyToCard(cardReplacement), cardDrawn.canBePlaced(game.getUserFromNick(nickname).getUserCodex()));
+                    this.notifyDraw(nickname, deckType, pos, Lightifier.lightifyToCard(cardDrawn) ,cardDrawn.canBePlaced(game.getUserFromNick(nickname).getUserCodex()));
                 }
                 //move on with the turns for the other players
                 if(!this.playerViewMap.keySet().isEmpty()) {
@@ -486,12 +481,12 @@ public class GameController implements GameControllerInterface {
                 view.updateGame(new GameDiffSetPawns(game.getPawnChoices()));
                 view.updateGame(new GameDiffSetPlayerColor(chooser, color));
 
+                view.updateGame(new DeckDiffDeckDraw(DrawableCard.RESOURCECARD, resourceBack));
+                view.updateGame(new DeckDiffDeckDraw(DrawableCard.GOLDCARD, goldBack));
+
                 if (nickname.equals(chooser)) {
                     view.log(LogsOnClientStatic.YOU_CHOSE_PAWN);
                     view.logGame(LogsOnClientStatic.WAIT_PAWN);
-
-                    view.updateGame(new DeckDiffDeckDraw(DrawableCard.RESOURCECARD, resourceBack));
-                    view.updateGame(new DeckDiffDeckDraw(DrawableCard.GOLDCARD, goldBack));
 
                     for(HandDiff handDiff : DiffGenerator.getHandYourCurrentState(user)){
                         view.updateGame(handDiff);
@@ -594,9 +589,12 @@ public class GameController implements GameControllerInterface {
         PersistenceFactory.save(game);
     }
 
-    private synchronized void notifyDraw(String drawerNickname, DrawableCard deckType, int pos, LightCard drawnCard, LightCard drawnReplace, boolean playability){
+    private synchronized void notifyDraw(String drawerNickname, DrawableCard deckType, int pos, LightCard drawnCard, boolean playability){
         playerViewMap.forEach((nickname, view)->{
             try {
+                for(DeckDiff diff : DiffGenerator.draw(deckType, pos, game))
+                    view.updateGame(diff);
+
                 if (!nickname.equals(drawerNickname)) {
                     view.logOthers(drawerNickname + LogsOnClientStatic.PLAYER_DRAW);
                     LightBack backOfDrawnCard = new LightBack(drawnCard.idBack());
@@ -605,7 +603,6 @@ public class GameController implements GameControllerInterface {
                     view.log(LogsOnClientStatic.YOU_DRAW);
                     view.updateGame(new HandDiffAdd(drawnCard, playability));
                 }
-                view.updateGame(DiffGenerator.draw(deckType, pos, drawnReplace));
             } catch(Exception ignored){}
         });
     }

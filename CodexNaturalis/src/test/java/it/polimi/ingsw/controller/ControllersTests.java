@@ -909,12 +909,8 @@ class ControllersTests {
     void drawFromBuffer() {
         ViewTest view1 = new ViewTest();
         ViewTest view2 = new ViewTest();
-        ViewTest view3 = new ViewTest();
-        ViewTest view4 = new ViewTest();
         view1.name = "pippo";
         view2.name = "pluto";
-        view3.name = "topolino";
-        view4.name = "gianni";
         String lobbyName1 = "test1";
         Controller controller1 = new Controller(realLobbyGameListController, view1);
         Controller controller2 = new Controller(realLobbyGameListController, view2);
@@ -937,11 +933,11 @@ class ControllersTests {
         controller1.chooseSecretObjective(secretObjective1);
         LightCard secretObjective2 = view2.lightGame.getHand().getSecretObjectiveOptions()[0];
         controller2.chooseSecretObjective(secretObjective2);
-        //place
+
         GameController gameController = lobbyGameListController.getGameMap().get(lobbyName1);
         PublicGameController publicController = new PublicGameController(gameController);
         Game game = publicController.getGame();
-
+        //place
         User user1 = game.getUserFromNick(view1.name);
         User user2 = game.getUserFromNick(view2.name);
         game.setCurrentPlayerIndex(game.getUsersList().lastIndexOf(user1));
@@ -963,14 +959,13 @@ class ControllersTests {
         assert Arrays.stream(view1.lightGame.getHand().getCards()).toList().contains(Lightifier.lightifyToCard(card));
         assert view1.lightGame.getCurrentPlayer().equals(view2.name);
         assert heavyBuffer.containsAll(lightBuffer1) && lightBuffer1.containsAll(heavyBuffer);
-        assert view1.lightGame.getGoldDeck().getDeckBack().idBack() == game.getGoldCardDeck().showCardFromBuffer(0).getIdBack();
+        assert view1.lightGame.getGoldDeck().getDeckBack().idBack() == game.getGoldCardDeck().showTopCardOfDeck().getIdBack();
         //lightModel2
         List<Integer> lightBuffer2 = Arrays.stream(view1.lightGame.getGoldDeck().getCardBuffer()).map(LightCard::idFront).toList();
         assert Arrays.stream(view2.lightGame.getHandOthers().get(view1.name).getCards()).toList().contains(new LightBack(card.getIdBack()));
         assert view1.lightGame.getCurrentPlayer().equals(view2.name);
         assert heavyBuffer.containsAll(lightBuffer2) && lightBuffer2.containsAll(heavyBuffer);
-        assert view2.lightGame.getGoldDeck().getDeckBack().idBack() == game.getGoldCardDeck().showCardFromBuffer(0).getIdBack();
-
+        assert view2.lightGame.getGoldDeck().getDeckBack().idBack() == game.getGoldCardDeck().showTopCardOfDeck().getIdBack();
     }
 
     @Test
