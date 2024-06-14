@@ -17,6 +17,7 @@ public enum StringStyle {
     BOLD("1"),
     ITALIC("3"),
     UNDERLINE("4"),
+    GREY_FOREGROUND(168, 168, 168, false),
     RED_FOREGROUND(248, 49, 47, false),
     GREEN_FOREGROUND(0, 210, 106, false),
     YELLOW_FOREGROUND("33"),

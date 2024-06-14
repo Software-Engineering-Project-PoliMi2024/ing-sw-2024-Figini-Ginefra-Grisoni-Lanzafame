@@ -30,13 +30,21 @@ public class ChatRenderable extends Renderable {
         this.view = view;
     }
 
+    /**
+     * Render the chat history
+     */
     @Override
     public void render() {
         for (ChatMessage message : chatHistory) {
-            PromptStyle.printInABox(message.getSender() + ": " + message.getMessage(), 30, StringStyle.ITALIC);
+            PromptStyle.printInABox(messageToString(message), 30, messageToStyle(message));
         }
     }
 
+    /**
+     * Update the chatHistory based on the answer. Allow the render of private messages, public messages and sent messages
+     * Allow the sending of public and private messages based on answers
+     * @param answer the answer to the command
+     */
     @Override
     public void updateCommand(CommandPromptResult answer) {
         switch (answer.getCommand()) {
@@ -46,31 +54,35 @@ public class ChatRenderable extends Renderable {
                 if(optionChose == 0){
                     //Show all messages
                     if(chatHistory.isEmpty()){
-                        PromptStyle.printInABox("No message received yet", 30, StringStyle.ITALIC);
+                        try {
+                            view.logErr("No message received yet");
+                        } catch (Exception e) {
+                            throw new RuntimeException(e);
+                        }
                         return;
                     }
                 }else if (optionChose == 1) {
                     //Show only received private messages
                     chatHistory.removeIf(message -> message.getPrivacy() != ChatMessage.MessagePrivacy.PRIVATE);
                     if(chatHistory.isEmpty()){
-                        PromptStyle.printInABox("No private message received yet", 30, StringStyle.ITALIC);
+                        try {
+                            view.logErr("No private message received yet");
+                        } catch (Exception e) {
+                            throw new RuntimeException(e);
+                        }
                         return;
                     }
                 } else if (optionChose == 2) {
                     //Show only sent messages
                     chatHistory.removeIf(message -> !message.getSender().equals(lightGame.getLightGameParty().getYourName()));
                     if(chatHistory.isEmpty()){
-                        PromptStyle.printInABox("No message sent yet", 30, StringStyle.ITALIC);
+                        try {
+                            view.logErr("No message sent yet");
+                        } catch (Exception e) {
+                            throw new RuntimeException(e);
+                        }
                         return;
                     }
-                    for(ChatMessage message : chatHistory){
-                        if(message.getPrivacy() == ChatMessage.MessagePrivacy.PUBLIC){
-                            PromptStyle.printInABox("To everyone: " + message.getMessage(), 30, StringStyle.ITALIC);
-                        }else{
-                            PromptStyle.printInABox("To " + message.getReceiver() + ": " + message.getMessage(), 30, StringStyle.ITALIC);
-                        }
-                    }
-                    return;
                 }
                 this.render();
                 break;
@@ -100,6 +112,40 @@ public class ChatRenderable extends Renderable {
                     }
                 }
                 break;
+        }
+    }
+
+    /**
+     * Return the message as a string based on the privacy and who is the receiver
+     * @param message the message to be converted
+     * @return the message as a string
+     */
+    private String messageToString(ChatMessage message){
+        if(message.getPrivacy() == ChatMessage.MessagePrivacy.PUBLIC){
+            return "To everyone: " + message.getMessage();
+        }else{
+            if(message.getReceiver().equals(lightGame.getLightGameParty().getYourName())){
+                return "From " + message.getSender() + ": " + message.getMessage();
+            }else{
+                return "To " + message.getReceiver() + ": " + message.getMessage();
+            }
+        }
+    }
+
+    /**
+     * Return the style of the message based on the sender and the privacy
+     * The message will be GREEN if the sender is the player (#GreenBubble),
+     * BLUE if the message is private, RESET (white) otherwise
+     * @param message the message to be styled
+     * @return the style of the message
+     */
+    private StringStyle messageToStyle(ChatMessage message){
+        if(message.getSender().equals(lightGame.getLightGameParty().getYourName())) {
+            return StringStyle.GREEN_FOREGROUND;
+        }else if(message.getPrivacy() == ChatMessage.MessagePrivacy.PRIVATE) {
+            return StringStyle.BLUE_FOREGROUND;
+        }else{
+            return StringStyle.RESET;
         }
     }
 }
