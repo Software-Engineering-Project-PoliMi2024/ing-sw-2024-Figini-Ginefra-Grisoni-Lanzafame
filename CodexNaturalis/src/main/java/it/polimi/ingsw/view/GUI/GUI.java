@@ -134,6 +134,10 @@ public class GUI extends Application implements ActualView {
     }
 
     @Override
+    public void logChat(String logMsg) throws RemoteException {
+    }
+
+    @Override
     public void updateLobbyList(ModelDiffs<LightLobbyList> diff) throws RemoteException {
         Platform.runLater(() -> diff.apply(lobbyList));
     }

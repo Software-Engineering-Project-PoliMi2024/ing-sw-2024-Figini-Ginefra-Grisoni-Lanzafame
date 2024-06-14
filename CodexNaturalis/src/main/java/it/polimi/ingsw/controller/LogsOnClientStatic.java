@@ -74,4 +74,10 @@ public class LogsOnClientStatic {
     //gameCountDown related
     public static String COUNTDOWN_START = "A CountDown of " +Configs.lastInGameTimerSeconds + " seconds is starting now";
     public static String COUNTDOWN_INTERRUPTED = "The CountDown has been stopped";
+
+    //chat related
+    public static String RECEIVED_PRIVATE_MESSAGE = "You received a private message from: ";
+    public static String SENT_PRIVATE_MESSAGE = "You sent a private message to: ";
+    public static String RECEIVED_PUBLIC_MESSAGE = "A new message has been posted in the public chat";
+    public static String SENT_PUBLIC_MESSAGE = "You posted a new message in the public chat";
 }

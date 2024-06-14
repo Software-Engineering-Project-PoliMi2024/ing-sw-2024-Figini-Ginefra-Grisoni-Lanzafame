@@ -122,6 +122,19 @@ public class VirtualViewRMI implements VirtualView {
     }
 
     @Override
+    public void logChat(String logMsg) throws Exception {
+        Future<Void> logFuture = viewExecutor.submit(()->{
+            viewStub.logChat(logMsg);
+            return null;
+        });
+        try {
+            logFuture.get(Configs.secondsTimeOut, TimeUnit.SECONDS);
+        }catch (Exception e){
+            debug(e);
+            //this.disconnect();
+        }
+    }
+    @Override
     public void updateLobbyList(ModelDiffs<LightLobbyList> diff) throws RemoteException {
         Future<Void> updateFuture = viewExecutor.submit(()->{
             viewStub.updateLobbyList(diff);

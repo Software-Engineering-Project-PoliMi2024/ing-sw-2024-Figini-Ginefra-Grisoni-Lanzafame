@@ -67,6 +67,11 @@ public class VirtualViewSocket implements VirtualView {
     }
 
     @Override
+    public void logChat(String logMsg) throws Exception {
+        clientHandler.sendServerMessage(new LogChatMsg(logMsg));
+    }
+
+    @Override
     public void updateLobbyList(ModelDiffs<LightLobbyList> diff) throws RemoteException {
         clientHandler.sendServerMessage(new UpdateLobbyListMsg(diff));
     }

@@ -280,6 +280,13 @@ public class TUI implements ActualView {
         Printer.println("");
     }
 
+    @Override
+    public void logChat(String logMsg) throws Exception {
+        Printer.println("");
+        PromptStyle.printInABox(logMsg,50, StringStyle.GOLD_FOREGROUND);
+        Printer.println("");
+    }
+
 
     @Override
     public void logErr(String logMsg) {

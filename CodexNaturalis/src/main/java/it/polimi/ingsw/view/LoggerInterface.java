@@ -2,7 +2,6 @@ package it.polimi.ingsw.view;
 
 import java.io.Serializable;
 import java.rmi.Remote;
-import java.rmi.RemoteException;
 
 public interface LoggerInterface extends Serializable, Remote {
     /** Logs a message to the view. */
@@ -16,5 +15,6 @@ public interface LoggerInterface extends Serializable, Remote {
 
     /** Logs a message to the view relative to the game. */
     void logGame(String logMsg) throws Exception;
+    void logChat(String logMsg) throws Exception;
 
 }
