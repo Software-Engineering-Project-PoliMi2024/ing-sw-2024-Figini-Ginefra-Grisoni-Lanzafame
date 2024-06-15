@@ -21,6 +21,7 @@ public class LobbyGUI implements Observer {
 
         lobbyNameToJoin.setText(GUI.getLobby().name());
         leaveButton.setText("leave lobby");
+        leaveButton.getStyleClass().add("danger");
 
         leaveButton.setOnAction(e->leaveLobby());
 
