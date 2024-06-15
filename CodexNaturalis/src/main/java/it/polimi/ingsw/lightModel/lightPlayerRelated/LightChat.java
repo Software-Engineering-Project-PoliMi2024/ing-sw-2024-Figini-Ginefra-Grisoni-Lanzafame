@@ -17,7 +17,7 @@ public class LightChat implements Differentiable, Observed{
     }
 
     public LinkedList<ChatMessage> getChatHistory() {
-        return chatHistory;
+        return new LinkedList<>(chatHistory);
     }
 
     public void addMessage(ChatMessage message){

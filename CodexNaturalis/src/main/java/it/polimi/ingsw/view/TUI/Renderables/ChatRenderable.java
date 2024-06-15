@@ -55,7 +55,7 @@ public class ChatRenderable extends Renderable {
                     //Show all messages
                     if(chatHistory.isEmpty()){
                         try {
-                            view.logErr("No message received yet");
+                            view.logChat("No message received yet");
                         } catch (Exception e) {
                             throw new RuntimeException(e);
                         }
@@ -63,10 +63,10 @@ public class ChatRenderable extends Renderable {
                     }
                 }else if (optionChose == 1) {
                     //Show only received private messages
-                    chatHistory.removeIf(message -> message.getPrivacy() != ChatMessage.MessagePrivacy.PRIVATE);
+                    chatHistory.removeIf(message -> message.getPrivacy() != ChatMessage.MessagePrivacy.PRIVATE || !message.getReceiver().equals(lightGame.getLightGameParty().getYourName()));
                     if(chatHistory.isEmpty()){
                         try {
-                            view.logErr("No private message received yet");
+                            view.logChat("No private message received yet");
                         } catch (Exception e) {
                             throw new RuntimeException(e);
                         }
@@ -77,7 +77,7 @@ public class ChatRenderable extends Renderable {
                     chatHistory.removeIf(message -> !message.getSender().equals(lightGame.getLightGameParty().getYourName()));
                     if(chatHistory.isEmpty()){
                         try {
-                            view.logErr("No message sent yet");
+                            view.logChat("No message sent yet");
                         } catch (Exception e) {
                             throw new RuntimeException(e);
                         }
@@ -95,18 +95,16 @@ public class ChatRenderable extends Renderable {
                 break;
 
             case CommandPrompt.SEND_PRIVATE_MESSAGE:
-                //todo if the player does not exist, it should force the reprint of the commands.
-                // Atm, isLocal is set to true, but the send option actually interact with the controller
                 String receiver = answer.getAnswer(0);
                 if(!lightGame.getCodexMap().containsKey(receiver)){
                     try {
-                        view.logErr("The player " + receiver + " does not exist");
+                        view.logChat("The player " + receiver + " does not exist");
                     } catch (Exception e) {
                         throw new RuntimeException(e);
                     }
                 }else if(receiver.equals(lightGame.getLightGameParty().getYourName())){
                     try{
-                        view.logErr("You can't message yourself");
+                        view.logChat("You can't message yourself");
                     } catch (Exception e){
                         throw new RuntimeException(e);
                     }
@@ -122,22 +120,25 @@ public class ChatRenderable extends Renderable {
     }
 
     /**
-     * Return the message as a string based on the privacy and who is the receiver
+     * Return the message as a string based on the privacy and who is the sender
      * @param message the message to be converted
      * @return the message as a string
      */
     private String messageToString(ChatMessage message){
         if(message.getPrivacy() == ChatMessage.MessagePrivacy.PUBLIC){
-            return "To everyone: " + message.getMessage();
-        }else{
-            if(message.getReceiver().equals(lightGame.getLightGameParty().getYourName())){
-                return "From " + message.getSender() + ": " + message.getMessage();
+            if(message.getSender().equals(lightGame.getLightGameParty().getYourName())){
+                return "You: " + message.getMessage();
             }else{
-                return "To " + message.getReceiver() + ": " + message.getMessage();
+                return message.getSender() + " to everyone: " + message.getMessage();
+            }
+        }else{ //Private message
+            if(message.getSender().equals(lightGame.getLightGameParty().getYourName())){
+                return "You to " + message.getReceiver() + ": " + message.getMessage();
+            }else{
+                return message.getSender() + " to you: " + message.getMessage();
             }
         }
     }
-
     /**
      * Return the style of the message based on the sender and the privacy
      * The message will be GREEN if the sender is the player (#GreenBubble),
