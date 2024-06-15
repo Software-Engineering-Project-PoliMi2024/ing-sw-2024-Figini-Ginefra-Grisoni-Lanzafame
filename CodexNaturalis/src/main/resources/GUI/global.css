@@ -5,3 +5,7 @@
 .customFont {
     -fx-font-family: 'Sketch Gothic School', sans-serif;
 }
+
+.list-cell {
+    -fx-alignment: center ;
+}
