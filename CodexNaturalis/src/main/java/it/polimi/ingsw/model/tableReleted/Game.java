@@ -13,7 +13,6 @@ import it.polimi.ingsw.model.utilities.Pair;
 import java.io.Serializable;
 import java.util.*;
 import java.util.List;
-import java.util.concurrent.locks.ReentrantLock;
 
 
 /**
@@ -33,7 +32,6 @@ public class Game implements Serializable {
     private final List<ObjectiveCard> commonObjective;
 
     private Integer lastTurnsCounter = null;
-    private final ReentrantLock turnLock = new ReentrantLock();
     /**
      * Constructs a new Game instance with a specified maximum number of players.
      */
@@ -115,16 +113,6 @@ public class Game implements Serializable {
 
     public void removeChoice(PawnColors color){
         gameParty.removeChoice(color);
-    }
-
-
-    /**
-     * This method is used to get the index of the next player that is supposed to play
-     * not considering the possible disconnection that may have occurred
-     * @return the index of the next player
-     */
-    public int getNextPlayerIndex() {
-        return gameParty.getNextPlayerIndex();
     }
 
     /** @return list of the User in this match*/
@@ -211,12 +199,10 @@ public class Game implements Serializable {
      * @return true if the conditions for triggering the last turn are met
      */
     public boolean checkForChickenDinner() {
-        synchronized (turnLock) {
-            List<Integer> playerPoints = getUsersList().stream().map(User::getUserCodex).map(Codex::getPoints).toList();
-            synchronized (goldCardDeck) {
-                synchronized (resourceCardDeck) {
-                    return areDeckEmpty() || playerPoints.stream().anyMatch(p -> p >= Configs.pointsToStartGameEnding);
-                }
+        List<Integer> playerPoints = getUsersList().stream().map(User::getUserCodex).map(Codex::getPoints).toList();
+        synchronized (goldCardDeck) {
+            synchronized (resourceCardDeck) {
+                return areDeckEmpty() || playerPoints.stream().anyMatch(p -> p >= Configs.pointsToStartGameEnding);
             }
         }
     }
@@ -224,10 +210,9 @@ public class Game implements Serializable {
      * Remove a user from the gameParty preventing them from joining the game later
      * @param nickname of the user being removed
      */
-    public void removeUser(String nickname){
-        synchronized (turnLock){
-            gameParty.removeUser(nickname);
-        }
+    public void removeUser(String nickname) {
+        gameParty.removeUser(nickname);
+
     }
 
     /**
@@ -258,26 +243,20 @@ public class Game implements Serializable {
     /**
      * @return true if the players in game are choosing the startCard
      */
-    public boolean isInStartCardState(){
-        synchronized (turnLock) {
-            return !this.hasEnded() && gameParty.getUsersList().stream().map(User::getUserHand).map(Hand::getStartCard).anyMatch(Objects::nonNull);
-        }
+    public boolean isInStartCardState() {
+        return !this.hasEnded() && gameParty.getUsersList().stream().map(User::getUserHand).map(Hand::getStartCard).anyMatch(Objects::nonNull);
     }
 
-    public boolean isInPawnChoiceState(){
-        synchronized (turnLock) {
-            return !this.hasEnded() && !isInStartCardState() && gameParty.getUsersList().stream().map(User::getPawnColor).anyMatch(Objects::isNull)
-                    && gameParty.getPawnChoices().stream().anyMatch(Objects::nonNull);
-        }
+    public boolean isInPawnChoiceState() {
+        return !this.hasEnded() && !isInStartCardState() && gameParty.getUsersList().stream().map(User::getPawnColor).anyMatch(Objects::isNull)
+                && gameParty.getPawnChoices().stream().anyMatch(Objects::nonNull);
     }
 
     /**
      * @return true if the players in game are choosing the secretObjective
      */
-    public boolean inInSecretObjState(){
-        synchronized (turnLock){
-            return gameParty.getUsersList().stream().map(User::getUserHand).map(Hand::getSecretObjectiveChoices).anyMatch(Objects::nonNull);
-        }
+    public boolean inInSecretObjState() {
+        return gameParty.getUsersList().stream().map(User::getUserHand).map(Hand::getSecretObjectiveChoices).anyMatch(Objects::nonNull);
     }
 
     /**
@@ -288,26 +267,16 @@ public class Game implements Serializable {
         return goldCardDeck.isEmpty() && resourceCardDeck.isEmpty();
     }
 
-    public boolean othersHadAllChooseSecretObjective(String nicknamePerspective){
+    public boolean othersHadAllChooseSecretObjective(String nicknamePerspective) {
         boolean check = true;
-        synchronized (turnLock) {
-            for (User user : gameParty.getUsersList()) {
-                if (!user.getNickname().equals(nicknamePerspective) && !user.hasChosenObjective()) {
-                    check = false;
-                }
+        for (User user : gameParty.getUsersList()) {
+            if (!user.getNickname().equals(nicknamePerspective) && !user.hasChosenObjective()) {
+                check = false;
             }
         }
         return check;
     }
 
-    public boolean isYourTurnToPlace(String nickname){
-        User you = getUserFromNick(nickname);
-        synchronized (turnLock) {
-            return (isInStartCardState() && !you.hasPlacedStartCard()) || (
-                    getCurrentPlayer().getNickname().equals(nickname)
-                            && you.getUserHand().getHand().size() == 3);
-        }
-    }
     @Override
     public String toString() {
 
@@ -324,37 +293,25 @@ public class Game implements Serializable {
         return obj instanceof Game && ((Game) obj).name.equals(name);
     }
 
-    public boolean decksAreEmpty(){
-        return goldCardDeck.isEmpty() && resourceCardDeck.isEmpty();
-    }
-
     public void startLastTurnsCounter() {
-        synchronized (turnLock) {
-            lastTurnsCounter = 2;
-        }
+        lastTurnsCounter = 2;
     }
 
-    public void decrementLastTurnsCounter(){
-        synchronized (turnLock){
-            if(lastTurnsCounter>0){
-                lastTurnsCounter -= 1;
-            }else
-                throw new IllegalStateException("game.decrementLastTurnsCounter: the counter cannot be decremented under 0");
-        }
+    public void decrementLastTurnsCounter() {
+        if (lastTurnsCounter > 0) {
+            lastTurnsCounter -= 1;
+        } else
+            throw new IllegalStateException("game.decrementLastTurnsCounter: the counter cannot be decremented under 0");
     }
 
     public boolean duringLastTurns() {
-        synchronized (turnLock) {
-            return lastTurnsCounter !=null;
-        }
+        return lastTurnsCounter != null;
     }
 
-    public boolean hasEnded(){
-        synchronized (turnLock){
-            if(lastTurnsCounter != null)
-                return lastTurnsCounter == 0;
-            return false;
-        }
+    public boolean hasEnded() {
+        if (lastTurnsCounter != null)
+            return lastTurnsCounter == 0;
+        return false;
     }
 
     private void populateCommonObjective(){

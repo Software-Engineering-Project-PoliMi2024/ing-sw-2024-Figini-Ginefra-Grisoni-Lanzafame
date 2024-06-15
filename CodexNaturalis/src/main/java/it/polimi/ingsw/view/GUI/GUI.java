@@ -25,6 +25,7 @@ import javafx.stage.WindowEvent;
 import java.rmi.RemoteException;
 import java.util.Arrays;
 import java.util.List;
+import java.util.Objects;
 
 public class GUI extends Application implements ActualView {
     static private ControllerInterface controller;
@@ -48,6 +49,7 @@ public class GUI extends Application implements ActualView {
 
     @Override
     public void start(Stage primaryStage) {
+        Application.setUserAgentStylesheet(Objects.requireNonNull(getClass().getResource("/GUI/Styles/themes/cupertino-light.css")).toExternalForm());
         transitionAnimation = new logoSwapAnimation(primaryStage);
 
 
@@ -59,7 +61,11 @@ public class GUI extends Application implements ActualView {
         primaryStage.setFullScreen(true);
         primaryStage.setTitle("Codex In Naturalis");
         primaryStage.getIcons().add(AssetsGUI.logo);
-        primaryStage.setScene(new Scene(stackRoot, 800, 600));
+
+        Scene primaryScene = new Scene(stackRoot, 800, 600);
+        primaryScene.getStylesheets().add(Objects.requireNonNull(getClass().getResource("/GUI/global.css")).toExternalForm());
+        primaryStage.setScene(primaryScene);
+
 
         AnchorPane.setTopAnchor(stackRoot, 0.0);
         AnchorPane.setBottomAnchor(stackRoot, 0.0);

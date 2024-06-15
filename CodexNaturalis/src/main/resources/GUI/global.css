@@ -1,0 +1,7 @@
+@font-face {
+    src: url('Styles/fonts/SketchGothicSchool.ttf');
+}
+
+.customFont {
+    -fx-font-family: 'Sketch Gothic School', sans-serif;
+}

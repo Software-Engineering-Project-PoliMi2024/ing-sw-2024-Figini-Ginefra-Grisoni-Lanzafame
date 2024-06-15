@@ -31,4 +31,12 @@ public class AssetsGUI {
     public static Image loadWritingMaterial(WritingMaterial writingMaterial) {
         return new Image(Objects.requireNonNull(GUI.class.getResourceAsStream("/GUI/images/Collectables/" + writingMaterial.toString() + ".png")));
     }
+
+    public static Image loadResourceCircle(Resource resource) {
+        return new Image(Objects.requireNonNull(GUI.class.getResourceAsStream("/GUI/images/ResourceCircles/" + resource + ".png")));
+    }
+
+    public static Image loadCharacter(Resource resource) {
+        return new Image(Objects.requireNonNull(GUI.class.getResourceAsStream("/GUI/images/Characters/" + resource + ".png")));
+    }
 }

@@ -12,6 +12,7 @@ import it.polimi.ingsw.model.cardReleted.utilityEnums.DrawableCard;
 import it.polimi.ingsw.model.playerReleted.ChatMessage;
 import it.polimi.ingsw.model.playerReleted.PawnColors;
 import it.polimi.ingsw.view.ViewInterface;
+import it.polimi.ingsw.view.ViewState;
 
 import java.io.IOException;
 import java.net.Socket;
@@ -37,6 +38,7 @@ public class VirtualControllerSocket implements VirtualController {
         } catch (IOException e) { //catch a "UnknownHostException" or a "ConnectException"
             System.out.println("Server unreachable, check the port and the ip address");
             this.view.logErr(LogsOnClientStatic.CONNECTION_ERROR);
+            this.view.transitionTo(ViewState.SERVER_CONNECTION);
             return;
         }
         //If the connection goes well

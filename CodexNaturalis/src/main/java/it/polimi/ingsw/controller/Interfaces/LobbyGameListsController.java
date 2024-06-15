@@ -6,7 +6,7 @@ import java.io.Serializable;
 import java.rmi.Remote;
 
 public interface LobbyGameListsController extends FinishedGameDeleter, Serializable, Remote {
-    void login(String nickname, ViewInterface view);
+    void login(String nickname, ViewInterface view, GameControllerReceiver controllerReceiver);
     void createLobby(String nickname, String gameName, int maxPlayerCount, GameControllerReceiver gameReceiver);
     void joinLobby(String nickname, String lobbyName, GameControllerReceiver gameReceiver);
     void disconnect(String nickname);

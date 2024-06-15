@@ -35,7 +35,7 @@ public class LobbyGameListsController implements it.polimi.ingsw.controller.Inte
     }
 
     @Override
-    public synchronized void login(String nickname, ViewInterface view) {
+    public synchronized void login(String nickname, ViewInterface view, GameControllerReceiver controllerReceiver) {
         //check if the nickname is already taken
         if(allConnectedUsers().containsKey(nickname)) {
             try {
@@ -51,10 +51,10 @@ public class LobbyGameListsController implements it.polimi.ingsw.controller.Inte
         }else{
             //Client is now logged-In. If he disconnects we have to update the model
             System.out.println(nickname + " has connected");
-
             //check if the player was playing a game before disconnecting
             if(isInGameParty(nickname)){
                 GameController gameToJoin = this.getGameFromUserNick(nickname);
+                controllerReceiver.setGameController(gameToJoin);
                 gameToJoin.join(nickname, view);
             }else{
                 joinLobbyList(nickname, view);
@@ -152,10 +152,10 @@ public class LobbyGameListsController implements it.polimi.ingsw.controller.Inte
     @Override
     public synchronized void disconnect(String nickname) {
         if(this.isInGameParty(nickname)) {
-            GameController gameToLeave = this.getGameFromUserNick(nickname);
-            gameToLeave.leave(nickname);
-            if(gameToLeave.getPlayerViewMap().keySet().isEmpty()) {
-                gameToLeave.save();
+            GameController gameToLeaveController = this.getGameFromUserNick(nickname);
+            gameToLeaveController.leave(nickname);
+            if(gameToLeaveController.getPlayerViewMap().keySet().isEmpty()) {
+                gameToLeaveController.save();
             }
         }else if(this.isActiveInLobby(nickname)){
             this.leaveLobby(nickname);
