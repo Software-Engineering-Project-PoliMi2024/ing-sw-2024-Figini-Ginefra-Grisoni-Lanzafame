@@ -104,6 +104,12 @@ public class ChatRenderable extends Renderable {
                     } catch (Exception e) {
                         throw new RuntimeException(e);
                     }
+                }else if(receiver.equals(lightGame.getLightGameParty().getYourName())){
+                    try{
+                        view.logErr("You can't message yourself");
+                    } catch (Exception e){
+                        throw new RuntimeException(e);
+                    }
                 }else{
                     try {
                         view.getController().sendChatMessage(new ChatMessage(lightGame.getLightGameParty().getYourName(), answer.getAnswer(1), receiver));
