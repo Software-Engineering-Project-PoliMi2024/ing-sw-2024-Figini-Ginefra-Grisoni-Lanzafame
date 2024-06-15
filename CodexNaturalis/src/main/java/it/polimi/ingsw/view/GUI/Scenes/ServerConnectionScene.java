@@ -8,7 +8,5 @@ public class ServerConnectionScene extends SceneGUI{
     public ServerConnectionScene() {
         super();
         content.getChildren().add(Root.SERVER_CONNECTION_FORM.getRoot());
-
-        content.getChildren().add(new Label("Server Connection Scene"));
     }
 }
