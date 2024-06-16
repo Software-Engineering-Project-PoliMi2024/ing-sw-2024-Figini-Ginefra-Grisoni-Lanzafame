@@ -117,7 +117,7 @@ public class VirtualControllerRMI implements VirtualController {
 
     @Override
     public void choosePawn(PawnColors color) {
-        Future<Void> choseSecretObjectiveFuture = controllerExecutor.submit(()->{
+        Future<Void> choosePawnFuture = controllerExecutor.submit(() -> {
             try {
                 controllerStub.choosePawn(color);
                 return null;
@@ -126,8 +126,8 @@ public class VirtualControllerRMI implements VirtualController {
             }
         });
         try {
-            choseSecretObjectiveFuture.get(Configs.secondsTimeOut, TimeUnit.SECONDS);
-        }catch (Exception e){
+            choosePawnFuture.get(Configs.secondsTimeOut, TimeUnit.SECONDS);
+        } catch (Exception e) {
             this.disconnect();
         }
     }

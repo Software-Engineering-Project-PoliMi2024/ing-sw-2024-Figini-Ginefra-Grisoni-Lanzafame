@@ -11,6 +11,7 @@ import it.polimi.ingsw.lightModel.lightPlayerRelated.LightPlacement;
 import it.polimi.ingsw.model.cardReleted.utilityEnums.DrawableCard;
 import it.polimi.ingsw.model.playerReleted.ChatMessage;
 import it.polimi.ingsw.model.playerReleted.PawnColors;
+import it.polimi.ingsw.connectionLayer.Socket.ClientMsg.ChosePawnMsg;
 import it.polimi.ingsw.view.ViewInterface;
 import it.polimi.ingsw.view.ViewState;
 
@@ -110,7 +111,7 @@ public class VirtualControllerSocket implements VirtualController {
 
     @Override
     public void choosePawn(PawnColors color) {
-
+        serverHandler.sendServerMessage(new ChosePawnMsg(color));
     }
 
     @Override
