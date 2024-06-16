@@ -70,5 +70,10 @@ public class ViewTest implements ViewInterface {
 
     }
 
+    @Override
+    public void logChat(String logMsg) throws Exception {
+
+    }
+
 
 }
