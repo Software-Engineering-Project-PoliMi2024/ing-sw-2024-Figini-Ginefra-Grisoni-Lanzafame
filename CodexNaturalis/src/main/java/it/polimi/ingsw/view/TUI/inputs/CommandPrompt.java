@@ -82,6 +82,18 @@ public enum CommandPrompt implements Iterator<String>, CommandObserved {
     /** The command to leave the lobby */
     LEAVE_LOBBY("Leave lobby", false),
 
+    CHOOSE_PAWN("Choose pawn",
+            new String[]{
+                    "Which pawn do you want to choose? (RED/BLUE/YELLOW/GREEN)"
+            },
+            new Predicate[]{
+                    s -> {
+                        String input = s.toString().toUpperCase();
+                        return input.equals("RED") || input.equals("BLUE") || input.equals("YELLOW") || input.equals("GREEN");
+                    }
+            },
+            false),
+
     /** The command to display the assigned start card front */
     DISPLAY_START_FRONT("Display start card front", true),
 
