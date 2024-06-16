@@ -63,7 +63,6 @@ public class ImageCounter {
 
         container.getChildren().addAll(this.image, labelBg, counterLabel);
 
-        container.setStyle("-fx-background-color: rgba(255, 255, 255, 0.2);");
 
         StackPane.setAlignment(labelBg, Pos.BOTTOM_RIGHT);
         StackPane.setAlignment(counterLabel, Pos.BOTTOM_RIGHT);
