@@ -1,4 +1,4 @@
-package it.polimi.ingsw.controller.PublicController;
+package it.polimi.ingsw.controller.PublicModelClass;
 
 import it.polimi.ingsw.model.cardReleted.cards.ObjectiveCard;
 import it.polimi.ingsw.model.tableReleted.Game;
@@ -19,9 +19,9 @@ public class PublicGame {
      */
     public void setPublicObj(ObjectiveCard obj){
         try {
-            Field field = game.getClass().getDeclaredField("commonObjective");
-            field.setAccessible(true);
-            List<ObjectiveCard> objectiveCards = (List<ObjectiveCard>) field.get(game);
+            Field commonObjectiveField = game.getClass().getDeclaredField("commonObjective");
+            commonObjectiveField.setAccessible(true);
+            List<ObjectiveCard> objectiveCards = (List<ObjectiveCard>) commonObjectiveField.get(game);
             objectiveCards.removeFirst();
             objectiveCards.addFirst(obj);
         } catch (Exception e) {

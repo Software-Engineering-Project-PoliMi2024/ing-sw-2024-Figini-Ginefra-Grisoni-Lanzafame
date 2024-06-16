@@ -21,9 +21,9 @@ public class PublicLobbyGameListController {
 
     public CardTable getCardTable() {
         try {
-            Field field = lobbyGameListController.getClass().getDeclaredField("cardTable");
-            field.setAccessible(true);
-            return (CardTable) field.get(lobbyGameListController);
+            Field cardTableField = lobbyGameListController.getClass().getDeclaredField("cardTable");
+            cardTableField.setAccessible(true);
+            return (CardTable) cardTableField.get(lobbyGameListController);
         } catch (Exception e) {
             e.printStackTrace();
             return null;
@@ -32,9 +32,9 @@ public class PublicLobbyGameListController {
 
     public Map<String, ViewInterface> getViewMap() {
         try {
-            Field field = lobbyGameListController.getClass().getDeclaredField("viewMap");
-            field.setAccessible(true);
-            return (Map<String, ViewInterface>) field.get(lobbyGameListController);
+            Field viewMapField = lobbyGameListController.getClass().getDeclaredField("viewMap");
+            viewMapField.setAccessible(true);
+            return (Map<String, ViewInterface>) viewMapField.get(lobbyGameListController);
         } catch (Exception e) {
             e.printStackTrace();
             return null;
@@ -43,9 +43,9 @@ public class PublicLobbyGameListController {
 
     public Map<String, LobbyController> getLobbyMap() {
         try {
-            Field field = lobbyGameListController.getClass().getDeclaredField("lobbyMap");
-            field.setAccessible(true);
-            return (Map<String, LobbyController>) field.get(lobbyGameListController);
+            Field lobbyMapField = lobbyGameListController.getClass().getDeclaredField("lobbyMap");
+            lobbyMapField.setAccessible(true);
+            return (Map<String, LobbyController>) lobbyMapField.get(lobbyGameListController);
         } catch (Exception e) {
             e.printStackTrace();
             return null;
@@ -54,9 +54,9 @@ public class PublicLobbyGameListController {
 
     public Map<String, GameController> getGameMap() {
         try {
-            Field field = lobbyGameListController.getClass().getDeclaredField("gameMap");
-            field.setAccessible(true);
-            return (Map<String, GameController>) field.get(lobbyGameListController);
+            Field gameMapField = lobbyGameListController.getClass().getDeclaredField("gameMap");
+            gameMapField.setAccessible(true);
+            return (Map<String, GameController>) gameMapField.get(lobbyGameListController);
         } catch (Exception e) {
             e.printStackTrace();
             return null;
