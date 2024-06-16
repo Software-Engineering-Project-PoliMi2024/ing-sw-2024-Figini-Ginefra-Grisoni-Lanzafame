@@ -15,6 +15,11 @@ import it.polimi.ingsw.view.TUI.Renderables.CardRelated.*;
 import it.polimi.ingsw.view.TUI.Renderables.CodexRelated.CodexRenderable;
 import it.polimi.ingsw.view.TUI.Renderables.CodexRelated.CodexRenderableOthers;
 import it.polimi.ingsw.view.TUI.Renderables.Forms.*;
+import it.polimi.ingsw.view.TUI.Renderables.Forms.ConnectFormRenderable;
+import it.polimi.ingsw.view.TUI.Renderables.Forms.DrawCardForm;
+import it.polimi.ingsw.view.TUI.Renderables.Forms.LoginFormRenderable;
+import it.polimi.ingsw.view.TUI.Renderables.Forms.PlaceCardForm;
+import it.polimi.ingsw.view.TUI.Renderables.Forms.ChoosePawnForm;
 import it.polimi.ingsw.view.TUI.States.StateTUI;
 import it.polimi.ingsw.view.TUI.Styles.PromptStyle;
 import it.polimi.ingsw.view.TUI.Styles.StringStyle;
@@ -51,7 +56,7 @@ public class TUI implements ActualView {
     private DrawCardForm drawCardForm;
     private LeaderboardRenderable leaderboardRenderable;
     private ChatRenderable chatRenderable;
-
+    private ChoosePawnForm choosePawnForm;
     private SecretObjectiveRenderable secretObjectiveRenderable;
     private final LightGame lightGame = new LightGame();
     private final LightLobby lightLobby = new LightLobby();
@@ -187,7 +192,14 @@ public class TUI implements ActualView {
                 new CommandPrompt[]{CommandPrompt.DISPLAY_POSTGAME},
                 this);
         StateTUI.GAME_ENDING.attach(leaderboardRenderable);
-
+/*
+        choosePawnForm = new ChoosePawnForm(
+                "Choose Pawn",
+                new CommandPrompt[]
+                        {CommandPrompt.CHOOSE_PAWN},
+                this);
+        StateTUI.CHOOSE_PAWN.attach((choosePawnForm));
+*/
         drawCardForm = new DrawCardForm(
                 "Draw Card",
                 new CommandPrompt[]{CommandPrompt.DRAW_CARD},
