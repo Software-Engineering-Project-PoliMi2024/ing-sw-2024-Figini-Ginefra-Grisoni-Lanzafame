@@ -21,8 +21,14 @@ public class LobbyGUI implements Observer {
 
         lobbyNameToJoin.setText(GUI.getLobby().name());
         leaveButton.setText("leave lobby");
+        leaveButton.getStyleClass().add("danger");
 
         leaveButton.setOnAction(e->leaveLobby());
+
+        userInLobby.setStyle("-fx-background-radius: 20;");
+        userInLobby.setPrefHeight(200);
+        userInLobby.setMaxHeight(200);
+        userInLobby.setMaxWidth(200);
 
         lobbyLayout.getChildren().addAll(lobbyNameToJoin, userInLobby, leaveButton);
 

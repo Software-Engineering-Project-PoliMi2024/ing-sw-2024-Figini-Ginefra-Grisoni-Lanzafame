@@ -35,7 +35,7 @@
                            </padding></HBox>
                      </children>
                   </VBox>
-                  <Button fx:id="createLobby" mnemonicParsing="false" onAction="#createLobby" prefWidth="100000.0" text="Create">
+                  <Button fx:id="createLobby" mnemonicParsing="false" onAction="#createLobby" styleClass="accent" text="Create">
                      <VBox.margin>
                         <Insets left="20.0" right="20.0" />
                      </VBox.margin>
@@ -53,7 +53,7 @@
                   <Font name="System Bold" size="69.0" />
                </font>
             </Text>
-            <AnchorPane fx:id="joinLobby" maxWidth="500.0" minHeight="0.0" minWidth="0.0" prefHeight="200.0" style="-fx-border-insets: 5; -fx-border-width: 3; -fx-border-color: black; -fx-border-radius: 20;" />
+            <AnchorPane fx:id="joinLobby" maxWidth="500.0" minHeight="100.0" minWidth="0.0" prefHeight="200.0" style="-fx-border-insets: 5; -fx-border-width: 3; -fx-border-color: black; -fx-border-radius: 20;" />
             <Text strokeType="OUTSIDE" strokeWidth="0.0" styleClass="customFont" text="Join a Lobby">
                <font>
                   <Font name="System Bold" size="69.0" />

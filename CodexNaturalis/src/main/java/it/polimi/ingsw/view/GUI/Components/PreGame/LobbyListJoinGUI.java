@@ -36,9 +36,12 @@ public class LobbyListJoinGUI implements Observer {
 
         lobbyListDisplay.setCellFactory(param -> listViewLobbyCellFactory());
         lobbyListDisplay.getSelectionModel().selectedItemProperty().addListener(linkLabelToSelection());
-        joinButton.setOnAction(e->joinLobby());
+        lobbyListDisplay.setStyle(lobbyListDisplay.getStyle() +  "-fx-background-radius: 20;");
 
-        HBox buttonAndLabelLayout = new HBox(joinButton, lobbyNameToJoin);
+        joinButton.setOnAction(e->joinLobby());
+        joinButton.getStyleClass().add("accent");
+
+        VBox buttonAndLabelLayout = new VBox(lobbyNameToJoin, joinButton);
         buttonAndLabelLayout.setPadding(new javafx.geometry.Insets(10, 10, 10, 10));
         buttonAndLabelLayout.setSpacing(10);
         buttonAndLabelLayout.setAlignment(Pos.CENTER);
@@ -85,9 +88,9 @@ public class LobbyListJoinGUI implements Observer {
             public void changed(ObservableValue<? extends LightLobby> observableValue, LightLobby lobby, LightLobby t1) {
                 LightLobby selectedLobby = lobbyListDisplay.getSelectionModel().getSelectedItem();
                 if(selectedLobby != null)
-                    lobbyNameToJoin.setText(selectedLobby.name());
+                    joinButton.setText("Join " + selectedLobby.name());
                 else
-                    lobbyNameToJoin.setText("Select a lobby to join");
+                    joinButton.setText("Join");
             }
         };
     }

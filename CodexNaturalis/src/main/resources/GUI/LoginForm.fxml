@@ -16,15 +16,15 @@
                   <Font name="System Bold" size="61.0" />
                </font>
             </Text>
-            <VBox maxWidth="200.0">
+            <VBox alignment="CENTER" maxWidth="200.0">
                <children>
                   <Text strokeType="OUTSIDE" strokeWidth="0.0" text="Nickname" />
-                  <TextField fx:id="nicknameText" promptText="Gianni" />
+                  <TextField fx:id="nicknameText" alignment="CENTER" promptText="Gianni" />
                </children>
             </VBox>
-            <Button mnemonicParsing="false" onAction="#login" prefHeight="59.0" prefWidth="118.0" text="Login">
+            <Button mnemonicParsing="false" onAction="#login" prefHeight="30.0" prefWidth="83.0" styleClass="accent" text="Login">
                <font>
-                  <Font size="28.0" />
+                  <Font size="15.0" />
                </font>
             </Button>
          </children>
