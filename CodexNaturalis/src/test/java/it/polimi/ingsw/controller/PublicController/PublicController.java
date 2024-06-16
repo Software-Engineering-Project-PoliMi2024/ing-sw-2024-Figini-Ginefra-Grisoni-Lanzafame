@@ -8,8 +8,6 @@ import java.lang.reflect.Field;
 public class PublicController {
     public Controller controller;
 
-    private String nickname;
-
     public PublicController(Controller controller) {
         this.controller = controller;
     }
