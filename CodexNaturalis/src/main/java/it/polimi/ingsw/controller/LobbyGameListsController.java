@@ -87,26 +87,24 @@ public class LobbyGameListsController implements it.polimi.ingsw.controller.Inte
             System.out.println(creator + " create" + lobbyName + " lobby");
             Lobby lobbyCreated = new Lobby(maxPlayerCount, lobbyName);
 
+            leaveLobbyList(creator);
             //add the lobby to the model
             lobbyMap.put(lobbyName, new LobbyController(lobbyCreated));
+            this.notifyNewLobby(creator, view, lobbyCreated); //notify the lobbyList mediator of the new lobby creation
+
             lobbyMap.get(lobbyName).addPlayer(creator, view, gameReceiver);
 
-            this.notifyNewLobby(creator, lobbyCreated); //notify the lobbyList mediator of the new lobby creation
-
             try{view.transitionTo(ViewState.LOBBY);}catch (Exception ignored){}
-            leaveLobbyList(creator);
         }
     }
 
-    private synchronized void notifyNewLobby(String creator, Lobby addedLobby){
+    private synchronized void notifyNewLobby(String creator, ViewInterface creatorView, Lobby addedLobby){
+        try{creatorView.log(LogsOnClientStatic.LOBBY_CREATED_YOU);}catch (Exception ignored){}
         viewMap.forEach((nickname, view) -> {
             try {
                 view.updateLobbyList(DiffGenerator.addLobbyDiff(addedLobby));
                 if(!nickname.equals(creator)) {
                     view.log(LogsOnClientStatic.LOBBY_CREATED_OTHERS);
-                }else{
-                    view.log(LogsOnClientStatic.LOBBY_CREATED_YOU);
-                    view.log(LogsOnClientStatic.LOBBY_JOIN_YOU);
                 }
             } catch (Exception ignored) {}
         });
