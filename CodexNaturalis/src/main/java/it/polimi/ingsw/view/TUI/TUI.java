@@ -221,8 +221,13 @@ public class TUI implements ActualView {
                 lightGame,
                 this);
         StateTUI.CHOOSE_START_CARD.attach(chatRenderable);
+        StateTUI.SELECT_OBJECTIVE.attach(chatRenderable);
+        StateTUI.IDLE.attach(chatRenderable);
+        StateTUI.WAITING_STATE.attach(chatRenderable);
+        StateTUI.PLACE_CARD.attach(chatRenderable);
+        StateTUI.DRAW_CARD.attach(chatRenderable);
+        StateTUI.GAME_ENDING.attach(chatRenderable);
         renderables.add(chatRenderable);
-
         this.transitionTo(ViewState.SERVER_CONNECTION);
     }
 

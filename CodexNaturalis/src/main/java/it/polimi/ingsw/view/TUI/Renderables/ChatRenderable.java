@@ -103,6 +103,14 @@ public class ChatRenderable extends Renderable {
                         throw new RuntimeException(e);
                     }
                 }else if(receiver.equals(lightGame.getLightGameParty().getYourName())){
+                    //Dear Baolo, this is my real easter egg pls try not to remove it if u can. Thx XOXO
+                    if(answer.getAnswer(1).toLowerCase().contains("ferrari")){
+                        try{
+                            view.logChat("Ferrari mentioned, WTF is a good race strategy!!");
+                        }catch (Exception e){
+                            throw new RuntimeException(e);
+                        }
+                    }
                     try{
                         view.logChat("You can't message yourself");
                     } catch (Exception e){

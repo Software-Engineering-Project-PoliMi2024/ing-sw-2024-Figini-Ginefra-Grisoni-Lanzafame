@@ -2,7 +2,6 @@ package it.polimi.ingsw;
 
 public class Configs {
     public static Boolean debugMode = true;
-    public static String gameSavesDir = "./gameSaves/";
     public static long gameSaveExpirationTimeMinutes = 30;
     public static String connectionLabelRMI = "connect";
     public static String CardResourcesFolderPath = "Cards/";
