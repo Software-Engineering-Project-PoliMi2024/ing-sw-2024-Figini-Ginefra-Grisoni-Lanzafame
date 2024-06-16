@@ -10,7 +10,6 @@ import it.polimi.ingsw.view.ActualView;
 import it.polimi.ingsw.lightModel.LogMemory;
 import it.polimi.ingsw.view.GUI.Components.LeaderboardGUI;
 import it.polimi.ingsw.view.GUI.Components.Logs.LogErr;
-import it.polimi.ingsw.view.GUI.Components.PawnChoice;
 import it.polimi.ingsw.view.GUI.Components.Utils.EnumProperty;
 import it.polimi.ingsw.view.GUI.Components.Utils.logoSwapAnimation;
 import it.polimi.ingsw.view.GUI.Controllers.ConnectionFormControllerGUI;
