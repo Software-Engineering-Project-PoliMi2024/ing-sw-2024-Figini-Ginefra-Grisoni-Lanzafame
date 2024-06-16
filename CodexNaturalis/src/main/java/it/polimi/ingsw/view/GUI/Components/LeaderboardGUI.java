@@ -87,7 +87,11 @@ public class LeaderboardGUI implements Observer {
                         System.out.println("Adding peeker for " + e.getKey());
                         Peeker peeker = new Peeker(parent, e.getKey());
 
-                        label.setOnMouseClicked(event -> peeker.open());
+                        label.setOnMouseClicked(event -> {
+                            peeker.open();
+                            event.consume();
+                        }
+                        );
 
                         // make label underlined
                         label.setStyle("-fx-underline: true;" + label.getStyle());

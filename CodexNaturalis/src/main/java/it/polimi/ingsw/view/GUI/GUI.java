@@ -34,19 +34,13 @@ public class GUI extends Application implements ActualView {
     private static final LightLobbyList lobbyList = new LightLobbyList();
     private static final LightLobby lobby = new LightLobby();
     private static final LightGame lightGame = new LightGame();
-
     private static LogMemory logMemory = new LogMemory();
-
     private Stage primaryStage;
     private Node currentRoot;
     private final AnchorPane stackRoot = new AnchorPane();
-
     private logoSwapAnimation transitionAnimation;
-
     private static final EnumProperty<StateGUI> stateProperty = new EnumProperty<>();
-
     private LeaderboardGUI leaderboardGUI;
-    private PawnChoice pawnChoice;
 
     public void run() {
         launch();
@@ -88,9 +82,6 @@ public class GUI extends Application implements ActualView {
         leaderboardGUI.attach();
         //leaderboardGUI.addThisTo(stackRoot);
 
-        // Inizialize the choice
-        pawnChoice = new PawnChoice(stackRoot);
-
         // set stackRoot background and style
         // stackRoot.setStyle("-fx-background-color: #1e1f22;");
         transitionTo(StateGUI.SERVER_CONNECTION);
@@ -118,9 +109,6 @@ public class GUI extends Application implements ActualView {
         if(!state.equals(stateProperty.get())) {
             Platform.runLater(() -> {
                 setRoot(state.getScene().getContent());
-                if (state== StateGUI.CHOOSE_PAWN){
-                    pawnChoice.update();
-                }
             });
         }
         stateProperty.set(state);

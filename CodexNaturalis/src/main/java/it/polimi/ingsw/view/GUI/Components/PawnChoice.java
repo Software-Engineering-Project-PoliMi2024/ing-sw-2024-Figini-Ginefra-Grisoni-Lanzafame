@@ -31,7 +31,8 @@ public class PawnChoice implements Observer {
         AnchorPane.setTopAnchor(container, 20.0);
 
         // Make it bold and centered
-        label.setStyle("-fx-font-size: 30; -fx-font-weight: bold; -fx-text-fill: white;");
+        label.setStyle("-fx-font-size: 40; -fx-font-weight: bold; -fx-text-fill: white;");
+        label.getStyleClass().add("customFont");
         label.setTextAlignment(TextAlignment.CENTER);
 
         container.getChildren().addAll(label, choiceBox);
@@ -53,7 +54,7 @@ public class PawnChoice implements Observer {
         // Automatically assign black pawn to the first player
         if (GUI.getLightGame().getLightGameParty().getFirstPlayerName().equals(GUI.getLightGame().getLightGameParty().getYourName())) {
             try {
-                GUI.getControllerStatic().choosePawn(PawnColors.BLACK);
+                //GUI.getControllerStatic().choosePawn(PawnColors.BLACK);
             } catch (Exception e) {
                 e.printStackTrace();
             }
