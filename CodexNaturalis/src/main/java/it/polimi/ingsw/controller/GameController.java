@@ -852,15 +852,14 @@ public class GameController implements GameControllerInterface {
         }catch (Exception ignored){}
     }
 
-    //Todo all of this shit is convoluted as fuck, must be review
     private synchronized void updateGlobalChat(ChatMessage chatMessage) {
         playerViewMap.forEach((nickname, view) -> {
             try {
                 view.updateGame(new ChatDiffs(List.of(chatMessage)));
-                if (chatMessage.getSender().equals(nickname)) {
-                    this.notifySender(chatMessage);
-                } else {
-                    this.notifyReceiver(chatMessage);
+                if(chatMessage.getSender().equals(nickname)){
+                    view.logChat(LogsOnClientStatic.SENT_PUBLIC_MESSAGE);
+                }else{
+                    view.logChat(LogsOnClientStatic.RECEIVED_PUBLIC_MESSAGE);
                 }
             } catch (Exception ignored) {
             }
@@ -870,42 +869,11 @@ public class GameController implements GameControllerInterface {
     private synchronized void updatePrivateChat(ChatMessage chatMessage) {
         try {
             playerViewMap.get(chatMessage.getSender()).updateGame(new ChatDiffs(List.of(chatMessage)));
-            this.notifySender(chatMessage);
+            playerViewMap.get(chatMessage.getSender()).logChat(LogsOnClientStatic.SENT_PRIVATE_MESSAGE + chatMessage.getReceiver());
 
             playerViewMap.get(chatMessage.getReceiver()).updateGame(new ChatDiffs(List.of(chatMessage)));
-            this.notifyReceiver(chatMessage);
+            playerViewMap.get(chatMessage.getReceiver()).logChat(LogsOnClientStatic.RECEIVED_PRIVATE_MESSAGE + chatMessage.getSender());
         } catch (Exception ignored) {
-        }
-    }
-
-    private synchronized void notifySender(ChatMessage message) {
-        try {
-            if (message.getPrivacy() == ChatMessage.MessagePrivacy.PRIVATE) {
-                playerViewMap.get(message.getSender()).logChat(LogsOnClientStatic.SENT_PRIVATE_MESSAGE + message.getReceiver());
-            } else {
-                playerViewMap.get(message.getSender()).logChat(LogsOnClientStatic.SENT_PUBLIC_MESSAGE);
-            }
-        } catch (Exception ignored) {
-        }
-    }
-
-    private synchronized void notifyReceiver(ChatMessage message) {
-        if (message.getPrivacy() == ChatMessage.MessagePrivacy.PUBLIC) {
-            playerViewMap.forEach((nickname, view) -> {
-                if (!nickname.equals(message.getSender())) {
-                    try {
-                        view.logChat(LogsOnClientStatic.RECEIVED_PUBLIC_MESSAGE);
-                    } catch (Exception e) {
-                        throw new RuntimeException(e);
-                    }
-                }
-            });
-        } else {
-            try {
-                playerViewMap.get(message.getReceiver()).logChat(LogsOnClientStatic.RECEIVED_PRIVATE_MESSAGE + message.getSender());
-            } catch (Exception e) {
-                throw new RuntimeException(e);
-            }
         }
     }
 }
