@@ -192,14 +192,15 @@ public class TUI implements ActualView {
                 new CommandPrompt[]{CommandPrompt.DISPLAY_POSTGAME},
                 this);
         StateTUI.GAME_ENDING.attach(leaderboardRenderable);
-/*
+
         choosePawnForm = new ChoosePawnForm(
                 "Choose Pawn",
                 new CommandPrompt[]
                         {CommandPrompt.CHOOSE_PAWN},
                 this);
         StateTUI.CHOOSE_PAWN.attach((choosePawnForm));
-*/
+        renderables.add(choosePawnForm);
+
         drawCardForm = new DrawCardForm(
                 "Draw Card",
                 new CommandPrompt[]{CommandPrompt.DRAW_CARD},
