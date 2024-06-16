@@ -1,5 +1,6 @@
 package it.polimi.ingsw.model.tableReleted;
 
+import it.polimi.ingsw.model.playerReleted.ChatMessage;
 import it.polimi.ingsw.model.playerReleted.PawnColors;
 import it.polimi.ingsw.model.playerReleted.User;
 

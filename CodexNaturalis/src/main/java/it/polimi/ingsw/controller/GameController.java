@@ -12,6 +12,7 @@ import it.polimi.ingsw.lightModel.diffs.game.GameDiffWinner;
 import it.polimi.ingsw.lightModel.diffs.game.chatDiffs.ChatDiffs;
 import it.polimi.ingsw.lightModel.diffs.game.codexDiffs.CodexDiffPlacement;
 import it.polimi.ingsw.lightModel.diffs.game.codexDiffs.CodexDiffSetFinalPoints;
+import it.polimi.ingsw.lightModel.diffs.game.deckDiffs.DeckDiff;
 import it.polimi.ingsw.lightModel.diffs.game.deckDiffs.DeckDiffDeckDraw;
 import it.polimi.ingsw.lightModel.diffs.game.gamePartyDiffs.GameDiffCurrentPlayer;
 import it.polimi.ingsw.lightModel.diffs.game.gamePartyDiffs.GameDiffFirstPlayer;
@@ -71,6 +72,7 @@ public class GameController implements GameControllerInterface {
         playerViewMap.put(joinerNickname, view);
 
         this.notifyJoinGame(joinerNickname);
+        this.loadChat(joinerNickname, view);
 
         if (game.isInStartCardState()) {
             this.updateJoinStartCard(joinerNickname);
@@ -842,6 +844,12 @@ public class GameController implements GameControllerInterface {
         } else {
             this.updatePrivateChat(chatMessage);
         }
+    }
+
+    private void loadChat(String joinerNickname, ViewInterface view) {
+        try{
+            view.updateGame(new ChatDiffs(game.getGameParty().getChatManager().retrieveChat(joinerNickname)));
+        }catch (Exception ignored){}
     }
 
     //Todo all of this shit is convoluted as fuck, must be review

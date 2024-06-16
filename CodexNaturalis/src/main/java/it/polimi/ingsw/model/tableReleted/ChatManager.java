@@ -25,4 +25,7 @@ public class ChatManager implements Serializable {
             playerChatHistories.get(message.getReceiver()).add(message);
         }
     }
+    public List<ChatMessage> retrieveChat(String nickname){
+        return playerChatHistories.get(nickname);
+    }
 }
