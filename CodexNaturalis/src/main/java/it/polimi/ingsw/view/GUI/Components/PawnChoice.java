@@ -49,6 +49,11 @@ public class PawnChoice implements Observer {
             if (newState == StateGUI.CHOOSE_PAWN) {
                 Platform.runLater(() -> parent.getChildren().add(container));
             }
+            else{
+                if(parent.getChildren().contains(container)){
+                    Platform.runLater(() -> parent.getChildren().remove(container));
+                }
+            }
         });
 
         // Automatically assign black pawn to the first player
@@ -95,7 +100,6 @@ public class PawnChoice implements Observer {
     private void choosePawn(PawnColors color) {
         try {
             GUI.getControllerStatic().choosePawn(color);
-            parent.getChildren().remove(container);
         } catch (Exception e) {
             e.printStackTrace();
         }

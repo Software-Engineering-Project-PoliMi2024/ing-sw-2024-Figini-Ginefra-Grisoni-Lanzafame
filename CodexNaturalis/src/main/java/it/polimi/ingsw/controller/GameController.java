@@ -399,11 +399,12 @@ public class GameController implements GameControllerInterface {
     private synchronized void pawnChoiceStateTransition(String nickname) {
         User user = game.getUserFromNick(nickname);
         try {
-            if (!user.hasChosenObjective()) {
+            if (!user.hasChosenPawnColor()) {
                 playerViewMap.get(nickname).transitionTo(ViewState.CHOOSE_PAWN);
             } else
                 playerViewMap.get(nickname).transitionTo(ViewState.WAITING_STATE);
-        } catch (Exception ignored) {
+        } catch (Exception e) {
+            e.printStackTrace();
         }
     }
 
@@ -433,7 +434,8 @@ public class GameController implements GameControllerInterface {
                     view.updateGame(communicateJoin);
                     view.logOthers(joinerNickname + LogsOnClientStatic.PLAYER_JOINED);
 
-                } catch (Exception ignored) {
+                } catch (Exception e) {
+                    e.printStackTrace();
                 }
             }
         });

@@ -99,7 +99,7 @@ public class LeaderboardGUI implements Observer {
                     layout.getChildren().add(row);
 
                     // Update pawn position on the plateau
-                    plateau.updatePawnPosition(e.getKey(), e.getValue(), pawnView);
+                    plateau.updatePawnPosition(e.getValue(), pawnView);
                 });
 
         // Add event handler to show plateau
@@ -116,7 +116,7 @@ public class LeaderboardGUI implements Observer {
                 .sorted(Map.Entry.<String, Integer>comparingByValue().reversed())
                 .forEach(e -> {
                     labelMap.get(e.getKey()).setText(e.getKey() + ": " + e.getValue());
-                    plateau.updatePawnPosition(e.getKey(), e.getValue(), playerpawnMap.get(e.getKey()).getImageView());
+                    plateau.updatePawnPosition(e.getValue(), playerpawnMap.get(e.getKey()).getImageView());
                 });
 
         labelMap.forEach((name, label) -> {
