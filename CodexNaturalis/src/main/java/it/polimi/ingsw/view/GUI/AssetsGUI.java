@@ -12,6 +12,14 @@ public class AssetsGUI {
     public static Image logoCircle = new Image(Objects.requireNonNull(GUI.class.getResourceAsStream("/GUI/images/Logo/Circle.png")));
     public static Image logoBackground = new Image(Objects.requireNonNull(GUI.class.getResourceAsStream("/GUI/images/Logo/Background.png")));
     public static Image logo = new Image(Objects.requireNonNull(GUI.class.getResourceAsStream("/GUI/images/CODEX_Rulebook_IT/01.png")));
+
+    public static Image plateau = new Image(Objects.requireNonNull(GUI.class.getResourceAsStream("/GUI/images/PLATEAU-SCORE-IMP/plateau.png")));
+    public static Image pawnBleu = new Image(Objects.requireNonNull(GUI.class.getResourceAsStream("/GUI/images/CODEX_pawn_bleu.png")));
+    public static Image pawnJaune = new Image(Objects.requireNonNull(GUI.class.getResourceAsStream("/GUI/images/CODEX_pawn_jaune.png")));
+    public static Image pawnBlack = new Image(Objects.requireNonNull(GUI.class.getResourceAsStream("/GUI/images/CODEX_pawn_noir.png")));
+    public static Image pawnGreen = new Image(Objects.requireNonNull(GUI.class.getResourceAsStream("/GUI/images/CODEX_pawn_vert.png")));
+    public static Image pawnRed = new Image(Objects.requireNonNull(GUI.class.getResourceAsStream("/GUI/images/CODEX_pawn_rouge.png")));
+
     public static Image loadCardFront(int id){
         String idString = String.valueOf(id);
         idString = "000".substring(idString.length()) + idString;
