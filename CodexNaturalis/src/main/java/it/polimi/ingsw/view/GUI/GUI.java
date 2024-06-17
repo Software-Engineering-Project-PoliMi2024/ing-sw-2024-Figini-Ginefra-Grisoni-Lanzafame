@@ -8,6 +8,7 @@ import it.polimi.ingsw.lightModel.lightTableRelated.LightLobby;
 import it.polimi.ingsw.lightModel.lightTableRelated.LightLobbyList;
 import it.polimi.ingsw.view.ActualView;
 import it.polimi.ingsw.lightModel.LogMemory;
+import it.polimi.ingsw.view.GUI.Components.LeaderboardGUI;
 import it.polimi.ingsw.view.GUI.Components.Logs.LogErr;
 import it.polimi.ingsw.view.GUI.Components.Utils.EnumProperty;
 import it.polimi.ingsw.view.GUI.Components.Utils.logoSwapAnimation;
@@ -32,16 +33,13 @@ public class GUI extends Application implements ActualView {
     private static final LightLobbyList lobbyList = new LightLobbyList();
     private static final LightLobby lobby = new LightLobby();
     private static final LightGame lightGame = new LightGame();
-
     private static LogMemory logMemory = new LogMemory();
-
     private Stage primaryStage;
     private Node currentRoot;
     private final AnchorPane stackRoot = new AnchorPane();
-
     private logoSwapAnimation transitionAnimation;
-
     private static final EnumProperty<StateGUI> stateProperty = new EnumProperty<>();
+    private LeaderboardGUI leaderboardGUI;
 
     public void run() {
         launch();
@@ -52,9 +50,7 @@ public class GUI extends Application implements ActualView {
         Application.setUserAgentStylesheet(Objects.requireNonNull(getClass().getResource("/GUI/Styles/themes/cupertino-light.css")).toExternalForm());
         transitionAnimation = new logoSwapAnimation(primaryStage);
 
-
         ConnectionFormControllerGUI.view = this;
-
         LoginFormControllerGUI.setView(this);
 
         this.primaryStage = primaryStage;
@@ -80,13 +76,19 @@ public class GUI extends Application implements ActualView {
 
             primaryStage.show();
 
-        //set stackRoot background and style
-        //stackRoot.setStyle("-fx-background-color: #1e1f22;");
+        // Initialize leaderboard
+        leaderboardGUI = new LeaderboardGUI();
+        leaderboardGUI.attach();
+        //leaderboardGUI.addThisTo(stackRoot);
+
+        // set stackRoot background and style
+        // stackRoot.setStyle("-fx-background-color: #1e1f22;");
         transitionTo(StateGUI.SERVER_CONNECTION);
-        //transitionTo(StateGUI.SELECT_OBJECTIVE);
-        //transitionTo(StateGUI.JOIN_LOBBY);
-        //transitionTo(StateGUI.LOBBY);
-        //transitionTo(StateGUI.PLACE_CARD);
+        // transitionTo(StateGUI.CHOOSE_PAWN);
+        // transitionTo(StateGUI.SELECT_OBJECTIVE);
+        // transitionTo(StateGUI.JOIN_LOBBY);
+        // transitionTo(StateGUI.LOBBY);
+        // transitionTo(StateGUI.PLACE_CARD);
     }
 
     private void setRoot(Node root){

@@ -40,7 +40,8 @@ public class ObjectiveChoice implements Observer {
         AnchorPane.setTopAnchor(container, 20.0);
 
         //Make it bold and centered
-        label.setStyle("-fx-font-size: 30; -fx-font-weight: bold; -fx-text-fill: white;");
+        label.setStyle("-fx-font-size: 40; -fx-font-weight: bold; -fx-text-fill: white;");
+        label.getStyleClass().add("customFont");
         label.setTextAlignment(TextAlignment.CENTER);
 
         container.getChildren().addAll(label, choiceBox);

@@ -14,6 +14,7 @@ import it.polimi.ingsw.view.GUI.Components.CodexRelated.FrontierCardGUI;
 import it.polimi.ingsw.view.GUI.GUI;
 import it.polimi.ingsw.view.GUI.GUIConfigs;
 import it.polimi.ingsw.view.GUI.StateGUI;
+import javafx.geometry.Insets;
 import javafx.geometry.Point2D;
 import javafx.geometry.Pos;
 import javafx.scene.layout.AnchorPane;
@@ -38,6 +39,7 @@ public class HandGUI implements Observer {
     public HandGUI() {
         hand.setSpacing(10);
         hand.setAlignment(Pos.CENTER);
+        hand.setPadding(new Insets(10));
 
         AnchorPane.setBottomAnchor(hand, 0.0);
         AnchorPane.setLeftAnchor(hand, 0.0);

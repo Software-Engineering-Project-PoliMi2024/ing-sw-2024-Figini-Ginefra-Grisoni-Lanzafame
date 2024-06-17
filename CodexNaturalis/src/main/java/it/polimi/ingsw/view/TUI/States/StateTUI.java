@@ -17,7 +17,8 @@ public enum StateTUI {
     IDLE(ViewState.IDLE),
     DRAW_CARD(ViewState.DRAW_CARD),
     PLACE_CARD(ViewState.PLACE_CARD),
-    GAME_ENDING(ViewState.GAME_ENDING);
+    GAME_ENDING(ViewState.GAME_ENDING),
+    CHOOSE_PAWN(ViewState.CHOOSE_PAWN);
 
     private final ViewState referenceState;
     private final List<Renderable> targetRenderables;
