@@ -201,9 +201,6 @@ public class VirtualControllerRMI implements VirtualController {
                 pingPongExecutor.shutdownNow();
                 System.out.println("pingPong " + e.getMessage());
                 this.disconnect();
-                try {
-                    Thread.sleep(Configs.pingPongFrequency * 1000L);
-                }catch (Exception r){}
             }
         }, Configs.pingPongFrequency, Configs.pingPongFrequency, TimeUnit.SECONDS);
 
@@ -242,22 +239,22 @@ public class VirtualControllerRMI implements VirtualController {
     @Override
     public void connect(String ip, int port, ViewInterface view) {
         this.view = view;
-        Future<ConnectionLayerServer> connect = controllerExecutor.submit(() -> {
+        //Future<ConnectionLayerServer> connect = controllerExecutor.submit(() -> {});
+        try {
+            //ConnectionLayerServer serverStub = connect.get(Configs.secondsTimeOut, TimeUnit.SECONDS);
+            ConnectionLayerServer serverStub = null;
             try {
                 Registry registry = LocateRegistry.getRegistry(ip, port);
                 ConnectionLayerServer serverReference = (ConnectionLayerServer) registry.lookup(Configs.connectionLabelRMI);
                 ViewInterface viewStub = (ViewInterface) UnicastRemoteObject.exportObject(view, 0);
                 VirtualController controllerStub = (VirtualController) UnicastRemoteObject.exportObject(this, 0);
                 serverReference.connect(controllerStub, viewStub, controllerStub);
-                return serverReference;
+                serverStub = serverReference;
+                //return serverReference;
             } catch (Exception e){
                 e.printStackTrace();
-                return null;
+                //return null;
             }
-
-        });
-        try {
-            ConnectionLayerServer serverStub = connect.get(Configs.secondsTimeOut, TimeUnit.SECONDS);
             if(serverStub == null)
                 throw new NullPointerException();
             this.pingPong();
@@ -268,9 +265,7 @@ public class VirtualControllerRMI implements VirtualController {
                 e.printStackTrace();
                 view.logErr(LogsOnClientStatic.CONNECTION_ERROR);
                 view.transitionTo(ViewState.SERVER_CONNECTION);
-            }catch (Exception e1){
-                e1.printStackTrace();
-            }
+            }catch (Exception ignored){}
         }
     }
 

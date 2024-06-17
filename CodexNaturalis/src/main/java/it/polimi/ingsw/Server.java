@@ -27,7 +27,9 @@ public class Server {
         OSRelated.checkOrCreateDataFolderServer();
         try (Socket socket = new Socket()) {
             socket.connect(new InetSocketAddress("google.com", 80));
-            Printer.println("IP: " + socket.getLocalAddress().getHostAddress());
+            String ip = socket.getLocalAddress().getHostAddress();
+            Printer.println("IP: " + ip);
+            System.setProperty("java.rmi.server.hostname", ip);
         } catch (IOException e) {
             System.out.println("No internet connection, can't get IP address");
         }

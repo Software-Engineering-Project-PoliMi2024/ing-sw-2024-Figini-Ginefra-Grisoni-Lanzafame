@@ -20,7 +20,7 @@ public class VirtualViewRMI implements VirtualView {
     private PingPongInterface pingPongStub;
     private ControllerInterface controller;
     private final ThreadPoolExecutor viewExecutor = new ThreadPoolExecutor(1, 4, 10, TimeUnit.MILLISECONDS, new LinkedBlockingQueue<>());
-    private ScheduledExecutorService pingPongExecutor = Executors.newSingleThreadScheduledExecutor();
+    private final ScheduledExecutorService pingPongExecutor = Executors.newSingleThreadScheduledExecutor();
     private boolean notAlreadyDisconnected = false;
     /**
      * @param viewStub the stub of the view on the client
@@ -31,12 +31,13 @@ public class VirtualViewRMI implements VirtualView {
     }
     public void pingPong(){
         Future<?> pong = pingPongExecutor.scheduleAtFixedRate(() -> {
-                try {
-                    pingPongStub.checkEmpty();
-                } catch (Exception e) {
-                    this.disconnect();
-                    pingPongExecutor.shutdownNow();
-                }
+            try {
+                pingPongStub.checkEmpty();
+            } catch (Exception e) {
+                pingPongExecutor.shutdownNow();
+                System.out.println("pingPong " + e.getMessage());
+                this.disconnect();
+            }
         }, Configs.pingPongFrequency, Configs.pingPongFrequency, TimeUnit.SECONDS);
 
     }

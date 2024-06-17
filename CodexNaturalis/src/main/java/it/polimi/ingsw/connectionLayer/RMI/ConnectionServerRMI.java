@@ -1,5 +1,6 @@
 package it.polimi.ingsw.connectionLayer.RMI;
 
+import it.polimi.ingsw.Configs;
 import it.polimi.ingsw.connectionLayer.ConnectionLayerServer;
 import it.polimi.ingsw.connectionLayer.PingPongInterface;
 import it.polimi.ingsw.connectionLayer.VirtualRMI.VirtualViewRMI;
@@ -22,7 +23,7 @@ import java.util.concurrent.TimeUnit;
 public class ConnectionServerRMI implements ConnectionLayerServer {
     private final LobbyGameListsController lobbyGameListController;
     private final ExecutorService serverExecutor = Executors.newSingleThreadExecutor();
-    int secondsTimeOut = 5;
+    int secondsTimeOut = Configs.secondsTimeOut;
 
     /**
      * The constructor of the class
@@ -47,12 +48,13 @@ public class ConnectionServerRMI implements ConnectionLayerServer {
             VirtualView virtualView = new VirtualViewRMI(view);
             ControllerInterface controllerOnServer = new Controller(lobbyGameListController, virtualView);
             virtualView.setController(controllerOnServer);
+            System.out.println("setViewPingPong" + pingPong);
             virtualView.setPingPongStub(pingPong);
             ControllerInterface controllerStub = (ControllerInterface) UnicastRemoteObject.exportObject(controllerOnServer, 0);
             PingPongInterface virtualViewStub = (PingPongInterface) UnicastRemoteObject.exportObject(virtualView, 0);
+            System.out.println("setControllerPingPong" + virtualViewStub);
             pingPong.setPingPongStub(virtualViewStub);
             controller.setControllerStub(controllerStub);
-            controller.pingPong();
             virtualView.pingPong();
             virtualView.log(LogsOnClientStatic.CONNECTION_SUCCESS);
             virtualView.transitionTo(ViewState.LOGIN_FORM);
