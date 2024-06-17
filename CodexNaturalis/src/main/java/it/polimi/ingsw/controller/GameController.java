@@ -176,6 +176,7 @@ public class GameController implements GameControllerInterface {
         } else {
             try {
                 view.logGame(LogsOnClientStatic.PAWN_TAKEN);
+                this.pawnChoiceStateTransition(nickname);
             } catch (Exception ignored) {
             }
         }
