@@ -59,7 +59,7 @@ public class PlateauGUI {
 //            pawnView.setTranslateY(coordinates.getY());
 //
 //        }
-
+        System.out.println("updatePawnPosition: " + score + " " + pawnView);
         if (!container.getChildren().contains(pawnView)) {
             container.getChildren().add(pawnView);
         }

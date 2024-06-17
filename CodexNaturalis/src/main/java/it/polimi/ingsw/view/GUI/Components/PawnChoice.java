@@ -25,11 +25,6 @@ public class PawnChoice implements Observer {
     public PawnChoice(AnchorPane parent) {
         this.parent = parent;
 
-        AnchorPane.setBottomAnchor(container, 20.0);
-        AnchorPane.setLeftAnchor(container, 20.0);
-        AnchorPane.setRightAnchor(container, 20.0);
-        AnchorPane.setTopAnchor(container, 20.0);
-
         // Make it bold and centered
         label.setStyle("-fx-font-size: 40; -fx-font-weight: bold; -fx-text-fill: white;");
         label.getStyleClass().add("customFont");
@@ -37,12 +32,13 @@ public class PawnChoice implements Observer {
 
         container.getChildren().addAll(label, choiceBox);
         container.setAlignment(Pos.CENTER);
+        container.setStyle("-fx-background-color: rgb(164, 158, 35); -fx-background-radius: 20; -fx-border-radius: 20;");
+
 
         GUI.getLightGame().getLightGameParty().attach(this);
 
         choiceBox.setAlignment(Pos.CENTER);
         choiceBox.setSpacing(10);
-        choiceBox.setStyle("-fx-background-color: rgba(0, 0, 0, 0.8); -fx-background-radius: 20; -fx-border-radius: 20;");
         choiceBox.setPadding(new Insets(30));
 
         GUI.getStateProperty().addListener((obs, oldState, newState) -> {
