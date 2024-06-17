@@ -33,19 +33,6 @@ public class GameParty implements Serializable {
     }
 
     /**
-     * This method is used to set the player index in the game
-     * @param index the index of the player that is playing
-     */
-    public void setPlayerIndex(int index){
-        currentPlayerLock.lock();
-        try {
-            currentPlayerIndex = index;
-        } finally {
-            currentPlayerLock.unlock();
-        }
-    }
-
-    /**
      * This method is used to get the current player that is supposed to play
      * @return the current player
      */
@@ -82,20 +69,6 @@ public class GameParty implements Serializable {
             });
         }
         return userPointsMap;
-    }
-
-    /**
-     * This method is used to get the index of the next player that is supposed to play
-     * not considering the possible disconnection that may have occurred
-     * @return the index of the next player
-     */
-    public int getNextPlayerIndex() {
-        currentPlayerLock.lock();
-        try{
-            return (currentPlayerIndex + 1) % getNumberOfMaxPlayer();
-        } finally {
-            currentPlayerLock.unlock();
-        }
     }
 
     /** @return list of the users in this match*/
@@ -141,17 +114,6 @@ public class GameParty implements Serializable {
                 playerList.remove(userToRemove);
             else
                 throw new IllegalArgumentException("User not in this gameParty");
-        }
-    }
-
-    /**
-     * This method is used to get the player from its index
-     * @param index the index of the player
-     * @return the player with the given index
-     */
-    public User getPlayerFromIndex(int index){
-        synchronized (playerList) {
-            return playerList.get(index);
         }
     }
 
