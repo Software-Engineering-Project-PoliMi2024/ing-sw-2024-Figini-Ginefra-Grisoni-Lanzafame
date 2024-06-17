@@ -1,5 +1,7 @@
-package it.polimi.ingsw.connectionLayer;
+package it.polimi.ingsw.connectionLayer.RMI;
 
+import it.polimi.ingsw.connectionLayer.ConnectionLayerServer;
+import it.polimi.ingsw.connectionLayer.PingPongInterface;
 import it.polimi.ingsw.connectionLayer.VirtualRMI.VirtualViewRMI;
 import it.polimi.ingsw.controller.Controller;
 import it.polimi.ingsw.controller.Interfaces.ControllerInterface;

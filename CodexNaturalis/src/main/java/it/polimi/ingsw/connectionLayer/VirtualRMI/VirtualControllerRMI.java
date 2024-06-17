@@ -42,6 +42,7 @@ public class VirtualControllerRMI implements VirtualController {
         try {
             loginFuture.get(Configs.secondsTimeOut, TimeUnit.SECONDS);
         }catch (Exception e){
+            System.out.println("login " + e.getMessage());
             this.disconnect();
         }
     }
@@ -60,6 +61,7 @@ public class VirtualControllerRMI implements VirtualController {
         try {
             createLobbyFuture.get(Configs.secondsTimeOut, TimeUnit.SECONDS);
         }catch (Exception e){
+            System.out.println("createLobby " + e.getMessage());
             this.disconnect();
         }
     }
@@ -77,6 +79,7 @@ public class VirtualControllerRMI implements VirtualController {
         try {
             joinLobbyFuture.get(Configs.secondsTimeOut, TimeUnit.SECONDS);
         }catch (Exception e){
+            System.out.println("joinLobby " + e.getMessage());
             this.disconnect();
         }
     }
@@ -94,6 +97,7 @@ public class VirtualControllerRMI implements VirtualController {
         try {
             leaveLobbyFuture.get(Configs.secondsTimeOut, TimeUnit.SECONDS);
         }catch (Exception e){
+            System.out.println("leaveLobby " + e.getMessage());
             this.disconnect();
         }
     }
@@ -111,6 +115,7 @@ public class VirtualControllerRMI implements VirtualController {
         try {
             choseSecretObjectiveFuture.get(Configs.secondsTimeOut, TimeUnit.SECONDS);
         }catch (Exception e){
+            System.out.println("chooseSecretObj " + e.getMessage());
             this.disconnect();
         }
     }
@@ -128,6 +133,7 @@ public class VirtualControllerRMI implements VirtualController {
         try {
             choosePawnFuture.get(Configs.secondsTimeOut, TimeUnit.SECONDS);
         } catch (Exception e) {
+            System.out.println("choosePawn " + e.getMessage());
             this.disconnect();
         }
     }
@@ -145,6 +151,7 @@ public class VirtualControllerRMI implements VirtualController {
         try {
             sendChatMessageFuture.get(Configs.secondsTimeOut, TimeUnit.SECONDS);
         }catch (Exception e){
+            System.out.println("sendChatMessage " + e.getMessage());
             this.disconnect();
         }
     }
@@ -163,7 +170,7 @@ public class VirtualControllerRMI implements VirtualController {
             //controllerStub.place(placement);
             placeFuture.get(Configs.secondsTimeOut, TimeUnit.SECONDS);
         }catch (Exception e){
-            e.printStackTrace();
+            System.out.println("place " + e.getMessage());
             this.disconnect();
         }
     }
@@ -181,6 +188,7 @@ public class VirtualControllerRMI implements VirtualController {
         try {
             drawFuture.get(Configs.secondsTimeOut, TimeUnit.SECONDS);
         }catch (Exception e){
+            System.out.println("draw " + e.getMessage());
             this.disconnect();
         }
     }
@@ -191,6 +199,7 @@ public class VirtualControllerRMI implements VirtualController {
                 pingPongStub.checkEmpty();
             } catch (Exception e) {
                 pingPongExecutor.shutdownNow();
+                System.out.println("pingPong " + e.getMessage());
                 this.disconnect();
                 try {
                     Thread.sleep(Configs.pingPongFrequency * 1000L);
@@ -208,7 +217,6 @@ public class VirtualControllerRMI implements VirtualController {
             UnicastRemoteObject.unexportObject(this, true);
             UnicastRemoteObject.unexportObject(view, true);
         }catch (RemoteException r){
-            r.printStackTrace();
         }
         this.erase();
         try {

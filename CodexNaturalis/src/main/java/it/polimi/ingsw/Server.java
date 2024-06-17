@@ -1,7 +1,7 @@
 package it.polimi.ingsw;
 
 import it.polimi.ingsw.connectionLayer.ConnectionLayerServer;
-import it.polimi.ingsw.connectionLayer.ConnectionServerRMI;
+import it.polimi.ingsw.connectionLayer.RMI.ConnectionServerRMI;
 import it.polimi.ingsw.connectionLayer.Socket.ClientHandler;
 import it.polimi.ingsw.connectionLayer.VirtualLayer.VirtualView;
 import it.polimi.ingsw.connectionLayer.VirtualSocket.VirtualViewSocket;
