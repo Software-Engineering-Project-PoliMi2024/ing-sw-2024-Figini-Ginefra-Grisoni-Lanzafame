@@ -47,7 +47,7 @@ public class PlateauGUI {
         popUp.close();
     }
 
-    public void updatePawnPosition(int score, ImageView pawnView) {
+    public void updatePawnPosition(String playerName, int score, ImageView pawnView) {
         Pair<Integer, Integer> coordinates = PlateauMapping.getPositionCoordinates(score);
         if (coordinates != null) {
             pawnView.setLayoutX(coordinates.getKey());

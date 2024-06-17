@@ -47,4 +47,7 @@ public class AssetsGUI {
     public static Image loadCharacter(Resource resource) {
         return new Image(Objects.requireNonNull(GUI.class.getResourceAsStream("/GUI/images/Characters/" + resource + ".png")));
     }
+
+    public static Image eye = new Image(Objects.requireNonNull(GUI.class.getResourceAsStream("/GUI/images/eye.png")));
+    public static Image closedEye = new Image(Objects.requireNonNull(GUI.class.getResourceAsStream("/GUI/images/closedEye.png")));
 }

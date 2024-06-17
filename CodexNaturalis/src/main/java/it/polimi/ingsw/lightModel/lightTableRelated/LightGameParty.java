@@ -44,7 +44,9 @@ public class LightGameParty implements Differentiable, Observed {
     }
 
     public void addPlayerColor(String nickname, PawnColors color){
+
         playersColor.put(nickname, color);
+        notifyObservers();
     }
 
     /**
