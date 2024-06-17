@@ -1,11 +1,14 @@
 package it.polimi.ingsw.view.GUI.Components;
 
 import it.polimi.ingsw.designPatterns.Observer;
+import it.polimi.ingsw.view.GUI.AssetsGUI;
 import it.polimi.ingsw.view.GUI.Components.CodexRelated.Peeker;
 import it.polimi.ingsw.view.GUI.Components.Utils.AnchoredPopUp;
 import it.polimi.ingsw.view.GUI.GUI;
 import javafx.geometry.Pos;
+import javafx.scene.control.Button;
 import javafx.scene.control.Label;
+import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.HBox;
@@ -64,13 +67,14 @@ public class LeaderboardGUI implements Observer {
                 .sorted(Map.Entry.<String, Integer>comparingByValue().reversed())
                 .forEach(e -> {
                     HBox row = new HBox();
+                    row.setAlignment(Pos.CENTER_LEFT);
 
                     boolean isFirstPlayer = e.getKey().equals(GUI.getLightGame().getLightGameParty().getFirstPlayerName());
                     PawnsGui pawn = playerpawnMap.computeIfAbsent(e.getKey(), key -> new PlayerPawnManager().assignPawn(e.getKey(), isFirstPlayer));
 
                     ImageView pawnView = pawn.getImageView();
-                    pawnView.setFitHeight(30);
-                    pawnView.setFitWidth(30);
+                    pawnView.setFitHeight(16);
+                    pawnView.setFitWidth(16);
                     row.setSpacing(10);
 
                     Label label = new Label(e.getKey() + ": " + e.getValue());
@@ -84,17 +88,34 @@ public class LeaderboardGUI implements Observer {
                     labelMap.put(e.getKey(), label);
 
                     if(!e.getKey().equals(GUI.getLightGame().getLightGameParty().getYourName())){
-                        System.out.println("Adding peeker for " + e.getKey());
                         Peeker peeker = new Peeker(parent, e.getKey());
+                        ImageView openedEyeIcon = new ImageView(AssetsGUI.eye);
+                        openedEyeIcon.setFitHeight(16);
+                        openedEyeIcon.setFitWidth(16);
 
-                        label.setOnMouseClicked(event -> {
+                        ImageView closedEyeIcon = new ImageView(AssetsGUI.closedEye);
+                        closedEyeIcon.setFitHeight(16);
+                        closedEyeIcon.setFitWidth(16);
+
+                        Button peekButton = new Button("", closedEyeIcon);
+                        peekButton.setStyle("-fx-background-color: transparent;");
+
+                        peekButton.setOnMouseEntered(event -> {
+                            peekButton.setGraphic(openedEyeIcon);
+                            event.consume();
+                        });
+
+                        peekButton.setOnMouseExited(event -> {
+                            peekButton.setGraphic(closedEyeIcon);
+                            event.consume();
+                        });
+
+                        peekButton.setOnAction(event -> {
                             peeker.open();
                             event.consume();
-                        }
-                        );
+                        });
 
-                        // make label underlined
-                        label.setStyle("-fx-underline: true;" + label.getStyle());
+                        row.getChildren().add(peekButton);
                     }
                     layout.getChildren().add(row);
 
@@ -121,10 +142,11 @@ public class LeaderboardGUI implements Observer {
 
         labelMap.forEach((name, label) -> {
             if(GUI.getLightGame().getLightGameParty().getCurrentPlayer().equals(name)){
-                label.setScaleX(1.2);
+                //Make the label underlined
+                label.setStyle(label.getStyle() + "-fx-underline: true;");
             }
             else{
-                label.setScaleX(1);
+                label.setStyle(label.getStyle().replace("-fx-underline: true;", ""));
             }
         });
     }

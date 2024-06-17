@@ -171,6 +171,7 @@ public class CodexGUI implements Observer {
                 frontier.remove(fc);
             }
         }
+
     }
 
     public FrontierCardGUI snapToFrontier(Point2D point){
