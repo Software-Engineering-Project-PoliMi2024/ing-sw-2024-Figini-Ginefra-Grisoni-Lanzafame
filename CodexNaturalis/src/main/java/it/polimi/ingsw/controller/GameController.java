@@ -67,11 +67,13 @@ public class GameController implements GameControllerInterface {
     //TODO test deck (when drawing all cards it remains a card)
     //TODO test when the decks finish the cards
 
-    public synchronized void join(String joinerNickname, ViewInterface view) {
+    public synchronized void join(String joinerNickname, ViewInterface view, boolean reconnected){
         this.resetLastPlayerTimer();
         playerViewMap.put(joinerNickname, view);
 
-        this.notifyJoinGame(joinerNickname);
+        if(reconnected) {
+            this.notifyJoinGame(joinerNickname);
+        }
         this.loadChat(joinerNickname, view);
 
         if (game.isInStartCardState()) {
@@ -116,7 +118,7 @@ public class GameController implements GameControllerInterface {
             this.takeTurn(joinerNickname);
         }
 
-        if(playerViewMap.size() == 1){
+        if(playerViewMap.size() == 1 && reconnected){
             this.notifyLastInGameTimer();
             this.startLastPlayerTimer();
         }

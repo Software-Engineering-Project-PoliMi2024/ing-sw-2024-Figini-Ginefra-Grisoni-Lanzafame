@@ -55,7 +55,7 @@ public class LobbyGameListsController implements it.polimi.ingsw.controller.Inte
             if(isInGameParty(nickname)){
                 GameController gameToJoin = this.getGameFromUserNick(nickname);
                 controllerReceiver.setGameController(gameToJoin);
-                gameToJoin.join(nickname, view);
+                gameToJoin.join(nickname, view, true);
             }else{
                 joinLobbyList(nickname, view);
                 try{view.transitionTo(ViewState.JOIN_LOBBY);}catch (Exception ignored){}
