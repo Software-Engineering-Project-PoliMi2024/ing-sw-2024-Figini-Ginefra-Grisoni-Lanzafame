@@ -232,17 +232,17 @@ public class GameController implements GameControllerInterface {
         Set<CardInHand> hand = user.getUserHand().getHand();
         Codex codexAfterPlacement = user.getUserCodex();
         //update playability
-        Map<LightCard, Boolean> FrontIdToPlayability = new HashMap<>();
+        Map<LightCard, Boolean> frontIdToPlayability = new HashMap<>();
         for (CardInHand cardInHand : hand) {
             boolean oldPlayability = cardInHand.canBePlaced(codexBeforePlacement);
             boolean newPlayability = cardInHand.canBePlaced(codexAfterPlacement);
             if (oldPlayability != newPlayability) {
-                FrontIdToPlayability.put(Lightifier.lightifyToCard(cardInHand), newPlayability);
+                frontIdToPlayability.put(Lightifier.lightifyToCard(cardInHand), newPlayability);
             }
         }
 
         //notify everyone
-        this.notifyPlacement(nickname, placement, user.getUserCodex(), FrontIdToPlayability);
+        this.notifyPlacement(nickname, placement, user.getUserCodex(), frontIdToPlayability);
         try {
             playerViewMap.get(nickname).transitionTo(ViewState.DRAW_CARD);
         } catch (Exception ignored) {
@@ -281,15 +281,13 @@ public class GameController implements GameControllerInterface {
             int nextPlayerIndex = this.getNextActivePlayerIndex();
             String nextPlayer = game.getUsersList().get(nextPlayerIndex).getNickname();
             if (!nextPlayer.equals(nickname)) {
-
                 game.setCurrentPlayerIndex(this.getNextActivePlayerIndex());
                 this.notifyTurnChange(nextPlayer);
                 this.takeTurn(nickname);
                 this.takeTurn(nextPlayer);
             }
+            this.save();
         }
-
-        this.save();
     }
 
     public synchronized void leave(String nickname) {
@@ -399,7 +397,7 @@ public class GameController implements GameControllerInterface {
     private synchronized void pawnChoiceStateTransition(String nickname) {
         User user = game.getUserFromNick(nickname);
         try {
-            if (!user.hasChosenObjective()) {
+            if (!user.hasChosenPawnColor()) {
                 playerViewMap.get(nickname).transitionTo(ViewState.CHOOSE_PAWN);
             } else
                 playerViewMap.get(nickname).transitionTo(ViewState.WAITING_STATE);
@@ -605,14 +603,14 @@ public class GameController implements GameControllerInterface {
         //notify
         this.notifyGameEnded(game.getPointPerPlayerMap(), game.getWinners());
 
+        finishedGameDeleter.deleteGame(game.getName());
+
         playerViewMap.forEach((nickname, view) -> {
             try {
                 view.transitionTo(ViewState.GAME_ENDING);
             } catch (Exception ignored) {
             }
         });
-
-        finishedGameDeleter.deleteGame(game.getName());
     }
 
     public void save() {
@@ -646,11 +644,11 @@ public class GameController implements GameControllerInterface {
         return turnsOrder.stream().filter(activePlayers::contains).findFirst().orElse(null);
     }
 
-    private synchronized void notifyGameEnded(Map<String, Integer> pointsPerPlayerMap, List<String> ranking) {
+    private synchronized void notifyGameEnded(Map<String, Integer> pointsPerPlayerMap, List<String> winners) {
         playerViewMap.forEach((nickname, view) -> {
             try {
                 view.updateGame(new CodexDiffSetFinalPoints(pointsPerPlayerMap));
-                view.updateGame(new GameDiffWinner(ranking));
+                view.updateGame(new GameDiffWinner(winners));
                 view.logGame(LogsOnClientStatic.GAME_END);
             } catch (Exception ignored) {
             }
