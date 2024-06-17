@@ -3,35 +3,40 @@ package it.polimi.ingsw.view.GUI.Components;
 import it.polimi.ingsw.view.GUI.AssetsGUI;
 import it.polimi.ingsw.view.GUI.Components.Utils.PopUp;
 import javafx.beans.binding.Bindings;
-import javafx.geometry.Point2D;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.AnchorPane;
-import javafx.scene.layout.StackPane;
 import javafx.util.Pair;
 
 public class PlateauGUI {
     private final ImageView plateauView;
+    private final AnchorPane root;
     private final PopUp popUp;
-
-    private final StackPane container = new StackPane();
 
     public PlateauGUI(AnchorPane parent) {
         this.plateauView = new ImageView(AssetsGUI.plateau);
-
-        this.popUp = new PopUp(parent);
+        this.root = new AnchorPane(plateauView);
+        this.root.setStyle("-fx-background-color: rgba(0, 0, 0, 0.75);");
 
         // Bind plateauView's size to height while maintaining aspect ratio
-        this.plateauView.setPreserveRatio(true);
-        plateauView.fitHeightProperty().bind(popUp.getContent().heightProperty().multiply(0.9));
+        plateauView.fitHeightProperty().bind(Bindings.createDoubleBinding(
+                () -> root.getHeight() * 0.9,
+                root.heightProperty()
+        ));
+        plateauView.fitWidthProperty().bind(Bindings.createDoubleBinding(
+                () -> plateauView.getFitHeight() * (AssetsGUI.plateau.getWidth() / AssetsGUI.plateau.getHeight()),
+                plateauView.fitHeightProperty()
+        ));
 
-        container.getChildren().add(plateauView);
+        AnchorPane.setTopAnchor(plateauView, 10.0);
+        AnchorPane.setBottomAnchor(plateauView, 10.0);
+        AnchorPane.setLeftAnchor(plateauView, 10.0);
+        AnchorPane.setRightAnchor(plateauView, 10.0);
 
-        AnchorPane.setBottomAnchor(container, 0.0);
-        AnchorPane.setTopAnchor(container, 0.0);
-        AnchorPane.setLeftAnchor(container, 0.0);
-        AnchorPane.setRightAnchor(container, 0.0);
+        // Plateau is displayed above other components
+        this.root.toFront();
 
-        popUp.getContent().getChildren().add(container);
+        this.popUp = new PopUp(parent);
+        popUp.getContent().getChildren().add(root);
     }
 
     public void show() {
@@ -42,26 +47,14 @@ public class PlateauGUI {
         popUp.close();
     }
 
-    private Point2D getCoordinates(int score) {
+    public void updatePawnPosition(String playerName, int score, ImageView pawnView) {
         Pair<Integer, Integer> coordinates = PlateauMapping.getPositionCoordinates(score);
         if (coordinates != null) {
-            double x = (coordinates.getKey() - plateauView.getImage().getWidth() / 2) * plateauView.getFitWidth() / plateauView.getImage().getWidth();
-            double y = (coordinates.getValue() - plateauView.getImage().getHeight() / 2) * plateauView.getFitHeight() / plateauView.getImage().getHeight();
-            return new Point2D(x, y);
-        }
-        return null;
-    }
-
-    public void updatePawnPosition(int score, ImageView pawnView) {
-//       Point2D coordinates = getCoordinates(score);
-//        if (coordinates != null) {
-//            pawnView.setTranslateX(coordinates.getX());
-//            pawnView.setTranslateY(coordinates.getY());
-//
-//        }
-
-        if (!container.getChildren().contains(pawnView)) {
-            container.getChildren().add(pawnView);
+            pawnView.setLayoutX(coordinates.getKey());
+            pawnView.setLayoutY(coordinates.getValue());
+            if (!root.getChildren().contains(pawnView)) {
+                root.getChildren().add(pawnView);
+            }
         }
     }
 }

@@ -17,9 +17,9 @@ public class PublicLobbyController {
 
     public Lobby getLobby() {
         try {
-            Field field = lobbyController.getClass().getDeclaredField("lobby");
-            field.setAccessible(true);
-            return (Lobby) field.get(lobbyController);
+            Field lobbyField = lobbyController.getClass().getDeclaredField("lobby");
+            lobbyField.setAccessible(true);
+            return (Lobby) lobbyField.get(lobbyController);
         } catch (Exception e) {
             e.printStackTrace();
             return null;
@@ -28,9 +28,9 @@ public class PublicLobbyController {
 
     public Map<String, ViewInterface> getViewMap() {
         try {
-            Field field = lobbyController.getClass().getDeclaredField("viewMap");
-            field.setAccessible(true);
-            return (Map<String, ViewInterface>) field.get(lobbyController);
+            Field viewMapField = lobbyController.getClass().getDeclaredField("viewMap");
+            viewMapField.setAccessible(true);
+            return (Map<String, ViewInterface>) viewMapField.get(lobbyController);
         } catch (Exception e) {
             e.printStackTrace();
             return null;
@@ -39,9 +39,9 @@ public class PublicLobbyController {
 
     public Map<String, GameControllerReceiver> getGameReceiverMap() {
         try {
-            Field field = lobbyController.getClass().getDeclaredField("gameReceiverMap");
-            field.setAccessible(true);
-            return (Map<String, GameControllerReceiver>) field.get(lobbyController);
+            Field gameReceiverMapField = lobbyController.getClass().getDeclaredField("gameReceiverMap");
+            gameReceiverMapField.setAccessible(true);
+            return (Map<String, GameControllerReceiver>) gameReceiverMapField.get(lobbyController);
         } catch (Exception e) {
             e.printStackTrace();
             return null;

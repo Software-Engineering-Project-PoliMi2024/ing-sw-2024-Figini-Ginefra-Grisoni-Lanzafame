@@ -57,7 +57,7 @@ public class LobbyController implements LobbyControllerInterface {
 
         notifyGameStart();
         gameReceiverMap.forEach((nick, receiver)->receiver.setGameController(gameController));
-        viewMap.forEach(gameController::join);
+        viewMap.forEach((nick, view) -> gameController.join(nick, view, false));
 
         return gameController;
     }

@@ -18,7 +18,7 @@ public class PostGameStateRenderable extends Renderable {
 
     @Override
     public void render() {
-        List<String> winnersList = lightGame.getRanking();
+        List<String> winnersList = lightGame.getWinners();
         String winners = String.join(", ", winnersList);
 
         PromptStyle.printInABox("Game Over! Congratulations to the winners:", 70);
