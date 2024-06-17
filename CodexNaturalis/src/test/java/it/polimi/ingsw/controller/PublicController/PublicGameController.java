@@ -17,9 +17,9 @@ public class PublicGameController {
 
     public CardTable getCardTable() {
         try {
-            Field field = gameController.getClass().getDeclaredField("cardTable");
-            field.setAccessible(true);
-            return (CardTable) field.get(gameController);
+            Field cardTableField = gameController.getClass().getDeclaredField("cardTable");
+            cardTableField.setAccessible(true);
+            return (CardTable) cardTableField.get(gameController);
         } catch (Exception e) {
             e.printStackTrace();
             return null;
@@ -28,9 +28,9 @@ public class PublicGameController {
 
     public Game getGame() {
         try {
-            Field field = gameController.getClass().getDeclaredField("game");
-            field.setAccessible(true);
-            return (Game) field.get(gameController);
+            Field gameField = gameController.getClass().getDeclaredField("game");
+            gameField.setAccessible(true);
+            return (Game) gameField.get(gameController);
         } catch (Exception e) {
             e.printStackTrace();
             return null;
@@ -39,9 +39,9 @@ public class PublicGameController {
 
     public Map<String, ViewInterface> getViewMap() {
         try {
-            Field field = gameController.getClass().getDeclaredField("playerViewMap");
-            field.setAccessible(true);
-            return (Map<String, ViewInterface>) field.get(gameController);
+            Field playerViewMapField = gameController.getClass().getDeclaredField("playerViewMap");
+            playerViewMapField.setAccessible(true);
+            return (Map<String, ViewInterface>) playerViewMapField.get(gameController);
         } catch (Exception e) {
             e.printStackTrace();
             return null;

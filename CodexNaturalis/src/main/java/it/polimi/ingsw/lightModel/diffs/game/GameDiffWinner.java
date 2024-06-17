@@ -11,6 +11,6 @@ public class GameDiffWinner extends GameDiff{
     }
     @Override
     public void apply(LightGame lightGame) {
-        lightGame.setRanking(winnersList);
+        lightGame.setWinners(winnersList);
     }
 }

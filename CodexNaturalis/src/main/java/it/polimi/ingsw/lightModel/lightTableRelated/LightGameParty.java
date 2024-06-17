@@ -1,5 +1,7 @@
 package it.polimi.ingsw.lightModel.lightTableRelated;
 
+import it.polimi.ingsw.designPatterns.Observed;
+import it.polimi.ingsw.designPatterns.Observer;
 import it.polimi.ingsw.lightModel.Differentiable;
 import it.polimi.ingsw.lightModel.lightPlayerRelated.LightChat;
 import it.polimi.ingsw.model.playerReleted.PawnColors;
@@ -8,8 +10,9 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.*;
 
-public class LightGameParty implements Differentiable {
+public class LightGameParty implements Differentiable, Observed {
     private String yourName;
     private String gameName;
     final private Map<String,Boolean> playerActiveList;
@@ -17,6 +20,8 @@ public class LightGameParty implements Differentiable {
     private String firstPlayerName;
     private List<PawnColors> pawnChoices = new ArrayList<>();
     private final Map<String, PawnColors> playersColor = new HashMap<>();
+    private final List<Observer> observers = new LinkedList<>();
+
     private final LightChat lightChat = new LightChat();
     public LightGameParty() {
         this.playerActiveList = new HashMap<>();
@@ -111,6 +116,21 @@ public class LightGameParty implements Differentiable {
     }
     public String getYourName() {
         return this.yourName ;
+    }
+    @Override
+    public void attach(Observer observer) {
+        observer.update();
+        observers.add(observer);
+    }
+
+    @Override
+    public void detach(Observer observer) {
+        observers.remove(observer);
+    }
+
+    @Override
+    public void notifyObservers() {
+        observers.forEach(Observer::update);
     }
 
     public LightChat getLightChat() {

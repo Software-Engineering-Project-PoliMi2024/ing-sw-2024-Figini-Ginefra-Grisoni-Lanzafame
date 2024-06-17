@@ -8,17 +8,15 @@ import java.lang.reflect.Field;
 public class PublicController {
     public Controller controller;
 
-    private String nickname;
-
     public PublicController(Controller controller) {
         this.controller = controller;
     }
 
     public String getNickname() {
         try {
-            Field field = controller.getClass().getDeclaredField("nickname");
-            field.setAccessible(true);
-            return (String) field.get(controller);
+            Field nicknameField = controller.getClass().getDeclaredField("nickname");
+            nicknameField.setAccessible(true);
+            return (String) nicknameField.get(controller);
         } catch (Exception e) {
             e.printStackTrace();
             return null;
@@ -27,9 +25,9 @@ public class PublicController {
 
     public GameController getGameController() {
         try {
-            Field field = controller.getClass().getDeclaredField("gameController");
-            field.setAccessible(true);
-            return (GameController) field.get(controller);
+            Field gameControllerField = controller.getClass().getDeclaredField("gameController");
+            gameControllerField.setAccessible(true);
+            return (GameController) gameControllerField.get(controller);
         } catch (Exception e) {
             e.printStackTrace();
             return null;

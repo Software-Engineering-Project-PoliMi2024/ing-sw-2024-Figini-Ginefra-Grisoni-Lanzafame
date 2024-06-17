@@ -11,6 +11,7 @@ public enum StateGUI {
     LOGIN_FORM(ViewState.LOGIN_FORM, LoginFormScene.class),
     JOIN_LOBBY(ViewState.JOIN_LOBBY, LobbyListScene.class),
     LOBBY(ViewState.LOBBY, LobbyScene.class),
+    CHOOSE_PAWN(ViewState.CHOOSE_PAWN, GameScene.class),
     CHOOSE_START_CARD(ViewState.CHOOSE_START_CARD, GameScene.class),
     SELECT_OBJECTIVE(ViewState.SELECT_OBJECTIVE, GameScene.class),
     WAITING_STATE(ViewState.WAITING_STATE, GameScene.class),

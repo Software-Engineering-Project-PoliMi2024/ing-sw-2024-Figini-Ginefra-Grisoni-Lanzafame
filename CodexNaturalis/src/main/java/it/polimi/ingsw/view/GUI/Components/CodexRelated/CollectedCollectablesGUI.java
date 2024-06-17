@@ -8,6 +8,7 @@ import it.polimi.ingsw.model.cardReleted.utilityEnums.WritingMaterial;
 import it.polimi.ingsw.view.GUI.AssetsGUI;
 import it.polimi.ingsw.view.GUI.Components.Utils.AnchoredPopUp;
 import it.polimi.ingsw.view.GUI.GUI;
+import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.HBox;
@@ -45,10 +46,9 @@ public class CollectedCollectablesGUI implements Observer {
         AnchorPane.setLeftAnchor(container, 0.0);
 
         container.setAlignment(Pos.CENTER);
+        container.setPadding(new Insets(10));
 
         container.setSpacing(20);
-
-        container.setStyle("-fx-background-color: rgba(255, 255, 255, 0.5);");
 
         counters.values().forEach(imageCounter -> container.getChildren().add(imageCounter.getContent()));
     }

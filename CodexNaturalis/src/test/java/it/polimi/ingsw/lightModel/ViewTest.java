@@ -9,7 +9,6 @@ import it.polimi.ingsw.view.ViewState;
 
 import java.rmi.RemoteException;
 import java.util.List;
-import java.util.Map;
 
 public class ViewTest implements ViewInterface {
     public String name;
@@ -67,6 +66,11 @@ public class ViewTest implements ViewInterface {
 
     @Override
     public void logGame(String logMsg) throws RemoteException {
+
+    }
+
+    @Override
+    public void logChat(String logMsg) throws Exception {
 
     }
 

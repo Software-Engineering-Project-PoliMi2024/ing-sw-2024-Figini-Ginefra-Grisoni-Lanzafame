@@ -8,6 +8,7 @@ import it.polimi.ingsw.view.GUI.Components.Utils.AnchoredPopUp;
 import it.polimi.ingsw.view.GUI.GUI;
 import it.polimi.ingsw.view.GUI.GUIConfigs;
 import it.polimi.ingsw.view.GUI.StateGUI;
+import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.HBox;
@@ -60,6 +61,7 @@ public class DeckAreaGUI implements Observer {
         content.getChildren().add(commonObjectivesContainer);
 
         content.setSpacing(GUIConfigs.vCardGapInDeck);
+        content.setPadding(new Insets(10));
 
         GUI.getLightGame().getDecks().forEach((drawableCard, lightDeck) -> lightDeck.attach(this));
     }
