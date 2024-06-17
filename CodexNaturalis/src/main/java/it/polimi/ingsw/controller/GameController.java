@@ -79,21 +79,21 @@ public class GameController implements GameControllerInterface {
         if (game.isInStartCardState()) {
             this.updateJoinStartCard(joinerNickname);
             startCardStateTransition(joinerNickname);
-            if (playerViewMap.size() == 2) {
+            if (playerViewMap.size() == 2 && reconnected) {
                 String otherPlayer = playerViewMap.keySet().stream().filter(nick -> !nick.equals(joinerNickname)).findFirst().orElse(null);
                 startCardStateTransition(otherPlayer);
             }
         } else if (game.inInSecretObjState()) {
             this.updateJoinSecretObjective(joinerNickname, game);
             this.objectiveChoiceStateTransition(joinerNickname);
-            if (playerViewMap.size() == 2) {
+            if (playerViewMap.size() == 2 && reconnected) {
                 String otherPlayer = playerViewMap.keySet().stream().filter(nick -> !nick.equals(joinerNickname)).findFirst().orElse(null);
                 objectiveChoiceStateTransition(otherPlayer);
             }
         } else if (game.isInPawnChoiceState()) {
             this.updateJoinPawnChoice(joinerNickname);
             this.pawnChoiceStateTransition(joinerNickname);
-            if (playerViewMap.size() == 2) {
+            if (playerViewMap.size() == 2 && reconnected){
                 String otherPlayer = playerViewMap.keySet().stream().filter(nick -> !nick.equals(joinerNickname)).findFirst().orElse(null);
                 pawnChoiceStateTransition(otherPlayer);
             }
