@@ -16,8 +16,8 @@ public class ChatButton implements Observer {
     public void addThisTo(AnchorPane parent) {
         chatButton = new Button();
         chatButton.setStyle("-fx-background-color: transparent;");
-        chatButton.prefHeightProperty().bind(parent.heightProperty().multiply(0.1));
-        chatButton.prefWidthProperty().bind(parent.widthProperty().multiply(0.1));
+        chatButton.maxHeightProperty().bind(parent.heightProperty().multiply(0.1));
+        chatButton.maxWidthProperty().bind(parent.widthProperty().multiply(0.1));
 
         chatIcon.fitHeightProperty().bind(chatButton.heightProperty().multiply(0.8));
         chatIcon.fitWidthProperty().bind(chatButton.widthProperty().multiply(0.8));

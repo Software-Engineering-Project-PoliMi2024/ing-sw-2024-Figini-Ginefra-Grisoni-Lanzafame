@@ -91,6 +91,7 @@ public class CodexGUI implements Observer {
 
     public void attachToCodex(){
         this.getLightCodex().attach(this);
+        GUI.getLightGame().getLightGameParty().attach(this);
     }
 
     protected LightCodex getLightCodex(){
@@ -121,12 +122,17 @@ public class CodexGUI implements Observer {
     }
 
     public synchronized void addToCodex(Node node){
-        if(!codex.getChildren().isEmpty()){
-            codex.getChildren().add(codex.getChildren().size() - 1, node);
+        codex.getChildren().add(node);
+
+        if(codex.getChildren().size() >= 3 && codex.getChildren().indexOf(pawn) != 2){
+            codex.getChildren().remove(pawn);
+            codex.getChildren().add(2, pawn);
         }
-        else{
-            codex.getChildren().add(node);
-        }
+        else if(codex.getChildren().size() < 3){
+            codex.getChildren().remove(pawn);
+            codex.getChildren().add(pawn);
+       }
+
     }
 
     public synchronized void addCard(CardGUI card, Position position) {
@@ -186,7 +192,7 @@ public class CodexGUI implements Observer {
             if(!currentFrontier.contains(newElement)){
                 Point2D cardPos = this.getCardPosition(newElement);
                 FrontierCardGUI fc = new FrontierCardGUI(newElement, cardPos.getX(), cardPos.getY());
-                codex.getChildren().add(fc.getCard());
+                this.addToCodex(fc.getCard());
                 fc.setVisibility(isFrontierVisible);
                 fc.setScale(this.getScale());
                 frontier.add(fc);

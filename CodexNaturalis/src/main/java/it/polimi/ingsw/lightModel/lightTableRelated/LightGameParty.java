@@ -95,7 +95,9 @@ public class LightGameParty implements Differentiable, Observed {
      * @param currentPlayer the current player playing
      */
     public void setCurrentPlayer(String currentPlayer) {
+
         this.currentPlayer = currentPlayer;
+        this.notifyObservers();
     }
     /**
      * @return the name of the game
