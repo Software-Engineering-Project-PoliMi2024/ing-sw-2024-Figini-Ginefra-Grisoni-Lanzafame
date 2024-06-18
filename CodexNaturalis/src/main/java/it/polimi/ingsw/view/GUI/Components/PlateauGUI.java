@@ -29,7 +29,7 @@ public class PlateauGUI {
         this.popUp = new PopUp(parent);
 
         // Bind plateauView's size to height while maintaining aspect ratio
-        this.plateauView.setPreserveRatio(true);
+        this.plateauView.fitWidthProperty().bind(this.plateauView.fitHeightProperty().multiply(plateauView.getImage().getWidth() / plateauView.getImage().getHeight()));
         this.plateauView.fitHeightProperty().bind(Bindings.min(popUp.getContent().heightProperty().multiply(0.9), popUp.getContent().widthProperty().multiply(0.9).multiply(plateauView.getImage().getHeight() / plateauView.getImage().getWidth())));
 
         container.getChildren().add(plateauView);
@@ -61,8 +61,9 @@ public class PlateauGUI {
     private Point2D getCoordinates(int score) {
         Pair<Integer, Integer> coordinates = PlateauMapping.getPositionCoordinates(score);
         if (coordinates != null) {
-            double x = (plateauView.getImage().getWidth() / 2 - coordinates.getKey()) * plateauView.getFitWidth() / plateauView.getImage().getWidth();
+            double x = (coordinates.getKey() - plateauView.getImage().getWidth() / 2) * plateauView.getFitWidth() / plateauView.getImage().getWidth();
             double y = (plateauView.getImage().getHeight() / 2 - coordinates.getValue()) * plateauView.getFitHeight() / plateauView.getImage().getHeight();
+            System.out.println("Coordinates for score " + score + ": " + coordinates.getKey() + ", " + coordinates.getValue() + " width: " + plateauView.getFitWidth() + " height: " + plateauView.getFitHeight());
             return new Point2D(x, y);
         }
         return null;
@@ -74,24 +75,23 @@ public class PlateauGUI {
         if(!pawnViews.containsKey(pawnColor)){
             ImageView pawnView = Objects.requireNonNull(PawnsGui.getPawnGui(pawnColor)).getImageView();
             pawnView.setPreserveRatio(true);
-            pawnView.setFitHeight(50);
-            pawnView.setFitWidth(50);
+            pawnView.setFitHeight(100);
+            pawnView.setFitWidth(100);
             pawnView.scaleXProperty().bindBidirectional(pawnView.scaleYProperty());
-            //pawnView.scaleXProperty().bind(plateauView.fitHeightProperty().divide(plateauView.getImage().getHeight()));
+            pawnView.scaleXProperty().bind(plateauView.fitHeightProperty().divide(plateauView.getImage().getHeight()));
             pawnViews.put(pawnColor, pawnView);
 
             container.getChildren().add(pawnView);
-
-            System.out.println("Added pawn view : " + pawnColor);
-
-            updatePawnPosition(pawnColor);
         }
+
+        updatePawnPosition(pawnColor);
     }
 
     public void updatePawnPosition(PawnColors pawnColor) {
         int score = pawnScores.get(pawnColor);
         Point2D coordinates = getCoordinates(score);
         if (coordinates != null) {
+            System.out.println("Setting position of " + pawnColor + " score " + score + " to " + coordinates.getX() + ", " + coordinates.getY());
             ImageView pawnView = pawnViews.get(pawnColor);
             pawnView.setTranslateX(coordinates.getX());
             pawnView.setTranslateY(coordinates.getY());
