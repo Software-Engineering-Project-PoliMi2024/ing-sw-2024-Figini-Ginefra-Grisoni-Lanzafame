@@ -30,7 +30,7 @@ import it.polimi.ingsw.model.cardReleted.utilityEnums.DrawableCard;
 import it.polimi.ingsw.model.playerReleted.Codex;
 import it.polimi.ingsw.model.playerReleted.Hand;
 import it.polimi.ingsw.model.playerReleted.PawnColors;
-import it.polimi.ingsw.model.playerReleted.User;
+import it.polimi.ingsw.model.playerReleted.Player;
 import it.polimi.ingsw.model.tableReleted.Deck;
 import it.polimi.ingsw.model.tableReleted.Game;
 import it.polimi.ingsw.model.tableReleted.Lobby;
@@ -183,7 +183,7 @@ public class DiffGenerator {
         List<PawnColors> pawnChoices = game.getPawnChoices();
         if(pawnChoices != null)
             pawnsDiff.add(new GameDiffSetPawns(pawnChoices));
-        for(User player : game.getUsersList()) {
+        for(Player player : game.getUsersList()) {
             PawnColors playerColor = player.getPawnColor();
             if(playerColor != null)
                 pawnsDiff.add(new GameDiffSetPlayerColor(player.getNickname(), playerColor));
@@ -194,7 +194,7 @@ public class DiffGenerator {
 
     private static GameDiffInitialization getInitialization(Game game, String nickname){
         return new GameDiffInitialization(
-                game.getUsersList().stream().map(User::getNickname).toList(),
+                game.getUsersList().stream().map(Player::getNickname).toList(),
                 game.getName(),
                 nickname,
                 new GameDiffCurrentPlayer(game.getCurrentPlayer().getNickname()),
@@ -234,7 +234,7 @@ public class DiffGenerator {
      */
     private static List<CodexDiffPlacement> getCodexCurrentState(Game game){
         List<CodexDiffPlacement> codexDiff = new ArrayList<>();
-        List<String> nicknamesInGameParty = game.getGameParty().getUsersList().stream().map(User::getNickname).toList();
+        List<String> nicknamesInGameParty = game.getGameParty().getUsersList().stream().map(Player::getNickname).toList();
         for(String nickname : nicknamesInGameParty){
             LightCodex codex = Lightifier.lightify(game.getGameParty().getUsersList().stream().filter(user -> user.getNickname().equals(nickname)).findFirst().get().getUserCodex());
             codexDiff.add(new CodexDiffPlacement(
@@ -249,15 +249,15 @@ public class DiffGenerator {
     }
 
     /**
-     * @param user the user to which sends the hand diffs
+     * @param player the user to which sends the hand diffs
      * @return a list of diffs containing the current state of the hand of the subscriber
      */
-    public static List<HandDiff> getHandYourCurrentState(User user) {
+    public static List<HandDiff> getHandYourCurrentState(Player player) {
         List<HandDiff> handDiffAdd = new ArrayList<>();
         //User user = game.getUserFromNick(nickname);
-        Hand hand = user.getUserHand();
+        Hand hand = player.getUserHand();
 
-        LightHand subscriberHand = Lightifier.lightifyYour(user.getUserHand(), user.getUserCodex());
+        LightHand subscriberHand = Lightifier.lightifyYour(player.getUserHand(), player.getUserCodex());
         for (LightCard card : subscriberHand.getCards()) {
             if (card != null)
                 handDiffAdd.add(new HandDiffAdd(card, subscriberHand.isPlayble(card)));
@@ -266,13 +266,13 @@ public class DiffGenerator {
         if (subscriberHand.getSecretObjective() != null)
             handDiffAdd.add(new HandDiffSetObj(subscriberHand.getSecretObjective()));
 
-        List<ObjectiveCard> objectiveOptions = user.getUserHand().getSecretObjectiveChoices();
+        List<ObjectiveCard> objectiveOptions = player.getUserHand().getSecretObjectiveChoices();
         if(objectiveOptions != null){
             handDiffAdd.add(new HandDiffAddOneSecretObjectiveOption(Lightifier.lightifyToCard(objectiveOptions.getFirst())));
             handDiffAdd.add(new HandDiffAddOneSecretObjectiveOption(Lightifier.lightifyToCard(objectiveOptions.getLast())));
         }
 
-        StartCard startCard = user.getUserHand().getStartCard();
+        StartCard startCard = player.getUserHand().getStartCard();
         if(startCard != null)
             handDiffAdd.add(new HandDiffAdd(Lightifier.lightifyToCard(startCard), true));
 
@@ -285,12 +285,12 @@ public class DiffGenerator {
      */
     public static List<HandOtherDiff> getHandOtherCurrentState(Game game, String nickname){
         List<HandOtherDiff> handOtherDiff = new ArrayList<>();
-        for(User user : game.getGameParty().getUsersList()){
-            if(!user.getNickname().equals(nickname)){
-                Hand handOther = user.getUserHand();
+        for(Player player : game.getGameParty().getUsersList()){
+            if(!player.getNickname().equals(nickname)){
+                Hand handOther = player.getUserHand();
                 LightHandOthers otherHand = Lightifier.lightifyOthers(handOther);
                 for(LightBack card : otherHand.getCards()){
-                    handOtherDiff.add(new HandOtherDiffAdd(card, user.getNickname()));
+                    handOtherDiff.add(new HandOtherDiffAdd(card, player.getNickname()));
                 }
             }
 

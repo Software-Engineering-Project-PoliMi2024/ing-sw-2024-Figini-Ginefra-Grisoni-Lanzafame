@@ -1,13 +1,9 @@
 package it.polimi.ingsw.controller.PublicModelClass;
 
 import it.polimi.ingsw.model.cardReleted.cards.ObjectiveCard;
-import it.polimi.ingsw.model.playerReleted.User;
 import it.polimi.ingsw.model.tableReleted.Game;
-import it.polimi.ingsw.model.tableReleted.GameParty;
 
 import java.lang.reflect.Field;
-import java.lang.reflect.Modifier;
-import java.util.ArrayList;
 import java.util.List;
 
 public record PublicGame(Game game) {

@@ -5,13 +5,13 @@ import it.polimi.ingsw.model.cardReleted.cards.ObjectiveCard;
 
 import java.io.Serializable;
 
-public class User implements Serializable {
+public class Player implements Serializable {
     private final String nickname;
     private final Codex userCodex;
     private final Hand userHand;
     private PawnColors pawnColor = null;
 
-    public User(String nickname){
+    public Player(String nickname){
         this.nickname = nickname;
         this.userCodex = new Codex();
         this.userHand = new Hand();
@@ -88,6 +88,6 @@ public class User implements Serializable {
 
     @Override
     public boolean equals(Object obj) {
-        return obj instanceof User && ((User) obj).nickname.equals(nickname);
+        return obj instanceof Player && ((Player) obj).nickname.equals(nickname);
     }
 }
