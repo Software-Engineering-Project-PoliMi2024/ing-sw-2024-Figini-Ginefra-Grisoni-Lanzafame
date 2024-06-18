@@ -13,6 +13,7 @@ import it.polimi.ingsw.lightModel.lightTableRelated.LightDeck;
 import it.polimi.ingsw.lightModel.lightTableRelated.LightLobby;
 import it.polimi.ingsw.model.cardReleted.cards.*;
 import it.polimi.ingsw.model.cardReleted.pointMultiplyer.CollectableCardPointMultiplier;
+import it.polimi.ingsw.model.cardReleted.pointMultiplyer.ObjectiveCardPointMultiplier;
 import it.polimi.ingsw.model.cardReleted.utilityEnums.*;
 import it.polimi.ingsw.model.playerReleted.*;
 import it.polimi.ingsw.model.tableReleted.Deck;
@@ -1071,7 +1072,6 @@ class ControllersTests {
         view2.state = ViewState.IDLE;
 
         //change public objective card
-
         CollectableCardPointMultiplier objMultiplier = new CollectableCardPointMultiplier(Map.of(Resource.PLANT, 3));
         ObjectiveCard plantX3 = new ObjectiveCard(96, 87, 100,objMultiplier);
 
@@ -1188,12 +1188,17 @@ class ControllersTests {
         view1.state = ViewState.PLACE_CARD;
         view2.state = ViewState.IDLE;
 
-        //change public objective card
+        //change secret objective to a useless one, that gives 0 points
+        CollectableCardPointMultiplier uselessMultiplier = new CollectableCardPointMultiplier(Map.of(Resource.FUNGI, 100));
+        ObjectiveCard uselessObjective = new ObjectiveCard(96, 87, 0, uselessMultiplier);
 
+        player1.setSecretObjective(uselessObjective);
+        player2.setSecretObjective(uselessObjective);
+        //change public objective card
         CollectableCardPointMultiplier objMultiplier = new CollectableCardPointMultiplier(Map.of(Resource.PLANT, 3));
         ObjectiveCard plantX3 = new ObjectiveCard(96, 87, 100,objMultiplier);
 
-        publicGame.setPublicObj(plantX3);
+        publicGame.setPublicObj(List.of(uselessObjective, plantX3));
 
         assert game.getCommonObjective().contains(plantX3);
 
@@ -1202,6 +1207,7 @@ class ControllersTests {
         for (CardCorner corner : CardCorner.values()) {
             cornerMap1.put(corner, Resource.PLANT);
         }
+        cornerMap1.put(CardCorner.TL, SpecialCollectable.EMPTY);
         ResourceCard exodiaTheForbidden = new ResourceCard(1, 1, Resource.PLANT, 100, cornerMap1);
         Placement exodiaPlacement = new Placement(new Position(1,1), exodiaTheForbidden, CardFace.FRONT);
 
@@ -1236,12 +1242,28 @@ class ControllersTests {
         assert game.duringLastTurns();
         assert publicGame.getLastTurnCounter() == 1;
         assert !game.hasEnded();
-        //play last turns placing the first card in hand and drawing from goldCardDeck
-        CardInHand randomCardFromHand;
+        //play last turns placing a card that gives 0 points and doesn't add resources
+        HashMap<CardCorner, Collectable> uselessCornerMap = new HashMap<>();
+        for (CardCorner corner : CardCorner.values()) {
+            uselessCornerMap.put(corner, SpecialCollectable.EMPTY);
+        }
+
+        ResourceCard uselessCard = new ResourceCard(1, 1, Resource.ANIMAL, 0, uselessCornerMap);
+        Placement uselessPlacement = new Placement(new Position(1,-1), uselessCard, CardFace.FRONT);
+
+        handFirst.removeCard(handFirst.getHand().stream().reduce((a,b)->a).get());
+        handFirst.addCard(uselessCard);
+        handSecond.removeCard(handSecond.getHand().stream().reduce((a,b)->a).get());
+        handSecond.addCard(uselessCard);
+
+        player1.playCard(uselessPlacement);
+        player2.playCard(uselessPlacement);
         firstToPlayController.draw(DrawableCard.GOLDCARD, 0);
         secondToPlayController.draw(DrawableCard.GOLDCARD, 0);
 
         assert game.hasEnded();
+        System.out.println(firstToPlay.getUserCodex().getPoints());
+        System.out.println(secondToPlay.getUserCodex().getPoints());
         assert firstToPlay.getUserCodex().getPoints() == 200;
         assert secondToPlay.getUserCodex().getPoints() == 200;
 

@@ -157,11 +157,13 @@ public class Game implements Serializable {
                 if(playerMaxPoint.contains(user.getNickname())){
                     int completedObj = 0;
                     for(ObjectiveCard obj : commonObjective){
-                        completedObj += obj.getPoints(user.getUserCodex()) / obj.getPoints();
+                        if(obj.getPoints() != 0)
+                            completedObj += obj.getPoints(user.getUserCodex()) / obj.getPoints();
                     }
                     if(user.getUserHand().getSecretObjective() != null) {
                         //TODO check if in actual game
-                        completedObj += user.getUserHand().getSecretObjective().getPoints(user.getUserCodex()) / user.getUserHand().getSecretObjective().getPoints();
+                        if(user.getUserHand().getSecretObjective().getPoints() != 0)
+                            completedObj += user.getUserHand().getSecretObjective().getPoints(user.getUserCodex()) / user.getUserHand().getSecretObjective().getPoints();
                         objectiveCompleted.put(user.getNickname(), completedObj);
                     }
                 }
