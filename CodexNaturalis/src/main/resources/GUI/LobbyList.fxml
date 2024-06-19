@@ -11,14 +11,14 @@
 
 <AnchorPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="532.0" prefWidth="635.0" stylesheets="@global.css" xmlns="http://javafx.com/javafx/21" xmlns:fx="http://javafx.com/fxml/1" fx:controller="it.polimi.ingsw.view.GUI.Controllers.LobbyListControllerGUI">
    <children>
-      <VBox alignment="CENTER" prefHeight="200.0" prefWidth="100.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+      <VBox alignment="CENTER" prefHeight="200.0" prefWidth="100.0" spacing="10.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
          <children>
             <Text strokeType="OUTSIDE" strokeWidth="0.0" styleClass="customFont" text="Create a Lobby">
                <font>
                   <Font name="System Bold" size="69.0" />
                </font>
             </Text>
-            <VBox alignment="CENTER" maxWidth="500.0" prefHeight="200.0" prefWidth="100.0" spacing="30.0" style="-fx-border-insets: 5; -fx-border-width: 3; -fx-border-color: black; -fx-border-radius: 20;">
+            <VBox alignment="CENTER" maxWidth="500.0" prefHeight="200.0" prefWidth="100.0" spacing="30.0" style="-fx-border-radius: 20;" styleClass="bordersCodexStyle" stylesheets="@global.css">
                <children>
                   <VBox alignment="CENTER" maxWidth="150.0" spacing="10.0">
                      <children>
@@ -29,7 +29,7 @@
                   <VBox alignment="CENTER" maxWidth="200.0" spacing="10.0">
                      <children>
                         <Text strokeType="OUTSIDE" strokeWidth="0.0" text="Number of Players" />
-                        <HBox fx:id="characterContainer" style="-fx-background-color: #ddd4ad; -fx-background-radius: 20;">
+                        <HBox fx:id="characterContainer" style="-fx-background-color: rgb(216, 196, 113); -fx-background-radius: 20;">
                            <padding>
                               <Insets bottom="10.0" left="10.0" right="10.0" top="10.0" />
                            </padding></HBox>
@@ -53,7 +53,7 @@
                   <Font name="System Bold" size="69.0" />
                </font>
             </Text>
-            <AnchorPane fx:id="joinLobby" maxWidth="500.0" minHeight="100.0" minWidth="0.0" prefHeight="200.0" style="-fx-border-insets: 5; -fx-border-width: 3; -fx-border-color: black; -fx-border-radius: 20;" />
+            <AnchorPane fx:id="joinLobby" maxWidth="500.0" minHeight="100.0" minWidth="0.0" prefHeight="200.0" style="-fx-border-radius: 20;" styleClass="bordersCodexStyle" stylesheets="@global.css" />
             <Text strokeType="OUTSIDE" strokeWidth="0.0" styleClass="customFont" text="Join a Lobby">
                <font>
                   <Font name="System Bold" size="69.0" />

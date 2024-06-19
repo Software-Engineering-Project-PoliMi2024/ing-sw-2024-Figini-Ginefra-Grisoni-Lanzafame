@@ -82,7 +82,7 @@ public class LeaderboardGUI implements Observer {
 
                     Label label = new Label(e.getKey() + ": " + e.getValue());
 
-                    label.setStyle("-fx-text-fill: white; -fx-font-size: 16pt;");
+                    label.setStyle("-fx-font-size: 16pt;");
 
                     label.scaleXProperty().bindBidirectional(label.scaleYProperty());
                     row.getChildren().add(pawnView);
@@ -93,12 +93,12 @@ public class LeaderboardGUI implements Observer {
                     if(!e.getKey().equals(GUI.getLightGame().getLightGameParty().getYourName())){
                         Peeker peeker = new Peeker(parent, e.getKey());
                         ImageView openedEyeIcon = new ImageView(AssetsGUI.eye);
-                        openedEyeIcon.setFitHeight(16);
-                        openedEyeIcon.setFitWidth(16);
+                        openedEyeIcon.setFitHeight(25);
+                        openedEyeIcon.setFitWidth(25);
 
                         ImageView closedEyeIcon = new ImageView(AssetsGUI.closedEye);
-                        closedEyeIcon.setFitHeight(16);
-                        closedEyeIcon.setFitWidth(16);
+                        closedEyeIcon.setFitHeight(25);
+                        closedEyeIcon.setFitWidth(25);
 
                         Button peekButton = new Button("", closedEyeIcon);
                         peekButton.setStyle("-fx-background-color: transparent;");

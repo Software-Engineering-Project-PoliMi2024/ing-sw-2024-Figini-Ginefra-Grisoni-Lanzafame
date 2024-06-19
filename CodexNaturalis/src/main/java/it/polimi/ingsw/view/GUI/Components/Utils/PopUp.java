@@ -72,18 +72,9 @@ public class PopUp {
         AnchorPane.setBottomAnchor(content, 50.0);
         AnchorPane.setLeftAnchor(content, 50.0);
 
+        content.getStyleClass().add("bordersCodexStyle");
+
         bg.setOnMouseClicked(e -> close());
-
-
-        // Make clip as big as the content
-        Rectangle clip = new Rectangle();
-        clip.widthProperty().bind(content.widthProperty());
-        clip.heightProperty().bind(content.heightProperty());
-
-        clip.setArcWidth(20);
-        clip.setArcHeight(20);
-
-        content.setClip(clip);
 
 
         this.setUpOpeningAnimation();

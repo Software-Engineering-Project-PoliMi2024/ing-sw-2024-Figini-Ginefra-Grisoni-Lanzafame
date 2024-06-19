@@ -60,8 +60,15 @@ public class DeckAreaGUI implements Observer {
         content.getChildren().add(decksContainer);
         content.getChildren().add(commonObjectivesContainer);
 
+
+        AnchorPane.setBottomAnchor(content, 0.0);
+        AnchorPane.setLeftAnchor(content, 0.0);
+        AnchorPane.setRightAnchor(content, 0.0);
+        AnchorPane.setTopAnchor(content, 0.0);
+
         content.setSpacing(GUIConfigs.vCardGapInDeck);
-        content.setPadding(new Insets(10));
+        content.setAlignment(Pos.CENTER);
+        content.setPadding(new Insets(15));
 
         GUI.getLightGame().getDecks().forEach((drawableCard, lightDeck) -> lightDeck.attach(this));
     }
