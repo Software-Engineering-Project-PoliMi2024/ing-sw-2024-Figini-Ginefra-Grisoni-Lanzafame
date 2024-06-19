@@ -100,12 +100,11 @@ public class GameController implements GameControllerInterface {
             //this.updateJoinActualGame(joinerNickname, game); if other information are necessary
             try {
                 view.updateGame(new CodexDiffSetFinalPoints(game.getPointPerPlayerMap()));
-                view.updateGame(new GameDiffWinner(game.getWinners()));
+                view.updateGame(new GameDiffWinner(this.getWinners()));
                 view.transitionTo(ViewState.GAME_ENDING);
-            } catch (Exception ignored) {
-            }
+            } catch (Exception ignored) {}
         } else {
-            if (playerViewMap.size() <= 2) {
+            if (playerViewMap.size() == 2) {
                 //TODO test this
                 //set as current player the joining player
                 game.setCurrentPlayerIndex(game.getUsersList().indexOf(game.getUserFromNick(joinerNickname)));
@@ -474,19 +473,19 @@ public class GameController implements GameControllerInterface {
 
     private synchronized void startLastPlayerTimer() {
         countdownTimer = new Timer();
+        String lastPlayerInGame = playerViewMap.keySet().stream().findFirst().orElse("");
         countdownTimer.schedule(new TimerTask() {
             @Override
             public void run() {
-                declareWinners();
+                winsTheLastPlayerInGame(lastPlayerInGame);
             }
         }, Configs.lastInGameTimerSeconds * 1000L);
         System.out.println(game.getName() + " started last player timer");
     }
 
-    private synchronized void winsTheLastPlayerInGame(){
+    private synchronized void winsTheLastPlayerInGame(String winner){
         game.addObjectivePoints();
-        //TODO getWinners move in gameController and if only one person
-        this.notifyGameEnded(game.getPointPerPlayerMap(), game.getWinners());
+        this.notifyGameEnded(game.getPointPerPlayerMap(), List.of(winner));
 
         new HashMap<>(playerViewMap).forEach((nickname, view) -> {
             try {
@@ -495,6 +494,42 @@ public class GameController implements GameControllerInterface {
             }
         });
         System.out.println(game.getName() + " ended");
+    }
+
+    /**
+     * @return a List containing the winner(s) of the game
+     */
+    public List<String> getWinners(){
+        Map<String, Integer> pointsPerPlayer = game.getPointPerPlayerMap();
+        //Calculate all possibleWinners player(s) who scored the max amount of points in the game
+        int maxPoint = pointsPerPlayer.values().stream().max(Integer::compareTo).orElse(0);
+        List<String> playerMaxPoint = new ArrayList<>(pointsPerPlayer.keySet().stream().filter(nick -> pointsPerPlayer.get(nick) == maxPoint).toList());
+        //calculate the number of objective cards completed
+        Map<String, Integer> objectiveCompleted = new HashMap<>();
+        if(playerMaxPoint.size() > 1){
+            game.getUsersList().forEach(user ->{
+                if(playerMaxPoint.contains(user.getNickname())){
+                    int completedObj = 0;
+                    for(ObjectiveCard obj : game.getCommonObjective()){
+                        if(obj.getPoints() != 0)
+                            completedObj += obj.getPoints(user.getUserCodex()) / obj.getPoints();
+                    }
+                    if(user.getUserHand().getSecretObjective() != null) {
+                        //TODO check if in actual game
+                        if(user.getUserHand().getSecretObjective().getPoints() != 0)
+                            completedObj += user.getUserHand().getSecretObjective().getPoints(user.getUserCodex()) / user.getUserHand().getSecretObjective().getPoints();
+                        objectiveCompleted.put(user.getNickname(), completedObj);
+                    }
+                }
+            });
+            int maxObj = objectiveCompleted.values().stream().max(Integer::compareTo).orElse(0);
+            List<String> playerMaxObj = objectiveCompleted.keySet().stream().filter(nick -> objectiveCompleted.get(nick) == maxObj).toList();
+
+            //intersect the two lists to get the winner(s)
+            playerMaxPoint.retainAll(playerMaxObj);
+        }
+
+        return playerMaxPoint;
     }
 
     private synchronized void notifyLastInGameTimer() {
@@ -631,7 +666,7 @@ public class GameController implements GameControllerInterface {
     private void declareWinners() {
         game.addObjectivePoints();
         //notify
-        this.notifyGameEnded(game.getPointPerPlayerMap(), game.getWinners());
+        this.notifyGameEnded(game.getPointPerPlayerMap(), this.getWinners());
 
         new HashMap<>(playerViewMap).forEach((nickname, view) -> {
             try {

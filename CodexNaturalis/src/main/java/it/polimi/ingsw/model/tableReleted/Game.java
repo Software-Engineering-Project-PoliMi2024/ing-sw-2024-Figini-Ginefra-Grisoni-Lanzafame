@@ -126,7 +126,7 @@ public class Game implements Serializable {
      */
     public void addObjectivePoints(){
         //TODO if(gameState == GameState.END_GAME) {
-            for (Player player : getUsersList()) {
+            for (Player player : new ArrayList<>(getUsersList())) {
                 for (ObjectiveCard commonObj : commonObjective) {
                     player.getUserCodex().pointsFromObjective(commonObj);
                 }
@@ -140,42 +140,6 @@ public class Game implements Serializable {
      */
     public Map<String, Integer> getPointPerPlayerMap(){
         return gameParty.getPointPerPlayerMap();
-    }
-
-    /**
-     * @return a List containing the winner(s) of the game
-     */
-    public List<String> getWinners(){
-        Map<String, Integer> pointsPerPlayer = getPointPerPlayerMap();
-        //Calculate all possibleWinners player(s) who scored the max amount of points in the game
-        int maxPoint = pointsPerPlayer.values().stream().max(Integer::compareTo).orElse(0);
-        List<String> playerMaxPoint = new ArrayList<>(pointsPerPlayer.keySet().stream().filter(nick -> pointsPerPlayer.get(nick) == maxPoint).toList());
-        //calculate the number of objective cards completed
-        Map<String, Integer> objectiveCompleted = new HashMap<>();
-        if(playerMaxPoint.size() > 1){
-            getUsersList().forEach(user ->{
-                if(playerMaxPoint.contains(user.getNickname())){
-                    int completedObj = 0;
-                    for(ObjectiveCard obj : commonObjective){
-                        if(obj.getPoints() != 0)
-                            completedObj += obj.getPoints(user.getUserCodex()) / obj.getPoints();
-                    }
-                    if(user.getUserHand().getSecretObjective() != null) {
-                        //TODO check if in actual game
-                        if(user.getUserHand().getSecretObjective().getPoints() != 0)
-                            completedObj += user.getUserHand().getSecretObjective().getPoints(user.getUserCodex()) / user.getUserHand().getSecretObjective().getPoints();
-                        objectiveCompleted.put(user.getNickname(), completedObj);
-                    }
-                }
-            });
-            int maxObj = objectiveCompleted.values().stream().max(Integer::compareTo).orElse(0);
-            List<String> playerMaxObj = objectiveCompleted.keySet().stream().filter(nick -> objectiveCompleted.get(nick) == maxObj).toList();
-
-            //intersect the two lists to get the winner(s)
-            playerMaxPoint.retainAll(playerMaxObj);
-        }
-
-        return playerMaxPoint;
     }
     /**
      * This method is used to get the user from its nickname
