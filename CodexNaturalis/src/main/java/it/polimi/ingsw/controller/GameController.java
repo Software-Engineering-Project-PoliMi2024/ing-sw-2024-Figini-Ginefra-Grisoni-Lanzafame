@@ -66,6 +66,7 @@ public class GameController implements GameControllerInterface {
 
     //TODO test deck (when drawing all cards it remains a card)
     //TODO test when the decks finish the cards
+    //TODO separate leave from disconnect; game ending view call leaveGame
     public synchronized void join(String joinerNickname, ViewInterface view, boolean reconnected){
         this.resetLastPlayerTimer();
         playerViewMap.put(joinerNickname, view);
@@ -229,24 +230,32 @@ public class GameController implements GameControllerInterface {
     private synchronized void placeCard(String nickname, LightPlacement placement) {
         Player player = game.getUserFromNick(nickname);
         Codex codexBeforePlacement = new Codex(player.getUserCodex());
-        player.playCard(Heavifier.heavify(placement, cardTable));
-        Set<CardInHand> hand = player.getUserHand().getHand();
-        Codex codexAfterPlacement = player.getUserCodex();
-        //update playability
-        Map<LightCard, Boolean> frontIdToPlayability = new HashMap<>();
-        for (CardInHand cardInHand : hand) {
-            boolean oldPlayability = cardInHand.canBePlaced(codexBeforePlacement);
-            boolean newPlayability = cardInHand.canBePlaced(codexAfterPlacement);
-            if (oldPlayability != newPlayability) {
-                frontIdToPlayability.put(Lightifier.lightifyToCard(cardInHand), newPlayability);
+        CardInHand card = Heavifier.heavifyCardInHand(placement.card(), cardTable);
+        if(card.canBePlaced(codexBeforePlacement)) {
+            player.playCard(Heavifier.heavify(placement, cardTable));
+            Set<CardInHand> hand = player.getUserHand().getHand();
+            Codex codexAfterPlacement = player.getUserCodex();
+            //update playability
+            Map<LightCard, Boolean> frontIdToPlayability = new HashMap<>();
+            for (CardInHand cardInHand : hand) {
+                boolean oldPlayability = cardInHand.canBePlaced(codexBeforePlacement);
+                boolean newPlayability = cardInHand.canBePlaced(codexAfterPlacement);
+                if (oldPlayability != newPlayability) {
+                    frontIdToPlayability.put(Lightifier.lightifyToCard(cardInHand), newPlayability);
+                }
             }
-        }
 
-        //notify everyone
-        this.notifyPlacement(nickname, placement, player.getUserCodex(), frontIdToPlayability);
-        try {
-            playerViewMap.get(nickname).transitionTo(ViewState.DRAW_CARD);
-        } catch (Exception ignored) {
+            //notify everyone
+            this.notifyPlacement(nickname, placement, player.getUserCodex(), frontIdToPlayability);
+            try {
+                playerViewMap.get(nickname).transitionTo(ViewState.DRAW_CARD);
+            } catch (Exception ignored) {
+            }
+        }else{
+            try {
+                playerViewMap.get(nickname).logErr(LogsOnClientStatic.CARD_NOT_PLACEABLE);
+                playerViewMap.get(nickname).transitionTo(ViewState.PLACE_CARD);
+            }catch (Exception ignored){}
         }
     }
 
@@ -355,6 +364,10 @@ public class GameController implements GameControllerInterface {
         if(playerViewMap.size() == 1) {
             this.notifyLastInGameTimer();
             this.startLastPlayerTimer();
+        }
+
+        if(playerViewMap.isEmpty()){
+            this.resetLastPlayerTimer();
         }
 
         try {
@@ -468,6 +481,20 @@ public class GameController implements GameControllerInterface {
             }
         }, Configs.lastInGameTimerSeconds * 1000L);
         System.out.println(game.getName() + " started last player timer");
+    }
+
+    private synchronized void winsTheLastPlayerInGame(){
+        game.addObjectivePoints();
+        //TODO getWinners move in gameController and if only one person
+        this.notifyGameEnded(game.getPointPerPlayerMap(), game.getWinners());
+
+        new HashMap<>(playerViewMap).forEach((nickname, view) -> {
+            try {
+                view.transitionTo(ViewState.GAME_ENDING);
+            } catch (Exception ignored) {
+            }
+        });
+        System.out.println(game.getName() + " ended");
     }
 
     private synchronized void notifyLastInGameTimer() {
