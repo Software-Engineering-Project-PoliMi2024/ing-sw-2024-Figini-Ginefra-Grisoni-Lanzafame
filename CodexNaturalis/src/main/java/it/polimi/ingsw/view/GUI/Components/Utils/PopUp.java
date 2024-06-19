@@ -74,6 +74,13 @@ public class PopUp {
 
         content.getStyleClass().add("bordersCodexStyle");
 
+        Rectangle clip = new Rectangle();
+        clip.widthProperty().bind(content.widthProperty());
+        clip.heightProperty().bind(content.heightProperty());
+        clip.setArcWidth(20);
+        clip.setArcHeight(20);
+        content.setClip(clip);
+
         bg.setOnMouseClicked(e -> close());
 
 

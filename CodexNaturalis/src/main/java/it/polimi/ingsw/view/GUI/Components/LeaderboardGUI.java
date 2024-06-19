@@ -4,6 +4,7 @@ import it.polimi.ingsw.designPatterns.Observer;
 import it.polimi.ingsw.model.playerReleted.PawnColors;
 import it.polimi.ingsw.view.GUI.AssetsGUI;
 import it.polimi.ingsw.view.GUI.Components.CodexRelated.Peeker;
+import it.polimi.ingsw.view.GUI.Components.Logs.LogsGUI;
 import it.polimi.ingsw.view.GUI.Components.Utils.AnchoredPopUp;
 import it.polimi.ingsw.view.GUI.GUI;
 import javafx.geometry.Pos;
@@ -35,6 +36,7 @@ public class LeaderboardGUI implements Observer {
     public LeaderboardGUI() {
         this.layout = new VBox(10);
         this.layout.setStyle("-fx-padding: 20; -fx-alignment: center; -fx-font-size: 16pt;");
+        this.layout.setAlignment(Pos.CENTER_LEFT);
         this.availablePawns = new ArrayList<>(Arrays.asList(PawnsGui.values()));
     }
 

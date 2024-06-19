@@ -19,6 +19,10 @@ public class LogMemory implements Observed {
         return new LinkedList<>(logMemory);
     }
 
+    public String getLastLog(){
+        return logMemory.getLast();
+    }
+
     public void clear(){
         logMemory.clear();
         notifyObservers();
