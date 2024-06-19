@@ -127,6 +127,7 @@ public class ServerHandler implements Runnable{
                 try{
                     server.close();
                     view.logErr(LogsOnClientStatic.CONNECTION_LOST_CLIENT_SIDE);
+                    view.transitionTo(ViewState.SERVER_CONNECTION);
                 }catch (Exception ex){
                     System.out.println("Error while closing the Socket of the Server");
                     e.printStackTrace();

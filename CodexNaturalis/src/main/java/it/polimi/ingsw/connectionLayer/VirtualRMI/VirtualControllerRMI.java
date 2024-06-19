@@ -17,6 +17,9 @@ import it.polimi.ingsw.model.playerReleted.PawnColors;
 import it.polimi.ingsw.view.ViewInterface;
 import it.polimi.ingsw.view.ViewState;
 
+import java.io.IOException;
+import java.net.InetSocketAddress;
+import java.net.Socket;
 import java.rmi.RemoteException;
 import java.rmi.registry.LocateRegistry;
 import java.rmi.registry.Registry;
@@ -29,6 +32,18 @@ public class VirtualControllerRMI implements VirtualController {
     private ViewInterface view;
     private PingPongInterface pingPongStub;
     private ControllerInterface controllerStub;
+
+    public VirtualControllerRMI() {
+        try (Socket socket = new Socket()) {
+            socket.connect(new InetSocketAddress("google.com", 80));
+            String ip = socket.getLocalAddress().getHostAddress();
+            System.setProperty("java.rmi.server.hostname", ip);
+        } catch (IOException e) {
+            try {
+                view.logErr("No internet connection, can't get IP address");
+            }catch (Exception ignored){}
+        }
+    }
 
     @Override
     public void login(String nickname) {
@@ -235,6 +250,10 @@ public class VirtualControllerRMI implements VirtualController {
     @Override
     public void connect(String ip, int port, ViewInterface view) {
         this.view = view;
+        try {
+            UnicastRemoteObject.unexportObject(this, true);
+            UnicastRemoteObject.unexportObject(view, true);
+        }catch (Exception ignored){}
         Future<?> connect = controllerExecutor.submit(() -> {
             try {
                 Registry registry = LocateRegistry.getRegistry(ip, port);
@@ -249,7 +268,7 @@ public class VirtualControllerRMI implements VirtualController {
 
         try {
             connect.get(Configs.secondsTimeOut, TimeUnit.SECONDS);
-        }catch (InterruptedException ignored){
+        }catch (InterruptedException ignored) {
         }catch (Exception e){
             try {
                 e.printStackTrace();

@@ -77,7 +77,6 @@ public class GameController implements GameControllerInterface {
             }catch (Exception ignored){}
             return;
         }
-
         this.resetLastPlayerTimer();
         playerViewMap.put(joinerNickname, view);
 

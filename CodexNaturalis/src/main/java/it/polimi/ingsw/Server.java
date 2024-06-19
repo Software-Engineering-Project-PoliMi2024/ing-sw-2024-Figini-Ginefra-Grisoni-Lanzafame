@@ -87,7 +87,6 @@ public class Server {
         }, "Socket Server Listening Thread");
         serverSocketThread.start();
 
-
 //        SocketServer socketServer = new SocketServer(multiGame);
 //        ServerRMI serverRMI = new ServerRMI(multiGame);
 //        Thread serverSocketThread = new Thread(socketServer, "Socket Server Listening Thread");
