@@ -4,12 +4,19 @@ import it.polimi.ingsw.model.cardReleted.utilityEnums.Collectable;
 import it.polimi.ingsw.model.cardReleted.utilityEnums.Resource;
 import it.polimi.ingsw.model.cardReleted.utilityEnums.SpecialCollectable;
 import it.polimi.ingsw.model.cardReleted.utilityEnums.WritingMaterial;
+import it.polimi.ingsw.model.playerReleted.PawnColors;
 
 import java.util.Map;
 
 public class CardTextStyle {
     private static final int CardWidth = 9;
     private static final int CardHeight = 7;
+    private static final Map<PawnColors, StringStyle> pawnToStyle = Map.of(
+            PawnColors.BLUE, StringStyle.BLUE_FOREGROUND,
+            PawnColors.RED, StringStyle.RED_FOREGROUND,
+            PawnColors.GREEN, StringStyle.GREEN_FOREGROUND,
+            PawnColors.YELLOW, StringStyle.GOLD_FOREGROUND
+    );
 
     public static final String ESCReset = "\u001B[0m";
 
@@ -123,7 +130,13 @@ public class CardTextStyle {
     public static String getEqualEmoji() {
         return equalEmoji;
     }
+
+    public static StringStyle convertPawnColor(PawnColors pawnColor){
+        return pawnToStyle.get(pawnColor);
+    }
 }
+
+
 
 
 
