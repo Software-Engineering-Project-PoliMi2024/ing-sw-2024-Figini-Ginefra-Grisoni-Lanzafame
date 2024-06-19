@@ -1,7 +1,5 @@
 package it.polimi.ingsw.view.TUI.Styles;
 
-import java.io.File;
-
 public enum StringStyle {
 
     RESET("0"),
