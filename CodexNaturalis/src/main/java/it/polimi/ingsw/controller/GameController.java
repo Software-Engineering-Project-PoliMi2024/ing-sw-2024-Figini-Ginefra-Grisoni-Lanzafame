@@ -132,7 +132,7 @@ public class GameController implements GameControllerInterface {
         player.setSecretObjective(objChoice);
         this.notifySecretObjectiveChoice(nickname, lightObjChoice);
 
-        if (otherHaveAllChosen(nickname)) {
+        if (otherHaveAllChosenObjective(nickname)) {
             this.removeInactivePlayers(Player::hasChosenObjective);
             this.notifyActualGameSetup();
             for (String players : playerViewMap.keySet())
@@ -319,7 +319,7 @@ public class GameController implements GameControllerInterface {
                 this.moveToSecretObjectivePhase();
             }
         } else if (game.inInSecretObjState()) {
-            if (otherHaveAllChosen(nickname) && !you.hasChosenObjective()) {
+            if (otherHaveAllChosenObjective(nickname) && !you.hasChosenObjective()) {
                 this.removeInactivePlayers(Player::hasChosenObjective);
 
                 String currentPlayer = game.getCurrentPlayer().getNickname();
@@ -511,7 +511,7 @@ public class GameController implements GameControllerInterface {
 
         new HashMap<>(playerViewMap).forEach((nickname, view) -> {
             try {
-                view.logGame(LogsOnClientStatic.EVERYONE_PLACED_STARTCARD);
+                view.logGame(LogsOnClientStatic.EVERYONE_CHOSE_PAWN);
                 view.transitionTo(ViewState.CHOOSE_PAWN);
             } catch (Exception ignored) {
             }
@@ -842,7 +842,7 @@ public class GameController implements GameControllerInterface {
 
     }
 
-    private synchronized boolean otherHaveAllChosen(String nicknamePerspective) {
+    private synchronized boolean otherHaveAllChosenObjective(String nicknamePerspective) {
         boolean allChosen = true;
         for (String nickname : playerViewMap.keySet()) {
             Player player = game.getUserFromNick(nickname);
