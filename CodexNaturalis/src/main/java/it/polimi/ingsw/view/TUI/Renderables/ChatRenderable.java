@@ -3,7 +3,10 @@ package it.polimi.ingsw.view.TUI.Renderables;
 import it.polimi.ingsw.lightModel.lightPlayerRelated.LightChat;
 import it.polimi.ingsw.lightModel.lightTableRelated.LightGame;
 import it.polimi.ingsw.model.playerReleted.ChatMessage;
+import it.polimi.ingsw.model.playerReleted.PawnColors;
 import it.polimi.ingsw.view.ActualView;
+import it.polimi.ingsw.view.TUI.Styles.CardTextStyle;
+import it.polimi.ingsw.view.TUI.Styles.DecoratedString;
 import it.polimi.ingsw.view.TUI.Styles.PromptStyle;
 import it.polimi.ingsw.view.TUI.Styles.StringStyle;
 import it.polimi.ingsw.view.TUI.inputs.CommandPrompt;
@@ -36,7 +39,7 @@ public class ChatRenderable extends Renderable {
     @Override
     public void render() {
         for (ChatMessage message : chatHistory) {
-            PromptStyle.printInABox(messageToString(message), 30, messageToStyle(message));
+            PromptStyle.printInABox(messageToString(message), 30);
         }
     }
 
@@ -128,22 +131,37 @@ public class ChatRenderable extends Renderable {
     }
 
     /**
-     * Return the message as a string based on the privacy and who is the sender
+     * Return the message as a string (decorated) based on the privacy and who is the sender
      * @param message the message to be converted
      * @return the message as a string
      */
     private String messageToString(ChatMessage message){
+        String actualMessage = ": " + message.getMessage();
+        if(message.getPrivacy() == ChatMessage.MessagePrivacy.PRIVATE){
+            actualMessage = new DecoratedString(actualMessage, StringStyle.ITALIC).toString();
+        }
+
+        StringStyle senderStyle = getUserColor(message.getSender());
+
         if(message.getPrivacy() == ChatMessage.MessagePrivacy.PUBLIC){
             if(message.getSender().equals(lightGame.getLightGameParty().getYourName())){
-                return "You: " + message.getMessage();
+                return new DecoratedString("You", senderStyle) + actualMessage;
             }else{
-                return message.getSender() + " to everyone: " + message.getMessage();
+                return new DecoratedString(message.getSender(), senderStyle) + actualMessage;
             }
         }else{ //Private message
+            StringStyle receiverStyle = getUserColor(message.getReceiver());
+
             if(message.getSender().equals(lightGame.getLightGameParty().getYourName())){
-                return "You to " + message.getReceiver() + ": " + message.getMessage();
+                return new DecoratedString("You", senderStyle)
+                        + new DecoratedString(" to ", StringStyle.ITALIC).toString()
+                        + new DecoratedString(message.getReceiver(), receiverStyle)
+                        + actualMessage;
             }else{
-                return message.getSender() + " to you: " + message.getMessage();
+                return new DecoratedString(message.getSender(), senderStyle)
+                        + new DecoratedString(" to ", StringStyle.ITALIC).toString()
+                        + new DecoratedString("you", receiverStyle)
+                        + actualMessage;
             }
         }
     }
@@ -162,5 +180,13 @@ public class ChatRenderable extends Renderable {
         }else{
             return StringStyle.RESET;
         }
+    }
+
+    private StringStyle getUserColor(String user){
+        PawnColors pawn = lightGame.getLightGameParty().getPlayerColor(user);
+        if(pawn == null){
+            return StringStyle.RESET;
+        }
+        return CardTextStyle.convertPawnColor(pawn);
     }
 }

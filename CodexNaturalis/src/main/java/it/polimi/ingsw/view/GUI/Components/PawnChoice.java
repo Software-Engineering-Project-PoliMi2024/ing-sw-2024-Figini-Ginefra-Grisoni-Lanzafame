@@ -17,6 +17,7 @@ import java.util.*;
 import java.util.stream.Collectors;
 
 public class PawnChoice implements Observer {
+    private final VBox metaContainer = new VBox();
     private final VBox container = new VBox();
     private final Text label = new Text("Choose your pawn");
     private final HBox choiceBox = new HBox();
@@ -30,10 +31,22 @@ public class PawnChoice implements Observer {
         label.getStyleClass().add("customFont");
         label.setTextAlignment(TextAlignment.CENTER);
 
+        AnchorPane.setTopAnchor(metaContainer, 0.0);
+        AnchorPane.setBottomAnchor(metaContainer, 0.0);
+        AnchorPane.setLeftAnchor(metaContainer, 0.0);
+        AnchorPane.setRightAnchor(metaContainer, 0.0);
+
+        metaContainer.getChildren().add(container);
+
+        metaContainer.setStyle("-fx-background-color: rgba(0, 0, 0, 0.5);");
+
+        metaContainer.setAlignment(Pos.CENTER);
+
         container.getChildren().addAll(label, choiceBox);
         container.setAlignment(Pos.CENTER);
         container.getStyleClass().add("bordersCodexStyle");
 
+        container.setMaxWidth(300);
 
         GUI.getLightGame().getLightGameParty().attach(this);
 
@@ -43,11 +56,11 @@ public class PawnChoice implements Observer {
 
         GUI.getStateProperty().addListener((obs, oldState, newState) -> {
             if (newState == StateGUI.CHOOSE_PAWN) {
-                Platform.runLater(() -> parent.getChildren().add(container));
+                Platform.runLater(() -> parent.getChildren().add(metaContainer));
             }
             else{
-                if(parent.getChildren().contains(container)){
-                    Platform.runLater(() -> parent.getChildren().remove(container));
+                if(parent.getChildren().contains(metaContainer)){
+                    Platform.runLater(() -> parent.getChildren().remove(metaContainer));
                 }
             }
         });

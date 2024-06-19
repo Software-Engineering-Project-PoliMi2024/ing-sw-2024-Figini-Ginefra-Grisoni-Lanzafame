@@ -10,11 +10,14 @@ import javafx.scene.image.ImageView;
 
 public class ChatButton implements Observer {
 
-    private Button chatButton;
-    private ImageView chatIcon = new ImageView(AssetsGUI.chatIcon);
+    private final Button chatButton = new Button();
+    private final ImageView chatIcon = new ImageView(AssetsGUI.chatIcon);
+
+    private ChatDisplay chatDisplay;
 
     public void addThisTo(AnchorPane parent) {
-        chatButton = new Button();
+        chatDisplay = new ChatDisplay(parent);
+
         chatButton.setStyle("-fx-background-color: transparent;");
         chatButton.maxHeightProperty().bind(parent.heightProperty().multiply(0.1));
         chatButton.maxWidthProperty().bind(parent.widthProperty().multiply(0.1));
@@ -32,13 +35,15 @@ public class ChatButton implements Observer {
     }
 
     private void showChat() {
-
+        chatIcon.setImage(AssetsGUI.chatIcon);
+        chatDisplay.open();
     }
 
     @Override
     public void update() {
         if(!GUI.getLightGame().getLightGameParty().getLightChat().getChatHistory().isEmpty()) {
             chatIcon.setImage(AssetsGUI.unreadChatIcon);
+            chatDisplay.updatedMessages(GUI.getLightGame().getLightGameParty().getLightChat().getChatHistory());
         }
 
     }

@@ -72,8 +72,6 @@ public class PopUp {
         AnchorPane.setBottomAnchor(content, 50.0);
         AnchorPane.setLeftAnchor(content, 50.0);
 
-        content.getStyleClass().add("bordersCodexStyle");
-
         Rectangle clip = new Rectangle();
         clip.widthProperty().bind(content.widthProperty());
         clip.heightProperty().bind(content.heightProperty());
