@@ -1,8 +1,7 @@
 package it.polimi.ingsw.model.tableReleted;
 
-import it.polimi.ingsw.model.playerReleted.ChatMessage;
 import it.polimi.ingsw.model.playerReleted.PawnColors;
-import it.polimi.ingsw.model.playerReleted.User;
+import it.polimi.ingsw.model.playerReleted.Player;
 
 import java.io.Serializable;
 import java.util.*;
@@ -10,7 +9,7 @@ import java.util.concurrent.locks.ReentrantLock;
 import java.util.stream.Collectors;
 
 public class GameParty implements Serializable {
-    final private List<User> playerList; //the player that were in the lobby pre game
+    final private List<Player> playerList; //the player that were in the lobby pre game
     private int currentPlayerIndex;
     final private ChatManager chatManager;
     private final List<PawnColors> pawnChoices;
@@ -27,7 +26,7 @@ public class GameParty implements Serializable {
         ArrayList<String> players = new ArrayList<>(playerNames);
         Collections.shuffle(players);
         this.pawnChoices = new ArrayList<>(Arrays.stream(PawnColors.values()).toList());
-        playerList = players.stream().map(User::new).collect(Collectors.toList());
+        playerList = players.stream().map(Player::new).collect(Collectors.toList());
         currentPlayerIndex = 0;
         chatManager = new ChatManager(playerNames);
     }
@@ -36,7 +35,7 @@ public class GameParty implements Serializable {
      * This method is used to get the current player that is supposed to play
      * @return the current player
      */
-    public User getCurrentPlayer() {
+    public Player getCurrentPlayer() {
         currentPlayerLock.lock();
         try {
             return playerList.get(currentPlayerIndex);
@@ -72,7 +71,7 @@ public class GameParty implements Serializable {
     }
 
     /** @return list of the users in this match*/
-    public List<User> getUsersList() {
+    public List<Player> getUsersList() {
         synchronized (playerList) {
             return playerList;
         }
@@ -84,9 +83,9 @@ public class GameParty implements Serializable {
      * @param nickname the nickname of the user
      * @return the user with the given nickname; returns null if the user is not in the gameParty
      */
-    public User getUserFromNick(String nickname){
+    public Player getUserFromNick(String nickname){
         synchronized (playerList) {
-            if(!playerList.stream().map(User::getNickname).toList().contains(nickname))
+            if(!playerList.stream().map(Player::getNickname).toList().contains(nickname))
                 return null;
             else{
                 return playerList.stream().filter(u -> u.getNickname().equals(nickname)).findFirst().orElse(null);
@@ -109,9 +108,9 @@ public class GameParty implements Serializable {
      */
     public void removeUser(String user){
         synchronized (playerList) {
-            User userToRemove = playerList.stream().filter(u -> u.getNickname().equals(user)).findFirst().orElse(null);
-            if (userToRemove != null)
-                playerList.remove(userToRemove);
+            Player playerToRemove = playerList.stream().filter(u -> u.getNickname().equals(user)).findFirst().orElse(null);
+            if (playerToRemove != null)
+                playerList.remove(playerToRemove);
             else
                 throw new IllegalArgumentException("User not in this gameParty");
         }

@@ -14,7 +14,7 @@ public class AssetsGUI {
     public static Image logo = new Image(Objects.requireNonNull(GUI.class.getResourceAsStream("/GUI/images/CODEX_Rulebook_IT/01.png")));
 
     public static Image plateau = new Image(Objects.requireNonNull(GUI.class.getResourceAsStream("/GUI/images/PLATEAU-SCORE-IMP/plateau.png")));
-    public static Image pawnBleu = new Image(Objects.requireNonNull(GUI.class.getResourceAsStream("/GUI/images/Pion/CODEX_Pion_bleu.png")));
+    public static Image pawnBleu = new Image(Objects.requireNonNull(GUI.class.getResourceAsStream("/GUI/images/Pion/CODEX_pion_bleu.png")));
     public static Image pawnJaune = new Image(Objects.requireNonNull(GUI.class.getResourceAsStream("/GUI/images/Pion/CODEX_pion_jaune.png")));
     public static Image pawnBlack = new Image(Objects.requireNonNull(GUI.class.getResourceAsStream("/GUI/images/Pion/CODEX_pion_noir.png")));
     public static Image pawnGreen = new Image(Objects.requireNonNull(GUI.class.getResourceAsStream("/GUI/images/Pion/CODEX_pion_vert.png")));

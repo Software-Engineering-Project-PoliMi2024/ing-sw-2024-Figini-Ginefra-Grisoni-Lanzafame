@@ -21,7 +21,6 @@ public class LogsOnClientStatic {
     public static String LOBBY_NAME_TAKEN = "The chosen lobby name is already taken.";
     public static String NOT_VALID_LOBBY_NAME = "The chosen lobby name is not valid.";
     public static String INVALID_MAX_PLAYER_COUNT = "the number of player per game must be 1 < n < 5.";
-    public static String LOBBY_IS_FULL = "The lobby is currently full.";
     public static String LOBBY_CREATED_YOU = "New Lobby creation successful.";
     public static String LOBBY_CREATED_OTHERS = "Added a new lobby.";
     public static String LOBBY_REMOVED_YOU = "Lobby removal successful.";
@@ -50,8 +49,7 @@ public class LogsOnClientStatic {
     public static String EVERYONE_CHOSE_OBJ = "All players have chosen their Secret Objectives.";
 
     //gameCards related  = card place or draw)
-    public static String CARD_PLACED = "Card successfully placed.";
-    public static String CARD_DRAWN = "Card successfully drawn.";
+    public static String CARD_NOT_PLACEABLE = "Card cannot be placed.";
 
     public static String PLAYER_PLACED = " placed a card.";
     public static String YOU_PLACED = "Successfully placed a card in your Codex.";

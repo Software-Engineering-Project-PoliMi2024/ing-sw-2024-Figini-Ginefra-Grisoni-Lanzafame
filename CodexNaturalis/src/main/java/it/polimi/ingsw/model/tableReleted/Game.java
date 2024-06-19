@@ -7,7 +7,7 @@ import it.polimi.ingsw.model.cardReleted.utilityEnums.DrawableCard;
 import it.polimi.ingsw.model.playerReleted.Codex;
 import it.polimi.ingsw.model.playerReleted.Hand;
 import it.polimi.ingsw.model.playerReleted.PawnColors;
-import it.polimi.ingsw.model.playerReleted.User;
+import it.polimi.ingsw.model.playerReleted.Player;
 import it.polimi.ingsw.model.utilities.Pair;
 
 import java.io.Serializable;
@@ -116,7 +116,7 @@ public class Game implements Serializable {
     }
 
     /** @return list of the User in this match*/
-    public List<User> getUsersList() {
+    public List<Player> getUsersList() {
         return gameParty.getUsersList();
     }
 
@@ -125,13 +125,14 @@ public class Game implements Serializable {
      * to the codex of the user
      */
     public void addObjectivePoints(){
-        for(User user : getUsersList()){
-            for(ObjectiveCard commonObj : commonObjective){
-                user.getUserCodex().pointsFromObjective(commonObj);
+        //TODO if(gameState == GameState.END_GAME) {
+            for (Player player : new ArrayList<>(getUsersList())) {
+                for (ObjectiveCard commonObj : commonObjective) {
+                    player.getUserCodex().pointsFromObjective(commonObj);
+                }
+                if (player.getUserHand().getSecretObjective() != null)
+                    player.getUserCodex().pointsFromObjective(player.getUserHand().getSecretObjective());
             }
-            if(user.getUserHand().getSecretObjective() != null)
-                user.getUserCodex().pointsFromObjective(user.getUserHand().getSecretObjective());
-        }
     }
 
     /**
@@ -140,44 +141,13 @@ public class Game implements Serializable {
     public Map<String, Integer> getPointPerPlayerMap(){
         return gameParty.getPointPerPlayerMap();
     }
-
-    /**
-     * @return a List containing the winner(s) of the game
-     */
-    public List<String> getWinners(){
-        Map<String, Integer> pointsPerPlayer = getPointPerPlayerMap();
-        //Calculate all possibleWinners player(s) who scored the max amount of points in the game
-        int maxPoint = pointsPerPlayer.values().stream().max(Integer::compareTo).orElse(0);
-        List<String> playerMaxPoint = new ArrayList<>(pointsPerPlayer.keySet().stream().filter(nick -> pointsPerPlayer.get(nick) == maxPoint).toList());
-        //calculate the number of objective cards completed
-        Map<String, Integer> objectiveCompleted = new HashMap<>();
-        if(playerMaxPoint.size() > 1){
-            getUsersList().forEach(user ->{
-                if(playerMaxPoint.contains(user.getNickname())){
-                    int completedObj = 0;
-                    for(ObjectiveCard obj : commonObjective){
-                        completedObj += obj.getPoints(user.getUserCodex()) / obj.getPoints();
-                    }
-                    completedObj += user.getUserHand().getSecretObjective().getPoints(user.getUserCodex()) / user.getUserHand().getSecretObjective().getPoints();
-                    objectiveCompleted.put(user.getNickname(), completedObj);
-                }
-            });
-            int maxObj = objectiveCompleted.values().stream().max(Integer::compareTo).orElse(0);
-            List<String> playerMaxObj = objectiveCompleted.keySet().stream().filter(nick -> objectiveCompleted.get(nick) == maxObj).toList();
-
-            //intersect the two lists to get the winner(s)
-            playerMaxPoint.retainAll(playerMaxObj);
-        }
-
-        return playerMaxPoint;
-    }
     /**
      * This method is used to get the user from its nickname
      * if the user is not in the gameParty, it returns null
      * @param nickname the nickname of the user
      * @return the user with the given nickname; returns null if the user is not in the gameParty
      */
-    public User getUserFromNick(String nickname){
+    public Player getUserFromNick(String nickname){
         return gameParty.getUserFromNick(nickname);
     }
 
@@ -185,7 +155,7 @@ public class Game implements Serializable {
      * This method is used to get the player currently playing
      * @return the player currently playing
      */
-    public User getCurrentPlayer() {
+    public Player getCurrentPlayer() {
         return gameParty.getCurrentPlayer();
     }
 
@@ -199,7 +169,7 @@ public class Game implements Serializable {
      * @return true if the conditions for triggering the last turn are met
      */
     public boolean checkForChickenDinner() {
-        List<Integer> playerPoints = getUsersList().stream().map(User::getUserCodex).map(Codex::getPoints).toList();
+        List<Integer> playerPoints = getUsersList().stream().map(Player::getUserCodex).map(Codex::getPoints).toList();
         synchronized (goldCardDeck) {
             synchronized (resourceCardDeck) {
                 return areDeckEmpty() || playerPoints.stream().anyMatch(p -> p >= Configs.pointsToStartGameEnding);
@@ -244,11 +214,11 @@ public class Game implements Serializable {
      * @return true if the players in game are choosing the startCard
      */
     public boolean isInStartCardState() {
-        return !this.hasEnded() && gameParty.getUsersList().stream().map(User::getUserHand).map(Hand::getStartCard).anyMatch(Objects::nonNull);
+        return !this.hasEnded() && gameParty.getUsersList().stream().map(Player::getUserHand).map(Hand::getStartCard).anyMatch(Objects::nonNull);
     }
 
     public boolean isInPawnChoiceState() {
-        return !this.hasEnded() && !isInStartCardState() && gameParty.getUsersList().stream().map(User::getPawnColor).anyMatch(Objects::isNull)
+        return !this.hasEnded() && !isInStartCardState() && gameParty.getUsersList().stream().map(Player::getPawnColor).anyMatch(Objects::isNull)
                 && gameParty.getPawnChoices().stream().anyMatch(Objects::nonNull);
     }
 
@@ -256,7 +226,7 @@ public class Game implements Serializable {
      * @return true if the players in game are choosing the secretObjective
      */
     public boolean inInSecretObjState() {
-        return gameParty.getUsersList().stream().map(User::getUserHand).map(Hand::getSecretObjectiveChoices).anyMatch(Objects::nonNull);
+        return gameParty.getUsersList().stream().map(Player::getUserHand).map(Hand::getSecretObjectiveChoices).anyMatch(Objects::nonNull);
     }
 
     /**
@@ -269,8 +239,8 @@ public class Game implements Serializable {
 
     public boolean othersHadAllChooseSecretObjective(String nicknamePerspective) {
         boolean check = true;
-        for (User user : gameParty.getUsersList()) {
-            if (!user.getNickname().equals(nicknamePerspective) && !user.hasChosenObjective()) {
+        for (Player player : gameParty.getUsersList()) {
+            if (!player.getNickname().equals(nicknamePerspective) && !player.hasChosenObjective()) {
                 check = false;
             }
         }
@@ -282,7 +252,7 @@ public class Game implements Serializable {
 
         return "Game{" +
                 "name='" + name + '\'' +
-                ", usersList=" + gameParty.getUsersList().stream().map(User::getNickname).reduce("", (a, b) -> a + " " + b) +
+                ", usersList=" + gameParty.getUsersList().stream().map(Player::getNickname).reduce("", (a, b) -> a + " " + b) +
                 //", currentPlayer=" + currentPlayer.getNickname() +
                 ", numberOfMaxPlayer=" + gameParty.getNumberOfMaxPlayer() +
                 '}';

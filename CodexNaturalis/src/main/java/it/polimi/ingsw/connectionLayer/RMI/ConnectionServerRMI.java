@@ -1,5 +1,8 @@
-package it.polimi.ingsw.connectionLayer;
+package it.polimi.ingsw.connectionLayer.RMI;
 
+import it.polimi.ingsw.Configs;
+import it.polimi.ingsw.connectionLayer.ConnectionLayerServer;
+import it.polimi.ingsw.connectionLayer.PingPongInterface;
 import it.polimi.ingsw.connectionLayer.VirtualRMI.VirtualViewRMI;
 import it.polimi.ingsw.controller.Controller;
 import it.polimi.ingsw.controller.Interfaces.ControllerInterface;
@@ -20,7 +23,7 @@ import java.util.concurrent.TimeUnit;
 public class ConnectionServerRMI implements ConnectionLayerServer {
     private final LobbyGameListsController lobbyGameListController;
     private final ExecutorService serverExecutor = Executors.newSingleThreadExecutor();
-    int secondsTimeOut = 5;
+    int secondsTimeOut = Configs.secondsTimeOut;
 
     /**
      * The constructor of the class
@@ -41,24 +44,28 @@ public class ConnectionServerRMI implements ConnectionLayerServer {
         //Create a ServerModelController for the new client
 
         //expose the controller to the client
-        Future<Void> connect = serverExecutor.submit(() -> {
-            VirtualView virtualView = new VirtualViewRMI(view);
-            ControllerInterface controllerOnServer = new Controller(lobbyGameListController, virtualView);
-            virtualView.setController(controllerOnServer);
-            virtualView.setPingPongStub(pingPong);
-            ControllerInterface controllerStub = (ControllerInterface) UnicastRemoteObject.exportObject(controllerOnServer, 0);
-            PingPongInterface virtualViewStub = (PingPongInterface) UnicastRemoteObject.exportObject(virtualView, 0);
-            pingPong.setPingPongStub(virtualViewStub);
-            controller.setControllerStub(controllerStub);
-            controller.pingPong();
-            virtualView.pingPong();
-            virtualView.log(LogsOnClientStatic.CONNECTION_SUCCESS);
-            virtualView.transitionTo(ViewState.LOGIN_FORM);
-            return null;
+        Future<?> connect = serverExecutor.submit(() -> {
+            try {
+                VirtualView virtualView = new VirtualViewRMI(view);
+                ControllerInterface controllerOnServer = new Controller(lobbyGameListController, virtualView);
+                virtualView.setController(controllerOnServer);
+                virtualView.setPingPongStub(pingPong);
+                ControllerInterface controllerOnServerStub = (ControllerInterface) UnicastRemoteObject.exportObject(controllerOnServer, 0);
+                PingPongInterface virtualViewStub = (PingPongInterface) UnicastRemoteObject.exportObject(virtualView, 0);
+                pingPong.setPingPongStub(virtualViewStub);
+                controller.setControllerStub(controllerOnServerStub);
+                pingPong.pingPong();
+                virtualView.pingPong();
+                virtualView.log(LogsOnClientStatic.CONNECTION_SUCCESS);
+                virtualView.transitionTo(ViewState.LOGIN_FORM);
+            }catch (Exception e){
+                throw new RuntimeException("ConnectionServerRMI.connect: " + "\n  message: " + e.getMessage() + "\n  cause:\n" + e.getCause());
+            }
         });
 
         try {
             connect.get(secondsTimeOut, TimeUnit.SECONDS);
+        }catch (InterruptedException ignored){
         } catch (Exception e) {
             System.out.println("Error In Client Connection");
         }
