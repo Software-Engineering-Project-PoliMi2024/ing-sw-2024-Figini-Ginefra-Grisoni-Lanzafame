@@ -78,7 +78,6 @@ public class LobbyListJoinGUI implements Observer {
                 }
             }
         };
-
         return cellFactory;
     }
 
