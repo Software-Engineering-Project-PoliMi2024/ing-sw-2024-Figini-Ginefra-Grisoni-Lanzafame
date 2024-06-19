@@ -69,6 +69,9 @@ public class GameController implements GameControllerInterface {
     //TODO test when the decks finish the cards
     //TODO separate leave from disconnect; game ending view call leaveGame
     public synchronized void join(String joinerNickname, ViewInterface view, boolean reconnected){
+        if(game.hasEnded()){
+
+        }
         this.resetLastPlayerTimer();
         playerViewMap.put(joinerNickname, view);
 
@@ -98,12 +101,7 @@ public class GameController implements GameControllerInterface {
                 pawnChoiceStateTransition(otherPlayer);
             }
         } else if (game.hasEnded() && game.getCurrentPlayer().getNickname().equals(getLastActivePlayer())) {
-            //this.updateJoinActualGame(joinerNickname, game); if other information are necessary
-            try {
-                view.updateGame(new CodexDiffSetFinalPoints(game.getPointPerPlayerMap()));
-                view.updateGame(new GameDiffWinner(this.getWinners()));
-                view.transitionTo(ViewState.GAME_ENDING);
-            } catch (Exception ignored) {}
+
         } else {
             if (playerViewMap.size() == 2) {
                 //TODO test this
@@ -393,7 +391,7 @@ public class GameController implements GameControllerInterface {
     private synchronized void updateJoinSecretObjective(String joiner, Game game) {
         List<String> activePlayers = new ArrayList<>(playerViewMap.keySet().stream().toList());
         try {
-            playerViewMap.get(joiner).updateGame(DiffGenerator.updateJoinStartCard(game, activePlayers, joiner));
+            playerViewMap.get(joiner).updateGame(DiffGenerator.updateJoinSecretObj(game, activePlayers, joiner));
             playerViewMap.get(joiner).logGame(LogsOnClientStatic.GAME_JOINED);
         } catch (Exception ignored) {
         }
