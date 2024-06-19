@@ -14,11 +14,14 @@ public class AssetsGUI {
     public static Image logo = new Image(Objects.requireNonNull(GUI.class.getResourceAsStream("/GUI/images/CODEX_Rulebook_IT/01.png")));
 
     public static Image plateau = new Image(Objects.requireNonNull(GUI.class.getResourceAsStream("/GUI/images/PLATEAU-SCORE-IMP/plateau.png")));
-    public static Image pawnBleu = new Image(Objects.requireNonNull(GUI.class.getResourceAsStream("/GUI/images/CODEX_pion_bleu.png")));
-    public static Image pawnJaune = new Image(Objects.requireNonNull(GUI.class.getResourceAsStream("/GUI/images/CODEX_pion_jaune.png")));
-    public static Image pawnBlack = new Image(Objects.requireNonNull(GUI.class.getResourceAsStream("/GUI/images/CODEX_pion_noir.png")));
-    public static Image pawnGreen = new Image(Objects.requireNonNull(GUI.class.getResourceAsStream("/GUI/images/CODEX_pion_vert.png")));
-    public static Image pawnRed = new Image(Objects.requireNonNull(GUI.class.getResourceAsStream("/GUI/images/CODEX_pion_rouge.png")));
+    public static Image pawnBleu = new Image(Objects.requireNonNull(GUI.class.getResourceAsStream("/GUI/images/Pion/CODEX_Pion_bleu.png")));
+    public static Image pawnJaune = new Image(Objects.requireNonNull(GUI.class.getResourceAsStream("/GUI/images/Pion/CODEX_pion_jaune.png")));
+    public static Image pawnBlack = new Image(Objects.requireNonNull(GUI.class.getResourceAsStream("/GUI/images/Pion/CODEX_pion_noir.png")));
+    public static Image pawnGreen = new Image(Objects.requireNonNull(GUI.class.getResourceAsStream("/GUI/images/Pion/CODEX_pion_vert.png")));
+    public static Image pawnRed = new Image(Objects.requireNonNull(GUI.class.getResourceAsStream("/GUI/images//Pion/CODEX_pion_rouge.png")));
+
+    public static Image chatIcon = new Image(Objects.requireNonNull(GUI.class.getResourceAsStream("/GUI/images/Misc/chatIcon.png")));
+    public static Image unreadChatIcon = new Image(Objects.requireNonNull(GUI.class.getResourceAsStream("/GUI/images/Misc/unreadChatIcon.png")));
 
     public static Image loadCardFront(int id){
         String idString = String.valueOf(id);
@@ -48,6 +51,6 @@ public class AssetsGUI {
         return new Image(Objects.requireNonNull(GUI.class.getResourceAsStream("/GUI/images/Characters/" + resource + ".png")));
     }
 
-    public static Image eye = new Image(Objects.requireNonNull(GUI.class.getResourceAsStream("/GUI/images/eye.png")));
-    public static Image closedEye = new Image(Objects.requireNonNull(GUI.class.getResourceAsStream("/GUI/images/closedEye.png")));
+    public static Image eye = new Image(Objects.requireNonNull(GUI.class.getResourceAsStream("/GUI/images/Misc/eye.png")));
+    public static Image closedEye = new Image(Objects.requireNonNull(GUI.class.getResourceAsStream("/GUI/images/Misc/closedEye.png")));
 }

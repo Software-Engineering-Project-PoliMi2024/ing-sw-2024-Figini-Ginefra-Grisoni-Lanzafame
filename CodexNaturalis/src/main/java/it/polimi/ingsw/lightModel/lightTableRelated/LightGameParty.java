@@ -39,12 +39,15 @@ public class LightGameParty implements Differentiable, Observed {
         return playersColor;
     }
 
+    public PawnColors getPlayerColor(String nickname){
+        return playersColor.get(nickname);
+    }
+
     public List<PawnColors> getPawnChoices(){
         return pawnChoices;
     }
 
     public void addPlayerColor(String nickname, PawnColors color){
-
         playersColor.put(nickname, color);
         notifyObservers();
     }
@@ -92,7 +95,9 @@ public class LightGameParty implements Differentiable, Observed {
      * @param currentPlayer the current player playing
      */
     public void setCurrentPlayer(String currentPlayer) {
+
         this.currentPlayer = currentPlayer;
+        this.notifyObservers();
     }
     /**
      * @return the name of the game

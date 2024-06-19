@@ -12,6 +12,15 @@ public enum PawnsGui {
     BLACK(AssetsGUI.pawnBlack, PawnColors.BLACK),
     RED(AssetsGUI.pawnRed, PawnColors.RED);
 
+    public static PawnsGui getPawnGui(PawnColors pawnColor) {
+        for (PawnsGui p : PawnsGui.values()) {
+            if (p.getPawnColor().equals(pawnColor)) {
+                return p;
+            }
+        }
+        return null;
+    }
+
     private final ImageView imageView;
     private final PawnColors pawnColor;
 

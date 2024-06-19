@@ -11,6 +11,7 @@ public class CodexOthers extends CodexGUI{
         this.targetPlayer = targetPlayer;
     }
 
+    @Override
     public String getTargetPlayer(){
         return targetPlayer;
     }

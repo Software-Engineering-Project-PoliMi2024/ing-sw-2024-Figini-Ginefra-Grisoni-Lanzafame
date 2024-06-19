@@ -16,7 +16,7 @@ public class PlateauMapping {
         positionCoordinates.put(0, new Pair<>(421, 219));
         positionCoordinates.put(1, new Pair<>(791, 219));
         positionCoordinates.put(2, new Pair<>(1163, 219));
-        positionCoordinates.put(3, new Pair<>(1387, 360));
+        positionCoordinates.put(3, new Pair<>(1387, 560));
         positionCoordinates.put(4, new Pair<>(975, 560));
         positionCoordinates.put(5, new Pair<>(605, 560));
         positionCoordinates.put(6, new Pair<>(235, 560));

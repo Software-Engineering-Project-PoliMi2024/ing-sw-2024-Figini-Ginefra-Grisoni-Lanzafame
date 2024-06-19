@@ -1,6 +1,7 @@
 package it.polimi.ingsw.view.GUI.Components;
 
 import it.polimi.ingsw.designPatterns.Observer;
+import it.polimi.ingsw.model.playerReleted.PawnColors;
 import it.polimi.ingsw.view.GUI.AssetsGUI;
 import it.polimi.ingsw.view.GUI.Components.CodexRelated.Peeker;
 import it.polimi.ingsw.view.GUI.Components.Utils.AnchoredPopUp;
@@ -26,6 +27,7 @@ public class LeaderboardGUI implements Observer {
     private AnchoredPopUp popUp;
 
     private Map<String, Label> labelMap = new HashMap<>();
+    private Map<String, ImageView> pawnImageViewMap = new HashMap<>();
     private static Map<String, PawnsGui> playerpawnMap = new HashMap<>();
     private PlateauGUI plateau;
     private List<PawnsGui> availablePawns;
@@ -38,6 +40,7 @@ public class LeaderboardGUI implements Observer {
 
     public void attach() {
         GUI.getLightGame().getCodexMap().values().forEach(codex -> codex.attach(this));
+        GUI.getLightGame().getLightGameParty().attach(this);
     }
 
     public void addThisTo(AnchorPane parent) {
@@ -69,13 +72,13 @@ public class LeaderboardGUI implements Observer {
                     HBox row = new HBox();
                     row.setAlignment(Pos.CENTER_LEFT);
 
-                    boolean isFirstPlayer = e.getKey().equals(GUI.getLightGame().getLightGameParty().getFirstPlayerName());
-                    PawnsGui pawn = playerpawnMap.computeIfAbsent(e.getKey(), key -> new PlayerPawnManager().assignPawn(e.getKey(), isFirstPlayer));
 
-                    ImageView pawnView = pawn.getImageView();
+                    ImageView pawnView = new ImageView();
                     pawnView.setFitHeight(16);
                     pawnView.setFitWidth(16);
                     row.setSpacing(10);
+
+                    pawnImageViewMap.put(e.getKey(), pawnView);
 
                     Label label = new Label(e.getKey() + ": " + e.getValue());
 
@@ -118,9 +121,6 @@ public class LeaderboardGUI implements Observer {
                         row.getChildren().add(peekButton);
                     }
                     layout.getChildren().add(row);
-
-                    // Update pawn position on the plateau
-                    plateau.updatePawnPosition(e.getValue(), pawnView);
                 });
 
         // Add event handler to show plateau
@@ -136,8 +136,17 @@ public class LeaderboardGUI implements Observer {
         scores.entrySet().stream()
                 .sorted(Map.Entry.<String, Integer>comparingByValue().reversed())
                 .forEach(e -> {
+                    if(!labelMap.containsKey(e.getKey())){
+                        return;
+                    }
+
                     labelMap.get(e.getKey()).setText(e.getKey() + ": " + e.getValue());
-                    plateau.updatePawnPosition(e.getValue(), playerpawnMap.get(e.getKey()).getImageView());
+                    PawnColors playerColor = GUI.getLightGame().getLightGameParty().getPlayerColor(e.getKey());
+
+                    if(playerColor != null){
+                        pawnImageViewMap.get(e.getKey()).setImage(Objects.requireNonNull(PawnsGui.getPawnGui(playerColor)).getImageView().getImage());
+                        plateau.setScore(playerColor, e.getValue());
+                    }
                 });
 
         labelMap.forEach((name, label) -> {

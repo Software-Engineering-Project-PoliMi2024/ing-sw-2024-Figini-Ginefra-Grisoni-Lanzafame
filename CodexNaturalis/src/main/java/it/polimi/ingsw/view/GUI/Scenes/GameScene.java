@@ -16,6 +16,7 @@ public class GameScene extends SceneGUI{
     private ObjectiveChoice objectiveChoice;
 
     private PawnChoice pawnChoice;
+    private ChatButton chatButton;
 
     public GameScene() {
         super();
@@ -46,6 +47,10 @@ public class GameScene extends SceneGUI{
         objectiveChoice = new ObjectiveChoice(getContent());
 
         pawnChoice = new PawnChoice(getContent());
+
+        chatButton = new ChatButton();
+        chatButton.addThisTo(getContent());
+        chatButton.attachToChat();
     }
 
 }

@@ -4,14 +4,18 @@ import it.polimi.ingsw.designPatterns.Observer;
 import it.polimi.ingsw.lightModel.lightPlayerRelated.LightCodex;
 import it.polimi.ingsw.lightModel.lightPlayerRelated.LightFrontier;
 import it.polimi.ingsw.lightModel.lightPlayerRelated.LightPlacement;
+import it.polimi.ingsw.model.playerReleted.PawnColors;
 import it.polimi.ingsw.model.playerReleted.Placement;
 import it.polimi.ingsw.model.playerReleted.Position;
+import it.polimi.ingsw.view.GUI.AssetsGUI;
 import it.polimi.ingsw.view.GUI.Components.CardRelated.CardGUI;
+import it.polimi.ingsw.view.GUI.Components.PawnsGui;
 import it.polimi.ingsw.view.GUI.GUI;
 import it.polimi.ingsw.view.GUI.GUIConfigs;
 import javafx.geometry.Point2D;
 import javafx.geometry.Pos;
 import javafx.scene.Node;
+import javafx.scene.image.ImageView;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.Pane;
 import javafx.scene.layout.StackPane;
@@ -32,6 +36,8 @@ public class CodexGUI implements Observer {
     private final List<FrontierCardGUI> frontier = new ArrayList<>();
 
     private boolean isFrontierVisible = false;
+
+    private final ImageView pawn = new ImageView();
 
 
     public CodexGUI() {
@@ -76,12 +82,16 @@ public class CodexGUI implements Observer {
                     scale += deltaY / 1000;
                     this.cards.forEach(card -> card.setScaleAndUpdateTranslation(this.getScale(), this.center));
                     this.frontier.forEach(card -> card.setScaleAndUpdateTranslation(this.getScale(), this.center));
+                    this.setScaleAndUpdateTransformPawn(this.getScale());
                 }
         );
+
+        codex.getChildren().add(pawn);
     }
 
     public void attachToCodex(){
         this.getLightCodex().attach(this);
+        GUI.getLightGame().getLightGameParty().attach(this);
     }
 
     protected LightCodex getLightCodex(){
@@ -111,10 +121,24 @@ public class CodexGUI implements Observer {
         );
     }
 
+    public synchronized void addToCodex(Node node){
+        codex.getChildren().add(node);
+
+        if(codex.getChildren().size() >= 3 && codex.getChildren().indexOf(pawn) != 2){
+            codex.getChildren().remove(pawn);
+            codex.getChildren().add(2, pawn);
+        }
+        else if(codex.getChildren().size() < 3){
+            codex.getChildren().remove(pawn);
+            codex.getChildren().add(pawn);
+       }
+
+    }
 
     public synchronized void addCard(CardGUI card, Position position) {
         cards.add(card);
-        codex.getChildren().add(card.getImageView());
+
+        this.addToCodex(card.getImageView());
 
         //Anchor the card to the center
         codex.setAlignment(Pos.CENTER);
@@ -133,6 +157,18 @@ public class CodexGUI implements Observer {
 
     public void setCenter(Point2D center) {
         this.center = center;
+    }
+
+    public String getTargetPlayer(){
+        return GUI.getLightGame().getLightGameParty().getYourName();
+    }
+
+    private void setScaleAndUpdateTransformPawn(double scale){
+        pawn.setScaleX(scale);
+        pawn.setScaleY(scale);
+        Point2D center = this.getCardPosition(new Position(0, 0));
+        pawn.setTranslateX(center.getX());
+        pawn.setTranslateY(center.getY());
     }
 
     public synchronized void update(){
@@ -156,7 +192,7 @@ public class CodexGUI implements Observer {
             if(!currentFrontier.contains(newElement)){
                 Point2D cardPos = this.getCardPosition(newElement);
                 FrontierCardGUI fc = new FrontierCardGUI(newElement, cardPos.getX(), cardPos.getY());
-                codex.getChildren().add(fc.getCard());
+                this.addToCodex(fc.getCard());
                 fc.setVisibility(isFrontierVisible);
                 fc.setScale(this.getScale());
                 frontier.add(fc);
@@ -170,6 +206,18 @@ public class CodexGUI implements Observer {
                 codex.getChildren().remove(fc.getCard());
                 frontier.remove(fc);
             }
+        }
+
+        String myNickname = this.getTargetPlayer();
+        PawnColors myColor = GUI.getLightGame().getLightGameParty().getPlayerColor(myNickname);
+        if(pawn.getImage()==null && myColor != null){
+            System.out.println("Setting pawn image");
+            pawn.setImage(Objects.requireNonNull(PawnsGui.getPawnGui(myColor)).getImageView().getImage());
+            pawn.setFitHeight(50);
+            pawn.setFitWidth(50);
+            Point2D center = this.getCardPosition(new Position(0, 0));
+            pawn.setTranslateX(center.getX());
+            pawn.setTranslateY(center.getY());
         }
 
     }

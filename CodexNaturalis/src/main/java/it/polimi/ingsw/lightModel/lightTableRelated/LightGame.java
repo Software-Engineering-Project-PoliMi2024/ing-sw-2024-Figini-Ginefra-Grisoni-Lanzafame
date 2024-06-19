@@ -113,6 +113,7 @@ public class LightGame implements Differentiable {
     }
     public void setCurrentPlayer(String player){
         this.lightGameParty.setCurrentPlayer(player);
+
     }
     public void setSecretObjective(LightCard secretObjective){
         this.hand.setSecretObjective(secretObjective);
