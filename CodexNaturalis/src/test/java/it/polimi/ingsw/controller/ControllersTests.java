@@ -807,7 +807,7 @@ class ControllersTests {
         game.setCurrentPlayerIndex(game.getUsersList().lastIndexOf(player1));
         CardInHand cardPlaced = player1.getUserHand().getHand().stream().filter(Objects::nonNull).toList().getFirst();
         Position position = player1.getUserCodex().getFrontier().getFrontier().getFirst();
-        LightPlacement placement = new LightPlacement(position, Lightifier.lightifyToCard(cardPlaced), CardFace.FRONT);
+        LightPlacement placement = new LightPlacement(position, Lightifier.lightifyToCard(cardPlaced), CardFace.BACK);
         controller1.place(placement);
 
         //model
@@ -880,8 +880,9 @@ class ControllersTests {
         game.setCurrentPlayerIndex(game.getUsersList().lastIndexOf(player1));
         CardInHand cardPlaced = player1.getUserHand().getHand().stream().filter(Objects::nonNull).toList().getFirst();
         Position position = player1.getUserCodex().getFrontier().getFrontier().getFirst();
-        LightPlacement placement = new LightPlacement(position, Lightifier.lightifyToCard(cardPlaced), CardFace.FRONT);
+        LightPlacement placement = new LightPlacement(position, Lightifier.lightifyToCard(cardPlaced), CardFace.BACK);
         controller1.place(placement);
+        assert player1.getUserHand().getHand().size() == 2;
         CardInHand card = game.getGoldCardDeck().showTopCardOfDeck();
         controller1.draw(DrawableCard.GOLDCARD, Configs.actualDeckPos);
 
@@ -944,7 +945,7 @@ class ControllersTests {
         game.setCurrentPlayerIndex(game.getUsersList().lastIndexOf(player1));
         CardInHand cardPlaced = player1.getUserHand().getHand().stream().filter(Objects::nonNull).toList().getFirst();
         Position position = player1.getUserCodex().getFrontier().getFrontier().getFirst();
-        LightPlacement placement = new LightPlacement(position, Lightifier.lightifyToCard(cardPlaced), CardFace.FRONT);
+        LightPlacement placement = new LightPlacement(position, Lightifier.lightifyToCard(cardPlaced), CardFace.BACK);
         controller1.place(placement);
         CardInHand card = game.getGoldCardDeck().showCardFromBuffer(0);
         controller1.draw(DrawableCard.GOLDCARD, 0);
@@ -1012,7 +1013,7 @@ class ControllersTests {
 
         LightCard cardPlaced1 = Lightifier.lightifyToCard(firstPlayer.getUserHand().getHand().stream().toList().getFirst());
         Position position1 = firstPlayer.getUserCodex().getFrontier().getFrontier().getFirst();
-        LightPlacement placement1 = new LightPlacement(position1, cardPlaced1, CardFace.FRONT);
+        LightPlacement placement1 = new LightPlacement(position1, cardPlaced1, CardFace.BACK);
 
         firstPlayerController.controller.place(placement1);
         firstPlayerController.controller.draw(DrawableCard.GOLDCARD, 0);

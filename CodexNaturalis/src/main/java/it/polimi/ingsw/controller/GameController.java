@@ -31,6 +31,7 @@ import it.polimi.ingsw.lightModel.lightPlayerRelated.LightPlacement;
 import it.polimi.ingsw.model.cardReleted.cards.CardInHand;
 import it.polimi.ingsw.model.cardReleted.cards.CardTable;
 import it.polimi.ingsw.model.cardReleted.cards.ObjectiveCard;
+import it.polimi.ingsw.model.cardReleted.utilityEnums.CardFace;
 import it.polimi.ingsw.model.cardReleted.utilityEnums.DrawableCard;
 import it.polimi.ingsw.model.playerReleted.*;
 import it.polimi.ingsw.model.tableReleted.Game;
@@ -230,7 +231,12 @@ public class GameController implements GameControllerInterface {
         Player player = game.getUserFromNick(nickname);
         Codex codexBeforePlacement = new Codex(player.getUserCodex());
         CardInHand card = Heavifier.heavifyCardInHand(placement.card(), cardTable);
-        if(card.canBePlaced(codexBeforePlacement)) {
+        if(!card.canBePlaced(codexBeforePlacement) && placement.face() == CardFace.FRONT) {
+            try {
+                playerViewMap.get(nickname).logErr(LogsOnClientStatic.CARD_NOT_PLACEABLE);
+                playerViewMap.get(nickname).transitionTo(ViewState.PLACE_CARD);
+            }catch (Exception ignored){}
+        }else {
             player.playCard(Heavifier.heavify(placement, cardTable));
             Set<CardInHand> hand = player.getUserHand().getHand();
             Codex codexAfterPlacement = player.getUserCodex();
@@ -250,11 +256,6 @@ public class GameController implements GameControllerInterface {
                 playerViewMap.get(nickname).transitionTo(ViewState.DRAW_CARD);
             } catch (Exception ignored) {
             }
-        }else{
-            try {
-                playerViewMap.get(nickname).logErr(LogsOnClientStatic.CARD_NOT_PLACEABLE);
-                playerViewMap.get(nickname).transitionTo(ViewState.PLACE_CARD);
-            }catch (Exception ignored){}
         }
     }
 
