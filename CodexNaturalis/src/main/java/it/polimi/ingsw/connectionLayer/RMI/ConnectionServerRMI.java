@@ -44,25 +44,28 @@ public class ConnectionServerRMI implements ConnectionLayerServer {
         //Create a ServerModelController for the new client
 
         //expose the controller to the client
-        Future<Void> connect = serverExecutor.submit(() -> {
-            VirtualView virtualView = new VirtualViewRMI(view);
-            ControllerInterface controllerOnServer = new Controller(lobbyGameListController, virtualView);
-            virtualView.setController(controllerOnServer);
-            System.out.println("setViewPingPong" + pingPong);
-            virtualView.setPingPongStub(pingPong);
-            ControllerInterface controllerStub = (ControllerInterface) UnicastRemoteObject.exportObject(controllerOnServer, 0);
-            PingPongInterface virtualViewStub = (PingPongInterface) UnicastRemoteObject.exportObject(virtualView, 0);
-            System.out.println("setControllerPingPong" + virtualViewStub);
-            pingPong.setPingPongStub(virtualViewStub);
-            controller.setControllerStub(controllerStub);
-            virtualView.pingPong();
-            virtualView.log(LogsOnClientStatic.CONNECTION_SUCCESS);
-            virtualView.transitionTo(ViewState.LOGIN_FORM);
-            return null;
+        Future<?> connect = serverExecutor.submit(() -> {
+            try {
+                VirtualView virtualView = new VirtualViewRMI(view);
+                ControllerInterface controllerOnServer = new Controller(lobbyGameListController, virtualView);
+                virtualView.setController(controllerOnServer);
+                virtualView.setPingPongStub(pingPong);
+                ControllerInterface controllerOnServerStub = (ControllerInterface) UnicastRemoteObject.exportObject(controllerOnServer, 0);
+                PingPongInterface virtualViewStub = (PingPongInterface) UnicastRemoteObject.exportObject(virtualView, 0);
+                pingPong.setPingPongStub(virtualViewStub);
+                controller.setControllerStub(controllerOnServerStub);
+                pingPong.pingPong();
+                virtualView.pingPong();
+                virtualView.log(LogsOnClientStatic.CONNECTION_SUCCESS);
+                virtualView.transitionTo(ViewState.LOGIN_FORM);
+            }catch (Exception e){
+                throw new RuntimeException("ConnectionServerRMI.connect: " + "\n  message: " + e.getMessage() + "\n  cause:\n" + e.getCause());
+            }
         });
 
         try {
             connect.get(secondsTimeOut, TimeUnit.SECONDS);
+        }catch (InterruptedException ignored){
         } catch (Exception e) {
             System.out.println("Error In Client Connection");
         }
