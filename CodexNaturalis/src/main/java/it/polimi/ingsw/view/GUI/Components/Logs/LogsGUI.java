@@ -1,37 +1,51 @@
 package it.polimi.ingsw.view.GUI.Components.Logs;
 
 import it.polimi.ingsw.designPatterns.Observer;
+import it.polimi.ingsw.view.GUI.Components.Utils.AnchoredPopUp;
 import it.polimi.ingsw.view.GUI.GUI;
+import javafx.animation.KeyFrame;
+import javafx.animation.Timeline;
+import javafx.geometry.Insets;
+import javafx.geometry.Pos;
+import javafx.scene.Node;
 import javafx.scene.control.ListView;
 import javafx.scene.layout.AnchorPane;
+import javafx.scene.layout.Pane;
+import javafx.scene.text.Text;
+import javafx.scene.text.TextAlignment;
+import javafx.util.Duration;
 
 public class LogsGUI implements Observer {
-    ListView<String> logsDisplay = new ListView<>();
+    private final Pane parent;
+    private final AnchoredPopUp popUp;
+    private final Text lastLog = new Text();
+    private final Timeline waiting = new Timeline();
 
-    /**
-     * Constructor for the LogsGUI class
-     */
-    public LogsGUI(){
+    public LogsGUI(Pane parent){
         GUI.getLogMemory().attach(this);
-        AnchorPane.setBottomAnchor(logsDisplay, 10.0);
-        AnchorPane.setRightAnchor(logsDisplay, 10.0);
-        logsDisplay.setPrefWidth(300);
-        logsDisplay.setPrefHeight(200);
-    }
+        this.parent = parent;
+        this.popUp = new AnchoredPopUp((AnchorPane)parent, 0.2f, 0.16f, Pos.TOP_CENTER, 0.25f);
+        popUp.setLocked(true);
+        this.popUp.getContent().getChildren().add(lastLog);
 
-    /**
-     * Customizable constructor for the LogsGUI class
-     * @param fromBottom pixel from the bottom
-     * @param fromRight pixel from the right
-     * @param width width in pixel of the list view
-     * @param height height in pixel of the list view
-     */
-    public LogsGUI(double fromBottom, double fromRight, int width, int height){
-        GUI.getLogMemory().attach(this);
-        AnchorPane.setBottomAnchor(logsDisplay, fromBottom);
-        AnchorPane.setRightAnchor(logsDisplay, fromRight);
-        logsDisplay.setPrefWidth(width);
-        logsDisplay.setPrefHeight(height);
+        AnchorPane.setTopAnchor(lastLog, 70.0);
+        AnchorPane.setLeftAnchor(lastLog, 0.0);
+        AnchorPane.setRightAnchor(lastLog, 0.0);
+
+        lastLog.setTextAlignment(TextAlignment.CENTER);
+        lastLog.setStyle("-fx-font-size: 16;");
+        lastLog.setWrappingWidth(200);
+
+        popUp.getContent().setPadding(new Insets(20));
+
+
+        waiting.getKeyFrames().addAll(
+                new KeyFrame(Duration.millis(2000))
+        );
+
+        waiting.setOnFinished(e -> popUp.close());
+
+        popUp.close();
     }
 
     /**
@@ -39,15 +53,11 @@ public class LogsGUI implements Observer {
      */
     @Override
     public void update() {
-        logsDisplay.getItems().clear();
-        logsDisplay.getItems().addAll(GUI.getLogMemory().getLogs());
-    }
+        String lastLogString = GUI.getLogMemory().getLastLog();
+        System.out.println("Logging: " + lastLog);
+        lastLog.setText(lastLogString);
+        popUp.open();
 
-    /**
-     * Getter for the logs display
-     * @return listView logsDisplay
-     */
-    public ListView<String> getLogsDisplay() {
-        return logsDisplay;
+        waiting.playFromStart();
     }
 }

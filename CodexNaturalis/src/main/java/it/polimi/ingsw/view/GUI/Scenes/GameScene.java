@@ -5,6 +5,7 @@ import it.polimi.ingsw.view.GUI.Components.CodexRelated.CodexGUI;
 import it.polimi.ingsw.view.GUI.Components.CodexRelated.CollectedCollectablesGUI;
 import it.polimi.ingsw.view.GUI.Components.DeckRelated.DeckAreaGUI;
 import it.polimi.ingsw.view.GUI.Components.HandRelated.HandGUI;
+import it.polimi.ingsw.view.GUI.Components.Logs.LogsGUI;
 import it.polimi.ingsw.view.GUI.Root;
 
 public class GameScene extends SceneGUI{
@@ -14,7 +15,6 @@ public class GameScene extends SceneGUI{
     private CollectedCollectablesGUI collectedCollectables;
     private LeaderboardGUI leaderboard;
     private ObjectiveChoice objectiveChoice;
-
     private PawnChoice pawnChoice;
     private ChatButton chatButton;
 
@@ -32,6 +32,8 @@ public class GameScene extends SceneGUI{
         this.add(codex.getCodex());
 
         hand.addHandTo(getContent());
+
+        LogsGUI logs = new LogsGUI(getContent());
 
         collectedCollectables = new CollectedCollectablesGUI();
         collectedCollectables.attachToCodex();

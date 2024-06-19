@@ -63,7 +63,6 @@ public class PlateauGUI {
         if (coordinates != null) {
             double x = (coordinates.getKey() - plateauView.getImage().getWidth() / 2) * plateauView.getFitWidth() / plateauView.getImage().getWidth();
             double y = (plateauView.getImage().getHeight() / 2 - coordinates.getValue()) * plateauView.getFitHeight() / plateauView.getImage().getHeight();
-            System.out.println("Coordinates for score " + score + ": " + coordinates.getKey() + ", " + coordinates.getValue() + " width: " + plateauView.getFitWidth() + " height: " + plateauView.getFitHeight());
             return new Point2D(x, y);
         }
         return null;
@@ -91,7 +90,6 @@ public class PlateauGUI {
         int score = pawnScores.get(pawnColor);
         Point2D coordinates = getCoordinates(score);
         if (coordinates != null) {
-            System.out.println("Setting position of " + pawnColor + " score " + score + " to " + coordinates.getX() + ", " + coordinates.getY());
             ImageView pawnView = pawnViews.get(pawnColor);
             pawnView.setTranslateX(coordinates.getX());
             pawnView.setTranslateY(coordinates.getY());
