@@ -32,7 +32,7 @@ public class PawnChoice implements Observer {
 
         container.getChildren().addAll(label, choiceBox);
         container.setAlignment(Pos.CENTER);
-        container.setStyle("-fx-background-color: rgb(164, 158, 35); -fx-background-radius: 20; -fx-border-radius: 20;");
+        container.getStyleClass().add("bordersCodexStyle");
 
 
         GUI.getLightGame().getLightGameParty().attach(this);

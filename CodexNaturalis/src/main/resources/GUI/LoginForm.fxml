@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
+<?import javafx.geometry.Insets?>
 <?import javafx.scene.control.Button?>
 <?import javafx.scene.control.TextField?>
 <?import javafx.scene.layout.AnchorPane?>
@@ -16,17 +17,24 @@
                   <Font name="System Bold" size="61.0" />
                </font>
             </Text>
-            <VBox alignment="CENTER" maxWidth="200.0">
+            <VBox alignment="CENTER" maxWidth="250.0" spacing="10.0" styleClass="bordersCodexStyle" stylesheets="@global.css">
                <children>
-                  <Text strokeType="OUTSIDE" strokeWidth="0.0" text="Nickname" />
-                  <TextField fx:id="nicknameText" alignment="CENTER" promptText="Gianni" />
+                  <VBox alignment="CENTER" maxWidth="200.0">
+                     <children>
+                        <Text strokeType="OUTSIDE" strokeWidth="0.0" text="Nickname" />
+                        <TextField fx:id="nicknameText" alignment="CENTER" promptText="Gianni" />
+                     </children>
+                  </VBox>
+                  <Button mnemonicParsing="false" onAction="#login" prefHeight="30.0" prefWidth="83.0" styleClass="accent" text="Login">
+                     <font>
+                        <Font size="15.0" />
+                     </font>
+                  </Button>
                </children>
+               <padding>
+                  <Insets bottom="10.0" left="10.0" right="10.0" top="10.0" />
+               </padding>
             </VBox>
-            <Button mnemonicParsing="false" onAction="#login" prefHeight="30.0" prefWidth="83.0" styleClass="accent" text="Login">
-               <font>
-                  <Font size="15.0" />
-               </font>
-            </Button>
          </children>
       </VBox>
    </children>

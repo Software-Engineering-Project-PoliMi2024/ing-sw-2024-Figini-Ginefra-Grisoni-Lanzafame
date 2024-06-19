@@ -23,7 +23,7 @@
                   <Font name="System Bold" size="120.0" />
                </font>
             </Text>
-            <BorderPane prefHeight="481.0" prefWidth="774.0">
+            <BorderPane prefHeight="481.0" prefWidth="774.0" styleClass="bordersCodexStyle" stylesheets="@global.css">
                <center>
                   <VBox alignment="CENTER" maxWidth="300.0" minWidth="126.0" prefHeight="427.0" prefWidth="300.0" spacing="50.0" BorderPane.alignment="CENTER">
                      <children>

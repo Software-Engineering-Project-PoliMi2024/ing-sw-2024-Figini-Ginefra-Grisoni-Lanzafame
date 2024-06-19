@@ -96,20 +96,20 @@ public class AnchoredPopUp {
 
 
         //set the content background color and radius
-        content.setStyle("-fx-background-color: black;");
+        content.getStyleClass().add("bordersCodexStyle");
 
         switch (alignment) {
             case BOTTOM_CENTER:
-                content.setStyle(content.getStyle() + "-fx-background-radius: 20 20 0 0;");
+                content.setStyle(content.getStyle() + "-fx-background-radius: 20 20 0 0; -fx-border-radius: 20 20 0 0;");
                 break;
             case TOP_CENTER:
-                content.setStyle(content.getStyle() + "-fx-background-radius: 0 0 20 20;");
+                content.setStyle(content.getStyle() + "-fx-background-radius: 0 0 20 20; -fx-border-radius: 0 0 20 20;");
                 break;
             case Pos.CENTER_RIGHT:
-                content.setStyle(content.getStyle() + "-fx-background-radius: 20 0 0 20;");
+                content.setStyle(content.getStyle() + "-fx-background-radius: 20 0 0 20; -fx-border-radius: 20 0 0 20;");
                 break;
             case Pos.CENTER_LEFT:
-                content.setStyle(content.getStyle() + "-fx-background-radius: 0 20 20 0;");
+                content.setStyle(content.getStyle() + "-fx-background-radius: 0 20 20 0; -fx-border-radius: 0 20 20 0;");
                 break;
         }
 

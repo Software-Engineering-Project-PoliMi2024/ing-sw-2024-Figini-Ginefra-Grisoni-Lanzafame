@@ -44,7 +44,7 @@ public class ImageCounter {
         Rectangle labelBg = new Rectangle(50, 50);
         labelBg.setArcWidth(10);
         labelBg.setArcHeight(10);
-        labelBg.setStyle("-fx-fill: white;");
+        labelBg.setStyle("-fx-fill: rgb(216, 196, 113);");
 
 
         //make the bg as big as the text
@@ -59,7 +59,7 @@ public class ImageCounter {
             labelBg.setLayoutY(newBounds.getCenterY());
         });
 
-        counterLabel.setStyle("-fx-font-size: 20; -fx-background-color: white;");
+        counterLabel.setStyle("-fx-font-size: 20;");
 
         container.getChildren().addAll(this.image, labelBg, counterLabel);
 

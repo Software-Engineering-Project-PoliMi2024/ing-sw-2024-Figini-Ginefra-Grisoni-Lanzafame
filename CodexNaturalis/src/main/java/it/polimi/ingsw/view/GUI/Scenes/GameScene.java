@@ -33,16 +33,16 @@ public class GameScene extends SceneGUI{
 
         hand.addHandTo(getContent());
 
+        collectedCollectables = new CollectedCollectablesGUI();
+        collectedCollectables.attachToCodex();
+        collectedCollectables.addThisTo(getContent());
+
         deck = new DeckAreaGUI();
         deck.addThisTo(getContent());
 
         leaderboard = new LeaderboardGUI();
         leaderboard.addThisTo(getContent());
         leaderboard.attach();
-
-        collectedCollectables = new CollectedCollectablesGUI();
-        collectedCollectables.attachToCodex();
-        collectedCollectables.addThisTo(getContent());
 
         objectiveChoice = new ObjectiveChoice(getContent());
 
