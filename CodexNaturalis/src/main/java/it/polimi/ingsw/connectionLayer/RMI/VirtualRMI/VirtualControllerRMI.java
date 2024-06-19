@@ -1,11 +1,11 @@
-package it.polimi.ingsw.connectionLayer.VirtualRMI;
+package it.polimi.ingsw.connectionLayer.RMI.VirtualRMI;
 
 import it.polimi.ingsw.Configs;
 import it.polimi.ingsw.connectionLayer.ConnectionLayerServer;
 import it.polimi.ingsw.connectionLayer.PingPongInterface;
 import it.polimi.ingsw.connectionLayer.VirtualLayer.VirtualController;
 import it.polimi.ingsw.controller.Interfaces.ControllerInterface;
-import it.polimi.ingsw.controller.LogsOnClientStatic;
+import it.polimi.ingsw.controller.LogsOnClient;
 import it.polimi.ingsw.lightModel.lightPlayerRelated.LightCard;
 import it.polimi.ingsw.lightModel.diffs.nuclearDiffs.FatManLobbyList;
 import it.polimi.ingsw.lightModel.diffs.nuclearDiffs.GadgetGame;
@@ -40,7 +40,8 @@ public class VirtualControllerRMI implements VirtualController {
             System.setProperty("java.rmi.server.hostname", ip);
         } catch (IOException e) {
             try {
-                view.logErr("No internet connection, can't get IP address");
+                view.logErr(LogsOnClient.UNABLE_TO_GET_IP);
+                view.transitionTo(ViewState.SERVER_CONNECTION);
             }catch (Exception ignored){}
         }
     }
@@ -228,7 +229,7 @@ public class VirtualControllerRMI implements VirtualController {
         }catch (RemoteException ignored){}
         this.eraseLightModel();
         try {
-            view.logErr(LogsOnClientStatic.CONNECTION_LOST_CLIENT_SIDE);
+            view.logErr(LogsOnClient.CONNECTION_LOST_CLIENT_SIDE);
             view.transitionTo(ViewState.SERVER_CONNECTION);
         }catch (Exception ignored){}
     }
@@ -272,7 +273,7 @@ public class VirtualControllerRMI implements VirtualController {
         }catch (Exception e){
             try {
                 e.printStackTrace();
-                view.logErr(LogsOnClientStatic.CONNECTION_ERROR);
+                view.logErr(LogsOnClient.CONNECTION_ERROR);
                 view.transitionTo(ViewState.SERVER_CONNECTION);
             }catch (Exception ignored){}
         }

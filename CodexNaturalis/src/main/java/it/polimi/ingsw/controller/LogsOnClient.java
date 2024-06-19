@@ -2,8 +2,9 @@ package it.polimi.ingsw.controller;
 
 import it.polimi.ingsw.Configs;
 
-public class LogsOnClientStatic {
+public class LogsOnClient {
     //connectionForm related
+    public static String UNABLE_TO_GET_IP = "No internet connection, can't get IP address";
     public static String CONNECTION_SUCCESS = "Connected to the server successfully.";
     public static String CONNECTION_ERROR = "Failed to connect to the server.";
     public static String CONNECTION_LOST_CLIENT_SIDE = "Lost connection with the server.";

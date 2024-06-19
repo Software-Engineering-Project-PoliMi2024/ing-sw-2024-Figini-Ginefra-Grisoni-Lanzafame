@@ -1,11 +1,9 @@
 package it.polimi.ingsw.view.TUI.Renderables.Forms;
 
-import it.polimi.ingsw.connectionLayer.ConnectionLayerClient;
 import it.polimi.ingsw.connectionLayer.VirtualLayer.VirtualController;
-import it.polimi.ingsw.connectionLayer.VirtualRMI.VirtualControllerRMI;
-import it.polimi.ingsw.connectionLayer.VirtualSocket.VirtualControllerSocket;
+import it.polimi.ingsw.connectionLayer.RMI.VirtualRMI.VirtualControllerRMI;
+import it.polimi.ingsw.connectionLayer.Socket.VirtualSocket.VirtualControllerSocket;
 import it.polimi.ingsw.view.ActualView;
-import it.polimi.ingsw.view.ViewInterface;
 import it.polimi.ingsw.view.TUI.inputs.CommandPrompt;
 import it.polimi.ingsw.view.TUI.inputs.CommandPromptResult;
 

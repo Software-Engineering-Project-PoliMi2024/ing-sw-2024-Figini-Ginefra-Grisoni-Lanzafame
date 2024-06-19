@@ -4,9 +4,9 @@ import it.polimi.ingsw.connectionLayer.ConnectionLayerServer;
 import it.polimi.ingsw.connectionLayer.RMI.ConnectionServerRMI;
 import it.polimi.ingsw.connectionLayer.Socket.ClientHandler;
 import it.polimi.ingsw.connectionLayer.VirtualLayer.VirtualView;
-import it.polimi.ingsw.connectionLayer.VirtualSocket.VirtualViewSocket;
+import it.polimi.ingsw.connectionLayer.Socket.VirtualSocket.VirtualViewSocket;
 import it.polimi.ingsw.controller.Controller;
-import it.polimi.ingsw.controller.LogsOnClientStatic;
+import it.polimi.ingsw.controller.LogsOnClient;
 import it.polimi.ingsw.controller.LobbyGameListsController;
 import it.polimi.ingsw.view.TUI.Printing.Printer;
 import it.polimi.ingsw.view.ViewState;
@@ -77,7 +77,7 @@ public class Server {
                     }
                     clientHandler.setOwner(virtualView);
                     clientHandler.setController(controller);
-                    virtualView.log(LogsOnClientStatic.SERVER_JOINED);
+                    virtualView.log(LogsOnClient.SERVER_JOINED);
                     virtualView.transitionTo(ViewState.LOGIN_FORM);
                 } catch (IOException e) {
                     System.out.println("connection dropped");

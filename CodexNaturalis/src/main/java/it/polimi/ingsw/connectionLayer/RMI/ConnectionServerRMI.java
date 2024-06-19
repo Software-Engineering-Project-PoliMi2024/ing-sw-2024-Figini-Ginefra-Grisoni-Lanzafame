@@ -3,12 +3,12 @@ package it.polimi.ingsw.connectionLayer.RMI;
 import it.polimi.ingsw.Configs;
 import it.polimi.ingsw.connectionLayer.ConnectionLayerServer;
 import it.polimi.ingsw.connectionLayer.PingPongInterface;
-import it.polimi.ingsw.connectionLayer.VirtualRMI.VirtualViewRMI;
+import it.polimi.ingsw.connectionLayer.RMI.VirtualRMI.VirtualViewRMI;
 import it.polimi.ingsw.controller.Controller;
 import it.polimi.ingsw.controller.Interfaces.ControllerInterface;
 import it.polimi.ingsw.connectionLayer.VirtualLayer.VirtualController;
 import it.polimi.ingsw.connectionLayer.VirtualLayer.VirtualView;
-import it.polimi.ingsw.controller.LogsOnClientStatic;
+import it.polimi.ingsw.controller.LogsOnClient;
 import it.polimi.ingsw.controller.LobbyGameListsController;
 import it.polimi.ingsw.view.ViewInterface;
 import it.polimi.ingsw.view.ViewState;
@@ -56,7 +56,7 @@ public class ConnectionServerRMI implements ConnectionLayerServer {
                 controller.setControllerStub(controllerOnServerStub);
                 pingPong.pingPong();
                 virtualView.pingPong();
-                virtualView.log(LogsOnClientStatic.CONNECTION_SUCCESS);
+                virtualView.log(LogsOnClient.CONNECTION_SUCCESS);
                 virtualView.transitionTo(ViewState.LOGIN_FORM);
             }catch (Exception e){
                 throw new RuntimeException("ConnectionServerRMI.connect: " + "\n  message: " + e.getMessage() + "\n  cause:\n" + e.getCause());

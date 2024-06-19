@@ -3,8 +3,8 @@ package it.polimi.ingsw.controller.ConnectionLayer;
 import it.polimi.ingsw.connectionLayer.Socket.ServerHandler;
 import it.polimi.ingsw.connectionLayer.Socket.ServerMsg.*;
 import it.polimi.ingsw.connectionLayer.VirtualLayer.VirtualController;
-import it.polimi.ingsw.connectionLayer.VirtualSocket.VirtualControllerSocket;
-import it.polimi.ingsw.controller.LogsOnClientStatic;
+import it.polimi.ingsw.connectionLayer.Socket.VirtualSocket.VirtualControllerSocket;
+import it.polimi.ingsw.controller.LogsOnClient;
 import it.polimi.ingsw.view.ViewInterface;
 import it.polimi.ingsw.view.ViewState;
 import org.junit.jupiter.api.Assertions;
@@ -55,7 +55,7 @@ public class ServerHandlerTest {
         serverHandler.setOwner(mockController);
         serverHandler.run();
         //If the exception is correctly thrown and catch, a Connection_Error message should be logged to the view
-        verify(mockView, times(1)).logErr(LogsOnClientStatic.CONNECTION_ERROR);
+        verify(mockView, times(1)).logErr(LogsOnClient.CONNECTION_ERROR);
     }
 
     @Test

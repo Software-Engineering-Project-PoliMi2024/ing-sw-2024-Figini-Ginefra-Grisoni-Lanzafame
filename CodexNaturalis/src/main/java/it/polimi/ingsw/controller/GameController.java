@@ -72,7 +72,7 @@ public class GameController implements GameControllerInterface {
     public synchronized void join(String joinerNickname, ViewInterface view, boolean reconnected){
         if(game.getGameState().equals(GameState.END_GAME)){
             try {
-                view.logErr(LogsOnClientStatic.GAME_END);
+                view.logErr(LogsOnClient.GAME_END);
                 view.transitionTo(ViewState.JOIN_LOBBY);
             }catch (Exception ignored){}
             return;
@@ -157,7 +157,7 @@ public class GameController implements GameControllerInterface {
             }
         } else {
             try {
-                view.logGame(LogsOnClientStatic.PAWN_TAKEN);
+                view.logGame(LogsOnClient.PAWN_TAKEN);
                 this.pawnChoiceStateTransition(nickname);
             } catch (Exception ignored) {
             }
@@ -235,7 +235,7 @@ public class GameController implements GameControllerInterface {
         CardInHand card = Heavifier.heavifyCardInHand(placement.card(), cardTable);
         if(!card.canBePlaced(codexBeforePlacement) && placement.face() == CardFace.FRONT) {
             try {
-                playerViewMap.get(nickname).logErr(LogsOnClientStatic.CARD_NOT_PLACEABLE);
+                playerViewMap.get(nickname).logErr(LogsOnClient.CARD_NOT_PLACEABLE);
                 playerViewMap.get(nickname).transitionTo(ViewState.PLACE_CARD);
             }catch (Exception ignored){}
         }else {
@@ -397,7 +397,7 @@ public class GameController implements GameControllerInterface {
         List<String> activePlayers = new ArrayList<>(playerViewMap.keySet().stream().toList());
         try {
             playerViewMap.get(joiner).updateGame(DiffGenerator.updateJoinSecretObj(game, activePlayers, joiner));
-            playerViewMap.get(joiner).logGame(LogsOnClientStatic.GAME_JOINED);
+            playerViewMap.get(joiner).logGame(LogsOnClient.GAME_JOINED);
         } catch (Exception ignored) {
         }
     }
@@ -427,7 +427,7 @@ public class GameController implements GameControllerInterface {
         List<String> activePlayers = new ArrayList<>(playerViewMap.keySet().stream().toList());
         try {
             playerViewMap.get(joiner).updateGame(DiffGenerator.updateChosePawn(game, activePlayers, joiner));
-            playerViewMap.get(joiner).logGame(LogsOnClientStatic.GAME_JOINED);
+            playerViewMap.get(joiner).logGame(LogsOnClient.GAME_JOINED);
         } catch (Exception ignored) {
         }
     }
@@ -436,7 +436,7 @@ public class GameController implements GameControllerInterface {
         List<String> activePlayers = new ArrayList<>(playerViewMap.keySet().stream().toList());
         try {
             playerViewMap.get(joiner).updateGame(DiffGenerator.updateJoinStartCard(game, activePlayers, joiner));
-            playerViewMap.get(joiner).logGame(LogsOnClientStatic.GAME_JOINED);
+            playerViewMap.get(joiner).logGame(LogsOnClient.GAME_JOINED);
         } catch (Exception ignored) {
         }
     }
@@ -448,7 +448,7 @@ public class GameController implements GameControllerInterface {
                 try {
                     view.updateGame(communicateJoin);
                     if(reconnected) {
-                        view.logOthers(joinerNickname + LogsOnClientStatic.PLAYER_JOINED);
+                        view.logOthers(joinerNickname + LogsOnClient.PLAYER_JOINED);
                     }
                 } catch (Exception ignored) {}
             }
@@ -460,7 +460,7 @@ public class GameController implements GameControllerInterface {
             if (!nickname.equals(leaver)) {
                 try {
                     view.updateGame(new GameDiffPlayerActivity(new ArrayList<>(), List.of(leaver)));
-                    view.logOthers(leaver + LogsOnClientStatic.PLAYER_GAME_LEFT);
+                    view.logOthers(leaver + LogsOnClient.PLAYER_GAME_LEFT);
                 } catch (Exception ignored) {
                 }
             }
@@ -539,7 +539,7 @@ public class GameController implements GameControllerInterface {
     private synchronized void notifyLastInGameTimer() {
         new HashMap<>(playerViewMap).forEach((nickname, view) -> {
             try {
-                view.logGame(LogsOnClientStatic.LAST_PLAYER);
+                view.logGame(LogsOnClient.LAST_PLAYER);
             } catch (Exception ignored) {
             }
         });
@@ -551,7 +551,7 @@ public class GameController implements GameControllerInterface {
 
         new HashMap<>(playerViewMap).forEach((nickname, view) -> {
             try {
-                view.logGame(LogsOnClientStatic.EVERYONE_CHOSE_PAWN);
+                view.logGame(LogsOnClient.EVERYONE_CHOSE_PAWN);
                 view.transitionTo(ViewState.CHOOSE_PAWN);
             } catch (Exception ignored) {
             }
@@ -578,14 +578,14 @@ public class GameController implements GameControllerInterface {
                 view.updateGame(new DeckDiffDeckDraw(DrawableCard.GOLDCARD, goldBack));
 
                 if (nickname.equals(chooser)) {
-                    view.log(LogsOnClientStatic.YOU_CHOSE_PAWN);
-                    view.logGame(LogsOnClientStatic.WAIT_PAWN);
+                    view.log(LogsOnClient.YOU_CHOSE_PAWN);
+                    view.logGame(LogsOnClient.WAIT_PAWN);
 
                     for (HandDiff handDiff : DiffGenerator.getHandYourCurrentState(player)) {
                         view.updateGame(handDiff);
                     }
                 } else {
-                    view.logOthers(chooser + LogsOnClientStatic.PLAYER_CHOSE_PAWN);
+                    view.logOthers(chooser + LogsOnClient.PLAYER_CHOSE_PAWN);
                 }
             } catch (Exception ignored) {
             }
@@ -597,13 +597,13 @@ public class GameController implements GameControllerInterface {
         new HashMap<>(playerViewMap).forEach((nickname, view) -> {
             try {
                 if (nickname.equals(placer)) {
-                    view.log(LogsOnClientStatic.YOU_PLACE_STARTCARD);
-                    view.logGame(LogsOnClientStatic.WAIT_STARTCARD);
+                    view.log(LogsOnClient.YOU_PLACE_STARTCARD);
+                    view.logGame(LogsOnClient.WAIT_STARTCARD);
                     view.updateGame(new HandDiffRemove(placement.card()));
                     view.updateGame(new CodexDiffPlacement(placer, player.getUserCodex().getPoints(),
                             player.getUserCodex().getEarnedCollectables(), List.of(placement), player.getUserCodex().getFrontier().getFrontier()));
                 } else {
-                    view.logOthers(placer + LogsOnClientStatic.PLAYER_PLACE_STARTCARD);
+                    view.logOthers(placer + LogsOnClient.PLAYER_PLACE_STARTCARD);
                 }
             } catch (Exception ignored) {
             }
@@ -626,10 +626,10 @@ public class GameController implements GameControllerInterface {
             try {
                 if (nickname.equals(chooser)) {
                     view.updateGame(new HandDiffSetObj(objChoice));
-                    view.log(LogsOnClientStatic.YOU_CHOSE_SECRET_OBJ);
-                    view.logGame(LogsOnClientStatic.WAIT_SECRET_OBJECTIVE);
+                    view.log(LogsOnClient.YOU_CHOSE_SECRET_OBJ);
+                    view.logGame(LogsOnClient.WAIT_SECRET_OBJECTIVE);
                 } else {
-                    view.logOthers(chooser + LogsOnClientStatic.PLAYER_CHOSE_SECRET_OBJ);
+                    view.logOthers(chooser + LogsOnClient.PLAYER_CHOSE_SECRET_OBJ);
                 }
             } catch (Exception ignored) {
             }
@@ -657,11 +657,11 @@ public class GameController implements GameControllerInterface {
                     view.updateGame(new HandDiffRemove(newPlacement.card()));
                     for (LightCard card : playability.keySet())
                         view.updateGame(new HandDiffUpdatePlayability(card, playability.get(card)));
-                    view.log(LogsOnClientStatic.YOU_PLACED);
+                    view.log(LogsOnClient.YOU_PLACED);
                 } else {
                     LightBack newPlacementBack = new LightBack(newPlacement.card().idBack());
                     view.updateGame(new HandOtherDiffRemove(newPlacementBack, placer));
-                    view.logOthers(placer + LogsOnClientStatic.PLAYER_PLACED);
+                    view.logOthers(placer + LogsOnClient.PLAYER_PLACED);
                 }
             } catch (Exception ignored) {
             }
@@ -693,11 +693,11 @@ public class GameController implements GameControllerInterface {
                     view.updateGame(diff);
 
                 if (!nickname.equals(drawerNickname)) {
-                    view.logOthers(drawerNickname + LogsOnClientStatic.PLAYER_DRAW);
+                    view.logOthers(drawerNickname + LogsOnClient.PLAYER_DRAW);
                     LightBack backOfDrawnCard = new LightBack(drawnCard.idBack());
                     view.updateGame(new HandOtherDiffAdd(backOfDrawnCard, drawerNickname));
                 } else {
-                    view.log(LogsOnClientStatic.YOU_DRAW);
+                    view.log(LogsOnClient.YOU_DRAW);
                     view.updateGame(new HandDiffAdd(drawnCard, playability));
                 }
             } catch (Exception ignored) {
@@ -718,7 +718,7 @@ public class GameController implements GameControllerInterface {
             try {
                 view.updateGame(new CodexDiffSetFinalPoints(pointsPerPlayerMap));
                 view.updateGame(new GameDiffWinner(winners));
-                view.logGame(LogsOnClientStatic.GAME_END);
+                view.logGame(LogsOnClient.GAME_END);
             } catch (Exception ignored) {
             }
         });
@@ -727,7 +727,7 @@ public class GameController implements GameControllerInterface {
     private synchronized void notifyLastTurn() {
         new HashMap<>(playerViewMap).forEach((nickname, view) -> {
             try {
-                view.logGame(LogsOnClientStatic.LAST_TURN);
+                view.logGame(LogsOnClient.LAST_TURN);
             } catch (Exception ignored) {
             }
         });
@@ -750,9 +750,9 @@ public class GameController implements GameControllerInterface {
             try {
                 view.updateGame(new GameDiffCurrentPlayer(nextPlayer));
                 if (!nickname.equals(nextPlayer)) {
-                    view.logOthers(nextPlayer + LogsOnClientStatic.PLAYER_TURN);
+                    view.logOthers(nextPlayer + LogsOnClient.PLAYER_TURN);
                 } else {
-                    view.log(LogsOnClientStatic.YOUR_TURN);
+                    view.log(LogsOnClient.YOUR_TURN);
                 }
             } catch (Exception ignored) {
             }
@@ -777,7 +777,7 @@ public class GameController implements GameControllerInterface {
 
         new HashMap<>(playerViewMap).forEach((nickname, view) -> {
             try {
-                view.logGame(LogsOnClientStatic.EVERYONE_PLACED_STARTCARD);
+                view.logGame(LogsOnClient.EVERYONE_PLACED_STARTCARD);
                 view.transitionTo(ViewState.SELECT_OBJECTIVE);
             } catch (Exception ignored) {
             }
@@ -813,7 +813,7 @@ public class GameController implements GameControllerInterface {
         new HashMap<>(playerViewMap).forEach((nickname, view) -> {
             try {
                 view.updateGame(new GameDiffPublicObj(game.getCommonObjective().stream().map(Lightifier::lightifyToCard).toArray(LightCard[]::new)));
-                view.logGame(LogsOnClientStatic.EVERYONE_CHOSE_OBJ);
+                view.logGame(LogsOnClient.EVERYONE_CHOSE_OBJ);
             } catch (Exception ignored) {
             }
         });
@@ -877,7 +877,7 @@ public class GameController implements GameControllerInterface {
         try {
             ViewInterface joinerView = playerViewMap.get(joiner);
             joinerView.updateGame(DiffGenerator.updateJoinActualGame(game, activePlayers, joiner));
-            joinerView.logGame(LogsOnClientStatic.GAME_JOINED);
+            joinerView.logGame(LogsOnClient.GAME_JOINED);
         } catch (Exception ignored) {
         }
 
@@ -925,9 +925,9 @@ public class GameController implements GameControllerInterface {
             try {
                 view.updateGame(new ChatDiffs(List.of(chatMessage)));
                 if(chatMessage.getSender().equals(nickname)){
-                    view.logChat(LogsOnClientStatic.SENT_PUBLIC_MESSAGE);
+                    view.logChat(LogsOnClient.SENT_PUBLIC_MESSAGE);
                 }else{
-                    view.logChat(LogsOnClientStatic.RECEIVED_PUBLIC_MESSAGE);
+                    view.logChat(LogsOnClient.RECEIVED_PUBLIC_MESSAGE);
                 }
             } catch (Exception ignored) {
             }
@@ -937,10 +937,10 @@ public class GameController implements GameControllerInterface {
     private synchronized void updatePrivateChat(ChatMessage chatMessage) {
         try {
             playerViewMap.get(chatMessage.getSender()).updateGame(new ChatDiffs(List.of(chatMessage)));
-            playerViewMap.get(chatMessage.getSender()).logChat(LogsOnClientStatic.SENT_PRIVATE_MESSAGE + chatMessage.getReceiver());
+            playerViewMap.get(chatMessage.getSender()).logChat(LogsOnClient.SENT_PRIVATE_MESSAGE + chatMessage.getReceiver());
 
             playerViewMap.get(chatMessage.getReceiver()).updateGame(new ChatDiffs(List.of(chatMessage)));
-            playerViewMap.get(chatMessage.getReceiver()).logChat(LogsOnClientStatic.RECEIVED_PRIVATE_MESSAGE + chatMessage.getSender());
+            playerViewMap.get(chatMessage.getReceiver()).logChat(LogsOnClient.RECEIVED_PRIVATE_MESSAGE + chatMessage.getSender());
         } catch (Exception ignored) {
         }
     }
