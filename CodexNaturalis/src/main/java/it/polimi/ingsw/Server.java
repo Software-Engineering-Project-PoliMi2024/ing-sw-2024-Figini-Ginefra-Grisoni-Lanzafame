@@ -1,7 +1,7 @@
 package it.polimi.ingsw;
 
 import it.polimi.ingsw.connectionLayer.ConnectionLayerServer;
-import it.polimi.ingsw.connectionLayer.ConnectionServerRMI;
+import it.polimi.ingsw.connectionLayer.RMI.ConnectionServerRMI;
 import it.polimi.ingsw.connectionLayer.Socket.ClientHandler;
 import it.polimi.ingsw.connectionLayer.VirtualLayer.VirtualView;
 import it.polimi.ingsw.connectionLayer.VirtualSocket.VirtualViewSocket;
@@ -27,7 +27,9 @@ public class Server {
         OSRelated.checkOrCreateDataFolderServer();
         try (Socket socket = new Socket()) {
             socket.connect(new InetSocketAddress("google.com", 80));
-            Printer.println("IP: " + socket.getLocalAddress().getHostAddress());
+            String ip = socket.getLocalAddress().getHostAddress();
+            Printer.println("IP: " + ip);
+            System.setProperty("java.rmi.server.hostname", ip);
         } catch (IOException e) {
             System.out.println("No internet connection, can't get IP address");
         }

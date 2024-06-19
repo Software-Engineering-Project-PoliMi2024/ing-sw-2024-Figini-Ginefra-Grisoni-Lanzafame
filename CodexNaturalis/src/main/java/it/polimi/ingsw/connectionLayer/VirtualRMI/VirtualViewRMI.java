@@ -12,6 +12,7 @@ import it.polimi.ingsw.view.ViewInterface;
 import it.polimi.ingsw.view.ViewState;
 
 import java.rmi.RemoteException;
+import java.rmi.server.UnicastRemoteObject;
 import java.util.List;
 import java.util.concurrent.*;
 
@@ -19,24 +20,25 @@ public class VirtualViewRMI implements VirtualView {
     private final ViewInterface viewStub;
     private PingPongInterface pingPongStub;
     private ControllerInterface controller;
-    private final ThreadPoolExecutor viewExecutor = new ThreadPoolExecutor(1, 4, 10, TimeUnit.MILLISECONDS, new LinkedBlockingQueue<>());
-    private ScheduledExecutorService pingPongExecutor = Executors.newSingleThreadScheduledExecutor();
-    private boolean notAlreadyDisconnected = false;
+    private final ThreadPoolExecutor viewExecutor = new ThreadPoolExecutor(2, 4, 10, TimeUnit.MILLISECONDS, new LinkedBlockingQueue<>());
+    private final ScheduledExecutorService pingPongExecutor = Executors.newSingleThreadScheduledExecutor();
+    private boolean alreadyDisconnected = false;
     /**
      * @param viewStub the stub of the view on the client
-     * @throws RemoteException if a communication-related exception occurs during the execution of this method.
      */
-    public VirtualViewRMI(ViewInterface viewStub) throws RemoteException {
+    public VirtualViewRMI(ViewInterface viewStub) {
         this.viewStub = viewStub;
     }
     public void pingPong(){
         Future<?> pong = pingPongExecutor.scheduleAtFixedRate(() -> {
-                try {
-                    pingPongStub.checkEmpty();
-                } catch (Exception e) {
-                    this.disconnect();
-                    pingPongExecutor.shutdownNow();
-                }
+            try {
+                //System.out.println("pingPong");
+                pingPongStub.checkEmpty();
+            } catch (Exception e) {
+                pingPongExecutor.shutdownNow();
+                this.disconnect();
+                System.out.println("pingPong " + e.getMessage());
+            }
         }, Configs.pingPongFrequency, Configs.pingPongFrequency, TimeUnit.SECONDS);
 
     }
@@ -53,162 +55,201 @@ public class VirtualViewRMI implements VirtualView {
 
     @Override
     public void transitionTo(ViewState state) throws RemoteException {
-        Future<Void> trasitionToFuture = viewExecutor.submit(()->{
-            viewStub.transitionTo(state);
-            return null;
+        Future<?> trasitionToFuture = viewExecutor.submit(()->{
+            try {
+                viewStub.transitionTo(state);
+            }catch (Exception e){
+                throw new RuntimeException("VirtualViewRMI.transitionTo: " + "\n  message: " + e.getMessage() + "\n  cause:\n" + e.getCause());
+            }
         });
         try {
             trasitionToFuture.get(Configs.secondsTimeOut, TimeUnit.SECONDS);
+        }catch (InterruptedException ignored){
         }catch (Exception e){
-            debug(e);
-            //this.disconnect();
+            e.printStackTrace();
+            this.disconnect();
         }
     }
 
     @Override
     public void log(String logMsg) throws RemoteException {
-        Future<Void> logFuture = viewExecutor.submit(()->{
-            viewStub.log(logMsg);
-            return null;
+        Future<?> logFuture = viewExecutor.submit(()->{
+            try {
+                viewStub.log(logMsg);
+            }catch (Exception e){
+                throw new RuntimeException("VirtualViewRMI.log: " + "\n  message: " + e.getMessage() + "\n  cause:\n" + e.getCause());
+            }
         });
         try {
             logFuture.get(Configs.secondsTimeOut, TimeUnit.SECONDS);
+        }catch (InterruptedException ignored){
         }catch (Exception e){
-            debug(e);
-            //this.disconnect();
+            e.printStackTrace();
+            this.disconnect();
         }
     }
 
     @Override
     public void logErr(String logMsg) throws RemoteException {
-        Future<Void> logErrFuture = viewExecutor.submit(()->{
-            viewStub.logErr(logMsg);
-            return null;
+        Future<?> logErrFuture = viewExecutor.submit(()->{
+            try {
+                viewStub.logErr(logMsg);
+            }catch (Exception e){
+                throw new RuntimeException("VirtualViewRMI.logErr: " + "\n  message: " + e.getMessage() + "\n  cause:\n" + e.getCause());
+            }
         });
         try {
             logErrFuture.get(Configs.secondsTimeOut, TimeUnit.SECONDS);
+        }catch (InterruptedException ignored){
         }catch (Exception e){
-            debug(e);
-            //this.disconnect();
+            e.printStackTrace();
+            this.disconnect();
         }
     }
 
     @Override
     public void logOthers(String logMsg) throws RemoteException {
-        Future<Void> logFuture = viewExecutor.submit(()->{
-            viewStub.logOthers(logMsg);
-            return null;
+        Future<?> logFuture = viewExecutor.submit(()->{
+            try {
+                viewStub.logOthers(logMsg);
+            }catch (Exception e){
+                throw new RuntimeException("VirtualViewRMI.logOthers: " + "\n  message: " + e.getMessage() + "\n  cause:\n" + e.getCause());
+            }
         });
         try {
             logFuture.get(Configs.secondsTimeOut, TimeUnit.SECONDS);
+        }catch (InterruptedException ignored){
         }catch (Exception e){
-            debug(e);
-            //this.disconnect();
+            e.printStackTrace();
+            this.disconnect();
         }
     }
 
     @Override
     public void logGame(String logMsg) throws RemoteException {
-        Future<Void> logFuture = viewExecutor.submit(()-> {
-            viewStub.logGame(logMsg);
-            return null;
+        Future<?> logFuture = viewExecutor.submit(()-> {
+            try {
+                viewStub.logGame(logMsg);
+            }catch (Exception e){
+                throw new RuntimeException("VirtualViewRMI.logGame: " + "\n  message: " + e.getMessage() + "\n  cause:\n" + e.getCause());
+            }
         });
         try {
             logFuture.get(Configs.secondsTimeOut, TimeUnit.SECONDS);
+        }catch (InterruptedException ignored){
         }catch (Exception e){
-            debug(e);
-            //this.disconnect();
+            e.printStackTrace();
+            this.disconnect();
         }
     }
 
     @Override
-    public void logChat(String logMsg) throws Exception {
-        Future<Void> logFuture = viewExecutor.submit(()->{
-            viewStub.logChat(logMsg);
-            return null;
+    public void logChat(String logMsg) throws RemoteException {
+        Future<?> logFuture = viewExecutor.submit(()->{
+            try {
+                viewStub.logChat(logMsg);
+            }catch (Exception e){
+                throw new RuntimeException("VirtualViewRMI.logChat: " + "\n  message: " + e.getMessage() + "\n  cause:\n" + e.getCause());
+            }
         });
         try {
             logFuture.get(Configs.secondsTimeOut, TimeUnit.SECONDS);
+        }catch (InterruptedException ignored){
         }catch (Exception e){
-            debug(e);
-            //this.disconnect();
+            e.printStackTrace();
+            this.disconnect();
         }
     }
     @Override
     public void updateLobbyList(ModelDiffs<LightLobbyList> diff) throws RemoteException {
-        Future<Void> updateFuture = viewExecutor.submit(()->{
-            viewStub.updateLobbyList(diff);
-            return null;
+        Future<?> updateFuture = viewExecutor.submit(()->{
+            try {
+                viewStub.updateLobbyList(diff);
+            }catch (Exception e){
+                throw new RuntimeException("VirtualViewRMI.updateLobbyList: " + "\n  message: " + e.getMessage() + "\n  cause:\n" + e.getCause());
+            }
+
         });
         try {
             updateFuture.get(Configs.secondsTimeOut, TimeUnit.SECONDS);
+        }catch (InterruptedException ignored){
         }catch (Exception e){
-            debug(e);
-            //this.disconnect();
+            e.printStackTrace();
+            this.disconnect();
         }
     }
 
     @Override
     public void updateLobby(ModelDiffs<LightLobby> diff) throws RemoteException {
-        Future<Void> updateFuture = viewExecutor.submit(()->{
-            viewStub.updateLobby(diff);
-            return null;
+        Future<?> updateFuture = viewExecutor.submit(()->{
+
         });
         try {
-            updateFuture.get(Configs.secondsTimeOut, TimeUnit.SECONDS);
+            viewStub.updateLobby(diff);
         }catch (Exception e){
-            debug(e);
-            //this.disconnect();
+            throw new RuntimeException("VirtualViewRMI.updateLobby: " + "\n  message: " + e.getMessage() + "\n  cause:\n" + e.getCause());
+        }
+        try {
+            updateFuture.get(Configs.secondsTimeOut, TimeUnit.SECONDS);
+        }catch (InterruptedException ignored){
+        }catch (Exception e){
+            e.printStackTrace();
+            this.disconnect();
         }
     }
 
     @Override
     public void updateGame(ModelDiffs<LightGame> diff) throws RemoteException {
-        Future<Void> updateFuture = viewExecutor.submit(()->{
-            viewStub.updateGame(diff);
-            return null;
+        Future<?> updateFuture = viewExecutor.submit(()->{
+            try {
+                viewStub.updateGame(diff);
+            }catch (Exception e){
+                throw new RuntimeException("VirtualViewRMI.updateGame: " + "\n  message: " + e.getMessage() + "\n  cause:\n" + e.getCause());
+            }
         });
         try {
             updateFuture.get(Configs.secondsTimeOut, TimeUnit.SECONDS);
+        }catch (InterruptedException ignored){
         }catch (Exception e){
-            debug(e);
-            //this.disconnect();
+            e.printStackTrace();
+            this.disconnect();
         }
     }
 
     @Override
     public void setFinalRanking(List<String> ranking) throws RemoteException {
-        Future<Void> setFinalRankingFuture = viewExecutor.submit(()->{
-            viewStub.setFinalRanking(ranking);
-            return null;
+        Future<?> setFinalRankingFuture = viewExecutor.submit(()->{
+            try {
+                viewStub.setFinalRanking(ranking);
+            }catch (Exception e){
+                throw new RuntimeException("VirtualViewRMI.setFinalRanking: " + "\n  message: " + e.getMessage() + "\n  cause:\n" + e.getCause());
+            }
         });
         try {
             setFinalRankingFuture.get(Configs.secondsTimeOut, TimeUnit.SECONDS);
+        }catch (InterruptedException ignored){
         }catch (Exception e){
-            debug(e);
-            //this.disconnect();
+            e.printStackTrace();
+            this.disconnect();
         }
     }
 
     private synchronized void disconnect(){
         try {
-            if(!notAlreadyDisconnected){
-                notAlreadyDisconnected = true;
+            if(!alreadyDisconnected){
+                alreadyDisconnected = true;
                 controller.disconnect();
             }
-            //UnicastRemoteObject.unexportObject(controller, true);
+            UnicastRemoteObject.unexportObject(controller, true);
+        }catch (InterruptedException ignored){
         }catch (Exception e){
-            e.printStackTrace();
+            System.out.println("disconnect " + e.getMessage());
         }
     }
 
     public void setController(ControllerInterface controller) {
-        notAlreadyDisconnected = false;
+        alreadyDisconnected = false;
         this.controller = controller;
-    }
-
-    private void debug(Exception e){
-        e.printStackTrace();
     }
 
 }

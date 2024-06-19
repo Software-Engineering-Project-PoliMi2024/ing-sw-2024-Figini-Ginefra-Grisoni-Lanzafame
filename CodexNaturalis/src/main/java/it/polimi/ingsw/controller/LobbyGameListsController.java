@@ -84,7 +84,7 @@ public class LobbyGameListsController implements it.polimi.ingsw.controller.Inte
                 view.transitionTo(ViewState.JOIN_LOBBY);
             }catch (Exception ignored){}
         }else { //create the lobby
-            System.out.println(creator + " create" + lobbyName + " lobby");
+            System.out.println(creator + " created " + lobbyName + " lobby");
             Lobby lobbyCreated = new Lobby(maxPlayerCount, lobbyName);
 
             leaveLobbyList(creator);
