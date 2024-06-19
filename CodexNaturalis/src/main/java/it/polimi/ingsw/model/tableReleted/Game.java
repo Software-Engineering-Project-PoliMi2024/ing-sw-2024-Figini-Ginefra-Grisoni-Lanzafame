@@ -31,6 +31,7 @@ public class Game implements Serializable {
     private final GameParty gameParty;
     private final List<ObjectiveCard> commonObjective;
 
+    private GameState gameState = GameState.CHOOSE_START_CARD;
     private Integer lastTurnsCounter = null;
     /**
      * Constructs a new Game instance with a specified maximum number of players.
@@ -47,6 +48,14 @@ public class Game implements Serializable {
 
         this.populateCommonObjective();
         this.setupStartCard();
+    }
+
+    public void setGameState(GameState gameState) {
+        this.gameState = gameState;
+    }
+
+    public GameState getGameState() {
+        return gameState;
     }
 
     /** @return the Objective Card Deck*/
@@ -125,7 +134,6 @@ public class Game implements Serializable {
      * to the codex of the user
      */
     public void addObjectivePoints(){
-        //TODO if(gameState == GameState.END_GAME) {
             for (Player player : new ArrayList<>(getUsersList())) {
                 for (ObjectiveCard commonObj : commonObjective) {
                     player.getUserCodex().pointsFromObjective(commonObj);
@@ -211,25 +219,6 @@ public class Game implements Serializable {
     }
 
     /**
-     * @return true if the players in game are choosing the startCard
-     */
-    public boolean isInStartCardState() {
-        return !this.hasEnded() && gameParty.getUsersList().stream().map(Player::getUserHand).map(Hand::getStartCard).anyMatch(Objects::nonNull);
-    }
-
-    public boolean isInPawnChoiceState() {
-        return !this.hasEnded() && !isInStartCardState() && gameParty.getUsersList().stream().map(Player::getPawnColor).anyMatch(Objects::isNull)
-                && gameParty.getPawnChoices().stream().anyMatch(Objects::nonNull);
-    }
-
-    /**
-     * @return true if the players in game are choosing the secretObjective
-     */
-    public boolean inInSecretObjState() {
-        return gameParty.getUsersList().stream().map(Player::getUserHand).map(Hand::getSecretObjectiveChoices).anyMatch(Objects::nonNull);
-    }
-
-    /**
      * This method is used to check if the decks are empty
      * @return true if the decks are empty, false otherwise
      */
@@ -278,7 +267,7 @@ public class Game implements Serializable {
         return lastTurnsCounter != null;
     }
 
-    public boolean hasEnded() {
+    public boolean noMoreTurns() {
         if (lastTurnsCounter != null)
             return lastTurnsCounter == 0;
         return false;
