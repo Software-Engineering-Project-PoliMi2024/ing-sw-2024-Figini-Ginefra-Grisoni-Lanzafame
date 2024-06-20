@@ -15,7 +15,7 @@ import javafx.scene.layout.VBox;
 import java.util.List;
 
 public class ChatDisplay {
-    private PopUp chatPopUp;
+    private final PopUp chatPopUp;
     private final ListView<ChatMessage> messages = new ListView<>();
 
     private ChoiceBox<String> receiverChoice;
@@ -25,7 +25,7 @@ public class ChatDisplay {
     public ChatDisplay(AnchorPane parent) {
         chatPopUp = new PopUp(parent);
         messages.setCellFactory(param -> listViewChatMessageCellFactory());
-        messages.getSelectionModel().selectedItemProperty().addListener(linkChoicetoAnswer());
+        messages.getSelectionModel().selectedItemProperty().addListener(linkMessage());
 
         VBox popUpFiller = new VBox();
         popUpFiller.setSpacing(20.0);
@@ -63,18 +63,18 @@ public class ChatDisplay {
                     setText(null);
                     setGraphic(null);
                 } else {
-                    HBox hBox = new HBox();
-                    hBox.setAlignment(Pos.CENTER);
+                    HBox messageContainer = new HBox();
+                    messageContainer.setAlignment(Pos.CENTER);
                     Label sender = new Label(chatMessage.getSender() + ": ");
                     Label message = new Label(chatMessage.getMessage());
                     Label receiver = new Label();
                     if(chatMessage.getPrivacy() == ChatMessage.MessagePrivacy.PRIVATE){
                         receiver.setText(" -> " + chatMessage.getReceiver());
-                        hBox.getChildren().addAll(sender, message, receiver);
+                        messageContainer.getChildren().addAll(sender, message, receiver);
                     }else{
-                        hBox.getChildren().addAll(sender, message);
+                        messageContainer.getChildren().addAll(sender, message);
                     }
-                    setGraphic(hBox);
+                    setGraphic(messageContainer);
                 }
             }
         };
@@ -90,8 +90,24 @@ public class ChatDisplay {
         chatPopUp.open();
     }
 
-    public ChangeListener<ChatMessage> linkChoicetoAnswer(){
-        return new ChangeListener<ChatMessage>() {
+    private void sendMessage(){
+        String sender = GUI.getLightGame().getLightGameParty().getYourName();
+        String message = sendMessageField.getText();
+        String receiver = receiverChoice.getValue();
+        try{
+            if(receiver.equals(publicMsg.EVERYONE.toString())) {
+                GUI.getControllerStatic().sendChatMessage(new ChatMessage(sender, message));
+            }else{
+                GUI.getControllerStatic().sendChatMessage(new ChatMessage(sender, message, receiver));
+            }
+        }catch (Exception e){
+            throw new RuntimeException(e);
+        }
+        sendMessageField.clear();
+    }
+
+    public ChangeListener<ChatMessage> linkMessage(){
+        return new ChangeListener<>() {
             @Override
             public void changed(ObservableValue<? extends ChatMessage> observableValue, ChatMessage chatMessage, ChatMessage t1) {
                 ChatMessage selectedMessage = messages.getSelectionModel().getSelectedItem();
@@ -100,26 +116,39 @@ public class ChatDisplay {
                     sendMessageField.setPromptText("Write a message to: " + selectedMessage.getSender());
                     receiverChoice.setValue(selectedMessage.getSender());
                 }else{
-                    receiverChoice.setValue("Everyone");
+                    receiverChoice.setValue(publicMsg.EVERYONE.toString());
                     sendMessageField.setPromptText("Write a message to: " + receiverChoice.getValue());
                 }
             }
         };
     }
 
+    public ChangeListener<String> linkChoice(){
+        return new ChangeListener<>() {
+            @Override
+            public void changed(ObservableValue<? extends String> observableValue, String s, String t1) {
+                sendMessageField.setPromptText("Write a message to: " + receiverChoice.getValue());
+            }
+        };
+    }
+
     private ChoiceBox<String> initializeReceiverChoice(){
         receiverChoice = new ChoiceBox<>();
-        receiverChoice.getItems().add("Everyone");
+        receiverChoice.getItems().add(publicMsg.EVERYONE.toString());
         for(String player : GUI.getLightGame().getLightGameParty().getPlayerActiveList().keySet()){
-            receiverChoice.getItems().add(player);
+            if(!player.equals(GUI.getLightGame().getLightGameParty().getYourName())){
+                receiverChoice.getItems().add(player);
+            }
         }
-        receiverChoice.setValue("Everyone");
+        receiverChoice.setValue(publicMsg.EVERYONE.toString());
+        receiverChoice.getSelectionModel().selectedItemProperty().addListener(linkChoice());
         return receiverChoice;
     }
 
     private Button initializeSendButton(){
-        //TODO implement send button, add icon
+        //TODO add icon
         sendButton = new Button("Send");
+        sendButton.setOnAction(e -> sendMessage());
         return sendButton;
     }
 
@@ -134,5 +163,13 @@ public class ChatDisplay {
         sendingOptionContainer.setAlignment(Pos.CENTER);
         sendingOptionContainer.getChildren().addAll(initializeReceiverChoice(), initializeSendButton());
         return sendingOptionContainer;
+    }
+
+    private enum publicMsg {
+        EVERYONE;
+        @Override
+        public String toString() {
+            return "Everyone";
+        }
     }
 }
