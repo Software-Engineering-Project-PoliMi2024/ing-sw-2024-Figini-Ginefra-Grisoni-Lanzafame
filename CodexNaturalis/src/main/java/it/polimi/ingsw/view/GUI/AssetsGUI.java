@@ -1,5 +1,6 @@
 package it.polimi.ingsw.view.GUI;
 
+import it.polimi.ingsw.model.cardReleted.utilityEnums.CardCorner;
 import it.polimi.ingsw.model.cardReleted.utilityEnums.Resource;
 import it.polimi.ingsw.model.cardReleted.utilityEnums.WritingMaterial;
 import javafx.scene.image.Image;
@@ -51,5 +52,9 @@ public class AssetsGUI {
 
     public static Image loadCharacter(Resource resource) {
         return new Image(Objects.requireNonNull(GUI.class.getClassLoader().getResourceAsStream("GUI/images/Characters/" + resource + ".png"), "Character " + resource + " is null"));
+    }
+
+    public static Image loadCorner(CardCorner corner){
+        return new Image(Objects.requireNonNull(GUI.class.getResourceAsStream("/GUI/images/Corners/" + corner + ".png")));
     }
 }

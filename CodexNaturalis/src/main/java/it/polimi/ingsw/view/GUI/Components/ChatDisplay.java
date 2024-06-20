@@ -2,6 +2,7 @@ package it.polimi.ingsw.view.GUI.Components;
 
 import it.polimi.ingsw.model.playerReleted.ChatMessage;
 import it.polimi.ingsw.model.playerReleted.PawnColors;
+import it.polimi.ingsw.view.GUI.Components.PawnRelated.PawnsGui;
 import it.polimi.ingsw.view.GUI.Components.Utils.PopUp;
 import it.polimi.ingsw.view.GUI.GUI;
 import javafx.beans.value.ChangeListener;
