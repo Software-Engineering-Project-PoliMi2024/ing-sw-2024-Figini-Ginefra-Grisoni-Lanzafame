@@ -15,7 +15,7 @@ import it.polimi.ingsw.view.ViewInterface;
 public class Controller implements ControllerInterface, GameControllerReceiver {
     private String nickname;
     private final LobbyGameListsController lobbyGameListController;
-    private final ViewInterface view;
+    private ViewInterface view;
     private GameController gameController;
 
     public Controller(LobbyGameListsController lobbyGameListController, ViewInterface view){
@@ -72,6 +72,7 @@ public class Controller implements ControllerInterface, GameControllerReceiver {
     @Override
     public void disconnect() {
         lobbyGameListController.disconnect(nickname);
+        view = null;
     }
 
     @Override
