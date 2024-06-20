@@ -95,24 +95,6 @@ public class DiffGenerator {
     }
 
     /**
-     * Generates a diff that updates the lightGame with the name of the user joined
-     * @param nickname the nickname of the user joined
-     * @return the diff that updates the lightGame with the name of the user joined
-     */
-    public static GameDiffPlayerActivity diffAddUserToGame(String nickname){
-        return new GameDiffPlayerActivity(List.of(nickname), new ArrayList<>());
-    }
-
-    /**
-     * Generates a diff that updates the lightGame with the name of the user disconnected
-     * @param nickname the nickname of the user disconnected
-     * @return the diff that updates the lightGame with the name of the user disconnected
-     */
-    public static GameDiffPlayerActivity diffRemoveUserFromGame(String nickname) {
-        return new GameDiffPlayerActivity(new ArrayList<>(), List.of(nickname));
-    }
-
-    /**
      * Generates a diff that updates the deck with a new card after one is drawn
      * @param deckType the type of the deck
      * @param pos the position of the card (2 = deck; 0,1 = buffer)
