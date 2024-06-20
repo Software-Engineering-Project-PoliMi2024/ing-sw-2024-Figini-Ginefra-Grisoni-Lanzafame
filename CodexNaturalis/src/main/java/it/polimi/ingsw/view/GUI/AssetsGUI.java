@@ -21,8 +21,6 @@ public class AssetsGUI {
     public static Image pawnGreen = new Image(Objects.requireNonNull(GUI.class.getClassLoader().getResourceAsStream("GUI/images/Pion/CODEX_pion_vert.png"), "Pawn Green is null"));
     public static Image pawnRed = new Image(Objects.requireNonNull(GUI.class.getClassLoader().getResourceAsStream("GUI/images/Pion/CODEX_pion_rouge.png"), "Pawn Red is null"));
     //Misc assets
-    public static Image chatIcon = new Image(Objects.requireNonNull(GUI.class.getClassLoader().getResourceAsStream("GUI/images/Misc/chatIcon.png"), "Chat Icon is null"));
-    public static Image unreadChatIcon = new Image(Objects.requireNonNull(GUI.class.getClassLoader().getResourceAsStream("GUI/images/Misc/unreadChatIcon.png"), "Unread Chat Icon is null"));
     public static Image eye = new Image(Objects.requireNonNull(GUI.class.getClassLoader().getResourceAsStream("GUI/images/Misc/eye.png"), "Eye is null"));
     public static Image closedEye = new Image(Objects.requireNonNull(GUI.class.getClassLoader().getResourceAsStream("GUI/images/Misc/closedEye.png"), "Closed Eye is null"));
     public static Image bgTile = new Image(Objects.requireNonNull(GUI.class.getClassLoader().getResourceAsStream("GUI/images/bgTile.png"), "bgTile is null"));
