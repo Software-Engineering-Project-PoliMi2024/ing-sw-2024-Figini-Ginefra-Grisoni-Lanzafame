@@ -25,6 +25,7 @@ public class AssetsGUI {
     public static Image unreadChatIcon = new Image(Objects.requireNonNull(GUI.class.getClassLoader().getResourceAsStream("GUI/images/Misc/unreadChatIcon.png"), "Unread Chat Icon is null"));
     public static Image eye = new Image(Objects.requireNonNull(GUI.class.getClassLoader().getResourceAsStream("GUI/images/Misc/eye.png"), "Eye is null"));
     public static Image closedEye = new Image(Objects.requireNonNull(GUI.class.getClassLoader().getResourceAsStream("GUI/images/Misc/closedEye.png"), "Closed Eye is null"));
+    public static Image bgTile = new Image(Objects.requireNonNull(GUI.class.getClassLoader().getResourceAsStream("GUI/images/bgTile.png"), "bgTile is null"));
 
     public static Image loadCardFront(int id){
         String idString = String.valueOf(id);
