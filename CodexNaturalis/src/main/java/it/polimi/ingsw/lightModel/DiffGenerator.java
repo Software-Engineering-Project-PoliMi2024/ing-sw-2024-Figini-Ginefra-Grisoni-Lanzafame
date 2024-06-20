@@ -134,7 +134,7 @@ public class DiffGenerator {
         joinDiff.put(getPlayerActivity(activePlayers));
         joinDiff.put(new ArrayList<>(getDeckCurrentState(game)));
         joinDiff.put(new ArrayList<>(getCodexCurrentState(game)));
-        joinDiff.put(new ArrayList<>(getHandYourCurrentState(game.getUserFromNick(nickname))));
+        joinDiff.put(new ArrayList<>(getHandYourCurrentState(game.getPlayerFromNick(nickname))));
 
         return joinDiff;
     }
@@ -165,7 +165,7 @@ public class DiffGenerator {
         List<PawnColors> pawnChoices = game.getPawnChoices();
         if(pawnChoices != null)
             pawnsDiff.add(new GameDiffSetPawns(pawnChoices));
-        for(Player player : game.getUsersList()) {
+        for(Player player : game.getPlayersList()) {
             PawnColors playerColor = player.getPawnColor();
             if(playerColor != null)
                 pawnsDiff.add(new GameDiffSetPlayerColor(player.getNickname(), playerColor));
@@ -176,11 +176,11 @@ public class DiffGenerator {
 
     private static GameDiffInitialization getInitialization(Game game, String nickname){
         return new GameDiffInitialization(
-                game.getUsersList().stream().map(Player::getNickname).toList(),
+                game.getPlayersList().stream().map(Player::getNickname).toList(),
                 game.getName(),
                 nickname,
                 new GameDiffCurrentPlayer(game.getCurrentPlayer().getNickname()),
-                new GameDiffFirstPlayer(game.getUsersList().getFirst().getNickname())
+                new GameDiffFirstPlayer(game.getPlayersList().getFirst().getNickname())
         );
     }
 
@@ -216,9 +216,9 @@ public class DiffGenerator {
      */
     private static List<CodexDiffPlacement> getCodexCurrentState(Game game){
         List<CodexDiffPlacement> codexDiff = new ArrayList<>();
-        List<String> nicknamesInGameParty = game.getGameParty().getUsersList().stream().map(Player::getNickname).toList();
+        List<String> nicknamesInGameParty = game.getGameParty().getPlayersList().stream().map(Player::getNickname).toList();
         for(String nickname : nicknamesInGameParty){
-            LightCodex codex = Lightifier.lightify(game.getGameParty().getUsersList().stream().filter(user -> user.getNickname().equals(nickname)).findFirst().get().getUserCodex());
+            LightCodex codex = Lightifier.lightify(game.getGameParty().getPlayersList().stream().filter(user -> user.getNickname().equals(nickname)).findFirst().get().getUserCodex());
             codexDiff.add(new CodexDiffPlacement(
                     nickname,
                     codex.getPoints(),
@@ -267,7 +267,7 @@ public class DiffGenerator {
      */
     public static List<HandOtherDiff> getHandOtherCurrentState(Game game, String nickname){
         List<HandOtherDiff> handOtherDiff = new ArrayList<>();
-        for(Player player : game.getGameParty().getUsersList()){
+        for(Player player : game.getGameParty().getPlayersList()){
             if(!player.getNickname().equals(nickname)){
                 Hand handOther = player.getUserHand();
                 LightHandOthers otherHand = Lightifier.lightifyOthers(handOther);

@@ -63,7 +63,7 @@ public class GameController implements GameControllerInterface {
     }
 
     public synchronized List<String> getGamePlayers() {
-        return game.getUsersList().stream().map(Player::getNickname).toList();
+        return game.getPlayersList().stream().map(Player::getNickname).toList();
     }
 
     //TODO test deck (when drawing all cards it remains a card)
@@ -76,6 +76,7 @@ public class GameController implements GameControllerInterface {
             }catch (Exception ignored){}
             return;
         }
+
         this.resetLastPlayerTimer();
         playerViewMap.put(joinerNickname, view);
 
@@ -86,29 +87,17 @@ public class GameController implements GameControllerInterface {
         if (game.getGameState().equals(GameState.CHOOSE_START_CARD)) {
             this.updateJoinStartCard(joinerNickname);
             startCardStateTransition(joinerNickname);
-            if (playerViewMap.size() == 2 && reconnected) {
-                String otherPlayer = playerViewMap.keySet().stream().filter(nick -> !nick.equals(joinerNickname)).findFirst().orElse(null);
-                startCardStateTransition(otherPlayer);
-            }
         } else if (game.getGameState().equals(GameState.CHOOSE_SECRET_OBJECTIVE)) {
             this.updateJoinSecretObjective(joinerNickname, game);
             this.objectiveChoiceStateTransition(joinerNickname);
-            if (playerViewMap.size() == 2 && reconnected) {
-                String otherPlayer = playerViewMap.keySet().stream().filter(nick -> !nick.equals(joinerNickname)).findFirst().orElse(null);
-                objectiveChoiceStateTransition(otherPlayer);
-            }
         } else if (game.getGameState().equals(GameState.CHOOSE_PAWN)) {
             this.updateJoinPawnChoice(joinerNickname);
             this.pawnChoiceStateTransition(joinerNickname);
-            if (playerViewMap.size() == 2 && reconnected){
-                String otherPlayer = playerViewMap.keySet().stream().filter(nick -> !nick.equals(joinerNickname)).findFirst().orElse(null);
-                pawnChoiceStateTransition(otherPlayer);
-            }
         } else {
             if (playerViewMap.size() == 2) {
                 //TODO test this
                 //set as current player the joining player
-                game.setCurrentPlayerIndex(game.getUsersList().indexOf(game.getUserFromNick(joinerNickname)));
+                game.setCurrentPlayerIndex(game.getPlayersList().indexOf(game.getPlayerFromNick(joinerNickname)));
                 this.notifyTurnChange(joinerNickname);
                 String otherPlayer = playerViewMap.keySet().stream().filter(nick -> !nick.equals(joinerNickname)).findFirst().orElse(null);
                 this.takeTurn(otherPlayer);
@@ -121,12 +110,11 @@ public class GameController implements GameControllerInterface {
             this.notifyLastInGameTimer();
             this.startLastPlayerTimer();
         }
-
     }
 
     @Override
     public synchronized void choosePawn(String nickname, PawnColors color) {
-        Player player = game.getUserFromNick(nickname);
+        Player player = game.getPlayerFromNick(nickname);
         ViewInterface view = playerViewMap.get(nickname);
         if (game.getPawnChoices().contains(color)) {
             player.setPawnColor(color);
@@ -166,7 +154,7 @@ public class GameController implements GameControllerInterface {
     @Override
     public synchronized void chooseSecretObjective(String nickname, LightCard lightObjChoice) {
         ObjectiveCard objChoice = Heavifier.heavifyObjectCard(lightObjChoice, cardTable);
-        Player player = game.getUserFromNick(nickname);
+        Player player = game.getPlayerFromNick(nickname);
 
         player.setSecretObjective(objChoice);
         this.notifySecretObjectiveChoice(nickname, lightObjChoice);
@@ -181,11 +169,11 @@ public class GameController implements GameControllerInterface {
             this.objectiveChoiceStateTransition(nickname);
         }
     }
-
+    //TODO replace this exception with some malevolent user handling
     @Override
     public void place(String nickname, LightPlacement placement) {
         Placement heavyPlacement;
-        Player player = game.getUserFromNick(nickname);
+        Player player = game.getPlayerFromNick(nickname);
         try {
             if (placement.position().equals(new Position(0, 0))) {
                 heavyPlacement = Heavifier.heavifyStartCardPlacement(placement, cardTable);
@@ -210,7 +198,7 @@ public class GameController implements GameControllerInterface {
     }
 
     private synchronized void placeStartCard(String nickname, Placement startCardPlacement) {
-        Player player = game.getUserFromNick(nickname);
+        Player player = game.getPlayerFromNick(nickname);
         player.placeStartCard(startCardPlacement);
 
         this.notifyStartCardFaceChoice(nickname, Lightifier.lightify(startCardPlacement));
@@ -222,14 +210,13 @@ public class GameController implements GameControllerInterface {
         } else {
             try {
                 playerViewMap.get(nickname).transitionTo(ViewState.WAITING_STATE);
-            } catch (Exception ignored) {
-            }
+            } catch (Exception ignored) {}
         }
 
     }
 
     private synchronized void placeCard(String nickname, LightPlacement placement) {
-        Player player = game.getUserFromNick(nickname);
+        Player player = game.getPlayerFromNick(nickname);
         Codex codexBeforePlacement = new Codex(player.getUserCodex());
         CardInHand card = Heavifier.heavifyCardInHand(placement.card(), cardTable);
         if(!card.canBePlaced(codexBeforePlacement) && placement.face() == CardFace.FRONT) {
@@ -262,7 +249,7 @@ public class GameController implements GameControllerInterface {
 
     @Override
     public synchronized void draw(String nickname, DrawableCard deckType, int cardID) {
-        Player player = game.getUserFromNick(nickname);
+        Player player = game.getPlayerFromNick(nickname);
         System.out.println(nickname + " drew card");
         if (!game.areDeckEmpty()) {
             CardInHand drawnCard;
@@ -291,7 +278,7 @@ public class GameController implements GameControllerInterface {
         } else {
             //turn
             int nextPlayerIndex = this.getNextActivePlayerIndex();
-            String nextPlayer = game.getUsersList().get(nextPlayerIndex).getNickname();
+            String nextPlayer = game.getPlayersList().get(nextPlayerIndex).getNickname();
             if (!nextPlayer.equals(nickname)) {
                 game.setCurrentPlayerIndex(this.getNextActivePlayerIndex());
                 this.notifyTurnChange(nextPlayer);
@@ -306,7 +293,7 @@ public class GameController implements GameControllerInterface {
         ViewInterface view = playerViewMap.get(nickname);
         String lastActivePlayerPreDisconnect = this.getLastActivePlayer();
         playerViewMap.remove(nickname);
-        Player leaver = game.getUserFromNick(nickname);
+        Player leaver = game.getPlayerFromNick(nickname);
 
         this.notifyGameLeft(nickname);
 
@@ -361,7 +348,7 @@ public class GameController implements GameControllerInterface {
                     //move on with the turns for the other players
                     if (!this.playerViewMap.keySet().isEmpty()) {
                         int nextPlayerIndex = this.getNextActivePlayerIndex();
-                        String nextPlayerNick = game.getUsersList().get(nextPlayerIndex).getNickname();
+                        String nextPlayerNick = game.getPlayersList().get(nextPlayerIndex).getNickname();
                         game.setCurrentPlayerIndex(nextPlayerIndex);
                         this.notifyTurnChange(nextPlayerNick);
                         this.takeTurn(nextPlayerNick);
@@ -372,7 +359,6 @@ public class GameController implements GameControllerInterface {
             }
         }
         if(game.getGameState().equals(GameState.END_GAME)){
-            //TODO check if it works even when timer ends
             finishedGameDeleter.deleteGame(game.getName());
         }else {
             this.save();
@@ -395,10 +381,13 @@ public class GameController implements GameControllerInterface {
     private synchronized void startCardStateTransition(String nickname) {
         ViewInterface view = playerViewMap.get(nickname);
         try {
-            if (!game.getUserFromNick(nickname).hasPlacedStartCard())
+            if (!game.getPlayerFromNick(nickname).hasPlacedStartCard()) {
+                game.getPlayerFromNick(nickname).setPlayerState(PlayerState.CHOOSE_START_CARD);
                 view.transitionTo(ViewState.CHOOSE_START_CARD);
-            else
+            }else {
+                game.getPlayerFromNick(nickname).setPlayerState(PlayerState.WAITING);
                 view.transitionTo(ViewState.WAITING_STATE);
+            }
         } catch (Exception ignored) {
         }
     }
@@ -413,23 +402,29 @@ public class GameController implements GameControllerInterface {
     }
 
     private synchronized void objectiveChoiceStateTransition(String nickname) {
-        Player player = game.getUserFromNick(nickname);
+        Player player = game.getPlayerFromNick(nickname);
         try {
             if (!player.hasChosenObjective()) {
+                game.getPlayerFromNick(nickname).setPlayerState(PlayerState.CHOOSE_SECRET_OBJECTIVE);
                 playerViewMap.get(nickname).transitionTo(ViewState.SELECT_OBJECTIVE);
-            } else
+            } else {
+                game.getPlayerFromNick(nickname).setPlayerState(PlayerState.WAITING);
                 playerViewMap.get(nickname).transitionTo(ViewState.WAITING_STATE);
+            }
         } catch (Exception ignored) {
         }
     }
 
     private synchronized void pawnChoiceStateTransition(String nickname) {
-        Player player = game.getUserFromNick(nickname);
+        Player player = game.getPlayerFromNick(nickname);
         try {
             if (!player.hasChosenPawnColor()) {
+                game.getPlayerFromNick(nickname).setPlayerState(PlayerState.CHOOSE_PAWN);
                 playerViewMap.get(nickname).transitionTo(ViewState.CHOOSE_PAWN);
-            } else
+            } else {
+                game.getPlayerFromNick(nickname).setPlayerState(PlayerState.WAITING);
                 playerViewMap.get(nickname).transitionTo(ViewState.WAITING_STATE);
+            }
         } catch (Exception ignored) {}
     }
 
@@ -471,8 +466,7 @@ public class GameController implements GameControllerInterface {
                 try {
                     view.updateGame(new GameDiffPlayerActivity(new ArrayList<>(), List.of(leaver)));
                     view.logOthers(leaver + LogsOnClient.PLAYER_GAME_LEFT);
-                } catch (Exception ignored) {
-                }
+                } catch (Exception ignored) {}
             }
         });
     }
@@ -522,7 +516,7 @@ public class GameController implements GameControllerInterface {
         //calculate the number of objective cards completed
         Map<String, Integer> objectiveCompleted = new HashMap<>();
         if(playerMaxPoint.size() > 1){
-            game.getUsersList().forEach(user ->{
+            game.getPlayersList().forEach(user ->{
                 if(playerMaxPoint.contains(user.getNickname())){
                     int completedObj = 0;
                     for(ObjectiveCard obj : game.getCommonObjective()){
@@ -578,7 +572,7 @@ public class GameController implements GameControllerInterface {
     }
 
     private synchronized void notifyPawnChoice(String chooser, PawnColors color, LightBack resourceBack, LightBack goldBack) {
-        Player player = game.getUserFromNick(chooser);
+        Player player = game.getPlayerFromNick(chooser);
         new HashMap<>(playerViewMap).forEach((nickname, view) -> {
             try {
                 view.updateGame(new GameDiffSetPawns(game.getPawnChoices()));
@@ -603,7 +597,7 @@ public class GameController implements GameControllerInterface {
     }
 
     private synchronized void notifyStartCardFaceChoice(String placer, LightPlacement placement) {
-        Player player = game.getUserFromNick(placer);
+        Player player = game.getPlayerFromNick(placer);
         new HashMap<>(playerViewMap).forEach((nickname, view) -> {
             try {
                 if (nickname.equals(placer)) {
@@ -624,7 +618,7 @@ public class GameController implements GameControllerInterface {
         boolean allChose = true;
         List<String> activePlayer = playerViewMap.keySet().stream().toList();
         for (String nick : activePlayer) {
-            if (!nick.equals(nicknamePerspective) && !game.getUserFromNick(nick).hasChosenPawnColor()) {
+            if (!nick.equals(nicknamePerspective) && !game.getPlayerFromNick(nick).hasChosenPawnColor()) {
                 allChose = false;
             }
         }
@@ -650,8 +644,10 @@ public class GameController implements GameControllerInterface {
         ViewInterface view = playerViewMap.get(nickname);
         try {
             if (game.getCurrentPlayer().getNickname().equals(nickname)) {
+                game.getPlayerFromNick(nickname).setPlayerState(PlayerState.PLACE);
                 view.transitionTo(ViewState.PLACE_CARD);
             } else {
+                game.getPlayerFromNick(nickname).setPlayerState(PlayerState.IDLE);
                 view.transitionTo(ViewState.IDLE);
             }
         } catch (Exception ignored) {
@@ -717,7 +713,7 @@ public class GameController implements GameControllerInterface {
 
     private synchronized String getLastActivePlayer() {
         List<String> activePlayers = playerViewMap.keySet().stream().toList();
-        ArrayList<String> turnsOrder = new ArrayList<>(game.getUsersList().stream().map(Player::getNickname).toList());
+        ArrayList<String> turnsOrder = new ArrayList<>(game.getPlayersList().stream().map(Player::getNickname).toList());
         Collections.reverse(turnsOrder);
 
         return turnsOrder.stream().filter(activePlayers::contains).findFirst().orElse(null);
@@ -744,7 +740,7 @@ public class GameController implements GameControllerInterface {
     }
 
     private synchronized int getNextActivePlayerIndex() {
-        List<String> userList = game.getUsersList().stream().map(Player::getNickname).toList();
+        List<String> userList = game.getPlayersList().stream().map(Player::getNickname).toList();
         List<String> activePlayer = playerViewMap.keySet().stream().toList();
         int currentPlayerIndex = game.getCurrentPlayerIndex();
         int nextPlayerIndex;
@@ -779,12 +775,14 @@ public class GameController implements GameControllerInterface {
 
     private synchronized void moveToSecretObjectivePhase() {
         game.setGameState(GameState.CHOOSE_SECRET_OBJECTIVE);
-        for (Player player : game.getUsersList()) {
+        for (Player player : game.getPlayersList()) {
+            player.setPlayerState(PlayerState.CHOOSE_SECRET_OBJECTIVE);
             this.drawObjectiveCard(player);
         }
-
         this.notifySecretObjectiveSetup();
+    }
 
+    private synchronized void notifySecretObjectiveSetup() {
         new HashMap<>(playerViewMap).forEach((nickname, view) -> {
             try {
                 view.logGame(LogsOnClient.EVERYONE_PLACED_STARTCARD);
@@ -793,12 +791,9 @@ public class GameController implements GameControllerInterface {
             }
         });
 
-    }
-
-    private synchronized void notifySecretObjectiveSetup() {
         new HashMap<>(playerViewMap).forEach((nickname, view) -> {
             try {
-                List<ObjectiveCard> secretObjChoices = game.getUserFromNick(nickname).getUserHand().getSecretObjectiveChoices();
+                List<ObjectiveCard> secretObjChoices = game.getPlayerFromNick(nickname).getUserHand().getSecretObjectiveChoices();
                 List<LightCard> lightSecretObjChoices = secretObjChoices.stream().map(Lightifier::lightifyToCard).toList();
                 for (LightCard secretObj : lightSecretObjChoices) {
                     view.updateGame(new HandDiffAddOneSecretObjectiveOption(secretObj));
@@ -807,7 +802,7 @@ public class GameController implements GameControllerInterface {
                 for (HandOtherDiff handDiff : DiffGenerator.getHandOtherCurrentState(game, nickname)) {
                     view.updateGame(handDiff);
                 }
-                for (Player player : game.getUsersList()) {
+                for (Player player : game.getPlayersList()) {
                     //update with the diff of the startCard placement
                     if (!player.getNickname().equals(nickname)) {
                         Placement startCardPlacement = player.getUserCodex().getPlacementAt(new Position(0, 0));
@@ -832,20 +827,20 @@ public class GameController implements GameControllerInterface {
     private synchronized void removeInactivePlayers(Predicate<Player> checkProperInactive) {
         List<String> activePlayer = playerViewMap.keySet().stream().toList();
         List<String> playersToRemove = new ArrayList<>();
-        for (Player player : game.getUsersList()) {
+        for (Player player : game.getPlayersList()) {
             if (!activePlayer.contains(player.getNickname()) && !checkProperInactive.test(player)) {
                 playersToRemove.add(player.getNickname());
             }
         }
 
         if (!playersToRemove.isEmpty()) {
-            String oldFirstPlayer = game.getUsersList().getFirst().getNickname();
+            String oldFirstPlayer = game.getPlayersList().getFirst().getNickname();
             for (String playerNick : playersToRemove) {
-                game.removeUser(playerNick);
+                game.removePlayer(playerNick);
             }
             this.updateRemovedPlayers(playersToRemove);
 
-            String newFirstPlayer = game.getUsersList().getFirst().getNickname();
+            String newFirstPlayer = game.getPlayersList().getFirst().getNickname();
             if (!oldFirstPlayer.equals(newFirstPlayer)) {
                 this.notifyFirstPlayerChange(newFirstPlayer);
             }
@@ -875,7 +870,7 @@ public class GameController implements GameControllerInterface {
         boolean allPlaced = true;
         List<String> activePlayer = playerViewMap.keySet().stream().toList();
         for (String nick : activePlayer) {
-            if (!nick.equals(nicknamePerspective) && !game.getUserFromNick(nick).hasPlacedStartCard()) {
+            if (!nick.equals(nicknamePerspective) && !game.getPlayerFromNick(nick).hasPlacedStartCard()) {
                 allPlaced = false;
             }
         }
@@ -896,7 +891,7 @@ public class GameController implements GameControllerInterface {
     private synchronized boolean otherHaveAllChosenObjective(String nicknamePerspective) {
         boolean allChosen = true;
         for (String nickname : playerViewMap.keySet()) {
-            Player player = game.getUserFromNick(nickname);
+            Player player = game.getPlayerFromNick(nickname);
             if (!player.getNickname().equals(nicknamePerspective) && !player.hasChosenObjective()) {
                 allChosen = false;
             }

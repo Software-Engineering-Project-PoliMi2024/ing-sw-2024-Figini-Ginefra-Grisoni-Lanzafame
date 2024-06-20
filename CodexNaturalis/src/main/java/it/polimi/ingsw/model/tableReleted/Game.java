@@ -5,7 +5,6 @@ import it.polimi.ingsw.Configs;
 import it.polimi.ingsw.model.cardReleted.cards.*;
 import it.polimi.ingsw.model.cardReleted.utilityEnums.DrawableCard;
 import it.polimi.ingsw.model.playerReleted.Codex;
-import it.polimi.ingsw.model.playerReleted.Hand;
 import it.polimi.ingsw.model.playerReleted.PawnColors;
 import it.polimi.ingsw.model.playerReleted.Player;
 import it.polimi.ingsw.model.utilities.Pair;
@@ -125,8 +124,8 @@ public class Game implements Serializable {
     }
 
     /** @return list of the User in this match*/
-    public List<Player> getUsersList() {
-        return gameParty.getUsersList();
+    public List<Player> getPlayersList() {
+        return gameParty.getPlayersList();
     }
 
     /**
@@ -134,7 +133,7 @@ public class Game implements Serializable {
      * to the codex of the user
      */
     public void addObjectivePoints(){
-            for (Player player : new ArrayList<>(getUsersList())) {
+            for (Player player : new ArrayList<>(getPlayersList())) {
                 for (ObjectiveCard commonObj : commonObjective) {
                     player.getUserCodex().pointsFromObjective(commonObj);
                 }
@@ -155,8 +154,8 @@ public class Game implements Serializable {
      * @param nickname the nickname of the user
      * @return the user with the given nickname; returns null if the user is not in the gameParty
      */
-    public Player getUserFromNick(String nickname){
-        return gameParty.getUserFromNick(nickname);
+    public Player getPlayerFromNick(String nickname){
+        return gameParty.getPlayerFromNick(nickname);
     }
 
     /**
@@ -177,7 +176,7 @@ public class Game implements Serializable {
      * @return true if the conditions for triggering the last turn are met
      */
     public boolean checkForChickenDinner() {
-        List<Integer> playerPoints = getUsersList().stream().map(Player::getUserCodex).map(Codex::getPoints).toList();
+        List<Integer> playerPoints = getPlayersList().stream().map(Player::getUserCodex).map(Codex::getPoints).toList();
         synchronized (goldCardDeck) {
             synchronized (resourceCardDeck) {
                 return areDeckEmpty() || playerPoints.stream().anyMatch(p -> p >= Configs.pointsToStartGameEnding);
@@ -188,8 +187,8 @@ public class Game implements Serializable {
      * Remove a user from the gameParty preventing them from joining the game later
      * @param nickname of the user being removed
      */
-    public void removeUser(String nickname) {
-        gameParty.removeUser(nickname);
+    public void removePlayer(String nickname) {
+        gameParty.removePlayer(nickname);
 
     }
 
@@ -228,7 +227,7 @@ public class Game implements Serializable {
 
     public boolean othersHadAllChooseSecretObjective(String nicknamePerspective) {
         boolean check = true;
-        for (Player player : gameParty.getUsersList()) {
+        for (Player player : gameParty.getPlayersList()) {
             if (!player.getNickname().equals(nicknamePerspective) && !player.hasChosenObjective()) {
                 check = false;
             }
@@ -241,7 +240,7 @@ public class Game implements Serializable {
 
         return "Game{" +
                 "name='" + name + '\'' +
-                ", usersList=" + gameParty.getUsersList().stream().map(Player::getNickname).reduce("", (a, b) -> a + " " + b) +
+                ", usersList=" + gameParty.getPlayersList().stream().map(Player::getNickname).reduce("", (a, b) -> a + " " + b) +
                 //", currentPlayer=" + currentPlayer.getNickname() +
                 ", numberOfMaxPlayer=" + gameParty.getNumberOfMaxPlayer() +
                 '}';
@@ -287,7 +286,7 @@ public class Game implements Serializable {
     }
 
     private void setupStartCard(){
-        gameParty.getUsersList().forEach(user-> {
+        gameParty.getPlayersList().forEach(user-> {
             if (user.getUserHand().getStartCard() == null && !user.hasPlacedStartCard()) {
                 StartCard startCard = drawStartCard();
                 user.getUserHand().setStartCard(startCard);

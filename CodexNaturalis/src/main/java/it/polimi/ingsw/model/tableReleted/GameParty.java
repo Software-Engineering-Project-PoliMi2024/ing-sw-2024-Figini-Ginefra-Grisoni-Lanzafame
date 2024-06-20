@@ -71,7 +71,7 @@ public class GameParty implements Serializable {
     }
 
     /** @return list of the users in this match*/
-    public List<Player> getUsersList() {
+    public List<Player> getPlayersList() {
         synchronized (playerList) {
             return playerList;
         }
@@ -83,7 +83,7 @@ public class GameParty implements Serializable {
      * @param nickname the nickname of the user
      * @return the user with the given nickname; returns null if the user is not in the gameParty
      */
-    public Player getUserFromNick(String nickname){
+    public Player getPlayerFromNick(String nickname){
         synchronized (playerList) {
             if(!playerList.stream().map(Player::getNickname).toList().contains(nickname))
                 return null;
@@ -106,7 +106,7 @@ public class GameParty implements Serializable {
      * Remove a user from the gameParty
      * @param user being removed
      */
-    public void removeUser(String user){
+    public void removePlayer(String user){
         synchronized (playerList) {
             Player playerToRemove = playerList.stream().filter(u -> u.getNickname().equals(user)).findFirst().orElse(null);
             if (playerToRemove != null)
