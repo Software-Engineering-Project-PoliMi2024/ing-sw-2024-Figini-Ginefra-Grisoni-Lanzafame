@@ -1,6 +1,7 @@
 package it.polimi.ingsw.view.GUI.Components;
 
 import it.polimi.ingsw.model.playerReleted.ChatMessage;
+import it.polimi.ingsw.model.playerReleted.PawnColors;
 import it.polimi.ingsw.view.GUI.Components.Utils.PopUp;
 import it.polimi.ingsw.view.GUI.GUI;
 import javafx.beans.value.ChangeListener;
@@ -11,6 +12,9 @@ import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.Priority;
 import javafx.scene.layout.VBox;
+import javafx.scene.paint.Color;
+import javafx.scene.text.Text;
+import javafx.scene.text.TextFlow;
 
 import java.util.List;
 
@@ -38,6 +42,7 @@ public class ChatDisplay {
         HBox receivedMessagesContainer = new HBox();
         receivedMessagesContainer.setAlignment(Pos.CENTER);
         receivedMessagesContainer.getChildren().add(messages);
+        receivedMessagesContainer.prefWidth(chatPopUp.getContent().getWidth());
         VBox.setVgrow(receivedMessagesContainer, Priority.ALWAYS);
 
         //Create a container for sending messages which will contain the TextField, Button and the ChoiceBox
@@ -65,20 +70,56 @@ public class ChatDisplay {
                 } else {
                     HBox messageContainer = new HBox();
                     messageContainer.setAlignment(Pos.CENTER);
-                    Label sender = new Label(chatMessage.getSender() + ": ");
-                    Label message = new Label(chatMessage.getMessage());
-                    Label receiver = new Label();
-                    if(chatMessage.getPrivacy() == ChatMessage.MessagePrivacy.PRIVATE){
-                        receiver.setText(" -> " + chatMessage.getReceiver());
-                        messageContainer.getChildren().addAll(sender, message, receiver);
-                    }else{
-                        messageContainer.getChildren().addAll(sender, message);
-                    }
+                    Label message = labelDecorator(chatMessage);
+                    messageContainer.getChildren().add(message);
                     setGraphic(messageContainer);
                 }
             }
         };
         return cellFactory;
+    }
+
+    private Label labelDecorator(ChatMessage message){
+        Label labelMessage = new Label();
+        labelStyleDecorator(message, labelMessage);
+        TextFlow textFlow;
+        if(message.getPrivacy() == ChatMessage.MessagePrivacy.PUBLIC) {
+            textFlow = new TextFlow(senderDecorator(message.getSender()), new Text(": " + message.getMessage()));
+        }else{ //Private message
+            textFlow = new TextFlow(senderDecorator(message.getSender()), new Text(" to: "), receiverDecorator(message.getReceiver()), new Text(": " + message.getMessage()));
+        }
+        labelMessage.setGraphic(textFlow);
+        return labelMessage;
+    }
+
+    private Text senderDecorator(String sender){
+        Text senderText = new Text();
+        if(sender.equals(GUI.getLightGame().getLightGameParty().getYourName())){
+            senderText.setText("You");
+        }else{
+            senderText.setText(sender);
+        }
+        senderText.setFill(getUserColor(sender));
+        senderText.setStyle("-fx-font-weight: bold");
+        return senderText;
+    }
+
+    private Text receiverDecorator(String receiver){
+        Text receiverText = new Text();
+        if(receiver.equals(GUI.getLightGame().getLightGameParty().getYourName())){
+            receiverText.setText("you");
+        }else{
+            receiverText.setText(receiver);
+        }
+        receiverText.setFill(getUserColor(receiver));
+        receiverText.setStyle("-fx-font-weight: bold");
+        return receiverText;
+    }
+
+    private void labelStyleDecorator(ChatMessage message, Label labelToEdit){
+        if(message.getPrivacy() == ChatMessage.MessagePrivacy.PRIVATE){
+            labelToEdit.setStyle("-fx-font-style: italic");
+        }
     }
 
     public void updatedMessages(List<ChatMessage> updatedMessages) {
@@ -170,6 +211,15 @@ public class ChatDisplay {
         @Override
         public String toString() {
             return "Everyone";
+        }
+    }
+
+    private Color getUserColor(String user){
+        PawnColors pawnColor = GUI.getLightGame().getLightGameParty().getPlayerColor(user);
+        if(pawnColor == null){
+            return Color.BLACK;
+        }else{
+            return PawnsGui.getColor(pawnColor);
         }
     }
 }
