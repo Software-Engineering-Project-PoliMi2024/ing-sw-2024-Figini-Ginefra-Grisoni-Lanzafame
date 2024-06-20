@@ -34,6 +34,7 @@ public class PawnChoice implements Observer {
         label.setTextAlignment(TextAlignment.CENTER);
 
         popUp = new PopUp(parent, true);
+        popUp.setLocked(true);
 
         popUp.getContent().getChildren().add(container);
 

@@ -19,6 +19,8 @@ public class PopUp {
     private final Timeline closingAnimation = new Timeline();
     private final AnchorPane parent;
 
+    private boolean isLocked = false;
+
     private static KeyValue createOpacityKeyValue(Node target, double value) {
         return new KeyValue(target.opacityProperty(), value, Interpolator.EASE_BOTH);
     }
@@ -95,7 +97,10 @@ public class PopUp {
         backDrop.widthProperty().bind(container.widthProperty());
         backDrop.heightProperty().bind(container.heightProperty());
 
-        backDrop.setOnMouseClicked(e -> close());
+        backDrop.setOnMouseClicked(e -> {
+            if(!this.isLocked)
+                close();
+        });
 
         container.getChildren().add(backDrop);
         container.getChildren().add(content);
@@ -125,5 +130,9 @@ public class PopUp {
 
     public AnchorPane getContent() {
         return content;
+    }
+
+    public void setLocked(boolean isLocked){
+        this.isLocked = isLocked;
     }
 }
