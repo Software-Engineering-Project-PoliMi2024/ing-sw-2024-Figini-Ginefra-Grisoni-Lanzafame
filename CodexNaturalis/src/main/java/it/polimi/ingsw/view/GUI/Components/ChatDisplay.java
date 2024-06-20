@@ -2,11 +2,12 @@ package it.polimi.ingsw.view.GUI.Components;
 
 import it.polimi.ingsw.model.playerReleted.ChatMessage;
 import it.polimi.ingsw.view.GUI.Components.Utils.PopUp;
-import javafx.scene.control.Label;
-import javafx.scene.control.ListCell;
-import javafx.scene.control.ListView;
+import javafx.geometry.Pos;
+import javafx.scene.control.*;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.HBox;
+import javafx.scene.layout.Priority;
+import javafx.scene.layout.VBox;
 
 import java.util.List;
 
@@ -17,8 +18,37 @@ public class ChatDisplay {
     public ChatDisplay(AnchorPane parent) {
         chatPopUp = new PopUp(parent);
         messages.setCellFactory(param -> listViewChatMessageCellFactory());
-        chatPopUp.getContent().getChildren().add(messages);
 
+        VBox popUpFiller = new VBox();
+        popUpFiller.setSpacing(20.0);
+        AnchorPane.setTopAnchor(popUpFiller, 20.0);
+        AnchorPane.setBottomAnchor(popUpFiller, 20.0);
+        AnchorPane.setLeftAnchor(popUpFiller, 0.0);
+        AnchorPane.setRightAnchor(popUpFiller, 0.0);
+
+        HBox receivedMessagesContainer = new HBox();
+        receivedMessagesContainer.setAlignment(Pos.CENTER);
+        receivedMessagesContainer.getChildren().add(messages);
+        VBox.setVgrow(receivedMessagesContainer, Priority.ALWAYS);
+
+        HBox sendMessageContainer = new HBox();
+        sendMessageContainer.setSpacing(20.0);
+        sendMessageContainer.setAlignment(Pos.CENTER);
+        TextField sendMessageField = new TextField();
+        sendMessageField.setPromptText("Write a message...");
+        sendMessageContainer.getChildren().add(sendMessageField);
+
+        VBox sendingOptionContainer = new VBox();
+        sendingOptionContainer.setSpacing(10.0);
+        Button sendButton = new Button("Send");
+        ChoiceBox<String> receiverChoice = new ChoiceBox<>();
+        sendingOptionContainer.getChildren().addAll(sendButton, receiverChoice);
+        sendMessageContainer.getChildren().add(sendingOptionContainer);
+
+        popUpFiller.getChildren().addAll(receivedMessagesContainer, sendMessageContainer);
+        chatPopUp.getContent().getChildren().add(popUpFiller);
+        //Add welcome message that will be removed when the first message is received
+        messages.getItems().add(new ChatMessage("Game", "Welcome to the chat!"));
     }
 
     public ListCell<ChatMessage> listViewChatMessageCellFactory() {
@@ -31,6 +61,7 @@ public class ChatDisplay {
                     setGraphic(null);
                 } else {
                     HBox hBox = new HBox();
+                    hBox.setAlignment(Pos.CENTER);
                     Label sender = new Label(chatMessage.getSender() + ": ");
                     Label message = new Label(chatMessage.getMessage());
                     Label receiver = new Label();
