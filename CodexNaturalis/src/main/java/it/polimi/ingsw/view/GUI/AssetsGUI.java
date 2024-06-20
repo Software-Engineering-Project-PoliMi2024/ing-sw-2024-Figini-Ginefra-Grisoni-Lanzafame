@@ -56,6 +56,6 @@ public class AssetsGUI {
     }
 
     public static Image loadCorner(CardCorner corner){
-        return new Image(Objects.requireNonNull(GUI.class.getResourceAsStream("/GUI/images/Corners/" + corner + ".png")));
+        return new Image(Objects.requireNonNull(GUI.class.getClassLoader().getResourceAsStream("GUI/images/Corners/" + corner + ".png"), "Corner " + corner + " is null"));
     }
 }

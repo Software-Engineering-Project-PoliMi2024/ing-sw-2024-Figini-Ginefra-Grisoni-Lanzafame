@@ -41,11 +41,15 @@ public class ChatButton implements Observer {
 
     @Override
     public void update() {
-        if(!GUI.getLightGame().getLightGameParty().getLightChat().getChatHistory().isEmpty()) {
-            chatIcon.setImage(AssetsGUI.unreadChatIcon);
+        if(chatDisplay.getDisplayedMessages().isEmpty() && !GUI.getLightGame().getLightGameParty().getLightChat().getChatHistory().isEmpty()) {
+            chatIcon.setImage(AssetsGUI.unreadChatIcon); //edge case for a mid-game join
+        }else if(!chatDisplay.getDisplayedMessages().getLast().getSender().equals(GUI.getLightGame().getLightGameParty().getYourName())) {
+            chatIcon.setImage(AssetsGUI.unreadChatIcon); //show unread icon only if the last message was NOT sent by the player
+        }
+        //update the chat display with the new messages only if there is a new first message otherwise, the "Game" welcome message will be removed
+        if(!GUI.getLightGame().getLightGameParty().getLightChat().getChatHistory().isEmpty()){
             chatDisplay.updatedMessages(GUI.getLightGame().getLightGameParty().getLightChat().getChatHistory());
         }
-
     }
 
     public void attachToChat() {
