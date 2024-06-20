@@ -26,26 +26,25 @@ public class PlateauGUI {
     public PlateauGUI(AnchorPane parent) {
         this.plateauView = new ImageView(AssetsGUI.plateau);
 
-        this.popUp = new PopUp(parent);
+        this.popUp = new PopUp(parent, true);
 
         // Bind plateauView's size to height while maintaining aspect ratio
         this.plateauView.fitWidthProperty().bind(this.plateauView.fitHeightProperty().multiply(plateauView.getImage().getWidth() / plateauView.getImage().getHeight()));
-        this.plateauView.fitHeightProperty().bind(Bindings.min(popUp.getContent().heightProperty().multiply(0.9), popUp.getContent().widthProperty().multiply(0.9).multiply(plateauView.getImage().getHeight() / plateauView.getImage().getWidth())));
+        this.plateauView.fitHeightProperty().bind(Bindings.min(parent.heightProperty().multiply(0.8), parent.widthProperty().multiply(0.9).multiply(plateauView.getImage().getHeight() / plateauView.getImage().getWidth())));
 
         container.getChildren().add(plateauView);
 
-        AnchorPane.setBottomAnchor(container, 0.0);
-        AnchorPane.setTopAnchor(container, 0.0);
-        AnchorPane.setLeftAnchor(container, 0.0);
-        AnchorPane.setRightAnchor(container, 0.0);
-
         popUp.getContent().getChildren().add(container);
 
-        popUp.getContent().widthProperty().addListener((obs, oldWidth, newWidth) -> {
+        popUp.getContent().maxWidthProperty().bind(plateauView.fitWidthProperty());
+        popUp.getContent().maxHeightProperty().bind(plateauView.fitHeightProperty());
+
+
+        parent.widthProperty().addListener((obs, oldWidth, newWidth) -> {
             this.updatePawnPosition();
         });
 
-        popUp.getContent().heightProperty().addListener((obs, oldHeight, newHeight) -> {
+        parent.heightProperty().addListener((obs, oldHeight, newHeight) -> {
             this.updatePawnPosition();
         });
     }
