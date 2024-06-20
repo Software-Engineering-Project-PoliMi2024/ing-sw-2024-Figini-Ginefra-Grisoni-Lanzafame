@@ -183,9 +183,9 @@ public class ResilienceTest {
         assert !player2.hasChosenPawnColor();
         assert !player2.hasChosenObjective();
 
-        assert game.getGameState().equals(GameState.CHOOSE_START_CARD);
-        assert !game.getGameState().equals(GameState.CHOOSE_PAWN);
-        assert !game.getGameState().equals(GameState.CHOOSE_SECRET_OBJECTIVE);
+        assert game.getState().equals(GameState.CHOOSE_START_CARD);
+        assert !game.getState().equals(GameState.CHOOSE_PAWN);
+        assert !game.getState().equals(GameState.CHOOSE_SECRET_OBJECTIVE);
 
         StartCard startCard2 = player2.getUserHand().getStartCard();
         assert Arrays.stream(view2.lightGame.getHand().getCards()).toList().contains(Lightifier.lightifyToCard(startCard2));
@@ -200,13 +200,13 @@ public class ResilienceTest {
         controller2.disconnect();
         controller4.disconnect();
 
-        assert game.getGameState().equals(GameState.CHOOSE_START_CARD);
+        assert game.getState().equals(GameState.CHOOSE_START_CARD);
 
         LightPlacement lightPlacement3 = new LightPlacement(new Position(0,0), Lightifier.lightifyToCard(player3.getUserHand().getStartCard()), CardFace.FRONT);
         controller3.place(lightPlacement3);
 
-        assert !game.getGameState().equals(GameState.CHOOSE_START_CARD);
-        assert game.getGameState().equals(GameState.CHOOSE_PAWN);
+        assert !game.getState().equals(GameState.CHOOSE_START_CARD);
+        assert game.getState().equals(GameState.CHOOSE_PAWN);
 
         assert !game.getPlayersList().contains(player2);
         assert game.getPlayersList().contains(player4);
@@ -216,7 +216,7 @@ public class ResilienceTest {
         controller2.login(view2.name);
         controller4.login(view4.name);
 
-        assert game.getGameState().equals(GameState.CHOOSE_PAWN);
+        assert game.getState().equals(GameState.CHOOSE_PAWN);
         assert !game.getPlayersList().contains(player2);
         assert game.getPlayersList().contains(player4);
 
@@ -285,9 +285,9 @@ public class ResilienceTest {
         assert !player2.hasChosenPawnColor();
         assert !player2.hasChosenObjective();
 
-        assert game.getGameState().equals(GameState.CHOOSE_START_CARD);
-        assert !game.getGameState().equals(GameState.CHOOSE_PAWN);
-        assert !game.getGameState().equals(GameState.CHOOSE_SECRET_OBJECTIVE);
+        assert game.getState().equals(GameState.CHOOSE_START_CARD);
+        assert !game.getState().equals(GameState.CHOOSE_PAWN);
+        assert !game.getState().equals(GameState.CHOOSE_SECRET_OBJECTIVE);
 
         LightPlacement lightPlacement1 = new LightPlacement(new Position(0,0), Lightifier.lightifyToCard(player1.getUserHand().getStartCard()), CardFace.FRONT);
         controller1.place(lightPlacement1);
@@ -297,12 +297,12 @@ public class ResilienceTest {
 
         assert !lobbyGameListController.getViewMap().containsKey(view4.name);
         controller4.disconnect();
-        assert game.getGameState().equals(GameState.CHOOSE_START_CARD);
+        assert game.getState().equals(GameState.CHOOSE_START_CARD);
 
         controller3.disconnect();
         controller2.disconnect();
-        assert !game.getGameState().equals(GameState.CHOOSE_START_CARD);
-        assert game.getGameState().equals(GameState.CHOOSE_PAWN);
+        assert !game.getState().equals(GameState.CHOOSE_START_CARD);
+        assert game.getState().equals(GameState.CHOOSE_PAWN);
 
         assert !game.getPlayersList().contains(player2);
         assert !game.getPlayersList().contains(player3);
@@ -478,10 +478,10 @@ public class ResilienceTest {
 
         controller4.disconnect();
         controller1.disconnect();
-        assert game.getGameState().equals(GameState.CHOOSE_PAWN);
+        assert game.getState().equals(GameState.CHOOSE_PAWN);
 
         controller2.disconnect();
-        assert game.getGameState().equals(GameState.CHOOSE_SECRET_OBJECTIVE);
+        assert game.getState().equals(GameState.CHOOSE_SECRET_OBJECTIVE);
         assert game.getPlayersList().contains(player3);
         assert game.getPlayersList().contains(player4);
         assert !game.getPlayersList().contains(player1);
@@ -589,9 +589,9 @@ public class ResilienceTest {
             System.out.println(user.getUserHand().getSecretObjectiveChoices());
         });
 
-        assert !game.getGameState().equals(GameState.CHOOSE_START_CARD);
-        assert !game.getGameState().equals(GameState.CHOOSE_PAWN);
-        assert !game.getGameState().equals(GameState.CHOOSE_SECRET_OBJECTIVE);
+        assert !game.getState().equals(GameState.CHOOSE_START_CARD);
+        assert !game.getState().equals(GameState.CHOOSE_PAWN);
+        assert !game.getState().equals(GameState.CHOOSE_SECRET_OBJECTIVE);
 
         controller1.login(view1.name);
         controller2.login(view2.name);
@@ -666,9 +666,9 @@ public class ResilienceTest {
         controller3.chooseSecretObjective(Lightifier.lightifyToCard(player3.getUserHand().getSecretObjectiveChoices().getFirst()));
         controller2.disconnect();
         controller4.disconnect();
-        assert game.getGameState().equals(GameState.CHOOSE_SECRET_OBJECTIVE);
+        assert game.getState().equals(GameState.CHOOSE_SECRET_OBJECTIVE);
         controller1.disconnect();
-        assert game.getGameState().equals(GameState.ACTUAL_GAME);
+        assert game.getState().equals(GameState.ACTUAL_GAME);
 
         controller1.login(view1.name);
         controller2.login(view2.name);
@@ -1161,7 +1161,7 @@ public class ResilienceTest {
 
         controllerLast.disconnect();
 
-        assert game.getGameState().equals(GameState.END_GAME);
+        assert game.getState().equals(GameState.END_GAME);
 
         controllerLast.login(lastPlayer.getNickname());
         assert viewMap.get(lastPlayer.getNickname()).state.equals(ViewState.JOIN_LOBBY);
@@ -1302,7 +1302,7 @@ public class ResilienceTest {
 
         controllerLast.disconnect();
 
-        assert game.getGameState().equals(GameState.END_GAME);
+        assert game.getState().equals(GameState.END_GAME);
 
         controllerLast.login(lastPlayer.getNickname());
         assert viewMap.get(lastPlayer.getNickname()).state.equals(ViewState.JOIN_LOBBY);
@@ -1378,10 +1378,10 @@ public class ResilienceTest {
     private void pawnChoicesSetupCorrectly(PublicGameController gameController, List<ViewTest> playerViews){
         Game game = gameController.getGame();
 
-        assert game.getGameState().equals(GameState.CHOOSE_PAWN);
-        assert !game.getGameState().equals(GameState.CHOOSE_START_CARD);
-        assert !game.getGameState().equals(GameState.CHOOSE_SECRET_OBJECTIVE);
-        assert !game.getGameState().equals(GameState.END_GAME);
+        assert game.getState().equals(GameState.CHOOSE_PAWN);
+        assert !game.getState().equals(GameState.CHOOSE_START_CARD);
+        assert !game.getState().equals(GameState.CHOOSE_SECRET_OBJECTIVE);
+        assert !game.getState().equals(GameState.END_GAME);
 
         assert game.getPawnChoices().containsAll(Arrays.stream(PawnColors.values()).toList());
 
@@ -1401,10 +1401,10 @@ public class ResilienceTest {
     private void setupObjChoicesCorrectly(PublicGameController gameController, List<ViewTest> playerViews){
         Game game = gameController.getGame();
 
-        assert game.getGameState().equals(GameState.CHOOSE_SECRET_OBJECTIVE);
-        assert !game.getGameState().equals(GameState.CHOOSE_PAWN);
-        assert !game.getGameState().equals(GameState.CHOOSE_START_CARD);
-        assert !game.getGameState().equals(GameState.END_GAME);
+        assert game.getState().equals(GameState.CHOOSE_SECRET_OBJECTIVE);
+        assert !game.getState().equals(GameState.CHOOSE_PAWN);
+        assert !game.getState().equals(GameState.CHOOSE_START_CARD);
+        assert !game.getState().equals(GameState.END_GAME);
 
         List<String> nicksToCheck = playerViews.stream().map(view->view.name).toList();
         List<Player> usersToCheck = game.getPlayersList().stream().filter(user->nicksToCheck.contains(user.getNickname())).toList();
@@ -1439,10 +1439,10 @@ public class ResilienceTest {
     private void setupActualGame(PublicGameController gameController, List<ViewTest> playerViews){
         Game game = gameController.getGame();
 
-        assert !game.getGameState().equals(GameState.CHOOSE_SECRET_OBJECTIVE);
-        assert !game.getGameState().equals(GameState.CHOOSE_PAWN);
-        assert !game.getGameState().equals(GameState.CHOOSE_START_CARD);
-        assert !game.getGameState().equals(GameState.END_GAME);
+        assert !game.getState().equals(GameState.CHOOSE_SECRET_OBJECTIVE);
+        assert !game.getState().equals(GameState.CHOOSE_PAWN);
+        assert !game.getState().equals(GameState.CHOOSE_START_CARD);
+        assert !game.getState().equals(GameState.END_GAME);
 
         List<String> nicksToCheck = playerViews.stream().map(view->view.name).toList();
         List<Player> usersToCheck = game.getPlayersList().stream().filter(user->nicksToCheck.contains(user.getNickname())).toList();

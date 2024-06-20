@@ -49,11 +49,11 @@ public class Game implements Serializable {
         this.setupStartCard();
     }
 
-    public void setGameState(GameState gameState) {
+    public void setState(GameState gameState) {
         this.gameState = gameState;
     }
 
-    public GameState getGameState() {
+    public GameState getState() {
         return gameState;
     }
 

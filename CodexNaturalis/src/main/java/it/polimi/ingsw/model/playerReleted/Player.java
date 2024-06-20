@@ -10,11 +10,20 @@ public class Player implements Serializable {
     private final Codex userCodex;
     private final Hand userHand;
     private PawnColors pawnColor = null;
+    private PlayerState playerState = PlayerState.CHOOSE_START_CARD;
 
     public Player(String nickname){
         this.nickname = nickname;
         this.userCodex = new Codex();
         this.userHand = new Hand();
+    }
+
+    public PlayerState getState() {
+        return playerState;
+    }
+
+    public void setState(PlayerState playerState) {
+        this.playerState = playerState;
     }
 
     public void setPawnColor(PawnColors pawnColor){
