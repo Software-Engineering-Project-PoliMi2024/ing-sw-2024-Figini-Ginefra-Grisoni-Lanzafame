@@ -74,6 +74,8 @@ public class GameController implements GameControllerInterface {
                 view.transitionTo(ViewState.JOIN_LOBBY);
             }catch (Exception ignored){}
             return;
+        }else{
+            this.save();
         }
 
         this.resetLastPlayerTimer();
@@ -139,6 +141,7 @@ public class GameController implements GameControllerInterface {
                 game.getPawnChoices().clear();
                 this.removeInactivePlayers(Player::hasChosenPawnColor);
                 this.moveToSecretObjectivePhase();
+                this.save();
             } else {
                 moveToWait(nickname);
             }
@@ -165,6 +168,7 @@ public class GameController implements GameControllerInterface {
             this.notifyActualGameSetup();
             for (String players : playerViewMap.keySet())
                 this.takeTurn(players);
+            this.save();
         } else {
             moveToWait(nickname);
         }
@@ -206,10 +210,10 @@ public class GameController implements GameControllerInterface {
         if (otherHaveAllSelectedStartCard(nickname)) {
             this.removeInactivePlayers(Player::hasPlacedStartCard);
             this.moveToChoosePawn();
+            this.save();
         } else {
             moveToWait(nickname);
         }
-
     }
 
     private synchronized void placeCard(String nickname, LightPlacement placement) {
@@ -287,14 +291,6 @@ public class GameController implements GameControllerInterface {
             }
             this.save();
         }
-    }
-
-    private synchronized void moveToWait(String nickname) {
-        Player player = game.getPlayerFromNick(nickname);
-        player.setState(PlayerState.WAIT);
-        try{
-            playerViewMap.get(nickname).transitionTo(ViewState.WAITING_STATE);
-        }catch (Exception ignored){}
     }
 
     public synchronized void leave(String nickname) {
@@ -561,6 +557,14 @@ public class GameController implements GameControllerInterface {
         });
     }
 
+    private synchronized void moveToWait(String nickname) {
+        Player player = game.getPlayerFromNick(nickname);
+        player.setState(PlayerState.WAIT);
+        try{
+            playerViewMap.get(nickname).transitionTo(ViewState.WAITING_STATE);
+        }catch (Exception ignored){}
+    }
+
     private synchronized void moveToChoosePawn() {
         game.setState(GameState.CHOOSE_PAWN);
         for(Player player : game.getPlayersList()){
@@ -697,7 +701,7 @@ public class GameController implements GameControllerInterface {
         System.out.println(game.getName() + " ended");
     }
 
-    public void save() {
+    private void save() {
         PersistenceFactory.save(game);
     }
 
