@@ -133,8 +133,11 @@ public class ChatDisplay {
 
     private void sendMessage(){
         String sender = GUI.getLightGame().getLightGameParty().getYourName();
-        String message = sendMessageField.getText();
         String receiver = receiverChoice.getValue();
+        String message = sendMessageField.getText();
+        if(message.isEmpty()){
+            return;
+        }
         try{
             if(receiver.equals(publicMsg.EVERYONE.toString())) {
                 GUI.getControllerStatic().sendChatMessage(new ChatMessage(sender, message));
