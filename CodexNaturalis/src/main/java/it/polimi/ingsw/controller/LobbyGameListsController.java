@@ -152,9 +152,6 @@ public class LobbyGameListsController implements it.polimi.ingsw.controller.Inte
         if(this.isInGameParty(nickname)) {
             GameController gameToLeaveController = this.getGameFromUserNick(nickname);
             gameToLeaveController.leave(nickname);
-            if(gameToLeaveController.getPlayerViewMap().keySet().isEmpty()) {
-                gameToLeaveController.save();
-            }
         }else if(this.isActiveInLobby(nickname)){
             this.leaveLobby(nickname);
             this.leaveLobbyList(nickname);
