@@ -1,4 +1,4 @@
-package it.polimi.ingsw.controller.ConnectionLayer;
+package it.polimi.ingsw.ConnectionLayer;
 
 import it.polimi.ingsw.connectionLayer.Socket.ServerHandler;
 import it.polimi.ingsw.connectionLayer.Socket.ServerMsg.*;
