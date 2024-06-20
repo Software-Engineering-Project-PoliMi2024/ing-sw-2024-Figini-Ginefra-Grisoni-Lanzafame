@@ -29,6 +29,7 @@ public class VirtualViewRMI implements VirtualView {
     public VirtualViewRMI(ViewInterface viewStub) {
         this.viewStub = viewStub;
     }
+
     public void pingPong(){
         Future<?> pong = pingPongExecutor.scheduleAtFixedRate(() -> {
             try {

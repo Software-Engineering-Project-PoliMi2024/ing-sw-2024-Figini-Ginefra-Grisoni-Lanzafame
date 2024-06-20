@@ -42,6 +42,17 @@ public class Server {
             ConnectionLayerServer stub = (ConnectionLayerServer) UnicastRemoteObject.exportObject(connection, 0);
             registry.rebind(Configs.connectionLabelRMI, stub);
             System.out.println("RMI Server started on port " + Configs.rmiPort + "🚔!");
+
+            Runtime.getRuntime().addShutdownHook(new Thread(() -> {
+                try {
+                    registry.unbind(Configs.connectionLabelRMI);
+                    UnicastRemoteObject.unexportObject(connection, true);
+                    UnicastRemoteObject.unexportObject(stub, true);
+                } catch (Exception e) {
+                    throw new RuntimeException(e);
+                }
+            }));
+
         } catch (Exception e) {
             System.err.println("Server exception: can't open registry " +
                     "or error while binding the object");

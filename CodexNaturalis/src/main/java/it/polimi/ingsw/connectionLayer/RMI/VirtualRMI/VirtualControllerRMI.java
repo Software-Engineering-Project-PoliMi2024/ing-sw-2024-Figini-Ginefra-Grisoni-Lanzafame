@@ -44,6 +44,14 @@ public class VirtualControllerRMI implements VirtualController {
                 view.transitionTo(ViewState.SERVER_CONNECTION);
             }catch (Exception ignored){}
         }
+
+        Runtime.getRuntime().addShutdownHook(new Thread(() -> {
+            try {
+                UnicastRemoteObject.unexportObject(this, true);
+                UnicastRemoteObject.unexportObject(view, true);
+            } catch (Exception ignored) {}
+        }));
+
     }
 
     @Override
@@ -226,6 +234,7 @@ public class VirtualControllerRMI implements VirtualController {
         try {
             UnicastRemoteObject.unexportObject(this, true);
             UnicastRemoteObject.unexportObject(view, true);
+
         }catch (RemoteException ignored){}
         this.eraseLightModel();
         try {
