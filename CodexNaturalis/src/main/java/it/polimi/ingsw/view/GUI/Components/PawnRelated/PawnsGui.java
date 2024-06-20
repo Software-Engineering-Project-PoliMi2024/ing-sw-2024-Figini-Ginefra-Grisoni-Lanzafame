@@ -1,4 +1,4 @@
-package it.polimi.ingsw.view.GUI.Components;
+package it.polimi.ingsw.view.GUI.Components.PawnRelated;
 
 import it.polimi.ingsw.view.GUI.AssetsGUI;
 import it.polimi.ingsw.model.playerReleted.PawnColors;
