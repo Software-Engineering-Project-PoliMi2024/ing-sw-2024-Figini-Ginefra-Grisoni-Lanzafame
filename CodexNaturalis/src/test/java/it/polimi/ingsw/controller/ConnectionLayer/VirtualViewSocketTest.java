@@ -3,7 +3,7 @@ package it.polimi.ingsw.controller.ConnectionLayer;
 
 import it.polimi.ingsw.connectionLayer.Socket.ClientHandler;
 import it.polimi.ingsw.connectionLayer.Socket.ServerMsg.*;
-import it.polimi.ingsw.connectionLayer.VirtualSocket.VirtualViewSocket;
+import it.polimi.ingsw.connectionLayer.Socket.VirtualSocket.VirtualViewSocket;
 import it.polimi.ingsw.view.ViewState;
 import org.junit.jupiter.api.Test;
 

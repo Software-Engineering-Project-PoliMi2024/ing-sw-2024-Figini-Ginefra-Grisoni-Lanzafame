@@ -39,13 +39,13 @@ public class LobbyGameListsController implements it.polimi.ingsw.controller.Inte
         //check if the nickname is already taken
         if(allConnectedUsers().containsKey(nickname)) {
             try {
-                view.logErr(LogsOnClientStatic.NAME_TAKEN);
+                view.logErr(LogsOnClient.NAME_TAKEN);
                 view.transitionTo(ViewState.LOGIN_FORM);
             }catch (Exception ignored){}
             //check if the nickname is valid
         }else if(nickname.matches(Configs.invalidNicknameRegex)){
             try {
-                view.logErr(LogsOnClientStatic.NOT_VALID_NICKNAME);
+                view.logErr(LogsOnClient.NOT_VALID_NICKNAME);
                 view.transitionTo(ViewState.LOGIN_FORM);
             }catch (Exception ignored){}
         }else{
@@ -69,18 +69,18 @@ public class LobbyGameListsController implements it.polimi.ingsw.controller.Inte
         ViewInterface view = viewMap.get(creator);
         if(lobbyMap.get(lobbyName)!=null || gameMap.get(lobbyName)!=null) {
             try {
-                view.logErr(LogsOnClientStatic.LOBBY_NAME_TAKEN);
+                view.logErr(LogsOnClient.LOBBY_NAME_TAKEN);
                 view.transitionTo(ViewState.JOIN_LOBBY);
             }catch (Exception ignored){}
             //check if the lobby name is valid
         }else if(lobbyName.matches(Configs.invalidLobbyNameRegex)) {
             try {
-                view.logErr(LogsOnClientStatic.NOT_VALID_LOBBY_NAME);
+                view.logErr(LogsOnClient.NOT_VALID_LOBBY_NAME);
                 view.transitionTo(ViewState.JOIN_LOBBY);
             }catch (Exception ignored){}
         }else if(maxPlayerCount < 2 || maxPlayerCount > 4){
             try {
-                view.logErr(LogsOnClientStatic.INVALID_MAX_PLAYER_COUNT);
+                view.logErr(LogsOnClient.INVALID_MAX_PLAYER_COUNT);
                 view.transitionTo(ViewState.JOIN_LOBBY);
             }catch (Exception ignored){}
         }else { //create the lobby
@@ -99,12 +99,12 @@ public class LobbyGameListsController implements it.polimi.ingsw.controller.Inte
     }
 
     private synchronized void notifyNewLobby(String creator, ViewInterface creatorView, Lobby addedLobby){
-        try{creatorView.log(LogsOnClientStatic.LOBBY_CREATED_YOU);}catch (Exception ignored){}
+        try{creatorView.log(LogsOnClient.LOBBY_CREATED_YOU);}catch (Exception ignored){}
         viewMap.forEach((nickname, view) -> {
             try {
                 view.updateLobbyList(DiffGenerator.addLobbyDiff(addedLobby));
                 if(!nickname.equals(creator)) {
-                    view.log(LogsOnClientStatic.LOBBY_CREATED_OTHERS);
+                    view.log(LogsOnClient.LOBBY_CREATED_OTHERS);
                 }
             } catch (Exception ignored) {}
         });
@@ -116,7 +116,7 @@ public class LobbyGameListsController implements it.polimi.ingsw.controller.Inte
         ViewInterface view = viewMap.get(joiner);
         if (lobbyToJoin == null) {
             try {
-                view.logErr(LogsOnClientStatic.LOBBY_NONEXISTENT);
+                view.logErr(LogsOnClient.LOBBY_NONEXISTENT);
                 view.transitionTo(ViewState.JOIN_LOBBY);
             }catch (Exception ignored){}
         } else {
@@ -142,7 +142,7 @@ public class LobbyGameListsController implements it.polimi.ingsw.controller.Inte
             try {
                 view.updateLobbyList(DiffGenerator.removeLobbyDiff(removedLobby));
                 if(nickname.equals(destroyer))
-                    view.log(LogsOnClientStatic.LOBBY_REMOVED_YOU);
+                    view.log(LogsOnClient.LOBBY_REMOVED_YOU);
             } catch (Exception ignored) {}
         });
     }
@@ -225,7 +225,7 @@ public class LobbyGameListsController implements it.polimi.ingsw.controller.Inte
         List<Lobby> lobbyHistory = lobbyMap.values().stream().map(LobbyController::getLobby).toList();
         try {
             joinerView.updateLobbyList(DiffGenerator.lobbyListHistory(lobbyHistory));
-            joinerView.log(LogsOnClientStatic.JOIN_LOBBY_LIST);
+            joinerView.log(LogsOnClient.JOIN_LOBBY_LIST);
         }catch (Exception ignored){}
     }
 
@@ -239,7 +239,7 @@ public class LobbyGameListsController implements it.polimi.ingsw.controller.Inte
     private synchronized void updateLeaveLobbyList(ViewInterface leaverView){
         try {
             leaverView.updateLobbyList(new FatManLobbyList());
-            leaverView.log(LogsOnClientStatic.LEFT_LOBBY_LIST);
+            leaverView.log(LogsOnClient.LEFT_LOBBY_LIST);
         }catch (Exception ignored){}
     }
 }

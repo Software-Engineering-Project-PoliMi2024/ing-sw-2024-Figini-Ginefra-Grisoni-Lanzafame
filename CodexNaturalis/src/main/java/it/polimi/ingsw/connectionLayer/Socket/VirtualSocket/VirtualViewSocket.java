@@ -1,4 +1,4 @@
-package it.polimi.ingsw.connectionLayer.VirtualSocket;
+package it.polimi.ingsw.connectionLayer.Socket.VirtualSocket;
 
 import it.polimi.ingsw.connectionLayer.PingPongInterface;
 import it.polimi.ingsw.connectionLayer.Socket.ClientHandler;

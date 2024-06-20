@@ -1,4 +1,4 @@
-package it.polimi.ingsw.connectionLayer.VirtualRMI;
+package it.polimi.ingsw.connectionLayer.RMI.VirtualRMI;
 
 import it.polimi.ingsw.Configs;
 import it.polimi.ingsw.connectionLayer.PingPongInterface;

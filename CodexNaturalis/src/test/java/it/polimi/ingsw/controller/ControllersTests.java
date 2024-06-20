@@ -13,11 +13,11 @@ import it.polimi.ingsw.lightModel.lightTableRelated.LightDeck;
 import it.polimi.ingsw.lightModel.lightTableRelated.LightLobby;
 import it.polimi.ingsw.model.cardReleted.cards.*;
 import it.polimi.ingsw.model.cardReleted.pointMultiplyer.CollectableCardPointMultiplier;
-import it.polimi.ingsw.model.cardReleted.pointMultiplyer.ObjectiveCardPointMultiplier;
 import it.polimi.ingsw.model.cardReleted.utilityEnums.*;
 import it.polimi.ingsw.model.playerReleted.*;
 import it.polimi.ingsw.model.tableReleted.Deck;
 import it.polimi.ingsw.model.tableReleted.Game;
+import it.polimi.ingsw.model.tableReleted.GameState;
 import it.polimi.ingsw.model.tableReleted.Lobby;
 import it.polimi.ingsw.view.ViewState;
 import org.junit.jupiter.api.Assertions;
@@ -398,7 +398,7 @@ class ControllersTests {
         assert game != null;
         Player player1 = game.getUserFromNick(view1.name);
         Player player2 = game.getUserFromNick(view2.name);
-        assert game.isInStartCardState();
+        assert game.getGameState().equals(GameState.CHOOSE_START_CARD);
 
         //user1
         assert player1.hasPlacedStartCard();
@@ -1020,6 +1020,71 @@ class ControllersTests {
     }
 
     @Test
+    void gameStateTest() {
+        ViewTest view1 = new ViewTest();
+        ViewTest view2 = new ViewTest();
+        view1.name = "pippo";
+        view2.name = "pluto";
+
+        String lobbyName1 = "test1";
+        Controller controller1 = new Controller(realLobbyGameListController, view1);
+        Controller controller2 = new Controller(realLobbyGameListController, view2);
+
+        controller1.login(view1.name);
+        controller2.login(view2.name);
+        controller1.createLobby(lobbyName1, 2);
+        controller2.joinLobby(lobbyName1);
+
+        PublicGameController gameController = new PublicGameController(lobbyGameListController.getGameMap().get(lobbyName1));
+        Game game = gameController.getGame();
+        
+        assert !game.getGameState().equals(GameState.END_GAME) && game.getGameParty().getUsersList().stream().map(Player::getUserHand).map(Hand::getStartCard).anyMatch(Objects::nonNull);
+        assert game.getGameState().equals(GameState.CHOOSE_START_CARD);
+        assert (game.getGameState().equals(GameState.CHOOSE_START_CARD)) ==  !game.getGameState().equals(GameState.END_GAME) && game.getGameParty().getUsersList().stream().map(Player::getUserHand).map(Hand::getStartCard).anyMatch(Objects::nonNull);
+
+        LightCard startCard1 = view1.lightGame.getHand().getCards()[0];
+        LightPlacement startPlacement1 = new LightPlacement(new Position(0,0), startCard1, CardFace.FRONT);
+        LightCard startCard2 = view2.lightGame.getHand().getCards()[0];
+        LightPlacement startPlacement2 = new LightPlacement(new Position(0,0), startCard2, CardFace.FRONT);
+
+        controller1.place(startPlacement1);
+        controller2.place(startPlacement2);
+
+        assert !game.getGameState().equals(GameState.END_GAME) && !game.getGameState().equals(GameState.CHOOSE_START_CARD) && game.getGameParty().getUsersList().stream().map(Player::getPawnColor).anyMatch(Objects::isNull)
+                && game.getGameParty().getPawnChoices().stream().anyMatch(Objects::nonNull);
+        assert game.getGameState().equals(GameState.CHOOSE_PAWN);
+        assert (game.getGameState().equals(GameState.CHOOSE_PAWN)) == !game.getGameState().equals(GameState.END_GAME) && !game.getGameState().equals(GameState.CHOOSE_START_CARD) && game.getGameParty().getUsersList().stream().map(Player::getPawnColor).anyMatch(Objects::isNull)
+                && game.getGameParty().getPawnChoices().stream().anyMatch(Objects::nonNull);;
+
+        controller1.choosePawn(PawnColors.BLUE);
+        controller2.choosePawn(PawnColors.RED);
+
+        LightCard secretObjective1 = view1.lightGame.getHand().getSecretObjectiveOptions()[0];
+        LightCard secretObjective2 = view2.lightGame.getHand().getSecretObjectiveOptions()[0];
+
+        assert game.getGameParty().getUsersList().stream().map(Player::getUserHand).map(Hand::getSecretObjectiveChoices).anyMatch(Objects::nonNull);
+        assert game.getGameState().equals(GameState.CHOOSE_SECRET_OBJECTIVE);
+        assert game.getGameState().equals(GameState.CHOOSE_SECRET_OBJECTIVE) == game.getGameParty().getUsersList().stream().map(Player::getUserHand).map(Hand::getSecretObjectiveChoices).anyMatch(Objects::nonNull);
+
+        controller1.chooseSecretObjective(secretObjective1);
+        controller2.chooseSecretObjective(secretObjective2);
+
+        assert game.getGameState().equals(GameState.ACTUAL_GAME);
+
+        PublicController firstPlayerController = new PublicController(view1.name.equals(game.getCurrentPlayer().getNickname()) ? controller1 : controller2);
+        PublicController secondPlayerController = new PublicController(view1.name.equals(game.getCurrentPlayer().getNickname()) ? controller2 : controller1);
+        Player firstPlayer = game.getUserFromNick(firstPlayerController.getNickname());
+        Player secondPlayer = game.getUserFromNick(secondPlayerController.getNickname());
+
+        LightCard cardPlaced1 = Lightifier.lightifyToCard(firstPlayer.getUserHand().getHand().stream().toList().getFirst());
+        Position position1 = firstPlayer.getUserCodex().getFrontier().getFrontier().getFirst();
+        LightPlacement placement1 = new LightPlacement(position1, cardPlaced1, CardFace.BACK);
+
+        firstPlayerController.controller.place(placement1);
+        firstPlayerController.controller.draw(DrawableCard.GOLDCARD, 0);
+    }
+
+    @Test
     void gameEndingCausePoints() {
         ViewTest view1 = new ViewTest();
         ViewTest view2 = new ViewTest();
@@ -1100,7 +1165,7 @@ class ControllersTests {
         view1.state = ViewState.DRAW_CARD;
         firstToPlayController.draw(DrawableCard.GOLDCARD, 0);
         assert game.duringLastTurns();
-        assert !game.hasEnded();
+        assert !game.getGameState().equals(GameState.END_GAME);
 
         //play last turns placing the first card in hand and drawing from goldCardDeck
         CardInHand randomCardFromHand = secondToPlay.getUserHand().getHand().stream().reduce((a,b)->a).get();
@@ -1109,7 +1174,7 @@ class ControllersTests {
 
         assert game.duringLastTurns();
         assert publicGame.getLastTurnCounter() == 1;
-        assert !game.hasEnded();
+        assert !game.getGameState().equals(GameState.END_GAME);
 
         randomCardFromHand = firstToPlay.getUserHand().getHand().stream().reduce((a,b)->a).get();
         firstToPlayController.place(new LightPlacement(new Position(1,-1), Lightifier.lightifyToCard(randomCardFromHand), CardFace.BACK));
@@ -1118,7 +1183,7 @@ class ControllersTests {
         secondToPlayController.place(new LightPlacement(new Position(1,-1), Lightifier.lightifyToCard(randomCardFromHand), CardFace.BACK));
         secondToPlayController.draw(DrawableCard.GOLDCARD, 0);
 
-        assert game.hasEnded();
+        assert game.getGameState().equals(GameState.END_GAME);
         assert firstToPlay.getUserCodex().getPoints() >= 200;
 
         assert firstToPlayView.state.equals(ViewState.GAME_ENDING);
@@ -1224,7 +1289,7 @@ class ControllersTests {
         firstToPlayView.state = ViewState.DRAW_CARD;
         firstToPlayController.draw(DrawableCard.GOLDCARD, 0);
         assert game.duringLastTurns();
-        assert !game.hasEnded();
+        assert !game.getGameState().equals(GameState.END_GAME);
 
 
         Hand handSecond = secondToPlay.getUserHand();
@@ -1238,11 +1303,11 @@ class ControllersTests {
         secondToPlayView.state = ViewState.DRAW_CARD;
         secondToPlayController.draw(DrawableCard.GOLDCARD, 0);
         assert game.duringLastTurns();
-        assert !game.hasEnded();
+        assert !game.getGameState().equals(GameState.END_GAME);
 
         assert game.duringLastTurns();
         assert publicGame.getLastTurnCounter() == 1;
-        assert !game.hasEnded();
+        assert !game.getGameState().equals(GameState.END_GAME);
         //play last turns placing a card that gives 0 points and doesn't add resources
         HashMap<CardCorner, Collectable> uselessCornerMap = new HashMap<>();
         for (CardCorner corner : CardCorner.values()) {
@@ -1262,7 +1327,7 @@ class ControllersTests {
         firstToPlayController.draw(DrawableCard.GOLDCARD, 0);
         secondToPlayController.draw(DrawableCard.GOLDCARD, 0);
 
-        assert game.hasEnded();
+        assert game.getGameState().equals(GameState.END_GAME);
         System.out.println(firstToPlay.getUserCodex().getPoints());
         System.out.println(secondToPlay.getUserCodex().getPoints());
         assert firstToPlay.getUserCodex().getPoints() == 200;

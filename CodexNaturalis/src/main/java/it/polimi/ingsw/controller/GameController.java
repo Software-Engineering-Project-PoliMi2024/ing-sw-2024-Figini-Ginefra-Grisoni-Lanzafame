@@ -35,6 +35,7 @@ import it.polimi.ingsw.model.cardReleted.utilityEnums.CardFace;
 import it.polimi.ingsw.model.cardReleted.utilityEnums.DrawableCard;
 import it.polimi.ingsw.model.playerReleted.*;
 import it.polimi.ingsw.model.tableReleted.Game;
+import it.polimi.ingsw.model.tableReleted.GameState;
 import it.polimi.ingsw.model.utilities.Pair;
 import it.polimi.ingsw.view.ViewInterface;
 import it.polimi.ingsw.view.ViewState;
@@ -69,8 +70,12 @@ public class GameController implements GameControllerInterface {
     //TODO test when the decks finish the cards
     //TODO separate leave from disconnect; game ending view call leaveGame
     public synchronized void join(String joinerNickname, ViewInterface view, boolean reconnected){
-        if(game.hasEnded()){
-
+        if(game.getGameState().equals(GameState.END_GAME)){
+            try {
+                view.logErr(LogsOnClient.GAME_END);
+                view.transitionTo(ViewState.JOIN_LOBBY);
+            }catch (Exception ignored){}
+            return;
         }
         this.resetLastPlayerTimer();
         playerViewMap.put(joinerNickname, view);
@@ -78,30 +83,28 @@ public class GameController implements GameControllerInterface {
         this.notifyJoinGame(joinerNickname, reconnected);
 
         this.loadChat(joinerNickname, view);
-
-        if (game.isInStartCardState()) {
+        
+        if (game.getGameState().equals(GameState.CHOOSE_START_CARD)) {
             this.updateJoinStartCard(joinerNickname);
             startCardStateTransition(joinerNickname);
             if (playerViewMap.size() == 2 && reconnected) {
                 String otherPlayer = playerViewMap.keySet().stream().filter(nick -> !nick.equals(joinerNickname)).findFirst().orElse(null);
                 startCardStateTransition(otherPlayer);
             }
-        } else if (game.inInSecretObjState()) {
+        } else if (game.getGameState().equals(GameState.CHOOSE_SECRET_OBJECTIVE)) {
             this.updateJoinSecretObjective(joinerNickname, game);
             this.objectiveChoiceStateTransition(joinerNickname);
             if (playerViewMap.size() == 2 && reconnected) {
                 String otherPlayer = playerViewMap.keySet().stream().filter(nick -> !nick.equals(joinerNickname)).findFirst().orElse(null);
                 objectiveChoiceStateTransition(otherPlayer);
             }
-        } else if (game.isInPawnChoiceState()) {
+        } else if (game.getGameState().equals(GameState.CHOOSE_PAWN)) {
             this.updateJoinPawnChoice(joinerNickname);
             this.pawnChoiceStateTransition(joinerNickname);
             if (playerViewMap.size() == 2 && reconnected){
                 String otherPlayer = playerViewMap.keySet().stream().filter(nick -> !nick.equals(joinerNickname)).findFirst().orElse(null);
                 pawnChoiceStateTransition(otherPlayer);
             }
-        } else if (game.hasEnded() && game.getCurrentPlayer().getNickname().equals(getLastActivePlayer())) {
-
         } else {
             if (playerViewMap.size() == 2) {
                 //TODO test this
@@ -120,24 +123,6 @@ public class GameController implements GameControllerInterface {
             this.startLastPlayerTimer();
         }
 
-    }
-
-    @Override
-    public synchronized void chooseSecretObjective(String nickname, LightCard lightObjChoice) {
-        ObjectiveCard objChoice = Heavifier.heavifyObjectCard(lightObjChoice, cardTable);
-        Player player = game.getUserFromNick(nickname);
-
-        player.setSecretObjective(objChoice);
-        this.notifySecretObjectiveChoice(nickname, lightObjChoice);
-
-        if (otherHaveAllChosenObjective(nickname)) {
-            this.removeInactivePlayers(Player::hasChosenObjective);
-            this.notifyActualGameSetup();
-            for (String players : playerViewMap.keySet())
-                this.takeTurn(players);
-        } else {
-            this.objectiveChoiceStateTransition(nickname);
-        }
     }
 
     @Override
@@ -172,10 +157,29 @@ public class GameController implements GameControllerInterface {
             }
         } else {
             try {
-                view.logGame(LogsOnClientStatic.PAWN_TAKEN);
+                view.logGame(LogsOnClient.PAWN_TAKEN);
                 this.pawnChoiceStateTransition(nickname);
             } catch (Exception ignored) {
             }
+        }
+    }
+
+    @Override
+    public synchronized void chooseSecretObjective(String nickname, LightCard lightObjChoice) {
+        ObjectiveCard objChoice = Heavifier.heavifyObjectCard(lightObjChoice, cardTable);
+        Player player = game.getUserFromNick(nickname);
+
+        player.setSecretObjective(objChoice);
+        this.notifySecretObjectiveChoice(nickname, lightObjChoice);
+
+        if (otherHaveAllChosenObjective(nickname)) {
+            this.removeInactivePlayers(Player::hasChosenObjective);
+            game.setGameState(GameState.ACTUAL_GAME);
+            this.notifyActualGameSetup();
+            for (String players : playerViewMap.keySet())
+                this.takeTurn(players);
+        } else {
+            this.objectiveChoiceStateTransition(nickname);
         }
     }
 
@@ -231,7 +235,7 @@ public class GameController implements GameControllerInterface {
         CardInHand card = Heavifier.heavifyCardInHand(placement.card(), cardTable);
         if(!card.canBePlaced(codexBeforePlacement) && placement.face() == CardFace.FRONT) {
             try {
-                playerViewMap.get(nickname).logErr(LogsOnClientStatic.CARD_NOT_PLACEABLE);
+                playerViewMap.get(nickname).logErr(LogsOnClient.CARD_NOT_PLACEABLE);
                 playerViewMap.get(nickname).transitionTo(ViewState.PLACE_CARD);
             }catch (Exception ignored){}
         }else {
@@ -273,6 +277,7 @@ public class GameController implements GameControllerInterface {
         }
 
         if (game.checkForChickenDinner() && !game.duringLastTurns()) {
+            game.setGameState(GameState.LAST_TURNS);
             game.startLastTurnsCounter();
             this.notifyLastTurn();
         }
@@ -280,9 +285,9 @@ public class GameController implements GameControllerInterface {
         if (game.duringLastTurns() && Objects.equals(nickname, getLastActivePlayer())) {
             game.decrementLastTurnsCounter();
         }
-
-        if (Objects.equals(this.getLastActivePlayer(), nickname) && game.hasEnded()) {
+        if (Objects.equals(this.getLastActivePlayer(), nickname) && game.noMoreTurns()) {
             //model update with points
+            game.setGameState(GameState.END_GAME);
             declareWinners();
         } else {
             //turn
@@ -305,18 +310,18 @@ public class GameController implements GameControllerInterface {
 
         this.notifyGameLeft(nickname);
 
-        if (game.isInStartCardState()) {
+        if (game.getGameState().equals(GameState.CHOOSE_START_CARD)) {
             if (otherHaveAllSelectedStartCard(nickname)) {
                 this.removeInactivePlayers(Player::hasPlacedStartCard);
                 this.moveToChoosePawn();
             }
-        } else if (game.isInPawnChoiceState()) {
+        } else if (game.getGameState().equals(GameState.CHOOSE_PAWN)) {
             if (otherHaveAllChoosePawn(nickname)) {
                 game.getPawnChoices().clear();
                 this.removeInactivePlayers(Player::hasChosenPawnColor);
                 this.moveToSecretObjectivePhase();
             }
-        } else if (game.inInSecretObjState()) {
+        } else if (game.getGameState().equals(GameState.CHOOSE_SECRET_OBJECTIVE)) {
             if (otherHaveAllChosenObjective(nickname) && !you.hasChosenObjective()) {
                 this.removeInactivePlayers(Player::hasChosenObjective);
 
@@ -327,7 +332,7 @@ public class GameController implements GameControllerInterface {
                 for (String players : playerViewMap.keySet())
                     this.takeTurn(players);
             }
-        } else if (!game.hasEnded()) { //if the game is in the actual game phase
+        } else if (!game.getGameState().equals(GameState.END_GAME)) { //if the game is in the actual game phase
             if (game.getCurrentPlayer().getNickname().equals(nickname)) { //if current player leaves
                 //check if the user has disconnected after placing
                 if (you.getHandSize() < 3 && !game.areDeckEmpty()) {
@@ -355,24 +360,24 @@ public class GameController implements GameControllerInterface {
                     this.resetLastPlayerTimer();
                 }
             }
-        }else{
+        }
+        if(game.getGameState().equals(GameState.END_GAME)){
+            //TODO check if it works even when timer ends
             finishedGameDeleter.deleteGame(game.getName());
-        }
-
-        if(playerViewMap.size() == 1) {
-            this.notifyLastInGameTimer();
-            this.startLastPlayerTimer();
-        }
-
-        if(playerViewMap.isEmpty()){
-            this.resetLastPlayerTimer();
+        }else {
+            this.save();
+            if (playerViewMap.size() == 1) {
+                this.notifyLastInGameTimer();
+                this.startLastPlayerTimer();
+            }else if (playerViewMap.isEmpty()) {
+                this.resetLastPlayerTimer();
+            }
         }
 
         try {
             view.updateGame(new GadgetGame());
             view.transitionTo(ViewState.LOGIN_FORM);
-        } catch (Exception ignored) {
-        }
+        } catch (Exception ignored) {}
     }
 
 
@@ -392,7 +397,7 @@ public class GameController implements GameControllerInterface {
         List<String> activePlayers = new ArrayList<>(playerViewMap.keySet().stream().toList());
         try {
             playerViewMap.get(joiner).updateGame(DiffGenerator.updateJoinSecretObj(game, activePlayers, joiner));
-            playerViewMap.get(joiner).logGame(LogsOnClientStatic.GAME_JOINED);
+            playerViewMap.get(joiner).logGame(LogsOnClient.GAME_JOINED);
         } catch (Exception ignored) {
         }
     }
@@ -422,7 +427,7 @@ public class GameController implements GameControllerInterface {
         List<String> activePlayers = new ArrayList<>(playerViewMap.keySet().stream().toList());
         try {
             playerViewMap.get(joiner).updateGame(DiffGenerator.updateChosePawn(game, activePlayers, joiner));
-            playerViewMap.get(joiner).logGame(LogsOnClientStatic.GAME_JOINED);
+            playerViewMap.get(joiner).logGame(LogsOnClient.GAME_JOINED);
         } catch (Exception ignored) {
         }
     }
@@ -431,7 +436,7 @@ public class GameController implements GameControllerInterface {
         List<String> activePlayers = new ArrayList<>(playerViewMap.keySet().stream().toList());
         try {
             playerViewMap.get(joiner).updateGame(DiffGenerator.updateJoinStartCard(game, activePlayers, joiner));
-            playerViewMap.get(joiner).logGame(LogsOnClientStatic.GAME_JOINED);
+            playerViewMap.get(joiner).logGame(LogsOnClient.GAME_JOINED);
         } catch (Exception ignored) {
         }
     }
@@ -443,7 +448,7 @@ public class GameController implements GameControllerInterface {
                 try {
                     view.updateGame(communicateJoin);
                     if(reconnected) {
-                        view.logOthers(joinerNickname + LogsOnClientStatic.PLAYER_JOINED);
+                        view.logOthers(joinerNickname + LogsOnClient.PLAYER_JOINED);
                     }
                 } catch (Exception ignored) {}
             }
@@ -455,7 +460,7 @@ public class GameController implements GameControllerInterface {
             if (!nickname.equals(leaver)) {
                 try {
                     view.updateGame(new GameDiffPlayerActivity(new ArrayList<>(), List.of(leaver)));
-                    view.logOthers(leaver + LogsOnClientStatic.PLAYER_GAME_LEFT);
+                    view.logOthers(leaver + LogsOnClient.PLAYER_GAME_LEFT);
                 } catch (Exception ignored) {
                 }
             }
@@ -476,6 +481,7 @@ public class GameController implements GameControllerInterface {
         countdownTimer.schedule(new TimerTask() {
             @Override
             public void run() {
+                game.setGameState(GameState.END_GAME);
                 winsTheLastPlayerInGame(lastPlayerInGame);
             }
         }, Configs.lastInGameTimerSeconds * 1000L);
@@ -514,7 +520,6 @@ public class GameController implements GameControllerInterface {
                             completedObj += obj.getPoints(user.getUserCodex()) / obj.getPoints();
                     }
                     if(user.getUserHand().getSecretObjective() != null) {
-                        //TODO check if in actual game
                         if(user.getUserHand().getSecretObjective().getPoints() != 0)
                             completedObj += user.getUserHand().getSecretObjective().getPoints(user.getUserCodex()) / user.getUserHand().getSecretObjective().getPoints();
                         objectiveCompleted.put(user.getNickname(), completedObj);
@@ -534,18 +539,19 @@ public class GameController implements GameControllerInterface {
     private synchronized void notifyLastInGameTimer() {
         new HashMap<>(playerViewMap).forEach((nickname, view) -> {
             try {
-                view.logGame(LogsOnClientStatic.LAST_PLAYER);
+                view.logGame(LogsOnClient.LAST_PLAYER);
             } catch (Exception ignored) {
             }
         });
     }
 
     private synchronized void moveToChoosePawn() {
+        game.setGameState(GameState.CHOOSE_PAWN);
         this.notifyPawnChoiceSetup();
 
         new HashMap<>(playerViewMap).forEach((nickname, view) -> {
             try {
-                view.logGame(LogsOnClientStatic.EVERYONE_CHOSE_PAWN);
+                view.logGame(LogsOnClient.EVERYONE_CHOSE_PAWN);
                 view.transitionTo(ViewState.CHOOSE_PAWN);
             } catch (Exception ignored) {
             }
@@ -572,14 +578,14 @@ public class GameController implements GameControllerInterface {
                 view.updateGame(new DeckDiffDeckDraw(DrawableCard.GOLDCARD, goldBack));
 
                 if (nickname.equals(chooser)) {
-                    view.log(LogsOnClientStatic.YOU_CHOSE_PAWN);
-                    view.logGame(LogsOnClientStatic.WAIT_PAWN);
+                    view.log(LogsOnClient.YOU_CHOSE_PAWN);
+                    view.logGame(LogsOnClient.WAIT_PAWN);
 
                     for (HandDiff handDiff : DiffGenerator.getHandYourCurrentState(player)) {
                         view.updateGame(handDiff);
                     }
                 } else {
-                    view.logOthers(chooser + LogsOnClientStatic.PLAYER_CHOSE_PAWN);
+                    view.logOthers(chooser + LogsOnClient.PLAYER_CHOSE_PAWN);
                 }
             } catch (Exception ignored) {
             }
@@ -591,13 +597,13 @@ public class GameController implements GameControllerInterface {
         new HashMap<>(playerViewMap).forEach((nickname, view) -> {
             try {
                 if (nickname.equals(placer)) {
-                    view.log(LogsOnClientStatic.YOU_PLACE_STARTCARD);
-                    view.logGame(LogsOnClientStatic.WAIT_STARTCARD);
+                    view.log(LogsOnClient.YOU_PLACE_STARTCARD);
+                    view.logGame(LogsOnClient.WAIT_STARTCARD);
                     view.updateGame(new HandDiffRemove(placement.card()));
                     view.updateGame(new CodexDiffPlacement(placer, player.getUserCodex().getPoints(),
                             player.getUserCodex().getEarnedCollectables(), List.of(placement), player.getUserCodex().getFrontier().getFrontier()));
                 } else {
-                    view.logOthers(placer + LogsOnClientStatic.PLAYER_PLACE_STARTCARD);
+                    view.logOthers(placer + LogsOnClient.PLAYER_PLACE_STARTCARD);
                 }
             } catch (Exception ignored) {
             }
@@ -620,10 +626,10 @@ public class GameController implements GameControllerInterface {
             try {
                 if (nickname.equals(chooser)) {
                     view.updateGame(new HandDiffSetObj(objChoice));
-                    view.log(LogsOnClientStatic.YOU_CHOSE_SECRET_OBJ);
-                    view.logGame(LogsOnClientStatic.WAIT_SECRET_OBJECTIVE);
+                    view.log(LogsOnClient.YOU_CHOSE_SECRET_OBJ);
+                    view.logGame(LogsOnClient.WAIT_SECRET_OBJECTIVE);
                 } else {
-                    view.logOthers(chooser + LogsOnClientStatic.PLAYER_CHOSE_SECRET_OBJ);
+                    view.logOthers(chooser + LogsOnClient.PLAYER_CHOSE_SECRET_OBJ);
                 }
             } catch (Exception ignored) {
             }
@@ -651,11 +657,11 @@ public class GameController implements GameControllerInterface {
                     view.updateGame(new HandDiffRemove(newPlacement.card()));
                     for (LightCard card : playability.keySet())
                         view.updateGame(new HandDiffUpdatePlayability(card, playability.get(card)));
-                    view.log(LogsOnClientStatic.YOU_PLACED);
+                    view.log(LogsOnClient.YOU_PLACED);
                 } else {
                     LightBack newPlacementBack = new LightBack(newPlacement.card().idBack());
                     view.updateGame(new HandOtherDiffRemove(newPlacementBack, placer));
-                    view.logOthers(placer + LogsOnClientStatic.PLAYER_PLACED);
+                    view.logOthers(placer + LogsOnClient.PLAYER_PLACED);
                 }
             } catch (Exception ignored) {
             }
@@ -687,11 +693,11 @@ public class GameController implements GameControllerInterface {
                     view.updateGame(diff);
 
                 if (!nickname.equals(drawerNickname)) {
-                    view.logOthers(drawerNickname + LogsOnClientStatic.PLAYER_DRAW);
+                    view.logOthers(drawerNickname + LogsOnClient.PLAYER_DRAW);
                     LightBack backOfDrawnCard = new LightBack(drawnCard.idBack());
                     view.updateGame(new HandOtherDiffAdd(backOfDrawnCard, drawerNickname));
                 } else {
-                    view.log(LogsOnClientStatic.YOU_DRAW);
+                    view.log(LogsOnClient.YOU_DRAW);
                     view.updateGame(new HandDiffAdd(drawnCard, playability));
                 }
             } catch (Exception ignored) {
@@ -712,7 +718,7 @@ public class GameController implements GameControllerInterface {
             try {
                 view.updateGame(new CodexDiffSetFinalPoints(pointsPerPlayerMap));
                 view.updateGame(new GameDiffWinner(winners));
-                view.logGame(LogsOnClientStatic.GAME_END);
+                view.logGame(LogsOnClient.GAME_END);
             } catch (Exception ignored) {
             }
         });
@@ -721,7 +727,7 @@ public class GameController implements GameControllerInterface {
     private synchronized void notifyLastTurn() {
         new HashMap<>(playerViewMap).forEach((nickname, view) -> {
             try {
-                view.logGame(LogsOnClientStatic.LAST_TURN);
+                view.logGame(LogsOnClient.LAST_TURN);
             } catch (Exception ignored) {
             }
         });
@@ -744,9 +750,9 @@ public class GameController implements GameControllerInterface {
             try {
                 view.updateGame(new GameDiffCurrentPlayer(nextPlayer));
                 if (!nickname.equals(nextPlayer)) {
-                    view.logOthers(nextPlayer + LogsOnClientStatic.PLAYER_TURN);
+                    view.logOthers(nextPlayer + LogsOnClient.PLAYER_TURN);
                 } else {
-                    view.log(LogsOnClientStatic.YOUR_TURN);
+                    view.log(LogsOnClient.YOUR_TURN);
                 }
             } catch (Exception ignored) {
             }
@@ -762,6 +768,7 @@ public class GameController implements GameControllerInterface {
     }
 
     private synchronized void moveToSecretObjectivePhase() {
+        game.setGameState(GameState.CHOOSE_SECRET_OBJECTIVE);
         for (Player player : game.getUsersList()) {
             this.drawObjectiveCard(player);
         }
@@ -770,7 +777,7 @@ public class GameController implements GameControllerInterface {
 
         new HashMap<>(playerViewMap).forEach((nickname, view) -> {
             try {
-                view.logGame(LogsOnClientStatic.EVERYONE_PLACED_STARTCARD);
+                view.logGame(LogsOnClient.EVERYONE_PLACED_STARTCARD);
                 view.transitionTo(ViewState.SELECT_OBJECTIVE);
             } catch (Exception ignored) {
             }
@@ -806,7 +813,7 @@ public class GameController implements GameControllerInterface {
         new HashMap<>(playerViewMap).forEach((nickname, view) -> {
             try {
                 view.updateGame(new GameDiffPublicObj(game.getCommonObjective().stream().map(Lightifier::lightifyToCard).toArray(LightCard[]::new)));
-                view.logGame(LogsOnClientStatic.EVERYONE_CHOSE_OBJ);
+                view.logGame(LogsOnClient.EVERYONE_CHOSE_OBJ);
             } catch (Exception ignored) {
             }
         });
@@ -870,7 +877,7 @@ public class GameController implements GameControllerInterface {
         try {
             ViewInterface joinerView = playerViewMap.get(joiner);
             joinerView.updateGame(DiffGenerator.updateJoinActualGame(game, activePlayers, joiner));
-            joinerView.logGame(LogsOnClientStatic.GAME_JOINED);
+            joinerView.logGame(LogsOnClient.GAME_JOINED);
         } catch (Exception ignored) {
         }
 
@@ -918,9 +925,9 @@ public class GameController implements GameControllerInterface {
             try {
                 view.updateGame(new ChatDiffs(List.of(chatMessage)));
                 if(chatMessage.getSender().equals(nickname)){
-                    view.logChat(LogsOnClientStatic.SENT_PUBLIC_MESSAGE);
+                    view.logChat(LogsOnClient.SENT_PUBLIC_MESSAGE);
                 }else{
-                    view.logChat(LogsOnClientStatic.RECEIVED_PUBLIC_MESSAGE);
+                    view.logChat(LogsOnClient.RECEIVED_PUBLIC_MESSAGE);
                 }
             } catch (Exception ignored) {
             }
@@ -930,10 +937,10 @@ public class GameController implements GameControllerInterface {
     private synchronized void updatePrivateChat(ChatMessage chatMessage) {
         try {
             playerViewMap.get(chatMessage.getSender()).updateGame(new ChatDiffs(List.of(chatMessage)));
-            playerViewMap.get(chatMessage.getSender()).logChat(LogsOnClientStatic.SENT_PRIVATE_MESSAGE + chatMessage.getReceiver());
+            playerViewMap.get(chatMessage.getSender()).logChat(LogsOnClient.SENT_PRIVATE_MESSAGE + chatMessage.getReceiver());
 
             playerViewMap.get(chatMessage.getReceiver()).updateGame(new ChatDiffs(List.of(chatMessage)));
-            playerViewMap.get(chatMessage.getReceiver()).logChat(LogsOnClientStatic.RECEIVED_PRIVATE_MESSAGE + chatMessage.getSender());
+            playerViewMap.get(chatMessage.getReceiver()).logChat(LogsOnClient.RECEIVED_PRIVATE_MESSAGE + chatMessage.getSender());
         } catch (Exception ignored) {
         }
     }

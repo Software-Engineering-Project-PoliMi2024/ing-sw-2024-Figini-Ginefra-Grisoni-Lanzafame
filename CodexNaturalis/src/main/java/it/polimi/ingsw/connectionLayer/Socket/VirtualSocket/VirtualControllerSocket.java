@@ -1,11 +1,11 @@
-package it.polimi.ingsw.connectionLayer.VirtualSocket;
+package it.polimi.ingsw.connectionLayer.Socket.VirtualSocket;
 
 import it.polimi.ingsw.connectionLayer.PingPongInterface;
 import it.polimi.ingsw.connectionLayer.Socket.ClientMsg.*;
 import it.polimi.ingsw.connectionLayer.Socket.ServerHandler;
 import it.polimi.ingsw.connectionLayer.VirtualLayer.VirtualController;
 import it.polimi.ingsw.controller.Interfaces.ControllerInterface;
-import it.polimi.ingsw.controller.LogsOnClientStatic;
+import it.polimi.ingsw.controller.LogsOnClient;
 import it.polimi.ingsw.lightModel.lightPlayerRelated.LightCard;
 import it.polimi.ingsw.lightModel.lightPlayerRelated.LightPlacement;
 import it.polimi.ingsw.model.cardReleted.utilityEnums.DrawableCard;
@@ -38,7 +38,7 @@ public class VirtualControllerSocket implements VirtualController {
             server = new Socket(ip, port);
         } catch (IOException e) { //catch a "UnknownHostException" or a "ConnectException"
             System.out.println("Server unreachable, check the port and the ip address");
-            this.view.logErr(LogsOnClientStatic.CONNECTION_ERROR);
+            this.view.logErr(LogsOnClient.CONNECTION_ERROR);
             this.view.transitionTo(ViewState.SERVER_CONNECTION);
             return;
         }

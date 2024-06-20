@@ -75,10 +75,10 @@ public class LobbyController implements LobbyControllerInterface {
             try {
                 if (!nick.equals(nickname)) {
                     view.updateLobby(DiffGenerator.diffAddUserToLobby(nickname));
-                    view.logOthers(nickname + LogsOnClientStatic.LOBBY_JOIN_OTHER);
+                    view.logOthers(nickname + LogsOnClient.LOBBY_JOIN_OTHER);
                 } else {
                     view.updateLobby(DiffGenerator.diffJoinLobby(this.lobby));
-                    view.log((LogsOnClientStatic.LOBBY_JOIN_YOU));
+                    view.log((LogsOnClient.LOBBY_JOIN_YOU));
                 }
             } catch (Exception ignored) {
             }
@@ -90,10 +90,10 @@ public class LobbyController implements LobbyControllerInterface {
             try {
                 if(nick.equals(nickname)){
                     view.updateLobby(new LittleBoyLobby());
-                    view.log(LogsOnClientStatic.LOBBY_LEFT);
+                    view.log(LogsOnClient.LOBBY_LEFT);
                 }else {
                     view.updateLobby(DiffGenerator.diffRemoveUserFromLobby(nickname));
-                    view.logOthers(nickname + LogsOnClientStatic.LOBBY_LEFT_OTHER);
+                    view.logOthers(nickname + LogsOnClient.LOBBY_LEFT_OTHER);
                 }
             } catch (Exception ignored) {
             }
@@ -104,7 +104,7 @@ public class LobbyController implements LobbyControllerInterface {
         viewMap.forEach((nick, view) -> {
             try {
                 view.updateLobby(new LittleBoyLobby());
-                view.logGame(LogsOnClientStatic.GAME_CREATED);
+                view.logGame(LogsOnClient.GAME_CREATED);
             } catch (Exception ignored) {
             }
         });

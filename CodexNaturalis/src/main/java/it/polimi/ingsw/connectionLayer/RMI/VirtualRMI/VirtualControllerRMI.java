@@ -1,11 +1,11 @@
-package it.polimi.ingsw.connectionLayer.VirtualRMI;
+package it.polimi.ingsw.connectionLayer.RMI.VirtualRMI;
 
 import it.polimi.ingsw.Configs;
 import it.polimi.ingsw.connectionLayer.ConnectionLayerServer;
 import it.polimi.ingsw.connectionLayer.PingPongInterface;
 import it.polimi.ingsw.connectionLayer.VirtualLayer.VirtualController;
 import it.polimi.ingsw.controller.Interfaces.ControllerInterface;
-import it.polimi.ingsw.controller.LogsOnClientStatic;
+import it.polimi.ingsw.controller.LogsOnClient;
 import it.polimi.ingsw.lightModel.lightPlayerRelated.LightCard;
 import it.polimi.ingsw.lightModel.diffs.nuclearDiffs.FatManLobbyList;
 import it.polimi.ingsw.lightModel.diffs.nuclearDiffs.GadgetGame;
@@ -17,6 +17,9 @@ import it.polimi.ingsw.model.playerReleted.PawnColors;
 import it.polimi.ingsw.view.ViewInterface;
 import it.polimi.ingsw.view.ViewState;
 
+import java.io.IOException;
+import java.net.InetSocketAddress;
+import java.net.Socket;
 import java.rmi.RemoteException;
 import java.rmi.registry.LocateRegistry;
 import java.rmi.registry.Registry;
@@ -29,6 +32,19 @@ public class VirtualControllerRMI implements VirtualController {
     private ViewInterface view;
     private PingPongInterface pingPongStub;
     private ControllerInterface controllerStub;
+
+    public VirtualControllerRMI() {
+        try (Socket socket = new Socket()) {
+            socket.connect(new InetSocketAddress("google.com", 80));
+            String ip = socket.getLocalAddress().getHostAddress();
+            System.setProperty("java.rmi.server.hostname", ip);
+        } catch (IOException e) {
+            try {
+                view.logErr(LogsOnClient.UNABLE_TO_GET_IP);
+                view.transitionTo(ViewState.SERVER_CONNECTION);
+            }catch (Exception ignored){}
+        }
+    }
 
     @Override
     public void login(String nickname) {
@@ -213,7 +229,7 @@ public class VirtualControllerRMI implements VirtualController {
         }catch (RemoteException ignored){}
         this.eraseLightModel();
         try {
-            view.logErr(LogsOnClientStatic.CONNECTION_LOST_CLIENT_SIDE);
+            view.logErr(LogsOnClient.CONNECTION_LOST_CLIENT_SIDE);
             view.transitionTo(ViewState.SERVER_CONNECTION);
         }catch (Exception ignored){}
     }
@@ -235,6 +251,10 @@ public class VirtualControllerRMI implements VirtualController {
     @Override
     public void connect(String ip, int port, ViewInterface view) {
         this.view = view;
+        try {
+            UnicastRemoteObject.unexportObject(this, true);
+            UnicastRemoteObject.unexportObject(view, true);
+        }catch (Exception ignored){}
         Future<?> connect = controllerExecutor.submit(() -> {
             try {
                 Registry registry = LocateRegistry.getRegistry(ip, port);
@@ -249,11 +269,11 @@ public class VirtualControllerRMI implements VirtualController {
 
         try {
             connect.get(Configs.secondsTimeOut, TimeUnit.SECONDS);
-        }catch (InterruptedException ignored){
+        }catch (InterruptedException ignored) {
         }catch (Exception e){
             try {
                 e.printStackTrace();
-                view.logErr(LogsOnClientStatic.CONNECTION_ERROR);
+                view.logErr(LogsOnClient.CONNECTION_ERROR);
                 view.transitionTo(ViewState.SERVER_CONNECTION);
             }catch (Exception ignored){}
         }
