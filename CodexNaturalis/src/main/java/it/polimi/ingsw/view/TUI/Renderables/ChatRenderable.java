@@ -165,22 +165,6 @@ public class ChatRenderable extends Renderable {
             }
         }
     }
-    /**
-     * Return the style of the message based on the sender and the privacy
-     * The message will be GREEN if the sender is the player (#GreenBubble),
-     * BLUE if the message is private, RESET (white) otherwise
-     * @param message the message to be styled
-     * @return the style of the message
-     */
-    private StringStyle messageToStyle(ChatMessage message){
-        if(message.getSender().equals(lightGame.getLightGameParty().getYourName())) {
-            return StringStyle.GREEN_FOREGROUND;
-        }else if(message.getPrivacy() == ChatMessage.MessagePrivacy.PRIVATE) {
-            return StringStyle.BLUE_FOREGROUND;
-        }else{
-            return StringStyle.RESET;
-        }
-    }
 
     private StringStyle getUserColor(String user){
         PawnColors pawn = lightGame.getLightGameParty().getPlayerColor(user);
