@@ -2,8 +2,13 @@ package it.polimi.ingsw.view.GUI.Components;
 
 import it.polimi.ingsw.view.GUI.AssetsGUI;
 import it.polimi.ingsw.model.playerReleted.PawnColors;
+import it.polimi.ingsw.view.GUI.Components.Utils.PopUp;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
+import javafx.scene.paint.Color;
+
+import java.security.PublicKey;
+import java.util.Map;
 
 public enum PawnsGui {
     BLUE(AssetsGUI.pawnBleu, PawnColors.BLUE),
@@ -11,6 +16,13 @@ public enum PawnsGui {
     YELLOW(AssetsGUI.pawnJaune, PawnColors.YELLOW),
     BLACK(AssetsGUI.pawnBlack, PawnColors.BLACK),
     RED(AssetsGUI.pawnRed, PawnColors.RED);
+
+    private static final Map<PawnColors, Color> pawnColorsColorMap = Map.of(
+        PawnColors.BLUE, Color.BLUE,
+        PawnColors.GREEN, Color.GREEN,
+        PawnColors.YELLOW, Color.YELLOW,
+        PawnColors.RED, Color.RED
+    );
 
     public static PawnsGui getPawnGui(PawnColors pawnColor) {
         for (PawnsGui p : PawnsGui.values()) {
@@ -35,5 +47,9 @@ public enum PawnsGui {
 
     public PawnColors getPawnColor() {
         return pawnColor;
+    }
+
+    public static Color getColor(PawnColors pawnColor) {
+        return pawnColorsColorMap.get(pawnColor);
     }
 }
