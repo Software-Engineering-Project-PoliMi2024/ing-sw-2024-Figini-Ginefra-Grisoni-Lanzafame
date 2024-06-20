@@ -305,8 +305,9 @@ public class GameController implements GameControllerInterface {
 
     public synchronized void leave(String nickname) {
         ViewInterface view = playerViewMap.get(nickname);
+        String lastActivePlayerPreDisconnect = this.getLastActivePlayer();
         playerViewMap.remove(nickname);
-        Player you = game.getUserFromNick(nickname);
+        Player leaver = game.getUserFromNick(nickname);
 
         this.notifyGameLeft(nickname);
 
@@ -322,7 +323,7 @@ public class GameController implements GameControllerInterface {
                 this.moveToSecretObjectivePhase();
             }
         } else if (game.getGameState().equals(GameState.CHOOSE_SECRET_OBJECTIVE)) {
-            if (otherHaveAllChosenObjective(nickname) && !you.hasChosenObjective()) {
+            if (otherHaveAllChosenObjective(nickname) && !leaver.hasChosenObjective()) {
                 this.removeInactivePlayers(Player::hasChosenObjective);
 
                 String currentPlayer = game.getCurrentPlayer().getNickname();
@@ -335,7 +336,7 @@ public class GameController implements GameControllerInterface {
         } else if (!game.getGameState().equals(GameState.END_GAME)) { //if the game is in the actual game phase
             if (game.getCurrentPlayer().getNickname().equals(nickname)) { //if current player leaves
                 //check if the user has disconnected after placing
-                if (you.getHandSize() < 3 && !game.areDeckEmpty()) {
+                if (leaver.getHandSize() < 3 && !game.areDeckEmpty()) {
                     DrawableCard deckType;
                     int pos;
                     CardInHand cardDrawn;
@@ -346,18 +347,27 @@ public class GameController implements GameControllerInterface {
                         cardDrawn = cardDrawnAndReplacement.first();
                     } while (cardDrawn == null);
 
+                    //the draw method manage turn and winners
                     this.draw(nickname, this.randomDeckType(), this.randomDeckPosition());
-                    this.notifyDraw(nickname, deckType, pos, Lightifier.lightifyToCard(cardDrawn) ,cardDrawn.canBePlaced(game.getUserFromNick(nickname).getUserCodex()));
-                }
-                //move on with the turns for the other players
-                if (!this.playerViewMap.keySet().isEmpty()) {
-                    int nextPlayerIndex = this.getNextActivePlayerIndex();
-                    String nextPlayerNick = game.getUsersList().get(nextPlayerIndex).getNickname();
-                    game.setCurrentPlayerIndex(nextPlayerIndex);
-                    this.notifyTurnChange(nextPlayerNick);
-                    this.takeTurn(nextPlayerNick);
                 } else {
-                    this.resetLastPlayerTimer();
+                    if (game.duringLastTurns() && Objects.equals(nickname, lastActivePlayerPreDisconnect)) {
+                        game.decrementLastTurnsCounter();
+                    }
+                    if (Objects.equals(lastActivePlayerPreDisconnect, nickname) && game.noMoreTurns()) {
+                        //model update with points
+                        game.setGameState(GameState.END_GAME);
+                        declareWinners();
+                    }
+                    //move on with the turns for the other players
+                    if (!this.playerViewMap.keySet().isEmpty()) {
+                        int nextPlayerIndex = this.getNextActivePlayerIndex();
+                        String nextPlayerNick = game.getUsersList().get(nextPlayerIndex).getNickname();
+                        game.setCurrentPlayerIndex(nextPlayerIndex);
+                        this.notifyTurnChange(nextPlayerNick);
+                        this.takeTurn(nextPlayerNick);
+                    } else {
+                        this.resetLastPlayerTimer();
+                    }
                 }
             }
         }
