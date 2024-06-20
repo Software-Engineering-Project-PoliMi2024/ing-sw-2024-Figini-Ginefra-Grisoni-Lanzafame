@@ -68,7 +68,6 @@ public class GameController implements GameControllerInterface {
 
     //TODO test deck (when drawing all cards it remains a card)
     //TODO test when the decks finish the cards
-    //TODO separate leave from disconnect; game ending view call leaveGame
     public synchronized void join(String joinerNickname, ViewInterface view, boolean reconnected){
         if(game.getGameState().equals(GameState.END_GAME)){
             try {
@@ -323,7 +322,8 @@ public class GameController implements GameControllerInterface {
                 this.moveToSecretObjectivePhase();
             }
         } else if (game.getGameState().equals(GameState.CHOOSE_SECRET_OBJECTIVE)) {
-            if (otherHaveAllChosenObjective(nickname) && !leaver.hasChosenObjective()) {
+            if (otherHaveAllChosenObjective(nickname)) {
+                game.setGameState(GameState.ACTUAL_GAME);
                 this.removeInactivePlayers(Player::hasChosenObjective);
 
                 String currentPlayer = game.getCurrentPlayer().getNickname();
