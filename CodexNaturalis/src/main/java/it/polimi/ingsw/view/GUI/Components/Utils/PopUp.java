@@ -4,19 +4,22 @@ import javafx.animation.Interpolator;
 import javafx.animation.KeyFrame;
 import javafx.animation.KeyValue;
 import javafx.animation.Timeline;
+import javafx.geometry.Insets;
+import javafx.geometry.Pos;
 import javafx.scene.Node;
-import javafx.scene.control.Button;
 import javafx.scene.layout.AnchorPane;
+import javafx.scene.layout.StackPane;
 import javafx.scene.shape.Rectangle;
 import javafx.util.Duration;
-import org.w3c.dom.css.Rect;
 
 public class PopUp {
-    private final Rectangle bg = new Rectangle();
+    private final StackPane container = new StackPane();
     private final AnchorPane content = new AnchorPane();
     private final Timeline openingAnimation = new Timeline();
     private final Timeline closingAnimation = new Timeline();
     private final AnchorPane parent;
+
+    private boolean isLocked = false;
 
     private static KeyValue createOpacityKeyValue(Node target, double value) {
         return new KeyValue(target.opacityProperty(), value, Interpolator.EASE_BOTH);
@@ -31,8 +34,8 @@ public class PopUp {
                 new KeyFrame(Duration.millis(0), createScaleKeyValue(content, 0.0)),
                 new KeyFrame(Duration.millis(300), createScaleKeyValue(content, 1.0)),
 
-                new KeyFrame(Duration.millis(0), createOpacityKeyValue(bg, 0.0)),
-                new KeyFrame(Duration.millis(300), createOpacityKeyValue(bg, 1.0))
+                new KeyFrame(Duration.millis(0), createOpacityKeyValue(container, 0.0)),
+                new KeyFrame(Duration.millis(300), createOpacityKeyValue(container, 1.0))
         );
     }
 
@@ -41,36 +44,44 @@ public class PopUp {
                 new KeyFrame(Duration.millis(0), createScaleKeyValue(content, 1.0)),
                 new KeyFrame(Duration.millis(300), createScaleKeyValue(content, 0.0)),
 
-                new KeyFrame(Duration.millis(0), createOpacityKeyValue(bg, 1.0)),
-                new KeyFrame(Duration.millis(300), createOpacityKeyValue(bg, 0.0))
+                new KeyFrame(Duration.millis(0), createOpacityKeyValue(container, 1.0)),
+                new KeyFrame(Duration.millis(300), createOpacityKeyValue(container, 0.0))
         );
 
         closingAnimation.setOnFinished(e -> {
-            parent.getChildren().remove(bg);
-            parent.getChildren().remove(content);
+            parent.getChildren().remove(container);
         });
     }
 
-    public PopUp(AnchorPane parent) {
+    /**
+     * Creates a new PopUp linked to the parent
+     * @param parent The AnchroPane that the PopUp will be added to and removed from when opened/closed
+     * @param fitContent Whether the PopUp will fit the size of its content (true) or stay at a fixed size (false)
+     */
+    public PopUp(AnchorPane parent, boolean fitContent) {
         this.parent = parent;
 
-        bg.setStyle("-fx-fill: rgba(0, 0, 0, 0.8);");
+        container.setAlignment(Pos.CENTER);
         content.setStyle("-fx-background-color: white; -fx-background-radius: 20;");
 
         content.scaleYProperty().bind(content.scaleXProperty());
 
-        AnchorPane.setTopAnchor(bg, 0.0);
-        AnchorPane.setRightAnchor(bg, 0.0);
-        AnchorPane.setBottomAnchor(bg, 0.0);
-        AnchorPane.setLeftAnchor(bg, 0.0);
+        AnchorPane.setTopAnchor(container, 0.0);
+        AnchorPane.setRightAnchor(container, 0.0);
+        AnchorPane.setBottomAnchor(container, 0.0);
+        AnchorPane.setLeftAnchor(container, 0.0);
 
-        bg.widthProperty().bind(parent.widthProperty());
-        bg.heightProperty().bind(parent.heightProperty());
 
-        AnchorPane.setTopAnchor(content, 50.0);
-        AnchorPane.setRightAnchor(content, 50.0);
-        AnchorPane.setBottomAnchor(content, 50.0);
-        AnchorPane.setLeftAnchor(content, 50.0);
+        container.prefWidthProperty().bind(parent.widthProperty());
+        container.prefHeightProperty().bind(parent.heightProperty());
+
+        if(!fitContent) {
+            container.setPadding(new Insets(50));
+        }
+        else{
+            content.setPrefHeight(.0);
+            content.setPrefWidth(.0);
+        }
 
         Rectangle clip = new Rectangle();
         clip.widthProperty().bind(content.widthProperty());
@@ -79,16 +90,37 @@ public class PopUp {
         clip.setArcHeight(20);
         content.setClip(clip);
 
-        bg.setOnMouseClicked(e -> close());
+
+        Rectangle backDrop = new Rectangle();
+        backDrop.setStyle("-fx-fill: rgba(0, 0, 0, 0.8);");
+
+        backDrop.widthProperty().bind(container.widthProperty());
+        backDrop.heightProperty().bind(container.heightProperty());
+
+        backDrop.setOnMouseClicked(e -> {
+            if(!this.isLocked)
+                close();
+        });
+
+        container.getChildren().add(backDrop);
+        container.getChildren().add(content);
+
 
 
         this.setUpOpeningAnimation();
         this.setUpClosingAnimation();
     }
 
+    /**
+     * Creates a new PopUp of fixed size and linked to the parent
+     * @param parent The AnchroPane that the PopUp will be added to and removed from when opened/closed
+     */
+    public PopUp(AnchorPane parent){
+        this(parent, false);
+    }
+
     public void open() {
-        parent.getChildren().add(bg);
-        parent.getChildren().add(content);
+        parent.getChildren().add(container);
         openingAnimation.play();
     }
 
@@ -98,5 +130,9 @@ public class PopUp {
 
     public AnchorPane getContent() {
         return content;
+    }
+
+    public void setLocked(boolean isLocked){
+        this.isLocked = isLocked;
     }
 }

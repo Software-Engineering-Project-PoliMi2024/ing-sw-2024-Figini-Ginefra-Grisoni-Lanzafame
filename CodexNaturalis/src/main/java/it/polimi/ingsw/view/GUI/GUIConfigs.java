@@ -30,4 +30,10 @@ public class GUIConfigs {
     public static int counterGlowDuration = 3000;
 
     public static int cardAddRemAnimationDuration = 100;
+
+    /**The width of the corners expressed as a percentage of the
+     * minimum between the window width and height */
+    public static double decorativeCornersPercentage = 0.2;
+
+    public static double flowerAnimationDuration = 2000;
 }

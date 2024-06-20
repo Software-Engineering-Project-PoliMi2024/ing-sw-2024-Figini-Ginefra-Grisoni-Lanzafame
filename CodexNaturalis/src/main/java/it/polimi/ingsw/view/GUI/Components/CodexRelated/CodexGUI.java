@@ -2,23 +2,19 @@ package it.polimi.ingsw.view.GUI.Components.CodexRelated;
 
 import it.polimi.ingsw.designPatterns.Observer;
 import it.polimi.ingsw.lightModel.lightPlayerRelated.LightCodex;
-import it.polimi.ingsw.lightModel.lightPlayerRelated.LightFrontier;
 import it.polimi.ingsw.lightModel.lightPlayerRelated.LightPlacement;
 import it.polimi.ingsw.model.playerReleted.PawnColors;
-import it.polimi.ingsw.model.playerReleted.Placement;
 import it.polimi.ingsw.model.playerReleted.Position;
 import it.polimi.ingsw.view.GUI.AssetsGUI;
 import it.polimi.ingsw.view.GUI.Components.CardRelated.CardGUI;
-import it.polimi.ingsw.view.GUI.Components.PawnsGui;
+import it.polimi.ingsw.view.GUI.Components.PawnRelated.PawnsGui;
 import it.polimi.ingsw.view.GUI.GUI;
 import it.polimi.ingsw.view.GUI.GUIConfigs;
 import javafx.geometry.Point2D;
 import javafx.geometry.Pos;
 import javafx.scene.Node;
 import javafx.scene.image.ImageView;
-import javafx.scene.layout.AnchorPane;
-import javafx.scene.layout.Pane;
-import javafx.scene.layout.StackPane;
+import javafx.scene.layout.*;
 
 import java.util.*;
 
@@ -46,6 +42,9 @@ public class CodexGUI implements Observer {
         AnchorPane.setRightAnchor(codex, 0.0);
         AnchorPane.setTopAnchor(codex, 0.0);
 
+        //Set the background
+        this.updateBg();
+
         codex.setOnMousePressed(
                 e -> {
                     pastX = e.getSceneX();
@@ -65,6 +64,8 @@ public class CodexGUI implements Observer {
                         target.setTranslateY(target.getTranslateY() + deltaY);
                     }
 
+                    this.updateBg();
+
                     pastX = e.getSceneX();
                     pastY = e.getSceneY();
                 }
@@ -83,10 +84,38 @@ public class CodexGUI implements Observer {
                     this.cards.forEach(card -> card.setScaleAndUpdateTranslation(this.getScale(), this.center));
                     this.frontier.forEach(card -> card.setScaleAndUpdateTranslation(this.getScale(), this.center));
                     this.setScaleAndUpdateTransformPawn(this.getScale());
+                    this.updateBg();
                 }
         );
 
         codex.getChildren().add(pawn);
+    }
+
+    private void updateBg(){
+        double width = 50 * this.getScale();
+        double height = width;
+
+        BackgroundImage bgImage = new BackgroundImage(
+                AssetsGUI.bgTile,
+                BackgroundRepeat.REPEAT,
+                BackgroundRepeat.REPEAT,
+                new BackgroundPosition(
+                        null,
+                        -width/2 + this.center.getX() + (codex.getWidth() - width)/2,
+                        false,
+                        null,
+                        -height/2 + this.center.getY() + (codex.getHeight() - height)/2,
+                        false
+                ),
+                new BackgroundSize(
+                        width,
+                        height,
+                        false,
+                        false,
+                        false,
+                        false
+                ));
+        codex.setBackground(new Background(bgImage));
     }
 
     public void attachToCodex(){

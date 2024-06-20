@@ -6,6 +6,7 @@ import it.polimi.ingsw.view.GUI.Components.CodexRelated.CollectedCollectablesGUI
 import it.polimi.ingsw.view.GUI.Components.DeckRelated.DeckAreaGUI;
 import it.polimi.ingsw.view.GUI.Components.HandRelated.HandGUI;
 import it.polimi.ingsw.view.GUI.Components.Logs.LogsGUI;
+import it.polimi.ingsw.view.GUI.Components.PawnRelated.PawnChoice;
 import it.polimi.ingsw.view.GUI.Root;
 
 public class GameScene extends SceneGUI{
@@ -30,6 +31,8 @@ public class GameScene extends SceneGUI{
         hand.setCodex(codex);
 
         this.add(codex.getCodex());
+
+        new DecorativeCorners(getContent());
 
         hand.addHandTo(getContent());
 

@@ -2,6 +2,7 @@ package it.polimi.ingsw.view.GUI.Components;
 
 import it.polimi.ingsw.model.playerReleted.ChatMessage;
 import it.polimi.ingsw.model.playerReleted.PawnColors;
+import it.polimi.ingsw.view.GUI.Components.PawnRelated.PawnsGui;
 import it.polimi.ingsw.view.GUI.Components.Utils.PopUp;
 import it.polimi.ingsw.view.GUI.GUI;
 import javafx.beans.value.ChangeListener;
@@ -23,13 +24,13 @@ public class ChatDisplay {
     private final ListView<ChatMessage> messages = new ListView<>();
 
     private ChoiceBox<String> receiverChoice;
-    private Button sendButton;
     private TextField sendMessageField;
 
     public ChatDisplay(AnchorPane parent) {
         chatPopUp = new PopUp(parent);
         messages.setCellFactory(param -> listViewChatMessageCellFactory());
         messages.getSelectionModel().selectedItemProperty().addListener(linkMessage());
+        messages.setStyle(messages.getStyle() +  "-fx-background-radius: 20;");
 
         VBox popUpFiller = new VBox();
         popUpFiller.setSpacing(20.0);
@@ -41,9 +42,9 @@ public class ChatDisplay {
         //Create a container for received messages which will contain the ListView
         HBox receivedMessagesContainer = new HBox();
         receivedMessagesContainer.setAlignment(Pos.CENTER);
-        receivedMessagesContainer.getChildren().add(messages);
-        receivedMessagesContainer.prefWidth(chatPopUp.getContent().getWidth());
+        receivedMessagesContainer.getChildren().add(messages);;
         VBox.setVgrow(receivedMessagesContainer, Priority.ALWAYS);
+        HBox.setHgrow(messages, Priority.ALWAYS);
 
         //Create a container for sending messages which will contain the TextField, Button and the ChoiceBox
         VBox sendMessageContainer = new VBox();
@@ -69,8 +70,10 @@ public class ChatDisplay {
                     setGraphic(null);
                 } else {
                     HBox messageContainer = new HBox();
-                    messageContainer.setAlignment(Pos.CENTER);
+                    messageContainer.setAlignment(Pos.CENTER_LEFT);
+
                     Label message = labelDecorator(chatMessage);
+
                     messageContainer.getChildren().add(message);
                     setGraphic(messageContainer);
                 }
@@ -190,9 +193,9 @@ public class ChatDisplay {
     }
 
     private Button initializeSendButton(){
-        //TODO add icon
-        sendButton = new Button("Send");
+        Button sendButton = new Button("Send");
         sendButton.setOnAction(e -> sendMessage());
+        sendButton.getStyleClass().add("accent");
         return sendButton;
     }
 
@@ -209,14 +212,6 @@ public class ChatDisplay {
         return sendingOptionContainer;
     }
 
-    private enum publicMsg {
-        EVERYONE;
-        @Override
-        public String toString() {
-            return "Everyone";
-        }
-    }
-
     private Color getUserColor(String user){
         PawnColors pawnColor = GUI.getLightGame().getLightGameParty().getPlayerColor(user);
         if(pawnColor == null){
@@ -224,5 +219,18 @@ public class ChatDisplay {
         }else{
             return PawnsGui.getColor(pawnColor);
         }
+    }
+
+    private enum publicMsg {
+        EVERYONE;
+
+        @Override
+        public String toString() {
+            return "Everyone";
+        }
+    }
+
+    public List<ChatMessage> getDisplayedMessages(){
+        return messages.getItems();
     }
 }

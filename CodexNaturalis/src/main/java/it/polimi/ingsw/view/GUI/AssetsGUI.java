@@ -1,6 +1,6 @@
 package it.polimi.ingsw.view.GUI;
 
-import it.polimi.ingsw.Client;
+import it.polimi.ingsw.model.cardReleted.utilityEnums.CardCorner;
 import it.polimi.ingsw.model.cardReleted.utilityEnums.Resource;
 import it.polimi.ingsw.model.cardReleted.utilityEnums.WritingMaterial;
 import javafx.scene.image.Image;
@@ -21,10 +21,11 @@ public class AssetsGUI {
     public static Image pawnGreen = new Image(Objects.requireNonNull(GUI.class.getClassLoader().getResourceAsStream("GUI/images/Pion/CODEX_pion_vert.png"), "Pawn Green is null"));
     public static Image pawnRed = new Image(Objects.requireNonNull(GUI.class.getClassLoader().getResourceAsStream("GUI/images/Pion/CODEX_pion_rouge.png"), "Pawn Red is null"));
     //Misc assets
-    public static Image chatIcon = new Image(Objects.requireNonNull(GUI.class.getClassLoader().getResourceAsStream("GUI/images/Misc/chatIcon.png"), "Chat Icon is null"));
-    public static Image unreadChatIcon = new Image(Objects.requireNonNull(GUI.class.getClassLoader().getResourceAsStream("GUI/images/Misc/unreadChatIcon.png"), "Unread Chat Icon is null"));
     public static Image eye = new Image(Objects.requireNonNull(GUI.class.getClassLoader().getResourceAsStream("GUI/images/Misc/eye.png"), "Eye is null"));
     public static Image closedEye = new Image(Objects.requireNonNull(GUI.class.getClassLoader().getResourceAsStream("GUI/images/Misc/closedEye.png"), "Closed Eye is null"));
+    public static Image bgTile = new Image(Objects.requireNonNull(GUI.class.getClassLoader().getResourceAsStream("GUI/images/bgTile.png"), "bgTile is null"));
+    public static Image book = new Image(Objects.requireNonNull(GUI.class.getClassLoader().getResourceAsStream("GUI/images/Misc/book.png"), "Book is null"));
+    public static Image flower = new Image(Objects.requireNonNull(GUI.class.getClassLoader().getResourceAsStream("GUI/images/Misc/flower.png"), "Flower is null"));
 
     public static Image loadCardFront(int id){
         String idString = String.valueOf(id);
@@ -52,5 +53,9 @@ public class AssetsGUI {
 
     public static Image loadCharacter(Resource resource) {
         return new Image(Objects.requireNonNull(GUI.class.getClassLoader().getResourceAsStream("GUI/images/Characters/" + resource + ".png"), "Character " + resource + " is null"));
+    }
+
+    public static Image loadCorner(CardCorner corner){
+        return new Image(Objects.requireNonNull(GUI.class.getClassLoader().getResourceAsStream("GUI/images/Corners/" + corner + ".png"), "Corner " + corner + " is null"));
     }
 }

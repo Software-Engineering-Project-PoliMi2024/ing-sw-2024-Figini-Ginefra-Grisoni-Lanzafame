@@ -1,8 +1,9 @@
-package it.polimi.ingsw.view.GUI.Components;
+package it.polimi.ingsw.view.GUI.Components.PawnRelated;
 
 import it.polimi.ingsw.designPatterns.Observer;
 import it.polimi.ingsw.model.playerReleted.PawnColors;
 import it.polimi.ingsw.view.GUI.AssetsGUI;
+import it.polimi.ingsw.view.GUI.Components.Utils.PopUp;
 import it.polimi.ingsw.view.GUI.GUI;
 import it.polimi.ingsw.view.GUI.StateGUI;
 import javafx.application.Platform;
@@ -17,11 +18,12 @@ import java.util.*;
 import java.util.stream.Collectors;
 
 public class PawnChoice implements Observer {
-    private final VBox metaContainer = new VBox();
     private final VBox container = new VBox();
     private final Text label = new Text("Choose your pawn");
     private final HBox choiceBox = new HBox();
     private final AnchorPane parent;
+
+    private final PopUp popUp;
 
     public PawnChoice(AnchorPane parent) {
         this.parent = parent;
@@ -31,20 +33,17 @@ public class PawnChoice implements Observer {
         label.getStyleClass().add("customFont");
         label.setTextAlignment(TextAlignment.CENTER);
 
-        AnchorPane.setTopAnchor(metaContainer, 0.0);
-        AnchorPane.setBottomAnchor(metaContainer, 0.0);
-        AnchorPane.setLeftAnchor(metaContainer, 0.0);
-        AnchorPane.setRightAnchor(metaContainer, 0.0);
+        popUp = new PopUp(parent, true);
+        popUp.setLocked(true);
 
-        metaContainer.getChildren().add(container);
+        popUp.getContent().getChildren().add(container);
 
-        metaContainer.setStyle("-fx-background-color: rgba(0, 0, 0, 0.5);");
-
-        metaContainer.setAlignment(Pos.CENTER);
+        popUp.getContent().setMaxWidth(300);
+        popUp.getContent().maxHeightProperty().bind(container.heightProperty());
 
         container.getChildren().addAll(label, choiceBox);
         container.setAlignment(Pos.CENTER);
-        container.getStyleClass().add("bordersCodexStyle");
+        //container.getStyleClass().add("bordersCodexStyle");
 
         container.setMaxWidth(300);
 
@@ -56,12 +55,10 @@ public class PawnChoice implements Observer {
 
         GUI.getStateProperty().addListener((obs, oldState, newState) -> {
             if (newState == StateGUI.CHOOSE_PAWN) {
-                Platform.runLater(() -> parent.getChildren().add(metaContainer));
+                Platform.runLater(popUp::open);
             }
             else{
-                if(parent.getChildren().contains(metaContainer)){
-                    Platform.runLater(() -> parent.getChildren().remove(metaContainer));
-                }
+                Platform.runLater(popUp::close);
             }
         });
 
@@ -81,7 +78,7 @@ public class PawnChoice implements Observer {
         List<PawnColors> availablePawns = Arrays.stream(PawnColors.values())
                 .filter(color -> !color.equals(PawnColors.BLACK))
                 .filter(color -> !GUI.getLightGame().getLightGameParty().getPlayersColor().containsValue(color))
-                .collect(Collectors.toList());
+                .toList();
 
         availablePawns.forEach(color -> {
             ImageView pawnView = getPawnImageView(color);
