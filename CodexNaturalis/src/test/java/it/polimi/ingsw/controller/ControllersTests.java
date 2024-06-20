@@ -1349,6 +1349,108 @@ class ControllersTests {
     }
 
     @Test
+    void loginNameTakenOrEmpty(){
+        ViewTest view1 = new ViewTest();
+        view1.name = "pippo";
+        ViewTest duplicateNameView = new ViewTest();
+        duplicateNameView.name = "pippo";
+        ViewTest emptyNameView = new ViewTest();
+        emptyNameView.name = "";
+        ViewTest allSpacesNameView = new ViewTest();
+        allSpacesNameView.name = "         ";
+        Controller controller1 = new Controller(realLobbyGameListController, view1);
+        Controller controllerDuplicateName = new Controller(realLobbyGameListController, duplicateNameView);
+        Controller controllerEmptyName = new Controller(realLobbyGameListController, emptyNameView);
+        Controller controllerAllSpacesName = new Controller(realLobbyGameListController, allSpacesNameView);
+
+        //view joins before adding lobbies
+        controller1.login(view1.name);
+        controllerDuplicateName.login(duplicateNameView.name);
+        controllerAllSpacesName.login(allSpacesNameView.name);
+        controllerEmptyName.login(emptyNameView.name);
+
+        assert view1.state.equals(ViewState.JOIN_LOBBY);
+        assert duplicateNameView.state.equals(ViewState.LOGIN_FORM);
+        assert emptyNameView.state.equals(ViewState.LOGIN_FORM);
+        assert allSpacesNameView.state.equals(ViewState.LOGIN_FORM);
+    }
+
+    @Test
+    void createLobbyInvalidParameters(){
+        ViewTest gameCreator = new ViewTest();
+        gameCreator.name = "pippo";
+        ViewTest gameJoiner = new ViewTest();
+        gameJoiner.name = "pluto";
+        ViewTest lobbyCreator = new ViewTest();
+        lobbyCreator.name = "mickey";
+        ViewTest invalidLobbyCreator = new ViewTest();
+        invalidLobbyCreator.name = "minnie";
+
+        Controller gameCreatorController = new Controller(realLobbyGameListController, gameCreator);
+        Controller gameJoinerController = new Controller(realLobbyGameListController, gameJoiner);
+        Controller lobbyCreatorController = new Controller(realLobbyGameListController, lobbyCreator);
+        Controller invalidLobbyCreatorController = new Controller(realLobbyGameListController, invalidLobbyCreator);
+
+        String gameName = "game1";
+        String lobbyName = "lobby1";
+
+        gameCreatorController.login(gameCreator.name);
+        gameJoinerController.login(gameJoiner.name);
+        lobbyCreatorController.login(lobbyCreator.name);
+        invalidLobbyCreatorController.login(invalidLobbyCreator.name);
+
+        //start a game and a lobby
+        gameCreatorController.createLobby(gameName, 2);
+        gameJoinerController.joinLobby(gameName);
+        lobbyCreatorController.createLobby(lobbyName, 2);
+        assert gameCreator.state.equals(ViewState.CHOOSE_START_CARD);
+        assert gameJoiner.state.equals(ViewState.CHOOSE_START_CARD);
+        assert lobbyCreator.state.equals(ViewState.LOBBY);
+
+        //check not possible create lobby with same name as the lobby already present
+        invalidLobbyCreatorController.createLobby(lobbyName, 2);
+        assert invalidLobbyCreator.state.equals(ViewState.JOIN_LOBBY);
+
+        //check not possible create lobby with same name as the game already present
+        invalidLobbyCreatorController.createLobby(gameName, 2);
+        assert invalidLobbyCreator.state.equals(ViewState.JOIN_LOBBY);
+
+        //check not possible create lobby with empty name
+        invalidLobbyCreatorController.createLobby("", 2);
+        assert invalidLobbyCreator.state.equals(ViewState.JOIN_LOBBY);
+
+        //check not possible create lobby with name of only spaces
+        invalidLobbyCreatorController.createLobby("         ", 2);
+        assert invalidLobbyCreator.state.equals(ViewState.JOIN_LOBBY);
+
+    }
+
+    @Test
+    void invalidLobbyJoin(){
+        ViewTest lobbyCreator = new ViewTest();
+        lobbyCreator.name = "mickey";
+        ViewTest invalidLobbyJoiner = new ViewTest();
+        invalidLobbyJoiner.name = "minnie";
+
+        Controller lobbyCreatorController = new Controller(realLobbyGameListController, lobbyCreator);
+        Controller invalidLobbyCreatorJoiner = new Controller(realLobbyGameListController, invalidLobbyJoiner);
+
+        String lobbyName = "lobby1";
+        String nonExistentLobbyName = lobbyName + "_error";
+
+        lobbyCreatorController.login(lobbyCreator.name);
+        invalidLobbyCreatorJoiner.login(invalidLobbyJoiner.name);
+
+        //start the game
+        lobbyCreatorController.createLobby(lobbyName, 2);
+        assert lobbyCreator.state.equals(ViewState.LOBBY);
+
+        invalidLobbyCreatorJoiner.joinLobby(nonExistentLobbyName);
+        assert invalidLobbyJoiner.state.equals(ViewState.JOIN_LOBBY);
+
+    }
+
+    @Test
     void deckFinished(){
 
     }
