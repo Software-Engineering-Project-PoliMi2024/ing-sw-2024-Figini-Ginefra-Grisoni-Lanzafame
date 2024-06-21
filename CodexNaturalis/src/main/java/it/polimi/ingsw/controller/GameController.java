@@ -305,71 +305,73 @@ public class GameController implements GameControllerInterface {
 
         if (playerViewMap.isEmpty()) {
             this.resetLastPlayerTimer();
-        }
+        }else {
 
-        this.notifyGameLeft(nickname);
+            this.notifyGameLeft(nickname);
 
-        if (game.getState().equals(GameState.CHOOSE_START_CARD)) {
-            if (otherHaveAllSelectedStartCard(nickname)) {
-                this.removeInactivePlayers(Player::hasPlacedStartCard);
-                this.moveToChoosePawn();
-            }
-        } else if (game.getState().equals(GameState.CHOOSE_PAWN)) {
-            if (otherHaveAllChoosePawn(nickname)) {
-                game.getPawnChoices().clear();
-                this.removeInactivePlayers(Player::hasChosenPawnColor);
-                this.moveToSecretObjectivePhase();
-            }
-        } else if (game.getState().equals(GameState.CHOOSE_SECRET_OBJECTIVE)) {
-            if (otherHaveAllChosenObjective(nickname)) {
-                game.setState(GameState.ACTUAL_GAME);
-                this.removeInactivePlayers(Player::hasChosenObjective);
-
-                String currentPlayer = game.getCurrentPlayer().getNickname();
-                if (currentPlayer.equals(nickname)) {
-                    game.setCurrentPlayerIndex(getNextActivePlayerIndex());
+            if (game.getState().equals(GameState.CHOOSE_START_CARD)) {
+                if (otherHaveAllSelectedStartCard(nickname)) {
+                    this.removeInactivePlayers(Player::hasPlacedStartCard);
+                    this.moveToChoosePawn();
                 }
-                for (String players : playerViewMap.keySet())
-                    this.takeTurn(players);
-            }
-        } else if (!game.getState().equals(GameState.END_GAME)) { //if the game is in the actual game phase
-            if (game.getCurrentPlayer().getNickname().equals(nickname)) { //if current player leaves
-                //check if the user has disconnected after placing
-                if (leaver.getHandSize() < 3 && !game.areDeckEmpty()) {
-                    DrawableCard deckType;
-                    int pos;
-                    CardInHand cardDrawn;
-                    do {
-                        deckType = randomDeckType();
-                        pos = randomDeckPosition();
-                        Pair<CardInHand, CardInHand> cardDrawnAndReplacement = game.drawAndGetReplacement(deckType, pos);
-                        cardDrawn = cardDrawnAndReplacement.first();
-                    } while (cardDrawn == null);
+            } else if (game.getState().equals(GameState.CHOOSE_PAWN)) {
+                if (otherHaveAllChoosePawn(nickname)) {
+                    game.getPawnChoices().clear();
+                    this.removeInactivePlayers(Player::hasChosenPawnColor);
+                    this.moveToSecretObjectivePhase();
+                }
+            } else if (game.getState().equals(GameState.CHOOSE_SECRET_OBJECTIVE)) {
+                if (otherHaveAllChosenObjective(nickname)) {
+                    game.setState(GameState.ACTUAL_GAME);
+                    this.removeInactivePlayers(Player::hasChosenObjective);
 
-                    //the draw method manage turn and winners
-                    this.draw(nickname, this.randomDeckType(), this.randomDeckPosition());
-                } else {
-                    if (game.duringLastTurns() && Objects.equals(nickname, lastActivePlayerPreDisconnect)) {
-                        game.decrementLastTurnsCounter();
+                    String currentPlayer = game.getCurrentPlayer().getNickname();
+                    if (currentPlayer.equals(nickname)) {
+                        game.setCurrentPlayerIndex(getNextActivePlayerIndex());
                     }
-                    if (Objects.equals(lastActivePlayerPreDisconnect, nickname) && game.noMoreTurns()) {
-                        //model update with points
-                        moveToEndGame();
-                        declareWinners();
-                    }
-                    //move on with the turns for the other players
-                    if (!this.playerViewMap.keySet().isEmpty()) {
-                        int nextPlayerIndex = this.getNextActivePlayerIndex();
-                        String nextPlayerNick = game.getPlayersList().get(nextPlayerIndex).getNickname();
-                        game.setCurrentPlayerIndex(nextPlayerIndex);
-                        this.notifyTurnChange(nextPlayerNick);
-                        this.takeTurn(nextPlayerNick);
+                    for (String players : playerViewMap.keySet())
+                        this.takeTurn(players);
+                }
+            } else if (!game.getState().equals(GameState.END_GAME)) { //if the game is in the actual game phase
+                if (game.getCurrentPlayer().getNickname().equals(nickname)) { //if current player leaves
+                    //check if the user has disconnected after placing
+                    if (leaver.getHandSize() < 3 && !game.areDeckEmpty()) {
+                        DrawableCard deckType;
+                        int pos;
+                        CardInHand cardDrawn;
+                        do {
+                            deckType = randomDeckType();
+                            pos = randomDeckPosition();
+                            Pair<CardInHand, CardInHand> cardDrawnAndReplacement = game.drawAndGetReplacement(deckType, pos);
+                            cardDrawn = cardDrawnAndReplacement.first();
+                        } while (cardDrawn == null);
+
+                        //the draw method manage turn and winners
+                        this.draw(nickname, this.randomDeckType(), this.randomDeckPosition());
                     } else {
-                        this.resetLastPlayerTimer();
+                        if (game.duringLastTurns() && Objects.equals(nickname, lastActivePlayerPreDisconnect)) {
+                            game.decrementLastTurnsCounter();
+                        }
+                        if (Objects.equals(lastActivePlayerPreDisconnect, nickname) && game.noMoreTurns()) {
+                            //model update with points
+                            moveToEndGame();
+                            declareWinners();
+                        }
+                        //move on with the turns for the other players
+                        if (!this.playerViewMap.keySet().isEmpty()) {
+                            int nextPlayerIndex = this.getNextActivePlayerIndex();
+                            String nextPlayerNick = game.getPlayersList().get(nextPlayerIndex).getNickname();
+                            game.setCurrentPlayerIndex(nextPlayerIndex);
+                            this.notifyTurnChange(nextPlayerNick);
+                            this.takeTurn(nextPlayerNick);
+                        } else {
+                            this.resetLastPlayerTimer();
+                        }
                     }
                 }
             }
         }
+
         if(game.getState().equals(GameState.END_GAME)){
             finishedGameDeleter.deleteGame(game.getName());
         }else {
