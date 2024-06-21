@@ -13,6 +13,7 @@ public class Configs {
     public static int lastInGameTimerSeconds = 30;
     public static int pointsToStartGameEnding = 20;
     public static int actualDeckPos = 2;
+    public static int numberOfEndingTurns = 2;
     public static String goldCardBinFileName = "goldCards.bin";
     public static String objectiveCardBinFileName = "objectiveCards.bin";
     public static String resourceCardBinFileName = "resourceCards.bin";

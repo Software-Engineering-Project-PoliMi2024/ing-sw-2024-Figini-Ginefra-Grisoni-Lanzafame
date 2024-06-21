@@ -32,7 +32,7 @@ public class Game implements Serializable {
     private final List<ObjectiveCard> commonObjective;
 
     private GameState gameState = GameState.CHOOSE_START_CARD;
-    private Integer lastTurnsCounter = null;
+    private Integer endingTurnsCounter = null;
     /**
      * Constructs a new Game instance with a specified maximum number of players.
      */
@@ -256,24 +256,24 @@ public class Game implements Serializable {
         return obj instanceof Game && ((Game) obj).name.equals(name);
     }
 
-    public void startLastTurnsCounter() {
-        lastTurnsCounter = 2;
+    public void startEndingTurnsCounter() {
+        endingTurnsCounter = Configs.numberOfEndingTurns;
     }
 
-    public void decrementLastTurnsCounter() {
-        if (lastTurnsCounter > 0) {
-            lastTurnsCounter -= 1;
+    public void decrementEndingTurnsCounter() {
+        if (endingTurnsCounter > 0) {
+            endingTurnsCounter -= 1;
         } else
             throw new IllegalStateException("game.decrementLastTurnsCounter: the counter cannot be decremented under 0");
     }
 
-    public boolean duringLastTurns() {
-        return lastTurnsCounter != null;
+    public boolean duringEndingTurns() {
+        return endingTurnsCounter != null;
     }
 
     public boolean noMoreTurns() {
-        if (lastTurnsCounter != null)
-            return lastTurnsCounter == 0;
+        if (endingTurnsCounter != null)
+            return endingTurnsCounter == 0;
         return false;
     }
 

@@ -275,14 +275,14 @@ public class GameController implements GameControllerInterface {
                     drawnCard.canBePlaced(player.getUserCodex()));
         }
 
-        if (game.checkForChickenDinner() && !game.duringLastTurns()) {
+        if (game.checkForChickenDinner() && !game.duringEndingTurns()) {
             game.setState(GameState.LAST_TURNS);
-            game.startLastTurnsCounter();
+            game.startEndingTurnsCounter();
             this.notifyLastTurn();
         }
 
-        if (game.duringLastTurns() && Objects.equals(nickname, getLastActivePlayer())) {
-            game.decrementLastTurnsCounter();
+        if (game.duringEndingTurns() && Objects.equals(nickname, getLastActivePlayer())) {
+            game.decrementEndingTurnsCounter();
         }
         if (Objects.equals(this.getLastActivePlayer(), nickname) && game.noMoreTurns()) {
             //model update with points
@@ -379,8 +379,8 @@ public class GameController implements GameControllerInterface {
     }
 
     private synchronized void moveOnWithTurnsFromPlace(String nickname, String lastActivePlayer) {
-        if (game.duringLastTurns() && Objects.equals(nickname, lastActivePlayer)) {
-            game.decrementLastTurnsCounter();
+        if (game.duringEndingTurns() && Objects.equals(nickname, lastActivePlayer)) {
+            game.decrementEndingTurnsCounter();
         }
         if (Objects.equals(lastActivePlayer, nickname) && game.noMoreTurns()) {
             //model update with points
