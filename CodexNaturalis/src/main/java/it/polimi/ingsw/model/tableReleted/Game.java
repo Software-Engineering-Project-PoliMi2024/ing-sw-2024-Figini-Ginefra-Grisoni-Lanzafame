@@ -227,7 +227,10 @@ public class Game implements Serializable {
         if (cardID == Configs.actualDeckPos) {
             drawCard = deck.drawFromDeck();
         } else {
-            drawCard = deck.drawFromBuffer(cardID);
+            if(cardID < deck.getBuffer().stream().toList().size())
+                drawCard = deck.drawFromBuffer(cardID);
+            else
+                drawCard = null;
         }
         return drawCard;
     }
