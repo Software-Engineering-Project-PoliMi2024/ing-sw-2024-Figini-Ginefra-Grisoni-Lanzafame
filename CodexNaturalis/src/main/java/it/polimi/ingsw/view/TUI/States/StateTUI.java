@@ -1,10 +1,12 @@
 package it.polimi.ingsw.view.TUI.States;
 
+import it.polimi.ingsw.model.playerReleted.PlayerState;
 import it.polimi.ingsw.view.TUI.Renderables.Renderable;
 import it.polimi.ingsw.view.ViewState;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 
 public enum StateTUI {
     SERVER_CONNECTION(ViewState.SERVER_CONNECTION),

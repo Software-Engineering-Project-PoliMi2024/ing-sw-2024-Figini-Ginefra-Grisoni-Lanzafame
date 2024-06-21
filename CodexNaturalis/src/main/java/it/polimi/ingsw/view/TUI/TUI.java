@@ -232,6 +232,7 @@ public class TUI implements ActualView {
                 lightGame,
                 this);
         StateTUI.CHOOSE_START_CARD.attach(chatRenderable);
+        StateTUI.CHOOSE_PAWN.attach(chatRenderable);
         StateTUI.SELECT_OBJECTIVE.attach(chatRenderable);
         StateTUI.IDLE.attach(chatRenderable);
         StateTUI.WAITING_STATE.attach(chatRenderable);
@@ -250,6 +251,7 @@ public class TUI implements ActualView {
 
     @Override
     public void transitionTo(ViewState state){
+        lightGame.getPlayerState().setState(state);
         if(this.state == state){
             commandDisplay.render();
         }else {
@@ -301,6 +303,7 @@ public class TUI implements ActualView {
         Printer.println("");
         PromptStyle.printInABox(logMsg,50, StringStyle.GOLD_FOREGROUND);
         Printer.println("");
+        this.transitionTo(lightGame.getPlayerState().getState());
     }
 
 

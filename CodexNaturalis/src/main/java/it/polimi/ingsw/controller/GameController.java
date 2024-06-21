@@ -933,11 +933,15 @@ public class GameController implements GameControllerInterface {
     }
 
     public void sendChatMessage(ChatMessage chatMessage) {
-        this.game.getGameParty().getChatManager().addMessage(chatMessage);
-        if (chatMessage.getPrivacy() == ChatMessage.MessagePrivacy.PUBLIC) {
-            this.updateGlobalChat(chatMessage);
-        } else {
-            this.updatePrivateChat(chatMessage);
+        if(!emptyMessage(chatMessage)){
+            if (chatMessage.getPrivacy() == ChatMessage.MessagePrivacy.PUBLIC) {
+                this.updateGlobalChat(chatMessage);
+            } else { //private message
+                if(!goodReceiver(chatMessage)){
+                    return;
+                }
+            }
+            this.game.getGameParty().getChatManager().addMessage(chatMessage);
         }
     }
 
@@ -959,6 +963,41 @@ public class GameController implements GameControllerInterface {
             } catch (Exception ignored) {
             }
         });
+    }
+
+    private boolean emptyMessage(ChatMessage chatMessage) {
+        ViewInterface senderView = playerViewMap.get(chatMessage.getSender());
+        try {
+            if (chatMessage.getMessage().isBlank()) {
+                senderView.logChat(LogsOnClient.NO_EMPTY_MESSAGE);
+                return true;
+            }
+        } catch (Exception ignored) {
+        }
+        return false;
+    }
+
+    private boolean goodReceiver(ChatMessage chatMessage){
+        ViewInterface senderView = playerViewMap.get(chatMessage.getSender());
+        try{
+            if(chatMessage.getReceiver().isBlank()){
+                senderView.logChat(LogsOnClient.EMPTY_RECEIVER);
+                return false;
+            }else if(!game.getGameParty().getPlayersList().stream().map(Player::getNickname).toList().contains(chatMessage.getReceiver())){
+                senderView.logChat(String.format(LogsOnClient.RECEIVER_NOT_FOUND, chatMessage.getReceiver()));
+                return false;
+            }else if (chatMessage.getSender().equals(chatMessage.getReceiver())) {
+                //Nothing to see here, move on
+                if(chatMessage.getMessage().toLowerCase().contains("ferrari")){
+                    senderView.logChat(LogsOnClient.FERRARI);
+                }
+                senderView.logChat(LogsOnClient.NO_SELF_MESSAGE);
+                return false;
+            }else{
+                this.updatePrivateChat(chatMessage);
+            }
+        }catch (Exception ignored){}
+        return true;
     }
 
     private synchronized void updatePrivateChat(ChatMessage chatMessage) {

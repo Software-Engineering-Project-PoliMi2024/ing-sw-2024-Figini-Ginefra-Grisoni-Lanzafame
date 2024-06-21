@@ -5,6 +5,7 @@ import it.polimi.ingsw.lightModel.lightPlayerRelated.*;
 import it.polimi.ingsw.model.cardReleted.utilityEnums.Collectable;
 import it.polimi.ingsw.model.cardReleted.utilityEnums.DrawableCard;
 import it.polimi.ingsw.model.playerReleted.PawnColors;
+import it.polimi.ingsw.view.ViewState;
 
 import java.util.*;
 
@@ -16,6 +17,7 @@ public class LightGame implements Differentiable {
     private Map<DrawableCard, LightDeck> decks;
     private LightCard[] publicObjective;
     private final List<String> winners;
+    private final LightViewState playerState = new LightViewState(ViewState.SERVER_CONNECTION);
 
     public LightGame(){
         this.lightGameParty = new LightGameParty();
@@ -179,5 +181,9 @@ public class LightGame implements Differentiable {
 
     public List<String> getWinners() {
         return new ArrayList<>(winners);
+    }
+
+    public LightViewState getPlayerState() {
+        return playerState;
     }
 }
