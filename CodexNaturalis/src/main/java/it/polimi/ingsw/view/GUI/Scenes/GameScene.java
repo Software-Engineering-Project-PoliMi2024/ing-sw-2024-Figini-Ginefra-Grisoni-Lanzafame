@@ -55,7 +55,7 @@ public class GameScene extends SceneGUI{
 
         chatButton = new ChatButton();
         chatButton.addThisTo(getContent());
-        chatButton.attachToChat();
+        chatButton.attach();
     }
 
 }

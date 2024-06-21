@@ -226,6 +226,16 @@ public class ChatDisplay {
         }
     }
 
+    public void addReceiver(String player) {
+        if(!receiverChoice.getItems().contains(player) && !player.equals(GUI.getLightGame().getLightGameParty().getYourName())){
+            receiverChoice.getItems().add(player);
+        }
+    }
+
+    public void removeReceiver(String player) {
+        receiverChoice.getItems().remove(player);
+    }
+
     private enum publicMsg {
         EVERYONE;
 
