@@ -262,7 +262,6 @@ public class ServerHandlerTest {
 
     @Test
     public void testTransitionToMsgInvocation() throws Exception {
-        //todo check why this test is so slow. It is so because it is the first test to be executed?
         ServerHandlerTestSetup setup = setupServerHandler();
 
         ObjectOutputStream toServerHandler = setup.toServerHandler();

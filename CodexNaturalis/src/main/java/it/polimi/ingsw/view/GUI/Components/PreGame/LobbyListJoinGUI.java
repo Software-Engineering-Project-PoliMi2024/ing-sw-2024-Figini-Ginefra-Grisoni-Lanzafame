@@ -73,8 +73,11 @@ public class LobbyListJoinGUI implements Observer {
                 super.updateItem(lobby, empty);
                 if (empty || lobby == null) {
                     setText(null);
+                    getStyleClass().remove("non-empty-list-cell");
                 } else {
                     setText(lobby.name());
+                    getStyleClass().add("non-empty-list-cell");
+
                 }
             }
         };

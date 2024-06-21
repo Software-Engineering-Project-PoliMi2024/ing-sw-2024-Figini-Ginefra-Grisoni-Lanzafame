@@ -33,6 +33,7 @@ import java.util.List;
 
 public class TUI implements ActualView {
     private ControllerInterface controller;
+    //TODO USE THIS STUPID
     private ViewState state;
     private final InputHandler inputHandler = new InputHandler();
     private final CommandDisplayRenderable commandDisplay;

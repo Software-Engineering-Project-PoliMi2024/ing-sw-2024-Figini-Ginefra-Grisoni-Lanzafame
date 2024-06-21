@@ -68,6 +68,7 @@ public class ChatDisplay {
                 if (empty || chatMessage == null) {
                     setText(null);
                     setGraphic(null);
+                    getStyleClass().remove("non-empty-list-cell");
                 } else {
                     HBox messageContainer = new HBox();
                     messageContainer.setAlignment(Pos.CENTER_LEFT);
@@ -184,6 +185,7 @@ public class ChatDisplay {
     private ChoiceBox<String> initializeReceiverChoice(){
         receiverChoice = new ChoiceBox<>();
         receiverChoice.getItems().add(publicMsg.EVERYONE.toString());
+        //todo you need to load all Player not only the active ones
         for(String player : GUI.getLightGame().getLightGameParty().getPlayerActiveList().keySet()){
             if(!player.equals(GUI.getLightGame().getLightGameParty().getYourName())){
                 receiverChoice.getItems().add(player);
