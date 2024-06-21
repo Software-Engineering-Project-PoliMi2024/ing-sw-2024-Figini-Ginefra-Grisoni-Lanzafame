@@ -84,4 +84,7 @@ public class LogsOnClient {
     public static String NO_SELF_MESSAGE = "You can't message yourself";
     public static String NO_EMPTY_MESSAGE = "You can't send an empty message";
     public static String FERRARI = "Ferrari mentioned, WTF is a good race strategy!!";
+
+    //malevolent player
+    public static String MALEVOLENT = "The action you are trying to perform is not allowed";
 }

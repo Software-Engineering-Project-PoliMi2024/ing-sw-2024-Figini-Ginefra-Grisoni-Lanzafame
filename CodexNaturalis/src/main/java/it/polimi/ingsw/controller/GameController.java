@@ -83,6 +83,8 @@ public class GameController implements GameControllerInterface {
         }
 
         this.resetLastPlayerTimer();
+
+
         playerViewMap.put(joinerNickname, view);
 
         this.notifyJoinGame(joinerNickname, reconnected);
@@ -556,9 +558,18 @@ public class GameController implements GameControllerInterface {
     private synchronized void notifyLastInGameTimer() {
         new HashMap<>(playerViewMap).forEach((nickname, view) -> {
             try {
-                view.logGame(LogsOnClient.LAST_PLAYER);
+                view.log(LogsOnClient.LAST_PLAYER);
+                view.logGame(LogsOnClient.COUNTDOWN_START);
             } catch (Exception ignored) {
             }
+        });
+    }
+
+    private synchronized void notifyLastInGameTimerStop() {
+        new HashMap<>(playerViewMap).forEach((nickname, view) -> {
+            try {
+                view.logGame(LogsOnClient.COUNTDOWN_INTERRUPTED);
+            } catch (Exception ignored) {}
         });
     }
 
@@ -1005,5 +1016,11 @@ public class GameController implements GameControllerInterface {
             playerViewMap.get(chatMessage.getReceiver()).logChat(LogsOnClient.RECEIVED_PRIVATE_MESSAGE + chatMessage.getSender());
         } catch (Exception ignored) {
         }
+    }
+
+    private synchronized void malevolentPlayer(String player) {
+        try {
+            playerViewMap.get(player).logErr(LogsOnClient.MALEVOLENT);
+        }catch (Exception ignored){}
     }
 }
