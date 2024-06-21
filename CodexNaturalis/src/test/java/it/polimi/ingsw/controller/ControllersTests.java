@@ -30,6 +30,7 @@ import java.util.*;
 class ControllersTests {
     private LobbyGameListsController realLobbyGameListController;
     private PublicLobbyGameListController lobbyGameListController;
+    private final PersistenceFactory persistenceFactory = new PersistenceFactory(OSRelated.gameDataFolderPath);
 
     @BeforeAll
     public static void setUpAll(){
@@ -38,7 +39,7 @@ class ControllersTests {
 
     @BeforeEach
     public void setUp() {
-        PersistenceFactory.eraseAllSaves();
+        persistenceFactory.eraseAllSaves();
         realLobbyGameListController = new LobbyGameListsController();
         lobbyGameListController = new PublicLobbyGameListController(realLobbyGameListController);
     }

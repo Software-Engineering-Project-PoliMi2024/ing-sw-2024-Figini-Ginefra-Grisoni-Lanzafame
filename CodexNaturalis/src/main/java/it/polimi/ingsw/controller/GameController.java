@@ -1,8 +1,8 @@
 package it.polimi.ingsw.controller;
 
 import it.polimi.ingsw.Configs;
-import it.polimi.ingsw.controller.Interfaces.FinishedGameDeleter;
 import it.polimi.ingsw.controller.Interfaces.GameControllerInterface;
+import it.polimi.ingsw.controller.Interfaces.GameList;
 import it.polimi.ingsw.controller.persistence.PersistenceFactory;
 import it.polimi.ingsw.lightModel.diffs.DiffGenerator;
 import it.polimi.ingsw.lightModel.Heavifier;
@@ -46,18 +46,21 @@ import java.util.function.Predicate;
 
 public class GameController implements GameControllerInterface {
     private final transient CardTable cardTable;
-    private final FinishedGameDeleter finishedGameDeleter;
+    private final transient PersistenceFactory persistenceFactory;
     private final Game game;
     private final Map<String, ViewInterface> playerViewMap = new HashMap<>();
 
     private transient ScheduledFuture<?> lastInGameFuture = null;
     private final transient ScheduledExecutorService countdownExecutor = Executors.newSingleThreadScheduledExecutor();
 
-    public GameController(Game game, CardTable cardTable, FinishedGameDeleter finishedGameDeleter) {
+    public GameController(Game game, CardTable cardTable, PersistenceFactory persistenceFactory, GameList gameList) {
         this.game = game;
         this.cardTable = cardTable;
-        this.finishedGameDeleter = finishedGameDeleter;
-        this.save();
+        this.persistenceFactory = persistenceFactory;
+        if(game.getState().equals(GameState.END_GAME)) {
+            persistenceFactory.delete(game.getName());
+            gameList.deleteGame(game.getName());
+        }
     }
 
     public synchronized Map<String, ViewInterface> getPlayerViewMap() {
@@ -68,7 +71,6 @@ public class GameController implements GameControllerInterface {
         return game.getPlayersList().stream().map(Player::getNickname).toList();
     }
 
-    //TODO test when the decks finish the cards
     public synchronized void join(String joinerNickname, ViewInterface view, boolean reconnected){
         if(game.getState().equals(GameState.END_GAME)){
             try {
@@ -274,6 +276,7 @@ public class GameController implements GameControllerInterface {
                     drawnCard.canBePlaced(player.getUserCodex()));
         }
         moveOnWithTurnsAndCheckForWinners(nickname, getLastActivePlayer());
+        this.save();
     }
 
     public synchronized void leave(String nickname) {
@@ -324,7 +327,7 @@ public class GameController implements GameControllerInterface {
         }
 
         if(game.getState().equals(GameState.END_GAME)){
-            finishedGameDeleter.deleteGame(game.getName());
+            persistenceFactory.delete(game.getName());
         }else {
             this.save();
             if (playerViewMap.size() == 1) {
@@ -382,7 +385,6 @@ public class GameController implements GameControllerInterface {
             }else{
                 moveToWait(nickname);
             }
-            this.save();
         }
     }
 
@@ -705,7 +707,7 @@ public class GameController implements GameControllerInterface {
     }
 
     private void save() {
-        PersistenceFactory.save(game);
+        persistenceFactory.save(game);
     }
 
     private synchronized void notifyDraw(String drawerNickname, DrawableCard deckType, int pos, LightCard drawnCard, boolean playability) {

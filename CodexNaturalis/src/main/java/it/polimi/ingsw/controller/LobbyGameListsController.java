@@ -12,26 +12,22 @@ import it.polimi.ingsw.model.tableReleted.Lobby;
 import it.polimi.ingsw.view.ViewInterface;
 import it.polimi.ingsw.view.ViewState;
 
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
+import java.util.*;
+import java.util.concurrent.*;
 
 /**
  * This class is the controller that handles the reception of the clients. It manages the lobbies, the nicknames and the offline games
  */
 public class LobbyGameListsController implements it.polimi.ingsw.controller.Interfaces.LobbyGameListsController {
-    private final CardTable cardTable = new CardTable(Configs.CardResourcesFolderPath, Configs.CardJSONFileName, OSRelated.cardFolderDataPath);
+    private transient final CardTable cardTable = new CardTable(Configs.CardResourcesFolderPath, Configs.CardJSONFileName, OSRelated.cardFolderDataPath);
     private final Map<String, ViewInterface> viewMap = new HashMap<>();
     private final Map<String, LobbyController> lobbyMap = new HashMap<>();
     private final Map<String, GameController> gameMap = new HashMap<>();
+    private transient final PersistenceFactory persistenceFactory = new PersistenceFactory(OSRelated.gameDataFolderPath);
+    private transient final ScheduledExecutorService gamesLoadExecutor = Executors.newScheduledThreadPool(1);
 
     public LobbyGameListsController(){
-        Set<Game> loadedGames = PersistenceFactory.load();
-        for(Game game : loadedGames){
-            GameController gameController = new GameController(game, cardTable, this);
-            gameMap.put(game.getName(), gameController);
-        }
+        gamesLoadExecutor.scheduleAtFixedRate(this::refreshGames, 0, Configs.gameSaveExpirationTimeMinutes, TimeUnit.MINUTES);
     }
 
     @Override
@@ -129,7 +125,7 @@ public class LobbyGameListsController implements it.polimi.ingsw.controller.Inte
                 try{view.transitionTo(ViewState.LOBBY);}catch (Exception ignored){}
             }else{
                 System.out.println(lobbyName + " lobby is full, game started");
-                GameController gameController = lobbyToJoin.startGame(cardTable, this);
+                GameController gameController = lobbyToJoin.startGame(cardTable, persistenceFactory, this);
                 lobbyMap.remove(lobbyName);
                 gameMap.put(lobbyName, gameController);
                 this.notifyLobbyRemoved(joiner, lobbyToJoin.getLobby());
@@ -178,12 +174,6 @@ public class LobbyGameListsController implements it.polimi.ingsw.controller.Inte
         }
     }
 
-    @Override
-    public void deleteGame(String gameName) {
-        gameMap.remove(gameName);
-        PersistenceFactory.delete(gameName);
-    }
-
     private synchronized Boolean isActiveInLobby(String nickname){
         return getLobbyFromUserNick(nickname) != null;
     }
@@ -226,11 +216,10 @@ public class LobbyGameListsController implements it.polimi.ingsw.controller.Inte
         }catch (Exception ignored){}
     }
 
-    private synchronized ViewInterface leaveLobbyList(String nickname){
+    private synchronized void leaveLobbyList(String nickname){
         ViewInterface view = viewMap.get(nickname);
         viewMap.remove(nickname);
         updateLeaveLobbyList(view);
-        return view;
     }
 
     private synchronized void updateLeaveLobbyList(ViewInterface leaverView){
@@ -238,5 +227,33 @@ public class LobbyGameListsController implements it.polimi.ingsw.controller.Inte
             leaverView.updateLobbyList(new FatManLobbyList());
             leaverView.log(LogsOnClient.LEFT_LOBBY_LIST);
         }catch (Exception ignored){}
+    }
+
+    private synchronized void refreshGames(){
+        Future<HashSet<Game>> loadedGamesFuture = persistenceFactory.load();
+        HashSet<Game> loadedGames = new HashSet<>();
+        try {
+            loadedGames = loadedGamesFuture.get();
+        } catch (InterruptedException | ExecutionException e) {
+            System.out.println("un-able to load games");
+        }
+
+        for(Game game : loadedGames){
+            if(gameMap.get(game.getName()) == null){
+                GameController gameController = new GameController(game, cardTable, persistenceFactory, this);
+                gameMap.put(game.getName(), gameController);
+            }
+        }
+
+        for(String game : gameMap.keySet()){
+            if(loadedGames.stream().noneMatch(g -> g.getName().equals(game))){
+                gameMap.remove(game);
+            }
+        }
+    }
+
+    @Override
+    public synchronized void deleteGame(String gameName){
+        gameMap.remove(gameName);
     }
 }

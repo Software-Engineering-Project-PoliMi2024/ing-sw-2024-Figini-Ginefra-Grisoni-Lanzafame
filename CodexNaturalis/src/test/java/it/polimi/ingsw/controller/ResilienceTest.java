@@ -28,6 +28,7 @@ import java.util.*;
 public class ResilienceTest {
     private LobbyGameListsController realLobbyGameListController;
     private PublicLobbyGameListController lobbyGameListController;
+    private final PersistenceFactory persistenceFactory = new PersistenceFactory(OSRelated.gameDataFolderPath);
 
     @BeforeAll
     public static void setUpAll(){
@@ -36,7 +37,7 @@ public class ResilienceTest {
 
     @BeforeEach
     public void setUp(){
-        PersistenceFactory.eraseAllSaves();
+        persistenceFactory.eraseAllSaves();
         realLobbyGameListController = new LobbyGameListsController();
         lobbyGameListController = new PublicLobbyGameListController(realLobbyGameListController);
 
