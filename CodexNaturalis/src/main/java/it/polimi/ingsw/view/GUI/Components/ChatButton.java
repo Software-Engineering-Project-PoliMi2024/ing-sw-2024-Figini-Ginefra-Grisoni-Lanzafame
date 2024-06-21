@@ -33,6 +33,7 @@ public class ChatButton implements Observer {
         flower.fitWidthProperty().bind(chatButton.widthProperty().multiply(0.8));
         flower.fitHeightProperty().bind(chatButton.heightProperty().multiply(0.8));
         flower.setPreserveRatio(true);
+        flower.setOpacity(0.0);
 
         StackPane chatIcon = new StackPane(book, flower);
         chatButton.setGraphic(chatIcon);
@@ -53,15 +54,36 @@ public class ChatButton implements Observer {
 
     @Override
     public void update() {
-        if(chatDisplay.getDisplayedMessages().isEmpty() && !GUI.getLightGame().getLightGameParty().getLightChat().getChatHistory().isEmpty()) {
-           playUnreadAnimation(); //edge case for a mid-game join
-        }else if(!chatDisplay.getDisplayedMessages().getLast().getSender().equals(GUI.getLightGame().getLightGameParty().getYourName())) {
-            playUnreadAnimation(); //show unread icon only if the last message was NOT sent by the player
-        }
-        //update the chat display with the new messages only if there is a new first message otherwise, the "Game" welcome message will be removed
-        if(!GUI.getLightGame().getLightGameParty().getLightChat().getChatHistory().isEmpty()){
+        if(newGameJoin()){
+            unreadAnimation.play();
+        }else if (midGameJoin()){
+            //This introduces a bug.
+            //Because when the first message is actually sent, the animation for the sending player will continue to play
+            unreadAnimation.play();
             chatDisplay.updatedMessages(GUI.getLightGame().getLightGameParty().getLightChat().getChatHistory());
+        }else{ // normal message update
+            chatDisplay.updatedMessages(GUI.getLightGame().getLightGameParty().getLightChat().getChatHistory());
+            if(unreadMessage()){
+                unreadAnimation.play();
+            }
         }
+    }
+
+    /**
+     @return true if the last message received is not from the player
+     */
+    private boolean unreadMessage() {
+        return !GUI.getLightGame().getLightGameParty().getLightChat().getChatHistory().getLast().getSender().equals(
+                GUI.getLightGame().getLightGameParty().getYourName());
+    }
+
+    private boolean newGameJoin(){
+        return GUI.getLightGame().getLightGameParty().getLightChat().getChatHistory().isEmpty();
+    }
+
+    private boolean midGameJoin(){
+        return (chatDisplay.getDisplayedMessages().getFirst().getSender().equals("Game") &&
+                !GUI.getLightGame().getLightGameParty().getLightChat().getChatHistory().isEmpty());
     }
 
     public void attachToChat() {
@@ -82,6 +104,6 @@ public class ChatButton implements Observer {
 
     public void stopUnreadAnimation(){
         unreadAnimation.stop();
-        flower.setOpacity(1.0);
+        flower.setOpacity(0.0);
     }
 }
