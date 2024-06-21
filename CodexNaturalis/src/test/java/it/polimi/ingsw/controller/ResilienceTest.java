@@ -179,9 +179,7 @@ public class ResilienceTest {
 
         assert view2.lightGame.getLightGameParty().getGameName().equals(lobbyName1);
 
-        assert !player2.hasPlacedStartCard();
-        assert !player2.hasChosenPawnColor();
-        assert !player2.hasChosenObjective();
+        assert player2.getState().equals(PlayerState.CHOOSE_START_CARD);
 
         assert game.getState().equals(GameState.CHOOSE_START_CARD);
         assert !game.getState().equals(GameState.CHOOSE_PAWN);
@@ -281,9 +279,7 @@ public class ResilienceTest {
         assert game.getName().equals(lobbyName1);
         assert game.getPlayersList().stream().map(Player::getNickname).toList().contains(view2.name);
 
-        assert !player2.hasPlacedStartCard();
-        assert !player2.hasChosenPawnColor();
-        assert !player2.hasChosenObjective();
+        assert player2.getState().equals(PlayerState.CHOOSE_START_CARD);
 
         assert game.getState().equals(GameState.CHOOSE_START_CARD);
         assert !game.getState().equals(GameState.CHOOSE_PAWN);
@@ -1409,15 +1405,13 @@ public class ResilienceTest {
         List<String> nicksToCheck = playerViews.stream().map(view->view.name).toList();
         List<Player> usersToCheck = game.getPlayersList().stream().filter(user->nicksToCheck.contains(user.getNickname())).toList();
 
-        usersToCheck.forEach(user->{
-            System.out.println(user.getNickname());
-            assert user.hasPlacedStartCard();
-            assert user.hasChosenPawnColor();
-            assert !user.hasChosenObjective();
-            List<ObjectiveCard> objOptions = user.getUserHand().getSecretObjectiveChoices();
+        usersToCheck.forEach(player->{
+            System.out.println(player.getNickname());
+            assert player.getState().equals(PlayerState.CHOOSE_SECRET_OBJECTIVE);
+            List<ObjectiveCard> objOptions = player.getUserHand().getSecretObjectiveChoices();
 
-            System.out.println(user.getUserHand().getSecretObjective());
-            assert user.getUserHand().getSecretObjective() == null;
+            System.out.println(player.getUserHand().getSecretObjective());
+            assert player.getUserHand().getSecretObjective() == null;
             Assertions.assertNotNull(objOptions);
             assert !objOptions.isEmpty();
             assert objOptions.size() == 2;
@@ -1448,14 +1442,11 @@ public class ResilienceTest {
         List<Player> usersToCheck = game.getPlayersList().stream().filter(user->nicksToCheck.contains(user.getNickname())).toList();
         List<String> allUserInGameNick = game.getPlayersList().stream().map(Player::getNickname).toList();
 
-        usersToCheck.forEach(user->{
-            System.out.println(user.getNickname());
-            assert user.hasPlacedStartCard();
-            assert user.hasChosenPawnColor();
-            assert user.hasChosenObjective();
-
-            assert user.getUserHand().getHand().stream().allMatch(Objects::nonNull);
-            assert user.getUserHand().getHand().size() == 3;
+        usersToCheck.forEach(player->{
+            System.out.println(player.getNickname());
+            assert player.getState().equals(PlayerState.PLACE) || player.getState().equals(PlayerState.IDLE);
+            assert player.getUserHand().getHand().stream().allMatch(Objects::nonNull);
+            assert player.getUserHand().getHand().size() == 3;
         });
 
         playerViews.forEach(view -> {

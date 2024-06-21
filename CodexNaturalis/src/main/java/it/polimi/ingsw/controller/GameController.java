@@ -121,6 +121,7 @@ public class GameController implements GameControllerInterface {
         Player player = game.getPlayerFromNick(nickname);
         ViewInterface view = playerViewMap.get(nickname);
         if (game.getPawnChoices().contains(color)) {
+            game.getPlayerFromNick(nickname).setState(PlayerState.WAIT);
             player.setPawnColor(color);
             game.removeChoice(color);
 
@@ -141,7 +142,7 @@ public class GameController implements GameControllerInterface {
 
             if (otherHaveAllChoosePawn(nickname)) {
                 game.getPawnChoices().clear();
-                this.removeInactivePlayers(Player::hasChosenPawnColor);
+                this.removeInactivePlayers(p->p.getState().equals(PlayerState.WAIT));
                 this.moveToSecretObjectivePhase();
                 this.save();
             } else {
@@ -160,12 +161,13 @@ public class GameController implements GameControllerInterface {
     public synchronized void chooseSecretObjective(String nickname, LightCard lightObjChoice) {
         ObjectiveCard objChoice = Heavifier.heavifyObjectCard(lightObjChoice, cardTable);
         Player player = game.getPlayerFromNick(nickname);
+        game.getPlayerFromNick(nickname).setState(PlayerState.WAIT);
 
         player.setSecretObjective(objChoice);
         this.notifySecretObjectiveChoice(nickname, lightObjChoice);
 
         if (otherHaveAllChosenObjective(nickname)) {
-            this.removeInactivePlayers(Player::hasChosenObjective);
+            this.removeInactivePlayers(p->p.getState().equals(PlayerState.WAIT));
             game.setState(GameState.ACTUAL_GAME);
             this.notifyActualGameSetup();
             for (String players : playerViewMap.keySet())
@@ -206,11 +208,12 @@ public class GameController implements GameControllerInterface {
     private synchronized void placeStartCard(String nickname, Placement startCardPlacement) {
         Player player = game.getPlayerFromNick(nickname);
         player.placeStartCard(startCardPlacement);
+        game.getPlayerFromNick(nickname).setState(PlayerState.WAIT);
 
         this.notifyStartCardFaceChoice(nickname, Lightifier.lightify(startCardPlacement));
 
         if (otherHaveAllSelectedStartCard(nickname)) {
-            this.removeInactivePlayers(Player::hasPlacedStartCard);
+            this.removeInactivePlayers(p->p.getState().equals(PlayerState.WAIT));
             this.moveToChoosePawn();
             this.save();
         } else {
@@ -315,19 +318,19 @@ public class GameController implements GameControllerInterface {
 
             if (game.getState().equals(GameState.CHOOSE_START_CARD)) {
                 if (otherHaveAllSelectedStartCard(nickname)) {
-                    this.removeInactivePlayers(Player::hasPlacedStartCard);
+                    this.removeInactivePlayers(p->p.getState().equals(PlayerState.WAIT));
                     this.moveToChoosePawn();
                 }
             } else if (game.getState().equals(GameState.CHOOSE_PAWN)) {
                 if (otherHaveAllChoosePawn(nickname)) {
                     game.getPawnChoices().clear();
-                    this.removeInactivePlayers(Player::hasChosenPawnColor);
+                    this.removeInactivePlayers(p->p.getState().equals(PlayerState.WAIT));
                     this.moveToSecretObjectivePhase();
                 }
             } else if (game.getState().equals(GameState.CHOOSE_SECRET_OBJECTIVE)) {
                 if (otherHaveAllChosenObjective(nickname)) {
                     game.setState(GameState.ACTUAL_GAME);
-                    this.removeInactivePlayers(Player::hasChosenObjective);
+                    this.removeInactivePlayers(p->p.getState().equals(PlayerState.WAIT));
 
                     String currentPlayer = game.getCurrentPlayer().getNickname();
                     if (currentPlayer.equals(nickname)) {
@@ -398,9 +401,9 @@ public class GameController implements GameControllerInterface {
 
     private synchronized void startCardStateTransition(String nickname) {
         ViewInterface view = playerViewMap.get(nickname);
+        Player player = game.getPlayerFromNick(nickname);
         try {
-            if (!game.getPlayerFromNick(nickname).hasPlacedStartCard()) {
-                game.getPlayerFromNick(nickname).setState(PlayerState.CHOOSE_START_CARD);
+            if (player.getState().equals(PlayerState.CHOOSE_START_CARD)) {
                 view.transitionTo(ViewState.CHOOSE_START_CARD);
             }else {
                 moveToWait(nickname);
@@ -421,8 +424,7 @@ public class GameController implements GameControllerInterface {
     private synchronized void objectiveChoiceStateTransition(String nickname) {
         Player player = game.getPlayerFromNick(nickname);
         try {
-            if (!player.hasChosenObjective()) {
-                game.getPlayerFromNick(nickname).setState(PlayerState.CHOOSE_SECRET_OBJECTIVE);
+            if (player.getState().equals(PlayerState.CHOOSE_SECRET_OBJECTIVE)) {
                 playerViewMap.get(nickname).transitionTo(ViewState.SELECT_OBJECTIVE);
             } else {
                 moveToWait(nickname);
@@ -434,8 +436,7 @@ public class GameController implements GameControllerInterface {
     private synchronized void pawnChoiceStateTransition(String nickname) {
         Player player = game.getPlayerFromNick(nickname);
         try {
-            if (!player.hasChosenPawnColor()) {
-                game.getPlayerFromNick(nickname).setState(PlayerState.CHOOSE_PAWN);
+            if (player.getState().equals(PlayerState.CHOOSE_PAWN)) {
                 playerViewMap.get(nickname).transitionTo(ViewState.CHOOSE_PAWN);
             } else {
                 moveToWait(nickname);
@@ -652,7 +653,7 @@ public class GameController implements GameControllerInterface {
         boolean allChose = true;
         List<String> activePlayer = playerViewMap.keySet().stream().toList();
         for (String nick : activePlayer) {
-            if (!nick.equals(nicknamePerspective) && !game.getPlayerFromNick(nick).hasChosenPawnColor()) {
+            if (!nick.equals(nicknamePerspective) && game.getPlayerFromNick(nick).getState().equals(PlayerState.CHOOSE_PAWN)) {
                 allChose = false;
             }
         }
@@ -898,7 +899,7 @@ public class GameController implements GameControllerInterface {
         boolean allPlaced = true;
         List<String> activePlayer = playerViewMap.keySet().stream().toList();
         for (String nick : activePlayer) {
-            if (!nick.equals(nicknamePerspective) && !game.getPlayerFromNick(nick).hasPlacedStartCard()) {
+            if (!nick.equals(nicknamePerspective) && game.getPlayerFromNick(nick).getState().equals(PlayerState.CHOOSE_START_CARD)) {
                 allPlaced = false;
             }
         }
@@ -920,7 +921,7 @@ public class GameController implements GameControllerInterface {
         boolean allChosen = true;
         for (String nickname : playerViewMap.keySet()) {
             Player player = game.getPlayerFromNick(nickname);
-            if (!player.getNickname().equals(nicknamePerspective) && !player.hasChosenObjective()) {
+            if (!player.getNickname().equals(nicknamePerspective) && player.getState().equals(PlayerState.CHOOSE_SECRET_OBJECTIVE)) {
                 allChosen = false;
             }
         }

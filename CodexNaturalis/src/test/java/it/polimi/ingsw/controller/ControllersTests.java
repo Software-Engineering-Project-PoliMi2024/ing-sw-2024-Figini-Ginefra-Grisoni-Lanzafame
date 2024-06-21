@@ -401,13 +401,12 @@ class ControllersTests {
         assert game.getState().equals(GameState.CHOOSE_START_CARD);
 
         //user1
-        assert player1.hasPlacedStartCard();
+        assert player1.getState().equals(PlayerState.WAIT);
         assert player1.getUserCodex().getPlacementAt(new Position(0,0)) != null;
         assert player1.getUserHand().getHand().stream().allMatch(Objects::nonNull);
-        assert player1.hasPlacedStartCard();
         assert player1.getUserHand().getStartCard() == null;
         //user2
-        assert !player2.hasPlacedStartCard();
+        assert player2.getState().equals(PlayerState.CHOOSE_START_CARD);
         assert player2.getUserHand().getHand().stream().allMatch(Objects::isNull);
         assert player2.getUserHand().getStartCard() != null;
 
@@ -454,12 +453,10 @@ class ControllersTests {
         Hand hand2 = player2.getUserHand();
 
         //user1
-        assert player1.hasPlacedStartCard();
-        assert !player1.hasChosenPawnColor();
+        assert player1.getState().equals(PlayerState.CHOOSE_PAWN);
         Assertions.assertNull(player1.getUserHand().getSecretObjectiveChoices());
         //user2
-        assert player2.hasPlacedStartCard();
-        assert !player2.hasChosenPawnColor();
+        assert player2.getState().equals(PlayerState.CHOOSE_PAWN);;
         Assertions.assertNull(player2.getUserHand().getSecretObjectiveChoices());
 
         //view 1 lightModel updated correctly
@@ -618,8 +615,8 @@ class ControllersTests {
         //check transition to secret objective choice state
         assert game.getPawnChoices().isEmpty();
 
-        assert player1.hasChosenPawnColor();
-        assert player2.hasChosenPawnColor();
+        assert player1.getState().equals(PlayerState.CHOOSE_SECRET_OBJECTIVE);
+        assert player2.getState().equals(PlayerState.CHOOSE_SECRET_OBJECTIVE);
 
         assert player1.getUserHand().getSecretObjectiveChoices().stream().allMatch(Objects::nonNull);
         assert player2.getUserHand().getSecretObjectiveChoices().stream().allMatch(Objects::nonNull);
@@ -634,12 +631,8 @@ class ControllersTests {
     void choseSecretObjective() {
         ViewTest view1 = new ViewTest();
         ViewTest view2 = new ViewTest();
-        ViewTest view3 = new ViewTest();
-        ViewTest view4 = new ViewTest();
         view1.name = "pippo";
         view2.name = "pluto";
-        view3.name = "topolino";
-        view4.name = "gianni";
         String lobbyName1 = "test1";
         Controller controller1 = new Controller(realLobbyGameListController, view1);
         Controller controller2 = new Controller(realLobbyGameListController, view2);
@@ -671,15 +664,14 @@ class ControllersTests {
         Player player2 = game.getPlayerFromNick(view2.name);
 
         //user1
-        assert player1.hasChosenObjective();
+        assert player1.getState().equals(PlayerState.WAIT);
         assert hand1.getSecretObjective() != null;
         assert hand1.getSecretObjective().getIdFront() == secretObjective.idFront();
         assert hand1.getSecretObjective().getIdBack() == secretObjective.idBack();
         assert hand1.getSecretObjectiveChoices() == null;
 
         //user2
-        assert !player2.hasChosenObjective();
-        assert game.othersHadAllChooseSecretObjective(view2.name);
+        assert player2.getState().equals(PlayerState.CHOOSE_SECRET_OBJECTIVE);
 
         LightHand lightHand = view1.lightGame.getHand();
         //view 1 lightModel updated correctly
@@ -735,14 +727,14 @@ class ControllersTests {
         Hand hand1 = player1.getUserHand();
         Player player2 = game.getPlayerFromNick(view2.name);
         Hand hand2 = player2.getUserHand();
-        //user1
-        assert player1.hasChosenObjective();
+        //player1
+        assert player1.getState().equals(PlayerState.PLACE) || player1.getState().equals(PlayerState.IDLE);
         assert hand1.getSecretObjective() != null;
         assert hand1.getSecretObjective().getIdFront() == secretObjective1.idFront();
         assert hand1.getSecretObjective().getIdBack() == secretObjective1.idBack();
         assert hand1.getSecretObjectiveChoices() == null;
-        //user2
-        assert player1.hasChosenObjective();
+        //player2
+        assert player2.getState().equals(PlayerState.PLACE) || player2.getState().equals(PlayerState.IDLE);
         assert hand2.getSecretObjective() != null;
         assert hand2.getSecretObjective().getIdFront() == secretObjective2.idFront();
         assert hand2.getSecretObjective().getIdBack() == secretObjective2.idBack();

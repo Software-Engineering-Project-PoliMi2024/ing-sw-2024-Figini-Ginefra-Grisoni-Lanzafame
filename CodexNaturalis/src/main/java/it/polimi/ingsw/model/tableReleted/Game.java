@@ -7,6 +7,7 @@ import it.polimi.ingsw.model.cardReleted.utilityEnums.DrawableCard;
 import it.polimi.ingsw.model.playerReleted.Codex;
 import it.polimi.ingsw.model.playerReleted.PawnColors;
 import it.polimi.ingsw.model.playerReleted.Player;
+import it.polimi.ingsw.model.playerReleted.PlayerState;
 import it.polimi.ingsw.model.utilities.Pair;
 
 import java.io.Serializable;
@@ -225,16 +226,6 @@ public class Game implements Serializable {
         return goldCardDeck.isEmpty() && resourceCardDeck.isEmpty();
     }
 
-    public boolean othersHadAllChooseSecretObjective(String nicknamePerspective) {
-        boolean check = true;
-        for (Player player : gameParty.getPlayersList()) {
-            if (!player.getNickname().equals(nicknamePerspective) && !player.hasChosenObjective()) {
-                check = false;
-            }
-        }
-        return check;
-    }
-
     @Override
     public String toString() {
 
@@ -286,10 +277,10 @@ public class Game implements Serializable {
     }
 
     private void setupStartCard(){
-        gameParty.getPlayersList().forEach(user-> {
-            if (user.getUserHand().getStartCard() == null && !user.hasPlacedStartCard()) {
+        gameParty.getPlayersList().forEach(player-> {
+            if (player.getUserHand().getStartCard() == null && player.getState().equals(PlayerState.CHOOSE_START_CARD)) {
                 StartCard startCard = drawStartCard();
-                user.getUserHand().setStartCard(startCard);
+                player.getUserHand().setStartCard(startCard);
             }
         });
     }
