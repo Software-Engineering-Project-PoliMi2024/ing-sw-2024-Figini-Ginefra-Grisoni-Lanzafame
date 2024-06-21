@@ -32,6 +32,7 @@ public class VirtualControllerRMI implements VirtualController {
     private ViewInterface view;
     private PingPongInterface pingPongStub;
     private ControllerInterface controllerStub;
+    private Future<?> pong;
 
     public VirtualControllerRMI() {
         try (Socket socket = new Socket()) {
@@ -218,11 +219,10 @@ public class VirtualControllerRMI implements VirtualController {
     }
 
     public void pingPong() {
-        Future<?> pong = pingPongExecutor.scheduleAtFixedRate(() -> {
+        this.pong = pingPongExecutor.scheduleAtFixedRate(() -> {
             try {
                 pingPongStub.checkEmpty();
             } catch (Exception e) {
-                pingPongExecutor.shutdownNow();
                 this.disconnect();
             }
         }, Configs.pingPongFrequency, Configs.pingPongFrequency, TimeUnit.SECONDS);
@@ -230,6 +230,8 @@ public class VirtualControllerRMI implements VirtualController {
 
 
     public synchronized void disconnect(){
+        pong.cancel(true);
+        pingPongExecutor.shutdownNow();
         pingPongExecutor = Executors.newSingleThreadScheduledExecutor();
         try {
             UnicastRemoteObject.unexportObject(this, true);
