@@ -76,6 +76,8 @@ public class ChatDisplay {
 
                     messageContainer.getChildren().add(message);
                     setGraphic(messageContainer);
+
+                    getStyleClass().add("non-empty-list-cell");
                 }
             }
         };
