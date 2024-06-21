@@ -9,82 +9,99 @@ import java.time.Duration;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.*;
+import java.util.concurrent.Executor;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
+import java.util.concurrent.Future;
 
 public class PersistenceFactory {
-    private static final String _ser = ".ser";
-    private static final String dateGameNameSeparator = "--";
-    private static final DateTimeFormatter windowSucks = DateTimeFormatter.ofPattern("yyyy-MM-dd_HH-mm-ss");
-    private static final String gameDataFolderPath = OSRelated.gameDataFolderPath;
+    private final String _ser = ".ser";
+    private final String dateGameNameSeparator = "--";
+    private final DateTimeFormatter windowSucks = DateTimeFormatter.ofPattern("yyyy-MM-dd_HH-mm-ss");
+    private final String gameDataFolderPath;
+    private final ExecutorService fileIOExecutor = Executors.newSingleThreadExecutor();
 
-    public static void save(Game game) {
-        File oldSave = latestGameSave(game);
-        File newSave = null;
-        ObjectOutputStream outStream = null;
-        try {
-            newSave= new File(gameDataFolderPath + LocalDateTime.now().format(windowSucks) + dateGameNameSeparator + game.getName() + _ser);
-            FileOutputStream fileOut = new FileOutputStream(newSave);
-            outStream = new ObjectOutputStream(fileOut);
-            outStream.writeObject(game);
-            outStream.flush();
-            outStream.close();
-            fileOut.close();
-            System.out.println("Game: " + game.getName() + " saved successfully");
-        } catch (IOException e) {
-            e.printStackTrace();
-            //I can't delete the new save if the stream is not closed
-            if(outStream != null){
-                try {
-                    outStream.close();
-                } catch (IOException ex) {
-                    throw new RuntimeException(ex);
+    public PersistenceFactory(String gameDataFolderPath) {
+        this.gameDataFolderPath = gameDataFolderPath;
+
+    }
+
+    public synchronized void save(Game game) {
+        fileIOExecutor.submit(()-> {
+            File oldSave = latestGameSave(game);
+            File newSave = null;
+            ObjectOutputStream outStream = null;
+            try {
+                newSave = new File(gameDataFolderPath + LocalDateTime.now().format(windowSucks) + dateGameNameSeparator + game.getName() + _ser);
+                newSave.createNewFile();
+                FileOutputStream fileOut = new FileOutputStream(newSave);
+                outStream = new ObjectOutputStream(fileOut);
+                outStream.writeObject(game);
+                outStream.flush();
+                outStream.close();
+                fileOut.close();
+                System.out.println("Game: " + newSave.getName() + " saved successfully");
+            } catch (IOException e) {
+                e.printStackTrace();
+                //I can't delete the new save if the stream is not closed
+                if (outStream != null) {
+                    try {
+                        outStream.close();
+                    } catch (IOException ex) {
+                        throw new RuntimeException(ex);
+                    }
+                }
+                delete(newSave);
+                newSave = null;
+                if (oldSave != null) {
+                    System.out.println("Error while saving the game. Keeping the previous save: " + oldSave.getName());
+                } else {
+                    System.out.println("Error while saving the game. No previous save found");
                 }
             }
-            delete(newSave);
-            newSave = null;
-            if (oldSave != null) {
-                System.out.println("Error while saving the game. Keeping the previous save: " + oldSave.getName());
-            } else {
-                System.out.println("Error while saving the game. No previous save found");
+            if (oldSave != null && newSave != null && !oldSave.getName().equals(newSave.getName())) {
+                boolean successfulDeletion = oldSave.delete();
+                if (successfulDeletion) {
+                    System.out.println("Old game save: " + oldSave.getName() + " deleted successfully");
+                } else {
+                    System.out.println("Old game save: " + oldSave.getName() + " could not be deleted");
+                }
             }
-        }
-        if (oldSave != null && newSave != null) {
-            boolean successfulDeletion = oldSave.delete();
-            if (successfulDeletion) {
-                System.out.println("Old game save: " + oldSave.getName() + " deleted successfully");
-            } else {
-                System.out.println("Old game save: " + oldSave.getName() + " could not be deleted");
-            }
-        }
+        });
     }
 
     /**
      * Load all the game saves in the gameDataFolderPath. If a gameSave is expired, delete it
      * @return a HashSet containing all the non-expired games loaded from the gameDataFolderPath
      */
-    public static HashSet<Game> load() {
-        HashSet<Game> gameList = new HashSet<>();
-        File dataFolder = new File(gameDataFolderPath);
+    public synchronized Future<HashSet<Game>> load() {
+        Future<HashSet<Game>> load = fileIOExecutor.submit(()-> {
+            HashSet<Game> gameList = new HashSet<>();
+            File dataFolder = new File(gameDataFolderPath);
 
-        File[] saves = dataFolder.listFiles();
-        if(saves == null){
-            throw new IllegalArgumentException("The gameDataFolderPath is not a valid directory, check the path in the OSRelated class");
-        }else if (saves.length == 0) {
-            System.out.println("No games saves found");
-        } else {
-            for (File gameSave : saves) {
-                if (checkTimeIsToDelete(gameSave)) {
-                    delete(gameSave); //delete the expired saves
-                } else {
-                    String gameName = getGameNameFromFile(gameSave);
-                    Game game = latestGame(Arrays.stream(saves).filter(file -> file.getName().contains(gameName)).toList());
-                    saves = dataFolder.listFiles(); //update the list of saves after possible deletion from latestGame
-                    if (game != null ){
-                        gameList.add(game);
+            File[] saves = dataFolder.listFiles();
+            if (saves == null) {
+                throw new IllegalArgumentException("The gameDataFolderPath is not a valid directory, check the path in the OSRelated class");
+            } else if (saves.length == 0) {
+                System.out.println("No games saves found");
+            } else {
+                for (File gameSave : saves) {
+                    if (checkTimeIsToDelete(gameSave)) {
+                        delete(gameSave); //delete the expired saves
+                    } else {
+                        String gameName = getGameNameFromFile(gameSave);
+                        Game game = latestGame(Arrays.stream(saves).filter(file -> file.getName().contains(gameName)).toList());
+                        saves = dataFolder.listFiles(); //update the list of saves after possible deletion from latestGame
+                        if (game != null) {
+                            gameList.add(game);
+                        }
                     }
                 }
             }
-        }
-        return gameList;
+            return gameList;
+        });
+
+        return load;
     }
 
     /**
@@ -93,7 +110,7 @@ public class PersistenceFactory {
      * @param gameSave the file to check
      * @return true if the file is expired, false otherwise
      */
-    private static boolean checkTimeIsToDelete(File gameSave){
+    private boolean checkTimeIsToDelete(File gameSave){
         String date = gameSave.getName().split(dateGameNameSeparator)[0];
         LocalDateTime saveDate = LocalDateTime.parse(date, windowSucks);
 
@@ -107,7 +124,7 @@ public class PersistenceFactory {
      * @param file the file from which the method gets the game
      * @return the game saved in the file, null if the file is corrupted and subsequently deleted
      */
-    private static Game getGameFromFile(File file) {
+    private Game getGameFromFile(File file) {
         Game game = null;
         FileInputStream fileIn = null;
         try {
@@ -145,8 +162,8 @@ public class PersistenceFactory {
      * @param game the game of which the method is looking for the save
      * @return the latest gameSave file of the given game if it exists, null otherwise
      */
-    private static File latestGameSave(Game game) {
-        File dataFolder = new File(PersistenceFactory.gameDataFolderPath);
+    private File latestGameSave(Game game) {
+        File dataFolder = new File(gameDataFolderPath);
         File[] saves = dataFolder.listFiles();
         Queue<File> savesOfGame = new PriorityQueue<>(gameSaveComparator);
         if (saves != null) {
@@ -176,7 +193,7 @@ public class PersistenceFactory {
      * @param gamesSave the list of gameSaves of the gamen that need to be loaded
      * @return the game loaded from the latest gameSave file in the list or null if the list is empty
      */
-    private static Game latestGame(List<File> gamesSave) {
+    private Game latestGame(List<File> gamesSave) {
         Queue<File> sortedGameSaves = new PriorityQueue<>(gameSaveComparator);
         sortedGameSaves.addAll(gamesSave);
         File latestGameSave = sortedGameSaves.poll();
@@ -190,7 +207,7 @@ public class PersistenceFactory {
      * Delete all the gameSave files in the queue
      * @param gamesSave the queue of gameSave files to delete
      */
-    private static void deleteMultipleGameSave(Queue<File> gamesSave) {
+    private void deleteMultipleGameSave(Queue<File> gamesSave) {
         for (File gameSave : gamesSave) {
             delete(gameSave);
         }
@@ -200,7 +217,7 @@ public class PersistenceFactory {
      * Comparator to compare two gameSave files by their date-time in the name
      * File are compared in descending order
      */
-    private static final Comparator<File> gameSaveComparator = (File1, File2) -> {
+    private final Comparator<File> gameSaveComparator = (File1, File2) -> {
         String dateTimeFile1 = File1.getName().split(dateGameNameSeparator)[0];
         String dateTimeFile2 = File2.getName().split(dateGameNameSeparator)[0];
 
@@ -211,37 +228,41 @@ public class PersistenceFactory {
         return dateTime2.compareTo(dateTime1);
     };
 
-    public static void delete(String gameName){
-        File dataFolder = new File(gameDataFolderPath);
-        File[] saves = dataFolder.listFiles();
-        File gameToDelete = null;
-        if (saves != null) {
-            gameToDelete = Arrays.stream(saves).filter(file -> file.getName().contains(gameName)).findFirst().orElse(null);
-        }
-        if(gameToDelete != null){
-            delete(gameToDelete);
-        } else {
-            System.out.println("No game save found for the game: " + gameName);
-        }
+    public void delete(String gameName){
+        fileIOExecutor.submit(()-> {
+            File dataFolder = new File(gameDataFolderPath);
+            File[] saves = dataFolder.listFiles();
+            File gameToDelete = null;
+            if (saves != null) {
+                gameToDelete = Arrays.stream(saves).filter(file -> file.getName().contains(gameName)).findFirst().orElse(null);
+            }
+            if (gameToDelete != null) {
+                delete(gameToDelete);
+            } else {
+                System.out.println("No game save found for the game: " + gameName);
+            }
+        });
     }
 
-    private static void delete(File file) {
+    private void delete(File file) {
         if(!file.delete()) {
             System.out.println("file:" + file.getName() + " could not be deleted");
         }
     }
 
-    public static void eraseAllSaves() {
-        File dataFolder = new File(gameDataFolderPath);
-        File[] saves = dataFolder.listFiles();
-        if (saves != null) {
-            for (File gameSave : saves) {
-                delete(gameSave);
+    public void eraseAllSaves() {
+        fileIOExecutor.submit(()-> {
+            File dataFolder = new File(gameDataFolderPath);
+            File[] saves = dataFolder.listFiles();
+            if (saves != null) {
+                for (File gameSave : saves) {
+                    delete(gameSave);
+                }
             }
-        }
+        });
     }
 
-    private static String getGameNameFromFile(File file) {
+    private String getGameNameFromFile(File file) {
         return file.getName().split(dateGameNameSeparator)[1].split(_ser)[0];
     }
 }
