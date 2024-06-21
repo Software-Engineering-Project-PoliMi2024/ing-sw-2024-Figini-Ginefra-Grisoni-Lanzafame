@@ -958,11 +958,9 @@ public class GameController implements GameControllerInterface {
 
     private boolean emptyMessage(ChatMessage chatMessage) {
         ViewInterface senderView = playerViewMap.get(chatMessage.getSender());
-        Player sender = game.getPlayerFromNick(chatMessage.getSender());
         try {
             if (chatMessage.getMessage().isBlank()) {
                 senderView.logChat(LogsOnClient.NO_EMPTY_MESSAGE);
-                senderView.transitionTo(ViewState.getViewFrom(sender.getState()));
                 return true;
             }
         } catch (Exception ignored) {
@@ -972,15 +970,12 @@ public class GameController implements GameControllerInterface {
 
     private boolean goodReceiver(ChatMessage chatMessage){
         ViewInterface senderView = playerViewMap.get(chatMessage.getSender());
-        Player sender = game.getPlayerFromNick(chatMessage.getSender());
         try{
             if(chatMessage.getReceiver().isBlank()){
                 senderView.logChat(LogsOnClient.EMPTY_RECEIVER);
-                senderView.transitionTo(ViewState.getViewFrom(sender.getState()));
                 return false;
             }else if(!game.getGameParty().getPlayersList().stream().map(Player::getNickname).toList().contains(chatMessage.getReceiver())){
                 senderView.logChat(String.format(LogsOnClient.RECEIVER_NOT_FOUND, chatMessage.getReceiver()));
-                senderView.transitionTo(ViewState.getViewFrom(sender.getState()));
                 return false;
             }else if (chatMessage.getSender().equals(chatMessage.getReceiver())) {
                 //Nothing to see here, move on
@@ -988,7 +983,6 @@ public class GameController implements GameControllerInterface {
                     senderView.logChat(LogsOnClient.FERRARI);
                 }
                 senderView.logChat(LogsOnClient.NO_SELF_MESSAGE);
-                senderView.transitionTo(ViewState.getViewFrom(sender.getState()));
                 return false;
             }else{
                 this.updatePrivateChat(chatMessage);

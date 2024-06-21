@@ -116,6 +116,7 @@ public class GUI extends Application implements ActualView {
 
     @Override
     public void transitionTo(ViewState state) throws RemoteException {
+        lightGame.getPlayerState().setState(state);
         StateGUI newState = Arrays.stream(StateGUI.values())
                 .filter(s -> s.references(state))
                 .findFirst()

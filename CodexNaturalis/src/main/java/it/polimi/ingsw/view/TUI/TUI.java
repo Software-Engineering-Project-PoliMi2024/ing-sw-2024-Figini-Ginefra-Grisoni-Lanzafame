@@ -251,6 +251,7 @@ public class TUI implements ActualView {
 
     @Override
     public void transitionTo(ViewState state){
+        lightGame.getPlayerState().setState(state);
         if(this.state == state){
             commandDisplay.render();
         }else {
@@ -302,6 +303,7 @@ public class TUI implements ActualView {
         Printer.println("");
         PromptStyle.printInABox(logMsg,50, StringStyle.GOLD_FOREGROUND);
         Printer.println("");
+        this.transitionTo(lightGame.getPlayerState().getState());
     }
 
 

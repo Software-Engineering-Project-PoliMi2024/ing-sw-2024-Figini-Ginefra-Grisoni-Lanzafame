@@ -1,5 +1,6 @@
 package it.polimi.ingsw.view.TUI.Renderables;
 
+import it.polimi.ingsw.lightModel.LightModelConfig;
 import it.polimi.ingsw.lightModel.lightPlayerRelated.LightChat;
 import it.polimi.ingsw.lightModel.lightTableRelated.LightGame;
 import it.polimi.ingsw.model.playerReleted.ChatMessage;
