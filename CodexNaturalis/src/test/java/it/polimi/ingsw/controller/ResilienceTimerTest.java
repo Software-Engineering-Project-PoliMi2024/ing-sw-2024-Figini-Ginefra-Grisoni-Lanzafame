@@ -27,7 +27,7 @@ import java.util.HashMap;
 public class ResilienceTimerTest {
     private LobbyGameListsController realLobbyGameListController;
     private PublicLobbyGameListController lobbyGameListController;
-    private static int shorterTimerDurationSeconds = 0;
+    private static int shorterTimerDurationSeconds = 1;
     private static int originalTimerDuration;
 
     @BeforeAll
@@ -85,55 +85,6 @@ public class ResilienceTimerTest {
         controller1.disconnect();
         //the save has been deleted
         assert !lobbyGameListController.getGameMap().containsKey(lobbyName1);
-    }
-
-
-    private void a(){
-        ViewTest view1 = new ViewTest();
-        ViewTest view2 = new ViewTest();
-        view1.name = "pippo";
-        view2.name = "pluto";
-
-        String lobbyName1 = "test1";
-        Controller controller1 = new Controller(realLobbyGameListController, view1);
-        Controller controller2 = new Controller(realLobbyGameListController, view2);
-
-        controller1.login(view1.name);
-        controller2.login(view2.name);
-        controller1.createLobby(lobbyName1, 2);
-        controller2.joinLobby(lobbyName1);
-
-        PublicGameController gameController = new PublicGameController(lobbyGameListController.getGameMap().get(lobbyName1));
-        Game game = gameController.getGame();
-
-        LightCard startCard1 = view1.lightGame.getHand().getCards()[0];
-        LightPlacement startPlacement1 = new LightPlacement(new Position(0,0), startCard1, CardFace.FRONT);
-        LightCard startCard2 = view2.lightGame.getHand().getCards()[0];
-        LightPlacement startPlacement2 = new LightPlacement(new Position(0,0), startCard2, CardFace.FRONT);
-
-        controller1.place(startPlacement1);
-        controller2.place(startPlacement2);
-
-        controller1.choosePawn(PawnColors.BLUE);
-        controller2.choosePawn(PawnColors.RED);
-
-        LightCard secretObjective1 = view1.lightGame.getHand().getSecretObjectiveOptions()[0];
-        LightCard secretObjective2 = view2.lightGame.getHand().getSecretObjectiveOptions()[0];
-
-        controller1.chooseSecretObjective(secretObjective1);
-        controller2.chooseSecretObjective(secretObjective2);
-
-        PublicController firstPlayerController = new PublicController(view1.name.equals(game.getCurrentPlayer().getNickname()) ? controller1 : controller2);
-        PublicController secondPlayerController = new PublicController(view1.name.equals(game.getCurrentPlayer().getNickname()) ? controller2 : controller1);
-        Player firstPlayer = game.getPlayerFromNick(firstPlayerController.getNickname());
-        Player secondPlayer = game.getPlayerFromNick(secondPlayerController.getNickname());
-
-        LightCard cardPlaced1 = Lightifier.lightifyToCard(firstPlayer.getUserHand().getHand().stream().toList().getFirst());
-        Position position1 = firstPlayer.getUserCodex().getFrontier().getFrontier().getFirst();
-        LightPlacement placement1 = new LightPlacement(position1, cardPlaced1, CardFace.BACK);
-
-        firstPlayerController.controller.place(placement1);
-        firstPlayerController.controller.draw(DrawableCard.GOLDCARD, 0);
     }
 
     @Test
@@ -327,6 +278,7 @@ public class ResilienceTimerTest {
         assert viewMap.get(secondPlayer.getNickname()).state.equals(ViewState.PLACE_CARD);
         secondPlayerController.disconnect();
 
+        assert !game.getState().equals(GameState.END_GAME);
         try {
             Thread.sleep(Configs.lastInGameTimerSeconds * 1000L + 1000L);
         }catch (Exception ignored){}
@@ -345,7 +297,87 @@ public class ResilienceTimerTest {
     }
 
     @Test
-    void joinGameTimerReset(){}
+    void joinGameTimerReset(){
+        ViewTest view1 = new ViewTest();
+        ViewTest view2 = new ViewTest();
+        view1.name = "pippo";
+        view2.name = "pluto";
+
+        String lobbyName1 = "test1";
+        Controller controller1 = new Controller(realLobbyGameListController, view1);
+        Controller controller2 = new Controller(realLobbyGameListController, view2);
+
+        controller1.login(view1.name);
+        controller2.login(view2.name);
+        controller1.createLobby(lobbyName1, 2);
+        controller2.joinLobby(lobbyName1);
+
+        PublicGameController gameController = new PublicGameController(lobbyGameListController.getGameMap().get(lobbyName1));
+        Game game = gameController.getGame();
+
+        LightCard startCard1 = view1.lightGame.getHand().getCards()[0];
+        LightPlacement startPlacement1 = new LightPlacement(new Position(0,0), startCard1, CardFace.FRONT);
+        LightCard startCard2 = view2.lightGame.getHand().getCards()[0];
+        LightPlacement startPlacement2 = new LightPlacement(new Position(0,0), startCard2, CardFace.FRONT);
+
+        controller1.place(startPlacement1);
+        controller2.place(startPlacement2);
+
+        controller1.choosePawn(PawnColors.BLUE);
+        controller2.choosePawn(PawnColors.RED);
+
+        assert game.getState().equals(GameState.CHOOSE_SECRET_OBJECTIVE);
+        controller1.disconnect();
+        assert !game.getState().equals(GameState.END_GAME);
+        controller1.login(view1.name);
+        try {
+            Thread.sleep(Configs.lastInGameTimerSeconds * 1000L + 1000L);
+        }catch (Exception ignored){}
+
+        assert !game.getState().equals(GameState.END_GAME);
+        assert game.getState().equals(GameState.CHOOSE_SECRET_OBJECTIVE);
+        assert lobbyGameListController.getGameMap().containsKey(lobbyName1);
+    }
     @Test
-    void allPlayerLeaveReset(){}
+    void allPlayerLeaveReset(){
+        ViewTest view1 = new ViewTest();
+        ViewTest view2 = new ViewTest();
+        view1.name = "pippo";
+        view2.name = "pluto";
+
+        String lobbyName1 = "test1";
+        Controller controller1 = new Controller(realLobbyGameListController, view1);
+        Controller controller2 = new Controller(realLobbyGameListController, view2);
+
+        controller1.login(view1.name);
+        controller2.login(view2.name);
+        controller1.createLobby(lobbyName1, 2);
+        controller2.joinLobby(lobbyName1);
+
+        PublicGameController gameController = new PublicGameController(lobbyGameListController.getGameMap().get(lobbyName1));
+        Game game = gameController.getGame();
+
+        LightCard startCard1 = view1.lightGame.getHand().getCards()[0];
+        LightPlacement startPlacement1 = new LightPlacement(new Position(0,0), startCard1, CardFace.FRONT);
+        LightCard startCard2 = view2.lightGame.getHand().getCards()[0];
+        LightPlacement startPlacement2 = new LightPlacement(new Position(0,0), startCard2, CardFace.FRONT);
+
+        controller1.place(startPlacement1);
+        controller2.place(startPlacement2);
+
+        controller1.choosePawn(PawnColors.BLUE);
+        controller2.choosePawn(PawnColors.RED);
+
+        assert game.getState().equals(GameState.CHOOSE_SECRET_OBJECTIVE);
+        controller1.disconnect();
+        assert !game.getState().equals(GameState.END_GAME);
+        controller2.disconnect();
+        try {
+            Thread.sleep(Configs.lastInGameTimerSeconds * 1000L + 1000L);
+        }catch (Exception ignored){}
+
+        assert !game.getState().equals(GameState.END_GAME);
+        assert game.getState().equals(GameState.CHOOSE_SECRET_OBJECTIVE);
+        assert lobbyGameListController.getGameMap().containsKey(lobbyName1);
+    }
 }
