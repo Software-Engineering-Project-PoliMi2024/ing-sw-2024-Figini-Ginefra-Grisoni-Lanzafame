@@ -11,7 +11,7 @@ import java.time.format.DateTimeFormatter;
 import java.util.*;
 
 public class PersistenceFactory {
-    private static final String _bin = ".bin";
+    private static final String _ser = ".ser";
     private static final String dateGameNameSeparator = "--";
     private static final DateTimeFormatter windowSucks = DateTimeFormatter.ofPattern("yyyy-MM-dd_HH-mm-ss");
     private static final String gameDataFolderPath = OSRelated.gameDataFolderPath;
@@ -21,20 +21,16 @@ public class PersistenceFactory {
         File newSave = null;
         ObjectOutputStream outStream = null;
         try {
-            newSave= new File(gameDataFolderPath + LocalDateTime.now().format(windowSucks) + dateGameNameSeparator + game.getName() + _bin);
-            outStream = new ObjectOutputStream(new FileOutputStream(newSave));
+            newSave= new File(gameDataFolderPath + LocalDateTime.now().format(windowSucks) + dateGameNameSeparator + game.getName() + _ser);
+            FileOutputStream fileOut = new FileOutputStream(newSave);
+            outStream = new ObjectOutputStream(fileOut);
             outStream.writeObject(game);
+            outStream.flush();
             outStream.close();
+            fileOut.close();
             System.out.println("Game: " + game.getName() + " saved successfully");
-            if (oldSave != null) {
-                boolean successfulDeletion = oldSave.delete();
-                if (successfulDeletion) {
-                    System.out.println("Old game save: " + oldSave.getName() + " deleted successfully");
-                } else {
-                    System.out.println("Old game save: " + oldSave.getName() + " could not be deleted");
-                }
-            }
         } catch (IOException e) {
+            e.printStackTrace();
             //I can't delete the new save if the stream is not closed
             if(outStream != null){
                 try {
@@ -44,12 +40,20 @@ public class PersistenceFactory {
                 }
             }
             delete(newSave);
+            newSave = null;
             if (oldSave != null) {
                 System.out.println("Error while saving the game. Keeping the previous save: " + oldSave.getName());
             } else {
                 System.out.println("Error while saving the game. No previous save found");
             }
-            e.printStackTrace();
+        }
+        if (oldSave != null && newSave != null) {
+            boolean successfulDeletion = oldSave.delete();
+            if (successfulDeletion) {
+                System.out.println("Old game save: " + oldSave.getName() + " deleted successfully");
+            } else {
+                System.out.println("Old game save: " + oldSave.getName() + " could not be deleted");
+            }
         }
     }
 
@@ -238,6 +242,6 @@ public class PersistenceFactory {
     }
 
     private static String getGameNameFromFile(File file) {
-        return file.getName().split(dateGameNameSeparator)[1].split(_bin)[0];
+        return file.getName().split(dateGameNameSeparator)[1].split(_ser)[0];
     }
 }
