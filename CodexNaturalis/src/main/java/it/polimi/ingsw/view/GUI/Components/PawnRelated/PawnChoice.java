@@ -1,6 +1,6 @@
 package it.polimi.ingsw.view.GUI.Components.PawnRelated;
 
-import it.polimi.ingsw.designPatterns.Observer;
+import it.polimi.ingsw.utils.Observer;
 import it.polimi.ingsw.model.playerReleted.PawnColors;
 import it.polimi.ingsw.view.GUI.AssetsGUI;
 import it.polimi.ingsw.view.GUI.Components.Utils.PopUp;
@@ -15,7 +15,6 @@ import javafx.scene.text.Text;
 import javafx.scene.text.TextAlignment;
 
 import java.util.*;
-import java.util.stream.Collectors;
 
 public class PawnChoice implements Observer {
     private final VBox container = new VBox();

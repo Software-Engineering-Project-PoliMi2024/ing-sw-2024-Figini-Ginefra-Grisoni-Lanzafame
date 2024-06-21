@@ -1,7 +1,7 @@
 package it.polimi.ingsw.view.TUI.cardDrawing;
 
 import it.polimi.ingsw.Configs;
-import it.polimi.ingsw.OSRelated;
+import it.polimi.ingsw.utils.OSRelated;
 import it.polimi.ingsw.model.cardReleted.utilityEnums.CardFace;
 import org.junit.jupiter.api.Test;
 

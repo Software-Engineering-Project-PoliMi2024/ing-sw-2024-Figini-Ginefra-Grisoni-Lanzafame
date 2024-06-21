@@ -1,7 +1,7 @@
 package it.polimi.ingsw.view.TUI.Renderables.CardRelated;
 
 import it.polimi.ingsw.Configs;
-import it.polimi.ingsw.OSRelated;
+import it.polimi.ingsw.utils.OSRelated;
 import it.polimi.ingsw.lightModel.diffs.game.codexDiffs.CodexDiffPlacement;
 import it.polimi.ingsw.lightModel.diffs.game.gamePartyDiffs.GameDiffCurrentPlayer;
 import it.polimi.ingsw.lightModel.diffs.game.gamePartyDiffs.GameDiffFirstPlayer;

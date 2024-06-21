@@ -1,14 +1,12 @@
 package it.polimi.ingsw.view.GUI.Components.Logs;
 
-import it.polimi.ingsw.designPatterns.Observer;
+import it.polimi.ingsw.utils.Observer;
 import it.polimi.ingsw.view.GUI.Components.Utils.AnchoredPopUp;
 import it.polimi.ingsw.view.GUI.GUI;
 import javafx.animation.KeyFrame;
 import javafx.animation.Timeline;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
-import javafx.scene.Node;
-import javafx.scene.control.ListView;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.Pane;
 import javafx.scene.text.Text;

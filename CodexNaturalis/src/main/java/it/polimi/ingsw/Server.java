@@ -8,6 +8,7 @@ import it.polimi.ingsw.connectionLayer.Socket.VirtualSocket.VirtualViewSocket;
 import it.polimi.ingsw.controller.Controller;
 import it.polimi.ingsw.controller.LogsOnClient;
 import it.polimi.ingsw.controller.LobbyGameListsController;
+import it.polimi.ingsw.utils.OSRelated;
 import it.polimi.ingsw.view.TUI.Printing.Printer;
 import it.polimi.ingsw.view.ViewState;
 

@@ -3,7 +3,6 @@ package it.polimi.ingsw.model.cardReleted.cardFactories;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
 import it.polimi.ingsw.Configs;
-import it.polimi.ingsw.OSRelated;
 import it.polimi.ingsw.model.cardReleted.cards.ResourceCard;
 
 import java.io.*;

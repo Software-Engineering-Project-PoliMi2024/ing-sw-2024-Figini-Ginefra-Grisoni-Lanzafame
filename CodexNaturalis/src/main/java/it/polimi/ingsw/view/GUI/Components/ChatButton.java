@@ -1,6 +1,6 @@
 package it.polimi.ingsw.view.GUI.Components;
 
-import it.polimi.ingsw.designPatterns.Observer;
+import it.polimi.ingsw.utils.Observer;
 import it.polimi.ingsw.view.GUI.AssetsGUI;
 import it.polimi.ingsw.view.GUI.GUI;
 import it.polimi.ingsw.view.GUI.GUIConfigs;

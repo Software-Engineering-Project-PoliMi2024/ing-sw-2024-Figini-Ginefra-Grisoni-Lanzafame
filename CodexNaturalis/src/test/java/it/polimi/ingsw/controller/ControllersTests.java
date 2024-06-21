@@ -1,7 +1,7 @@
 package it.polimi.ingsw.controller;
 
 import it.polimi.ingsw.Configs;
-import it.polimi.ingsw.OSRelated;
+import it.polimi.ingsw.utils.OSRelated;
 import it.polimi.ingsw.controller.PublicController.*;
 import it.polimi.ingsw.controller.PublicModelClass.PublicGame;
 import it.polimi.ingsw.controller.persistence.PersistenceFactory;

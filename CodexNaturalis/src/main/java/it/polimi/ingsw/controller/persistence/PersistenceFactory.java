@@ -1,7 +1,7 @@
 package it.polimi.ingsw.controller.persistence;
 
 import it.polimi.ingsw.Configs;
-import it.polimi.ingsw.OSRelated;
+import it.polimi.ingsw.utils.OSRelated;
 import it.polimi.ingsw.model.tableReleted.Game;
 
 import java.io.*;

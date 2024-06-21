@@ -1,24 +1,19 @@
 package it.polimi.ingsw.controller;
 
 import it.polimi.ingsw.Configs;
-import it.polimi.ingsw.OSRelated;
-import it.polimi.ingsw.controller.PublicController.PublicController;
+import it.polimi.ingsw.utils.OSRelated;
 import it.polimi.ingsw.controller.PublicController.PublicGameController;
 import it.polimi.ingsw.controller.PublicController.PublicLobbyGameListController;
 import it.polimi.ingsw.controller.persistence.PersistenceFactory;
-import it.polimi.ingsw.lightModel.Lightifier;
 import it.polimi.ingsw.lightModel.ViewTest;
 import it.polimi.ingsw.lightModel.lightPlayerRelated.LightCard;
 import it.polimi.ingsw.lightModel.lightPlayerRelated.LightPlacement;
 import it.polimi.ingsw.model.cardReleted.utilityEnums.CardFace;
-import it.polimi.ingsw.model.cardReleted.utilityEnums.DrawableCard;
-import it.polimi.ingsw.model.playerReleted.Hand;
 import it.polimi.ingsw.model.playerReleted.PawnColors;
 import it.polimi.ingsw.model.playerReleted.Player;
 import it.polimi.ingsw.model.playerReleted.Position;
 import it.polimi.ingsw.model.tableReleted.Game;
 import it.polimi.ingsw.model.tableReleted.GameState;
-import it.polimi.ingsw.view.ViewInterface;
 import it.polimi.ingsw.view.ViewState;
 import org.junit.jupiter.api.*;
 

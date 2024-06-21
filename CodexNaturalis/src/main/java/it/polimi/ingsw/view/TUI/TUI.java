@@ -1,7 +1,7 @@
 package it.polimi.ingsw.view.TUI;
 
 import it.polimi.ingsw.Configs;
-import it.polimi.ingsw.OSRelated;
+import it.polimi.ingsw.utils.OSRelated;
 import it.polimi.ingsw.controller.Interfaces.ControllerInterface;
 import it.polimi.ingsw.lightModel.diffs.ModelDiffs;
 import it.polimi.ingsw.lightModel.lightTableRelated.LightGame;

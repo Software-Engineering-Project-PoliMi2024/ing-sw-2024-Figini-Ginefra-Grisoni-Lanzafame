@@ -1,4 +1,6 @@
-package it.polimi.ingsw;
+package it.polimi.ingsw.utils;
+
+import it.polimi.ingsw.Configs;
 
 import java.io.File;
 

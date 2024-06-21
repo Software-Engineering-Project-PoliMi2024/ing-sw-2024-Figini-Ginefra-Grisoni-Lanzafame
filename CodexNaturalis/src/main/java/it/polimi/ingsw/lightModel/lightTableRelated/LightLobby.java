@@ -1,7 +1,7 @@
 package it.polimi.ingsw.lightModel.lightTableRelated;
 
-import it.polimi.ingsw.designPatterns.Observed;
-import it.polimi.ingsw.designPatterns.Observer;
+import it.polimi.ingsw.utils.Observed;
+import it.polimi.ingsw.utils.Observer;
 import it.polimi.ingsw.lightModel.Differentiable;
 import it.polimi.ingsw.lightModel.LightModelConfig;
 
