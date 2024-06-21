@@ -62,6 +62,13 @@ public class PawnChoice implements Observer {
             }
         });
 
+        if(GUI.getStateProperty().get() == StateGUI.CHOOSE_PAWN){
+            popUp.open();
+        }
+        else{
+            popUp.close();
+        }
+
         // Automatically assign black pawn to the first player
         if (GUI.getLightGame().getLightGameParty().getFirstPlayerName().equals(GUI.getLightGame().getLightGameParty().getYourName())) {
             try {
