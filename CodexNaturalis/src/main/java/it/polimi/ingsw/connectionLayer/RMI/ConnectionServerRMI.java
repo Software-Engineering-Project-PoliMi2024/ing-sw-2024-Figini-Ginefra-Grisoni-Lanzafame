@@ -67,7 +67,7 @@ public class ConnectionServerRMI implements ConnectionLayerServer {
             connect.get(secondsTimeOut, TimeUnit.SECONDS);
         }catch (InterruptedException ignored){
         } catch (Exception e) {
-            e.printStackTrace();
+//            e.printStackTrace();
             System.out.println("Error In Client Connection");
         }
 

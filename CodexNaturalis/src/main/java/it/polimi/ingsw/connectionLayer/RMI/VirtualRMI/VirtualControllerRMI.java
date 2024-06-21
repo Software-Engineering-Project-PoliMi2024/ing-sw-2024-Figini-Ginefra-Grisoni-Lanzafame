@@ -68,7 +68,7 @@ public class VirtualControllerRMI implements VirtualController {
             loginFuture.get(Configs.secondsTimeOut, TimeUnit.SECONDS);
         }catch (InterruptedException ignored){
         }catch (Exception e){
-            e.printStackTrace();
+//            e.printStackTrace();
             this.disconnect();
         }
     }
@@ -87,7 +87,7 @@ public class VirtualControllerRMI implements VirtualController {
             createLobbyFuture.get(Configs.secondsTimeOut, TimeUnit.SECONDS);
         }catch (InterruptedException ignored){
         }catch (Exception e){
-            e.printStackTrace();
+//            e.printStackTrace();
             this.disconnect();
         }
     }
@@ -105,7 +105,7 @@ public class VirtualControllerRMI implements VirtualController {
             joinLobbyFuture.get(Configs.secondsTimeOut, TimeUnit.SECONDS);
         }catch (InterruptedException ignored){
         }catch (Exception e){
-            e.printStackTrace();
+//            e.printStackTrace();
             this.disconnect();
         }
     }
@@ -123,7 +123,7 @@ public class VirtualControllerRMI implements VirtualController {
             leaveLobbyFuture.get(Configs.secondsTimeOut, TimeUnit.SECONDS);
         }catch (InterruptedException ignored){
         }catch (Exception e){
-            e.printStackTrace();
+//            e.printStackTrace();
             this.disconnect();
         }
     }
@@ -141,7 +141,7 @@ public class VirtualControllerRMI implements VirtualController {
             choseSecretObjectiveFuture.get(Configs.secondsTimeOut, TimeUnit.SECONDS);
         }catch (InterruptedException ignored){
         }catch (Exception e){
-            e.printStackTrace();
+//            e.printStackTrace();
             this.disconnect();
         }
     }
@@ -159,7 +159,7 @@ public class VirtualControllerRMI implements VirtualController {
             choosePawnFuture.get(Configs.secondsTimeOut, TimeUnit.SECONDS);
         }catch (InterruptedException ignored){
         } catch (Exception e) {
-            e.printStackTrace();
+//            e.printStackTrace();
             this.disconnect();
         }
     }
@@ -177,7 +177,7 @@ public class VirtualControllerRMI implements VirtualController {
             sendChatMessageFuture.get(Configs.secondsTimeOut, TimeUnit.SECONDS);
         }catch (InterruptedException ignored){
         }catch (Exception e){
-            e.printStackTrace();
+//            e.printStackTrace();
             this.disconnect();
         }
     }
@@ -195,7 +195,7 @@ public class VirtualControllerRMI implements VirtualController {
             placeFuture.get(Configs.secondsTimeOut, TimeUnit.SECONDS);
         }catch (InterruptedException ignored){
         }catch (Exception e){
-            e.printStackTrace();
+//            e.printStackTrace();
             this.disconnect();
         }
     }
@@ -213,7 +213,7 @@ public class VirtualControllerRMI implements VirtualController {
             drawFuture.get(Configs.secondsTimeOut, TimeUnit.SECONDS);
         }catch (InterruptedException ignored){
         }catch (Exception e){
-            e.printStackTrace();
+//            e.printStackTrace();
             this.disconnect();
         }
     }
@@ -231,7 +231,7 @@ public class VirtualControllerRMI implements VirtualController {
                 ping.get(Configs.secondsTimeOut, TimeUnit.SECONDS);
             }catch (InterruptedException ignored){
             } catch (Exception e) {
-                e.printStackTrace();
+//                e.printStackTrace();
                 this.disconnect();
             }
         }, Configs.pingPongFrequency, 1, TimeUnit.SECONDS);
@@ -292,7 +292,7 @@ public class VirtualControllerRMI implements VirtualController {
         }catch (InterruptedException ignored) {
         }catch (Exception e){
             try {
-                e.printStackTrace();
+//                e.printStackTrace();
                 view.logErr(LogsOnClient.CONNECTION_ERROR);
                 view.transitionTo(ViewState.SERVER_CONNECTION);
             }catch (Exception ignored){}
