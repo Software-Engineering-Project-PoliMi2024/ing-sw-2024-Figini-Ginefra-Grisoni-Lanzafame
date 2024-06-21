@@ -17,8 +17,6 @@ public class LightGame implements Differentiable {
     private Map<DrawableCard, LightDeck> decks;
     private LightCard[] publicObjective;
     private final List<String> winners;
-    private final LightViewState playerState = new LightViewState(ViewState.SERVER_CONNECTION);
-
     public LightGame(){
         this.lightGameParty = new LightGameParty();
         this.codexMap = new HashMap<>();
@@ -181,9 +179,5 @@ public class LightGame implements Differentiable {
 
     public List<String> getWinners() {
         return new ArrayList<>(winners);
-    }
-
-    public LightViewState getPlayerState() {
-        return playerState;
     }
 }
