@@ -41,6 +41,7 @@ import it.polimi.ingsw.view.ViewInterface;
 import it.polimi.ingsw.view.ViewState;
 
 import java.util.*;
+import java.util.concurrent.*;
 import java.util.function.Predicate;
 
 public class GameController implements GameControllerInterface {
@@ -49,7 +50,8 @@ public class GameController implements GameControllerInterface {
     private final Game game;
     private final Map<String, ViewInterface> playerViewMap = new HashMap<>();
 
-    private transient Timer countdownTimer = null;
+    private transient ScheduledFuture<?> lastInGameFuture = null;
+    private final transient ScheduledExecutorService countdownExecutor = Executors.newSingleThreadScheduledExecutor();
 
     public GameController(Game game, CardTable cardTable, FinishedGameDeleter finishedGameDeleter) {
         this.game = game;
@@ -241,6 +243,8 @@ public class GameController implements GameControllerInterface {
 
             //notify everyone
             this.notifyPlacement(nickname, placement, player.getUserCodex(), frontIdToPlayability);
+
+            //TODO check if deck are finished or else move over
             player.setState(PlayerState.DRAW);
             try {
                 playerViewMap.get(nickname).transitionTo(ViewState.DRAW_CARD);
@@ -298,6 +302,10 @@ public class GameController implements GameControllerInterface {
         String lastActivePlayerPreDisconnect = this.getLastActivePlayer();
         playerViewMap.remove(nickname);
         Player leaver = game.getPlayerFromNick(nickname);
+
+        if (playerViewMap.isEmpty()) {
+            this.resetLastPlayerTimer();
+        }
 
         this.notifyGameLeft(nickname);
 
@@ -369,8 +377,6 @@ public class GameController implements GameControllerInterface {
             if (playerViewMap.size() == 1) {
                 this.notifyLastInGameTimer();
                 this.startLastPlayerTimer();
-            }else if (playerViewMap.isEmpty()) {
-                this.resetLastPlayerTimer();
             }
         }
 
@@ -473,22 +479,23 @@ public class GameController implements GameControllerInterface {
     }
 
     private synchronized void resetLastPlayerTimer(){
-        if(countdownTimer != null){
-            countdownTimer.cancel();
-            countdownTimer = null;
+        if(lastInGameFuture != null){
+            lastInGameFuture.cancel(true);
             System.out.println(game.getName() + " stopped last player timer");
         }
     }
 
     private synchronized void startLastPlayerTimer() {
-        countdownTimer = new Timer();
         String lastPlayerInGame = playerViewMap.keySet().stream().findFirst().orElse("");
-        countdownTimer.schedule(new TimerTask() {
-            @Override
-            public void run() {
+        Runnable declareLastPlayerWinner = () -> {
+            if (!Thread.currentThread().isInterrupted()) {
                 winsTheLastPlayerInGame(lastPlayerInGame);
+                countdownExecutor.shutdownNow();
+                lastInGameFuture = null;
             }
-        }, Configs.lastInGameTimerSeconds * 1000L);
+        };
+
+        lastInGameFuture = countdownExecutor.schedule(declareLastPlayerWinner, Configs.lastInGameTimerSeconds, TimeUnit.SECONDS);
         System.out.println(game.getName() + " started last player timer");
     }
 
