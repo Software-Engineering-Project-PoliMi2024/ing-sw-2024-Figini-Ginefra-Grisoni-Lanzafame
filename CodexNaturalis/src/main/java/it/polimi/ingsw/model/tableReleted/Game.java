@@ -7,6 +7,7 @@ import it.polimi.ingsw.model.cardReleted.utilityEnums.DrawableCard;
 import it.polimi.ingsw.model.playerReleted.Codex;
 import it.polimi.ingsw.model.playerReleted.PawnColors;
 import it.polimi.ingsw.model.playerReleted.Player;
+import it.polimi.ingsw.model.playerReleted.PlayerState;
 import it.polimi.ingsw.model.utilities.Pair;
 
 import java.io.Serializable;
@@ -31,7 +32,7 @@ public class Game implements Serializable {
     private final List<ObjectiveCard> commonObjective;
 
     private GameState gameState = GameState.CHOOSE_START_CARD;
-    private Integer lastTurnsCounter = null;
+    private Integer endingTurnsCounter = null;
     /**
      * Constructs a new Game instance with a specified maximum number of players.
      */
@@ -205,16 +206,33 @@ public class Game implements Serializable {
         CardInHand cardReplacement;
         if(deckType == DrawableCard.GOLDCARD){
             synchronized (goldCardDeck) {
-                drawnCard = goldCardDeck.drawACard(cardID);
+                drawnCard = drawACard(goldCardDeck, cardID);
                 cardReplacement = goldCardDeck.peekCardInDecks(cardID);
             }
         }else {
             synchronized (resourceCardDeck) {
-                drawnCard = resourceCardDeck.drawACard(cardID);
+                drawnCard = drawACard(resourceCardDeck, cardID);
                 cardReplacement = resourceCardDeck.peekCardInDecks(cardID);
             }
         }
         return new Pair<>(drawnCard, cardReplacement);
+    }
+
+    /**
+     * @param cardID the position from where draw the card (buffer/deck)
+     * @return the card drawn
+     */
+    public <T> T drawACard(Deck<T> deck, int cardID) {
+        T drawCard;
+        if (cardID == Configs.actualDeckPos) {
+            drawCard = deck.drawFromDeck();
+        } else {
+            if(cardID < deck.getBuffer().stream().toList().size())
+                drawCard = deck.drawFromBuffer(cardID);
+            else
+                drawCard = null;
+        }
+        return drawCard;
     }
 
     /**
@@ -223,16 +241,6 @@ public class Game implements Serializable {
      */
     public boolean areDeckEmpty(){
         return goldCardDeck.isEmpty() && resourceCardDeck.isEmpty();
-    }
-
-    public boolean othersHadAllChooseSecretObjective(String nicknamePerspective) {
-        boolean check = true;
-        for (Player player : gameParty.getPlayersList()) {
-            if (!player.getNickname().equals(nicknamePerspective) && !player.hasChosenObjective()) {
-                check = false;
-            }
-        }
-        return check;
     }
 
     @Override
@@ -251,24 +259,24 @@ public class Game implements Serializable {
         return obj instanceof Game && ((Game) obj).name.equals(name);
     }
 
-    public void startLastTurnsCounter() {
-        lastTurnsCounter = 2;
+    public void startEndingTurnsCounter() {
+        endingTurnsCounter = Configs.numberOfEndingTurns;
     }
 
-    public void decrementLastTurnsCounter() {
-        if (lastTurnsCounter > 0) {
-            lastTurnsCounter -= 1;
+    public void decrementEndingTurnsCounter() {
+        if (endingTurnsCounter > 0) {
+            endingTurnsCounter -= 1;
         } else
             throw new IllegalStateException("game.decrementLastTurnsCounter: the counter cannot be decremented under 0");
     }
 
-    public boolean duringLastTurns() {
-        return lastTurnsCounter != null;
+    public boolean duringEndingTurns() {
+        return endingTurnsCounter != null;
     }
 
     public boolean noMoreTurns() {
-        if (lastTurnsCounter != null)
-            return lastTurnsCounter == 0;
+        if (endingTurnsCounter != null)
+            return endingTurnsCounter == 0;
         return false;
     }
 
@@ -286,10 +294,10 @@ public class Game implements Serializable {
     }
 
     private void setupStartCard(){
-        gameParty.getPlayersList().forEach(user-> {
-            if (user.getUserHand().getStartCard() == null && !user.hasPlacedStartCard()) {
+        gameParty.getPlayersList().forEach(player-> {
+            if (player.getUserHand().getStartCard() == null && player.getState().equals(PlayerState.CHOOSE_START_CARD)) {
                 StartCard startCard = drawStartCard();
-                user.getUserHand().setStartCard(startCard);
+                player.getUserHand().setStartCard(startCard);
             }
         });
     }

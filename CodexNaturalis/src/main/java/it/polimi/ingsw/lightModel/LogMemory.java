@@ -1,7 +1,7 @@
 package it.polimi.ingsw.lightModel;
 
-import it.polimi.ingsw.designPatterns.Observed;
-import it.polimi.ingsw.designPatterns.Observer;
+import it.polimi.ingsw.utils.Observed;
+import it.polimi.ingsw.utils.Observer;
 
 import java.util.LinkedList;
 import java.util.List;

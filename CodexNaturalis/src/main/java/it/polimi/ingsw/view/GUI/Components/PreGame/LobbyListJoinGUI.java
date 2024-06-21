@@ -1,11 +1,10 @@
 package it.polimi.ingsw.view.GUI.Components.PreGame;
 
-import it.polimi.ingsw.designPatterns.Observer;
+import it.polimi.ingsw.utils.Observer;
 import it.polimi.ingsw.lightModel.lightTableRelated.LightLobby;
 import it.polimi.ingsw.view.GUI.GUI;
 import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
-import javafx.fxml.Initializable;
 import javafx.geometry.Pos;
 import javafx.scene.Node;
 import javafx.scene.control.Button;
@@ -13,14 +12,7 @@ import javafx.scene.control.Label;
 import javafx.scene.control.ListCell;
 import javafx.scene.control.ListView;
 import javafx.scene.layout.AnchorPane;
-import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
-import javafx.scene.text.Text;
-
-import java.net.URL;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.ResourceBundle;
 
 public class LobbyListJoinGUI implements Observer {
     private final ListView<LightLobby> lobbyListDisplay = new ListView<>();

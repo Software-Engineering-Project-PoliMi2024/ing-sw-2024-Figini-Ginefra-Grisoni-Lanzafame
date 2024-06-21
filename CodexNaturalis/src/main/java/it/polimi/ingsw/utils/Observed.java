@@ -1,4 +1,4 @@
-package it.polimi.ingsw.designPatterns;
+package it.polimi.ingsw.utils;
 
 public interface Observed {
     void attach(Observer observer);

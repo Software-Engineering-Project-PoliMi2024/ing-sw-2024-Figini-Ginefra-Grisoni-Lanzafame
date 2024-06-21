@@ -1,7 +1,8 @@
-package it.polimi.ingsw.lightModel;
+package it.polimi.ingsw.lightModel.diffs;
 
 
 import it.polimi.ingsw.Configs;
+import it.polimi.ingsw.lightModel.Lightifier;
 import it.polimi.ingsw.lightModel.diffs.game.*;
 import it.polimi.ingsw.lightModel.diffs.game.codexDiffs.CodexDiffPlacement;
 import it.polimi.ingsw.lightModel.diffs.game.deckDiffs.DeckDiff;

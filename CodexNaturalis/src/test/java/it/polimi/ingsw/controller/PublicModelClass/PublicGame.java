@@ -47,7 +47,7 @@ public record PublicGame(Game game) {
 
     public Integer getLastTurnCounter(){
         try{
-            Field lastTurnCounterField = game.getClass().getDeclaredField("lastTurnsCounter");
+            Field lastTurnCounterField = game.getClass().getDeclaredField("endingTurnsCounter");
             lastTurnCounterField.setAccessible(true);
             return  (int) lastTurnCounterField.get(game);
         }catch (Exception e){

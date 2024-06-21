@@ -28,10 +28,11 @@ import java.util.concurrent.*;
 
 public class VirtualControllerRMI implements VirtualController {
     private final ThreadPoolExecutor controllerExecutor = new ThreadPoolExecutor(1, 4, 10, TimeUnit.MILLISECONDS, new LinkedBlockingQueue<>());
-    private ScheduledExecutorService pingPongExecutor = Executors.newSingleThreadScheduledExecutor();
+    private ScheduledExecutorService pingPongExecutor = Executors.newScheduledThreadPool(2);
     private ViewInterface view;
     private PingPongInterface pingPongStub;
     private ControllerInterface controllerStub;
+    private Future<?> pong;
 
     public VirtualControllerRMI() {
         try (Socket socket = new Socket()) {
@@ -218,18 +219,28 @@ public class VirtualControllerRMI implements VirtualController {
     }
 
     public void pingPong() {
-        Future<?> pong = pingPongExecutor.scheduleAtFixedRate(() -> {
+        pong = pingPongExecutor.scheduleAtFixedRate(() -> {
             try {
-                pingPongStub.checkEmpty();
+                Future<?> ping = pingPongExecutor.submit(() -> {
+                    try {
+                        pingPongStub.checkEmpty();
+                    } catch (Exception e) {
+                        throw new RuntimeException("VirtualViewRMI.pinPong: " + "\n  message: " + e.getMessage() + "\n  cause:\n" + e.getCause());
+                    }
+                });
+                ping.get(Configs.secondsTimeOut, TimeUnit.SECONDS);
+            }catch (InterruptedException ignored){
             } catch (Exception e) {
-                pingPongExecutor.shutdownNow();
+                e.printStackTrace();
                 this.disconnect();
             }
-        }, Configs.pingPongFrequency, Configs.pingPongFrequency, TimeUnit.SECONDS);
+        }, Configs.pingPongFrequency, 1, TimeUnit.SECONDS);
     }
 
 
     public synchronized void disconnect(){
+        pong.cancel(true);
+        pingPongExecutor.shutdownNow();
         pingPongExecutor = Executors.newSingleThreadScheduledExecutor();
         try {
             UnicastRemoteObject.unexportObject(this, true);

@@ -1,6 +1,6 @@
 package it.polimi.ingsw.view.GUI.Components.PawnRelated;
 
-import it.polimi.ingsw.designPatterns.Observer;
+import it.polimi.ingsw.utils.Observer;
 import it.polimi.ingsw.model.playerReleted.PawnColors;
 import it.polimi.ingsw.view.GUI.AssetsGUI;
 import it.polimi.ingsw.view.GUI.Components.Utils.PopUp;
@@ -15,7 +15,6 @@ import javafx.scene.text.Text;
 import javafx.scene.text.TextAlignment;
 
 import java.util.*;
-import java.util.stream.Collectors;
 
 public class PawnChoice implements Observer {
     private final VBox container = new VBox();
@@ -61,6 +60,13 @@ public class PawnChoice implements Observer {
                 Platform.runLater(popUp::close);
             }
         });
+
+        if(GUI.getStateProperty().get() == StateGUI.CHOOSE_PAWN){
+            popUp.open();
+        }
+        else{
+            popUp.close();
+        }
 
         // Automatically assign black pawn to the first player
         if (GUI.getLightGame().getLightGameParty().getFirstPlayerName().equals(GUI.getLightGame().getLightGameParty().getYourName())) {

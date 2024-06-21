@@ -4,7 +4,7 @@ import it.polimi.ingsw.Configs;
 import it.polimi.ingsw.controller.Interfaces.FinishedGameDeleter;
 import it.polimi.ingsw.controller.Interfaces.GameControllerInterface;
 import it.polimi.ingsw.controller.persistence.PersistenceFactory;
-import it.polimi.ingsw.lightModel.DiffGenerator;
+import it.polimi.ingsw.lightModel.diffs.DiffGenerator;
 import it.polimi.ingsw.lightModel.Heavifier;
 import it.polimi.ingsw.lightModel.Lightifier;
 import it.polimi.ingsw.lightModel.diffs.game.GameDiffPublicObj;
@@ -41,6 +41,7 @@ import it.polimi.ingsw.view.ViewInterface;
 import it.polimi.ingsw.view.ViewState;
 
 import java.util.*;
+import java.util.concurrent.*;
 import java.util.function.Predicate;
 
 public class GameController implements GameControllerInterface {
@@ -49,7 +50,8 @@ public class GameController implements GameControllerInterface {
     private final Game game;
     private final Map<String, ViewInterface> playerViewMap = new HashMap<>();
 
-    private transient Timer countdownTimer = null;
+    private transient ScheduledFuture<?> lastInGameFuture = null;
+    private final transient ScheduledExecutorService countdownExecutor = Executors.newSingleThreadScheduledExecutor();
 
     public GameController(Game game, CardTable cardTable, FinishedGameDeleter finishedGameDeleter) {
         this.game = game;
@@ -119,6 +121,7 @@ public class GameController implements GameControllerInterface {
         Player player = game.getPlayerFromNick(nickname);
         ViewInterface view = playerViewMap.get(nickname);
         if (game.getPawnChoices().contains(color)) {
+            game.getPlayerFromNick(nickname).setState(PlayerState.WAIT);
             player.setPawnColor(color);
             game.removeChoice(color);
 
@@ -139,7 +142,7 @@ public class GameController implements GameControllerInterface {
 
             if (otherHaveAllChoosePawn(nickname)) {
                 game.getPawnChoices().clear();
-                this.removeInactivePlayers(Player::hasChosenPawnColor);
+                this.removeInactivePlayers(p->p.getState().equals(PlayerState.WAIT));
                 this.moveToSecretObjectivePhase();
                 this.save();
             } else {
@@ -158,12 +161,13 @@ public class GameController implements GameControllerInterface {
     public synchronized void chooseSecretObjective(String nickname, LightCard lightObjChoice) {
         ObjectiveCard objChoice = Heavifier.heavifyObjectCard(lightObjChoice, cardTable);
         Player player = game.getPlayerFromNick(nickname);
+        game.getPlayerFromNick(nickname).setState(PlayerState.WAIT);
 
         player.setSecretObjective(objChoice);
         this.notifySecretObjectiveChoice(nickname, lightObjChoice);
 
         if (otherHaveAllChosenObjective(nickname)) {
-            this.removeInactivePlayers(Player::hasChosenObjective);
+            this.removeInactivePlayers(p->p.getState().equals(PlayerState.WAIT));
             game.setState(GameState.ACTUAL_GAME);
             this.notifyActualGameSetup();
             for (String players : playerViewMap.keySet())
@@ -204,11 +208,12 @@ public class GameController implements GameControllerInterface {
     private synchronized void placeStartCard(String nickname, Placement startCardPlacement) {
         Player player = game.getPlayerFromNick(nickname);
         player.placeStartCard(startCardPlacement);
+        game.getPlayerFromNick(nickname).setState(PlayerState.WAIT);
 
         this.notifyStartCardFaceChoice(nickname, Lightifier.lightify(startCardPlacement));
 
         if (otherHaveAllSelectedStartCard(nickname)) {
-            this.removeInactivePlayers(Player::hasPlacedStartCard);
+            this.removeInactivePlayers(p->p.getState().equals(PlayerState.WAIT));
             this.moveToChoosePawn();
             this.save();
         } else {
@@ -241,14 +246,19 @@ public class GameController implements GameControllerInterface {
 
             //notify everyone
             this.notifyPlacement(nickname, placement, player.getUserCodex(), frontIdToPlayability);
-            player.setState(PlayerState.DRAW);
-            try {
-                playerViewMap.get(nickname).transitionTo(ViewState.DRAW_CARD);
-            } catch (Exception ignored) {
+
+            if (!game.areDeckEmpty()) {
+                player.setState(PlayerState.DRAW);
+                try {
+                    playerViewMap.get(nickname).transitionTo(ViewState.DRAW_CARD);
+                } catch (Exception ignored) {
+                }
+            }else{
+                moveOnWithTurnsAndCheckForWinners(nickname, getLastActivePlayer());
             }
         }
     }
-
+    //TODO check if the card in position is not null
     @Override
     public synchronized void draw(String nickname, DrawableCard deckType, int cardID) {
         Player player = game.getPlayerFromNick(nickname);
@@ -263,26 +273,109 @@ public class GameController implements GameControllerInterface {
             this.notifyDraw(nickname, deckType, cardID, Lightifier.lightifyToCard(drawnCard),
                     drawnCard.canBePlaced(player.getUserCodex()));
         }
+        moveOnWithTurnsAndCheckForWinners(nickname, getLastActivePlayer());
+    }
 
-        if (game.checkForChickenDinner() && !game.duringLastTurns()) {
+    public synchronized void leave(String nickname) {
+        ViewInterface view = playerViewMap.get(nickname);
+        String lastActivePlayerPreDisconnect = this.getLastActivePlayer();
+        playerViewMap.remove(nickname);
+        Player leaver = game.getPlayerFromNick(nickname);
+
+        if (playerViewMap.isEmpty()) {
+            this.resetLastPlayerTimer();
+        }else {
+
+            this.notifyGameLeft(nickname);
+
+            if (game.getState().equals(GameState.CHOOSE_START_CARD)) {
+                if (otherHaveAllSelectedStartCard(nickname)) {
+                    this.removeInactivePlayers(p->p.getState().equals(PlayerState.WAIT));
+                    this.moveToChoosePawn();
+                }
+            } else if (game.getState().equals(GameState.CHOOSE_PAWN)) {
+                if (otherHaveAllChoosePawn(nickname)) {
+                    game.getPawnChoices().clear();
+                    this.removeInactivePlayers(p->p.getState().equals(PlayerState.WAIT));
+                    this.moveToSecretObjectivePhase();
+                }
+            } else if (game.getState().equals(GameState.CHOOSE_SECRET_OBJECTIVE)) {
+                if (otherHaveAllChosenObjective(nickname)) {
+                    game.setState(GameState.ACTUAL_GAME);
+                    this.removeInactivePlayers(p->p.getState().equals(PlayerState.WAIT));
+
+                    String currentPlayer = game.getCurrentPlayer().getNickname();
+                    if (currentPlayer.equals(nickname)) {
+                        game.setCurrentPlayerIndex(getNextActivePlayerIndex());
+                    }
+                    for (String players : playerViewMap.keySet())
+                        this.takeTurn(players);
+                }
+            } else if (!game.getState().equals(GameState.END_GAME)) { //if the game is in the actual game phase
+                if (game.getCurrentPlayer().getNickname().equals(nickname)) { //if current player leaves
+                    //check if the user has disconnected after placing
+                    if (leaver.getHandSize() < 3 && !game.areDeckEmpty()) {
+                        this.drawRandomCard(nickname);
+                    }
+
+                    this.moveOnWithTurnsAndCheckForWinners(nickname, lastActivePlayerPreDisconnect);
+                }
+            }
+        }
+
+        if(game.getState().equals(GameState.END_GAME)){
+            finishedGameDeleter.deleteGame(game.getName());
+        }else {
+            this.save();
+            if (playerViewMap.size() == 1) {
+                this.notifyLastInGameTimer();
+                this.startLastPlayerTimer();
+            }
+        }
+
+        try {
+            view.updateGame(new GadgetGame());
+            view.transitionTo(ViewState.LOGIN_FORM);
+        } catch (Exception ignored) {}
+    }
+
+    private synchronized void drawRandomCard(String nickname){
+        Player player = game.getPlayerFromNick(nickname);
+        DrawableCard deckType;
+        int pos;
+        Pair<CardInHand, CardInHand> cardDrawnAndReplacement;
+        do {
+            deckType = randomDeckType();
+            pos = randomDeckPosition();
+            cardDrawnAndReplacement = game.drawAndGetReplacement(deckType, pos);
+        } while (cardDrawnAndReplacement.first() == null);
+
+        player.getUserHand().addCard(cardDrawnAndReplacement.first());
+
+        this.notifyDraw(nickname, deckType, pos, Lightifier.lightifyToCard(cardDrawnAndReplacement.first()),
+                cardDrawnAndReplacement.first().canBePlaced(player.getUserCodex()));
+    }
+
+    private synchronized void moveOnWithTurnsAndCheckForWinners(String nickname, String lastActivePlayer) {
+        if (game.checkForChickenDinner() && !game.duringEndingTurns()) {
             game.setState(GameState.LAST_TURNS);
-            game.startLastTurnsCounter();
+            game.startEndingTurnsCounter();
             this.notifyLastTurn();
         }
 
-        if (game.duringLastTurns() && Objects.equals(nickname, getLastActivePlayer())) {
-            game.decrementLastTurnsCounter();
+        if (game.duringEndingTurns() && Objects.equals(nickname, lastActivePlayer)) {
+            game.decrementEndingTurnsCounter();
         }
-        if (Objects.equals(this.getLastActivePlayer(), nickname) && game.noMoreTurns()) {
+        if (Objects.equals(lastActivePlayer, nickname) && game.noMoreTurns()) {
             //model update with points
             moveToEndGame();
             declareWinners();
-        } else {
+        } else if(!this.playerViewMap.isEmpty()){
             //turn
             int nextPlayerIndex = this.getNextActivePlayerIndex();
             String nextPlayer = game.getPlayersList().get(nextPlayerIndex).getNickname();
             if (!nextPlayer.equals(nickname)) {
-                game.setCurrentPlayerIndex(this.getNextActivePlayerIndex());
+                game.setCurrentPlayerIndex(nextPlayerIndex);
                 this.notifyTurnChange(nextPlayer);
                 this.takeTurn(nickname);
                 this.takeTurn(nextPlayer);
@@ -293,100 +386,11 @@ public class GameController implements GameControllerInterface {
         }
     }
 
-    public synchronized void leave(String nickname) {
-        ViewInterface view = playerViewMap.get(nickname);
-        String lastActivePlayerPreDisconnect = this.getLastActivePlayer();
-        playerViewMap.remove(nickname);
-        Player leaver = game.getPlayerFromNick(nickname);
-
-        this.notifyGameLeft(nickname);
-
-        if (game.getState().equals(GameState.CHOOSE_START_CARD)) {
-            if (otherHaveAllSelectedStartCard(nickname)) {
-                this.removeInactivePlayers(Player::hasPlacedStartCard);
-                this.moveToChoosePawn();
-            }
-        } else if (game.getState().equals(GameState.CHOOSE_PAWN)) {
-            if (otherHaveAllChoosePawn(nickname)) {
-                game.getPawnChoices().clear();
-                this.removeInactivePlayers(Player::hasChosenPawnColor);
-                this.moveToSecretObjectivePhase();
-            }
-        } else if (game.getState().equals(GameState.CHOOSE_SECRET_OBJECTIVE)) {
-            if (otherHaveAllChosenObjective(nickname)) {
-                game.setState(GameState.ACTUAL_GAME);
-                this.removeInactivePlayers(Player::hasChosenObjective);
-
-                String currentPlayer = game.getCurrentPlayer().getNickname();
-                if (currentPlayer.equals(nickname)) {
-                    game.setCurrentPlayerIndex(getNextActivePlayerIndex());
-                }
-                for (String players : playerViewMap.keySet())
-                    this.takeTurn(players);
-            }
-        } else if (!game.getState().equals(GameState.END_GAME)) { //if the game is in the actual game phase
-            if (game.getCurrentPlayer().getNickname().equals(nickname)) { //if current player leaves
-                //check if the user has disconnected after placing
-                if (leaver.getHandSize() < 3 && !game.areDeckEmpty()) {
-                    DrawableCard deckType;
-                    int pos;
-                    CardInHand cardDrawn;
-                    do {
-                        deckType = randomDeckType();
-                        pos = randomDeckPosition();
-                        Pair<CardInHand, CardInHand> cardDrawnAndReplacement = game.drawAndGetReplacement(deckType, pos);
-                        cardDrawn = cardDrawnAndReplacement.first();
-                    } while (cardDrawn == null);
-
-                    //the draw method manage turn and winners
-                    this.draw(nickname, this.randomDeckType(), this.randomDeckPosition());
-                } else {
-                    if (game.duringLastTurns() && Objects.equals(nickname, lastActivePlayerPreDisconnect)) {
-                        game.decrementLastTurnsCounter();
-                    }
-                    if (Objects.equals(lastActivePlayerPreDisconnect, nickname) && game.noMoreTurns()) {
-                        //model update with points
-                        moveToEndGame();
-                        declareWinners();
-                    }
-                    //move on with the turns for the other players
-                    if (!this.playerViewMap.keySet().isEmpty()) {
-                        int nextPlayerIndex = this.getNextActivePlayerIndex();
-                        String nextPlayerNick = game.getPlayersList().get(nextPlayerIndex).getNickname();
-                        game.setCurrentPlayerIndex(nextPlayerIndex);
-                        this.notifyTurnChange(nextPlayerNick);
-                        this.takeTurn(nextPlayerNick);
-                    } else {
-                        this.resetLastPlayerTimer();
-                    }
-                }
-            }
-        }
-        if(game.getState().equals(GameState.END_GAME)){
-            finishedGameDeleter.deleteGame(game.getName());
-        }else {
-            this.save();
-            if (playerViewMap.size() == 1) {
-                this.notifyLastInGameTimer();
-                this.startLastPlayerTimer();
-            }else if (playerViewMap.isEmpty()) {
-                this.resetLastPlayerTimer();
-            }
-        }
-
-        try {
-            view.updateGame(new GadgetGame());
-            view.transitionTo(ViewState.LOGIN_FORM);
-        } catch (Exception ignored) {}
-    }
-
-
-
     private synchronized void startCardStateTransition(String nickname) {
         ViewInterface view = playerViewMap.get(nickname);
+        Player player = game.getPlayerFromNick(nickname);
         try {
-            if (!game.getPlayerFromNick(nickname).hasPlacedStartCard()) {
-                game.getPlayerFromNick(nickname).setState(PlayerState.CHOOSE_START_CARD);
+            if (player.getState().equals(PlayerState.CHOOSE_START_CARD)) {
                 view.transitionTo(ViewState.CHOOSE_START_CARD);
             }else {
                 moveToWait(nickname);
@@ -407,8 +411,7 @@ public class GameController implements GameControllerInterface {
     private synchronized void objectiveChoiceStateTransition(String nickname) {
         Player player = game.getPlayerFromNick(nickname);
         try {
-            if (!player.hasChosenObjective()) {
-                game.getPlayerFromNick(nickname).setState(PlayerState.CHOOSE_SECRET_OBJECTIVE);
+            if (player.getState().equals(PlayerState.CHOOSE_SECRET_OBJECTIVE)) {
                 playerViewMap.get(nickname).transitionTo(ViewState.SELECT_OBJECTIVE);
             } else {
                 moveToWait(nickname);
@@ -420,8 +423,7 @@ public class GameController implements GameControllerInterface {
     private synchronized void pawnChoiceStateTransition(String nickname) {
         Player player = game.getPlayerFromNick(nickname);
         try {
-            if (!player.hasChosenPawnColor()) {
-                game.getPlayerFromNick(nickname).setState(PlayerState.CHOOSE_PAWN);
+            if (player.getState().equals(PlayerState.CHOOSE_PAWN)) {
                 playerViewMap.get(nickname).transitionTo(ViewState.CHOOSE_PAWN);
             } else {
                 moveToWait(nickname);
@@ -473,22 +475,23 @@ public class GameController implements GameControllerInterface {
     }
 
     private synchronized void resetLastPlayerTimer(){
-        if(countdownTimer != null){
-            countdownTimer.cancel();
-            countdownTimer = null;
+        if(lastInGameFuture != null){
+            lastInGameFuture.cancel(true);
             System.out.println(game.getName() + " stopped last player timer");
         }
     }
 
     private synchronized void startLastPlayerTimer() {
-        countdownTimer = new Timer();
         String lastPlayerInGame = playerViewMap.keySet().stream().findFirst().orElse("");
-        countdownTimer.schedule(new TimerTask() {
-            @Override
-            public void run() {
+        Runnable declareLastPlayerWinner = () -> {
+            if (!Thread.currentThread().isInterrupted()) {
                 winsTheLastPlayerInGame(lastPlayerInGame);
+                countdownExecutor.shutdownNow();
+                lastInGameFuture = null;
             }
-        }, Configs.lastInGameTimerSeconds * 1000L);
+        };
+
+        lastInGameFuture = countdownExecutor.schedule(declareLastPlayerWinner, Configs.lastInGameTimerSeconds, TimeUnit.SECONDS);
         System.out.println(game.getName() + " started last player timer");
     }
 
@@ -637,7 +640,7 @@ public class GameController implements GameControllerInterface {
         boolean allChose = true;
         List<String> activePlayer = playerViewMap.keySet().stream().toList();
         for (String nick : activePlayer) {
-            if (!nick.equals(nicknamePerspective) && !game.getPlayerFromNick(nick).hasChosenPawnColor()) {
+            if (!nick.equals(nicknamePerspective) && game.getPlayerFromNick(nick).getState().equals(PlayerState.CHOOSE_PAWN)) {
                 allChose = false;
             }
         }
@@ -883,7 +886,7 @@ public class GameController implements GameControllerInterface {
         boolean allPlaced = true;
         List<String> activePlayer = playerViewMap.keySet().stream().toList();
         for (String nick : activePlayer) {
-            if (!nick.equals(nicknamePerspective) && !game.getPlayerFromNick(nick).hasPlacedStartCard()) {
+            if (!nick.equals(nicknamePerspective) && game.getPlayerFromNick(nick).getState().equals(PlayerState.CHOOSE_START_CARD)) {
                 allPlaced = false;
             }
         }
@@ -905,7 +908,7 @@ public class GameController implements GameControllerInterface {
         boolean allChosen = true;
         for (String nickname : playerViewMap.keySet()) {
             Player player = game.getPlayerFromNick(nickname);
-            if (!player.getNickname().equals(nicknamePerspective) && !player.hasChosenObjective()) {
+            if (!player.getNickname().equals(nicknamePerspective) && player.getState().equals(PlayerState.CHOOSE_SECRET_OBJECTIVE)) {
                 allChosen = false;
             }
         }

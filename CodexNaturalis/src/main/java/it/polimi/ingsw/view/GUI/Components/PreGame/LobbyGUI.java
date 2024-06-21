@@ -1,6 +1,6 @@
 package it.polimi.ingsw.view.GUI.Components.PreGame;
 
-import it.polimi.ingsw.designPatterns.Observer;
+import it.polimi.ingsw.utils.Observer;
 import it.polimi.ingsw.view.GUI.GUI;
 import javafx.geometry.Pos;
 import javafx.scene.Node;

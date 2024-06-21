@@ -1,5 +1,6 @@
 package it.polimi.ingsw;
 
+import it.polimi.ingsw.utils.OSRelated;
 import it.polimi.ingsw.view.GUI.GUI;
 import it.polimi.ingsw.view.TUI.TUI;
 import java.util.Scanner;

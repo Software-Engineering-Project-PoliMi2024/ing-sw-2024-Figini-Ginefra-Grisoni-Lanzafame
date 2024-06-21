@@ -34,10 +34,6 @@ public class Player implements Serializable {
         return this.pawnColor;
     }
 
-    public boolean hasChosenPawnColor(){
-        return this.pawnColor != null;
-    }
-
     /** @return the user nickname*/
     public String getNickname(){
         return this.nickname;
@@ -61,27 +57,11 @@ public class Player implements Serializable {
     }
 
     /**
-     * This method checks if the user has already placed the start card
-     * @return true if the user has already placed the start card, false otherwise
-     */
-    public synchronized boolean hasPlacedStartCard(){
-        return (userCodex.getPlacementAt(new Position(0,0)) != null);
-    }
-
-    /**
      * This method returns the number of cards in the user's hand
      * @return the number of cards in the user's hand
      */
     public synchronized int getHandSize(){
         return userHand.getHandSize();
-    }
-
-    /**
-     * This method checks if the user has already chosen the objective
-     * @return true if the user has already chosen the objective, false otherwise
-     */
-    public synchronized boolean hasChosenObjective(){
-        return userHand.getSecretObjective() != null;
     }
 
     public synchronized void placeStartCard(Placement placement){

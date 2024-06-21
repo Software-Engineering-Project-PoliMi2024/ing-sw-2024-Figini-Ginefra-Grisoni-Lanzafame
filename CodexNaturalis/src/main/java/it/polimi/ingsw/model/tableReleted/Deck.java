@@ -81,6 +81,8 @@ public class Deck<Element> implements Serializable {
             Element newElement = this.drawFromDeck();
             if(newElement != null){
                 buffer.set(indexElement, newElement);
+            }else{
+                buffer.remove(indexElement);
             }
             return element;
         }
@@ -105,7 +107,10 @@ public class Deck<Element> implements Serializable {
      * @return the bufferID card from the buffer but do not remove it
      */
     public Element showCardFromBuffer(int bufferId){
-        return buffer.stream().toList().get(bufferId);
+        if(bufferId < buffer.stream().toList().size())
+            return buffer.stream().toList().get(bufferId);
+        else
+            return null;
     }
 
     public boolean isEmpty(){
@@ -119,19 +124,5 @@ public class Deck<Element> implements Serializable {
             card = showCardFromBuffer(cardID);
         }
         return card;
-    }
-
-    /**
-     * @param cardID the position from where draw the card (buffer/deck)
-     * @return the card drawn
-     */
-    public Element drawACard(int cardID) {
-        Element drawCard;
-        if (cardID == Configs.actualDeckPos) {
-            drawCard = drawFromDeck();
-        } else {
-            drawCard = drawFromBuffer(cardID);
-        }
-        return drawCard;
     }
 }

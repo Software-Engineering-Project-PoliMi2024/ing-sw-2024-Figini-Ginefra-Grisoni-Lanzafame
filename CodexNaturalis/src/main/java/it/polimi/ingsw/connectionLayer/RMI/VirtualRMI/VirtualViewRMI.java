@@ -21,27 +21,14 @@ public class VirtualViewRMI implements VirtualView {
     private PingPongInterface pingPongStub;
     private ControllerInterface controller;
     private final ThreadPoolExecutor viewExecutor = new ThreadPoolExecutor(2, 4, 10, TimeUnit.MILLISECONDS, new LinkedBlockingQueue<>());
-    private final ScheduledExecutorService pingPongExecutor = Executors.newSingleThreadScheduledExecutor();
+    private final ScheduledExecutorService pingPongExecutor = Executors.newScheduledThreadPool(2);
     private boolean alreadyDisconnected = false;
+    private Future<?> pong;
     /**
      * @param viewStub the stub of the view on the client
      */
     public VirtualViewRMI(ViewInterface viewStub) {
         this.viewStub = viewStub;
-    }
-
-    public void pingPong(){
-        Future<?> pong = pingPongExecutor.scheduleAtFixedRate(() -> {
-            try {
-                //System.out.println("pingPong");
-                pingPongStub.checkEmpty();
-            } catch (Exception e) {
-                pingPongExecutor.shutdownNow();
-                this.disconnect();
-                System.out.println("pingPong " + e.getMessage());
-            }
-        }, Configs.pingPongFrequency, Configs.pingPongFrequency, TimeUnit.SECONDS);
-
     }
 
     @Override
@@ -240,6 +227,8 @@ public class VirtualViewRMI implements VirtualView {
             if(!alreadyDisconnected){
                 alreadyDisconnected = true;
                 controller.disconnect();
+                pong.cancel(true);
+                pingPongExecutor.shutdownNow();
             }
             UnicastRemoteObject.unexportObject(controller, true);
         }catch (InterruptedException ignored){
@@ -251,6 +240,26 @@ public class VirtualViewRMI implements VirtualView {
     public void setController(ControllerInterface controller) {
         alreadyDisconnected = false;
         this.controller = controller;
+    }
+
+    @Override
+    public void pingPong() throws RemoteException {
+        pong = pingPongExecutor.scheduleAtFixedRate(() -> {
+            try {
+                Future<?> ping = pingPongExecutor.submit(() -> {
+                    try {
+                        pingPongStub.checkEmpty();
+                    } catch (Exception e) {
+                        throw new RuntimeException("VirtualViewRMI.pinPong: " + "\n  message: " + e.getMessage() + "\n  cause:\n" + e.getCause());
+                    }
+                });
+                ping.get(Configs.secondsTimeOut, TimeUnit.SECONDS);
+            }catch (InterruptedException ignored){
+            } catch (Exception e) {
+                e.printStackTrace();
+                this.disconnect();
+            }
+        }, Configs.pingPongFrequency, 1, TimeUnit.SECONDS);
     }
 
 }

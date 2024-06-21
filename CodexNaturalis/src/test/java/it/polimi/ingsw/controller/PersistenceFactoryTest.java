@@ -1,11 +1,10 @@
-package it.polimi.ingsw.controller.persistence;
+package it.polimi.ingsw.controller;
 
 import it.polimi.ingsw.Configs;
-import it.polimi.ingsw.OSRelated;
-import it.polimi.ingsw.controller.GameController;
-import it.polimi.ingsw.controller.LobbyGameListsController;
+import it.polimi.ingsw.utils.OSRelated;
 import it.polimi.ingsw.controller.PublicController.PublicGameController;
 import it.polimi.ingsw.controller.PublicController.PublicLobbyGameListController;
+import it.polimi.ingsw.controller.persistence.PersistenceFactory;
 import it.polimi.ingsw.model.cardReleted.cards.*;
 import it.polimi.ingsw.model.tableReleted.Deck;
 import it.polimi.ingsw.model.tableReleted.Game;
@@ -23,10 +22,20 @@ import java.util.List;
 import java.util.Objects;
 
 public class PersistenceFactoryTest {
+    private final CardTable cardTable = new CardTable(Configs.CardResourcesFolderPath, Configs.CardJSONFileName, OSRelated.cardFolderDataPath);
+
     @BeforeEach
     void setUp() { //emulate the serverStartUP
         OSRelated.checkOrCreateDataFolderServer();
-        PersistenceFactory.eraseAllSaves();
+    }
+
+    @BeforeEach
+    void delay(){
+        try{
+            Thread.sleep(1000);
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
     }
 
     @AfterEach
@@ -36,18 +45,23 @@ public class PersistenceFactoryTest {
 
     @Test
     void saveTest(){
-        CardTable cardTable = new CardTable(Configs.CardResourcesFolderPath, Configs.CardJSONFileName, OSRelated.cardFolderDataPath);
-        Deck<ObjectiveCard> objectiveCardDeck = new Deck<>(0,cardTable.getCardLookUpObjective().getQueue());
+        Game gameToSave = getGame(cardTable);
+        PersistenceFactory.save(gameToSave);
+
+        List<File> gameSaves = Arrays.asList(Objects.requireNonNull(new File(OSRelated.gameDataFolderPath).listFiles()));
+        System.out.println(gameSaves);
+        Assertions.assertEquals(1, gameSaves.stream().filter(file -> file.getName().contains("saveGameTest")).count());
+    }
+
+    private static Game getGame(CardTable cardTable) {
+        Deck<ObjectiveCard> objectiveCardDeck = new Deck<>(0, cardTable.getCardLookUpObjective().getQueue());
         Deck<ResourceCard> resourceCardDeck = new Deck<>(2, cardTable.getCardLookUpResourceCard().getQueue());
         Deck<GoldCard> goldCardDeck = new Deck<>(2, cardTable.getCardLookUpGoldCard().getQueue());
         Deck<StartCard> startingCardDeck = new Deck<>(0, cardTable.getCardLookUpStartCard().getQueue());
         Lobby lobby = new Lobby(3, "saveGameTest");
 
         Game gameToSave = new Game(lobby, objectiveCardDeck, resourceCardDeck, goldCardDeck, startingCardDeck);
-        PersistenceFactory.save(gameToSave);
-
-        List<File> gameSaves = Arrays.asList(Objects.requireNonNull(new File(OSRelated.gameDataFolderPath).listFiles()));
-        Assertions.assertEquals(1, gameSaves.stream().filter(file -> file.getName().contains("saveGameTest")).count());
+        return gameToSave;
     }
 
     @Test
@@ -124,9 +138,9 @@ public class PersistenceFactoryTest {
 
     private void createMockGameSaves(Game gameToSave, LocalDateTime fakeLocalTimeDate) throws IOException {
         DateTimeFormatter windowSucks = DateTimeFormatter.ofPattern("yyyy-MM-dd_HH-mm-ss");
-        String _bin = ".bin";
+        String _ser = ".ser";
         String dateGameNameSeparator = "--";
-        File expiredSave = new File(OSRelated.gameDataFolderPath + fakeLocalTimeDate.format(windowSucks) + dateGameNameSeparator + gameToSave.getName() + _bin);
+        File expiredSave = new File(OSRelated.gameDataFolderPath + fakeLocalTimeDate.format(windowSucks) + dateGameNameSeparator + gameToSave.getName() + _ser);
         ObjectOutputStream outStream = new ObjectOutputStream(new FileOutputStream(expiredSave));
         outStream.writeObject(gameToSave);
         outStream.close();

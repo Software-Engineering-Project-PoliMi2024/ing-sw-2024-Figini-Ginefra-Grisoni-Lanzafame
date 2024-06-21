@@ -1,11 +1,10 @@
 package it.polimi.ingsw.lightModel.lightTableRelated;
 
-import it.polimi.ingsw.designPatterns.Observed;
-import it.polimi.ingsw.designPatterns.Observer;
+import it.polimi.ingsw.utils.Observed;
+import it.polimi.ingsw.utils.Observer;
 import it.polimi.ingsw.lightModel.Differentiable;
 import it.polimi.ingsw.lightModel.lightPlayerRelated.LightBack;
 import it.polimi.ingsw.lightModel.lightPlayerRelated.LightCard;
-import it.polimi.ingsw.model.cardReleted.utilityEnums.Resource;
 
 import java.util.ArrayList;
 import java.util.List;
