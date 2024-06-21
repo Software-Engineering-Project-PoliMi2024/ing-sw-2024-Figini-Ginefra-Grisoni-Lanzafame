@@ -79,4 +79,9 @@ public class LogsOnClient {
     public static String SENT_PRIVATE_MESSAGE = "You sent a private message to: ";
     public static String RECEIVED_PUBLIC_MESSAGE = "A new message has been posted in the public chat";
     public static String SENT_PUBLIC_MESSAGE = "You posted a new message in the public chat";
+    public static String RECEIVER_NOT_FOUND = "The player %s was not found in this game";
+    public static String EMPTY_RECEIVER = "No receiver of the message can not be blank";
+    public static String NO_SELF_MESSAGE = "You can't message yourself";
+    public static String NO_EMPTY_MESSAGE = "You can't send an empty message";
+    public static String FERRARI = "Ferrari mentioned, WTF is a good race strategy!!";
 }

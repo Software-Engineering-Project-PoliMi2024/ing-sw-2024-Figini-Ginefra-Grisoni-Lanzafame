@@ -98,33 +98,10 @@ public class ChatRenderable extends Renderable {
                 break;
 
             case CommandPrompt.SEND_PRIVATE_MESSAGE:
-                String receiver = answer.getAnswer(0);
-                if(!lightGame.getCodexMap().containsKey(receiver)){
-                    try {
-                        view.logChat("The player " + receiver + " does not exist");
-                    } catch (Exception e) {
-                        throw new RuntimeException(e);
-                    }
-                }else if(receiver.equals(lightGame.getLightGameParty().getYourName())){
-                    //Dear Baolo, this is my real easter egg pls try not to remove it if u can. Thx XOXO
-                    if(answer.getAnswer(1).toLowerCase().contains("ferrari")){
-                        try{
-                            view.logChat("Ferrari mentioned, WTF is a good race strategy!!");
-                        }catch (Exception e){
-                            throw new RuntimeException(e);
-                        }
-                    }
-                    try{
-                        view.logChat("You can't message yourself");
-                    } catch (Exception e){
-                        throw new RuntimeException(e);
-                    }
-                }else{
-                    try {
-                        view.getController().sendChatMessage(new ChatMessage(lightGame.getLightGameParty().getYourName(), answer.getAnswer(1), receiver));
-                    } catch (Exception e) {
-                        throw new RuntimeException(e);
-                    }
+                try{
+                    view.getController().sendChatMessage(new ChatMessage(lightGame.getLightGameParty().getYourName(), answer.getAnswer(1), answer.getAnswer(0)));
+                }catch (Exception e) {
+                    throw new RuntimeException(e);
                 }
                 break;
         }

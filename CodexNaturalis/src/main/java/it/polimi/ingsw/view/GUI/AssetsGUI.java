@@ -48,7 +48,7 @@ public class AssetsGUI {
     }
 
     public static Image loadResourceCircle(Resource resource) {
-        return new Image(Objects.requireNonNull(GUI.class.getClassLoader().getResourceAsStream("GUI/images/ResourceCircles/" + resource + ".png")));
+        return new Image(Objects.requireNonNull(GUI.class.getClassLoader().getResourceAsStream("GUI/images/ResourceCircles/" + resource + ".png"), "Resource Circle " + resource + " is null"));
     }
 
     public static Image loadCharacter(Resource resource) {
