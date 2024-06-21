@@ -247,7 +247,6 @@ public class GameController implements GameControllerInterface {
             //notify everyone
             this.notifyPlacement(nickname, placement, player.getUserCodex(), frontIdToPlayability);
 
-            //TODO check if deck are finished or else move over
             if (!game.areDeckEmpty()) {
                 player.setState(PlayerState.DRAW);
                 try {
@@ -255,11 +254,11 @@ public class GameController implements GameControllerInterface {
                 } catch (Exception ignored) {
                 }
             }else{
-                moveOnWithTurnsFromPlace(nickname, getLastActivePlayer());
+                moveOnWithTurnsAndCheckForWinners(nickname, getLastActivePlayer());
             }
         }
     }
-
+    //TODO check if the card in position is not null
     @Override
     public synchronized void draw(String nickname, DrawableCard deckType, int cardID) {
         Player player = game.getPlayerFromNick(nickname);
@@ -274,34 +273,7 @@ public class GameController implements GameControllerInterface {
             this.notifyDraw(nickname, deckType, cardID, Lightifier.lightifyToCard(drawnCard),
                     drawnCard.canBePlaced(player.getUserCodex()));
         }
-
-        if (game.checkForChickenDinner() && !game.duringEndingTurns()) {
-            game.setState(GameState.LAST_TURNS);
-            game.startEndingTurnsCounter();
-            this.notifyLastTurn();
-        }
-
-        if (game.duringEndingTurns() && Objects.equals(nickname, getLastActivePlayer())) {
-            game.decrementEndingTurnsCounter();
-        }
-        if (Objects.equals(this.getLastActivePlayer(), nickname) && game.noMoreTurns()) {
-            //model update with points
-            moveToEndGame();
-            declareWinners();
-        } else {
-            //turn
-            int nextPlayerIndex = this.getNextActivePlayerIndex();
-            String nextPlayer = game.getPlayersList().get(nextPlayerIndex).getNickname();
-            if (!nextPlayer.equals(nickname)) {
-                game.setCurrentPlayerIndex(this.getNextActivePlayerIndex());
-                this.notifyTurnChange(nextPlayer);
-                this.takeTurn(nickname);
-                this.takeTurn(nextPlayer);
-            }else{
-                moveToWait(nickname);
-            }
-            this.save();
-        }
+        moveOnWithTurnsAndCheckForWinners(nickname, getLastActivePlayer());
     }
 
     public synchronized void leave(String nickname) {
@@ -343,21 +315,10 @@ public class GameController implements GameControllerInterface {
                 if (game.getCurrentPlayer().getNickname().equals(nickname)) { //if current player leaves
                     //check if the user has disconnected after placing
                     if (leaver.getHandSize() < 3 && !game.areDeckEmpty()) {
-                        DrawableCard deckType;
-                        int pos;
-                        CardInHand cardDrawn;
-                        do {
-                            deckType = randomDeckType();
-                            pos = randomDeckPosition();
-                            Pair<CardInHand, CardInHand> cardDrawnAndReplacement = game.drawAndGetReplacement(deckType, pos);
-                            cardDrawn = cardDrawnAndReplacement.first();
-                        } while (cardDrawn == null);
-
-                        //the draw method manage turn and winners
-                        this.draw(nickname, this.randomDeckType(), this.randomDeckPosition());
-                    } else {
-                        this.moveOnWithTurnsFromPlace(nickname, lastActivePlayerPreDisconnect);
+                        this.drawRandomCard(nickname);
                     }
+
+                    this.moveOnWithTurnsAndCheckForWinners(nickname, lastActivePlayerPreDisconnect);
                 }
             }
         }
@@ -378,7 +339,30 @@ public class GameController implements GameControllerInterface {
         } catch (Exception ignored) {}
     }
 
-    private synchronized void moveOnWithTurnsFromPlace(String nickname, String lastActivePlayer) {
+    private synchronized void drawRandomCard(String nickname){
+        Player player = game.getPlayerFromNick(nickname);
+        DrawableCard deckType;
+        int pos;
+        Pair<CardInHand, CardInHand> cardDrawnAndReplacement;
+        do {
+            deckType = randomDeckType();
+            pos = randomDeckPosition();
+            cardDrawnAndReplacement = game.drawAndGetReplacement(deckType, pos);
+        } while (cardDrawnAndReplacement.first() == null);
+
+        player.getUserHand().addCard(cardDrawnAndReplacement.first());
+
+        this.notifyDraw(nickname, deckType, pos, Lightifier.lightifyToCard(cardDrawnAndReplacement.first()),
+                cardDrawnAndReplacement.first().canBePlaced(player.getUserCodex()));
+    }
+
+    private synchronized void moveOnWithTurnsAndCheckForWinners(String nickname, String lastActivePlayer) {
+        if (game.checkForChickenDinner() && !game.duringEndingTurns()) {
+            game.setState(GameState.LAST_TURNS);
+            game.startEndingTurnsCounter();
+            this.notifyLastTurn();
+        }
+
         if (game.duringEndingTurns() && Objects.equals(nickname, lastActivePlayer)) {
             game.decrementEndingTurnsCounter();
         }
@@ -386,16 +370,19 @@ public class GameController implements GameControllerInterface {
             //model update with points
             moveToEndGame();
             declareWinners();
-        }
-        //move on with the turns for the other players
-        if (!this.playerViewMap.keySet().isEmpty()) {
+        } else if(!this.playerViewMap.isEmpty()){
+            //turn
             int nextPlayerIndex = this.getNextActivePlayerIndex();
-            String nextPlayerNick = game.getPlayersList().get(nextPlayerIndex).getNickname();
-            game.setCurrentPlayerIndex(nextPlayerIndex);
-            this.notifyTurnChange(nextPlayerNick);
-            this.takeTurn(nextPlayerNick);
-        } else {
-            this.resetLastPlayerTimer();
+            String nextPlayer = game.getPlayersList().get(nextPlayerIndex).getNickname();
+            if (!nextPlayer.equals(nickname)) {
+                game.setCurrentPlayerIndex(nextPlayerIndex);
+                this.notifyTurnChange(nextPlayer);
+                this.takeTurn(nickname);
+                this.takeTurn(nextPlayer);
+            }else{
+                moveToWait(nickname);
+            }
+            this.save();
         }
     }
 
