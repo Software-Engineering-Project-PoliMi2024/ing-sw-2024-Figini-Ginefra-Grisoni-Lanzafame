@@ -206,16 +206,30 @@ public class Game implements Serializable {
         CardInHand cardReplacement;
         if(deckType == DrawableCard.GOLDCARD){
             synchronized (goldCardDeck) {
-                drawnCard = goldCardDeck.drawACard(cardID);
+                drawnCard = drawACard(goldCardDeck, cardID);
                 cardReplacement = goldCardDeck.peekCardInDecks(cardID);
             }
         }else {
             synchronized (resourceCardDeck) {
-                drawnCard = resourceCardDeck.drawACard(cardID);
+                drawnCard = drawACard(resourceCardDeck, cardID);
                 cardReplacement = resourceCardDeck.peekCardInDecks(cardID);
             }
         }
         return new Pair<>(drawnCard, cardReplacement);
+    }
+
+    /**
+     * @param cardID the position from where draw the card (buffer/deck)
+     * @return the card drawn
+     */
+    public <T> T drawACard(Deck<T> deck, int cardID) {
+        T drawCard;
+        if (cardID == Configs.actualDeckPos) {
+            drawCard = deck.drawFromDeck();
+        } else {
+            drawCard = deck.drawFromBuffer(cardID);
+        }
+        return drawCard;
     }
 
     /**
