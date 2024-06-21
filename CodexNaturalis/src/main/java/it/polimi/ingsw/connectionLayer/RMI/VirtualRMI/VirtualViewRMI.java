@@ -21,7 +21,7 @@ public class VirtualViewRMI implements VirtualView {
     private PingPongInterface pingPongStub;
     private ControllerInterface controller;
     private final ThreadPoolExecutor viewExecutor = new ThreadPoolExecutor(2, 4, 10, TimeUnit.MILLISECONDS, new LinkedBlockingQueue<>());
-    private final ScheduledExecutorService pingPongExecutor = Executors.newSingleThreadScheduledExecutor();
+    private final ScheduledExecutorService pingPongExecutor = Executors.newScheduledThreadPool(2);
     private boolean alreadyDisconnected = false;
     private Future<?> pong;
     /**
@@ -246,13 +246,20 @@ public class VirtualViewRMI implements VirtualView {
     public void pingPong() throws RemoteException {
         pong = pingPongExecutor.scheduleAtFixedRate(() -> {
             try {
-                //System.out.println("pingPong");
-                pingPongStub.checkEmpty();
+                Future<?> ping = pingPongExecutor.submit(() -> {
+                    try {
+                        pingPongStub.checkEmpty();
+                    } catch (Exception e) {
+                        throw new RuntimeException("VirtualViewRMI.pinPong: " + "\n  message: " + e.getMessage() + "\n  cause:\n" + e.getCause());
+                    }
+                });
+                ping.get(Configs.secondsTimeOut, TimeUnit.SECONDS);
+            }catch (InterruptedException ignored){
             } catch (Exception e) {
+                e.printStackTrace();
                 this.disconnect();
-                System.out.println("pingPong " + e.getMessage());
             }
-        }, Configs.pingPongFrequency, Configs.pingPongFrequency, TimeUnit.SECONDS);
+        }, Configs.pingPongFrequency, 1, TimeUnit.SECONDS);
     }
 
 }
