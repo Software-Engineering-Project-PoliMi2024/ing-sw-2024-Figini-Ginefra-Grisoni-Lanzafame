@@ -1,5 +1,7 @@
 package it.polimi.ingsw.controller;
 
+import it.polimi.ingsw.Configs;
+import it.polimi.ingsw.controller.PublicController.PublicController;
 import it.polimi.ingsw.utils.OSRelated;
 import it.polimi.ingsw.controller.PublicController.PublicGameController;
 import it.polimi.ingsw.controller.PublicController.PublicLobbyController;
@@ -1302,6 +1304,219 @@ public class ResilienceTest {
 
         controllerLast.login(lastPlayer.getNickname());
         assert viewMap.get(lastPlayer.getNickname()).state.equals(ViewState.JOIN_LOBBY);
+    }
+
+    @Test
+    void leaveDeckFinishedPlaceCard() {
+        ViewTest view1 = new ViewTest();
+        ViewTest view2 = new ViewTest();
+        view1.name = "pippo";
+        view2.name = "pluto";
+        int numberOfPlayers = 2;
+        int totalCardsInDeck = 40;
+        int resourceCardsInHandAtStart = 2;
+        int goldCardsInHandAtStart = 1;
+
+        String lobbyName1 = "test1";
+        Controller controller1 = new Controller(realLobbyGameListController, view1);
+        Controller controller2 = new Controller(realLobbyGameListController, view2);
+
+        controller1.login(view1.name);
+        controller2.login(view2.name);
+        controller1.createLobby(lobbyName1, 2);
+        controller2.joinLobby(lobbyName1);
+
+        LightCard startCard1 = view1.lightGame.getHand().getCards()[0];
+        LightPlacement startPlacement1 = new LightPlacement(new Position(0, 0), startCard1, CardFace.FRONT);
+        LightCard startCard2 = view2.lightGame.getHand().getCards()[0];
+        LightPlacement startPlacement2 = new LightPlacement(new Position(0, 0), startCard2, CardFace.FRONT);
+
+        controller1.place(startPlacement1);
+        controller2.place(startPlacement2);
+        controller1.choosePawn(PawnColors.BLUE);
+        controller2.choosePawn(PawnColors.RED);
+
+        LightCard secretObjective1 = view1.lightGame.getHand().getSecretObjectiveOptions()[0];
+        LightCard secretObjective2 = view2.lightGame.getHand().getSecretObjectiveOptions()[0];
+
+        controller1.chooseSecretObjective(secretObjective1);
+        controller2.chooseSecretObjective(secretObjective2);
+
+        GameController gameController = lobbyGameListController.getGameMap().get(lobbyName1);
+        PublicGameController publicController = new PublicGameController(gameController);
+        Game game = publicController.getGame();
+
+        PublicController firstPlayerController = new PublicController(view1.name.equals(game.getCurrentPlayer().getNickname()) ? controller1 : controller2);
+        PublicController secondPlayerController = new PublicController(view1.name.equals(game.getCurrentPlayer().getNickname()) ? controller2 : controller1);
+        Player firstPlayer = game.getPlayerFromNick(firstPlayerController.getNickname());
+        Player secondPlayer = game.getPlayerFromNick(secondPlayerController.getNickname());
+
+        //empty resourceDeck
+        for (int i = 0; i < (totalCardsInDeck - resourceCardsInHandAtStart * numberOfPlayers) / numberOfPlayers; i++) {
+            LightCard cardPlaced1 = Lightifier.lightifyToCard(firstPlayer.getUserHand().getHand().stream().toList().getFirst());
+            Position position1 = firstPlayer.getUserCodex().getFrontier().getFrontier().getFirst();
+            LightPlacement placement1 = new LightPlacement(position1, cardPlaced1, CardFace.BACK);
+
+            firstPlayerController.controller.place(placement1);
+            firstPlayerController.controller.draw(DrawableCard.RESOURCECARD, 0);
+
+            LightCard cardPlaced2 = Lightifier.lightifyToCard(secondPlayer.getUserHand().getHand().stream().toList().getFirst());
+            Position position2 = secondPlayer.getUserCodex().getFrontier().getFrontier().getFirst();
+            LightPlacement placement2 = new LightPlacement(position2, cardPlaced2, CardFace.BACK);
+
+            secondPlayerController.controller.place(placement2);
+            secondPlayerController.controller.draw(DrawableCard.RESOURCECARD, 0);
+        }
+
+        assert game.getResourceCardDeck().isEmpty();
+
+        //empty goldDeck
+        for (int i = 0; i < (totalCardsInDeck - goldCardsInHandAtStart * numberOfPlayers) / numberOfPlayers; i++) {
+            LightCard cardPlaced1 = Lightifier.lightifyToCard(firstPlayer.getUserHand().getHand().stream().toList().getFirst());
+            Position position1 = firstPlayer.getUserCodex().getFrontier().getFrontier().getFirst();
+            LightPlacement placement1 = new LightPlacement(position1, cardPlaced1, CardFace.BACK);
+
+            firstPlayerController.controller.place(placement1);
+            firstPlayerController.controller.draw(DrawableCard.GOLDCARD, 0);
+
+            LightCard cardPlaced2 = Lightifier.lightifyToCard(secondPlayer.getUserHand().getHand().stream().toList().getFirst());
+            Position position2 = secondPlayer.getUserCodex().getFrontier().getFrontier().getFirst();
+            LightPlacement placement2 = new LightPlacement(position2, cardPlaced2, CardFace.BACK);
+
+            secondPlayerController.controller.place(placement2);
+            secondPlayerController.controller.draw(DrawableCard.GOLDCARD, 0);
+        }
+
+        assert game.getGoldCardDeck().isEmpty();
+
+        assert game.duringEndingTurns();
+        assert game.getState().equals(GameState.LAST_TURNS);
+
+        assert game.getCurrentPlayer().equals(firstPlayer);
+
+        LightCard cardPlaced1 = Lightifier.lightifyToCard(firstPlayer.getUserHand().getHand().stream().toList().getFirst());
+        Position position1 = firstPlayer.getUserCodex().getFrontier().getFrontier().getFirst();
+        LightPlacement placement1 = new LightPlacement(position1, cardPlaced1, CardFace.BACK);
+
+        firstPlayerController.controller.place(placement1);
+
+        secondPlayerController.controller.disconnect();
+
+        assert game.getState().equals(GameState.END_GAME);
+    }
+
+    @Test
+    void leaveLastCardBeforeDeckFinished() {
+        ViewTest view1 = new ViewTest();
+        ViewTest view2 = new ViewTest();
+        view1.name = "pippo";
+        view2.name = "pluto";
+        int numberOfPlayers = 2;
+        int totalCardsInDeck = 40;
+        int resourceCardsInHandAtStart = 2;
+        int goldCardsInHandAtStart = 1;
+
+        String lobbyName1 = "test1";
+        Controller controller1 = new Controller(realLobbyGameListController, view1);
+        Controller controller2 = new Controller(realLobbyGameListController, view2);
+
+        controller1.login(view1.name);
+        controller2.login(view2.name);
+        controller1.createLobby(lobbyName1, 2);
+        controller2.joinLobby(lobbyName1);
+
+        LightCard startCard1 = view1.lightGame.getHand().getCards()[0];
+        LightPlacement startPlacement1 = new LightPlacement(new Position(0, 0), startCard1, CardFace.FRONT);
+        LightCard startCard2 = view2.lightGame.getHand().getCards()[0];
+        LightPlacement startPlacement2 = new LightPlacement(new Position(0, 0), startCard2, CardFace.FRONT);
+
+        controller1.place(startPlacement1);
+        controller2.place(startPlacement2);
+        controller1.choosePawn(PawnColors.BLUE);
+        controller2.choosePawn(PawnColors.RED);
+
+        LightCard secretObjective1 = view1.lightGame.getHand().getSecretObjectiveOptions()[0];
+        LightCard secretObjective2 = view2.lightGame.getHand().getSecretObjectiveOptions()[0];
+
+        controller1.chooseSecretObjective(secretObjective1);
+        controller2.chooseSecretObjective(secretObjective2);
+
+        GameController gameController = lobbyGameListController.getGameMap().get(lobbyName1);
+        PublicGameController publicController = new PublicGameController(gameController);
+        Game game = publicController.getGame();
+
+        PublicController firstPlayerController = new PublicController(view1.name.equals(game.getCurrentPlayer().getNickname()) ? controller1 : controller2);
+        PublicController secondPlayerController = new PublicController(view1.name.equals(game.getCurrentPlayer().getNickname()) ? controller2 : controller1);
+        Player firstPlayer = game.getPlayerFromNick(firstPlayerController.getNickname());
+        Player secondPlayer = game.getPlayerFromNick(secondPlayerController.getNickname());
+
+        //empty resourceDeck
+        for (int i = 0; i < (totalCardsInDeck - resourceCardsInHandAtStart * numberOfPlayers) / numberOfPlayers; i++) {
+            LightCard cardPlaced1 = Lightifier.lightifyToCard(firstPlayer.getUserHand().getHand().stream().toList().getFirst());
+            Position position1 = firstPlayer.getUserCodex().getFrontier().getFrontier().getFirst();
+            LightPlacement placement1 = new LightPlacement(position1, cardPlaced1, CardFace.BACK);
+
+            firstPlayerController.controller.place(placement1);
+            firstPlayerController.controller.draw(DrawableCard.RESOURCECARD, 0);
+
+            LightCard cardPlaced2 = Lightifier.lightifyToCard(secondPlayer.getUserHand().getHand().stream().toList().getFirst());
+            Position position2 = secondPlayer.getUserCodex().getFrontier().getFrontier().getFirst();
+            LightPlacement placement2 = new LightPlacement(position2, cardPlaced2, CardFace.BACK);
+
+            secondPlayerController.controller.place(placement2);
+            secondPlayerController.controller.draw(DrawableCard.RESOURCECARD, 0);
+        }
+
+        assert game.getResourceCardDeck().isEmpty();
+
+        //empty goldDeck leaving a card
+        for (int i = 0; i < (totalCardsInDeck - goldCardsInHandAtStart * numberOfPlayers) / numberOfPlayers; i++) {
+            LightCard cardPlaced1 = Lightifier.lightifyToCard(firstPlayer.getUserHand().getHand().stream().toList().getFirst());
+            Position position1 = firstPlayer.getUserCodex().getFrontier().getFrontier().getFirst();
+            LightPlacement placement1 = new LightPlacement(position1, cardPlaced1, CardFace.BACK);
+
+            firstPlayerController.controller.place(placement1);
+            firstPlayerController.controller.draw(DrawableCard.GOLDCARD, 0);
+
+            LightCard cardPlaced2 = Lightifier.lightifyToCard(secondPlayer.getUserHand().getHand().stream().toList().getFirst());
+            Position position2 = secondPlayer.getUserCodex().getFrontier().getFrontier().getFirst();
+            LightPlacement placement2 = new LightPlacement(position2, cardPlaced2, CardFace.BACK);
+
+            secondPlayerController.controller.place(placement2);
+
+            if (i < (totalCardsInDeck - goldCardsInHandAtStart * numberOfPlayers) / numberOfPlayers - 1) {
+                secondPlayerController.controller.draw(DrawableCard.GOLDCARD, 0);
+            }
+        }
+
+        assert game.getGoldCardDeck().getBuffer().stream().filter(Objects::nonNull).toList().size() == 1;
+        assert game.getCurrentPlayer().equals(secondPlayer);
+        assert secondPlayer.getState().equals(PlayerState.DRAW);
+
+        secondPlayerController.controller.disconnect();
+        assert game.getGoldCardDeck().isEmpty();
+        secondPlayerController.controller.login(secondPlayer.getNickname());
+
+        assert game.duringEndingTurns();
+        assert game.getState().equals(GameState.LAST_TURNS);
+
+        assert game.getCurrentPlayer().equals(firstPlayer);
+
+        LightCard cardPlaced1 = Lightifier.lightifyToCard(firstPlayer.getUserHand().getHand().stream().toList().getFirst());
+        Position position1 = firstPlayer.getUserCodex().getFrontier().getFrontier().getFirst();
+        LightPlacement placement1 = new LightPlacement(position1, cardPlaced1, CardFace.BACK);
+
+        firstPlayerController.controller.place(placement1);
+
+        assert game.getCurrentPlayer().equals(secondPlayer);
+
+        LightCard cardPlaced2 = Lightifier.lightifyToCard(secondPlayer.getUserHand().getHand().stream().toList().getFirst());
+        Position position2 = secondPlayer.getUserCodex().getFrontier().getFrontier().getFirst();
+        LightPlacement placement2 = new LightPlacement(position2, cardPlaced2, CardFace.BACK);
+
+        secondPlayerController.controller.place(placement2);
+
+        assert game.getState().equals(GameState.END_GAME);
     }
 
     private void checkInitialization(ViewTest view, PublicGameController gameController){
