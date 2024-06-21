@@ -4,7 +4,7 @@ import it.polimi.ingsw.Configs;
 import it.polimi.ingsw.OSRelated;
 import it.polimi.ingsw.controller.Interfaces.GameControllerReceiver;
 import it.polimi.ingsw.controller.persistence.PersistenceFactory;
-import it.polimi.ingsw.lightModel.DiffGenerator;
+import it.polimi.ingsw.lightModel.diffs.DiffGenerator;
 import it.polimi.ingsw.lightModel.diffs.nuclearDiffs.FatManLobbyList;
 import it.polimi.ingsw.model.cardReleted.cards.CardTable;
 import it.polimi.ingsw.model.tableReleted.Game;

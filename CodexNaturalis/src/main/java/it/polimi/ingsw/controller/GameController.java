@@ -4,7 +4,7 @@ import it.polimi.ingsw.Configs;
 import it.polimi.ingsw.controller.Interfaces.FinishedGameDeleter;
 import it.polimi.ingsw.controller.Interfaces.GameControllerInterface;
 import it.polimi.ingsw.controller.persistence.PersistenceFactory;
-import it.polimi.ingsw.lightModel.DiffGenerator;
+import it.polimi.ingsw.lightModel.diffs.DiffGenerator;
 import it.polimi.ingsw.lightModel.Heavifier;
 import it.polimi.ingsw.lightModel.Lightifier;
 import it.polimi.ingsw.lightModel.diffs.game.GameDiffPublicObj;
@@ -245,10 +245,14 @@ public class GameController implements GameControllerInterface {
             this.notifyPlacement(nickname, placement, player.getUserCodex(), frontIdToPlayability);
 
             //TODO check if deck are finished or else move over
-            player.setState(PlayerState.DRAW);
-            try {
-                playerViewMap.get(nickname).transitionTo(ViewState.DRAW_CARD);
-            } catch (Exception ignored) {
+            if (!game.areDeckEmpty()) {
+                player.setState(PlayerState.DRAW);
+                try {
+                    playerViewMap.get(nickname).transitionTo(ViewState.DRAW_CARD);
+                } catch (Exception ignored) {
+                }
+            }else{
+                moveOnWithTurnsFromPlace(nickname, getLastActivePlayer());
             }
         }
     }
@@ -349,24 +353,7 @@ public class GameController implements GameControllerInterface {
                         //the draw method manage turn and winners
                         this.draw(nickname, this.randomDeckType(), this.randomDeckPosition());
                     } else {
-                        if (game.duringLastTurns() && Objects.equals(nickname, lastActivePlayerPreDisconnect)) {
-                            game.decrementLastTurnsCounter();
-                        }
-                        if (Objects.equals(lastActivePlayerPreDisconnect, nickname) && game.noMoreTurns()) {
-                            //model update with points
-                            moveToEndGame();
-                            declareWinners();
-                        }
-                        //move on with the turns for the other players
-                        if (!this.playerViewMap.keySet().isEmpty()) {
-                            int nextPlayerIndex = this.getNextActivePlayerIndex();
-                            String nextPlayerNick = game.getPlayersList().get(nextPlayerIndex).getNickname();
-                            game.setCurrentPlayerIndex(nextPlayerIndex);
-                            this.notifyTurnChange(nextPlayerNick);
-                            this.takeTurn(nextPlayerNick);
-                        } else {
-                            this.resetLastPlayerTimer();
-                        }
+                        this.moveOnWithTurnsFromPlace(nickname, lastActivePlayerPreDisconnect);
                     }
                 }
             }
@@ -388,7 +375,26 @@ public class GameController implements GameControllerInterface {
         } catch (Exception ignored) {}
     }
 
-
+    private synchronized void moveOnWithTurnsFromPlace(String nickname, String lastActivePlayer) {
+        if (game.duringLastTurns() && Objects.equals(nickname, lastActivePlayer)) {
+            game.decrementLastTurnsCounter();
+        }
+        if (Objects.equals(lastActivePlayer, nickname) && game.noMoreTurns()) {
+            //model update with points
+            moveToEndGame();
+            declareWinners();
+        }
+        //move on with the turns for the other players
+        if (!this.playerViewMap.keySet().isEmpty()) {
+            int nextPlayerIndex = this.getNextActivePlayerIndex();
+            String nextPlayerNick = game.getPlayersList().get(nextPlayerIndex).getNickname();
+            game.setCurrentPlayerIndex(nextPlayerIndex);
+            this.notifyTurnChange(nextPlayerNick);
+            this.takeTurn(nextPlayerNick);
+        } else {
+            this.resetLastPlayerTimer();
+        }
+    }
 
     private synchronized void startCardStateTransition(String nickname) {
         ViewInterface view = playerViewMap.get(nickname);
