@@ -204,6 +204,7 @@ public class TUI implements ActualView {
                 lightGame,
                 new CommandPrompt[]{CommandPrompt.DISPLAY_LEADERBOARD},
                 this);
+        StateTUI.CHOOSE_START_CARD.attach(leaderboardRenderable);
         StateTUI.SELECT_OBJECTIVE.attach(leaderboardRenderable);
         StateTUI.IDLE.attach(leaderboardRenderable);
         StateTUI.PLACE_CARD.attach(leaderboardRenderable);
