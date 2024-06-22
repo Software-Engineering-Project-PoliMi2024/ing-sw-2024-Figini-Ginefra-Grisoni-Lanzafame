@@ -162,7 +162,7 @@ public class GameController implements GameControllerInterface {
                 }
             } else {
                 try {
-                    view.logGame(LogsOnClient.PAWN_TAKEN);
+                    view.logErr(LogsOnClient.PAWN_TAKEN);
                     this.pawnChoiceStateTransition(nickname);
                 } catch (Exception ignored) {
                 }

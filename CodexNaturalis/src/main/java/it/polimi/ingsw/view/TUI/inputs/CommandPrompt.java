@@ -94,6 +94,8 @@ public enum CommandPrompt implements Iterator<String>, CommandObserved {
             },
             false),
 
+    DISPLAY_PAWN_OPTIONS("Display pawn", true),
+
     /** The command to display the assigned start card front */
     DISPLAY_START_FRONT("Display start card front", true),
 
