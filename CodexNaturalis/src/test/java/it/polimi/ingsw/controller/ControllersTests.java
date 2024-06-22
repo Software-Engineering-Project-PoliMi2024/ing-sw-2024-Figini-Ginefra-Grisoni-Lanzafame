@@ -1664,4 +1664,138 @@ class ControllersTests {
 
         assert game.getState().equals(GameState.END_GAME);
     }
+
+    @Test
+    void chatPubblicMessageTest(){
+        ViewTest[] views = new ViewTest[3];
+        views[0] = new ViewTest();
+        views[1] = new ViewTest();
+        views[2] = new ViewTest();
+        views[0].name = "pippo";
+        views[1].name = "pluto";
+        views[2].name = "paperino";
+
+        String lobbyName1 = "chatMessageTest";
+        Controller pippoController = new Controller(realLobbyGameListController, views[0]);
+        Controller plutoController = new Controller(realLobbyGameListController, views[1]);
+        Controller paperinoController = new Controller(realLobbyGameListController, views[2]);
+
+        pippoController.login(views[0].name);
+        plutoController.login(views[1].name);
+        paperinoController.login(views[2].name);
+
+        pippoController.createLobby(lobbyName1, 3);
+        plutoController.joinLobby(lobbyName1);
+        paperinoController.joinLobby(lobbyName1);
+
+        GameController gameController = lobbyGameListController.getGameMap().get(lobbyName1);
+        PublicGameController publicController = new PublicGameController(gameController);
+        Game game = publicController.getGame();
+
+        Random random = new Random();
+        int senderIdx = random.nextInt(3);
+
+        //Send a public message from a random player
+        pippoController.sendChatMessage(new ChatMessage(views[senderIdx].name, "PublicMSg"));
+
+        //Check if the messages is saved in the model (chatManager)
+        for(int i=0; i < views.length; i++){
+            assert game.getGameParty().getChatManager().retrieveChat(views[i].name).stream().map(ChatMessage::getSender).anyMatch(views[senderIdx].name::equals);
+            assert game.getGameParty().getChatManager().retrieveChat(views[i].name).stream().map(ChatMessage::getMessage).anyMatch("PublicMSg"::equals);
+            assert game.getGameParty().getChatManager().retrieveChat(views[i].name).size() == 1;
+        }
+
+        //Check if every lightModel has the public message and only that
+        for(int i = 0; i < views.length; i++){
+            assert views[i].lightGame.getLightGameParty().getLightChat().getChatHistory().stream().map(ChatMessage::getSender).anyMatch(views[senderIdx].name::equals);
+            assert views[i].lightGame.getLightGameParty().getLightChat().getChatHistory().stream().map(ChatMessage::getMessage).anyMatch("PublicMSg"::equals);
+            assert views[i].lightGame.getLightGameParty().getLightChat().getChatHistory().size() == 1;
+        }
+
+        int newSenderIdx = (senderIdx + 1) % 3;
+        //Send a another public message, from another player, and check if the chat is updated correctly
+        plutoController.sendChatMessage(new ChatMessage(views[newSenderIdx].name, "PublicMSg2"));
+
+        for(int i=0; i < views.length; i++){
+            //new message is saved in the model
+            assert game.getGameParty().getChatManager().retrieveChat(views[i].name).stream().map(ChatMessage::getSender).anyMatch(views[newSenderIdx].name::equals);
+            assert game.getGameParty().getChatManager().retrieveChat(views[i].name).stream().map(ChatMessage::getMessage).anyMatch("PublicMSg2"::equals);
+            //old message is still there
+            assert game.getGameParty().getChatManager().retrieveChat(views[i].name).stream().map(ChatMessage::getSender).anyMatch(views[senderIdx].name::equals);
+            assert game.getGameParty().getChatManager().retrieveChat(views[i].name).stream().map(ChatMessage::getMessage).anyMatch("PublicMSg"::equals);
+            //no other messages are present
+            assert game.getGameParty().getChatManager().retrieveChat(views[i].name).size() == 2;
+        }
+
+        for(int i = 0; i < views.length; i++){
+            //new message is saved in the lightModel
+            assert views[i].lightGame.getLightGameParty().getLightChat().getChatHistory().stream().map(ChatMessage::getSender).anyMatch(views[newSenderIdx].name::equals);
+            assert views[i].lightGame.getLightGameParty().getLightChat().getChatHistory().stream().map(ChatMessage::getMessage).anyMatch("PublicMSg2"::equals);
+            //old message is still there
+            assert views[i].lightGame.getLightGameParty().getLightChat().getChatHistory().stream().map(ChatMessage::getSender).anyMatch(views[senderIdx].name::equals);
+            assert views[i].lightGame.getLightGameParty().getLightChat().getChatHistory().stream().map(ChatMessage::getMessage).anyMatch("PublicMSg"::equals);
+            //no other messages are present
+            assert views[i].lightGame.getLightGameParty().getLightChat().getChatHistory().size() == 2;
+        }
+    }
+
+    @Test
+    void chatPrivateMsgTest(){
+        ViewTest[] views = new ViewTest[3];
+        views[0] = new ViewTest();
+        views[1] = new ViewTest();
+        views[2] = new ViewTest();
+        views[0].name = "pippo";
+        views[1].name = "pluto";
+        views[2].name = "paperino";
+
+        String lobbyName1 = "chatMessageTest";
+        Controller pippoController = new Controller(realLobbyGameListController, views[0]);
+        Controller plutoController = new Controller(realLobbyGameListController, views[1]);
+        Controller paperinoController = new Controller(realLobbyGameListController, views[2]);
+
+        pippoController.login(views[0].name);
+        plutoController.login(views[1].name);
+        paperinoController.login(views[2].name);
+
+        pippoController.createLobby(lobbyName1, 3);
+        plutoController.joinLobby(lobbyName1);
+        paperinoController.joinLobby(lobbyName1);
+
+        GameController gameController = lobbyGameListController.getGameMap().get(lobbyName1);
+        PublicGameController publicController = new PublicGameController(gameController);
+        Game game = publicController.getGame();
+
+        //Check that a message cannot be sent if the sender is also the receiver
+        pippoController.sendChatMessage(new ChatMessage("pippo", "PrivateMSg", "pippo"));
+        assert game.getGameParty().getChatManager().retrieveChat("pippo").isEmpty();
+        assert views[0].lightGame.getLightGameParty().getLightChat().getChatHistory().isEmpty();
+
+        //Send a private message from a random player to another random player
+        pippoController.sendChatMessage(new ChatMessage("pippo", "PrivateMSg", "pluto"));
+
+        //Check that only the sender and the receiver have the message in their lightModel
+        for(int i = 0; i < views.length; i++){
+            if(views[i].name.equals("pippo") || views[i].name.equals("pluto")){
+                assert views[i].lightGame.getLightGameParty().getLightChat().getChatHistory().stream().map(ChatMessage::getSender).anyMatch("pippo"::equals);
+                assert views[i].lightGame.getLightGameParty().getLightChat().getChatHistory().stream().map(ChatMessage::getMessage).anyMatch("PrivateMSg"::equals);
+                assert views[i].lightGame.getLightGameParty().getLightChat().getChatHistory().stream().map(ChatMessage::getReceiver).anyMatch("pluto"::equals);
+                assert views[i].lightGame.getLightGameParty().getLightChat().getChatHistory().size() == 1;
+            } else {
+                assert views[i].lightGame.getLightGameParty().getLightChat().getChatHistory().isEmpty();
+            }
+        }
+
+        //Check if the messages is saved in the model (chatManager) only for the sender and the receiver
+        for(int i=0; i < views.length; i++){
+            if(views[i].name.equals("pippo") || views[i].name.equals("pluto")){
+                assert game.getGameParty().getChatManager().retrieveChat(views[i].name).stream().map(ChatMessage::getSender).anyMatch("pippo"::equals);
+                assert game.getGameParty().getChatManager().retrieveChat(views[i].name).stream().map(ChatMessage::getMessage).anyMatch("PrivateMSg"::equals);
+                assert game.getGameParty().getChatManager().retrieveChat(views[i].name).stream().map(ChatMessage::getReceiver).anyMatch("pluto"::equals);
+                assert game.getGameParty().getChatManager().retrieveChat(views[i].name).size() == 1;
+            } else {
+                assert game.getGameParty().getChatManager().retrieveChat(views[i].name).isEmpty();
+            }
+        }
+    }
 }
