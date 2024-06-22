@@ -63,34 +63,82 @@ public class LobbyGameListsController implements it.polimi.ingsw.controller.Inte
     public synchronized void createLobby(String creator, String lobbyName, int maxPlayerCount, GameControllerReceiver gameReceiver) {
         //check if the lobby name is already taken
         ViewInterface view = viewMap.get(creator);
-        if(lobbyMap.get(lobbyName)!=null || gameMap.get(lobbyName)!=null) {
-            try {
-                view.logErr(LogsOnClient.LOBBY_NAME_TAKEN);
-                view.transitionTo(ViewState.JOIN_LOBBY);
-            }catch (Exception ignored){}
-            //check if the lobby name is valid
-        }else if(lobbyName.matches(Configs.invalidLobbyNameRegex)) {
-            try {
-                view.logErr(LogsOnClient.NOT_VALID_LOBBY_NAME);
-                view.transitionTo(ViewState.JOIN_LOBBY);
-            }catch (Exception ignored){}
-        }else if(maxPlayerCount < 2 || maxPlayerCount > 4){
-            try {
-                view.logErr(LogsOnClient.INVALID_MAX_PLAYER_COUNT);
-                view.transitionTo(ViewState.JOIN_LOBBY);
-            }catch (Exception ignored){}
-        }else { //create the lobby
-            System.out.println(creator + " created " + lobbyName + " lobby");
-            Lobby lobbyCreated = new Lobby(maxPlayerCount, lobbyName);
 
-            leaveLobbyList(creator);
-            //add the lobby to the model
-            lobbyMap.put(lobbyName, new LobbyController(lobbyCreated));
-            this.notifyNewLobby(creator, view, lobbyCreated); //notify the lobbyList mediator of the new lobby creation
+        if(view != null) {
+            if (lobbyMap.get(lobbyName) != null || gameMap.get(lobbyName) != null) {
+                try {
+                    view.logErr(LogsOnClient.LOBBY_NAME_TAKEN);
+                    view.transitionTo(ViewState.JOIN_LOBBY);
+                } catch (Exception ignored) {
+                }
+                //check if the lobby name is valid
+            } else if (lobbyName.matches(Configs.invalidLobbyNameRegex)) {
+                try {
+                    view.logErr(LogsOnClient.NOT_VALID_LOBBY_NAME);
+                    view.transitionTo(ViewState.JOIN_LOBBY);
+                } catch (Exception ignored) {
+                }
+            } else if (maxPlayerCount < 2 || maxPlayerCount > 4) {
+                try {
+                    view.logErr(LogsOnClient.INVALID_MAX_PLAYER_COUNT);
+                    view.transitionTo(ViewState.JOIN_LOBBY);
+                } catch (Exception ignored) {
+                }
+            } else { //create the lobby
+                System.out.println(creator + " created " + lobbyName + " lobby");
+                Lobby lobbyCreated = new Lobby(maxPlayerCount, lobbyName);
 
-            lobbyMap.get(lobbyName).addPlayer(creator, view, gameReceiver);
+                leaveLobbyList(creator);
+                //add the lobby to the model
+                lobbyMap.put(lobbyName, new LobbyController(lobbyCreated));
+                this.notifyNewLobby(creator, view, lobbyCreated); //notify the lobbyList mediator of the new lobby creation
 
-            try{view.transitionTo(ViewState.LOBBY);}catch (Exception ignored){}
+                lobbyMap.get(lobbyName).addPlayer(creator, view, gameReceiver);
+
+                try {
+                    view.transitionTo(ViewState.LOBBY);
+                } catch (Exception ignored) {
+                }
+            }
+        }else {
+            this.manageMalevolentPlayer(creator);
+        }
+    }
+
+    @Override
+    public synchronized void joinLobby(String joiner, String lobbyName, GameControllerReceiver gameReceiver) {
+        LobbyController lobbyToJoin = lobbyMap.get(lobbyName);
+        ViewInterface view = viewMap.get(joiner);
+
+        if(view != null) {
+            if (lobbyToJoin == null) {
+                try {
+                    view.logErr(LogsOnClient.LOBBY_NONEXISTENT);
+                    view.transitionTo(ViewState.JOIN_LOBBY);
+                } catch (Exception ignored) {
+                }
+            } else {
+                System.out.println(joiner + " joined " + lobbyName + " lobby");
+                leaveLobbyList(joiner);
+                //add the player to the lobby, updated model
+                lobbyToJoin.addPlayer(joiner, view, gameReceiver);
+
+                if (!lobbyToJoin.isLobbyFull()) {
+                    try {
+                        view.transitionTo(ViewState.LOBBY);
+                    } catch (Exception ignored) {
+                    }
+                } else {
+                    System.out.println(lobbyName + " lobby is full, game started");
+                    GameController gameController = lobbyToJoin.startGame(cardTable, persistenceFactory, this, this);
+                    lobbyMap.remove(lobbyName);
+                    gameMap.put(lobbyName, gameController);
+                    this.notifyLobbyRemoved(joiner, lobbyToJoin.getLobby());
+                }
+            }
+        }else {
+            this.manageMalevolentPlayer(joiner);
+            return;
         }
     }
 
@@ -104,33 +152,6 @@ public class LobbyGameListsController implements it.polimi.ingsw.controller.Inte
                 }
             } catch (Exception ignored) {}
         });
-    }
-
-    @Override
-    public synchronized void joinLobby(String joiner, String lobbyName, GameControllerReceiver gameReceiver) {
-        LobbyController lobbyToJoin = lobbyMap.get(lobbyName);
-        ViewInterface view = viewMap.get(joiner);
-        if (lobbyToJoin == null) {
-            try {
-                view.logErr(LogsOnClient.LOBBY_NONEXISTENT);
-                view.transitionTo(ViewState.JOIN_LOBBY);
-            }catch (Exception ignored){}
-        } else {
-            System.out.println(joiner + " joined " + lobbyName + " lobby");
-            leaveLobbyList(joiner);
-            //add the player to the lobby, updated model
-            lobbyToJoin.addPlayer(joiner, view, gameReceiver);
-
-            if (!lobbyToJoin.isLobbyFull()) {
-                try{view.transitionTo(ViewState.LOBBY);}catch (Exception ignored){}
-            }else{
-                System.out.println(lobbyName + " lobby is full, game started");
-                GameController gameController = lobbyToJoin.startGame(cardTable, persistenceFactory, this);
-                lobbyMap.remove(lobbyName);
-                gameMap.put(lobbyName, gameController);
-                this.notifyLobbyRemoved(joiner, lobbyToJoin.getLobby());
-            }
-        }
     }
 
     private synchronized void notifyLobbyRemoved(String destroyer, Lobby removedLobby){
@@ -240,7 +261,7 @@ public class LobbyGameListsController implements it.polimi.ingsw.controller.Inte
 
         for(Game game : loadedGames){
             if(gameMap.get(game.getName()) == null){
-                GameController gameController = new GameController(game, cardTable, persistenceFactory, this);
+                GameController gameController = new GameController(game, cardTable, persistenceFactory, this, this);
                 gameMap.put(game.getName(), gameController);
             }
         }
@@ -255,5 +276,12 @@ public class LobbyGameListsController implements it.polimi.ingsw.controller.Inte
     @Override
     public synchronized void deleteGame(String gameName){
         gameMap.remove(gameName);
+    }
+
+    public synchronized void manageMalevolentPlayer(String player) {
+        try {
+            viewMap.get(player).logErr(LogsOnClient.MALEVOLENT);
+            System.out.println(player + " is malevolent");
+        }catch (Exception ignored){}
     }
 }

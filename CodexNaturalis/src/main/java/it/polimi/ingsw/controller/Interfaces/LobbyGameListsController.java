@@ -5,7 +5,7 @@ import it.polimi.ingsw.view.ViewInterface;
 import java.io.Serializable;
 import java.rmi.Remote;
 
-public interface LobbyGameListsController extends GameList, Serializable, Remote {
+public interface LobbyGameListsController extends GameList, MalevolentPlayerManager, Serializable, Remote {
     void login(String nickname, ViewInterface view, GameControllerReceiver controllerReceiver);
     void createLobby(String nickname, String gameName, int maxPlayerCount, GameControllerReceiver gameReceiver);
     void joinLobby(String nickname, String lobbyName, GameControllerReceiver gameReceiver);

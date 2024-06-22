@@ -251,8 +251,8 @@ public class PersistenceFactory {
             System.out.println("file:" + file.getName() + " deleted successfully");
     }
 
-    public void eraseAllSaves() {
-        fileIOExecutor.submit(()-> {
+    public Future<?> eraseAllSaves() {
+        return fileIOExecutor.submit(()-> {
             File dataFolder = new File(gameDataFolderPath);
             File[] saves = dataFolder.listFiles();
             if (saves != null) {

@@ -1,6 +1,7 @@
 package it.polimi.ingsw.controller;
 
 import it.polimi.ingsw.Configs;
+import it.polimi.ingsw.lightModel.Heavifier;
 import it.polimi.ingsw.utils.OSRelated;
 import it.polimi.ingsw.controller.PublicController.*;
 import it.polimi.ingsw.controller.PublicModelClass.PublicGame;
@@ -25,7 +26,9 @@ import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
+import java.io.File;
 import java.util.*;
+import java.util.concurrent.Future;
 
 class ControllersTests {
     private LobbyGameListsController realLobbyGameListController;
@@ -39,7 +42,15 @@ class ControllersTests {
 
     @BeforeEach
     public void setUp() {
-        persistenceFactory.eraseAllSaves();
+        Future<?> eraseAll = persistenceFactory.eraseAllSaves();
+        File dataFolder = new File(Configs.gameSaveFolderName);
+        File[] saves = dataFolder.listFiles();
+        if (saves != null) {
+            for (File gameSave : saves) {
+                gameSave.delete();
+            }
+        }
+
         realLobbyGameListController = new LobbyGameListsController();
         lobbyGameListController = new PublicLobbyGameListController(realLobbyGameListController);
     }
@@ -57,7 +68,7 @@ class ControllersTests {
         controller1.login(view1.name);
         System.out.println(view1.state);
         //add lobby
-        Lobby lobby = new Lobby(2, "test1");
+        Lobby lobby = new Lobby(2, "loginJoiningLobbyList");
         controller1.createLobby(lobby.getLobbyName(), lobby.getNumberOfMaxPlayer());
         System.out.println(view1.state);
         //view joins after adding lobbies
@@ -86,9 +97,9 @@ class ControllersTests {
 
         view1.name = "pippo";
         view2.name = "pluto";
-        view3.name = "topolino";
-        String lobbyName1 = "test1";
-        String lobbyName2 = "test2";
+        view3.name = "mickey";
+        String lobbyName1 = "createLobby1";
+        String lobbyName2 = "createLobby2";
 
         controller1.login(view1.name);
         controller1.createLobby(lobbyName1, 2);
@@ -113,7 +124,7 @@ class ControllersTests {
 
         view1.name = "pippo";
         view2.name = "pluto";
-        String lobbyName1 = "test1";
+        String lobbyName1 = "joinLobby";
         controller1.login(view1.name);
         controller1.createLobby(lobbyName1, 3);
         controller2.login(view2.name);
@@ -145,8 +156,8 @@ class ControllersTests {
         ViewTest view3 = new ViewTest();
         view1.name = "pippo";
         view2.name = "pluto";
-        view3.name = "topolino";
-        String lobbyName1 = "test1";
+        view3.name = "mickey";
+        String lobbyName1 = "joinLobbyAndStartGame1";
         Controller controller1 = new Controller(realLobbyGameListController, view1);
         Controller controller2 = new Controller(realLobbyGameListController, view2);
         Controller controller3 = new Controller(realLobbyGameListController, view3);
@@ -315,10 +326,10 @@ class ControllersTests {
         ViewTest view4 = new ViewTest();
         view1.name = "pippo";
         view2.name = "pluto";
-        view3.name = "topolino";
-        view4.name = "gianni";
-        String lobbyName1 = "test1";
-        String lobbyName2 = "test2";
+        view3.name = "mickey";
+        view4.name = "duck";
+        String lobbyName1 = "leaveLobby1";
+        String lobbyName2 = "leaveLobby2";
         Controller controller1 = new Controller(realLobbyGameListController, view1);
         Controller controller2 = new Controller(realLobbyGameListController, view2);
         Controller controller3 = new Controller(realLobbyGameListController, view3);
@@ -378,7 +389,7 @@ class ControllersTests {
         ViewTest view2 = new ViewTest();
         view1.name = "pippo";
         view2.name = "pluto";
-        String lobbyName1 = "test1";
+        String lobbyName1 = "selectStartCardFace";
         Controller controller1 = new Controller(realLobbyGameListController, view1);
         Controller controller2 = new Controller(realLobbyGameListController, view2);
 
@@ -427,7 +438,7 @@ class ControllersTests {
         ViewTest view2 = new ViewTest();
         view1.name = "pippo";
         view2.name = "pluto";
-        String lobbyName1 = "test1";
+        String lobbyName1 = "lastPlayerSelectStartCard";
         Controller controller1 = new Controller(realLobbyGameListController, view1);
         Controller controller2 = new Controller(realLobbyGameListController, view2);
 
@@ -516,7 +527,7 @@ class ControllersTests {
         ViewTest view2 = new ViewTest();
         view1.name = "pippo";
         view2.name = "pluto";
-        String lobbyName1 = "test1";
+        String lobbyName1 = "choosePawn";
         Controller controller1 = new Controller(realLobbyGameListController, view1);
         Controller controller2 = new Controller(realLobbyGameListController, view2);
 
@@ -576,7 +587,7 @@ class ControllersTests {
         ViewTest view2 = new ViewTest();
         view1.name = "pippo";
         view2.name = "pluto";
-        String lobbyName1 = "test1";
+        String lobbyName1 = "lastPlayerChoosePawn";
         Controller controller1 = new Controller(realLobbyGameListController, view1);
         Controller controller2 = new Controller(realLobbyGameListController, view2);
 
@@ -601,7 +612,7 @@ class ControllersTests {
         Player player1 = game.getPlayerFromNick(view1.name);
         Player player2 = game.getPlayerFromNick(view2.name);
 
-        //pawnChoices settedUp
+        //pawnChoices setUp
         assert player1.getPawnColor() == PawnColors.BLUE;
         assert player2.getPawnColor() == PawnColors.RED;
 
@@ -634,7 +645,7 @@ class ControllersTests {
         ViewTest view2 = new ViewTest();
         view1.name = "pippo";
         view2.name = "pluto";
-        String lobbyName1 = "test1";
+        String lobbyName1 = "choseSecretObjective";
         Controller controller1 = new Controller(realLobbyGameListController, view1);
         Controller controller2 = new Controller(realLobbyGameListController, view2);
 
@@ -690,13 +701,9 @@ class ControllersTests {
     void lastToChoseSecretObjective() {
         ViewTest view1 = new ViewTest();
         ViewTest view2 = new ViewTest();
-        ViewTest view3 = new ViewTest();
-        ViewTest view4 = new ViewTest();
         view1.name = "pippo";
         view2.name = "pluto";
-        view3.name = "topolino";
-        view4.name = "gianni";
-        String lobbyName1 = "test1";
+        String lobbyName1 = "lastToChoseSecretObjective";
         Controller controller1 = new Controller(realLobbyGameListController, view1);
         Controller controller2 = new Controller(realLobbyGameListController, view2);
 
@@ -763,13 +770,9 @@ class ControllersTests {
     void place() {
         ViewTest view1 = new ViewTest();
         ViewTest view2 = new ViewTest();
-        ViewTest view3 = new ViewTest();
-        ViewTest view4 = new ViewTest();
         view1.name = "pippo";
         view2.name = "pluto";
-        view3.name = "topolino";
-        view4.name = "gianni";
-        String lobbyName1 = "test1";
+        String lobbyName1 = "place";
         Controller controller1 = new Controller(realLobbyGameListController, view1);
         Controller controller2 = new Controller(realLobbyGameListController, view2);
 
@@ -796,12 +799,14 @@ class ControllersTests {
         PublicGameController publicController = new PublicGameController(gameController);
         Game game = publicController.getGame();
 
-        Player player1 = game.getPlayerFromNick(view1.name);
-        game.setCurrentPlayerIndex(game.getPlayersList().lastIndexOf(player1));
+        Controller controllerFirst = view1.name.equals(game.getCurrentPlayer().getNickname()) ? controller1 : controller2;
+
+        Player player1 = game.getCurrentPlayer();
+        assert player1.getState().equals(PlayerState.PLACE);
         CardInHand cardPlaced = player1.getUserHand().getHand().stream().filter(Objects::nonNull).toList().getFirst();
         Position position = player1.getUserCodex().getFrontier().getFrontier().getFirst();
         LightPlacement placement = new LightPlacement(position, Lightifier.lightifyToCard(cardPlaced), CardFace.BACK);
-        controller1.place(placement);
+        controllerFirst.place(placement);
 
         //model
         assert !player1.getUserHand().getHand().contains(cardPlaced);
@@ -810,19 +815,21 @@ class ControllersTests {
         assert player1.getUserCodex().getPlacementAt(position).card().getIdBack() == cardPlaced.getIdBack();
 
         //lightModel1
-        LightCodex lightCodex1 = view1.lightGame.getCodexMap().get(view1.name);
-        LightHand lightHand1 = view1.lightGame.getHand();
-        assert !Arrays.stream(lightHand1.getCards()).toList().contains(Lightifier.lightifyToCard(cardPlaced));
-        assert lightCodex1.getPlacementHistory().contains(placement);
-        assert !lightCodex1.getFrontier().frontier().contains(position);
-        assert lightCodex1.getEarnedCollectables().equals(player1.getUserCodex().getEarnedCollectables());
-        assert lightCodex1.getFrontier().frontier().equals(player1.getUserCodex().getFrontier().getFrontier());
+        ViewTest viewFirst = view1.name.equals(player1.getNickname()) ? view1 : view2;
+        LightCodex lightCodexFirst = viewFirst.lightGame.getCodexMap().get(viewFirst.name);
+        LightHand lightHandFirst = viewFirst.lightGame.getHand();
+        assert !Arrays.stream(lightHandFirst.getCards()).toList().contains(Lightifier.lightifyToCard(cardPlaced));
+        assert lightCodexFirst.getPlacementHistory().contains(placement);
+        assert !lightCodexFirst.getFrontier().frontier().contains(position);
+        assert lightCodexFirst.getEarnedCollectables().equals(player1.getUserCodex().getEarnedCollectables());
+        assert lightCodexFirst.getFrontier().frontier().equals(player1.getUserCodex().getFrontier().getFrontier());
         for(CardInHand card : player1.getUserHand().getHand()){
-            assert card == null || lightHand1.getCardPlayability().get(Lightifier.lightifyToCard(card)) == card.canBePlaced(player1.getUserCodex());
+            assert card == null || lightHandFirst.getCardPlayability().get(Lightifier.lightifyToCard(card)) == card.canBePlaced(player1.getUserCodex());
         }
         //lightModel2
-        LightCodex lightCodex1on2 = view2.lightGame.getCodexMap().get(view1.name);
-        List<LightBack> lightHand1on2 = new ArrayList<>(Arrays.stream(view2.lightGame.getHandOthers().get(view1.name).getCards()).toList());
+        ViewTest viewSecond = view1.name.equals(player1.getNickname()) ? view2 : view1;
+        LightCodex lightCodex1on2 = viewSecond.lightGame.getCodexMap().get(viewFirst.name);
+        List<LightBack> lightHand1on2 = new ArrayList<>(Arrays.stream(viewSecond.lightGame.getHandOthers().get(viewFirst.name).getCards()).toList());
         System.out.println(lightHand1on2);
         assert lightHand1on2.contains(null);
         lightHand1on2.remove(null);
@@ -835,13 +842,9 @@ class ControllersTests {
     void drawFromDeck() {
         ViewTest view1 = new ViewTest();
         ViewTest view2 = new ViewTest();
-        ViewTest view3 = new ViewTest();
-        ViewTest view4 = new ViewTest();
         view1.name = "pippo";
         view2.name = "pluto";
-        view3.name = "topolino";
-        view4.name = "gianni";
-        String lobbyName1 = "test1";
+        String lobbyName1 = "drawFromDeck";
         Controller controller1 = new Controller(realLobbyGameListController, view1);
         Controller controller2 = new Controller(realLobbyGameListController, view2);
 
@@ -868,35 +871,41 @@ class ControllersTests {
         PublicGameController publicController = new PublicGameController(gameController);
         Game game = publicController.getGame();
 
-        Player player1 = game.getPlayerFromNick(view1.name);
-        Player player2 = game.getPlayerFromNick(view2.name);
-        game.setCurrentPlayerIndex(game.getPlayersList().lastIndexOf(player1));
-        CardInHand cardPlaced = player1.getUserHand().getHand().stream().filter(Objects::nonNull).toList().getFirst();
-        Position position = player1.getUserCodex().getFrontier().getFrontier().getFirst();
+        Player firstPlayer = game.getCurrentPlayer();
+        Player secondPlayer = game.getPlayerFromNick(view1.name.equals(firstPlayer.getNickname()) ? view2.name : view1.name);
+
+        Controller firstController = view1.name.equals(firstPlayer.getNickname()) ? controller1 : controller2;
+        Controller secondController = view1.name.equals(firstPlayer.getNickname()) ? controller2 : controller1;
+
+        ViewTest firstView = view1.name.equals(firstPlayer.getNickname()) ? view1 : view2;
+        ViewTest secondView = view1.name.equals(firstPlayer.getNickname()) ? view2 : view1;
+
+        CardInHand cardPlaced = firstPlayer.getUserHand().getHand().stream().filter(Objects::nonNull).toList().getFirst();
+        Position position = firstPlayer.getUserCodex().getFrontier().getFrontier().getFirst();
         LightPlacement placement = new LightPlacement(position, Lightifier.lightifyToCard(cardPlaced), CardFace.BACK);
-        controller1.place(placement);
-        assert player1.getUserHand().getHand().size() == 2;
+        firstController.place(placement);
+        assert firstPlayer.getUserHand().getHand().size() == 2;
         CardInHand card = game.getGoldCardDeck().showTopCardOfDeck();
-        controller1.draw(DrawableCard.GOLDCARD, Configs.actualDeckPos);
+        firstController.draw(DrawableCard.GOLDCARD, Configs.actualDeckPos);
 
         //model
         List<Integer> heavyBuffer = game.getGoldCardDeck().getBuffer().stream().map(Card::getIdFront).toList();
-        assert player1.getUserHand().getHand().contains(card);
-        assert game.getCurrentPlayer().equals(player2);
+        assert firstPlayer.getUserHand().getHand().contains(card);
+        assert game.getCurrentPlayer().equals(secondPlayer);
         assert !heavyBuffer.contains(card.getIdFront());
         assert game.getGoldCardDeck().showTopCardOfDeck().getIdFront() != card.getIdFront();
         //lightModel1
-        List<Integer> lightBuffer1 = Arrays.stream(view1.lightGame.getGoldDeck().getCardBuffer()).map(LightCard::idFront).toList();
-        assert Arrays.stream(view1.lightGame.getHand().getCards()).toList().contains(Lightifier.lightifyToCard(card));
-        assert view1.lightGame.getCurrentPlayer().equals(view2.name);
+        List<Integer> lightBuffer1 = Arrays.stream(firstView.lightGame.getGoldDeck().getCardBuffer()).map(LightCard::idFront).toList();
+        assert Arrays.stream(firstView.lightGame.getHand().getCards()).toList().contains(Lightifier.lightifyToCard(card));
+        assert firstView.lightGame.getCurrentPlayer().equals(secondView.name);
         assert heavyBuffer.containsAll(lightBuffer1) && lightBuffer1.containsAll(heavyBuffer);
-        assert view1.lightGame.getGoldDeck().getDeckBack().idBack() == game.getGoldCardDeck().showTopCardOfDeck().getIdBack();
+        assert firstView.lightGame.getGoldDeck().getDeckBack().idBack() == game.getGoldCardDeck().showTopCardOfDeck().getIdBack();
         //lightModel2
-        List<Integer> lightBuffer2 = Arrays.stream(view1.lightGame.getGoldDeck().getCardBuffer()).map(LightCard::idFront).toList();
-        assert Arrays.stream(view2.lightGame.getHandOthers().get(view1.name).getCards()).toList().contains(new LightBack(card.getIdBack()));
-        assert view1.lightGame.getCurrentPlayer().equals(view2.name);
+        List<Integer> lightBuffer2 = Arrays.stream(firstView.lightGame.getGoldDeck().getCardBuffer()).map(LightCard::idFront).toList();
+        assert Arrays.stream(secondView.lightGame.getHandOthers().get(firstView.name).getCards()).toList().contains(new LightBack(card.getIdBack()));
+        assert firstView.lightGame.getCurrentPlayer().equals(secondView.name);
         assert heavyBuffer.containsAll(lightBuffer2) && lightBuffer2.containsAll(heavyBuffer);
-        assert view2.lightGame.getGoldDeck().getDeckBack().idBack() == game.getGoldCardDeck().showTopCardOfDeck().getIdBack();
+        assert secondView.lightGame.getGoldDeck().getDeckBack().idBack() == game.getGoldCardDeck().showTopCardOfDeck().getIdBack();
 
     }
 
@@ -906,7 +915,7 @@ class ControllersTests {
         ViewTest view2 = new ViewTest();
         view1.name = "pippo";
         view2.name = "pluto";
-        String lobbyName1 = "test1";
+        String lobbyName1 = "drawFromBuffer";
         Controller controller1 = new Controller(realLobbyGameListController, view1);
         Controller controller2 = new Controller(realLobbyGameListController, view2);
 
@@ -935,42 +944,51 @@ class ControllersTests {
         //place
         Player player1 = game.getPlayerFromNick(view1.name);
         Player player2 = game.getPlayerFromNick(view2.name);
-        game.setCurrentPlayerIndex(game.getPlayersList().lastIndexOf(player1));
-        CardInHand cardPlaced = player1.getUserHand().getHand().stream().filter(Objects::nonNull).toList().getFirst();
-        Position position = player1.getUserCodex().getFrontier().getFrontier().getFirst();
+
+        Player firstToPlay = game.getCurrentPlayer().equals(player1) ? player1 : player2;
+        Player secondToPlay = firstToPlay.equals(player1) ? player2 : player1;
+
+        ViewTest firstToPlayView = firstToPlay.getNickname().equals(view1.name) ? view1 : view2;
+        ViewTest secondToPlayView = secondToPlay.getNickname().equals(view1.name) ? view1 : view2;
+
+        Controller firstToPlayController = firstToPlay.getNickname().equals(view1.name) ? controller1 : controller2;
+        Controller secondToPlayController = secondToPlay.getNickname().equals(view1.name) ? controller1 : controller2;
+
+        CardInHand cardPlaced = firstToPlay.getUserHand().getHand().stream().filter(Objects::nonNull).toList().getFirst();
+        Position position = firstToPlay.getUserCodex().getFrontier().getFrontier().getFirst();
         LightPlacement placement = new LightPlacement(position, Lightifier.lightifyToCard(cardPlaced), CardFace.BACK);
-        controller1.place(placement);
+        firstToPlayController.place(placement);
         CardInHand card = game.getGoldCardDeck().showCardFromBuffer(0);
-        controller1.draw(DrawableCard.GOLDCARD, 0);
+        firstToPlayController.draw(DrawableCard.GOLDCARD, 0);
 
         //model
         List<Integer> heavyBuffer = game.getGoldCardDeck().getBuffer().stream().map(Card::getIdFront).toList();
-        assert player1.getUserHand().getHand().contains(card);
-        assert game.getCurrentPlayer().equals(player2);
+        assert firstToPlay.getUserHand().getHand().contains(card);
+        assert game.getCurrentPlayer().equals(secondToPlay);
         assert !heavyBuffer.contains(card.getIdFront());
         assert game.getGoldCardDeck().showTopCardOfDeck().getIdFront() != card.getIdFront();
         //lightModel1
-        List<Integer> lightBuffer1 = Arrays.stream(view1.lightGame.getGoldDeck().getCardBuffer()).map(LightCard::idFront).toList();
-        assert Arrays.stream(view1.lightGame.getHand().getCards()).toList().contains(Lightifier.lightifyToCard(card));
-        assert view1.lightGame.getCurrentPlayer().equals(view2.name);
+        List<Integer> lightBuffer1 = Arrays.stream(firstToPlayView.lightGame.getGoldDeck().getCardBuffer()).map(LightCard::idFront).toList();
+        assert Arrays.stream(firstToPlayView.lightGame.getHand().getCards()).toList().contains(Lightifier.lightifyToCard(card));
+        assert firstToPlayView.lightGame.getCurrentPlayer().equals(secondToPlayView.name);
         assert heavyBuffer.containsAll(lightBuffer1) && lightBuffer1.containsAll(heavyBuffer);
-        assert view1.lightGame.getGoldDeck().getDeckBack().idBack() == game.getGoldCardDeck().showTopCardOfDeck().getIdBack();
+        assert firstToPlayView.lightGame.getGoldDeck().getDeckBack().idBack() == game.getGoldCardDeck().showTopCardOfDeck().getIdBack();
         //lightModel2
-        List<Integer> lightBuffer2 = Arrays.stream(view1.lightGame.getGoldDeck().getCardBuffer()).map(LightCard::idFront).toList();
-        assert Arrays.stream(view2.lightGame.getHandOthers().get(view1.name).getCards()).toList().contains(new LightBack(card.getIdBack()));
-        assert view1.lightGame.getCurrentPlayer().equals(view2.name);
+        List<Integer> lightBuffer2 = Arrays.stream(firstToPlayView.lightGame.getGoldDeck().getCardBuffer()).map(LightCard::idFront).toList();
+        assert Arrays.stream(secondToPlayView.lightGame.getHandOthers().get(firstToPlayView.name).getCards()).toList().contains(new LightBack(card.getIdBack()));
+        assert firstToPlayView.lightGame.getCurrentPlayer().equals(secondToPlayView.name);
         assert heavyBuffer.containsAll(lightBuffer2) && lightBuffer2.containsAll(heavyBuffer);
-        assert view2.lightGame.getGoldDeck().getDeckBack().idBack() == game.getGoldCardDeck().showTopCardOfDeck().getIdBack();
+        assert secondToPlayView.lightGame.getGoldDeck().getDeckBack().idBack() == game.getGoldCardDeck().showTopCardOfDeck().getIdBack();
     }
 
     @Test
     void completeTurn() {//TODO remove
         ViewTest view1 = new ViewTest();
         ViewTest view2 = new ViewTest();
-        view1.name = "pippo";
-        view2.name = "pluto";
+        view1.name = "g";
+        view2.name = "a";
 
-        String lobbyName1 = "test1";
+        String lobbyName1 = "completeTurn";
         Controller controller1 = new Controller(realLobbyGameListController, view1);
         Controller controller2 = new Controller(realLobbyGameListController, view2);
 
@@ -1019,7 +1037,7 @@ class ControllersTests {
         view1.name = "pippo";
         view2.name = "pluto";
 
-        String lobbyName1 = "test1";
+        String lobbyName1 = "gameStateTest";
         Controller controller1 = new Controller(realLobbyGameListController, view1);
         Controller controller2 = new Controller(realLobbyGameListController, view2);
 
@@ -1084,7 +1102,7 @@ class ControllersTests {
         view1.name = "pippo";
         view2.name = "pluto";
 
-        String lobbyName1 = "test1";
+        String lobbyName1 = "playerStateTest";
         Controller controller1 = new Controller(realLobbyGameListController, view1);
         Controller controller2 = new Controller(realLobbyGameListController, view2);
 
@@ -1160,7 +1178,7 @@ class ControllersTests {
         view1.name = "pippo";
         view2.name = "pluto";
 
-        String lobbyName1 = "test1";
+        String lobbyName1 = "gameEndingCausePoints";
         Controller controller1 = new Controller(realLobbyGameListController, view1);
         Controller controller2 = new Controller(realLobbyGameListController, view2);
 
@@ -1224,32 +1242,30 @@ class ControllersTests {
 
         //remove the first element from the hand e add the card to get 100 points
         Hand handFirst = firstToPlay.getUserHand();
-        handFirst.removeCard(handFirst.getHand().stream().reduce((a,b)->a).get());
+        CardInHand removedCard = handFirst.getHand().stream().reduce((a,b)->a).get();
+        handFirst.removeCard(removedCard);
         handFirst.addCard(exodiaTheForbidden);
-
         firstToPlay.playCard(exodiaPlacement);
+        handFirst.addCard(removedCard);
 
         assert firstToPlay.getUserCodex().getPoints() == 100;
 
-        view1.state = ViewState.DRAW_CARD;
-        firstToPlayController.draw(DrawableCard.GOLDCARD, 0);
+        placeRandom(firstToPlay, firstToPlayController);
+        firstToPlayController.draw(DrawableCard.RESOURCECARD, 0);
         assert game.duringEndingTurns();
         assert !game.getState().equals(GameState.END_GAME);
 
         //play last turns placing the first card in hand and drawing from goldCardDeck
-        CardInHand randomCardFromHand = secondToPlay.getUserHand().getHand().stream().reduce((a,b)->a).get();
-        secondToPlayController.place(new LightPlacement(new Position(1,1), Lightifier.lightifyToCard(randomCardFromHand), CardFace.BACK));
-        secondToPlayController.draw(DrawableCard.GOLDCARD, 0);
+        placeRandom(secondToPlay, secondToPlayController);
+        secondToPlayController.draw(DrawableCard.RESOURCECARD, 0);
 
         assert game.duringEndingTurns();
         assert publicGame.getLastTurnCounter() == 1;
         assert !game.getState().equals(GameState.END_GAME);
 
-        randomCardFromHand = firstToPlay.getUserHand().getHand().stream().reduce((a,b)->a).get();
-        firstToPlayController.place(new LightPlacement(new Position(1,-1), Lightifier.lightifyToCard(randomCardFromHand), CardFace.BACK));
+        placeRandom(firstToPlay, firstToPlayController);
         firstToPlayController.draw(DrawableCard.GOLDCARD, 0);
-        randomCardFromHand = secondToPlay.getUserHand().getHand().stream().reduce((a,b)->a).get();
-        secondToPlayController.place(new LightPlacement(new Position(1,-1), Lightifier.lightifyToCard(randomCardFromHand), CardFace.BACK));
+        placeRandom(secondToPlay, secondToPlayController);
         secondToPlayController.draw(DrawableCard.GOLDCARD, 0);
 
         assert game.getState().equals(GameState.END_GAME);
@@ -1277,13 +1293,14 @@ class ControllersTests {
         view1.name = "pippo";
         view2.name = "pluto";
 
-        String lobbyName1 = "test1";
+        String lobbyName1 = "gameEndingItsATie";
         Controller controller1 = new Controller(realLobbyGameListController, view1);
         Controller controller2 = new Controller(realLobbyGameListController, view2);
 
         controller1.login(view1.name);
         controller2.login(view2.name);
         controller1.createLobby(lobbyName1, 2);
+        assert lobbyGameListController.getLobbyMap().containsKey(lobbyName1);
         controller2.joinLobby(lobbyName1);
 
         LightCard startCard1 = view1.lightGame.getHand().getCards()[0];
@@ -1320,8 +1337,8 @@ class ControllersTests {
         Controller firstToPlayController = firstToPlay.getNickname().equals(view1.name) ? controller1 : controller2;
         Controller secondToPlayController = secondToPlay.getNickname().equals(view1.name) ? controller1 : controller2;
 
-        view1.state = ViewState.PLACE_CARD;
-        view2.state = ViewState.IDLE;
+        firstToPlayView.state = ViewState.PLACE_CARD;
+        secondToPlayView.state = ViewState.IDLE;
 
         //change secret objective to a useless one, that gives 0 points
         CollectableCardPointMultiplier uselessMultiplier = new CollectableCardPointMultiplier(Map.of(Resource.FUNGI, 100));
@@ -1348,28 +1365,32 @@ class ControllersTests {
 
         //remove the first element from the hand e add the card to get 100 points
         Hand handFirst = firstToPlay.getUserHand();
-        handFirst.removeCard(handFirst.getHand().stream().reduce((a,b)->a).get());
+        CardInHand removedCard = handFirst.getHand().stream().reduce((a,b)->a).get();
+        handFirst.removeCard(removedCard);
         handFirst.addCard(exodiaTheForbidden);
-
         firstToPlay.playCard(exodiaPlacement);
+        handFirst.addCard(removedCard);
 
         assert firstToPlay.getUserCodex().getPoints() == 100;
 
-        firstToPlayView.state = ViewState.DRAW_CARD;
-        firstToPlayController.draw(DrawableCard.GOLDCARD, 0);
+
+        placeRandom(firstToPlay, firstToPlayController);
+        firstToPlayController.draw(DrawableCard.RESOURCECARD, 0);
         assert game.duringEndingTurns();
         assert !game.getState().equals(GameState.END_GAME);
 
 
         Hand handSecond = secondToPlay.getUserHand();
+        removedCard = handFirst.getHand().stream().reduce((a,b)->a).get();
         handSecond.removeCard(handSecond.getHand().stream().reduce((a,b)->a).get());
         handSecond.addCard(exodiaTheForbidden);
-
         secondToPlay.playCard(exodiaPlacement);
+        handSecond.addCard(removedCard);
 
         assert secondToPlay.getUserCodex().getPoints() == 100;
 
         secondToPlayView.state = ViewState.DRAW_CARD;
+        placeRandom(secondToPlay, secondToPlayController);
         secondToPlayController.draw(DrawableCard.GOLDCARD, 0);
         assert game.duringEndingTurns();
         assert !game.getState().equals(GameState.END_GAME);
@@ -1386,14 +1407,25 @@ class ControllersTests {
         ResourceCard uselessCard = new ResourceCard(1, 1, Resource.ANIMAL, 0, uselessCornerMap);
         Placement uselessPlacement = new Placement(new Position(1,-1), uselessCard, CardFace.FRONT);
 
-        handFirst.removeCard(handFirst.getHand().stream().reduce((a,b)->a).get());
-        handFirst.addCard(uselessCard);
-        handSecond.removeCard(handSecond.getHand().stream().reduce((a,b)->a).get());
-        handSecond.addCard(uselessCard);
 
-        player1.playCard(uselessPlacement);
-        player2.playCard(uselessPlacement);
+        removedCard = handFirst.getHand().stream().reduce((a,b)->a).get();
+        handFirst.removeCard(removedCard);
+        LightCard lightCard = new LightCard(1, 1);
+        handFirst.addCard(Heavifier.heavifyCardInHand(lightCard, lobbyGameListController.getCardTable()));
+        Position position = firstToPlay.getUserCodex().getFrontier().getFrontier().getFirst();
+        LightPlacement lightPlacement = new LightPlacement(position, lightCard, CardFace.BACK);
+
+        firstToPlayController.place(lightPlacement);
         firstToPlayController.draw(DrawableCard.GOLDCARD, 0);
+
+        removedCard = handSecond.getHand().stream().reduce((a,b)->a).get();
+        handSecond.removeCard(removedCard);
+        lightCard = new LightCard(1, 1);
+        handSecond.addCard(Heavifier.heavifyCardInHand(lightCard, lobbyGameListController.getCardTable()));
+        position = secondToPlay.getUserCodex().getFrontier().getFrontier().getFirst();
+        lightPlacement = new LightPlacement(position, lightCard, CardFace.BACK);
+
+        secondToPlayController.place(lightPlacement);
         secondToPlayController.draw(DrawableCard.GOLDCARD, 0);
 
         assert game.getState().equals(GameState.END_GAME);
@@ -1442,6 +1474,14 @@ class ControllersTests {
         assert duplicateNameView.state.equals(ViewState.LOGIN_FORM);
         assert emptyNameView.state.equals(ViewState.LOGIN_FORM);
         assert allSpacesNameView.state.equals(ViewState.LOGIN_FORM);
+    }
+
+    private void placeRandom(Player player, Controller controller){
+        Hand hand = player.getUserHand();
+        Position position = player.getUserCodex().getFrontier().getFrontier().getFirst();
+        LightCard lightCard = Lightifier.lightifyToCard(hand.getHand().stream().reduce((a,b)->a).get());
+        LightPlacement lightPlacement = new LightPlacement(position, lightCard, CardFace.BACK);
+        controller.place(lightPlacement);
     }
 
     @Test
@@ -1530,7 +1570,7 @@ class ControllersTests {
         int resourceCardsInHandAtStart = 2;
         int goldCardsInHandAtStart = 1;
 
-        String lobbyName1 = "test1";
+        String lobbyName1 = "deckFinished";
         Controller controller1 = new Controller(realLobbyGameListController, view1);
         Controller controller2 = new Controller(realLobbyGameListController, view2);
 

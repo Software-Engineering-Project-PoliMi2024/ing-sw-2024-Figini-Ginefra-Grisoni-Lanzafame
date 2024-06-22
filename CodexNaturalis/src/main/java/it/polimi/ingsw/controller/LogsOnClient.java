@@ -56,6 +56,7 @@ public class LogsOnClient {
     public static String YOU_PLACED = "Successfully placed a card in your Codex.";
     public static String PLAYER_DRAW = " drew a card.";
     public static String YOU_DRAW = "Successfully drew a card to your Hand.";
+    public static String EMPTY_DECK_POSITION = "There are no cards here.";
 
     //gameTurn related
     public static String YOUR_TURN = "It's now your turn to play.";
