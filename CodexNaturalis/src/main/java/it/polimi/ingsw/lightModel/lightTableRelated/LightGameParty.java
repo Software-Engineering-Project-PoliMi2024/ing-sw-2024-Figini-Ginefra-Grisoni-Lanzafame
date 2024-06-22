@@ -21,8 +21,8 @@ public class LightGameParty implements Differentiable, Observed {
     private List<PawnColors> pawnChoices = new ArrayList<>();
     private final Map<String, PawnColors> playersColor = new HashMap<>();
     private final List<Observer> observers = new LinkedList<>();
-
     private final LightChat lightChat = new LightChat();
+
     public LightGameParty() {
         this.playerActiveList = new HashMap<>();
     }
@@ -49,21 +49,7 @@ public class LightGameParty implements Differentiable, Observed {
 
     public void addPlayerColor(String nickname, PawnColors color){
         playersColor.put(nickname, color);
-        notifyObservers();
-    }
-
-    /**
-     * @param gameName the name of the game
-     * @param playerNicknames  the list of the player nicknames
-     * @param currentPlayer the current player
-     */
-    public LightGameParty(String gameName, List<String> playerNicknames, String currentPlayer){
-        this.gameName = gameName;
-        this.currentPlayer = currentPlayer;
-        this.playerActiveList = new HashMap<>();
-        for (String player : playerNicknames) {
-            playerActiveList.put(player, true);
-        }
+        this.notifyObservers();
     }
 
     /**
@@ -89,13 +75,13 @@ public class LightGameParty implements Differentiable, Observed {
 
     public void removePlayer(String player){
         playerActiveList.remove(player);
+        this.notifyObservers();
     }
 
     /**
      * @param currentPlayer the current player playing
      */
     public void setCurrentPlayer(String currentPlayer) {
-
         this.currentPlayer = currentPlayer;
         this.notifyObservers();
     }
@@ -110,12 +96,14 @@ public class LightGameParty implements Differentiable, Observed {
      */
     public void setInactivePlayer(String player){
         playerActiveList.put(player,false);
+        this.notifyObservers();
     }
     /**
      * @param player nickname of the player to set active
      */
     public void setActivePlayer(String player){
         playerActiveList.put(player,true);
+        this.notifyObservers();
     }
 
     public void setYourName(String yourName) {

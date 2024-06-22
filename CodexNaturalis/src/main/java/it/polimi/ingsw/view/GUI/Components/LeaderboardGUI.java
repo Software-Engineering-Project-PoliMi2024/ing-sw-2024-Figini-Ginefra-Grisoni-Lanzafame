@@ -15,6 +15,7 @@ import javafx.scene.image.ImageView;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
+import javafx.scene.text.Text;
 import javafx.stage.Window;
 
 import java.util.HashMap;
@@ -27,9 +28,10 @@ public class LeaderboardGUI implements Observer {
 
     private AnchoredPopUp popUp;
 
-    private Map<String, Label> labelMap = new HashMap<>();
+    private Map<String, Text> labelMap = new HashMap<>();
     private Map<String, ImageView> pawnImageViewMap = new HashMap<>();
     private static Map<String, PawnsGui> playerpawnMap = new HashMap<>();
+    private final HBox buttonContainer = new HBox();
     private PlateauGUI plateau;
     private List<PawnsGui> availablePawns;
 
@@ -52,9 +54,28 @@ public class LeaderboardGUI implements Observer {
         popUp.getContent().getChildren().add(layout);
 
         popUp.open();
-        popUp.setLocked(true);
+        popUp.setLocked(false);
 
         createLeaderboard(parent);
+
+        layout.getChildren().add(buttonContainer);
+        buttonContainer.setAlignment(Pos.CENTER);
+
+        ChatButton chatButton = new ChatButton();
+        chatButton.addThisTo(parent);
+        chatButton.attach();
+
+        ImageView plateauIcon = new ImageView(AssetsGUI.plateauIcon);
+        plateauIcon.preserveRatioProperty().set(true);
+        plateauIcon.fitHeightProperty().bind(chatButton.getChatButton().heightProperty().multiply(0.8));
+        Button plateauButton = new Button("", plateauIcon);
+        plateauButton.setStyle("-fx-background-color: transparent;");
+        plateauButton.setOnAction(event -> plateau.show());
+
+        buttonContainer.getChildren().add(plateauButton);
+        buttonContainer.getChildren().add(chatButton.getChatButton());
+
+
 
         layout.prefHeightProperty().bind(popUp.getContent().prefHeightProperty());
         layout.prefWidthProperty().bind(popUp.getContent().prefWidthProperty());
@@ -82,7 +103,7 @@ public class LeaderboardGUI implements Observer {
 
                     pawnImageViewMap.put(e.getKey(), pawnView);
 
-                    Label label = new Label(e.getKey() + ": " + e.getValue());
+                    Text label = new Text(e.getKey() + ": " + e.getValue());
 
                     label.setStyle("-fx-font-size: 16pt;");
 
@@ -124,12 +145,6 @@ public class LeaderboardGUI implements Observer {
                     }
                     layout.getChildren().add(row);
                 });
-
-        // Add event handler to show plateau
-        layout.setOnMouseClicked(event -> {
-            Window owner = parent.getScene().getWindow();
-            plateau.show();
-        });
     }
 
     private void updateLeaderboard() {
@@ -158,6 +173,15 @@ public class LeaderboardGUI implements Observer {
             }
             else{
                 label.setStyle(label.getStyle().replace("-fx-underline: true;", ""));
+            }
+
+            Boolean isActive = GUI.getLightGame().getLightGameParty().getPlayerActiveList().get(name);
+            if(isActive != null && !isActive){
+                System.out.println("strikethrough");
+                label.setStyle(label.getStyle() + "-fx-strikethrough: true;");
+            }
+            else{
+                label.setStyle(label.getStyle().replace("-fx-strikethrough: true;", ""));
             }
         });
     }
