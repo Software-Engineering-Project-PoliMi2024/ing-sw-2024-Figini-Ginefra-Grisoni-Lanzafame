@@ -54,7 +54,7 @@ public class VirtualViewRMI implements VirtualView {
             trasitionToFuture.get(Configs.secondsTimeOut, TimeUnit.SECONDS);
         }catch (InterruptedException ignored){
         }catch (Exception e){
-////            e.printStackTrace();
+              e.printStackTrace();
             this.disconnect();
         }
     }
@@ -72,7 +72,7 @@ public class VirtualViewRMI implements VirtualView {
             logFuture.get(Configs.secondsTimeOut, TimeUnit.SECONDS);
         }catch (InterruptedException ignored){
         }catch (Exception e){
-//            e.printStackTrace();
+              e.printStackTrace();
             this.disconnect();
         }
     }
@@ -90,7 +90,7 @@ public class VirtualViewRMI implements VirtualView {
             logErrFuture.get(Configs.secondsTimeOut, TimeUnit.SECONDS);
         }catch (InterruptedException ignored){
         }catch (Exception e){
-//            e.printStackTrace();
+              e.printStackTrace();
             this.disconnect();
         }
     }
@@ -108,7 +108,7 @@ public class VirtualViewRMI implements VirtualView {
             logFuture.get(Configs.secondsTimeOut, TimeUnit.SECONDS);
         }catch (InterruptedException ignored){
         }catch (Exception e){
-//            e.printStackTrace();
+              e.printStackTrace();
             this.disconnect();
         }
     }
@@ -126,7 +126,7 @@ public class VirtualViewRMI implements VirtualView {
             logFuture.get(Configs.secondsTimeOut, TimeUnit.SECONDS);
         }catch (InterruptedException ignored){
         }catch (Exception e){
-//            e.printStackTrace();
+              e.printStackTrace();
             this.disconnect();
         }
     }
@@ -144,7 +144,7 @@ public class VirtualViewRMI implements VirtualView {
             logFuture.get(Configs.secondsTimeOut, TimeUnit.SECONDS);
         }catch (InterruptedException ignored){
         }catch (Exception e){
-//            e.printStackTrace();
+              e.printStackTrace();
             this.disconnect();
         }
     }
@@ -162,7 +162,7 @@ public class VirtualViewRMI implements VirtualView {
             updateFuture.get(Configs.secondsTimeOut, TimeUnit.SECONDS);
         }catch (InterruptedException ignored){
         }catch (Exception e){
-//            e.printStackTrace();
+              e.printStackTrace();
             this.disconnect();
         }
     }
@@ -181,7 +181,7 @@ public class VirtualViewRMI implements VirtualView {
             updateFuture.get(Configs.secondsTimeOut, TimeUnit.SECONDS);
         }catch (InterruptedException ignored){
         }catch (Exception e){
-//            e.printStackTrace();
+              e.printStackTrace();
             this.disconnect();
         }
     }
@@ -199,7 +199,7 @@ public class VirtualViewRMI implements VirtualView {
             updateFuture.get(Configs.secondsTimeOut, TimeUnit.SECONDS);
         }catch (InterruptedException ignored){
         }catch (Exception e){
-//            e.printStackTrace();
+              e.printStackTrace();
             this.disconnect();
         }
     }
@@ -217,7 +217,7 @@ public class VirtualViewRMI implements VirtualView {
             setFinalRankingFuture.get(Configs.secondsTimeOut, TimeUnit.SECONDS);
         }catch (InterruptedException ignored){
         }catch (Exception e){
-//            e.printStackTrace();
+              e.printStackTrace();
             this.disconnect();
         }
     }
@@ -233,7 +233,7 @@ public class VirtualViewRMI implements VirtualView {
             UnicastRemoteObject.unexportObject(controller, true);
         }catch (InterruptedException ignored){
         }catch (Exception e){
-//            e.printStackTrace();
+            e.printStackTrace();
         }
     }
 
@@ -256,7 +256,7 @@ public class VirtualViewRMI implements VirtualView {
                 ping.get(Configs.secondsTimeOut, TimeUnit.SECONDS);
             }catch (InterruptedException ignored){
             } catch (Exception e) {
-//                e.printStackTrace();
+                e.printStackTrace();
                 this.disconnect();
             }
         }, Configs.pingPongFrequency, 1, TimeUnit.SECONDS);
