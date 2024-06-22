@@ -90,7 +90,7 @@ public class PersistenceFactory {
                         delete(gameSave); //delete the expired saves
                     } else {
                         String gameName = getGameNameFromFile(gameSave);
-                        Game game = latestGame(Arrays.stream(saves).filter(file -> file.getName().contains(gameName)).toList());
+                        Game game = latestGame(Arrays.stream(saves).filter(file -> getGameNameFromFile(file).equals(gameName)).toList());
                         saves = dataFolder.listFiles(); //update the list of saves after possible deletion from latestGame
                         if (game != null) {
                             gameList.add(game);
@@ -168,7 +168,7 @@ public class PersistenceFactory {
         Queue<File> savesOfGame = new PriorityQueue<>(gameSaveComparator);
         if (saves != null) {
             for (File gameSave : saves) {
-                if (gameSave.getName().contains(game.getName())) {
+                if (getGameNameFromFile(gameSave).equals(game.getName())) {
                     savesOfGame.add(gameSave);
                 }
             }
@@ -234,7 +234,7 @@ public class PersistenceFactory {
             File[] saves = dataFolder.listFiles();
             File gameToDelete = null;
             if (saves != null) {
-                gameToDelete = Arrays.stream(saves).filter(file -> file.getName().contains(gameName)).findFirst().orElse(null);
+                gameToDelete = Arrays.stream(saves).filter(file -> getGameNameFromFile(file).equals(gameName)).findFirst().orElse(null);
             }
             if (gameToDelete != null) {
                 delete(gameToDelete);
@@ -247,7 +247,8 @@ public class PersistenceFactory {
     private void delete(File file) {
         if(!file.delete()) {
             System.out.println("file:" + file.getName() + " could not be deleted");
-        }
+        }else
+            System.out.println("file:" + file.getName() + " deleted successfully");
     }
 
     public void eraseAllSaves() {
