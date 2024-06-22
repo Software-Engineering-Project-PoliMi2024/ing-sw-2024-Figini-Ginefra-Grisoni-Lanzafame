@@ -175,6 +175,7 @@ public class LobbyGameListsController implements it.polimi.ingsw.controller.Inte
         }else {
             this.leaveLobbyList(nickname);
         }
+        System.out.println(nickname + " disconnected");
     }
 
     @Override

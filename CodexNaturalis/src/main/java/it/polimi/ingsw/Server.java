@@ -19,6 +19,7 @@ import java.net.Socket;
 import java.rmi.registry.LocateRegistry;
 import java.rmi.registry.Registry;
 import java.rmi.server.UnicastRemoteObject;
+import java.util.logging.Logger;
 
 /**
  * Starts the server, create an object of MultiGame, starts his SocketServer Thread
@@ -26,13 +27,15 @@ import java.rmi.server.UnicastRemoteObject;
 public class Server {
     public static void main(String[] args) {
         OSRelated.checkOrCreateDataFolderServer();
+        Logger serverLogger = Logger.getLogger("serverLogger");
+
         try (Socket socket = new Socket()) {
             socket.connect(new InetSocketAddress("google.com", 80));
             String ip = socket.getLocalAddress().getHostAddress();
-            Printer.println("IP: " + ip);
+            serverLogger.info("IP: " + ip);
             System.setProperty("java.rmi.server.hostname", ip);
         } catch (IOException e) {
-            System.out.println("No internet connection, can't get IP address");
+            serverLogger.warning("No internet connection, can't get IP address");
         }
         LobbyGameListsController lobbyGameListController = new LobbyGameListsController();
 
@@ -42,34 +45,37 @@ public class Server {
             ConnectionLayerServer connection = new ConnectionServerRMI(lobbyGameListController);
             ConnectionLayerServer stub = (ConnectionLayerServer) UnicastRemoteObject.exportObject(connection, 0);
             registry.rebind(Configs.connectionLabelRMI, stub);
-            System.out.println("RMI Server started on port " + Configs.rmiPort + "🚔!");
+            serverLogger.info("RMI Server started on port " + Configs.rmiPort + "🚔!");
 
             Runtime.getRuntime().addShutdownHook(new Thread(() -> {
                 try {
-                    registry.unbind(Configs.connectionLabelRMI);
-                    UnicastRemoteObject.unexportObject(connection, true);
-                    UnicastRemoteObject.unexportObject(stub, true);
+                    for (String boundName : registry.list()) {
+                        registry.unbind(boundName);
+                    }
                 } catch (Exception e) {
-                    System.out.println("Regular shutdown");
+                    serverLogger.severe("Error while unbinding ");
                 }
+
+                serverLogger.info("Shutting down server");
             }));
 
         } catch (Exception e) {
-            System.err.println("Server exception: can't open registry " +
+            serverLogger.severe("Server exception: can't open registry " +
                     "or error while binding the object");
-            e.printStackTrace();
+            System.exit(1);
+            //e.printStackTrace();
         }
 
         ServerSocket server;
         try {
             server = new ServerSocket(Configs.socketPort);
         } catch (IOException e) {
-            System.out.println("cannot open server socket");
+            serverLogger.severe("Cannot open server socket");
             System.exit(1);
             return;
         }
         Thread serverSocketThread = new Thread(() -> {
-            System.out.println("Socket Server started on port " + server.getLocalPort() + "🚔!");
+            serverLogger.info("Socket Server started on port " + server.getLocalPort() + "🚔!");
             while (true) {
                 try {
                     //todo this should be done in a connectionServerSocket but I don't know if it is the right thing (mental note, pinPong)
@@ -92,7 +98,7 @@ public class Server {
                     virtualView.log(LogsOnClient.SERVER_JOINED);
                     virtualView.transitionTo(ViewState.LOGIN_FORM);
                 } catch (IOException e) {
-                    System.out.println("connection dropped");
+                    serverLogger.severe("Connection dropped");
                     e.printStackTrace();
                 }
             }
