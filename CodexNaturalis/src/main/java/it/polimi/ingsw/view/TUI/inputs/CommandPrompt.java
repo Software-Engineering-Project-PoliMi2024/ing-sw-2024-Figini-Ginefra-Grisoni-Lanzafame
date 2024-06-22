@@ -195,7 +195,7 @@ public enum CommandPrompt implements Iterator<String>, CommandObserved {
 
     DISPLAY_DECKS("Display decks", true),
 
-    DISPLAY_POSTGAME("Display decks", true),
+    DISPLAY_POSTGAME("Display winners", true),
 
     SEND_PUBLIC_MESSAGE("Send public message",
             new String[]{

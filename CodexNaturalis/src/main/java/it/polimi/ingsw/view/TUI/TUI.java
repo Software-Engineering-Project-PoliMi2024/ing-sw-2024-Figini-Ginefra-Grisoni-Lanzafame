@@ -184,13 +184,6 @@ public class TUI implements ActualView {
         StateTUI.PLACE_CARD.attach(deckRenderable);
         renderables.add(deckRenderable);
 
-        postGameStateRenderable = new PostGameStateRenderable(
-                "Post Game",
-                lightGame,
-                new CommandPrompt[]{CommandPrompt.DISPLAY_POSTGAME},
-                this);
-        StateTUI.GAME_ENDING.attach(leaderboardRenderable);
-
         choosePawnForm = new ChoosePawnForm(
                 "Choose Pawn",
                 new CommandPrompt[]
