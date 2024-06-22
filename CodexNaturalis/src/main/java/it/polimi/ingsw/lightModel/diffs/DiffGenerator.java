@@ -132,7 +132,10 @@ public class DiffGenerator {
 
     public static GameDiffJoin updateJoinStartCard(Game game, List<String> activePlayers, String nickname){
         GameDiffJoin joinDiff = new GameDiffJoin(getInitialization(game, nickname));
-        joinDiff.put(getPlayerActivity(activePlayers));
+        ArrayList<String> allPlayers = new ArrayList<>(game.getGameParty().getPlayersList().stream().map(Player::getNickname).toList());
+        allPlayers.removeAll(activePlayers);
+        ArrayList<String> inactivePlayers = new ArrayList<>(allPlayers);
+        joinDiff.put(new GameDiffPlayerActivity(activePlayers, inactivePlayers));
         joinDiff.put(new ArrayList<>(getDeckCurrentState(game)));
         joinDiff.put(new ArrayList<>(getCodexCurrentState(game)));
         joinDiff.put(new ArrayList<>(getHandYourCurrentState(game.getPlayerFromNick(nickname))));
@@ -204,13 +207,7 @@ public class DiffGenerator {
         return deckDiff;
     }
 
-    /**
-     * @param activePlayers the list of the active players in the game
-     * @return a diff containing the current state of the active players in the game
-     */
-    private static GameDiffPlayerActivity getPlayerActivity(List<String> activePlayers){
-        return new GameDiffPlayerActivity(activePlayers, new ArrayList<>());
-    }
+
 
     /**
      * @return a list of diffs containing the current state of the codexes in the game
