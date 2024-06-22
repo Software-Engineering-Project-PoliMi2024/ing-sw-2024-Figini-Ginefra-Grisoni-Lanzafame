@@ -50,11 +50,7 @@ public class LobbyController implements LobbyControllerInterface {
     }
 
     public synchronized GameController startGame(CardTable cardTable, PersistenceFactory persistenceFactory, GameList gameList, MalevolentPlayerManager malevolentPlayerManager){
-        Deck<ObjectiveCard> objectiveCardDeck = new Deck<>(0,cardTable.getCardLookUpObjective().getQueue());
-        Deck<ResourceCard> resourceCardDeck = new Deck<>(2, cardTable.getCardLookUpResourceCard().getQueue());
-        Deck<GoldCard> goldCardDeck = new Deck<>(2, cardTable.getCardLookUpGoldCard().getQueue());
-        Deck<StartCard> startingCardDeck = new Deck<>(0, cardTable.getCardLookUpStartCard().getQueue());
-        Game createdGame = new Game(lobby, objectiveCardDeck, resourceCardDeck, goldCardDeck, startingCardDeck);
+        Game createdGame = getGame(cardTable);
         GameController gameController = new GameController(createdGame, cardTable, persistenceFactory, gameList, malevolentPlayerManager);
 
         notifyGameStart();
@@ -62,6 +58,15 @@ public class LobbyController implements LobbyControllerInterface {
         viewMap.forEach((nick, view) -> gameController.join(nick, view, false));
 
         return gameController;
+    }
+
+    private Game getGame(CardTable cardTable) {
+        Deck<ObjectiveCard> objectiveCardDeck = new Deck<>(0, cardTable.getCardLookUpObjective().getQueue());
+        Deck<ResourceCard> resourceCardDeck = new Deck<>(2, cardTable.getCardLookUpResourceCard().getQueue());
+        Deck<GoldCard> goldCardDeck = new Deck<>(2, cardTable.getCardLookUpGoldCard().getQueue());
+        Deck<StartCard> startingCardDeck = new Deck<>(0, cardTable.getCardLookUpStartCard().getQueue());
+        Game createdGame = new Game(lobby, objectiveCardDeck, resourceCardDeck, goldCardDeck, startingCardDeck);
+        return createdGame;
     }
 
     public synchronized boolean isLobbyFull(){

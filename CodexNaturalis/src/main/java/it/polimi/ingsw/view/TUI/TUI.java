@@ -293,7 +293,7 @@ public class TUI implements ActualView {
     }
 
     @Override
-    public void logChat(String logMsg) throws Exception {
+    public void logChat(String logMsg) {
         Printer.println("");
         PromptStyle.printInABox(logMsg,50, StringStyle.GOLD_FOREGROUND);
         Printer.println("");
