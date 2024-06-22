@@ -264,6 +264,10 @@ public class ChatDisplay {
         receiverChoice.getItems().remove(player);
     }
 
+    public boolean isOpen() {
+        return chatPopUp.isOpen();
+    }
+
     private enum publicMsg {
         EVERYONE;
 

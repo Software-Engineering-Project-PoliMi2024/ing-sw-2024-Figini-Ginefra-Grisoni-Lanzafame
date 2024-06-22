@@ -197,7 +197,7 @@ public class ChatButton implements Observer {
     }
 
     private void updateMessages(){
-        if(unreadMessage()){
+        if(unreadMessage() && !chatDisplay.isOpen()){
             unreadAnimation.play();
         }
         chatDisplay.updatedMessages(GUI.getLightGame().getLightGameParty().getLightChat().getChatHistory());
