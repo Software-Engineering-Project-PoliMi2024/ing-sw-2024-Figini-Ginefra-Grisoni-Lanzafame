@@ -27,7 +27,7 @@ public class LobbyGameListsController implements it.polimi.ingsw.controller.Inte
     private transient final ScheduledExecutorService gamesLoadExecutor = Executors.newScheduledThreadPool(1);
 
     public LobbyGameListsController(){
-        gamesLoadExecutor.scheduleAtFixedRate(this::refreshGames, 0, Configs.gameSaveExpirationTimeMinutes, TimeUnit.MINUTES);
+        gamesLoadExecutor.scheduleAtFixedRate(this::refreshGames, 1, Configs.gameSaveExpirationTimeMinutes, TimeUnit.MINUTES);
     }
 
     @Override
