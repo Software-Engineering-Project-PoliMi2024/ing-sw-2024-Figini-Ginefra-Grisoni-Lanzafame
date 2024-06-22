@@ -273,7 +273,4 @@ public class ChatDisplay {
         }
     }
 
-    public List<ChatMessage> getDisplayedMessages(){
-        return new ArrayList<>(messages.getItems());
-    }
 }

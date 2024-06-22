@@ -75,15 +75,15 @@ public class ChatButton implements Observer {
         if(isUpdatePlayerColor()){
             System.out.println("updatePlayerColor");
             updatePlayerColor();
-        }else if(isUpdateRemovePlayer()){
+        }else if(isUpdateRemovePlayer()) {
             System.out.println("removePlayer");
             removePlayer();
+        }else if(isUpdateActivePlayer()){
+                System.out.println("activePlayer");
+                activePlayer();
         }else if(isUpdateInactivePlayer()) {
             System.out.println("inactivePlayer");
             inactivePlayer();
-        }else if(isUpdateActivePlayer()){
-            System.out.println("activePlayer");
-            activePlayer();
         }else if(isUpdateCurrentPlayer()){
             System.out.println( "currentPlayer");
             currentPlayer();
@@ -136,7 +136,7 @@ public class ChatButton implements Observer {
     private boolean isUpdateInactivePlayer(){
         boolean inactive = false;
         for(String player : chatMembers.keySet()){
-            if(GUI.getLightGame().getLightGameParty().getPlayerActiveList().get(player) != chatMembers.get(player).second()){
+            if(!GUI.getLightGame().getLightGameParty().getPlayerActiveList().get(player) && chatMembers.get(player).second()){
                 inactive = true;
                 break;
             }
@@ -170,7 +170,7 @@ public class ChatButton implements Observer {
         for(String player : GUI.getLightGame().getLightGameParty().getPlayerActiveList().keySet()){
             if(player.equals(GUI.getLightGame().getLightGameParty().getYourName())){
                 if(!chatMembers.containsKey(GUI.getLightGame().getLightGameParty().getYourName())){
-                    System.out.println("I'm the generic joiner");
+                    System.out.println("I'm the joiner");
                     chatMembers.put(GUI.getLightGame().getLightGameParty().getYourName(), new Pair<>(GUI.getLightGame().getLightGameParty().getPlayerColor(GUI.getLightGame().getLightGameParty().getYourName()), true));
                     chatDisplay.addReceiver(player);
                     unreadAnimation.play();
@@ -179,15 +179,10 @@ public class ChatButton implements Observer {
                     }
                 }
             }else{
-                if(!chatMembers.containsKey(player)){ //someone else is the new joiner
-                    System.out.println(player + " is another joiner");
-                    chatMembers.put(player, new Pair<>(GUI.getLightGame().getLightGameParty().getPlayerColor(player), true));
-                    chatDisplay.addReceiver(player);
-                }else if(chatMembers.containsKey(player) && !chatMembers.get(player).second()){ //someone else is the mid-game joiner
-                    System.out.println(player + " is the mid-game joiner");
-                    chatMembers.put(player, new Pair<>(GUI.getLightGame().getLightGameParty().getPlayerColor(player), true));
-                    chatDisplay.updatedMessages(GUI.getLightGame().getLightGameParty().getLightChat().getChatHistory());
-                }
+                System.out.println(player + " is the joiner");
+                chatDisplay.addReceiver(player);
+                chatMembers.put(player, new Pair<>(GUI.getLightGame().getLightGameParty().getPlayerColor(player), true));
+                this.reloadMessages();
             }
         }
     }
