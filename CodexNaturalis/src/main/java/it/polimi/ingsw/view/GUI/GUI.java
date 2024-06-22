@@ -70,6 +70,7 @@ public class GUI extends Application implements ActualView {
 
         primaryStage.setOnCloseRequest((WindowEvent event) -> {
             try{
+                controller.disconnect();
                 System.exit(0);
             }catch (Exception e){}
         });
