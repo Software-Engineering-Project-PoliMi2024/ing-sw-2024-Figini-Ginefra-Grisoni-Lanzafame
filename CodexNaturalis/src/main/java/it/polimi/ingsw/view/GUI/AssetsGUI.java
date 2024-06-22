@@ -14,19 +14,19 @@ public class AssetsGUI {
     public static Image logoBackground = new Image(Objects.requireNonNull(GUI.class.getClassLoader().getResourceAsStream("GUI/images/Logo/Background.png"), "Logo Background is null"));
     public static Image logo = new Image(Objects.requireNonNull(GUI.class.getClassLoader().getResourceAsStream("GUI/images/CODEX_Rulebook_IT/01.png"), "Logo is null"));
     //Pawn assets
-    public static Image plateau = new Image(Objects.requireNonNull(GUI.class.getClassLoader().getResourceAsStream("GUI/images/PLATEAU-SCORE-IMP/plateau.png"), "Plateau is null"));
+    public static Image plateau = new Image(Objects.requireNonNull(GUI.class.getClassLoader().getResourceAsStream("GUI/images/PLATEAU-SCORE-IMP/plateau.png"), "Plateau is null"), 1575, 3150, true, true);
     public static Image pawnBleu = new Image(Objects.requireNonNull(GUI.class.getClassLoader().getResourceAsStream("GUI/images/Pion/CODEX_pion_bleu.png"), "Pawn Bleu is null"));
     public static Image pawnJaune = new Image(Objects.requireNonNull(GUI.class.getClassLoader().getResourceAsStream("GUI/images/Pion/CODEX_pion_jaune.png"), "Pawn Jaune is null"));
     public static Image pawnBlack = new Image(Objects.requireNonNull(GUI.class.getClassLoader().getResourceAsStream("GUI/images/Pion/CODEX_pion_noir.png"), "Pawn Black is null"));
     public static Image pawnGreen = new Image(Objects.requireNonNull(GUI.class.getClassLoader().getResourceAsStream("GUI/images/Pion/CODEX_pion_vert.png"), "Pawn Green is null"));
     public static Image pawnRed = new Image(Objects.requireNonNull(GUI.class.getClassLoader().getResourceAsStream("GUI/images/Pion/CODEX_pion_rouge.png"), "Pawn Red is null"));
     //Misc assets
-    public static Image eye = new Image(Objects.requireNonNull(GUI.class.getClassLoader().getResourceAsStream("GUI/images/Misc/eye.png"), "Eye is null"));
-    public static Image closedEye = new Image(Objects.requireNonNull(GUI.class.getClassLoader().getResourceAsStream("GUI/images/Misc/closedEye.png"), "Closed Eye is null"));
+    public static Image eye = new Image(Objects.requireNonNull(GUI.class.getClassLoader().getResourceAsStream("GUI/images/Misc/eye.png"), "Eye is null"), 100, 100, true, true);
+    public static Image closedEye = new Image(Objects.requireNonNull(GUI.class.getClassLoader().getResourceAsStream("GUI/images/Misc/closedEye.png"), "Closed Eye is null"), 100, 100, true, true);
     public static Image bgTile = new Image(Objects.requireNonNull(GUI.class.getClassLoader().getResourceAsStream("GUI/images/bgTile.png"), "bgTile is null"));
-    public static Image book = new Image(Objects.requireNonNull(GUI.class.getClassLoader().getResourceAsStream("GUI/images/Misc/book.png"), "Book is null"));
-    public static Image flower = new Image(Objects.requireNonNull(GUI.class.getClassLoader().getResourceAsStream("GUI/images/Misc/flower.png"), "Flower is null"));
-
+    public static Image book = new Image(Objects.requireNonNull(GUI.class.getClassLoader().getResourceAsStream("GUI/images/Misc/book.png"), "Book is null"), 100, 100, true, true);
+    public static Image flower = new Image(Objects.requireNonNull(GUI.class.getClassLoader().getResourceAsStream("GUI/images/Misc/flower.png"), "Flower is null"), 100, 100, true, true);
+    public static Image plateauIcon = new Image(Objects.requireNonNull(GUI.class.getClassLoader().getResourceAsStream("GUI/images/PLATEAU-SCORE-IMP/plateauIcon.png"), "Plateau Icon is null"), 100, 100, true, true);
     public static Image loadCardFront(int id){
         String idString = String.valueOf(id);
         idString = "000".substring(idString.length()) + idString;
@@ -40,11 +40,13 @@ public class AssetsGUI {
     }
 
     public static Image loadResource(Resource resource) {
-        return new Image(Objects.requireNonNull(GUI.class.getClassLoader().getResourceAsStream("GUI/images/Collectables/" + resource + ".png"), "Resource " + resource + " is null"));
+        return new Image(Objects.requireNonNull(GUI.class.getClassLoader().getResourceAsStream("GUI/images/Collectables/" + resource + ".png"), "Resource " + resource + " is null"),
+                100, 100, true, true);
     }
 
     public static Image loadWritingMaterial(WritingMaterial writingMaterial) {
-        return new Image(Objects.requireNonNull(GUI.class.getClassLoader().getResourceAsStream("GUI/images/Collectables/" + writingMaterial.toString() + ".png"), "Writing Material " + writingMaterial + " is null"));
+        return new Image(Objects.requireNonNull(GUI.class.getClassLoader().getResourceAsStream("GUI/images/Collectables/" + writingMaterial.toString() + ".png"), "Writing Material " + writingMaterial + " is null"),
+                100, 100, true, true);
     }
 
     public static Image loadResourceCircle(Resource resource) {
@@ -56,6 +58,6 @@ public class AssetsGUI {
     }
 
     public static Image loadCorner(CardCorner corner){
-        return new Image(Objects.requireNonNull(GUI.class.getClassLoader().getResourceAsStream("GUI/images/Corners/" + corner + ".png"), "Corner " + corner + " is null"));
+        return new Image(Objects.requireNonNull(GUI.class.getClassLoader().getResourceAsStream("GUI/images/Corners/" + corner + ".png"), "Corner " + corner + " is null"), 500, 500, true, true);
     }
 }
