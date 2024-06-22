@@ -28,7 +28,6 @@ public class ChatButton implements Observer {
     private String currentPlayer = "";
 
     public ChatButton() {
-
         book.fitWidthProperty().bind(chatButton.widthProperty().multiply(0.8));
         book.fitHeightProperty().bind(chatButton.heightProperty().multiply(0.8));
         book.setPreserveRatio(true);
@@ -66,11 +65,12 @@ public class ChatButton implements Observer {
     public void update() {
         if(isUpdatePlayerColor()){
             System.out.println("updatePlayerColor");
-            updatePlayerColor();
+            reloadMessages();
         }else if(isUpdateRemovePlayer()){
             System.out.println("removePlayer");
             removePlayer();
         }else if(isUpdateInactivePlayer()) {
+            System.out.println("inactivePlayer");
             inactivePlayer();
         }else if(isUpdateActivePlayer()){
             System.out.println("activePlayer");
@@ -95,10 +95,6 @@ public class ChatButton implements Observer {
         return changed;
     }
 
-    private void updatePlayerColor(){
-        System.out.println("updatePlayerColor");
-    }
-
     private boolean isUpdateRemovePlayer(){
         boolean removed = false;
         for(String player : chatMembers.keySet()){
@@ -118,6 +114,7 @@ public class ChatButton implements Observer {
                 break;
             }
         }
+        reloadMessages();
     }
 
     private boolean isUpdateInactivePlayer(){
@@ -133,7 +130,7 @@ public class ChatButton implements Observer {
 
     private void inactivePlayer(){
         chatMembers.put(GUI.getLightGame().getLightGameParty().getCurrentPlayer(), new Pair<>(GUI.getLightGame().getLightGameParty().getPlayerColor(GUI.getLightGame().getLightGameParty().getCurrentPlayer()), false));
-        System.out.println("inactivePlayer");
+        reloadMessages();
     }
 
     private boolean isUpdateActivePlayer(){
@@ -167,7 +164,7 @@ public class ChatButton implements Observer {
                 }else if(chatMembers.containsKey(player) && !chatMembers.get(player).second()){ //someone else is the mid-game joiner
                     System.out.println(player + " is the mid-game joiner");
                     chatMembers.put(player, new Pair<>(GUI.getLightGame().getLightGameParty().getPlayerColor(player), true));
-                    //todo recolor text?
+                    chatDisplay.updatedMessages(GUI.getLightGame().getLightGameParty().getLightChat().getChatHistory());
                 }
             }
         }
@@ -179,6 +176,7 @@ public class ChatButton implements Observer {
 
     private void currentPlayer(){
         currentPlayer = GUI.getLightGame().getCurrentPlayer();
+        reloadMessages();
     }
 
     private void updateMessages(){
@@ -186,6 +184,12 @@ public class ChatButton implements Observer {
             unreadAnimation.play();
         }
         chatDisplay.updatedMessages(GUI.getLightGame().getLightGameParty().getLightChat().getChatHistory());
+    }
+
+    public void reloadMessages(){
+        if(!GUI.getLightGame().getLightGameParty().getLightChat().getChatHistory().isEmpty()){
+            chatDisplay.updatedMessages(GUI.getLightGame().getLightGameParty().getLightChat().getChatHistory());
+        }
     }
     /**
      @return true if the last message received is not from the player
@@ -201,10 +205,6 @@ public class ChatButton implements Observer {
         unreadAnimation.setToValue(0.0);
         unreadAnimation.setCycleCount(FadeTransition.INDEFINITE);
         unreadAnimation.setAutoReverse(true);
-    }
-
-    public void playUnreadAnimation(){
-        unreadAnimation.play();
     }
 
     public void stopUnreadAnimation(){

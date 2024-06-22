@@ -101,31 +101,56 @@ public class ChatDisplay {
 
     private Text senderDecorator(String sender){
         Text senderText = new Text();
+        if(sender.equals("Game")){
+            senderText.setStyle("-fx-font-weight: bold");
+        }else {
+            playerTextDecorator(sender, senderText);
+        }
         if(sender.equals(GUI.getLightGame().getLightGameParty().getYourName())){
             senderText.setText("You");
-        }else{
+        }else {
             senderText.setText(sender);
         }
-        senderText.setFill(getUserColor(sender));
-        senderText.setStyle("-fx-font-weight: bold");
         return senderText;
     }
 
     private Text receiverDecorator(String receiver){
         Text receiverText = new Text();
+        playerTextDecorator(receiver, receiverText);
         if(receiver.equals(GUI.getLightGame().getLightGameParty().getYourName())){
             receiverText.setText("you");
         }else{
             receiverText.setText(receiver);
         }
-        receiverText.setFill(getUserColor(receiver));
-        receiverText.setStyle("-fx-font-weight: bold");
         return receiverText;
     }
 
     private void labelStyleDecorator(ChatMessage message, Label labelToEdit){
         if(message.getPrivacy() == ChatMessage.MessagePrivacy.PRIVATE){
             labelToEdit.setStyle("-fx-font-style: italic");
+        }
+    }
+
+    private void playerTextDecorator(String player, Text text){
+        if(!GUI.getLightGame().getLightGameParty().getPlayerActiveList().containsKey(player)){
+            text.setFill(Color.GRAY);
+        } else { // Only if the player is still in the game, the text will be bold
+            text.setFill(getUserColor(player));
+            StringBuilder style = new StringBuilder("-fx-font-weight: bold;");
+
+            if(GUI.getLightGame().getLightGameParty().getCurrentPlayer().equals(player)){
+                style.append("-fx-underline: true;");
+            } else {
+                style.append("-fx-underline: false;");
+            }
+
+            if(GUI.getLightGame().getLightGameParty().getPlayerActiveList().get(player)) {
+                style.append("-fx-strikethrough: false;");
+            } else {
+                style.append("-fx-strikethrough: true;");
+            }
+
+            text.setStyle(style.toString());
         }
     }
 
