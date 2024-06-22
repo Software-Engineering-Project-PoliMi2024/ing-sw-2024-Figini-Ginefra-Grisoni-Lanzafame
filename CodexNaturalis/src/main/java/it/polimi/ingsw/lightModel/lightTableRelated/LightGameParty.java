@@ -131,4 +131,17 @@ public class LightGameParty implements Differentiable, Observed {
     public LightChat getLightChat() {
         return lightChat;
     }
+
+    /**
+     * @return the list of pawns that are not taken by any player
+     */
+    public List<PawnColors> getFreePawns(){
+        List<PawnColors> freePawns = new ArrayList<>();
+        for(PawnColors pawn : PawnColors.values()){
+            if(!playersColor.containsValue(pawn) && pawn != PawnColors.BLACK){
+                freePawns.add(pawn);
+            }
+        }
+        return freePawns;
+    }
 }

@@ -18,6 +18,7 @@ public class PopUp {
     private final Timeline openingAnimation = new Timeline();
     private final Timeline closingAnimation = new Timeline();
     private final AnchorPane parent;
+    private boolean isOpen = false;
 
     private boolean isLocked = false;
 
@@ -120,11 +121,13 @@ public class PopUp {
     }
 
     public void open() {
+        isOpen = true;
         parent.getChildren().add(container);
         openingAnimation.play();
     }
 
     public void close() {
+        isOpen = false;
         closingAnimation.play();
     }
 
@@ -134,5 +137,9 @@ public class PopUp {
 
     public void setLocked(boolean isLocked){
         this.isLocked = isLocked;
+    }
+
+    public boolean isOpen() {
+        return isOpen;
     }
 }

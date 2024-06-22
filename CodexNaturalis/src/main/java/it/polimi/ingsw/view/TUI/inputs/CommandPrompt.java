@@ -94,6 +94,8 @@ public enum CommandPrompt implements Iterator<String>, CommandObserved {
             },
             false),
 
+    DISPLAY_PAWN_OPTIONS("Display pawn", true),
+
     /** The command to display the assigned start card front */
     DISPLAY_START_FRONT("Display start card front", true),
 
@@ -195,7 +197,7 @@ public enum CommandPrompt implements Iterator<String>, CommandObserved {
 
     DISPLAY_DECKS("Display decks", true),
 
-    DISPLAY_POSTGAME("Display decks", true),
+    DISPLAY_POSTGAME("Display winners", true),
 
     SEND_PUBLIC_MESSAGE("Send public message",
             new String[]{

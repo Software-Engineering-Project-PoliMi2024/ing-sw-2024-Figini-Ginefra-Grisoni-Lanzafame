@@ -2,10 +2,13 @@ package it.polimi.ingsw.view.TUI.Renderables;
 
 import it.polimi.ingsw.lightModel.lightTableRelated.LightGame;
 import it.polimi.ingsw.view.ControllerProvider;
+import it.polimi.ingsw.view.TUI.Styles.DecoratedString;
 import it.polimi.ingsw.view.TUI.Styles.PromptStyle;
+import it.polimi.ingsw.view.TUI.Styles.StringStyle;
 import it.polimi.ingsw.view.TUI.inputs.CommandPrompt;
 import it.polimi.ingsw.view.TUI.inputs.CommandPromptResult;
 
+import java.time.format.TextStyle;
 import java.util.Map;
 import java.util.stream.Collectors;
 
@@ -28,7 +31,15 @@ public class LeaderboardRenderable extends Renderable {
                 .collect(Collectors.joining("\n"));
 
         PromptStyle.printInABox("Leaderboard", 70);
-        PromptStyle.printListInABox("Player Scores", scores.keySet().stream().map(k -> k + " - " + scores.get(k)).toList(), 70, 1);
+        PromptStyle.printListInABox("Player Scores", scores.keySet().stream().map(nickname -> {
+            Boolean isActive = lightGame.getLightGameParty().getPlayerActiveList().get(nickname);
+            String content = nickname + " - " + scores.get(nickname);
+
+            if(isActive != null && !isActive)
+                content = new DecoratedString(content, StringStyle.STRIKETHROUGH).toString();
+
+            return content;
+        }).toList(), 70, 1);
     }
 
 

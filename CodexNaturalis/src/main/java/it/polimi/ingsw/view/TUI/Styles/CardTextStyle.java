@@ -18,6 +18,13 @@ public class CardTextStyle {
             PawnColors.YELLOW, StringStyle.GOLD_FOREGROUND
     );
 
+    private static final Map<PawnColors, StringStyle> pawnToBgStyle = Map.of(
+            PawnColors.BLUE, StringStyle.BLUE_BG,
+            PawnColors.RED, StringStyle.RED_BG,
+            PawnColors.GREEN, StringStyle.GREEN_BG,
+            PawnColors.YELLOW, StringStyle.GOLD_BG
+    );
+
     public static final String ESCReset = "\u001B[0m";
 
     private static final Map<Collectable, String> collectableEmoji = Map.of(
@@ -133,6 +140,10 @@ public class CardTextStyle {
 
     public static StringStyle convertPawnColor(PawnColors pawnColor){
         return pawnToStyle.get(pawnColor);
+    }
+
+    public static StringStyle convertPawnBgColor(PawnColors pawnColor){
+        return pawnToBgStyle.get(pawnColor);
     }
 }
 

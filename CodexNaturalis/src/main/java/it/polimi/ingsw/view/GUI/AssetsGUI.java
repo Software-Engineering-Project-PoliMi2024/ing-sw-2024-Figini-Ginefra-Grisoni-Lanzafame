@@ -54,7 +54,8 @@ public class AssetsGUI {
     }
 
     public static Image loadCharacter(Resource resource) {
-        return new Image(Objects.requireNonNull(GUI.class.getClassLoader().getResourceAsStream("GUI/images/Characters/" + resource + ".png"), "Character " + resource + " is null"));
+        return new Image(Objects.requireNonNull(GUI.class.getClassLoader().getResourceAsStream("GUI/images/Characters/" + resource + ".png"), "Character " + resource + " is null"),
+                200, 200, true, true);
     }
 
     public static Image loadCorner(CardCorner corner){
