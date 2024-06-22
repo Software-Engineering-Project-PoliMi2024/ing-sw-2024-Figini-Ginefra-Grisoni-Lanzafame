@@ -15,10 +15,6 @@ public class GameScene extends SceneGUI{
     private CodexGUI codex;
     private CollectedCollectablesGUI collectedCollectables;
     private LeaderboardGUI leaderboard;
-    private ObjectiveChoice objectiveChoice;
-    private PawnChoice pawnChoice;
-    private ChatButton chatButton;
-
     public GameScene() {
         super();
 
@@ -49,13 +45,9 @@ public class GameScene extends SceneGUI{
         leaderboard.addThisTo(getContent());
         leaderboard.attach();
 
-        objectiveChoice = new ObjectiveChoice(getContent());
+        ObjectiveChoice objectiveChoice = new ObjectiveChoice(getContent());
 
-        pawnChoice = new PawnChoice(getContent());
-
-        chatButton = new ChatButton();
-        chatButton.addThisTo(getContent());
-        chatButton.attach();
+        PawnChoice pawnChoice = new PawnChoice(getContent());
     }
 
 }

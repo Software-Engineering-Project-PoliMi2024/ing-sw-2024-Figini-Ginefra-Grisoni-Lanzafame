@@ -30,6 +30,7 @@ public class LeaderboardGUI implements Observer {
     private Map<String, Label> labelMap = new HashMap<>();
     private Map<String, ImageView> pawnImageViewMap = new HashMap<>();
     private static Map<String, PawnsGui> playerpawnMap = new HashMap<>();
+    private final HBox buttonContainer = new HBox();
     private PlateauGUI plateau;
     private List<PawnsGui> availablePawns;
 
@@ -52,9 +53,28 @@ public class LeaderboardGUI implements Observer {
         popUp.getContent().getChildren().add(layout);
 
         popUp.open();
-        popUp.setLocked(true);
+        popUp.setLocked(false);
 
         createLeaderboard(parent);
+
+        layout.getChildren().add(buttonContainer);
+        buttonContainer.setAlignment(Pos.CENTER);
+
+        ChatButton chatButton = new ChatButton();
+        chatButton.addThisTo(parent);
+        chatButton.attach();
+
+        ImageView plateauIcon = new ImageView(AssetsGUI.plateauIcon);
+        plateauIcon.preserveRatioProperty().set(true);
+        plateauIcon.fitHeightProperty().bind(chatButton.getChatButton().heightProperty().multiply(0.8));
+        Button plateauButton = new Button("", plateauIcon);
+        plateauButton.setStyle("-fx-background-color: transparent;");
+        plateauButton.setOnAction(event -> plateau.show());
+
+        buttonContainer.getChildren().add(plateauButton);
+        buttonContainer.getChildren().add(chatButton.getChatButton());
+
+
 
         layout.prefHeightProperty().bind(popUp.getContent().prefHeightProperty());
         layout.prefWidthProperty().bind(popUp.getContent().prefWidthProperty());
@@ -124,12 +144,6 @@ public class LeaderboardGUI implements Observer {
                     }
                     layout.getChildren().add(row);
                 });
-
-        // Add event handler to show plateau
-        layout.setOnMouseClicked(event -> {
-            Window owner = parent.getScene().getWindow();
-            plateau.show();
-        });
     }
 
     private void updateLeaderboard() {

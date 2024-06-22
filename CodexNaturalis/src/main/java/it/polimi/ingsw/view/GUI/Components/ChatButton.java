@@ -28,11 +28,16 @@ public class ChatButton implements Observer {
     private String currentPlayer = "";
 
     public ChatButton() {
+        book.maxHeight(16);
+        book.maxWidth(16);
         book.fitWidthProperty().bind(chatButton.widthProperty().multiply(0.8));
         book.fitHeightProperty().bind(chatButton.heightProperty().multiply(0.8));
         book.setPreserveRatio(true);
-        flower.fitWidthProperty().bind(chatButton.widthProperty().multiply(0.8));
-        flower.fitHeightProperty().bind(chatButton.heightProperty().multiply(0.8));
+
+        flower.maxHeight(16);
+        flower.maxWidth(16);
+        flower.fitWidthProperty().bind(chatButton.widthProperty().multiply(0.5));
+        flower.fitHeightProperty().bind(chatButton.heightProperty().multiply(0.5));
         flower.setPreserveRatio(true);
         flower.setOpacity(0.0);
 
@@ -43,17 +48,21 @@ public class ChatButton implements Observer {
         chatDisplay = new ChatDisplay(parent);
 
         chatButton.setStyle("-fx-background-color: transparent;");
-        chatButton.maxHeightProperty().bind(parent.heightProperty().multiply(0.2));
-        chatButton.maxWidthProperty().bind(parent.widthProperty().multiply(0.2));
+        chatButton.maxHeightProperty().set(16);
+        chatButton.maxWidthProperty().set(16);
 
         StackPane chatIcon = new StackPane(book, flower);
+        chatIcon.setMaxHeight(16);
+        chatIcon.setMaxWidth(16);
         chatButton.setGraphic(chatIcon);
 
-        AnchorPane.setBottomAnchor(chatButton, 20.0);
-        AnchorPane.setRightAnchor(chatButton, 20.0);
-        parent.getChildren().add(chatButton);
+        createAnimation();
 
         chatButton.setOnAction(event -> showChat());
+    }
+
+    public Button getChatButton() {
+        return chatButton;
     }
 
     private void showChat() {
