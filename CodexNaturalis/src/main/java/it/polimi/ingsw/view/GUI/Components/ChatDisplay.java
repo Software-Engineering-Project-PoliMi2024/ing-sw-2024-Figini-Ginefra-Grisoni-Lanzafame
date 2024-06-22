@@ -48,10 +48,12 @@ public class ChatDisplay {
         HBox.setHgrow(messages, Priority.ALWAYS);
 
         //Create a container for sending messages which will contain the TextField, Button and the ChoiceBox
-        VBox sendMessageContainer = new VBox();
+        HBox sendMessageContainer = new HBox();
         sendMessageContainer.setSpacing(20.0);
         sendMessageContainer.setAlignment(Pos.CENTER);
-        VBox sendingOptionContainer = initializeSendingOptionContainer(new VBox());
+        HBox.setHgrow(sendMessageContainer, Priority.ALWAYS);
+
+        HBox sendingOptionContainer = initializeSendingOptionContainer(new HBox());
         sendMessageContainer.getChildren().addAll(initializeSendMessageField(), sendingOptionContainer);
 
         popUpFiller.getChildren().addAll(receivedMessagesContainer, sendMessageContainer);
@@ -232,10 +234,11 @@ public class ChatDisplay {
     private TextField initializeSendMessageField(){
         sendMessageField = new TextField();
         sendMessageField.setPromptText("Write a message to: " + receiverChoice.getValue());
+        HBox.setHgrow(sendMessageField, Priority.ALWAYS);
         return sendMessageField;
     }
 
-    private VBox initializeSendingOptionContainer(VBox sendingOptionContainer){
+    private HBox initializeSendingOptionContainer(HBox sendingOptionContainer){
         sendingOptionContainer.setSpacing(10.0);
         sendingOptionContainer.setAlignment(Pos.CENTER);
         sendingOptionContainer.getChildren().addAll(initializeReceiverChoice(), initializeSendButton());
