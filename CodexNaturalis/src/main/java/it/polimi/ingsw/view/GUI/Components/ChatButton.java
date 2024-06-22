@@ -65,7 +65,7 @@ public class ChatButton implements Observer {
     public void update() {
         if(isUpdatePlayerColor()){
             System.out.println("updatePlayerColor");
-            reloadMessages();
+            updatePlayerColor();
         }else if(isUpdateRemovePlayer()){
             System.out.println("removePlayer");
             removePlayer();
@@ -93,6 +93,13 @@ public class ChatButton implements Observer {
             }
         }
         return changed;
+    }
+
+    private void updatePlayerColor(){
+        for(String player : chatMembers.keySet()){
+            chatMembers.put(player, new Pair<>(GUI.getLightGame().getLightGameParty().getPlayerColor(player), chatMembers.get(player).second()));
+        }
+        reloadMessages();
     }
 
     private boolean isUpdateRemovePlayer(){
@@ -129,7 +136,13 @@ public class ChatButton implements Observer {
     }
 
     private void inactivePlayer(){
-        chatMembers.put(GUI.getLightGame().getLightGameParty().getCurrentPlayer(), new Pair<>(GUI.getLightGame().getLightGameParty().getPlayerColor(GUI.getLightGame().getLightGameParty().getCurrentPlayer()), false));
+        for(String player : chatMembers.keySet()){
+            if(!GUI.getLightGame().getLightGameParty().getPlayerActiveList().get(player) && chatMembers.get(player).second()){
+                chatMembers.put(player, new Pair<>(GUI.getLightGame().getLightGameParty().getPlayerColor(player), false));
+                chatDisplay.removeReceiver(player);
+                break;
+            }
+        }
         reloadMessages();
     }
 

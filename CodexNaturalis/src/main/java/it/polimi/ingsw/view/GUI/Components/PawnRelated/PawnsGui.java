@@ -20,7 +20,7 @@ public enum PawnsGui {
     private static final Map<PawnColors, Color> pawnColorsColorMap = Map.of(
         PawnColors.BLUE, Color.BLUE,
         PawnColors.GREEN, Color.GREEN,
-        PawnColors.YELLOW, Color.GOLD,
+        PawnColors.YELLOW, Color.DARKGOLDENROD,
         PawnColors.RED, Color.RED
     );
 
