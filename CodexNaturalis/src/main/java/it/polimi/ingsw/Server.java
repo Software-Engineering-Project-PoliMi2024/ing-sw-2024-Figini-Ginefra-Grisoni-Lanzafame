@@ -50,7 +50,7 @@ public class Server {
                     UnicastRemoteObject.unexportObject(connection, true);
                     UnicastRemoteObject.unexportObject(stub, true);
                 } catch (Exception e) {
-                    throw new RuntimeException(e);
+                    System.out.println("Regular shutdown");
                 }
             }));
 

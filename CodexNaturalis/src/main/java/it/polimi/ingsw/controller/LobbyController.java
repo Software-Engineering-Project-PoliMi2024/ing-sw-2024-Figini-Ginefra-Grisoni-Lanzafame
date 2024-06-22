@@ -1,8 +1,10 @@
 package it.polimi.ingsw.controller;
 
-import it.polimi.ingsw.controller.Interfaces.FinishedGameDeleter;
 import it.polimi.ingsw.controller.Interfaces.GameControllerReceiver;
+import it.polimi.ingsw.controller.Interfaces.GameList;
 import it.polimi.ingsw.controller.Interfaces.LobbyControllerInterface;
+import it.polimi.ingsw.controller.Interfaces.MalevolentPlayerManager;
+import it.polimi.ingsw.controller.persistence.PersistenceFactory;
 import it.polimi.ingsw.lightModel.diffs.DiffGenerator;
 import it.polimi.ingsw.lightModel.diffs.nuclearDiffs.LittleBoyLobby;
 import it.polimi.ingsw.model.cardReleted.cards.*;
@@ -47,13 +49,13 @@ public class LobbyController implements LobbyControllerInterface {
         return view;
     }
 
-    public synchronized GameController startGame(CardTable cardTable, FinishedGameDeleter finishedGameDeleter){
+    public synchronized GameController startGame(CardTable cardTable, PersistenceFactory persistenceFactory, GameList gameList, MalevolentPlayerManager malevolentPlayerManager){
         Deck<ObjectiveCard> objectiveCardDeck = new Deck<>(0,cardTable.getCardLookUpObjective().getQueue());
         Deck<ResourceCard> resourceCardDeck = new Deck<>(2, cardTable.getCardLookUpResourceCard().getQueue());
         Deck<GoldCard> goldCardDeck = new Deck<>(2, cardTable.getCardLookUpGoldCard().getQueue());
         Deck<StartCard> startingCardDeck = new Deck<>(0, cardTable.getCardLookUpStartCard().getQueue());
         Game createdGame = new Game(lobby, objectiveCardDeck, resourceCardDeck, goldCardDeck, startingCardDeck);
-        GameController gameController = new GameController(createdGame, cardTable, finishedGameDeleter);
+        GameController gameController = new GameController(createdGame, cardTable, persistenceFactory, gameList, malevolentPlayerManager);
 
         notifyGameStart();
         gameReceiverMap.forEach((nick, receiver)->receiver.setGameController(gameController));

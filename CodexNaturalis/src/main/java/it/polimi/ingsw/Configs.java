@@ -1,5 +1,8 @@
 package it.polimi.ingsw;
 
+import java.util.function.BiFunction;
+import java.util.function.Consumer;
+
 public class Configs {
     public static Boolean debugMode = true;
     public static long gameSaveExpirationTimeMinutes = 30;
@@ -24,5 +27,4 @@ public class Configs {
     public static String dataFolderName = "CodexNaturalis";
     public static String cardDataFolderName = "Cards";
     public static String gameSaveFolderName = "GameSaved";
-
 }

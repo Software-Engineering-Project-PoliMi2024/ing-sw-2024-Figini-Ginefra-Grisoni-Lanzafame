@@ -1,5 +1,5 @@
 package it.polimi.ingsw.controller.Interfaces;
 
-public interface FinishedGameDeleter {
+public interface GameList {
     void deleteGame(String gameName);
 }

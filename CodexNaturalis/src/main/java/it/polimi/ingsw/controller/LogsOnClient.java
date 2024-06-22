@@ -56,6 +56,7 @@ public class LogsOnClient {
     public static String YOU_PLACED = "Successfully placed a card in your Codex.";
     public static String PLAYER_DRAW = " drew a card.";
     public static String YOU_DRAW = "Successfully drew a card to your Hand.";
+    public static String EMPTY_DECK_POSITION = "There are no cards here.";
 
     //gameTurn related
     public static String YOUR_TURN = "It's now your turn to play.";
@@ -84,4 +85,7 @@ public class LogsOnClient {
     public static String NO_SELF_MESSAGE = "You can't message yourself";
     public static String NO_EMPTY_MESSAGE = "You can't send an empty message";
     public static String FERRARI = "Ferrari mentioned, WTF is a good race strategy!!";
+
+    //malevolent player
+    public static String MALEVOLENT = "The action you are trying to perform is not allowed";
 }

@@ -24,6 +24,7 @@ public class ResilienceTimerTest {
     private PublicLobbyGameListController lobbyGameListController;
     private static int shorterTimerDurationSeconds = 1;
     private static int originalTimerDuration;
+    private final PersistenceFactory persistenceFactory = new PersistenceFactory(OSRelated.gameDataFolderPath);
 
     @BeforeAll
     public static void setUpAll(){
@@ -32,7 +33,7 @@ public class ResilienceTimerTest {
 
     @BeforeEach
     public void setUp(){
-        PersistenceFactory.eraseAllSaves();
+        persistenceFactory.eraseAllSaves();
 
         realLobbyGameListController = new LobbyGameListsController();
         lobbyGameListController = new PublicLobbyGameListController(realLobbyGameListController);

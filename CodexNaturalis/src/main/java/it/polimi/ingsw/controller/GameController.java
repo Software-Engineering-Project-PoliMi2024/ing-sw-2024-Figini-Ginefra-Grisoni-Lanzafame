@@ -1,8 +1,9 @@
 package it.polimi.ingsw.controller;
 
 import it.polimi.ingsw.Configs;
-import it.polimi.ingsw.controller.Interfaces.FinishedGameDeleter;
 import it.polimi.ingsw.controller.Interfaces.GameControllerInterface;
+import it.polimi.ingsw.controller.Interfaces.GameList;
+import it.polimi.ingsw.controller.Interfaces.MalevolentPlayerManager;
 import it.polimi.ingsw.controller.persistence.PersistenceFactory;
 import it.polimi.ingsw.lightModel.diffs.DiffGenerator;
 import it.polimi.ingsw.lightModel.Heavifier;
@@ -37,6 +38,7 @@ import it.polimi.ingsw.model.playerReleted.*;
 import it.polimi.ingsw.model.tableReleted.Game;
 import it.polimi.ingsw.model.tableReleted.GameState;
 import it.polimi.ingsw.model.utilities.Pair;
+import it.polimi.ingsw.utils.CardChecks;
 import it.polimi.ingsw.view.ViewInterface;
 import it.polimi.ingsw.view.ViewState;
 
@@ -46,18 +48,25 @@ import java.util.function.Predicate;
 
 public class GameController implements GameControllerInterface {
     private final transient CardTable cardTable;
-    private final FinishedGameDeleter finishedGameDeleter;
+    private final transient GameList gameList;
+    private final transient PersistenceFactory persistenceFactory;
+    private final transient MalevolentPlayerManager malevolentPlayerManager;
     private final Game game;
     private final Map<String, ViewInterface> playerViewMap = new HashMap<>();
 
     private transient ScheduledFuture<?> lastInGameFuture = null;
     private final transient ScheduledExecutorService countdownExecutor = Executors.newSingleThreadScheduledExecutor();
 
-    public GameController(Game game, CardTable cardTable, FinishedGameDeleter finishedGameDeleter) {
+    public GameController(Game game, CardTable cardTable, PersistenceFactory persistenceFactory, GameList gameList, MalevolentPlayerManager malevolentPlayerManager) {
+        if(game.getState().equals(GameState.END_GAME)) {
+            persistenceFactory.delete(game.getName());
+            gameList.deleteGame(game.getName());
+        }
         this.game = game;
         this.cardTable = cardTable;
-        this.finishedGameDeleter = finishedGameDeleter;
-        this.save();
+        this.persistenceFactory = persistenceFactory;
+        this.gameList = gameList;
+        this.malevolentPlayerManager = malevolentPlayerManager;
     }
 
     public synchronized Map<String, ViewInterface> getPlayerViewMap() {
@@ -68,7 +77,6 @@ public class GameController implements GameControllerInterface {
         return game.getPlayersList().stream().map(Player::getNickname).toList();
     }
 
-    //TODO test when the decks finish the cards
     public synchronized void join(String joinerNickname, ViewInterface view, boolean reconnected){
         if(game.getState().equals(GameState.END_GAME)){
             try {
@@ -81,6 +89,7 @@ public class GameController implements GameControllerInterface {
         }
 
         this.resetLastPlayerTimer();
+
         playerViewMap.put(joinerNickname, view);
 
         this.notifyJoinGame(joinerNickname, reconnected);
@@ -103,6 +112,7 @@ public class GameController implements GameControllerInterface {
                     //set as current player the joining player
                     game.setCurrentPlayerIndex(game.getPlayersList().indexOf(game.getPlayerFromNick(joinerNickname)));
                     this.notifyTurnChange(joinerNickname);
+                    game.getPlayerFromNick(otherPlayerNick).setState(PlayerState.IDLE);
                     this.takeTurn(otherPlayerNick);
                 }
             }
@@ -111,7 +121,6 @@ public class GameController implements GameControllerInterface {
         }
 
         if(playerViewMap.size() == 1 && reconnected){
-            this.notifyLastInGameTimer();
             this.startLastPlayerTimer();
         }
     }
@@ -119,65 +128,83 @@ public class GameController implements GameControllerInterface {
     @Override
     public synchronized void choosePawn(String nickname, PawnColors color) {
         Player player = game.getPlayerFromNick(nickname);
-        ViewInterface view = playerViewMap.get(nickname);
-        if (game.getPawnChoices().contains(color)) {
-            game.getPlayerFromNick(nickname).setState(PlayerState.WAIT);
-            player.setPawnColor(color);
-            game.removeChoice(color);
 
-            //model: add cards to hand
-            CardInHand resourceDeck = null;
-            for (int i = 0; i < 2; i++) {
-                Pair<CardInHand, CardInHand> resourceDrawnAndReplacement = game.drawAndGetReplacement(DrawableCard.RESOURCECARD, Configs.actualDeckPos);
-                player.getUserHand().addCard(resourceDrawnAndReplacement.first());
-                resourceDeck = resourceDrawnAndReplacement.second();
-            }
-            Pair<CardInHand, CardInHand> goldDrawnAndReplacement = game.drawAndGetReplacement(DrawableCard.GOLDCARD, Configs.actualDeckPos);
-            player.getUserHand().addCard(goldDrawnAndReplacement.first());
-            //notify everyone and update my lightModel
-            LightBack resourceBack = new LightBack(resourceDeck.getIdBack());
-            LightBack goldBack = new LightBack(goldDrawnAndReplacement.second().getIdBack());
+        if(player.getState().equals(PlayerState.CHOOSE_PAWN) && color != PawnColors.BLACK) {
+            ViewInterface view = playerViewMap.get(nickname);
+            if (game.getPawnChoices().contains(color)) {
+                game.getPlayerFromNick(nickname).setState(PlayerState.WAIT);
+                player.setPawnColor(color);
+                game.removeChoice(color);
 
-            this.notifyPawnChoice(nickname, color, resourceBack, goldBack);
+                //model: add cards to hand
+                CardInHand resourceDeck = null;
+                for (int i = 0; i < 2; i++) {
+                    Pair<CardInHand, CardInHand> resourceDrawnAndReplacement = game.drawAndGetReplacement(DrawableCard.RESOURCECARD, Configs.actualDeckPos);
+                    player.getUserHand().addCard(resourceDrawnAndReplacement.first());
+                    resourceDeck = resourceDrawnAndReplacement.second();
+                }
+                Pair<CardInHand, CardInHand> goldDrawnAndReplacement = game.drawAndGetReplacement(DrawableCard.GOLDCARD, Configs.actualDeckPos);
+                player.getUserHand().addCard(goldDrawnAndReplacement.first());
+                //notify everyone and update my lightModel
+                LightBack resourceBack = new LightBack(resourceDeck.getIdBack());
+                LightBack goldBack = new LightBack(goldDrawnAndReplacement.second().getIdBack());
 
-            if (otherHaveAllChoosePawn(nickname)) {
-                game.getPawnChoices().clear();
-                this.removeInactivePlayers(p->p.getState().equals(PlayerState.WAIT));
-                this.moveToSecretObjectivePhase();
-                this.save();
+                this.notifyPawnChoice(nickname, color, resourceBack, goldBack);
+
+                System.out.println(nickname + " chose pawn");
+                if (otherHaveAllChoosePawn(nickname)) {
+                    game.getPawnChoices().clear();
+                    this.removeInactivePlayers(p -> p.getState().equals(PlayerState.WAIT));
+                    this.moveToSecretObjectivePhase();
+                    this.save();
+                } else {
+                    moveToWait(nickname);
+                }
             } else {
-                moveToWait(nickname);
+                try {
+                    view.logGame(LogsOnClient.PAWN_TAKEN);
+                    this.pawnChoiceStateTransition(nickname);
+                } catch (Exception ignored) {
+                }
             }
-        } else {
-            try {
-                view.logGame(LogsOnClient.PAWN_TAKEN);
-                this.pawnChoiceStateTransition(nickname);
-            } catch (Exception ignored) {
-            }
+        }else{
+            this.malevolentPlayer(nickname);
+            return;
         }
     }
 
     @Override
     public synchronized void chooseSecretObjective(String nickname, LightCard lightObjChoice) {
-        ObjectiveCard objChoice = Heavifier.heavifyObjectCard(lightObjChoice, cardTable);
         Player player = game.getPlayerFromNick(nickname);
-        game.getPlayerFromNick(nickname).setState(PlayerState.WAIT);
+        ObjectiveCard objChoice;
+        try{
+            objChoice = Heavifier.heavifyObjectCard(lightObjChoice, cardTable);
+        }catch (Exception e){
+            this.malevolentPlayer(nickname);
+            return;
+        }
 
-        player.setSecretObjective(objChoice);
-        this.notifySecretObjectiveChoice(nickname, lightObjChoice);
+        if(player.getState().equals(PlayerState.CHOOSE_SECRET_OBJECTIVE)
+                && CardChecks.objectiveCardsCheck.apply(lightObjChoice.idFront(), lightObjChoice.idBack())){
 
-        if (otherHaveAllChosenObjective(nickname)) {
-            this.removeInactivePlayers(p->p.getState().equals(PlayerState.WAIT));
-            game.setState(GameState.ACTUAL_GAME);
-            this.notifyActualGameSetup();
-            for (String players : playerViewMap.keySet())
-                this.takeTurn(players);
-            this.save();
-        } else {
-            moveToWait(nickname);
+            game.getPlayerFromNick(nickname).setState(PlayerState.WAIT);
+
+            player.setSecretObjective(objChoice);
+            this.notifySecretObjectiveChoice(nickname, lightObjChoice);
+
+            System.out.println(nickname + " chose secret objective");
+            if (otherHaveAllChosenObjective(nickname)) {
+                this.removeInactivePlayers(p -> p.getState().equals(PlayerState.WAIT));
+                this.moveToActualGame();
+                this.save();
+            } else {
+                moveToWait(nickname);
+            }
+        }else{
+            this.malevolentPlayer(nickname);
+            return;
         }
     }
-    //TODO replace this exception with some malevolent user handling
     @Override
     public void place(String nickname, LightPlacement placement) {
         Placement heavyPlacement;
@@ -199,81 +226,109 @@ public class GameController implements GameControllerInterface {
 
                 this.placeCard(nickname, placement);
             }
-            System.out.println(nickname + " placed card");
         } catch (Exception e) {
-            throw new IllegalArgumentException("The placement is not valid " + e.getMessage());
+            this.malevolentPlayer(nickname);
+            return;
         }
     }
 
     private synchronized void placeStartCard(String nickname, Placement startCardPlacement) {
         Player player = game.getPlayerFromNick(nickname);
-        player.placeStartCard(startCardPlacement);
-        game.getPlayerFromNick(nickname).setState(PlayerState.WAIT);
+        if(player.getState().equals(PlayerState.CHOOSE_START_CARD) &&
+                CardChecks.startCardCheck.apply(startCardPlacement.card().getIdFront(), startCardPlacement.card().getIdBack())){
 
-        this.notifyStartCardFaceChoice(nickname, Lightifier.lightify(startCardPlacement));
+            player.placeStartCard(startCardPlacement);
+            game.getPlayerFromNick(nickname).setState(PlayerState.WAIT);
 
-        if (otherHaveAllSelectedStartCard(nickname)) {
-            this.removeInactivePlayers(p->p.getState().equals(PlayerState.WAIT));
-            this.moveToChoosePawn();
-            this.save();
-        } else {
-            moveToWait(nickname);
+            this.notifyStartCardFaceChoice(nickname, Lightifier.lightify(startCardPlacement));
+
+            System.out.println(nickname + " placed start card");
+            if (otherHaveAllSelectedStartCard(nickname)) {
+                this.removeInactivePlayers(p -> p.getState().equals(PlayerState.WAIT));
+                this.moveToChoosePawn();
+                this.save();
+            } else {
+                moveToWait(nickname);
+            }
+        }else {
+            this.malevolentPlayer(nickname);
+            return;
         }
     }
 
     private synchronized void placeCard(String nickname, LightPlacement placement) {
         Player player = game.getPlayerFromNick(nickname);
-        Codex codexBeforePlacement = new Codex(player.getUserCodex());
-        CardInHand card = Heavifier.heavifyCardInHand(placement.card(), cardTable);
-        if(!card.canBePlaced(codexBeforePlacement) && placement.face() == CardFace.FRONT) {
-            try {
-                playerViewMap.get(nickname).logErr(LogsOnClient.CARD_NOT_PLACEABLE);
-                playerViewMap.get(nickname).transitionTo(ViewState.PLACE_CARD);
-            }catch (Exception ignored){}
-        }else {
-            player.playCard(Heavifier.heavify(placement, cardTable));
-            Set<CardInHand> hand = player.getUserHand().getHand();
-            Codex codexAfterPlacement = player.getUserCodex();
-            //update playability
-            Map<LightCard, Boolean> frontIdToPlayability = new HashMap<>();
-            for (CardInHand cardInHand : hand) {
-                boolean oldPlayability = cardInHand.canBePlaced(codexBeforePlacement);
-                boolean newPlayability = cardInHand.canBePlaced(codexAfterPlacement);
-                if (oldPlayability != newPlayability) {
-                    frontIdToPlayability.put(Lightifier.lightifyToCard(cardInHand), newPlayability);
-                }
-            }
 
-            //notify everyone
-            this.notifyPlacement(nickname, placement, player.getUserCodex(), frontIdToPlayability);
-
-            if (!game.areDeckEmpty()) {
-                player.setState(PlayerState.DRAW);
+        if(player.getState().equals(PlayerState.PLACE) &&
+                (CardChecks.resourceCardCheck.apply(placement.card().idFront(), placement.card().idBack())
+                        || CardChecks.goldCardCheck.apply(placement.card().idFront(), placement.card().idBack()))){
+            Codex codexBeforePlacement = new Codex(player.getUserCodex());
+            CardInHand card = Heavifier.heavifyCardInHand(placement.card(), cardTable);
+            if (!card.canBePlaced(codexBeforePlacement) && placement.face() == CardFace.FRONT) {
                 try {
-                    playerViewMap.get(nickname).transitionTo(ViewState.DRAW_CARD);
+                    playerViewMap.get(nickname).logErr(LogsOnClient.CARD_NOT_PLACEABLE);
+                    playerViewMap.get(nickname).transitionTo(ViewState.PLACE_CARD);
                 } catch (Exception ignored) {
                 }
-            }else{
-                moveOnWithTurnsAndCheckForWinners(nickname, getLastActivePlayer());
+            } else {
+                player.playCard(Heavifier.heavify(placement, cardTable));
+                Set<CardInHand> hand = player.getUserHand().getHand();
+                Codex codexAfterPlacement = player.getUserCodex();
+                //update playability
+                Map<LightCard, Boolean> frontIdToPlayability = new HashMap<>();
+                for (CardInHand cardInHand : hand) {
+                    boolean oldPlayability = cardInHand.canBePlaced(codexBeforePlacement);
+                    boolean newPlayability = cardInHand.canBePlaced(codexAfterPlacement);
+                    if (oldPlayability != newPlayability) {
+                        frontIdToPlayability.put(Lightifier.lightifyToCard(cardInHand), newPlayability);
+                    }
+                }
+
+                //notify everyone
+                this.notifyPlacement(nickname, placement, player.getUserCodex(), frontIdToPlayability);
+
+                System.out.println(nickname + " placed card");
+                if (!game.areDeckEmpty()) {
+                    player.setState(PlayerState.DRAW);
+                    try {
+                        playerViewMap.get(nickname).transitionTo(ViewState.DRAW_CARD);
+                    } catch (Exception ignored) {
+                    }
+                } else {
+                    moveOnWithTurnsAndCheckForWinners(nickname, getLastActivePlayer());
+                }
             }
+        }else {
+            this.malevolentPlayer(nickname);
+            return;
         }
     }
-    //TODO check if the card in position is not null
+
     @Override
     public synchronized void draw(String nickname, DrawableCard deckType, int cardID) {
         Player player = game.getPlayerFromNick(nickname);
-        System.out.println(nickname + " drew card");
-        if (!game.areDeckEmpty()) {
-            CardInHand drawnCard;
-            Pair<CardInHand, CardInHand> drawnAndReplacement = game.drawAndGetReplacement(deckType, cardID);
-            drawnCard = drawnAndReplacement.first();
+        if(player.getState().equals(PlayerState.DRAW) && cardID >= 0 && cardID <= Configs.actualDeckPos){
+            System.out.println(nickname + " drew card");
+            if (!game.areDeckEmpty()) {
+                CardInHand drawnCard;
+                Pair<CardInHand, CardInHand> drawnAndReplacement = game.drawAndGetReplacement(deckType, cardID);
+                drawnCard = drawnAndReplacement.first();
 
-            player.getUserHand().addCard(drawnCard);
+                if(drawnCard != null) {
+                    player.getUserHand().addCard(drawnCard);
 
-            this.notifyDraw(nickname, deckType, cardID, Lightifier.lightifyToCard(drawnCard),
-                    drawnCard.canBePlaced(player.getUserCodex()));
+                    this.notifyDraw(nickname, deckType, cardID, Lightifier.lightifyToCard(drawnCard),
+                            drawnCard.canBePlaced(player.getUserCodex()));
+                }else {
+                    notifyEmptyDeckPosition(nickname);
+                }
+            }
+            moveOnWithTurnsAndCheckForWinners(nickname, getLastActivePlayer());
+            this.save();
+        }else {
+            this.malevolentPlayer(nickname);
+            return;
         }
-        moveOnWithTurnsAndCheckForWinners(nickname, getLastActivePlayer());
     }
 
     public synchronized void leave(String nickname) {
@@ -308,8 +363,7 @@ public class GameController implements GameControllerInterface {
                     if (currentPlayer.equals(nickname)) {
                         game.setCurrentPlayerIndex(getNextActivePlayerIndex());
                     }
-                    for (String players : playerViewMap.keySet())
-                        this.takeTurn(players);
+                    this.moveToActualGame();
                 }
             } else if (!game.getState().equals(GameState.END_GAME)) { //if the game is in the actual game phase
                 if (game.getCurrentPlayer().getNickname().equals(nickname)) { //if current player leaves
@@ -324,11 +378,11 @@ public class GameController implements GameControllerInterface {
         }
 
         if(game.getState().equals(GameState.END_GAME)){
-            finishedGameDeleter.deleteGame(game.getName());
+            persistenceFactory.delete(game.getName());
+            gameList.deleteGame(game.getName());
         }else {
             this.save();
             if (playerViewMap.size() == 1) {
-                this.notifyLastInGameTimer();
                 this.startLastPlayerTimer();
             }
         }
@@ -356,6 +410,20 @@ public class GameController implements GameControllerInterface {
                 cardDrawnAndReplacement.first().canBePlaced(player.getUserCodex()));
     }
 
+    private synchronized void moveToActualGame(){
+        game.setState(GameState.ACTUAL_GAME);
+        this.notifyActualGameSetup();
+        for (String playerNick : game.getPlayersList().stream().map(Player::getNickname).toList()) {
+            Player playerFromNick = game.getPlayerFromNick(playerNick);
+            if (playerNick.equals(game.getCurrentPlayer().getNickname())){
+                playerFromNick.setState(PlayerState.PLACE);
+            }else {
+                playerFromNick.setState(PlayerState.IDLE);
+            }
+            this.takeTurn(playerNick);
+        }
+    }
+
     private synchronized void moveOnWithTurnsAndCheckForWinners(String nickname, String lastActivePlayer) {
         if (game.checkForChickenDinner() && !game.duringEndingTurns()) {
             game.setState(GameState.LAST_TURNS);
@@ -376,14 +444,21 @@ public class GameController implements GameControllerInterface {
             String nextPlayer = game.getPlayersList().get(nextPlayerIndex).getNickname();
             if (!nextPlayer.equals(nickname)) {
                 game.setCurrentPlayerIndex(nextPlayerIndex);
+                game.getPlayerFromNick(nextPlayer).setState(PlayerState.PLACE);
+                game.getPlayerFromNick(nickname).setState(PlayerState.IDLE);
                 this.notifyTurnChange(nextPlayer);
                 this.takeTurn(nickname);
                 this.takeTurn(nextPlayer);
             }else{
                 moveToWait(nickname);
             }
-            this.save();
         }
+    }
+
+    private synchronized void notifyEmptyDeckPosition(String nickname){
+        try {
+            playerViewMap.get(nickname).logErr(LogsOnClient.EMPTY_DECK_POSITION);
+        }catch (Exception ignored){}
     }
 
     private synchronized void startCardStateTransition(String nickname) {
@@ -478,11 +553,13 @@ public class GameController implements GameControllerInterface {
         if(lastInGameFuture != null){
             lastInGameFuture.cancel(true);
             System.out.println(game.getName() + " stopped last player timer");
+            this.notifyLastInGameTimerStop();
         }
     }
 
     private synchronized void startLastPlayerTimer() {
         String lastPlayerInGame = playerViewMap.keySet().stream().findFirst().orElse("");
+        this.notifyLastInGameTimer();
         Runnable declareLastPlayerWinner = () -> {
             if (!Thread.currentThread().isInterrupted()) {
                 winsTheLastPlayerInGame(lastPlayerInGame);
@@ -554,9 +631,18 @@ public class GameController implements GameControllerInterface {
     private synchronized void notifyLastInGameTimer() {
         new HashMap<>(playerViewMap).forEach((nickname, view) -> {
             try {
-                view.logGame(LogsOnClient.LAST_PLAYER);
+                view.log(LogsOnClient.LAST_PLAYER);
+                view.logGame(LogsOnClient.COUNTDOWN_START);
             } catch (Exception ignored) {
             }
+        });
+    }
+
+    private synchronized void notifyLastInGameTimerStop() {
+        new HashMap<>(playerViewMap).forEach((nickname, view) -> {
+            try {
+                view.logGame(LogsOnClient.COUNTDOWN_INTERRUPTED);
+            } catch (Exception ignored) {}
         });
     }
 
@@ -666,10 +752,8 @@ public class GameController implements GameControllerInterface {
         ViewInterface view = playerViewMap.get(nickname);
         try {
             if (game.getCurrentPlayer().getNickname().equals(nickname)) {
-                game.getPlayerFromNick(nickname).setState(PlayerState.PLACE);
                 view.transitionTo(ViewState.PLACE_CARD);
             } else {
-                game.getPlayerFromNick(nickname).setState(PlayerState.IDLE);
                 view.transitionTo(ViewState.IDLE);
             }
         } catch (Exception ignored) {
@@ -705,7 +789,7 @@ public class GameController implements GameControllerInterface {
     }
 
     private void save() {
-        PersistenceFactory.save(game);
+        persistenceFactory.save(game);
     }
 
     private synchronized void notifyDraw(String drawerNickname, DrawableCard deckType, int pos, LightCard drawnCard, boolean playability) {
@@ -1003,5 +1087,9 @@ public class GameController implements GameControllerInterface {
             playerViewMap.get(chatMessage.getReceiver()).logChat(LogsOnClient.RECEIVED_PRIVATE_MESSAGE + chatMessage.getSender());
         } catch (Exception ignored) {
         }
+    }
+
+    private synchronized void malevolentPlayer(String player) {
+        malevolentPlayerManager.manageMalevolentPlayer(player);
     }
 }

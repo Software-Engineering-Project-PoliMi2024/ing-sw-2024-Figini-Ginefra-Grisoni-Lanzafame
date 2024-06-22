@@ -28,6 +28,7 @@ import java.util.*;
 public class ResilienceTest {
     private LobbyGameListsController realLobbyGameListController;
     private PublicLobbyGameListController lobbyGameListController;
+    private final PersistenceFactory persistenceFactory = new PersistenceFactory(OSRelated.gameDataFolderPath);
 
     @BeforeAll
     public static void setUpAll(){
@@ -36,7 +37,7 @@ public class ResilienceTest {
 
     @BeforeEach
     public void setUp(){
-        PersistenceFactory.eraseAllSaves();
+        persistenceFactory.eraseAllSaves();
         realLobbyGameListController = new LobbyGameListsController();
         lobbyGameListController = new PublicLobbyGameListController(realLobbyGameListController);
 
@@ -388,6 +389,7 @@ public class ResilienceTest {
         assert player2.getPawnColor().equals(PawnColors.BLUE);
 
         controller1.login(view1.name);
+        assert view1.state.equals(ViewState.CHOOSE_PAWN);
         checkInitialization(view1, gameController);
 
         assert view1.lightGame.getLightGameParty().getPawnChoices().containsAll(nonChosenColors);
@@ -1126,20 +1128,20 @@ public class ResilienceTest {
         Placement exodiaPlacement = new Placement(new Position(1,1), exodiaTheForbidden, CardFace.FRONT);
 
         Hand handFirst = firstPlayer.getUserHand();
-        handFirst.removeCard(handFirst.getHand().stream().reduce((a,b)->a).get());
+        CardInHand removedCard = handFirst.getHand().stream().reduce((a,b)->a).get();
+        handFirst.removeCard(removedCard);
         handFirst.addCard(exodiaTheForbidden);
         firstPlayer.playCard(exodiaPlacement);
+        handFirst.addCard(removedCard);
 
+        placeRandom(firstPlayer, controllerFirst);
         //move on with turns
         controllerFirst.draw(DrawableCard.RESOURCECARD, 0);
 
-        Hand handSecond = secondPlayer.getUserHand();
-        Hand handThird = thirdPlayer.getUserHand();
-
-        handSecond.removeCard(handSecond.getHand().stream().reduce((a,b)->a).get());
-        handThird.removeCard(handThird.getHand().stream().reduce((a,b)->a).get());
-
+        placeRandom(secondPlayer, controllerSecond);
         controllerSecond.draw(DrawableCard.RESOURCECARD, 0);
+
+        placeRandom(thirdPlayer, controllerThird);
         controllerThird.draw(DrawableCard.RESOURCECARD, 0);
 
         assert game.getCurrentPlayer().getNickname().equals(lastPlayer.getNickname());
@@ -1149,12 +1151,13 @@ public class ResilienceTest {
 
         assert game.getCurrentPlayer().getNickname().equals(firstPlayer.getNickname());
 
-        handFirst.removeCard(handFirst.getHand().stream().reduce((a,b)->a).get());
-        handSecond.removeCard(handSecond.getHand().stream().reduce((a,b)->a).get());
-        handThird.removeCard(handThird.getHand().stream().reduce((a,b)->a).get());
-
+        placeRandom(firstPlayer, controllerFirst);
         controllerFirst.draw(DrawableCard.RESOURCECARD, 0);
+
+        placeRandom(secondPlayer, controllerSecond);
         controllerSecond.draw(DrawableCard.RESOURCECARD, 0);
+
+        placeRandom(thirdPlayer, controllerThird);
         controllerThird.draw(DrawableCard.RESOURCECARD, 0);
 
         controllerLast.disconnect();
@@ -1163,6 +1166,14 @@ public class ResilienceTest {
 
         controllerLast.login(lastPlayer.getNickname());
         assert viewMap.get(lastPlayer.getNickname()).state.equals(ViewState.JOIN_LOBBY);
+    }
+
+    private void placeRandom(Player player, Controller controller){
+        Hand hand = player.getUserHand();
+        Position position = player.getUserCodex().getFrontier().getFrontier().getFirst();
+        LightCard lightCard = Lightifier.lightifyToCard(hand.getHand().stream().reduce((a,b)->a).get());
+        LightPlacement lightPlacement = new LightPlacement(position, lightCard, CardFace.BACK);
+        controller.place(lightPlacement);
     }
 
     @Test
@@ -1267,20 +1278,24 @@ public class ResilienceTest {
         Placement exodiaPlacement = new Placement(new Position(1,1), exodiaTheForbidden, CardFace.FRONT);
 
         Hand handFirst = firstPlayer.getUserHand();
-        handFirst.removeCard(handFirst.getHand().stream().reduce((a,b)->a).get());
+        CardInHand removedCard = handFirst.getHand().stream().reduce((a,b)->a).get();
+        handFirst.removeCard(removedCard);
         handFirst.addCard(exodiaTheForbidden);
         firstPlayer.playCard(exodiaPlacement);
+        handFirst.addCard(removedCard);
 
         //move on with turns
+        placeRandom(firstPlayer, controllerFirst);
+
         controllerFirst.draw(DrawableCard.RESOURCECARD, 0);
 
         Hand handSecond = secondPlayer.getUserHand();
         Hand handThird = thirdPlayer.getUserHand();
 
-        handSecond.removeCard(handSecond.getHand().stream().reduce((a,b)->a).get());
-        handThird.removeCard(handThird.getHand().stream().reduce((a,b)->a).get());
-
+        placeRandom(secondPlayer, controllerSecond);
         controllerSecond.draw(DrawableCard.RESOURCECARD, 0);
+
+        placeRandom(thirdPlayer, controllerThird);
         controllerThird.draw(DrawableCard.RESOURCECARD, 0);
 
         assert game.getCurrentPlayer().getNickname().equals(lastPlayer.getNickname());
@@ -1290,12 +1305,15 @@ public class ResilienceTest {
 
         assert game.getCurrentPlayer().getNickname().equals(firstPlayer.getNickname());
 
-        handFirst.removeCard(handFirst.getHand().stream().reduce((a,b)->a).get());
-        handSecond.removeCard(handSecond.getHand().stream().reduce((a,b)->a).get());
-        handThird.removeCard(handThird.getHand().stream().reduce((a,b)->a).get());
 
+
+        placeRandom(firstPlayer, controllerFirst);
         controllerFirst.draw(DrawableCard.RESOURCECARD, 0);
+
+        placeRandom(secondPlayer, controllerSecond);
         controllerSecond.draw(DrawableCard.RESOURCECARD, 0);
+
+        placeRandom(thirdPlayer, controllerThird);
         controllerThird.draw(DrawableCard.RESOURCECARD, 0);
 
         controllerLast.disconnect();
@@ -1502,19 +1520,11 @@ public class ResilienceTest {
 
         assert game.getCurrentPlayer().equals(firstPlayer);
 
-        LightCard cardPlaced1 = Lightifier.lightifyToCard(firstPlayer.getUserHand().getHand().stream().toList().getFirst());
-        Position position1 = firstPlayer.getUserCodex().getFrontier().getFrontier().getFirst();
-        LightPlacement placement1 = new LightPlacement(position1, cardPlaced1, CardFace.BACK);
-
-        firstPlayerController.controller.place(placement1);
+        placeRandom(firstPlayer, firstPlayerController.controller);
 
         assert game.getCurrentPlayer().equals(secondPlayer);
 
-        LightCard cardPlaced2 = Lightifier.lightifyToCard(secondPlayer.getUserHand().getHand().stream().toList().getFirst());
-        Position position2 = secondPlayer.getUserCodex().getFrontier().getFrontier().getFirst();
-        LightPlacement placement2 = new LightPlacement(position2, cardPlaced2, CardFace.BACK);
-
-        secondPlayerController.controller.place(placement2);
+        placeRandom(secondPlayer, secondPlayerController.controller);
 
         assert game.getState().equals(GameState.END_GAME);
     }
@@ -1529,7 +1539,7 @@ public class ResilienceTest {
 
         assert view.lightGame.getLightGameParty().getGameName().equals(game.getName());
 
-        List<String> playerNick = gameController.gameController.getPlayerViewMap().keySet().stream().toList();
+        List<String> playerNick = game.getGameParty().getPlayersList().stream().map(Player::getNickname).toList();
         List<String> playerNicksOnView = view.lightGame.getLightGameParty().getPlayerActiveList().keySet().stream().toList();
         System.out.println(playerNick);
         System.out.println(playerNicksOnView);
