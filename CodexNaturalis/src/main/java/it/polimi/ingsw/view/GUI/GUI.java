@@ -17,6 +17,7 @@ import it.polimi.ingsw.view.GUI.Controllers.LoginFormControllerGUI;
 import it.polimi.ingsw.view.GUI.Controllers.PostGameControllerGUI;
 import it.polimi.ingsw.view.GUI.Scenes.PostGameScene;
 import it.polimi.ingsw.view.ViewState;
+import javafx.animation.PauseTransition;
 import javafx.application.Application;
 import javafx.application.Platform;
 import javafx.scene.Node;
@@ -24,6 +25,7 @@ import javafx.scene.Scene;
 import javafx.scene.layout.AnchorPane;
 import javafx.stage.Stage;
 import javafx.stage.WindowEvent;
+import javafx.util.Duration;
 
 import java.rmi.RemoteException;
 import java.util.Arrays;
@@ -133,7 +135,10 @@ public class GUI extends Application implements ActualView {
 
     @Override
     public void logErr(String logMsg) throws RemoteException {
-        Platform.runLater(()->LogErr.display(stackRoot, logMsg));
+        //Allow the transition some time to finish before displaying the error
+        PauseTransition pause = new PauseTransition(Duration.millis(200));
+        pause.setOnFinished(event -> Platform.runLater(() -> LogErr.display(stackRoot, logMsg)));
+        pause.play();
     }
 
     @Override
