@@ -81,7 +81,7 @@ public class LeaderboardGUI implements Observer {
         layout.prefWidthProperty().bind(popUp.getContent().prefWidthProperty());
     }
 
-    private Map<String, Integer> getScores(){
+    private Map<String, Integer> getScores() {
         return GUI.getLightGame().getCodexMap().entrySet().stream()
                 .collect(Collectors.toMap(Map.Entry::getKey, e -> e.getValue().getPoints()));
     }
@@ -95,19 +95,25 @@ public class LeaderboardGUI implements Observer {
                     HBox row = new HBox();
                     row.setAlignment(Pos.CENTER_LEFT);
 
-
-                    ImageView pawnView = new ImageView();
-                    pawnView.setFitHeight(16);
-                    pawnView.setFitWidth(16);
-                    row.setSpacing(10);
-
-                    pawnImageViewMap.put(e.getKey(), pawnView);
-
                     Text label = new Text(e.getKey() + ": " + e.getValue());
 
                     label.setStyle("-fx-font-size: 16pt;");
 
                     label.scaleXProperty().bindBidirectional(label.scaleYProperty());
+
+                    if (e.getKey().equals(GUI.getLightGame().getLightGameParty().getFirstPlayerName())) {
+                        ImageView blackPawnView = new ImageView(AssetsGUI.pawnBlack);
+                        blackPawnView.setFitHeight(30);
+                        blackPawnView.setFitWidth(30);
+                        row.getChildren().add(blackPawnView);
+                    }
+
+                    ImageView pawnView = new ImageView();
+                    pawnView.setFitHeight(30);
+                    pawnView.setFitWidth(30);
+                    row.setSpacing(5);
+
+                    pawnImageViewMap.put(e.getKey(), pawnView);
                     row.getChildren().add(pawnView);
                     row.getChildren().add(label);
 

@@ -57,8 +57,8 @@ public class PlateauGUI {
         popUp.close();
     }
 
-    private Point2D getCoordinates(int score) {
-        Pair<Integer, Integer> coordinates = PlateauMapping.getPositionCoordinates(score);
+    private Point2D getCoordinates(int score, PawnColors color) {
+        Pair<Integer, Integer> coordinates = PlateauMapping.getPositionCoordinates(score, color);
         if (coordinates != null) {
             double x = (coordinates.getKey() - plateauView.getImage().getWidth() / 2) * plateauView.getFitWidth() / plateauView.getImage().getWidth();
             double y = (plateauView.getImage().getHeight() / 2 - coordinates.getValue()) * plateauView.getFitHeight() / plateauView.getImage().getHeight();
@@ -70,7 +70,7 @@ public class PlateauGUI {
     public void setScore(PawnColors pawnColor, int score) {
         pawnScores.put(pawnColor, score);
 
-        if(!pawnViews.containsKey(pawnColor)){
+        if (!pawnViews.containsKey(pawnColor)) {
             ImageView pawnView = Objects.requireNonNull(PawnsGui.getPawnGui(pawnColor)).getImageView();
             pawnView.setPreserveRatio(true);
             pawnView.setFitHeight(100);
@@ -87,7 +87,7 @@ public class PlateauGUI {
 
     public void updatePawnPosition(PawnColors pawnColor) {
         int score = pawnScores.get(pawnColor);
-        Point2D coordinates = getCoordinates(score);
+        Point2D coordinates = getCoordinates(score, pawnColor);
         if (coordinates != null) {
             ImageView pawnView = pawnViews.get(pawnColor);
             pawnView.setTranslateX(coordinates.getX());
