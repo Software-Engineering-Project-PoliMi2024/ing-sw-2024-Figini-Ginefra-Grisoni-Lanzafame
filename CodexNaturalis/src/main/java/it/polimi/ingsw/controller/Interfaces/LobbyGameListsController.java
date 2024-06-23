@@ -9,6 +9,6 @@ public interface LobbyGameListsController extends GameList, MalevolentPlayerMana
     boolean login(String nickname, ViewInterface view, GameControllerReceiver controllerReceiver);
     void createLobby(String nickname, String gameName, int maxPlayerCount, GameControllerReceiver gameReceiver);
     void joinLobby(String nickname, String lobbyName, GameControllerReceiver gameReceiver);
-    void disconnect(String nickname);
+    void leave(String nickname);
     void leaveLobby(String nickname);
 }

@@ -20,6 +20,7 @@ import it.polimi.ingsw.view.ViewState;
 
 import java.io.IOException;
 import java.net.Socket;
+import java.rmi.RemoteException;
 
 public class VirtualControllerSocket implements VirtualController {
 
@@ -98,9 +99,15 @@ public class VirtualControllerSocket implements VirtualController {
     }
 
     @Override
+    public void leave() {
+        serverHandler.sendServerMessage(new LeaveMsg());
+        this.eraseLightModel();
+    }
+
+    @Override
     public void disconnect(){
         this.eraseLightModel();
-        serverHandler.sendServerMessage(new DisconnectMsg());
+        serverHandler.sendServerMessage(new LeaveMsg());
         /*try {
             view.transitionTo(ViewState.SERVER_CONNECTION);
         } catch (Exception e) {

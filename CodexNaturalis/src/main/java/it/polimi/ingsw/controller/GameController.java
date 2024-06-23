@@ -389,7 +389,6 @@ public class GameController implements GameControllerInterface {
 
         /*try {
             view.updateGame(new GadgetGame());
-            view.transitionTo(ViewState.LOGIN_FORM);
         } catch (Exception ignored) {}*/
     }
 

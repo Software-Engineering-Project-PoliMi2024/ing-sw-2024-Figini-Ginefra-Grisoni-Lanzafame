@@ -24,6 +24,8 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
 import java.util.*;
+import java.util.concurrent.ExecutionException;
+import java.util.concurrent.Future;
 
 public class ResilienceTest {
     private LobbyGameListsController realLobbyGameListController;
@@ -36,20 +38,21 @@ public class ResilienceTest {
     }
 
     @BeforeEach
-    public void setUp(){
+    public void setUp() throws ExecutionException, InterruptedException {
         persistenceFactory.eraseAllSaves();
+
         realLobbyGameListController = new LobbyGameListsController();
         lobbyGameListController = new PublicLobbyGameListController(realLobbyGameListController);
 
     }
     @Test
-    void disconnectFromLobbyList(){
+    void leaveFromLobbyList(){
         ViewTest view1 = new ViewTest();
         ViewTest view2 = new ViewTest();
         view1.name = "pippo";
         view2.name = "pluto";
 
-        String lobbyName1 = "test1";
+        String lobbyName1 = "leaveFromLobbyList";
         Controller controller1 = new Controller(realLobbyGameListController, view1);
         Controller controller2 = new Controller(realLobbyGameListController, view2);
 
@@ -60,20 +63,20 @@ public class ResilienceTest {
         assert lobbyGameListController.getViewMap().containsKey(view2.name);
         assert view2.lightLobbyList.getLobbies().stream().map(LightLobby::name).toList().contains(lobbyName1);
 
-        controller2.disconnect();
+        controller2.leave();
 
         assert !lobbyGameListController.getViewMap().containsKey(view2.name);
         assert view2.lightLobbyList.getLobbies().isEmpty();
     }
 
     @Test
-    void disconnectFromLobby(){
+    void leaveFromLobby(){
         ViewTest view1 = new ViewTest();
         ViewTest view2 = new ViewTest();
         view1.name = "pippo";
         view2.name = "pluto";
 
-        String lobbyName1 = "test1";
+        String lobbyName1 = "leaveFromLobby";
         Controller controller1 = new Controller(realLobbyGameListController, view1);
         Controller controller2 = new Controller(realLobbyGameListController, view2);
 
@@ -86,7 +89,7 @@ public class ResilienceTest {
         assert view2.lightLobbyList.getLobbies().isEmpty();
         assert view2.lightLobby.name().equals(lobbyName1);
 
-        controller2.disconnect();
+        controller2.leave();
 
         assert !lobbyGameListController.getViewMap().containsKey(view2.name);
         assert view2.lightLobby.name().isEmpty();
@@ -114,8 +117,8 @@ public class ResilienceTest {
         view4.name = "mickey";
         view5.name = "minnie";
 
-        String lobbyName1 = "test1";
-        String lobbyName2 = "test2";
+        String lobbyName1 = "leaveAndRejoinGameChooseStartCardPhase1";
+        String lobbyName2 = "leaveAndRejoinGameChooseStartCardPhase2";
         Controller controller1 = new Controller(realLobbyGameListController, view1);
         Controller controller2 = new Controller(realLobbyGameListController, view2);
         Controller controller3 = new Controller(realLobbyGameListController, view3);
@@ -154,7 +157,7 @@ public class ResilienceTest {
         assert game.getName().equals(lobbyName1);
         assert game.getPlayersList().stream().map(Player::getNickname).toList().contains(view2.name);
 
-        controller2.disconnect();
+        controller2.leave();
 
         assert !gameController.getViewMap().containsKey(view2.name);
 
@@ -198,8 +201,8 @@ public class ResilienceTest {
         controller4.place(lightPlacement4);
 
         assert !lobbyGameListController.getViewMap().containsKey(view4.name);
-        controller2.disconnect();
-        controller4.disconnect();
+        controller2.leave();
+        controller4.leave();
 
         assert game.getState().equals(GameState.CHOOSE_START_CARD);
 
@@ -242,8 +245,8 @@ public class ResilienceTest {
         view4.name = "mickey";
         view5.name = "minnie";
 
-        String lobbyName1 = "test1";
-        String lobbyName2 = "test2";
+        String lobbyName1 = "leaveAndRejoinGameChooseStartCardPhaseTheLeaverTriggersNextPhase1";
+        String lobbyName2 = "leaveAndRejoinGameChooseStartCardPhaseTheLeaverTriggersNextPhase2";
         Controller controller1 = new Controller(realLobbyGameListController, view1);
         Controller controller2 = new Controller(realLobbyGameListController, view2);
         Controller controller3 = new Controller(realLobbyGameListController, view3);
@@ -295,11 +298,11 @@ public class ResilienceTest {
         controller4.place(lightPlacement4);
 
         assert !lobbyGameListController.getViewMap().containsKey(view4.name);
-        controller4.disconnect();
+        controller4.leave();
         assert game.getState().equals(GameState.CHOOSE_START_CARD);
 
-        controller3.disconnect();
-        controller2.disconnect();
+        controller3.leave();
+        controller2.leave();
         assert !game.getState().equals(GameState.CHOOSE_START_CARD);
         assert game.getState().equals(GameState.CHOOSE_PAWN);
 
@@ -333,8 +336,8 @@ public class ResilienceTest {
         view4.name = "mickey";
         view5.name = "minnie";
 
-        String lobbyName1 = "test1";
-        String lobbyName2 = "test2";
+        String lobbyName1 = "leaveAndRejoinGameChoosePawn1";
+        String lobbyName2 = "leaveAndRejoinGameChoosePawn2";
         Controller controller1 = new Controller(realLobbyGameListController, view1);
         Controller controller2 = new Controller(realLobbyGameListController, view2);
         Controller controller3 = new Controller(realLobbyGameListController, view3);
@@ -380,7 +383,7 @@ public class ResilienceTest {
 
         pawnChoicesSetupCorrectly(gameController, List.of(view1, view2, view3, view4));
 
-        controller1.disconnect();
+        controller1.leave();
         controller2.choosePawn(PawnColors.BLUE);
 
         List<PawnColors> nonChosenColors = Arrays.stream(PawnColors.values()).filter(color->!color.equals(PawnColors.BLUE)).toList();
@@ -389,6 +392,7 @@ public class ResilienceTest {
         assert player2.getPawnColor().equals(PawnColors.BLUE);
 
         controller1.login(view1.name);
+        System.out.println(view1.state);
         assert view1.state.equals(ViewState.CHOOSE_PAWN);
         checkInitialization(view1, gameController);
 
@@ -397,8 +401,8 @@ public class ResilienceTest {
 
         controller3.choosePawn(PawnColors.RED);
 
-        controller1.disconnect();
-        controller2.disconnect();
+        controller1.leave();
+        controller2.leave();
 
         controller4.choosePawn(PawnColors.GREEN);
 
@@ -426,8 +430,8 @@ public class ResilienceTest {
         view4.name = "mickey";
         view5.name = "minnie";
 
-        String lobbyName1 = "test1";
-        String lobbyName2 = "test2";
+        String lobbyName1 = "leaveAndRejoinGameChoosePawnTheLeaverTriggersNextPhase1";
+        String lobbyName2 = "leaveAndRejoinGameChoosePawnTheLeaverTriggersNextPhase2";
         Controller controller1 = new Controller(realLobbyGameListController, view1);
         Controller controller2 = new Controller(realLobbyGameListController, view2);
         Controller controller3 = new Controller(realLobbyGameListController, view3);
@@ -476,11 +480,11 @@ public class ResilienceTest {
         controller3.choosePawn(PawnColors.RED);
         controller4.choosePawn(PawnColors.GREEN);
 
-        controller4.disconnect();
-        controller1.disconnect();
+        controller4.leave();
+        controller1.leave();
         assert game.getState().equals(GameState.CHOOSE_PAWN);
 
-        controller2.disconnect();
+        controller2.leave();
         assert game.getState().equals(GameState.CHOOSE_SECRET_OBJECTIVE);
         assert game.getPlayersList().contains(player3);
         assert game.getPlayersList().contains(player4);
@@ -511,8 +515,8 @@ public class ResilienceTest {
         view4.name = "mickey";
         view5.name = "minnie";
 
-        String lobbyName1 = "test1";
-        String lobbyName2 = "test2";
+        String lobbyName1 = "leaveAndRejoinChooseSecretObj1";
+        String lobbyName2 = "leaveAndRejoinChooseSecretObj2";
         Controller controller1 = new Controller(realLobbyGameListController, view1);
         Controller controller2 = new Controller(realLobbyGameListController, view2);
         Controller controller3 = new Controller(realLobbyGameListController, view3);
@@ -561,10 +565,10 @@ public class ResilienceTest {
 
         setupObjChoicesCorrectly(gameController, List.of(view1, view2, view3, view4));
 
-        controller1.disconnect();
+        controller1.leave();
         LightCard obj2 = Lightifier.lightifyToCard(player2.getUserHand().getSecretObjectiveChoices().getFirst());
         controller2.chooseSecretObjective(obj2);
-        controller2.disconnect();
+        controller2.leave();
 
         controller1.login(view1.name);
         checkInitialization(view1, gameController);
@@ -579,8 +583,8 @@ public class ResilienceTest {
         assert view2.lightGame.getHand().getSecretObjective().equals(obj2);
 
         controller3.chooseSecretObjective(Lightifier.lightifyToCard(player3.getUserHand().getSecretObjectiveChoices().getFirst()));
-        controller1.disconnect();
-        controller2.disconnect();
+        controller1.leave();
+        controller2.leave();
         controller4.chooseSecretObjective(Lightifier.lightifyToCard(player4.getUserHand().getSecretObjectiveChoices().getFirst()));
 
         game.getPlayersList().forEach(user->{
@@ -613,8 +617,8 @@ public class ResilienceTest {
         view4.name = "mickey";
         view5.name = "minnie";
 
-        String lobbyName1 = "test1";
-        String lobbyName2 = "test2";
+        String lobbyName1 = "leaveAndRejoinChooseSecretObjTheLeaverTriggersNextPhase1";
+        String lobbyName2 = "leaveAndRejoinChooseSecretObjTheLeaverTriggersNextPhase2";
         Controller controller1 = new Controller(realLobbyGameListController, view1);
         Controller controller2 = new Controller(realLobbyGameListController, view2);
         Controller controller3 = new Controller(realLobbyGameListController, view3);
@@ -664,10 +668,10 @@ public class ResilienceTest {
         LightCard obj2 = Lightifier.lightifyToCard(player2.getUserHand().getSecretObjectiveChoices().getFirst());
         controller2.chooseSecretObjective(obj2);
         controller3.chooseSecretObjective(Lightifier.lightifyToCard(player3.getUserHand().getSecretObjectiveChoices().getFirst()));
-        controller2.disconnect();
-        controller4.disconnect();
+        controller2.leave();
+        controller4.leave();
         assert game.getState().equals(GameState.CHOOSE_SECRET_OBJECTIVE);
-        controller1.disconnect();
+        controller1.leave();
         assert game.getState().equals(GameState.ACTUAL_GAME);
 
         controller1.login(view1.name);
@@ -691,8 +695,8 @@ public class ResilienceTest {
         view4.name = "mickey";
         view5.name = "minnie";
 
-        String lobbyName1 = "test1";
-        String lobbyName2 = "test2";
+        String lobbyName1 = "leaveAndRejoinActualGameIdle1";
+        String lobbyName2 = "leaveAndRejoinActualGameIdle2";
         Controller controller1 = new Controller(realLobbyGameListController, view1);
         Controller controller2 = new Controller(realLobbyGameListController, view2);
         Controller controller3 = new Controller(realLobbyGameListController, view3);
@@ -761,33 +765,33 @@ public class ResilienceTest {
         setupActualGame(gameController, List.of(view1, view2, view3, view4));
 
         Player firstPlayer = game.getPlayersList().getFirst();
-        Player playerDisconnected = game.getPlayersList().get(3);
+        Player playerleaveed = game.getPlayersList().get(3);
 
         Controller controllerFirst = controllerMap.get(firstPlayer.getNickname());
-        Controller controllerDisconnected = controllerMap.get(playerDisconnected.getNickname());
+        Controller controllerleaveed = controllerMap.get(playerleaveed.getNickname());
 
         ViewTest viewFirst = viewMap.get(firstPlayer.getNickname());
-        ViewTest viewDisconnected = viewMap.get(playerDisconnected.getNickname());
+        ViewTest viewleaveed = viewMap.get(playerleaveed.getNickname());
 
-        controllerDisconnected.disconnect();
+        controllerleaveed.leave();
 
         controllerFirst.place(new LightPlacement(new Position(1,1), Lightifier.lightifyToCard(firstPlayer.getUserHand().getHand().stream().findFirst().get()), CardFace.BACK));
 
-        controllerDisconnected.login(playerDisconnected.getNickname());
-        checkInitialization(viewDisconnected, gameController);
-        checkGame(viewDisconnected, gameController);
+        controllerleaveed.login(playerleaveed.getNickname());
+        checkInitialization(viewleaveed, gameController);
+        checkGame(viewleaveed, gameController);
         for(ViewTest view : viewMap.values()){
-            Assertions.assertTrue(view.lightGame.getLightGameParty().getPlayerActiveList().get(viewDisconnected.name));
+            Assertions.assertTrue(view.lightGame.getLightGameParty().getPlayerActiveList().get(viewleaveed.name));
         }
 
-        controllerDisconnected.disconnect();
+        controllerleaveed.leave();
         controllerFirst.draw(DrawableCard.RESOURCECARD, 0);
 
-        controllerDisconnected.login(playerDisconnected.getNickname());
-        checkInitialization(viewDisconnected, gameController);
-        checkGame(viewDisconnected, gameController);
+        controllerleaveed.login(playerleaveed.getNickname());
+        checkInitialization(viewleaveed, gameController);
+        checkGame(viewleaveed, gameController);
         for(ViewTest view : viewMap.values()){
-            Assertions.assertTrue(view.lightGame.getLightGameParty().getPlayerActiveList().get(viewDisconnected.name));
+            Assertions.assertTrue(view.lightGame.getLightGameParty().getPlayerActiveList().get(viewleaveed.name));
         }
     }
 
@@ -804,8 +808,8 @@ public class ResilienceTest {
         view4.name = "mickey";
         view5.name = "minnie";
 
-        String lobbyName1 = "test1";
-        String lobbyName2 = "test2";
+        String lobbyName1 = "leaveAndRejoinActualGamePlaceCard1";
+        String lobbyName2 = "leaveAndRejoinActualGamePlaceCard2";
         Controller controller1 = new Controller(realLobbyGameListController, view1);
         Controller controller2 = new Controller(realLobbyGameListController, view2);
         Controller controller3 = new Controller(realLobbyGameListController, view3);
@@ -882,7 +886,7 @@ public class ResilienceTest {
         ViewTest viewFirst = viewMap.get(firstPlayer.getNickname());
         ViewTest viewSecond = viewMap.get(secondPlayer.getNickname());
 
-        controllerFirst.disconnect();
+        controllerFirst.leave();
 
         assert game.getCurrentPlayer().getNickname().equals(secondPlayer.getNickname());
         assert viewSecond.state == ViewState.PLACE_CARD;
@@ -915,8 +919,8 @@ public class ResilienceTest {
         view4.name = "mickey";
         view5.name = "minnie";
 
-        String lobbyName1 = "test1";
-        String lobbyName2 = "test2";
+        String lobbyName1 = "leaveAndRejoinActualGameDrawCard1";
+        String lobbyName2 = "leaveAndRejoinActualGameDrawCard2";
         Controller controller1 = new Controller(realLobbyGameListController, view1);
         Controller controller2 = new Controller(realLobbyGameListController, view2);
         Controller controller3 = new Controller(realLobbyGameListController, view3);
@@ -995,11 +999,11 @@ public class ResilienceTest {
 
         controllerFirst.place(new LightPlacement(new Position(1,1), Lightifier.lightifyToCard(firstPlayer.getUserHand().getHand().stream().findFirst().get()), CardFace.BACK));
         assert firstPlayer.getHandSize() == 2;
-        ArrayList<CardInHand> cardsBeforeDisconnect = new ArrayList<>(firstPlayer.getUserHand().getHand().stream().toList());
-        controllerFirst.disconnect();
+        ArrayList<CardInHand> cardsBeforeleave = new ArrayList<>(firstPlayer.getUserHand().getHand().stream().toList());
+        controllerFirst.leave();
         assert firstPlayer.getHandSize() == 3;
-        ArrayList<CardInHand> cardsAfterDisconnect = new ArrayList<>(firstPlayer.getUserHand().getHand().stream().toList());
-        CardInHand diffCard = cardsAfterDisconnect.stream().filter(card -> !cardsBeforeDisconnect.contains(card)).findFirst().get();
+        ArrayList<CardInHand> cardsAfterleave = new ArrayList<>(firstPlayer.getUserHand().getHand().stream().toList());
+        CardInHand diffCard = cardsAfterleave.stream().filter(card -> !cardsBeforeleave.contains(card)).findFirst().get();
 
         System.out.println(game.getCurrentPlayer().getNickname());
         System.out.println(game.getPlayersList().stream().map(Player::getNickname).toList());
@@ -1039,8 +1043,8 @@ public class ResilienceTest {
         view4.name = "mickey";
         view5.name = "minnie";
 
-        String lobbyName1 = "test1";
-        String lobbyName2 = "test2";
+        String lobbyName1 = "leaveAndRejoinPlaceWinning1";
+        String lobbyName2 = "leaveAndRejoinPlaceWinning2";
         Controller controller1 = new Controller(realLobbyGameListController, view1);
         Controller controller2 = new Controller(realLobbyGameListController, view2);
         Controller controller3 = new Controller(realLobbyGameListController, view3);
@@ -1146,7 +1150,7 @@ public class ResilienceTest {
 
         assert game.getCurrentPlayer().getNickname().equals(lastPlayer.getNickname());
 
-        controllerLast.disconnect();
+        controllerLast.leave();
         controllerLast.login(lastPlayer.getNickname());
 
         assert game.getCurrentPlayer().getNickname().equals(firstPlayer.getNickname());
@@ -1160,7 +1164,7 @@ public class ResilienceTest {
         placeRandom(thirdPlayer, controllerThird);
         controllerThird.draw(DrawableCard.RESOURCECARD, 0);
 
-        controllerLast.disconnect();
+        controllerLast.leave();
 
         assert game.getState().equals(GameState.END_GAME);
 
@@ -1189,8 +1193,8 @@ public class ResilienceTest {
         view4.name = "mickey";
         view5.name = "minnie";
 
-        String lobbyName1 = "test1";
-        String lobbyName2 = "test2";
+        String lobbyName1 = "leaveAndRejoinActualGameEnding1";
+        String lobbyName2 = "leaveAndRejoinActualGameEnding2";
         Controller controller1 = new Controller(realLobbyGameListController, view1);
         Controller controller2 = new Controller(realLobbyGameListController, view2);
         Controller controller3 = new Controller(realLobbyGameListController, view3);
@@ -1300,7 +1304,7 @@ public class ResilienceTest {
 
         assert game.getCurrentPlayer().getNickname().equals(lastPlayer.getNickname());
 
-        controllerLast.disconnect();
+        controllerLast.leave();
         controllerLast.login(lastPlayer.getNickname());
 
         assert game.getCurrentPlayer().getNickname().equals(firstPlayer.getNickname());
@@ -1316,7 +1320,7 @@ public class ResilienceTest {
         placeRandom(thirdPlayer, controllerThird);
         controllerThird.draw(DrawableCard.RESOURCECARD, 0);
 
-        controllerLast.disconnect();
+        controllerLast.leave();
 
         assert game.getState().equals(GameState.END_GAME);
 
@@ -1335,7 +1339,7 @@ public class ResilienceTest {
         int resourceCardsInHandAtStart = 2;
         int goldCardsInHandAtStart = 1;
 
-        String lobbyName1 = "test1";
+        String lobbyName1 = "leaveDeckFinishedPlaceCard1";
         Controller controller1 = new Controller(realLobbyGameListController, view1);
         Controller controller2 = new Controller(realLobbyGameListController, view2);
 
@@ -1418,7 +1422,7 @@ public class ResilienceTest {
 
         firstPlayerController.controller.place(placement1);
 
-        secondPlayerController.controller.disconnect();
+        secondPlayerController.controller.leave();
 
         assert game.getState().equals(GameState.END_GAME);
     }
@@ -1434,7 +1438,7 @@ public class ResilienceTest {
         int resourceCardsInHandAtStart = 2;
         int goldCardsInHandAtStart = 1;
 
-        String lobbyName1 = "test1";
+        String lobbyName1 = "leaveLastCardBeforeDeckFinished1";
         Controller controller1 = new Controller(realLobbyGameListController, view1);
         Controller controller2 = new Controller(realLobbyGameListController, view2);
 
@@ -1511,7 +1515,7 @@ public class ResilienceTest {
         assert game.getCurrentPlayer().equals(secondPlayer);
         assert secondPlayer.getState().equals(PlayerState.DRAW);
 
-        secondPlayerController.controller.disconnect();
+        secondPlayerController.controller.leave();
         assert game.getGoldCardDeck().isEmpty();
         secondPlayerController.controller.login(secondPlayer.getNickname());
 

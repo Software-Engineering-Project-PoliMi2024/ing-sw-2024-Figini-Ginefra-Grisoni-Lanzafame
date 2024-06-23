@@ -84,14 +84,14 @@ public class VirtualControllerSocketTest {
     }
 
     @Test
-    public void disconnectTest() {
+    public void leaveTest() {
         VirtualControllerSocket virtualControllerSocket = new VirtualControllerSocket();
         ServerHandler mockServerHandler = mock(ServerHandler.class);
 
         virtualControllerSocket.setServerHanlder(mockServerHandler);
-        virtualControllerSocket.disconnect();
+        virtualControllerSocket.leave();
 
-        verify(mockServerHandler, times(1)).sendServerMessage(any(DisconnectMsg.class));
+        verify(mockServerHandler, times(1)).sendServerMessage(any(LeaveMsg.class));
     }
 
     @Test

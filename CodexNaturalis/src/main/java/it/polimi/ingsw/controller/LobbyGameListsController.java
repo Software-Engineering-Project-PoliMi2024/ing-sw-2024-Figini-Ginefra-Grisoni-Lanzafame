@@ -1,6 +1,8 @@
 package it.polimi.ingsw.controller;
 
 import it.polimi.ingsw.Configs;
+import it.polimi.ingsw.lightModel.diffs.nuclearDiffs.GadgetGame;
+import it.polimi.ingsw.lightModel.diffs.nuclearDiffs.LittleBoyLobby;
 import it.polimi.ingsw.utils.OSRelated;
 import it.polimi.ingsw.controller.Interfaces.GameControllerReceiver;
 import it.polimi.ingsw.controller.persistence.PersistenceFactory;
@@ -27,7 +29,7 @@ public class LobbyGameListsController implements it.polimi.ingsw.controller.Inte
     private transient final ScheduledExecutorService gamesLoadExecutor = Executors.newScheduledThreadPool(1);
 
     public LobbyGameListsController(){
-        gamesLoadExecutor.scheduleAtFixedRate(this::refreshGames, 1, Configs.gameSaveExpirationTimeMinutes, TimeUnit.MINUTES);
+        gamesLoadExecutor.scheduleAtFixedRate(this::refreshGames, 0, Configs.gameSaveExpirationTimeMinutes, TimeUnit.MINUTES);
     }
 
     @Override
@@ -170,7 +172,7 @@ public class LobbyGameListsController implements it.polimi.ingsw.controller.Inte
     }
 
     @Override
-    public synchronized void disconnect(String nickname) {
+    public synchronized void leave(String nickname) {
         if(this.isInGameParty(nickname)) {
             GameController gameToLeaveController = this.getGameFromUserNick(nickname);
             gameToLeaveController.leave(nickname);
@@ -180,6 +182,7 @@ public class LobbyGameListsController implements it.polimi.ingsw.controller.Inte
         }else {
             this.leaveLobbyList(nickname);
         }
+        this.eraseLightModel(nickname);
         System.out.println(nickname + " disconnected");
     }
 
@@ -288,6 +291,15 @@ public class LobbyGameListsController implements it.polimi.ingsw.controller.Inte
         try {
             viewMap.get(player).logErr(LogsOnClient.MALEVOLENT);
             System.out.println(player + " is malevolent");
+        }catch (Exception ignored){}
+    }
+
+    private void eraseLightModel(String nickname){
+        ViewInterface view = viewMap.get(nickname);
+        try {
+            view.updateLobbyList(new FatManLobbyList());
+            view.updateLobby(new LittleBoyLobby());
+            view.updateGame(new GadgetGame());
         }catch (Exception ignored){}
     }
 }
