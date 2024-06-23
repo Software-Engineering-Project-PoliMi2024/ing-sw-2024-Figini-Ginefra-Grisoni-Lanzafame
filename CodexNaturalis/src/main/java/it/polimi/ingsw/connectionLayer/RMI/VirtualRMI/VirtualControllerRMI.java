@@ -33,6 +33,7 @@ public class VirtualControllerRMI implements VirtualController {
     private PingPongInterface pingPongStub;
     private ControllerInterface controllerStub;
     private Future<?> pong;
+    private boolean hardDisconnect = false;
 
     public VirtualControllerRMI() {
         try (Socket socket = new Socket()) {
@@ -69,6 +70,7 @@ public class VirtualControllerRMI implements VirtualController {
         }catch (InterruptedException ignored){
         }catch (Exception e){
             e.printStackTrace();
+            hardDisconnect = true;
             this.disconnect();
         }
     }
@@ -88,7 +90,8 @@ public class VirtualControllerRMI implements VirtualController {
         }catch (InterruptedException ignored){
         }catch (Exception e){
             e.printStackTrace();
-            this.disconnect();
+            hardDisconnect = true;
+            this.disconnect();;
         }
     }
 
@@ -106,6 +109,7 @@ public class VirtualControllerRMI implements VirtualController {
         }catch (InterruptedException ignored){
         }catch (Exception e){
             e.printStackTrace();
+            hardDisconnect = true;
             this.disconnect();
         }
     }
@@ -124,6 +128,7 @@ public class VirtualControllerRMI implements VirtualController {
         }catch (InterruptedException ignored){
         }catch (Exception e){
             e.printStackTrace();
+            hardDisconnect = true;
             this.disconnect();
         }
     }
@@ -142,6 +147,7 @@ public class VirtualControllerRMI implements VirtualController {
         }catch (InterruptedException ignored){
         }catch (Exception e){
             e.printStackTrace();
+            hardDisconnect = true;
             this.disconnect();
         }
     }
@@ -160,6 +166,7 @@ public class VirtualControllerRMI implements VirtualController {
         }catch (InterruptedException ignored){
         } catch (Exception e) {
             e.printStackTrace();
+            hardDisconnect = true;
             this.disconnect();
         }
     }
@@ -178,6 +185,7 @@ public class VirtualControllerRMI implements VirtualController {
         }catch (InterruptedException ignored){
         }catch (Exception e){
             e.printStackTrace();
+            hardDisconnect = true;
             this.disconnect();
         }
     }
@@ -196,6 +204,7 @@ public class VirtualControllerRMI implements VirtualController {
         }catch (InterruptedException ignored){
         }catch (Exception e){
             e.printStackTrace();
+            hardDisconnect = true;
             this.disconnect();
         }
     }
@@ -214,6 +223,7 @@ public class VirtualControllerRMI implements VirtualController {
         }catch (InterruptedException ignored){
         }catch (Exception e){
             e.printStackTrace();
+            hardDisconnect = true;
             this.disconnect();
         }
     }
@@ -232,13 +242,14 @@ public class VirtualControllerRMI implements VirtualController {
             }catch (InterruptedException ignored){
             } catch (Exception e) {
                 e.printStackTrace();
+                hardDisconnect = true;
                 this.disconnect();
             }
         }, Configs.pingPongFrequency, 1, TimeUnit.SECONDS);
     }
 
-
     public synchronized void disconnect(){
+        //This is the "normal" disconnect. It just disconnects the
         pong.cancel(true);
         pingPongExecutor.shutdownNow();
         pingPongExecutor = Executors.newSingleThreadScheduledExecutor();
@@ -249,7 +260,10 @@ public class VirtualControllerRMI implements VirtualController {
         }catch (RemoteException ignored){}
         this.eraseLightModel();
         try {
-            view.logErr(LogsOnClient.CONNECTION_LOST_CLIENT_SIDE);
+            if(hardDisconnect){
+                hardDisconnect = false;
+                view.logErr(LogsOnClient.CONNECTION_LOST_CLIENT_SIDE);
+            }
             view.transitionTo(ViewState.SERVER_CONNECTION);
         }catch (Exception ignored){}
     }
