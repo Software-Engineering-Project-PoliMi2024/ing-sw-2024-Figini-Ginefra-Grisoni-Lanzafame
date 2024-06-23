@@ -148,7 +148,6 @@ public class ChatButton implements Observer {
         for(String player : chatMembers.keySet()){
             if(!GUI.getLightGame().getLightGameParty().getPlayerActiveList().get(player) && chatMembers.get(player).second()){
                 chatMembers.put(player, new Pair<>(GUI.getLightGame().getLightGameParty().getPlayerColor(player), false));
-                chatDisplay.removeReceiver(player);
                 break;
             }
         }
