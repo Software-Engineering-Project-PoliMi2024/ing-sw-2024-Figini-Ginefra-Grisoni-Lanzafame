@@ -25,8 +25,9 @@ public class Controller implements ControllerInterface, GameControllerReceiver {
 
     @Override
     public void login(String nickname) {
-        this.nickname = nickname;
-        lobbyGameListController.login(nickname, view, this);
+        if(lobbyGameListController.login(nickname, view, this)) {
+            this.nickname = nickname;
+        }
     }
 
     @Override

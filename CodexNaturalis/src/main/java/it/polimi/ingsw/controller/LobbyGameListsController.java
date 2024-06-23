@@ -31,20 +31,24 @@ public class LobbyGameListsController implements it.polimi.ingsw.controller.Inte
     }
 
     @Override
-    public synchronized void login(String nickname, ViewInterface view, GameControllerReceiver controllerReceiver) {
+    public synchronized boolean login(String nickname, ViewInterface view, GameControllerReceiver controllerReceiver) {
+        boolean loggedIn;
         //check if the nickname is already taken
         if(allConnectedUsers().containsKey(nickname)) {
+            loggedIn = false;
             try {
                 view.logErr(LogsOnClient.NAME_TAKEN);
                 view.transitionTo(ViewState.LOGIN_FORM);
             }catch (Exception ignored){}
             //check if the nickname is valid
         }else if(nickname.matches(Configs.invalidNicknameRegex)){
+            loggedIn = false;
             try {
                 view.logErr(LogsOnClient.NOT_VALID_NICKNAME);
                 view.transitionTo(ViewState.LOGIN_FORM);
             }catch (Exception ignored){}
         }else{
+            loggedIn = true;
             //Client is now logged-In. If he disconnects we have to update the model
             System.out.println(nickname + " has connected");
             //check if the player was playing a game before disconnecting
@@ -57,6 +61,7 @@ public class LobbyGameListsController implements it.polimi.ingsw.controller.Inte
                 try{view.transitionTo(ViewState.JOIN_LOBBY);}catch (Exception ignored){}
             }
         }
+        return loggedIn;
     }
 
     @Override
