@@ -8,8 +8,9 @@ import it.polimi.ingsw.connectionLayer.Socket.VirtualSocket.VirtualViewSocket;
 import it.polimi.ingsw.controller.Controller;
 import it.polimi.ingsw.controller.LogsOnClient;
 import it.polimi.ingsw.controller.LobbyGameListsController;
+import it.polimi.ingsw.utils.logger.LoggerSources;
+import it.polimi.ingsw.utils.logger.ProjectLogger;
 import it.polimi.ingsw.utils.OSRelated;
-import it.polimi.ingsw.view.TUI.Printing.Printer;
 import it.polimi.ingsw.view.ViewState;
 
 import java.io.IOException;
@@ -19,7 +20,7 @@ import java.net.Socket;
 import java.rmi.registry.LocateRegistry;
 import java.rmi.registry.Registry;
 import java.rmi.server.UnicastRemoteObject;
-import java.util.logging.Logger;
+import java.util.logging.Level;
 
 /**
  * Starts the server, create an object of MultiGame, starts his SocketServer Thread
@@ -27,15 +28,15 @@ import java.util.logging.Logger;
 public class Server {
     public static void main(String[] args) {
         OSRelated.checkOrCreateDataFolderServer();
-        Logger serverLogger = Logger.getLogger("serverLogger");
+        ProjectLogger serverLogger = new ProjectLogger(LoggerSources.SERVER);
 
         try (Socket socket = new Socket()) {
             socket.connect(new InetSocketAddress("google.com", 80));
             String ip = socket.getLocalAddress().getHostAddress();
-            serverLogger.info("IP: " + ip);
+            serverLogger.log(Level.INFO, "IP: " + ip);
             System.setProperty("java.rmi.server.hostname", ip);
         } catch (IOException e) {
-            serverLogger.warning("No internet connection, can't get IP address");
+            serverLogger.log(Level.WARNING, "No internet connection, can't get IP address");
         }
         LobbyGameListsController lobbyGameListController = new LobbyGameListsController();
 
@@ -45,7 +46,7 @@ public class Server {
             ConnectionLayerServer connection = new ConnectionServerRMI(lobbyGameListController);
             ConnectionLayerServer stub = (ConnectionLayerServer) UnicastRemoteObject.exportObject(connection, 0);
             registry.rebind(Configs.connectionLabelRMI, stub);
-            serverLogger.info("RMI Server started on port " + Configs.rmiPort + "🚔!");
+            serverLogger.log(Level.INFO, "RMI Server started on port " + Configs.rmiPort + "🚔!");
 
             Runtime.getRuntime().addShutdownHook(new Thread(() -> {
                 try {
@@ -53,14 +54,14 @@ public class Server {
                         registry.unbind(boundName);
                     }
                 } catch (Exception e) {
-                    serverLogger.severe("Error while unbinding ");
+                    serverLogger.log(Level.SEVERE, "Error while unbinding ");
                 }
 
-                serverLogger.info("Shutting down server");
+                serverLogger.log(Level.INFO, "Shutting down server");
             }));
 
         } catch (Exception e) {
-            serverLogger.severe("Server exception: can't open registry " +
+            serverLogger.log(Level.SEVERE, "Server exception: can't open registry " +
                     "or error while binding the object");
             System.exit(1);
             //e.printStackTrace();
@@ -70,12 +71,12 @@ public class Server {
         try {
             server = new ServerSocket(Configs.socketPort);
         } catch (IOException e) {
-            serverLogger.severe("Cannot open server socket");
+            serverLogger.log(Level.SEVERE, "Cannot open server socket");
             System.exit(1);
             return;
         }
         Thread serverSocketThread = new Thread(() -> {
-            serverLogger.info("Socket Server started on port " + server.getLocalPort() + "🚔!");
+            serverLogger.log(Level.INFO, "Socket Server started on port " + server.getLocalPort() + "🚔!");
             while (true) {
                 try {
                     Socket client = server.accept();
@@ -97,7 +98,7 @@ public class Server {
                     virtualView.log(LogsOnClient.SERVER_JOINED);
                     virtualView.transitionTo(ViewState.LOGIN_FORM);
                 } catch (IOException e) {
-                    serverLogger.severe("Connection dropped");
+                    serverLogger.log(Level.SEVERE, "Connection dropped");
                     e.printStackTrace();
                 }
             }

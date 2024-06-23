@@ -1,7 +1,7 @@
 package it.polimi.ingsw.lightModel.lightPlayerRelated;
 
-import it.polimi.ingsw.utils.Observed;
-import it.polimi.ingsw.utils.Observer;
+import it.polimi.ingsw.utils.designPatterns.Observed;
+import it.polimi.ingsw.utils.designPatterns.Observer;
 import it.polimi.ingsw.lightModel.Differentiable;
 import it.polimi.ingsw.model.playerReleted.ChatMessage;
 

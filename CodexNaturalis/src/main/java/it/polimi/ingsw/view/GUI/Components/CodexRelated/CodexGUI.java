@@ -1,6 +1,6 @@
 package it.polimi.ingsw.view.GUI.Components.CodexRelated;
 
-import it.polimi.ingsw.utils.Observer;
+import it.polimi.ingsw.utils.designPatterns.Observer;
 import it.polimi.ingsw.lightModel.lightPlayerRelated.LightCodex;
 import it.polimi.ingsw.lightModel.lightPlayerRelated.LightPlacement;
 import it.polimi.ingsw.model.playerReleted.PawnColors;

@@ -1,6 +1,6 @@
 package it.polimi.ingsw.view.GUI.Components.DeckRelated;
 
-import it.polimi.ingsw.utils.Observer;
+import it.polimi.ingsw.utils.designPatterns.Observer;
 import it.polimi.ingsw.lightModel.lightTableRelated.LightDeck;
 import it.polimi.ingsw.model.cardReleted.utilityEnums.CardFace;
 import it.polimi.ingsw.model.cardReleted.utilityEnums.DrawableCard;

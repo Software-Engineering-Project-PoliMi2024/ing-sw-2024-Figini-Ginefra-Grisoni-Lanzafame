@@ -2,7 +2,7 @@ package it.polimi.ingsw.view.GUI.Components;
 
 import it.polimi.ingsw.model.playerReleted.PawnColors;
 import it.polimi.ingsw.model.utilities.Pair;
-import it.polimi.ingsw.utils.Observer;
+import it.polimi.ingsw.utils.designPatterns.Observer;
 import it.polimi.ingsw.view.GUI.AssetsGUI;
 import it.polimi.ingsw.view.GUI.GUI;
 import it.polimi.ingsw.view.GUI.GUIConfigs;

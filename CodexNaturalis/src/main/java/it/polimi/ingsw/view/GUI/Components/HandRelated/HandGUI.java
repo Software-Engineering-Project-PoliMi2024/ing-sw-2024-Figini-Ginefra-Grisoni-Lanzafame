@@ -1,6 +1,6 @@
 package it.polimi.ingsw.view.GUI.Components.HandRelated;
 
-import it.polimi.ingsw.utils.Observer;
+import it.polimi.ingsw.utils.designPatterns.Observer;
 import it.polimi.ingsw.lightModel.lightPlayerRelated.LightCard;
 import it.polimi.ingsw.lightModel.lightPlayerRelated.LightPlacement;
 import it.polimi.ingsw.model.cardReleted.utilityEnums.CardFace;

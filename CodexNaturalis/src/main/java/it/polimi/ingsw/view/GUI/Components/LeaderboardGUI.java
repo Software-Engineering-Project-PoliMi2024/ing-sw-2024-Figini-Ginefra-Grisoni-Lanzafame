@@ -1,6 +1,6 @@
 package it.polimi.ingsw.view.GUI.Components;
 
-import it.polimi.ingsw.utils.Observer;
+import it.polimi.ingsw.utils.designPatterns.Observer;
 import it.polimi.ingsw.model.playerReleted.PawnColors;
 import it.polimi.ingsw.view.GUI.AssetsGUI;
 import it.polimi.ingsw.view.GUI.Components.CodexRelated.Peeker;
@@ -10,13 +10,11 @@ import it.polimi.ingsw.view.GUI.Components.Utils.AnchoredPopUp;
 import it.polimi.ingsw.view.GUI.GUI;
 import javafx.geometry.Pos;
 import javafx.scene.control.Button;
-import javafx.scene.control.Label;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
 import javafx.scene.text.Text;
-import javafx.stage.Window;
 
 import java.util.HashMap;
 import java.util.Map;
