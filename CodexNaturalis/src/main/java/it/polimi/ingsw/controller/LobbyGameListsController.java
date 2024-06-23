@@ -182,7 +182,6 @@ public class LobbyGameListsController implements it.polimi.ingsw.controller.Inte
         }else {
             this.leaveLobbyList(nickname);
         }
-        this.eraseLightModel(nickname);
         System.out.println(nickname + " disconnected");
     }
 
@@ -291,15 +290,6 @@ public class LobbyGameListsController implements it.polimi.ingsw.controller.Inte
         try {
             viewMap.get(player).logErr(LogsOnClient.MALEVOLENT);
             System.out.println(player + " is malevolent");
-        }catch (Exception ignored){}
-    }
-
-    private void eraseLightModel(String nickname){
-        ViewInterface view = viewMap.get(nickname);
-        try {
-            view.updateLobbyList(new FatManLobbyList());
-            view.updateLobby(new LittleBoyLobby());
-            view.updateGame(new GadgetGame());
         }catch (Exception ignored){}
     }
 }
