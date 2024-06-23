@@ -271,21 +271,26 @@ public class VirtualControllerRMI implements VirtualController {
 
     @Override
     public synchronized void disconnect(){
+        this.closeConnection();
+        this.eraseLightModel();
+        try {
+            view.transitionTo(ViewState.SERVER_CONNECTION);
+        }catch (Exception ignored){}
+    }
+
+    private synchronized void closeConnection(){
         pong.cancel(true);
         pingPongExecutor.shutdown();
         pingPongExecutor = Executors.newSingleThreadScheduledExecutor();
         try {
             UnicastRemoteObject.unexportObject(this, true);
             UnicastRemoteObject.unexportObject(view, true);
-
         }catch (RemoteException ignored){}
-        this.eraseLightModel();
     }
 
     public synchronized void notifyLostServerConnection(){
         try {
             view.logErr(LogsOnClient.CONNECTION_LOST_CLIENT_SIDE);
-            view.transitionTo(ViewState.SERVER_CONNECTION);
         }catch (Exception ignored){}
     }
 
