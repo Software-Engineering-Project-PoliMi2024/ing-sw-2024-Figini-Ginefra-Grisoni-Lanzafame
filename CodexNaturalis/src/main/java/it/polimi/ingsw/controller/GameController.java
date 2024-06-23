@@ -387,9 +387,9 @@ public class GameController implements GameControllerInterface {
             }
         }
 
-        /*try {
+        try {
             view.updateGame(new GadgetGame());
-        } catch (Exception ignored) {}*/
+        } catch (Exception ignored) {}
     }
 
     private synchronized void drawRandomCard(String nickname){
