@@ -9,6 +9,7 @@ import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
 import javafx.geometry.Pos;
 import javafx.scene.control.*;
+import javafx.scene.input.KeyCode;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.Priority;
@@ -235,6 +236,13 @@ public class ChatDisplay {
         sendMessageField = new TextField();
         sendMessageField.setPromptText("Write a message to: " + receiverChoice.getValue());
         HBox.setHgrow(sendMessageField, Priority.ALWAYS);
+
+        sendMessageField.setOnKeyPressed(event -> {
+            if (event.getCode() == KeyCode.ENTER) {
+                sendMessage();
+            }
+        });
+
         return sendMessageField;
     }
 

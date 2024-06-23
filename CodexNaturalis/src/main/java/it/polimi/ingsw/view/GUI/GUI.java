@@ -14,6 +14,8 @@ import it.polimi.ingsw.view.GUI.Components.Utils.EnumProperty;
 import it.polimi.ingsw.view.GUI.Components.Utils.logoSwapAnimation;
 import it.polimi.ingsw.view.GUI.Controllers.ConnectionFormControllerGUI;
 import it.polimi.ingsw.view.GUI.Controllers.LoginFormControllerGUI;
+import it.polimi.ingsw.view.GUI.Controllers.PostGameControllerGUI;
+import it.polimi.ingsw.view.GUI.Scenes.PostGameScene;
 import it.polimi.ingsw.view.ViewState;
 import javafx.application.Application;
 import javafx.application.Platform;
@@ -52,6 +54,7 @@ public class GUI extends Application implements ActualView {
 
         ConnectionFormControllerGUI.view = this;
         LoginFormControllerGUI.setView(this);
+        PostGameScene.setView(this);
 
         this.primaryStage = primaryStage;
         primaryStage.setFullScreen(true);
@@ -130,7 +133,7 @@ public class GUI extends Application implements ActualView {
 
     @Override
     public void logErr(String logMsg) throws RemoteException {
-        Platform.runLater(()->LogErr.display(logMsg));
+        Platform.runLater(()->LogErr.display(stackRoot, logMsg));
     }
 
     @Override

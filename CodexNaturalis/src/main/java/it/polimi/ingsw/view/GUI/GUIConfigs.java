@@ -36,4 +36,7 @@ public class GUIConfigs {
     public static double decorativeCornersPercentage = 0.2;
 
     public static double flowerAnimationDuration = 2000;
+
+    public static double logErrWidth = 500;
+    public static double logErrHeight = 150;
 }
