@@ -58,11 +58,15 @@ public class EndGamePopUp {
     }
 
     private VBox initializeText() {
-        Text title = new Text("Game Over! Congratulations to the winners: ");
+        Text title = new Text("Game Over!");
         title.setStyle("-fx-font-size: 24px;" +
                 "-fx-font-weight: bold;");
-        VBox vbox = new VBox(title);
+        Text subTitle = new Text("Congratulations to the winners: ");
+        subTitle.setStyle("-fx-font-size: 24px;" +
+                "-fx-font-weight: bold;");
+        VBox vbox = new VBox(title, subTitle);
         vbox.setAlignment(Pos.CENTER);
+        vbox.setSpacing(10);
         return vbox;
     }
 
