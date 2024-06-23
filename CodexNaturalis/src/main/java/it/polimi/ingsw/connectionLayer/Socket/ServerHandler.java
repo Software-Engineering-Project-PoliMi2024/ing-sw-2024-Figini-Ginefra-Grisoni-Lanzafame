@@ -28,6 +28,8 @@ public class ServerHandler implements Runnable{
     private boolean ready = false;
     private int msgIndex;
     private final Queue<ServerMsg> receivedMsg = new PriorityQueue<>(Comparator.comparingInt(ServerMsg::getIndex));
+    private boolean isListening = true;
+
 
     /**
      * Initializes a new handler using a specific socket that is present on a server.
@@ -114,7 +116,7 @@ public class ServerHandler implements Runnable{
     private void handleMsg() {
         System.out.println("Listening for messages of " + server.getInetAddress());
         int expectedIndex = 0;
-        while (true) {
+        while (isListening) {
             ServerMsg serverMsg;
             try {
                 serverMsg = (ServerMsg) input.readObject();
@@ -123,14 +125,19 @@ public class ServerHandler implements Runnable{
                 System.out.println("Error during the transmission of the message. The message was not a ServerMsg object.");
                 e.printStackTrace();
                 return;
-            }catch (IOException e){ //This will catch a SocketException("Connection reset") when the server crashes
+            }catch (IOException e){ //This will catch a SocketException("Connection reset") when something happen in the connection
                 try{
-                    server.close();
-                    view.logErr(LogsOnClient.CONNECTION_LOST_CLIENT_SIDE);
-                    view.transitionTo(ViewState.SERVER_CONNECTION);
+                    this.connectionLayerDisconnection();
+                    if(isListening){
+                        //If the client is still listening, the disconnection was not intentional. Server CRASHED
+                        view.logErr(LogsOnClient.CONNECTION_LOST_CLIENT_SIDE);
+                        view.transitionTo(ViewState.SERVER_CONNECTION);
+                    }else{
+                        System.out.println("Stopped listening for messages of " + server.getInetAddress());
+                    }
                 }catch (Exception ex){
-                    System.out.println("Error while closing the Socket of the Server");
-                    e.printStackTrace();
+                    System.out.println("Error while printing the error message or transitioning to the SERVER_CONNECTION state");
+                    ex.printStackTrace();
                 }
                 return;
             }
@@ -149,6 +156,34 @@ public class ServerHandler implements Runnable{
             }
         }
     }
+
+    private void connectionLayerDisconnection() {
+        try {
+            if (input != null){
+                input.close();
+            }
+            if (output != null){
+                output.close();
+            }
+            if (server != null && !server.isClosed()){
+                server.close();
+            }
+        } catch (IOException e) {
+            System.out.println("Error while closing the connection");
+            e.printStackTrace();
+        }
+    }
+
+    public void stopListening() {
+        this.isListening = false;
+        try {
+            //Close the communications with the server. This will cause an IOException in the handleMsg method
+            server.close();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
     /**
      * @param queue The queue of messages already present on the client
      * @param expectedIndex The index of the next message expected by the client

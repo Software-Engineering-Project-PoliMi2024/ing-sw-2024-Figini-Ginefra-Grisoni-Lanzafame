@@ -20,6 +20,7 @@ public class ClientHandler implements Runnable{
     private int msgIndex;
     //Create a queue of messages ordered by index, lower index first
     private final Queue<ClientMsg> recivedMsgs = new PriorityQueue<>(Comparator.comparingInt(ClientMsg::getIndex));
+    private volatile boolean isListening = true;
 
     private boolean ready = false;
 
@@ -83,7 +84,7 @@ public class ClientHandler implements Runnable{
     private void handleMsg(){
         System.out.println("Listening for messages of " + client.getInetAddress() + ":" + client.getPort());
         int expectedIndex = 0;
-        while(true) {
+        while(isListening) {
             ClientMsg clientMsg;
             try {
                 clientMsg = (ClientMsg) input.readObject();
@@ -92,10 +93,11 @@ public class ClientHandler implements Runnable{
                 System.out.println("Error during the transmission of the message. The message was not a ClientMsg object.");
                 e.printStackTrace();
                 return;
-            }catch (IOException e) { //This will catch a SocketException("Connection reset") when the client disconnects
+            }catch (IOException e) { //This will catch a SocketException("Connection reset") when the client DISCONNECTS
                 try{
+                    System.out.println("Client " + client.getInetAddress() + ":" + client.getPort() + " disconnected");
+                    this.connectionLayerDisconnection();
                     this.controller.leave();
-                    client.close();
                 }catch (Exception ex){
                     System.out.println("Error during the disconnection of the client");
                     ex.printStackTrace();
@@ -115,6 +117,24 @@ public class ClientHandler implements Runnable{
                 });
                 elaborateMsgThread.start();
             }
+        }
+    }
+
+    private void connectionLayerDisconnection() {
+        try {
+            if (input != null){
+                input.close();
+            }
+            if (output != null){
+                output.close();
+            }
+            if (client != null && !client.isClosed()){
+                client.close();
+            }
+            this.isListening = false;
+        } catch (IOException e) {
+            System.out.println("Error while closing the connection");
+            e.printStackTrace();
         }
     }
 

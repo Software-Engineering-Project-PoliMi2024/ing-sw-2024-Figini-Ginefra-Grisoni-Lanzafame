@@ -80,7 +80,7 @@ public class PostGameScene extends SceneGUI {
 
     private void goToMenu() {
         try {
-            GUI.getControllerStatic().disconnect();
+            GUI.getControllerStatic().leave();
         } catch (Exception e) {
             throw new RuntimeException(e);
         }
