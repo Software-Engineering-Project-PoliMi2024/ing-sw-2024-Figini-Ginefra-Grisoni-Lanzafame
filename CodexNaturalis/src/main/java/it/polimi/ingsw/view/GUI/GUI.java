@@ -133,7 +133,7 @@ public class GUI extends Application implements ActualView {
 
     @Override
     public void logErr(String logMsg) throws RemoteException {
-        Platform.runLater(()->LogErr.display(logMsg));
+        Platform.runLater(()->LogErr.display(stackRoot, logMsg));
     }
 
     @Override

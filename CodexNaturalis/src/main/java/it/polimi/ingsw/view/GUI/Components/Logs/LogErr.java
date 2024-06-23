@@ -1,33 +1,45 @@
 package it.polimi.ingsw.view.GUI.Components.Logs;
 
+import it.polimi.ingsw.view.GUI.Components.Utils.PopUp;
 import javafx.geometry.Pos;
-import javafx.scene.Scene;
-import javafx.scene.control.Button;
 import javafx.scene.control.Label;
+import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.VBox;
-import javafx.stage.Modality;
-import javafx.stage.Stage;
 
 public class LogErr {
-    public static void display(String log){
-        Stage logStage = new Stage();
-        VBox layout = new VBox(10);
-        Scene scene = new Scene(layout);
+    public static void display(AnchorPane stackRoot, String log){
+        PopUp errorPopUp = new PopUp(stackRoot, true);
 
         Label label = new Label();
-        Button closeButton = new Button("Close");
-
-        logStage.initModality(Modality.APPLICATION_MODAL);
-        logStage.setTitle("Error");
-        logStage.setMinWidth(250);
-
         label.setText(log);
-        closeButton.setOnAction(e -> logStage.close());
+        label.setStyle("-fx-font-size: 20px; " +
+                        "-fx-text-fill: red; " +
+                        "-fx-font-weight: bold; " +
+                        "-fx-padding: 10px; " +
+                        "-fx-text-alignment: center; " +
+                        "-fx-border-color: red; " +
+                        "-fx-border-width: 2px; " +
+                        "-fx-border-radius: 10px; " +
+                        "-fx-background-radius: 10px; ");
 
-        layout.getChildren().addAll(label, closeButton);
-        layout.setAlignment(Pos.CENTER);
+        VBox filler = new VBox();
+        filler.setAlignment(Pos.CENTER);
+        AnchorPane.setTopAnchor(filler, 0.0);
+        AnchorPane.setBottomAnchor(filler, 0.0);
+        AnchorPane.setLeftAnchor(filler, 0.0);
+        AnchorPane.setRightAnchor(filler, 0.0);
+        filler.getChildren().add(label);
 
-        logStage.setScene(scene);
-        logStage.showAndWait();
+        System.out.println(label.getHeight());
+        System.out.println(label.getWidth());
+        //The magic numbers are because javaFx does not calculate the width and height of the label until it is displayed
+        filler.setMaxWidth(500);
+        filler.setMaxHeight(150);
+
+        errorPopUp.getContent().maxHeightProperty().bind(filler.maxHeightProperty());
+        errorPopUp.getContent().maxWidthProperty().bind(filler.maxWidthProperty());
+
+        errorPopUp.getContent().getChildren().add(filler);
+        errorPopUp.open();
     }
 }
