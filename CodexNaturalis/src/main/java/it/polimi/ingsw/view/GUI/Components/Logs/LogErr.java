@@ -1,6 +1,8 @@
 package it.polimi.ingsw.view.GUI.Components.Logs;
 
+import it.polimi.ingsw.Configs;
 import it.polimi.ingsw.view.GUI.Components.Utils.PopUp;
+import it.polimi.ingsw.view.GUI.GUIConfigs;
 import javafx.geometry.Pos;
 import javafx.scene.control.Label;
 import javafx.scene.layout.AnchorPane;
@@ -32,9 +34,10 @@ public class LogErr {
 
         System.out.println(label.getHeight());
         System.out.println(label.getWidth());
-        //The magic numbers are because javaFx does not calculate the width and height of the label until it is displayed
-        filler.setMaxWidth(500);
-        filler.setMaxHeight(150);
+
+        //This magic numbers are because javaFx does not calculate the width and height of the label until it is displayed
+        filler.setMaxWidth(GUIConfigs.logErrWidth);
+        filler.setMaxHeight(GUIConfigs.logErrHeight);
 
         errorPopUp.getContent().maxHeightProperty().bind(filler.maxHeightProperty());
         errorPopUp.getContent().maxWidthProperty().bind(filler.maxWidthProperty());
