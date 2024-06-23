@@ -39,6 +39,9 @@ import it.polimi.ingsw.model.tableReleted.Game;
 import it.polimi.ingsw.model.tableReleted.GameState;
 import it.polimi.ingsw.model.utilities.Pair;
 import it.polimi.ingsw.utils.CardChecks;
+import it.polimi.ingsw.utils.logger.LoggerLevel;
+import it.polimi.ingsw.utils.logger.LoggerSources;
+import it.polimi.ingsw.utils.logger.ProjectLogger;
 import it.polimi.ingsw.view.ViewInterface;
 import it.polimi.ingsw.view.ViewState;
 
@@ -51,6 +54,8 @@ public class GameController implements GameControllerInterface {
     private final transient GameList gameList;
     private final transient PersistenceFactory persistenceFactory;
     private final transient MalevolentPlayerManager malevolentPlayerManager;
+    private final transient ProjectLogger logger;
+
     private final Game game;
     private final Map<String, ViewInterface> playerViewMap = new HashMap<>();
 
@@ -67,6 +72,7 @@ public class GameController implements GameControllerInterface {
         this.persistenceFactory = persistenceFactory;
         this.gameList = gameList;
         this.malevolentPlayerManager = malevolentPlayerManager;
+        this.logger = new ProjectLogger(LoggerSources.GAME_CONTROLLER, game.getName());
     }
 
     public synchronized Map<String, ViewInterface> getPlayerViewMap() {
@@ -88,14 +94,15 @@ public class GameController implements GameControllerInterface {
             this.save();
         }
 
+        logger.log(LoggerLevel.INFO, joinerNickname + " joined the game");
+
         this.resetLastPlayerTimer();
 
         playerViewMap.put(joinerNickname, view);
-
         this.notifyJoinGame(joinerNickname, reconnected);
 
         this.loadChat(joinerNickname, view);
-        
+
         if (game.getState().equals(GameState.CHOOSE_START_CARD)) {
             this.updateJoinStartCard(joinerNickname);
             startCardStateTransition(joinerNickname);
@@ -151,7 +158,8 @@ public class GameController implements GameControllerInterface {
 
                 this.notifyPawnChoice(nickname, color, resourceBack, goldBack);
 
-                System.out.println(nickname + " chose pawn");
+                logger.log(LoggerLevel.INFO, nickname + " chose pawn");
+
                 if (otherHaveAllChoosePawn(nickname)) {
                     game.getPawnChoices().clear();
                     this.removeInactivePlayers(p -> p.getState().equals(PlayerState.WAIT));
@@ -192,7 +200,7 @@ public class GameController implements GameControllerInterface {
             player.setSecretObjective(objChoice);
             this.notifySecretObjectiveChoice(nickname, lightObjChoice);
 
-            System.out.println(nickname + " chose secret objective");
+            logger.log(LoggerLevel.INFO, nickname + " chose secret objective");
             if (otherHaveAllChosenObjective(nickname)) {
                 this.removeInactivePlayers(p -> p.getState().equals(PlayerState.WAIT));
                 this.moveToActualGame();
@@ -242,7 +250,7 @@ public class GameController implements GameControllerInterface {
 
             this.notifyStartCardFaceChoice(nickname, Lightifier.lightify(startCardPlacement));
 
-            System.out.println(nickname + " placed start card");
+            logger.log(LoggerLevel.INFO, nickname + " placed start card");
             if (otherHaveAllSelectedStartCard(nickname)) {
                 this.removeInactivePlayers(p -> p.getState().equals(PlayerState.WAIT));
                 this.moveToChoosePawn();
@@ -287,7 +295,7 @@ public class GameController implements GameControllerInterface {
                 //notify everyone
                 this.notifyPlacement(nickname, placement, player.getUserCodex(), frontIdToPlayability);
 
-                System.out.println(nickname + " placed card");
+                logger.log(LoggerLevel.INFO, nickname + " placed card");
                 if (!game.areDeckEmpty()) {
                     player.setState(PlayerState.DRAW);
                     try {
@@ -308,7 +316,7 @@ public class GameController implements GameControllerInterface {
     public synchronized void draw(String nickname, DrawableCard deckType, int cardID) {
         Player player = game.getPlayerFromNick(nickname);
         if(player.getState().equals(PlayerState.DRAW) && cardID >= 0 && cardID <= Configs.actualDeckPos){
-            System.out.println(nickname + " drew card");
+            logger.log(LoggerLevel.INFO, nickname + " drew card");
             if (!game.areDeckEmpty()) {
                 CardInHand drawnCard;
                 Pair<CardInHand, CardInHand> drawnAndReplacement = game.drawAndGetReplacement(deckType, cardID);
@@ -551,7 +559,7 @@ public class GameController implements GameControllerInterface {
     private synchronized void resetLastPlayerTimer(){
         if(lastInGameFuture != null){
             lastInGameFuture.cancel(true);
-            System.out.println(game.getName() + " stopped last player timer");
+            logger.log(LoggerLevel.INFO, game.getName() + " stopped last player timer");
             this.notifyLastInGameTimerStop();
         }
     }
@@ -568,11 +576,11 @@ public class GameController implements GameControllerInterface {
         };
 
         lastInGameFuture = countdownExecutor.schedule(declareLastPlayerWinner, Configs.lastInGameTimerSeconds, TimeUnit.SECONDS);
-        System.out.println(game.getName() + " started last player timer");
+        logger.log(LoggerLevel.INFO, game.getName() + " started last player timer");
     }
 
     private synchronized void winsTheLastPlayerInGame(String winner){
-        System.out.println(game.getName() + " ended");
+        logger.log(LoggerLevel.INFO, "ended");
         game.addObjectivePoints();
         this.notifyGameEnded(game.getPointPerPlayerMap(), List.of(winner));
         moveToEndGame();
@@ -783,8 +791,7 @@ public class GameController implements GameControllerInterface {
         game.addObjectivePoints();
         //notify
         this.notifyGameEnded(game.getPointPerPlayerMap(), this.getWinners());
-
-        System.out.println(game.getName() + " ended");
+        logger.log(LoggerLevel.INFO, "ended");
     }
 
     private void save() {

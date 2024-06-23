@@ -3,6 +3,9 @@ package it.polimi.ingsw.controller.persistence;
 import it.polimi.ingsw.Configs;
 import it.polimi.ingsw.utils.OSRelated;
 import it.polimi.ingsw.model.tableReleted.Game;
+import it.polimi.ingsw.utils.logger.LoggerLevel;
+import it.polimi.ingsw.utils.logger.LoggerSources;
+import it.polimi.ingsw.utils.logger.ProjectLogger;
 
 import java.io.*;
 import java.time.Duration;
@@ -20,6 +23,7 @@ public class PersistenceFactory {
     private final DateTimeFormatter windowSucks = DateTimeFormatter.ofPattern("yyyy-MM-dd_HH-mm-ss");
     private final String gameDataFolderPath;
     private final ExecutorService fileIOExecutor = Executors.newSingleThreadExecutor();
+    private final ProjectLogger logger = new ProjectLogger(LoggerSources.PERSISTENCE, "");
 
     public PersistenceFactory(String gameDataFolderPath) {
         this.gameDataFolderPath = gameDataFolderPath;
@@ -40,7 +44,7 @@ public class PersistenceFactory {
                 outStream.flush();
                 outStream.close();
                 fileOut.close();
-                System.out.println("Game: " + newSave.getName() + " saved successfully");
+                logger.log(LoggerLevel.INFO, "Game: " + game.getName() + " saved successfully");
             } catch (IOException e) {
                 e.printStackTrace();
                 //I can't delete the new save if the stream is not closed
@@ -54,17 +58,17 @@ public class PersistenceFactory {
                 delete(newSave);
                 newSave = null;
                 if (oldSave != null) {
-                    System.out.println("Error while saving the game. Keeping the previous save: " + oldSave.getName());
+                    logger.log(LoggerLevel.WARNING, "Error while saving the game. Keeping the previous save: " + oldSave.getName());
                 } else {
-                    System.out.println("Error while saving the game. No previous save found");
+                    logger.log(LoggerLevel.SEVERE, "Error while saving the game. No previous save found");
                 }
             }
             if (oldSave != null && newSave != null && !oldSave.getName().equals(newSave.getName())) {
                 boolean successfulDeletion = oldSave.delete();
                 if (successfulDeletion) {
-                    System.out.println("Old game save: " + oldSave.getName() + " deleted successfully");
+                    logger.log(LoggerLevel.INFO, "Old game save: " + oldSave.getName() + " deleted successfully");
                 } else {
-                    System.out.println("Old game save: " + oldSave.getName() + " could not be deleted");
+                    logger.log(LoggerLevel.WARNING, "Old game save: " + oldSave.getName() + " could not be deleted");
                 }
             }
         });
@@ -83,7 +87,7 @@ public class PersistenceFactory {
             if (saves == null) {
                 throw new IllegalArgumentException("The gameDataFolderPath is not a valid directory, check the path in the OSRelated class");
             } else if (saves.length == 0) {
-                System.out.println("No games saves found");
+                logger.log(LoggerLevel.INFO, "No games saves found");
             } else {
                 for (File gameSave : saves) {
                     if (checkTimeIsToDelete(gameSave)) {
@@ -142,8 +146,8 @@ public class PersistenceFactory {
             }
             fileIn.close();
         } catch (ClassNotFoundException | IOException e) {
-            System.out.println("file path: " + file.getAbsoluteFile());
-            System.out.println("file:" + file.getName() + " corrupted, deleting it");
+            //System.out.println("file path: " + file.getAbsoluteFile());
+            logger.log(LoggerLevel.WARNING, "file:" + file.getName() + " corrupted, deleting it");
             if (fileIn != null) {
                 try {
                     fileIn.close();
@@ -177,13 +181,13 @@ public class PersistenceFactory {
         if (savesOfGame.isEmpty()) {
             return null;
         } else if (savesOfGame.size() == 1) {
-            System.out.println("Game: " + game.getName() + " loaded successfully");
+            logger.log(LoggerLevel.INFO, "Game: " + game.getName() + " loaded successfully");
             return savesOfGame.poll();
         } else {
-            System.out.println("Multiple saves of the same game found");
+            logger.log(LoggerLevel.WARNING, "Multiple saves of the same game found");
             File latestGameSave = savesOfGame.poll();
             deleteMultipleGameSave(savesOfGame);
-            System.out.println("Game: " + game.getName() + " loaded successfully");
+            logger.log(LoggerLevel.INFO, "Game: " + game.getName() + " loaded from the latest save");
             return latestGameSave;
         }
     }
@@ -239,16 +243,17 @@ public class PersistenceFactory {
             if (gameToDelete != null) {
                 delete(gameToDelete);
             } else {
-                System.out.println("No game save found for the game: " + gameName);
+                logger.log(LoggerLevel.WARNING, "No game save found for the game: " + gameName);
             }
         });
     }
 
     private void delete(File file) {
         if(!file.delete()) {
-            System.out.println("file:" + file.getName() + " could not be deleted");
-        }else
-            System.out.println("file:" + file.getName() + " deleted successfully");
+            logger.log(LoggerLevel.WARNING, "file:" + file.getName() + " could not be deleted");
+        }else{
+            logger.log(LoggerLevel.INFO, "file:" + file.getName() + " deleted successfully");
+        }
     }
 
     public Future<?> eraseAllSaves() {

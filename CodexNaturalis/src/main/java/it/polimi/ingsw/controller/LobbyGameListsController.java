@@ -11,6 +11,9 @@ import it.polimi.ingsw.lightModel.diffs.nuclearDiffs.FatManLobbyList;
 import it.polimi.ingsw.model.cardReleted.cards.CardTable;
 import it.polimi.ingsw.model.tableReleted.Game;
 import it.polimi.ingsw.model.tableReleted.Lobby;
+import it.polimi.ingsw.utils.logger.LoggerLevel;
+import it.polimi.ingsw.utils.logger.LoggerSources;
+import it.polimi.ingsw.utils.logger.ProjectLogger;
 import it.polimi.ingsw.view.ViewInterface;
 import it.polimi.ingsw.view.ViewState;
 
@@ -27,6 +30,7 @@ public class LobbyGameListsController implements it.polimi.ingsw.controller.Inte
     private final Map<String, GameController> gameMap = new HashMap<>();
     private transient final PersistenceFactory persistenceFactory = new PersistenceFactory(OSRelated.gameDataFolderPath);
     private transient final ScheduledExecutorService gamesLoadExecutor = Executors.newScheduledThreadPool(1);
+    private transient final ProjectLogger logger = new ProjectLogger(LoggerSources.LOBBY_GAME_LISTS_CONTROLLER, "");
 
     public LobbyGameListsController(){
         gamesLoadExecutor.scheduleAtFixedRate(this::refreshGames, 0, Configs.gameSaveExpirationTimeMinutes, TimeUnit.MINUTES);
@@ -52,7 +56,7 @@ public class LobbyGameListsController implements it.polimi.ingsw.controller.Inte
         }else{
             loggedIn = true;
             //Client is now logged-In. If he disconnects we have to update the model
-            System.out.println(nickname + " has connected");
+            logger.log(LoggerLevel.INFO, nickname + " has connected");
             //check if the player was playing a game before disconnecting
             if(isInGameParty(nickname)){
                 GameController gameToJoin = this.getGameFromUserNick(nickname);
@@ -92,7 +96,7 @@ public class LobbyGameListsController implements it.polimi.ingsw.controller.Inte
                 } catch (Exception ignored) {
                 }
             } else { //create the lobby
-                System.out.println(creator + " created " + lobbyName + " lobby");
+                logger.log(LoggerLevel.INFO, creator + " created " + lobbyName + " lobby");
                 Lobby lobbyCreated = new Lobby(maxPlayerCount, lobbyName);
 
                 leaveLobbyList(creator);
@@ -125,7 +129,7 @@ public class LobbyGameListsController implements it.polimi.ingsw.controller.Inte
                 } catch (Exception ignored) {
                 }
             } else {
-                System.out.println(joiner + " joined " + lobbyName + " lobby");
+                logger.log(LoggerLevel.INFO, joiner + " joined " + lobbyName + " lobby");
                 leaveLobbyList(joiner);
                 //add the player to the lobby, updated model
                 lobbyToJoin.addPlayer(joiner, view, gameReceiver);
@@ -136,7 +140,7 @@ public class LobbyGameListsController implements it.polimi.ingsw.controller.Inte
                     } catch (Exception ignored) {
                     }
                 } else {
-                    System.out.println(lobbyName + " lobby is full, game started");
+                    logger.log(LoggerLevel.INFO, lobbyName + " lobby is full, game started");
                     GameController gameController = lobbyToJoin.startGame(cardTable, persistenceFactory, this, this);
                     lobbyMap.remove(lobbyName);
                     gameMap.put(lobbyName, gameController);
@@ -182,7 +186,7 @@ public class LobbyGameListsController implements it.polimi.ingsw.controller.Inte
         }else {
             this.leaveLobbyList(nickname);
         }
-        System.out.println(nickname + " disconnected");
+        logger.log(LoggerLevel.INFO, nickname + " disconnected");
     }
 
     @Override
@@ -190,12 +194,13 @@ public class LobbyGameListsController implements it.polimi.ingsw.controller.Inte
         LobbyController lobbyToLeave = this.getLobbyFromUserNick(leaverNick);
 
         if(lobbyToLeave!=null) {
-            System.out.println(leaverNick + " left lobby");
+            logger.log(LoggerLevel.INFO, leaverNick + " left lobby");
             ViewInterface leaverView = lobbyToLeave.removePlayer(leaverNick);
             //update the model
             if(lobbyToLeave.isLobbyEmpty()) {
                 lobbyMap.remove(lobbyToLeave.getLobby().getLobbyName());
                 this.notifyLobbyRemoved(leaverNick, lobbyToLeave.getLobby());
+                logger.log(LoggerLevel.INFO, "Lobby " + lobbyToLeave.getLobby().getLobbyName() + " removed");
             }
             this.joinLobbyList(leaverNick, leaverView);
 
@@ -264,7 +269,7 @@ public class LobbyGameListsController implements it.polimi.ingsw.controller.Inte
         try {
             loadedGames = loadedGamesFuture.get();
         } catch (InterruptedException | ExecutionException e) {
-            System.out.println("un-able to load games");
+            logger.log(LoggerLevel.WARNING, "un-able to load games");
         }
 
         for(Game game : loadedGames){
@@ -289,7 +294,7 @@ public class LobbyGameListsController implements it.polimi.ingsw.controller.Inte
     public synchronized void manageMalevolentPlayer(String player) {
         try {
             viewMap.get(player).logErr(LogsOnClient.MALEVOLENT);
-            System.out.println(player + " is malevolent");
+            logger.log(LoggerLevel.WARNING, player + " is malevolent");
         }catch (Exception ignored){}
     }
 }
