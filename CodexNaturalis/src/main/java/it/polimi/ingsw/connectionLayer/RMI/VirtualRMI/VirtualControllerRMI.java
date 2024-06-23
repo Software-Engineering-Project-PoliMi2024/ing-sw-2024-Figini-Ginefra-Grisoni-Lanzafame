@@ -27,7 +27,8 @@ import java.rmi.server.UnicastRemoteObject;
 import java.util.concurrent.*;
 
 public class VirtualControllerRMI implements VirtualController {
-    private final ThreadPoolExecutor controllerExecutor = new ThreadPoolExecutor(1, 4, 10, TimeUnit.MILLISECONDS, new LinkedBlockingQueue<>());
+    private final ThreadPoolExecutor controllerExecutor = new ThreadPoolExecutor(1, 2, 10, TimeUnit.MILLISECONDS, new LinkedBlockingQueue<>());
+    private final ExecutorService controllerCommandsExecutor = Executors.newSingleThreadExecutor();
     private ScheduledExecutorService pingPongExecutor = Executors.newScheduledThreadPool(2);
     private ViewInterface view;
     private PingPongInterface pingPongStub;
@@ -51,171 +52,194 @@ public class VirtualControllerRMI implements VirtualController {
                 UnicastRemoteObject.unexportObject(this, true);
                 UnicastRemoteObject.unexportObject(view, true);
             } catch (Exception ignored) {}
+            controllerExecutor.shutdownNow();
+            controllerCommandsExecutor.shutdownNow();
+            pingPongExecutor.shutdownNow();
         }));
 
     }
 
     @Override
     public void login(String nickname) {
-        Future<?> loginFuture = controllerExecutor.submit(()->{
+        controllerExecutor.execute(()->{
+            Future<?> loginFuture = controllerCommandsExecutor.submit(()-> {
+                try {
+                    controllerStub.login(nickname);
+                } catch (Exception e) {
+                    throw new RuntimeException("VirtualControllerRMI.login: " + "\n  message: " + e.getMessage() + "\n  cause:\n" + e.getCause());
+                }
+            });
+
             try {
-                controllerStub.login(nickname);
-            } catch (Exception e) {
-                throw new RuntimeException("VirtualControllerRMI.login: " + "\n  message: " + e.getMessage() + "\n  cause:\n" + e.getCause());
+                loginFuture.get(Configs.secondsTimeOut, TimeUnit.SECONDS);
+            }catch (InterruptedException ignored){
+            }catch (Exception e){
+                e.printStackTrace();
+                this.disconnect();
             }
         });
-        try {
-            loginFuture.get(Configs.secondsTimeOut, TimeUnit.SECONDS);
-        }catch (InterruptedException ignored){
-        }catch (Exception e){
-            e.printStackTrace();
-            this.disconnect();
-        }
     }
 
 
     @Override
     public void createLobby(String gameName, int maxPlayerCount) {
-        Future<?> createLobbyFuture = controllerExecutor.submit(()->{
+        controllerExecutor.execute(()->{
+            Future<?> createLobbyFuture = controllerCommandsExecutor.submit(()->{
+                try {
+                    controllerStub.createLobby(gameName, maxPlayerCount);
+                } catch (Exception e) {
+                    throw new RuntimeException("VirtualControllerRMI.createLobby: " + "\n  message: " + e.getMessage() + "\n  cause:\n" + e.getCause());
+                }
+            });
             try {
-                controllerStub.createLobby(gameName, maxPlayerCount);
-            } catch (Exception e) {
-                throw new RuntimeException("VirtualControllerRMI.createLobby: " + "\n  message: " + e.getMessage() + "\n  cause:\n" + e.getCause());
+                createLobbyFuture.get(Configs.secondsTimeOut, TimeUnit.SECONDS);
+            }catch (InterruptedException ignored){
+            }catch (Exception e){
+                e.printStackTrace();
+                this.disconnect();
             }
         });
-        try {
-            createLobbyFuture.get(Configs.secondsTimeOut, TimeUnit.SECONDS);
-        }catch (InterruptedException ignored){
-        }catch (Exception e){
-            e.printStackTrace();
-            this.disconnect();
-        }
+
     }
 
     @Override
     public void joinLobby(String lobbyName) {
-        Future<?> joinLobbyFuture = controllerExecutor.submit(()->{
+        controllerExecutor.execute(()->{
+            Future<?> joinLobbyFuture = controllerCommandsExecutor.submit(()->{
+                try {
+                    controllerStub.joinLobby(lobbyName);
+                } catch (Exception e) {
+                    throw new RuntimeException("VirtualControllerRMI.joinLobby: " + "\n  message: " + e.getMessage() + "\n  cause:\n" + e.getCause());
+                }
+            });
             try {
-                controllerStub.joinLobby(lobbyName);
-            } catch (Exception e) {
-                throw new RuntimeException("VirtualControllerRMI.joinLobby: " + "\n  message: " + e.getMessage() + "\n  cause:\n" + e.getCause());
+                joinLobbyFuture.get(Configs.secondsTimeOut, TimeUnit.SECONDS);
+            }catch (InterruptedException ignored){
+            }catch (Exception e){
+                e.printStackTrace();
+                this.disconnect();
             }
         });
-        try {
-            joinLobbyFuture.get(Configs.secondsTimeOut, TimeUnit.SECONDS);
-        }catch (InterruptedException ignored){
-        }catch (Exception e){
-            e.printStackTrace();
-            this.disconnect();
-        }
     }
 
     @Override
     public void leaveLobby() {
-        Future<?> leaveLobbyFuture = controllerExecutor.submit(()->{
+        controllerExecutor.execute(()-> {
+            Future<?> leaveLobbyFuture = controllerCommandsExecutor.submit(() -> {
+                try {
+                    controllerStub.leaveLobby();
+                } catch (Exception e) {
+                    throw new RuntimeException("VirtualControllerRMI.leaveLobby: " + "\n  message: " + e.getMessage() + "\n  cause:\n" + e.getCause());
+                }
+            });
             try {
-                controllerStub.leaveLobby();
+                leaveLobbyFuture.get(Configs.secondsTimeOut, TimeUnit.SECONDS);
+            } catch (InterruptedException ignored) {
             } catch (Exception e) {
-                throw new RuntimeException("VirtualControllerRMI.leaveLobby: " + "\n  message: " + e.getMessage() + "\n  cause:\n" + e.getCause());
+                e.printStackTrace();
+                this.disconnect();
             }
         });
-        try {
-            leaveLobbyFuture.get(Configs.secondsTimeOut, TimeUnit.SECONDS);
-        }catch (InterruptedException ignored){
-        }catch (Exception e){
-            e.printStackTrace();
-            this.disconnect();
-        }
     }
 
     @Override
     public void chooseSecretObjective(LightCard objectiveCard) {
-        Future<?> choseSecretObjectiveFuture = controllerExecutor.submit(()->{
+        controllerExecutor.execute(()-> {
+            Future<?> choseSecretObjectiveFuture = controllerCommandsExecutor.submit(() -> {
+                try {
+                    controllerStub.chooseSecretObjective(objectiveCard);
+                } catch (Exception e) {
+                    throw new RuntimeException("VirtualControllerRMI.chooseSecretObjective: " + "\n  message: " + e.getMessage() + "\n  cause:\n" + e.getCause());
+                }
+            });
             try {
-                controllerStub.chooseSecretObjective(objectiveCard);
+                choseSecretObjectiveFuture.get(Configs.secondsTimeOut, TimeUnit.SECONDS);
+            } catch (InterruptedException ignored) {
             } catch (Exception e) {
-                throw new RuntimeException("VirtualControllerRMI.chooseSecretObjective: " + "\n  message: " + e.getMessage() + "\n  cause:\n" + e.getCause());
+                e.printStackTrace();
+                this.disconnect();
             }
         });
-        try {
-            choseSecretObjectiveFuture.get(Configs.secondsTimeOut, TimeUnit.SECONDS);
-        }catch (InterruptedException ignored){
-        }catch (Exception e){
-            e.printStackTrace();
-            this.disconnect();
-        }
     }
 
     @Override
     public void choosePawn(PawnColors color) {
-        Future<?> choosePawnFuture = controllerExecutor.submit(() -> {
+        controllerExecutor.execute(()-> {
+            Future<?> choosePawnFuture = controllerCommandsExecutor.submit(() -> {
+                try {
+                    controllerStub.choosePawn(color);
+                } catch (Exception e) {
+                    throw new RuntimeException("VirtualControllerRMI.choosePawn: " + "\n  message: " + e.getMessage() + "\n  cause:\n" + e.getCause());
+                }
+            });
             try {
-                controllerStub.choosePawn(color);
+                choosePawnFuture.get(Configs.secondsTimeOut, TimeUnit.SECONDS);
+            } catch (InterruptedException ignored) {
             } catch (Exception e) {
-                throw new RuntimeException("VirtualControllerRMI.choosePawn: " + "\n  message: " + e.getMessage() + "\n  cause:\n" + e.getCause());
+                e.printStackTrace();
+                this.disconnect();
             }
         });
-        try {
-            choosePawnFuture.get(Configs.secondsTimeOut, TimeUnit.SECONDS);
-        }catch (InterruptedException ignored){
-        } catch (Exception e) {
-            e.printStackTrace();
-            this.disconnect();
-        }
     }
 
     @Override
     public void sendChatMessage(ChatMessage message) {
-        Future<?> sendChatMessageFuture = controllerExecutor.submit(()->{
+        controllerExecutor.execute(()-> {
+            Future<?> sendChatMessageFuture = controllerCommandsExecutor.submit(() -> {
+                try {
+                    controllerStub.sendChatMessage(message);
+                } catch (Exception e) {
+                    throw new RuntimeException("VirtualControllerRMI.sendChatMessage: " + "\n  message: " + e.getMessage() + "\n  cause:\n" + e.getCause());
+                }
+            });
             try {
-                controllerStub.sendChatMessage(message);
+                sendChatMessageFuture.get(Configs.secondsTimeOut, TimeUnit.SECONDS);
+            } catch (InterruptedException ignored) {
             } catch (Exception e) {
-                throw new RuntimeException("VirtualControllerRMI.sendChatMessage: " + "\n  message: " + e.getMessage() + "\n  cause:\n" + e.getCause());
+                e.printStackTrace();
+                this.disconnect();
             }
         });
-        try {
-            sendChatMessageFuture.get(Configs.secondsTimeOut, TimeUnit.SECONDS);
-        }catch (InterruptedException ignored){
-        }catch (Exception e){
-            e.printStackTrace();
-            this.disconnect();
-        }
     }
 
     @Override
     public void place(LightPlacement placement) {
-        Future<?> placeFuture = controllerExecutor.submit(()->{
+        controllerExecutor.execute(()-> {
+            Future<?> placeFuture = controllerCommandsExecutor.submit(() -> {
+                try {
+                    controllerStub.place(placement);
+                } catch (Exception e) {
+                    throw new RuntimeException("VirtualControllerRMI.place: " + "\n  message: " + e.getMessage() + "\n  cause:\n" + e.getCause());
+                }
+            });
             try {
-                controllerStub.place(placement);
+                placeFuture.get(Configs.secondsTimeOut, TimeUnit.SECONDS);
+            } catch (InterruptedException ignored) {
             } catch (Exception e) {
-                throw new RuntimeException("VirtualControllerRMI.place: " + "\n  message: " + e.getMessage() + "\n  cause:\n" + e.getCause());
+                e.printStackTrace();
+                this.disconnect();
             }
         });
-        try {
-            placeFuture.get(Configs.secondsTimeOut, TimeUnit.SECONDS);
-        }catch (InterruptedException ignored){
-        }catch (Exception e){
-            e.printStackTrace();
-            this.disconnect();
-        }
     }
 
     @Override
     public void draw(DrawableCard deckID, int cardID) {
-        Future<?> drawFuture = controllerExecutor.submit(()->{
+        controllerExecutor.execute(()-> {
+            Future<?> drawFuture = controllerCommandsExecutor.submit(() -> {
+                try {
+                    controllerStub.draw(deckID, cardID);
+                } catch (Exception e) {
+                    throw new RuntimeException("VirtualControllerRMI.draw: " + "\n  message: " + e.getMessage() + "\n  cause:\n" + e.getCause());
+                }
+            });
             try {
-                controllerStub.draw(deckID, cardID);
+                drawFuture.get(Configs.secondsTimeOut, TimeUnit.SECONDS);
+            } catch (InterruptedException ignored) {
             } catch (Exception e) {
-                throw new RuntimeException("VirtualControllerRMI.draw: " + "\n  message: " + e.getMessage() + "\n  cause:\n" + e.getCause());
+                e.printStackTrace();
+                this.disconnect();
             }
         });
-        try {
-            drawFuture.get(Configs.secondsTimeOut, TimeUnit.SECONDS);
-        }catch (InterruptedException ignored){
-        }catch (Exception e){
-            e.printStackTrace();
-            this.disconnect();
-        }
     }
 
     public void pingPong() {
@@ -275,7 +299,7 @@ public class VirtualControllerRMI implements VirtualController {
             UnicastRemoteObject.unexportObject(this, true);
             UnicastRemoteObject.unexportObject(view, true);
         }catch (Exception ignored){}
-        Future<?> connect = controllerExecutor.submit(() -> {
+        Future<?> connect = controllerCommandsExecutor.submit(() -> {
             try {
                 Registry registry = LocateRegistry.getRegistry(ip, port);
                 ConnectionLayerServer serverReference = (ConnectionLayerServer) registry.lookup(Configs.connectionLabelRMI);

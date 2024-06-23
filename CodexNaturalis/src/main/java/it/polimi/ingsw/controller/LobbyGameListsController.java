@@ -231,8 +231,8 @@ public class LobbyGameListsController implements it.polimi.ingsw.controller.Inte
     }
 
     private synchronized void joinLobbyList(String nickname, ViewInterface view){
-        viewMap.put(nickname, view);
         updateJoinLobbyList(view);
+        viewMap.put(nickname, view);
     }
 
     private synchronized void updateJoinLobbyList(ViewInterface joinerView){
