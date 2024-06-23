@@ -6,6 +6,9 @@ import it.polimi.ingsw.connectionLayer.Socket.ServerHandler;
 import it.polimi.ingsw.connectionLayer.VirtualLayer.VirtualController;
 import it.polimi.ingsw.controller.Interfaces.ControllerInterface;
 import it.polimi.ingsw.controller.LogsOnClient;
+import it.polimi.ingsw.lightModel.diffs.nuclearDiffs.FatManLobbyList;
+import it.polimi.ingsw.lightModel.diffs.nuclearDiffs.GadgetGame;
+import it.polimi.ingsw.lightModel.diffs.nuclearDiffs.LittleBoyLobby;
 import it.polimi.ingsw.lightModel.lightPlayerRelated.LightCard;
 import it.polimi.ingsw.lightModel.lightPlayerRelated.LightPlacement;
 import it.polimi.ingsw.model.cardReleted.utilityEnums.DrawableCard;
@@ -96,7 +99,21 @@ public class VirtualControllerSocket implements VirtualController {
 
     @Override
     public void disconnect(){
+        this.eraseLightModel();
         serverHandler.sendServerMessage(new DisconnectMsg());
+        /*try {
+            view.transitionTo(ViewState.SERVER_CONNECTION);
+        } catch (Exception e) {
+            throw new RuntimeException(e);
+        }*/
+    }
+
+    private void eraseLightModel(){
+        try {
+            view.updateLobbyList(new FatManLobbyList());
+            view.updateLobby(new LittleBoyLobby());
+            view.updateGame(new GadgetGame());
+        }catch (Exception ignored){}
     }
 
     @Override
