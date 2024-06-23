@@ -16,7 +16,7 @@ public class LightGame implements Differentiable {
     private Map<String, LightHandOthers> handOthers;
     private Map<DrawableCard, LightDeck> decks;
     private LightCard[] publicObjective;
-    private final List<String> winners;
+    private List<String> winners;
 
     public LightGame(){
         this.lightGameParty = new LightGameParty();
@@ -166,6 +166,7 @@ public class LightGame implements Differentiable {
         this.hand = new LightHand();
         this.handOthers = new HashMap<>();
         this.decks = new HashMap<>();
+        this.winners = new ArrayList<>();
         decks.put(DrawableCard.RESOURCECARD, new LightDeck());
         decks.put(DrawableCard.GOLDCARD, new LightDeck());
         publicObjective = new LightCard[2];
