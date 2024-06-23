@@ -48,6 +48,8 @@ public class GameScene extends SceneGUI{
         ObjectiveChoice objectiveChoice = new ObjectiveChoice(getContent());
 
         PawnChoice pawnChoice = new PawnChoice(getContent());
+
+        EndGamePopUp endGame = new EndGamePopUp(getContent());
     }
 
 }
