@@ -78,7 +78,6 @@ public class Server {
             serverLogger.info("Socket Server started on port " + server.getLocalPort() + "🚔!");
             while (true) {
                 try {
-                    //todo this should be done in a connectionServerSocket but I don't know if it is the right thing (mental note, pinPong)
                     Socket client = server.accept();
                     ClientHandler clientHandler = new ClientHandler(client);
                     Thread clientHandlerThread = new Thread(clientHandler, "clientHandler of" + client.getInetAddress());

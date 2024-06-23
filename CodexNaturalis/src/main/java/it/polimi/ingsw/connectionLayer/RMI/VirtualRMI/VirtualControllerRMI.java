@@ -263,6 +263,7 @@ public class VirtualControllerRMI implements VirtualController {
         }, Configs.pingPongFrequency, 1, TimeUnit.SECONDS);
     }
 
+    @Override
     public synchronized void disconnect(){
         //This is the "normal" disconnect. It just disconnects the
         pong.cancel(true);

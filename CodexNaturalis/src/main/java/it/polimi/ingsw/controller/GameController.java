@@ -387,10 +387,10 @@ public class GameController implements GameControllerInterface {
             }
         }
 
-        try {
+        /*try {
             view.updateGame(new GadgetGame());
             view.transitionTo(ViewState.LOGIN_FORM);
-        } catch (Exception ignored) {}
+        } catch (Exception ignored) {}*/
     }
 
     private synchronized void drawRandomCard(String nickname){
