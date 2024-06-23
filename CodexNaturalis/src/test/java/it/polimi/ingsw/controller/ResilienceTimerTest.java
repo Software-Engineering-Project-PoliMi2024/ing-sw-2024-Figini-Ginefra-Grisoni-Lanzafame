@@ -70,7 +70,7 @@ public class ResilienceTimerTest {
         LightPlacement startPlacement1 = new LightPlacement(new Position(0,0), startCard1, CardFace.FRONT);
 
         controller1.place(startPlacement1);
-        controller2.disconnect();
+        controller2.leave();
         try {
             Thread.sleep(Configs.lastInGameTimerSeconds * 1000L + 1000L);
         }catch (Exception ignored){}
@@ -78,7 +78,7 @@ public class ResilienceTimerTest {
         assert view1.state.equals(ViewState.GAME_ENDING);
         assert lobbyGameListController.getGameMap().containsKey(lobbyName1);
 
-        controller1.disconnect();
+        controller1.leave();
         //the save has been deleted
         assert !lobbyGameListController.getGameMap().containsKey(lobbyName1);
     }
@@ -102,7 +102,7 @@ public class ResilienceTimerTest {
         PublicGameController gameController = new PublicGameController(lobbyGameListController.getGameMap().get(lobbyName1));
         Game game = gameController.getGame();
 
-        controller2.disconnect();
+        controller2.leave();
         assert !game.getState().equals(GameState.END_GAME);
 
         try {
@@ -115,7 +115,7 @@ public class ResilienceTimerTest {
         assert lobbyGameListController.getGameMap().containsKey(lobbyName1);
 
         //the save has been deleted
-        controller1.disconnect();
+        controller1.leave();
         assert !lobbyGameListController.getGameMap().containsKey(lobbyName1);
     }
     @Test
@@ -146,7 +146,7 @@ public class ResilienceTimerTest {
         controller2.place(startPlacement2);
 
         assert game.getState().equals(GameState.CHOOSE_PAWN);
-        controller2.disconnect();
+        controller2.leave();
         try {
             Thread.sleep(Configs.lastInGameTimerSeconds * 1000L + 1000L);
         }catch (Exception ignored){}
@@ -155,7 +155,7 @@ public class ResilienceTimerTest {
         assert lobbyGameListController.getGameMap().containsKey(lobbyName1);
 
         //the save has been deleted
-        controller1.disconnect();
+        controller1.leave();
         assert !lobbyGameListController.getGameMap().containsKey(lobbyName1);
     }
     @Test
@@ -189,7 +189,7 @@ public class ResilienceTimerTest {
         controller2.choosePawn(PawnColors.RED);
 
         assert game.getState().equals(GameState.CHOOSE_SECRET_OBJECTIVE);
-        controller2.disconnect();
+        controller2.leave();
         try {
             Thread.sleep(Configs.lastInGameTimerSeconds * 1000L + 1000L);
         }catch (Exception ignored){}
@@ -198,7 +198,7 @@ public class ResilienceTimerTest {
         assert lobbyGameListController.getGameMap().containsKey(lobbyName1);
 
         //the save has been deleted
-        controller1.disconnect();
+        controller1.leave();
         assert !lobbyGameListController.getGameMap().containsKey(lobbyName1);
     }
     @Test
@@ -267,12 +267,12 @@ public class ResilienceTimerTest {
         assert game.getState().equals(GameState.ACTUAL_GAME);
         Player firstPlayer = game.getPlayerFromNick(game.getCurrentPlayer().getNickname());
         Controller firstPlayerController = controllerMap.get(firstPlayer.getNickname());
-        firstPlayerController.disconnect();
+        firstPlayerController.leave();
         Player secondPlayer = game.getPlayerFromNick(game.getCurrentPlayer().getNickname());
         Controller secondPlayerController = controllerMap.get(secondPlayer.getNickname());
 
         assert viewMap.get(secondPlayer.getNickname()).state.equals(ViewState.PLACE_CARD);
-        secondPlayerController.disconnect();
+        secondPlayerController.leave();
 
         assert !game.getState().equals(GameState.END_GAME);
         try {
@@ -288,7 +288,7 @@ public class ResilienceTimerTest {
         assert lobbyGameListController.getGameMap().containsKey(lobbyName1);
 
         //the save has been deleted
-        controller1.disconnect();
+        controller1.leave();
         assert !lobbyGameListController.getGameMap().containsKey(lobbyName1);
     }
 
@@ -323,7 +323,7 @@ public class ResilienceTimerTest {
         controller2.choosePawn(PawnColors.RED);
 
         assert game.getState().equals(GameState.CHOOSE_SECRET_OBJECTIVE);
-        controller1.disconnect();
+        controller1.leave();
         assert !game.getState().equals(GameState.END_GAME);
         controller1.login(view1.name);
         try {
@@ -365,9 +365,9 @@ public class ResilienceTimerTest {
         controller2.choosePawn(PawnColors.RED);
 
         assert game.getState().equals(GameState.CHOOSE_SECRET_OBJECTIVE);
-        controller1.disconnect();
+        controller1.leave();
         assert !game.getState().equals(GameState.END_GAME);
-        controller2.disconnect();
+        controller2.leave();
         try {
             Thread.sleep(Configs.lastInGameTimerSeconds * 1000L + 1000L);
         }catch (Exception ignored){}

@@ -248,7 +248,7 @@ public class VirtualViewRMI implements VirtualView {
                 alreadyDisconnected = true;
                 pong.cancel(true);
                 pingPongExecutor.shutdownNow();
-                controller.disconnect();
+                controller.leave();
                 virtualViewExecutor.shutdownNow();
                 viewUpdateExecutor.shutdownNow();
             }
@@ -281,7 +281,7 @@ public class VirtualViewRMI implements VirtualView {
                 e.printStackTrace();
                 this.disconnect();
             }
-        }, Configs.pingPongFrequency, 1, TimeUnit.SECONDS);
+        }, Configs.pingPongFrequency, Configs.pingPongFrequency, TimeUnit.SECONDS);
     }
 
 }

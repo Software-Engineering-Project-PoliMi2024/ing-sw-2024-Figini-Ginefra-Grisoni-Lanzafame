@@ -94,7 +94,7 @@ public class ClientHandler implements Runnable{
                 return;
             }catch (IOException e) { //This will catch a SocketException("Connection reset") when the client disconnects
                 try{
-                    this.controller.disconnect();
+                    this.controller.leave();
                     client.close();
                 }catch (Exception ex){
                     System.out.println("Error during the disconnection of the client");

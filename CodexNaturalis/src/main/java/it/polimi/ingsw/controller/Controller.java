@@ -71,8 +71,8 @@ public class Controller implements ControllerInterface, GameControllerReceiver {
     }
 
     @Override
-    public void disconnect() {
-        lobbyGameListController.disconnect(nickname);
+    public void leave() {
+        lobbyGameListController.leave(nickname);
     }
 
     @Override

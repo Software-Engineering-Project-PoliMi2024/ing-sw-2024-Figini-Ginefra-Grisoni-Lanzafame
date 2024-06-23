@@ -42,14 +42,7 @@ class ControllersTests {
 
     @BeforeEach
     public void setUp() {
-        Future<?> eraseAll = persistenceFactory.eraseAllSaves();
-        File dataFolder = new File(Configs.gameSaveFolderName);
-        File[] saves = dataFolder.listFiles();
-        if (saves != null) {
-            for (File gameSave : saves) {
-                gameSave.delete();
-            }
-        }
+        persistenceFactory.eraseAllSaves();
 
         realLobbyGameListController = new LobbyGameListsController();
         lobbyGameListController = new PublicLobbyGameListController(realLobbyGameListController);

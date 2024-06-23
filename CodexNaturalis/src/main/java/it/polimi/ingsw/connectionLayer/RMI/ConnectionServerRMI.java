@@ -49,9 +49,9 @@ public class ConnectionServerRMI implements ConnectionLayerServer {
                 VirtualView virtualView = new VirtualViewRMI(view);
                 ControllerInterface controllerOnServer = new Controller(lobbyGameListController, virtualView);
                 virtualView.setController(controllerOnServer);
-                virtualView.setPingPongStub(pingPong);
                 ControllerInterface controllerOnServerStub = (ControllerInterface) UnicastRemoteObject.exportObject(controllerOnServer, 0);
                 PingPongInterface virtualViewStub = (PingPongInterface) UnicastRemoteObject.exportObject(virtualView, 0);
+                virtualView.setPingPongStub(pingPong);
                 pingPong.setPingPongStub(virtualViewStub);
                 controller.setControllerStub(controllerOnServerStub);
                 pingPong.pingPong();
