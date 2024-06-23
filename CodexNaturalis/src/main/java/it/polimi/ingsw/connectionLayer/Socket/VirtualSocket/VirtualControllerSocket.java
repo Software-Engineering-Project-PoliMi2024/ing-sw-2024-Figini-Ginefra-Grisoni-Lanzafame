@@ -6,6 +6,9 @@ import it.polimi.ingsw.connectionLayer.Socket.ServerHandler;
 import it.polimi.ingsw.connectionLayer.VirtualLayer.VirtualController;
 import it.polimi.ingsw.controller.Interfaces.ControllerInterface;
 import it.polimi.ingsw.controller.LogsOnClient;
+import it.polimi.ingsw.lightModel.diffs.nuclearDiffs.FatManLobbyList;
+import it.polimi.ingsw.lightModel.diffs.nuclearDiffs.GadgetGame;
+import it.polimi.ingsw.lightModel.diffs.nuclearDiffs.LittleBoyLobby;
 import it.polimi.ingsw.lightModel.lightPlayerRelated.LightCard;
 import it.polimi.ingsw.lightModel.lightPlayerRelated.LightPlacement;
 import it.polimi.ingsw.model.cardReleted.utilityEnums.DrawableCard;
@@ -17,6 +20,7 @@ import it.polimi.ingsw.view.ViewState;
 
 import java.io.IOException;
 import java.net.Socket;
+import java.rmi.RemoteException;
 
 public class VirtualControllerSocket implements VirtualController {
 
@@ -95,8 +99,29 @@ public class VirtualControllerSocket implements VirtualController {
     }
 
     @Override
+    public void leave() {
+        serverHandler.sendServerMessage(new LeaveMsg());
+        this.disconnect();
+    }
+
+    @Override
     public void disconnect(){
-        serverHandler.sendServerMessage(new DisconnectMsg());
+        this.eraseLightModel();
+        serverHandler.sendServerMessage(new LeaveMsg());
+        serverHandler.stopListening();
+        try {
+            view.transitionTo(ViewState.SERVER_CONNECTION);
+        } catch (Exception e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+    private void eraseLightModel(){
+        try {
+            view.updateLobbyList(new FatManLobbyList());
+            view.updateLobby(new LittleBoyLobby());
+            view.updateGame(new GadgetGame());
+        }catch (Exception ignored){}
     }
 
     @Override

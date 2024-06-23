@@ -2,13 +2,13 @@ package it.polimi.ingsw.connectionLayer.Socket.ClientMsg;
 
 import it.polimi.ingsw.connectionLayer.Socket.ClientHandler;
 
-public class DisconnectMsg extends ClientMsg {
+public class LeaveMsg extends ClientMsg {
 
-    public DisconnectMsg() {
+    public LeaveMsg() {
     }
 
     @Override
     public void processMsg(ClientHandler clientHandler) throws Exception {
-        clientHandler.getController().disconnect();
+        clientHandler.getController().leave();
     }
 }

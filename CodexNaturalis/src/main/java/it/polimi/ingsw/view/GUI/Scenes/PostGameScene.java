@@ -73,8 +73,17 @@ public class PostGameScene extends SceneGUI {
         buttons.setSpacing(20);
         playAgainButton.getStyleClass().add("accent");
         menuButton.getStyleClass().add("accent");
+        menuButton.setOnMouseClicked(e -> goToMenu());
         buttons.getChildren().addAll(playAgainButton, menuButton);
         return buttons;
+    }
+
+    private void goToMenu() {
+        try {
+            GUI.getControllerStatic().leave();
+        } catch (Exception e) {
+            throw new RuntimeException(e);
+        }
     }
 
     public static void setView(ActualView view) {

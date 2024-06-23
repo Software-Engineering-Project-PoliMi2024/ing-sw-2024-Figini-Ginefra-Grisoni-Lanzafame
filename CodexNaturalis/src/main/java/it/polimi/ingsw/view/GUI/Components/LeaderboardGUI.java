@@ -30,7 +30,6 @@ public class LeaderboardGUI implements Observer {
 
     private Map<String, Text> labelMap = new HashMap<>();
     private Map<String, ImageView> pawnImageViewMap = new HashMap<>();
-    private static Map<String, PawnsGui> playerpawnMap = new HashMap<>();
     private final HBox buttonContainer = new HBox();
     private PlateauGUI plateau;
     private List<PawnsGui> availablePawns;

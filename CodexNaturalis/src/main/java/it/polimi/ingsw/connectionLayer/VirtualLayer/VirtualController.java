@@ -12,4 +12,5 @@ public interface VirtualController extends ControllerInterface, ConnectionLayerC
     @Override
     void setPingPongStub(PingPongInterface pingPongStub) throws RemoteException;
     void setControllerStub(ControllerInterface controllerStub) throws RemoteException;
+    void disconnect() throws RemoteException;
 }

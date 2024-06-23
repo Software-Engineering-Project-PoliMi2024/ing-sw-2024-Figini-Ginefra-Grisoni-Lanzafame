@@ -12,6 +12,7 @@ import javafx.scene.layout.VBox;
 
 public class LobbyGUI implements Observer {
     private final ListView<String> userInLobby = new ListView<>();
+    private final Label playerInLobbyCount = new Label();
     private final Label lobbyNameToJoin = new Label();
     private final Button leaveButton = new Button();
     private final VBox lobbyLayout = new VBox();
@@ -25,12 +26,18 @@ public class LobbyGUI implements Observer {
 
         leaveButton.setOnAction(e->leaveLobby());
 
+        int numberOfMaxPlayers = GUI.getLobby().numberMaxPlayer();
+        int numberOfPlayerInLobby = GUI.getLobby().nicknames().size();
+        playerInLobbyCount.setText(numberOfPlayerInLobby + "/" + numberOfMaxPlayers);
+        playerInLobbyCount.setPadding(new javafx.geometry.Insets(0, 0, 20, 0));
+
         userInLobby.getStyleClass().add("bordersCodexStyle");
         userInLobby.setPrefHeight(200);
         userInLobby.setMaxHeight(200);
         userInLobby.setMaxWidth(200);
 
-        lobbyLayout.getChildren().addAll(lobbyNameToJoin, userInLobby, leaveButton);
+
+        lobbyLayout.getChildren().addAll(lobbyNameToJoin, playerInLobbyCount, userInLobby, leaveButton);
 
         lobbyLayout.setSpacing(10);
         lobbyLayout.setAlignment(Pos.CENTER);
@@ -45,6 +52,7 @@ public class LobbyGUI implements Observer {
     public void update() {
         userInLobby.getItems().clear();
         userInLobby.getItems().addAll(GUI.getLobby().nicknames());
+        playerInLobbyCount.setText(GUI.getLobby().nicknames().size() + "/" + GUI.getLobby().numberMaxPlayer());
     }
 
     public void leaveLobby() {

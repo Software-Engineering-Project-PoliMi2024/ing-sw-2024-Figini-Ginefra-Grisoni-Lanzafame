@@ -257,14 +257,22 @@ public class VirtualControllerRMI implements VirtualController {
             } catch (Exception e) {
                 e.printStackTrace();
                 this.disconnect();
+                notifyLostServerConnection();
             }
-        }, Configs.pingPongFrequency, 1, TimeUnit.SECONDS);
+        }, Configs.pingPongFrequency, Configs.pingPongFrequency, TimeUnit.SECONDS);
+    }
+
+    @Override
+    public synchronized void leave() throws Exception {
+        controllerStub.leave();
+        this.disconnect();
     }
 
 
+    @Override
     public synchronized void disconnect(){
         pong.cancel(true);
-        pingPongExecutor.shutdownNow();
+        pingPongExecutor.shutdown();
         pingPongExecutor = Executors.newSingleThreadScheduledExecutor();
         try {
             UnicastRemoteObject.unexportObject(this, true);
@@ -272,6 +280,9 @@ public class VirtualControllerRMI implements VirtualController {
 
         }catch (RemoteException ignored){}
         this.eraseLightModel();
+    }
+
+    public synchronized void notifyLostServerConnection(){
         try {
             view.logErr(LogsOnClient.CONNECTION_LOST_CLIENT_SIDE);
             view.transitionTo(ViewState.SERVER_CONNECTION);
