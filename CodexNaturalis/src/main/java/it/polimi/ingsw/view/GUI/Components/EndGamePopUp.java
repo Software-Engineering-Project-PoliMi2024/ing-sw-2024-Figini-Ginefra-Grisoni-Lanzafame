@@ -17,6 +17,7 @@ public class EndGamePopUp {
 
     public EndGamePopUp(AnchorPane parent) {
         PopUp endGamePopUp = new PopUp(parent, true);
+        endGamePopUp.getContent().setStyle("-fx-background-color: transparent");
 
         GUI.getStateProperty().addListener((obs, oldState, newState) -> {
             Platform.runLater(() -> {
@@ -36,6 +37,7 @@ public class EndGamePopUp {
 
     private void populateScene(PopUp endGamePopUp) {
         VBox filler = new VBox();
+        filler.setStyle("-fx-background-color: transparent");
         filler.setAlignment(Pos.CENTER);
         filler.setSpacing(30);
 
@@ -49,8 +51,6 @@ public class EndGamePopUp {
         Button disconnectButton = initializeButton();
 
         filler.getChildren().addAll(text, winners, disconnectButton);
-        filler.setMaxWidth(700);
-        filler.setMaxHeight(400);
 
         endGamePopUp.getContent().maxHeightProperty().bind(filler.maxHeightProperty());
         endGamePopUp.getContent().maxWidthProperty().bind(filler.maxWidthProperty());
@@ -59,11 +59,13 @@ public class EndGamePopUp {
 
     private VBox initializeText() {
         Text title = new Text("Game Over!");
-        title.setStyle("-fx-font-size: 24px;" +
-                "-fx-font-weight: bold;");
+        title.setStyle("-fx-font-size: 30px;" +
+                "-fx-font-weight: bold;" +
+                "-fx-fill: white;");
         Text subTitle = new Text("Congratulations to the winners: ");
-        subTitle.setStyle("-fx-font-size: 24px;" +
-                "-fx-font-weight: bold;");
+        subTitle.setStyle("-fx-font-size: 30px;" +
+                "-fx-font-weight: bold;" +
+                "-fx-fill: white;");
         VBox vbox = new VBox(title, subTitle);
         vbox.setAlignment(Pos.CENTER);
         vbox.setSpacing(10);
@@ -77,10 +79,10 @@ public class EndGamePopUp {
         GUI.getLightGame().getWinners().forEach(winner -> {
             System.out.println(winner + " has won the game!");
             Text winnerText = new Text(winner);
-            winnerText.setStyle("-fx-font-size: 16px; " +
-                    "-fx-font-weight: bold;");
+            winnerText.setStyle("-fx-font-size: 24px; " +
+                    "-fx-font-weight: bold; ");
             Color color = PawnsGui.getPawnGui(GUI.getLightGame().getLightGameParty().getPlayerColor(winner)) == null ?
-                    Color.BLACK : PawnsGui.getColor(GUI.getLightGame().getLightGameParty().getPlayerColor(winner));
+                    Color.WHITE : PawnsGui.getColor(GUI.getLightGame().getLightGameParty().getPlayerColor(winner));
             winnerText.setFill(color);
             winners.getChildren().add(winnerText);
         });
