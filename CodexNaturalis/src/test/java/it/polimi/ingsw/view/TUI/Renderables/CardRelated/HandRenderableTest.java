@@ -36,10 +36,4 @@ class HandRenderableTest {
         CommandPromptResult answer = new CommandPromptResult(CommandPrompt.DISPLAY_HAND, new String[]{"0"});
         renderable.updateCommand(answer);
     }
-
-    @Test
-    void displaySecretObjective() {
-        CommandPromptResult answer = new CommandPromptResult(CommandPrompt.DISPLAY_SECRET_OBJECTIVE, new String[]{});
-        renderable.updateCommand(answer);
-    }
 }
