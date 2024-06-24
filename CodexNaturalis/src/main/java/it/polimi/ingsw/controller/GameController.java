@@ -670,7 +670,7 @@ public class GameController implements GameControllerInterface {
 
         new HashMap<>(playerViewMap).forEach((nickname, view) -> {
             try {
-                view.logGame(LogsOnClient.EVERYONE_CHOSE_PAWN);
+                view.logGame(LogsOnClient.EVERYONE_PLACED_STARTCARD);
                 view.transitionTo(ViewState.CHOOSE_PAWN);
             } catch (Exception ignored) {
             }
@@ -849,10 +849,12 @@ public class GameController implements GameControllerInterface {
         List<String> userList = game.getPlayersList().stream().map(Player::getNickname).toList();
         List<String> activePlayer = playerViewMap.keySet().stream().toList();
         int currentPlayerIndex = game.getCurrentPlayerIndex();
+        int currentPlayerIteration = 0;
         int nextPlayerIndex;
         do {
-            nextPlayerIndex = (currentPlayerIndex + 1) % userList.size();
-        } while (!activePlayer.contains(userList.get(nextPlayerIndex)));
+            currentPlayerIteration += 1;
+            nextPlayerIndex = (currentPlayerIndex + currentPlayerIteration) % userList.size();
+        } while (!activePlayer.contains(userList.get(nextPlayerIndex)) && currentPlayerIteration <= userList.size());
 
         return nextPlayerIndex;
     }
@@ -891,7 +893,7 @@ public class GameController implements GameControllerInterface {
     private synchronized void notifySecretObjectiveSetup() {
         new HashMap<>(playerViewMap).forEach((nickname, view) -> {
             try {
-                view.logGame(LogsOnClient.EVERYONE_PLACED_STARTCARD);
+                view.logGame(LogsOnClient.EVERYONE_CHOSE_PAWN);
                 view.transitionTo(ViewState.SELECT_OBJECTIVE);
             } catch (Exception ignored) {
             }
