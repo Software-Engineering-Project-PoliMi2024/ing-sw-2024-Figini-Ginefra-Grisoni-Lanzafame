@@ -4,6 +4,7 @@ import it.polimi.ingsw.lightModel.lightPlayerRelated.LightCard;
 import it.polimi.ingsw.lightModel.lightTableRelated.LightGame;
 import it.polimi.ingsw.model.cardReleted.utilityEnums.CardFace;
 import it.polimi.ingsw.view.ControllerProvider;
+import it.polimi.ingsw.view.TUI.Printing.Printable;
 import it.polimi.ingsw.view.TUI.Printing.Printer;
 import it.polimi.ingsw.view.TUI.Renderables.CodexRelated.CanvasRenderable;
 import it.polimi.ingsw.view.TUI.Renderables.drawables.Drawable;
@@ -15,6 +16,9 @@ import it.polimi.ingsw.view.TUI.cardDrawing.CardMuseum;
 import it.polimi.ingsw.view.TUI.cardDrawing.TextCard;
 import it.polimi.ingsw.view.TUI.inputs.CommandPrompt;
 import it.polimi.ingsw.view.TUI.inputs.CommandPromptResult;
+
+import java.util.LinkedList;
+import java.util.List;
 
 /**
  * This class is a Renderable that can render the hand of the main player.
@@ -48,8 +52,10 @@ public class HandRenderable extends CanvasRenderable {
      */
     @Override
     public void render() {
-        PromptStyle.printInABox("Hand", CardTextStyle.getCardWidth() * 3);
+        PromptStyle.printInABox("Hand", CardTextStyle.getCardWidth() * 6);
         this.canvas.fillContent(CardTextStyle.getBackgroundEmoji());
+        List<Printable> infos = new LinkedList<>();
+
         for (int i = 0; i < 3; i++) {
             String cardNumber = new DecoratedString("[" + (i + 1) + "]", StringStyle.BOLD).toString();
             String text = "Card " + cardNumber;
@@ -59,10 +65,13 @@ public class HandRenderable extends CanvasRenderable {
                 continue;
             }
 
-            PromptStyle.printInABox(text, CardTextStyle.getCardWidth() * 2);
+            Printable info = new Printable("");
+            PromptStyle.printInABox(info, text, CardTextStyle.getCardWidth() * 2 - 2);
+            infos.add(info);
+
             this.canvas.draw(museum.get(card.idFront()).get(CardFace.FRONT), CardTextStyle.getCardWidth() /2 + i * (CardTextStyle.getCardWidth() + 1), CardTextStyle.getCardHeight() /2);
         }
-
+        Printer.printStackedHorizontally(infos, "  ");
         super.render();
     }
 
@@ -73,7 +82,6 @@ public class HandRenderable extends CanvasRenderable {
     public void updateCommand(CommandPromptResult answer){
         switch (answer.getCommand()) {
             case CommandPrompt.DISPLAY_HAND:
-                int cardIndex = Integer.parseInt(answer.getAnswer(0));
                 this.render();
                 break;
             default:
