@@ -1,5 +1,6 @@
 package it.polimi.ingsw.view.TUI.Printing;
 
+import java.util.List;
 import java.util.Queue;
 
 /**
@@ -41,5 +42,33 @@ public class Printer {
         Printable printable = new Printable("");
         printable.printlnt(content);
         printable.flush();
+    }
+
+    public static synchronized void printStackedHorizontally(List<Printable> printables){
+        printStackedHorizontally(printables, "");
+    }
+
+    public static synchronized void printStackedHorizontally(List<Printable> printables, String separator){
+        Printable printable = new Printable("");
+
+        //Find printable with the highest height
+        int maxHeight = 0;
+        for(Printable p : printables){
+            if(p.getHeight() > maxHeight){
+                maxHeight = p.getHeight();
+            }
+        }
+
+        for(int i = 0; i < maxHeight; i++){
+            for(Printable p : printables){
+                if(i < p.getHeight()) {
+                    printable.print(p.getRow(i));
+                    printable.print(separator);
+                }
+            }
+            printable.println("");
+        }
+
+        Printer.print(printable);
     }
 }
