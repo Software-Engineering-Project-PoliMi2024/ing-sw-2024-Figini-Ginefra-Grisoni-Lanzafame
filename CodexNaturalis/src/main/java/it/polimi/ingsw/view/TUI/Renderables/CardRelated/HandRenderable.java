@@ -36,7 +36,7 @@ public class HandRenderable extends CanvasRenderable {
      * @param view The controller provider.
      */
     public HandRenderable(String name, CardMuseum museum, LightGame game, CommandPrompt[] relatedCommands, ControllerProvider view) {
-        super(name, CardTextStyle.getCardWidth() * 3 + 3, CardTextStyle.getCardHeight(), relatedCommands, view);
+        super(name, CardTextStyle.getCardWidth() * 4 + 4, CardTextStyle.getCardHeight(), relatedCommands, view);
         this.museum = museum;
         this.lightGame = game;
     }
@@ -52,7 +52,7 @@ public class HandRenderable extends CanvasRenderable {
      */
     @Override
     public void render() {
-        PromptStyle.printInABox("Hand", CardTextStyle.getCardWidth() * 6);
+        PromptStyle.printInABox("Hand", CardTextStyle.getCardWidth() * 8 + 6);
         this.canvas.fillContent(CardTextStyle.getBackgroundEmoji());
         List<Printable> infos = new LinkedList<>();
 
@@ -69,9 +69,26 @@ public class HandRenderable extends CanvasRenderable {
             PromptStyle.printInABox(info, text, CardTextStyle.getCardWidth() * 2 - 2);
             infos.add(info);
 
-            this.canvas.draw(museum.get(card.idFront()).get(CardFace.FRONT), CardTextStyle.getCardWidth() /2 + i * (CardTextStyle.getCardWidth() + 1), CardTextStyle.getCardHeight() /2);
+            this.canvas.draw(museum.get(card.idFront()).get(CardFace.FRONT),
+                    CardTextStyle.getCardWidth() /2 + (i + 1) * (CardTextStyle.getCardWidth() + 1) + 1,
+                    CardTextStyle.getCardHeight() /2);
         }
-        Printer.printStackedHorizontally(infos, "  ");
+
+        LightCard secretObjective = lightGame.getHand().getSecretObjective();
+        if(secretObjective != null){
+            this.canvas.draw(museum.get(secretObjective.idFront()).get(CardFace.FRONT),
+                    CardTextStyle.getCardWidth() /2,
+                    CardTextStyle.getCardHeight() /2);
+        }
+
+
+        Printable labels = new Printable("");
+        Printer.printStackedHorizontally(labels, infos, "  ");
+
+        Printable secretObjectiveLabel = new Printable("");
+        PromptStyle.printInABox(secretObjectiveLabel, "Secret Objective", CardTextStyle.getCardWidth() * 2 - 2);
+
+        Printer.printStackedHorizontally(List.of(secretObjectiveLabel, labels), "    ");
         super.render();
     }
 

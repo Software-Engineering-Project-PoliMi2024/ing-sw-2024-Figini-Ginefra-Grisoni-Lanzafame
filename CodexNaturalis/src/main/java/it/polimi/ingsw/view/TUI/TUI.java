@@ -57,7 +57,6 @@ public class TUI implements ActualView {
     private LeaderboardRenderable leaderboardRenderable;
     private ChatRenderable chatRenderable;
     private PawnChoiceRenderable pawnChoiceRenderable;
-    private SecretObjectiveRenderable secretObjectiveRenderable;
     private final LightGame lightGame = new LightGame();
     private final LightLobby lightLobby = new LightLobby();
     private final LightLobbyList lightLobbyList = new LightLobbyList();
@@ -102,7 +101,8 @@ public class TUI implements ActualView {
                 cardMuseum,
                 lightGame,
                 new CommandPrompt[]{CommandPrompt.DISPLAY_OBJECTIVE_OPTIONS, CommandPrompt.CHOOSE_OBJECTIVE_CARD},
-                this);
+                this,
+                lightGame);
         StateTUI.SELECT_OBJECTIVE.attach(chooseObjectiveCardRenderable);
         renderables.add(chooseObjectiveCardRenderable);
 
@@ -117,17 +117,6 @@ public class TUI implements ActualView {
         StateTUI.IDLE.attach(handRenderable);
         StateTUI.DRAW_CARD.attach(handRenderable);
         renderables.add(handRenderable);
-
-        secretObjectiveRenderable = new SecretObjectiveRenderable(
-                "Secret Objective",
-                cardMuseum,
-                lightGame,
-                new CommandPrompt[]{CommandPrompt.DISPLAY_SECRET_OBJECTIVE},
-                this);
-        StateTUI.IDLE.attach(secretObjectiveRenderable);
-        StateTUI.PLACE_CARD.attach(secretObjectiveRenderable);
-        StateTUI.DRAW_CARD.attach(secretObjectiveRenderable);
-        renderables.add(secretObjectiveRenderable);
 
         placeCardForm = new PlaceCardForm(
                 "Place Card",
@@ -251,24 +240,22 @@ public class TUI implements ActualView {
 
         StateTUI.CHOOSE_PAWN.addStartupPrompt(CommandPrompt.DISPLAY_PAWN_OPTIONS);
 
+        //TODO: understand why it crushes if I add DISPLAY_OBJECTIVE_OPTIONS
         StateTUI.SELECT_OBJECTIVE.addStartupPrompt(CommandPrompt.DISPLAY_LEADERBOARD);
 
         StateTUI.WAITING_STATE.addStartupPrompt(CommandPrompt.DISPLAY_LEADERBOARD);
 
         StateTUI.IDLE.addStartupPrompt(CommandPrompt.DISPLAY_LEADERBOARD);
         StateTUI.IDLE.addStartupPrompt(CommandPrompt.DISPLAY_DECKS);
-        StateTUI.IDLE.addStartupPrompt(CommandPrompt.DISPLAY_SECRET_OBJECTIVE);
         StateTUI.IDLE.addStartupPrompt(CommandPrompt.DISPLAY_CODEX);
-        StateTUI.IDLE.addStartupPrompt(new StartUpPrompt(CommandPrompt.DISPLAY_HAND, new String[]{"1"}));
+        StateTUI.IDLE.addStartupPrompt(CommandPrompt.DISPLAY_HAND);
 
         StateTUI.PLACE_CARD.addStartupPrompt(CommandPrompt.DISPLAY_LEADERBOARD);
         StateTUI.PLACE_CARD.addStartupPrompt(CommandPrompt.DISPLAY_CODEX);
-        StateTUI.PLACE_CARD.addStartupPrompt(new StartUpPrompt(CommandPrompt.DISPLAY_HAND, new String[]{"1"}));
-
+        StateTUI.PLACE_CARD.addStartupPrompt(CommandPrompt.DISPLAY_HAND);
 
         StateTUI.DRAW_CARD.addStartupPrompt(CommandPrompt.DISPLAY_LEADERBOARD);
-        StateTUI.DRAW_CARD.addStartupPrompt(CommandPrompt.DISPLAY_SECRET_OBJECTIVE);
-        StateTUI.DRAW_CARD.addStartupPrompt(new StartUpPrompt(CommandPrompt.DISPLAY_HAND, new String[]{"1"}));
+        StateTUI.DRAW_CARD.addStartupPrompt(CommandPrompt.DISPLAY_HAND);
         StateTUI.DRAW_CARD.addStartupPrompt(CommandPrompt.DISPLAY_CODEX);
         StateTUI.DRAW_CARD.addStartupPrompt(CommandPrompt.DISPLAY_DECKS);
 
