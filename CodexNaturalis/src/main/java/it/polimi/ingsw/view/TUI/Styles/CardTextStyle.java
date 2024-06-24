@@ -10,7 +10,7 @@ import java.util.Map;
 
 public class CardTextStyle {
     private static final int CardWidth = 9;
-    private static final int CardHeight = 7;
+    private static final int CardHeight = 5;
     private static final Map<PawnColors, StringStyle> pawnToStyle = Map.of(
             PawnColors.BLUE, StringStyle.BLUE_FOREGROUND,
             PawnColors.RED, StringStyle.RED_FOREGROUND,
