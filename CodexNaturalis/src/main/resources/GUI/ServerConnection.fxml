@@ -4,12 +4,15 @@
 <?import javafx.scene.control.Button?>
 <?import javafx.scene.control.ChoiceBox?>
 <?import javafx.scene.control.TextField?>
+<?import javafx.scene.image.Image?>
+<?import javafx.scene.image.ImageView?>
 <?import javafx.scene.layout.AnchorPane?>
+<?import javafx.scene.layout.HBox?>
 <?import javafx.scene.layout.VBox?>
 <?import javafx.scene.text.Font?>
 <?import javafx.scene.text.Text?>
 
-<AnchorPane prefHeight="744.0" prefWidth="949.0" stylesheets="@global.css" xmlns="http://javafx.com/javafx/21" xmlns:fx="http://javafx.com/fxml/1" fx:controller="it.polimi.ingsw.view.GUI.Controllers.ConnectionFormControllerGUI">
+<AnchorPane prefHeight="744.0" prefWidth="949.0" stylesheets="@global.css" xmlns="http://javafx.com/javafx/22" xmlns:fx="http://javafx.com/fxml/1" fx:controller="it.polimi.ingsw.view.GUI.Controllers.ConnectionFormControllerGUI">
    <children>
       <VBox alignment="CENTER" layoutX="188.0" prefHeight="653.0" prefWidth="960.0" spacing="80.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
          <children>
@@ -18,11 +21,25 @@
                   <Font name="System Bold" size="120.0" />
                </font>
             </Text>
-            <VBox alignment="CENTER" maxWidth="300.0" minWidth="126.0" prefHeight="349.0" prefWidth="300.0" spacing="50.0" styleClass="bordersCodexStyle" stylesheets="@global.css">
+            <VBox alignment="CENTER" maxWidth="300.0" minWidth="126.0" prefHeight="349.0" prefWidth="300.0" spacing="10.0" styleClass="bordersCodexStyle" stylesheets="@global.css">
                <children>
-                  <VBox alignment="CENTER" spacing="20.0">
+                  <HBox prefHeight="75.0" prefWidth="298.0">
                      <children>
-                        <VBox alignment="CENTER" prefWidth="195.0">
+                        <ImageView fitHeight="75.0" fitWidth="149.0" preserveRatio="true">
+                           <image>
+                              <Image url="@images/ScenesDecorations/ServerTop.png" />
+                           </image>
+                        </ImageView>
+                        <ImageView fitHeight="75.0" fitWidth="149.0" nodeOrientation="RIGHT_TO_LEFT" preserveRatio="true">
+                           <image>
+                              <Image url="@images/ScenesDecorations/ServerTop.png" />
+                           </image>
+                        </ImageView>
+                     </children>
+                  </HBox>
+                  <VBox alignment="CENTER" prefHeight="204.0" prefWidth="298.0" spacing="20.0" translateY="-10.0">
+                     <children>
+                        <VBox alignment="CENTER" prefHeight="58.0" prefWidth="298.0">
                            <children>
                               <Text strokeType="OUTSIDE" strokeWidth="0.0" text="Protocol">
                                  <font>
@@ -31,6 +48,9 @@
                               </Text>
                               <ChoiceBox fx:id="protocolChoice" prefWidth="300.0" />
                            </children>
+                           <padding>
+                              <Insets left="10.0" right="10.0" />
+                           </padding>
                         </VBox>
                         <VBox alignment="CENTER" prefWidth="100.0">
                            <children>
@@ -45,6 +65,9 @@
                                  </font>
                               </TextField>
                            </children>
+                           <padding>
+                              <Insets left="10.0" right="10.0" />
+                           </padding>
                         </VBox>
                         <VBox alignment="CENTER" prefWidth="100.0">
                            <children>
@@ -59,18 +82,41 @@
                                  </font>
                               </TextField>
                            </children>
+                           <padding>
+                              <Insets left="10.0" right="10.0" />
+                           </padding>
                         </VBox>
                      </children>
                   </VBox>
-                  <Button mnemonicParsing="false" onAction="#connect" styleClass="accent" text="Connect">
-                     <font>
-                        <Font size="15.0" />
-                     </font>
-                  </Button>
+                  <HBox alignment="CENTER" prefHeight="111.0" prefWidth="298.0">
+                     <children>
+                        <ImageView fitHeight="100.0" fitWidth="100.0" nodeOrientation="RIGHT_TO_LEFT" preserveRatio="true">
+                           <image>
+                              <Image url="@images/ScenesDecorations/ServerConnectionRight.png" />
+                           </image>
+                        </ImageView>
+                        <VBox alignment="BOTTOM_CENTER" prefHeight="85.0" prefWidth="100.0">
+                           <children>
+                              <Button mnemonicParsing="false" onAction="#connect" prefHeight="33.0" prefWidth="94.0" styleClass="accent" text="Connect">
+                                 <font>
+                                    <Font size="15.0" />
+                                 </font>
+                              </Button>
+                              <ImageView fitHeight="32.0" fitWidth="64.0" preserveRatio="true">
+                                 <image>
+                                    <Image url="@images/ScenesDecorations/ServerBottom.png" />
+                                 </image>
+                              </ImageView>
+                           </children>
+                        </VBox>
+                        <ImageView fitHeight="100.0" fitWidth="100.0">
+                           <image>
+                              <Image url="@images/ScenesDecorations/ServerConnectionLeft.png" />
+                           </image>
+                        </ImageView>
+                     </children>
+                  </HBox>
                </children>
-               <padding>
-                  <Insets bottom="10.0" left="10.0" right="10.0" top="10.0" />
-               </padding>
             </VBox>
          </children>
          <padding>
