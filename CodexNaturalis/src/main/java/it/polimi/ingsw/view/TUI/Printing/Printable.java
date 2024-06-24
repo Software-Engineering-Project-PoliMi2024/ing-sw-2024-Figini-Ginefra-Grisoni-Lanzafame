@@ -18,6 +18,11 @@ public class Printable {
         this.print(content);
     }
 
+    public Printable(String character, int times){
+        this.content = new StringBuilder();
+        this.content.append(String.valueOf(character).repeat(Math.max(0, times)));
+    }
+
     /**
      * This method appends a string to the content of the Printable object.
      * @param content the string to be appended.
