@@ -56,7 +56,7 @@ public class DeckRenderable extends CanvasRenderable {
         Printer.printStackedHorizontally(printedResourceLabels, resourceLabels, "  ");
 
         Printable CommonObjectiveLabel = new Printable("");
-        PromptStyle.printInABox(CommonObjectiveLabel, "Common Objectives", CardTextStyle.getCardWidth() * 2);
+        PromptStyle.printInABox(CommonObjectiveLabel, "Common Objectives", CardTextStyle.getCardWidth() * 2 - 2);
 
         Printer.printStackedHorizontally(upperPrintable, List.of(printedResourceLabels, CommonObjectiveLabel), "  ");
 
