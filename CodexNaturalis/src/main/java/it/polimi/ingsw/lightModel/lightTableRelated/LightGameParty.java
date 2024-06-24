@@ -95,8 +95,10 @@ public class LightGameParty implements Differentiable, Observed {
      * @param player the nickname of the player to set inactive
      */
     public void setInactivePlayer(String player){
-        playerActiveList.put(player,false);
-        this.notifyObservers();
+        if(playerActiveList.get(player)){
+            playerActiveList.put(player,false);
+            this.notifyObservers();
+        }
     }
     /**
      * @param player nickname of the player to set active
