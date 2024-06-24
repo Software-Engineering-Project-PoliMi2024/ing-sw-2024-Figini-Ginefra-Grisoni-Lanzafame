@@ -7,11 +7,13 @@ import it.polimi.ingsw.model.cardReleted.utilityEnums.CardFace;
 import it.polimi.ingsw.model.playerReleted.Position;
 import it.polimi.ingsw.view.ControllerProvider;
 import it.polimi.ingsw.view.TUI.Printing.Printer;
+import it.polimi.ingsw.view.TUI.Styles.CardTextStyle;
 import it.polimi.ingsw.view.TUI.Styles.PromptStyle;
 import it.polimi.ingsw.view.TUI.cardDrawing.CardMuseum;
 import it.polimi.ingsw.view.TUI.inputs.CommandPrompt;
 import it.polimi.ingsw.view.TUI.inputs.CommandPromptResult;
 
+import java.time.format.TextStyle;
 import java.util.Arrays;
 
 /**
@@ -35,6 +37,7 @@ public class ChooseStartCardRenderable extends CardRenderable {
      */
     @Override
     public void render() {
+        PromptStyle.printInABox("Start card " + this.getFace().toString().toLowerCase(), CardTextStyle.getCardWidth() * 2 - 2);
         LightCard card = this.getLightGame().getHand().getCards()[0];
         this.renderCard(card);
     }
