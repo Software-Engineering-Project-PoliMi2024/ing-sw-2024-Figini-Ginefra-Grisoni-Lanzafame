@@ -60,15 +60,15 @@ public class HandRenderable extends CanvasRenderable {
             String cardNumber = new DecoratedString("[" + (i + 1) + "]", StringStyle.BOLD).toString();
             String text = "Card " + cardNumber;
 
-            LightCard card = lightGame.getHand().getCards()[i];
-            if(card == null){
-                continue;
-            }
-
             Printable info = new Printable("");
             PromptStyle.printInABox(info, text, CardTextStyle.getCardWidth() * 2 - 2);
             infos.add(info);
 
+
+            LightCard card = lightGame.getHand().getCards()[i];
+            if(card == null){
+                continue;
+            }
             this.canvas.draw(museum.get(card.idFront()).get(CardFace.FRONT),
                     CardTextStyle.getCardWidth() /2 + (i + 1) * (CardTextStyle.getCardWidth() + 1) + 1,
                     CardTextStyle.getCardHeight() /2);
