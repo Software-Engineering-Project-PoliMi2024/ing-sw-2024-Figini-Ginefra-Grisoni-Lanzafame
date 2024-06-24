@@ -27,13 +27,14 @@ import it.polimi.ingsw.view.TUI.inputs.CommandPrompt;
 import it.polimi.ingsw.view.TUI.inputs.CommandPromptResult;
 import it.polimi.ingsw.view.TUI.inputs.InputHandler;
 import it.polimi.ingsw.view.TUI.inputs.StartUpPrompt;
+import it.polimi.ingsw.view.TUI.observers.CommandObserver;
 import it.polimi.ingsw.view.ViewState;
 
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
-public class TUI implements ActualView {
+public class TUI implements ActualView, CommandObserver {
     private ControllerInterface controller;
     private ViewState state;
     private final InputHandler inputHandler = new InputHandler();
@@ -261,6 +262,7 @@ public class TUI implements ActualView {
 
         StateTUI.GAME_ENDING.addStartupPrompt(CommandPrompt.DISPLAY_POSTGAME);
 
+        CommandPrompt.REFRESH.attach(this);
         this.transitionTo(ViewState.SERVER_CONNECTION);
     }
 
@@ -355,12 +357,18 @@ public class TUI implements ActualView {
 
 
     private void updateCommands(){
+        StateTUI stateTUI = Arrays.stream(StateTUI.values()).reduce((a, b) -> a.references(state) ? a : b).orElse(null);
+        assert stateTUI != null;
+
         commandDisplay.clearCommandPrompts();
+
+        commandDisplay.addCommandPrompt(CommandPrompt.REFRESH);
 
         for(Renderable renderable : renderables){
             if(renderable.isActive()) {
                 for (CommandPrompt commandPrompt : renderable.getRelatedCommands()) {
-                    commandDisplay.addCommandPrompt(commandPrompt);
+                    if(!stateTUI.isStartupPrompt(commandPrompt))
+                        commandDisplay.addCommandPrompt(commandPrompt);
                 }
             }
         }
@@ -374,5 +382,12 @@ public class TUI implements ActualView {
     @Override
     public void setController(ControllerInterface controller) {
         this.controller = controller;
+    }
+
+    @Override
+    public void updateCommand(CommandPromptResult input) {
+        if(input.getCommand() == CommandPrompt.REFRESH){
+            this.transitionTo(state);
+        }
     }
 }

@@ -222,7 +222,9 @@ public enum CommandPrompt implements Iterator<String>, CommandObserved {
                 s -> s.equals("0") || s.equals("1") || s.equals("2"),
         }, true),
 
-    LEAVE("Leave", false);
+    LEAVE("Leave", false),
+
+    REFRESH("Refresh", false);
 
     /** The questions to ask the user. */
     private final String[] questions;
