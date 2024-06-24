@@ -49,6 +49,10 @@ public class LeaderboardRenderable extends Renderable {
             if(isActive != null && !isActive)
                 content = new DecoratedString(content, StringStyle.STRIKETHROUGH).toString();
 
+            boolean isCurrentPlayer = lightGame.getLightGameParty().getCurrentPlayer().equals(nickname);
+            if(isCurrentPlayer)
+                content = new DecoratedString(content, StringStyle.UNDERLINE).toString();
+
             return content;
         }).toList(), 70, 1);
     }
