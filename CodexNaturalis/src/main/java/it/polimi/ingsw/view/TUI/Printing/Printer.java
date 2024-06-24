@@ -48,9 +48,7 @@ public class Printer {
         printStackedHorizontally(printables, "");
     }
 
-    public static synchronized void printStackedHorizontally(List<Printable> printables, String separator){
-        Printable printable = new Printable("");
-
+    public static synchronized void printStackedHorizontally(Printable printable, List<Printable> printables, String separator){
         //Find printable with the highest height
         int maxHeight = 0;
         for(Printable p : printables){
@@ -73,7 +71,11 @@ public class Printer {
             }
             printable.println("");
         }
+    }
 
+    public static synchronized void printStackedHorizontally(List<Printable> printables, String separator){
+        Printable printable = new Printable("");
+        printStackedHorizontally(printable, printables, separator);
         Printer.print(printable);
     }
 }
