@@ -82,11 +82,15 @@ public class PromptStyle {
 
     public static void printInABox(String text, int width){
         Printable printable = new Printable("");
-        width = Math.max(width, text.length());
-        printSeparator(printable, width+2, PromptStyle.HorizontalSeparator, PromptStyle.CornerTopLeftRounded, PromptStyle.CornerTopRightRounded);
-        printBetweenSeparators(printable, text, width, PromptStyle.VerticalSeparator);
-        printSeparator(printable, width+2, PromptStyle.HorizontalSeparator, PromptStyle.CornerBottomLeftRounded, PromptStyle.CornerBottomRightRounded);
+        printInABox(printable, text, width);
         Printer.print(printable);
+    }
+
+    public static void printInABox(Printable target, String text, int width){
+        width = Math.max(width, text.length());
+        printSeparator(target, width+2, PromptStyle.HorizontalSeparator, PromptStyle.CornerTopLeftRounded, PromptStyle.CornerTopRightRounded);
+        printBetweenSeparators(target, text, width, PromptStyle.VerticalSeparator);
+        printSeparator(target, width+2, PromptStyle.HorizontalSeparator, PromptStyle.CornerBottomLeftRounded, PromptStyle.CornerBottomRightRounded);
     }
 
     public static void printInABoxDouble(String text, int width){
