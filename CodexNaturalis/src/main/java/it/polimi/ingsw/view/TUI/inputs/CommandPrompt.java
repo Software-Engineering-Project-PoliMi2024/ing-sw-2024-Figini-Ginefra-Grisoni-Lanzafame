@@ -391,11 +391,21 @@ public enum CommandPrompt implements Iterator<String>, CommandObserved {
     }
 
     /**
-     * Notifies the observers.
+     * Notifies the observers with the current result.
      */
     public void notifyObservers() {
         for (CommandObserver observer : observers) {
             observer.updateCommand(this.currentResult);
+        }
+    }
+
+    /**
+     * Notifies the observers with the given result.
+     * @param result The result to notify.
+     */
+    public void notifyObservers(CommandPromptResult result) {
+        for (CommandObserver observer : observers) {
+            observer.updateCommand(result);
         }
     }
 

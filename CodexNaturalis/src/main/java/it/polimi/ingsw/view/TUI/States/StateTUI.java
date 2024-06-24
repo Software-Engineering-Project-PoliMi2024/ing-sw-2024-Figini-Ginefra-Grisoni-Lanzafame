@@ -3,6 +3,7 @@ package it.polimi.ingsw.view.TUI.States;
 import it.polimi.ingsw.model.playerReleted.PlayerState;
 import it.polimi.ingsw.view.TUI.Renderables.Renderable;
 import it.polimi.ingsw.view.TUI.inputs.CommandPrompt;
+import it.polimi.ingsw.view.TUI.inputs.StartUpPrompt;
 import it.polimi.ingsw.view.ViewState;
 
 import java.util.ArrayList;
@@ -30,7 +31,7 @@ public enum StateTUI {
     /**
      * The list of prompts that will be triggered at the start of the state.
      */
-    private final List<CommandPrompt> startupPrompts = new LinkedList<>();
+    private final List<StartUpPrompt> startupPrompts = new LinkedList<>();
 
     StateTUI(ViewState referenceState) {
         this.referenceState = referenceState;
@@ -53,16 +54,20 @@ public enum StateTUI {
         return referenceState == state;
     }
 
-    public void addStartupPrompt(CommandPrompt prompt) {
-        if(!prompt.isLocal())
-            throw new IllegalArgumentException("Only local prompts can be added to the startup prompts of a state. " + prompt.getCommandName() + " is not local.");
+    public void addStartupPrompt(StartUpPrompt prompt) {
+        if(!prompt.getCommand().isLocal())
+            throw new IllegalArgumentException("Only local prompts can be added to the startup prompts of a state. " + prompt.getCommand().getCommandName() + " is not local.");
         startupPrompts.add(prompt);
     }
 
-    public void addAllStartupPrompts(List<CommandPrompt> prompts) {
-        for(CommandPrompt prompt : prompts)
-            if(!prompt.isLocal())
-                throw new IllegalArgumentException("Only local prompts can be added to the startup prompts of a state. " + prompt.getCommandName() + " is not local.");
+    public void addStartupPrompt(CommandPrompt prompt) {
+        addStartupPrompt(new StartUpPrompt(prompt));
+    }
+
+    public void addAllStartupPrompts(List<StartUpPrompt> prompts) {
+        for(StartUpPrompt prompt : prompts)
+            if(!prompt.getCommand().isLocal())
+                throw new IllegalArgumentException("Only local prompts can be added to the startup prompts of a state. " + prompt.getCommand().getCommandName() + " is not local.");
 
         startupPrompts.addAll(prompts);
     }
@@ -71,8 +76,8 @@ public enum StateTUI {
      * This methods makes all the startup prompts of the state notify their observers.
      */
     public void triggerStartupPrompts() {
-        for (CommandPrompt prompt : startupPrompts) {
-            prompt.notifyObservers();
+        for (StartUpPrompt prompt : startupPrompts) {
+            prompt.trigger();
         }
     }
 }

@@ -24,7 +24,9 @@ import it.polimi.ingsw.view.TUI.Styles.StringStyle;
 import it.polimi.ingsw.view.TUI.cardDrawing.CardMuseum;
 import it.polimi.ingsw.view.TUI.cardDrawing.CardMuseumFactory;
 import it.polimi.ingsw.view.TUI.inputs.CommandPrompt;
+import it.polimi.ingsw.view.TUI.inputs.CommandPromptResult;
 import it.polimi.ingsw.view.TUI.inputs.InputHandler;
+import it.polimi.ingsw.view.TUI.inputs.StartUpPrompt;
 import it.polimi.ingsw.view.ViewState;
 
 import java.util.ArrayList;
@@ -244,40 +246,31 @@ public class TUI implements ActualView {
 
         StateTUI.LOBBY.addStartupPrompt(CommandPrompt.DISPLAY_LOBBY);
 
-        StateTUI.CHOOSE_START_CARD.addAllStartupPrompts(Arrays.asList(
-                CommandPrompt.DISPLAY_START_FRONT,
-                CommandPrompt.DISPLAY_START_BACK));
+        StateTUI.CHOOSE_START_CARD.addStartupPrompt(CommandPrompt.DISPLAY_START_FRONT);
+        StateTUI.CHOOSE_START_CARD.addStartupPrompt(CommandPrompt.DISPLAY_START_BACK);
 
-        StateTUI.CHOOSE_PAWN.addAllStartupPrompts(Arrays.asList(
-                CommandPrompt.DISPLAY_LEADERBOARD,
-                CommandPrompt.DISPLAY_PAWN_OPTIONS
-        ));
+        StateTUI.CHOOSE_PAWN.addStartupPrompt(CommandPrompt.DISPLAY_PAWN_OPTIONS);
 
-        StateTUI.SELECT_OBJECTIVE.addStartupPrompt(CommandPrompt.DISPLAY_OBJECTIVE_OPTIONS);
+        StateTUI.SELECT_OBJECTIVE.addStartupPrompt(CommandPrompt.DISPLAY_LEADERBOARD);
 
         StateTUI.WAITING_STATE.addStartupPrompt(CommandPrompt.DISPLAY_LEADERBOARD);
 
-        StateTUI.IDLE.addAllStartupPrompts(Arrays.asList(
-                CommandPrompt.DISPLAY_LEADERBOARD,
-                CommandPrompt.DISPLAY_DECKS,
-                CommandPrompt.DISPLAY_SECRET_OBJECTIVE,
-                CommandPrompt.DISPLAY_CODEX,
-                CommandPrompt.DISPLAY_HAND
-                ));
+        StateTUI.IDLE.addStartupPrompt(CommandPrompt.DISPLAY_LEADERBOARD);
+        StateTUI.IDLE.addStartupPrompt(CommandPrompt.DISPLAY_DECKS);
+        StateTUI.IDLE.addStartupPrompt(CommandPrompt.DISPLAY_SECRET_OBJECTIVE);
+        StateTUI.IDLE.addStartupPrompt(CommandPrompt.DISPLAY_CODEX);
+        StateTUI.IDLE.addStartupPrompt(new StartUpPrompt(CommandPrompt.DISPLAY_HAND, new String[]{"1"}));
 
-        StateTUI.PLACE_CARD.addAllStartupPrompts(Arrays.asList(
-                CommandPrompt.DISPLAY_LEADERBOARD,
-                CommandPrompt.DISPLAY_CODEX,
-                CommandPrompt.DISPLAY_HAND
-        ));
+        StateTUI.PLACE_CARD.addStartupPrompt(CommandPrompt.DISPLAY_LEADERBOARD);
+        StateTUI.PLACE_CARD.addStartupPrompt(CommandPrompt.DISPLAY_CODEX);
+        StateTUI.PLACE_CARD.addStartupPrompt(new StartUpPrompt(CommandPrompt.DISPLAY_HAND, new String[]{"1"}));
 
-        StateTUI.DRAW_CARD.addAllStartupPrompts(Arrays.asList(
-                CommandPrompt.DISPLAY_LEADERBOARD,
-                CommandPrompt.DISPLAY_SECRET_OBJECTIVE,
-                CommandPrompt.DISPLAY_HAND,
-                CommandPrompt.DISPLAY_CODEX,
-                CommandPrompt.DISPLAY_DECKS
-        ));
+
+        StateTUI.DRAW_CARD.addStartupPrompt(CommandPrompt.DISPLAY_LEADERBOARD);
+        StateTUI.DRAW_CARD.addStartupPrompt(CommandPrompt.DISPLAY_SECRET_OBJECTIVE);
+        StateTUI.DRAW_CARD.addStartupPrompt(new StartUpPrompt(CommandPrompt.DISPLAY_HAND, new String[]{"1"}));
+        StateTUI.DRAW_CARD.addStartupPrompt(CommandPrompt.DISPLAY_CODEX);
+        StateTUI.DRAW_CARD.addStartupPrompt(CommandPrompt.DISPLAY_DECKS);
 
         StateTUI.GAME_ENDING.addStartupPrompt(CommandPrompt.DISPLAY_POSTGAME);
 
@@ -295,10 +288,8 @@ public class TUI implements ActualView {
         StateTUI stateTUI = Arrays.stream(StateTUI.values()).reduce((a, b) -> a.references(state) ? a : b).orElse(null);
 
         if (stateTUI == null) {
-            throw new IllegalArgumentException("Current View State(" + stateTUI.name() + ") not supported by TUI");
+            throw new IllegalArgumentException("Current View State(" + state.name() + ") not supported by TUI");
         }
-
-        stateTUI.triggerStartupPrompts();
 
         if(this.state != state){
             this.state = state;
@@ -313,6 +304,8 @@ public class TUI implements ActualView {
 
             updateCommands();
         }
+
+        stateTUI.triggerStartupPrompts();
         commandDisplay.render();
     }
 

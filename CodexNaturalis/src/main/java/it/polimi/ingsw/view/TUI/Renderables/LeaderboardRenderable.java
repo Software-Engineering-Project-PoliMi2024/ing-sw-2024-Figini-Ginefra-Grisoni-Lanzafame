@@ -1,7 +1,9 @@
 package it.polimi.ingsw.view.TUI.Renderables;
 
 import it.polimi.ingsw.lightModel.lightTableRelated.LightGame;
+import it.polimi.ingsw.model.playerReleted.PawnColors;
 import it.polimi.ingsw.view.ControllerProvider;
+import it.polimi.ingsw.view.TUI.Styles.CardTextStyle;
 import it.polimi.ingsw.view.TUI.Styles.DecoratedString;
 import it.polimi.ingsw.view.TUI.Styles.PromptStyle;
 import it.polimi.ingsw.view.TUI.Styles.StringStyle;
@@ -32,9 +34,18 @@ public class LeaderboardRenderable extends Renderable {
 
         PromptStyle.printInABox("Leaderboard", 70);
         PromptStyle.printListInABox("Player Scores", scores.keySet().stream().map(nickname -> {
-            Boolean isActive = lightGame.getLightGameParty().getPlayerActiveList().get(nickname);
-            String content = nickname + " - " + scores.get(nickname);
 
+            String decoratedNickname = new DecoratedString(nickname, StringStyle.BOLD).toString();
+
+            PawnColors nickColor = lightGame.getLightGameParty().getPlayerColor(nickname);
+            if(nickColor != null) {
+                StringStyle color = CardTextStyle.convertPawnBgColor(nickColor);
+                decoratedNickname = new DecoratedString(decoratedNickname, color).toString();
+            }
+
+            String content = decoratedNickname + " - " + scores.get(nickname);
+
+            Boolean isActive = lightGame.getLightGameParty().getPlayerActiveList().get(nickname);
             if(isActive != null && !isActive)
                 content = new DecoratedString(content, StringStyle.STRIKETHROUGH).toString();
 
