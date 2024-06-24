@@ -216,7 +216,7 @@ public class TUI implements ActualView {
         postGameStateRenderable = new PostGameStateRenderable(
                 "Post Game",
                 lightGame,
-                new CommandPrompt[]{CommandPrompt.DISPLAY_POSTGAME},
+                new CommandPrompt[]{CommandPrompt.DISPLAY_POSTGAME, CommandPrompt.LEAVE},
                 this);
 
         StateTUI.GAME_ENDING.attach(postGameStateRenderable);
@@ -235,6 +235,52 @@ public class TUI implements ActualView {
         StateTUI.DRAW_CARD.attach(chatRenderable);
         StateTUI.GAME_ENDING.attach(chatRenderable);
         renderables.add(chatRenderable);
+
+        //==============================================================================================================
+        // SETUP STARTUP PROMPTS FOR THE STATES
+        //==============================================================================================================
+
+        StateTUI.JOIN_LOBBY.addStartupPrompt(CommandPrompt.DISPLAY_GAME_LIST);
+
+        StateTUI.LOBBY.addStartupPrompt(CommandPrompt.DISPLAY_LOBBY);
+
+        StateTUI.CHOOSE_START_CARD.addAllStartupPrompts(Arrays.asList(
+                CommandPrompt.DISPLAY_START_FRONT,
+                CommandPrompt.DISPLAY_START_BACK));
+
+        StateTUI.CHOOSE_PAWN.addAllStartupPrompts(Arrays.asList(
+                CommandPrompt.DISPLAY_LEADERBOARD,
+                CommandPrompt.DISPLAY_PAWN_OPTIONS
+        ));
+
+        StateTUI.SELECT_OBJECTIVE.addStartupPrompt(CommandPrompt.DISPLAY_OBJECTIVE_OPTIONS);
+
+        StateTUI.WAITING_STATE.addStartupPrompt(CommandPrompt.DISPLAY_LEADERBOARD);
+
+        StateTUI.IDLE.addAllStartupPrompts(Arrays.asList(
+                CommandPrompt.DISPLAY_LEADERBOARD,
+                CommandPrompt.DISPLAY_DECKS,
+                CommandPrompt.DISPLAY_SECRET_OBJECTIVE,
+                CommandPrompt.DISPLAY_CODEX,
+                CommandPrompt.DISPLAY_HAND
+                ));
+
+        StateTUI.PLACE_CARD.addAllStartupPrompts(Arrays.asList(
+                CommandPrompt.DISPLAY_LEADERBOARD,
+                CommandPrompt.DISPLAY_CODEX,
+                CommandPrompt.DISPLAY_HAND
+        ));
+
+        StateTUI.DRAW_CARD.addAllStartupPrompts(Arrays.asList(
+                CommandPrompt.DISPLAY_LEADERBOARD,
+                CommandPrompt.DISPLAY_SECRET_OBJECTIVE,
+                CommandPrompt.DISPLAY_HAND,
+                CommandPrompt.DISPLAY_CODEX,
+                CommandPrompt.DISPLAY_DECKS
+        ));
+
+        StateTUI.GAME_ENDING.addStartupPrompt(CommandPrompt.DISPLAY_POSTGAME);
+
         this.transitionTo(ViewState.SERVER_CONNECTION);
     }
 
@@ -246,16 +292,16 @@ public class TUI implements ActualView {
 
     @Override
     public void transitionTo(ViewState state){
-        if(this.state == state){
-            commandDisplay.render();
-        }else {
+        StateTUI stateTUI = Arrays.stream(StateTUI.values()).reduce((a, b) -> a.references(state) ? a : b).orElse(null);
+
+        if (stateTUI == null) {
+            throw new IllegalArgumentException("Current View State(" + stateTUI.name() + ") not supported by TUI");
+        }
+
+        stateTUI.triggerStartupPrompts();
+
+        if(this.state != state){
             this.state = state;
-
-            StateTUI stateTUI = Arrays.stream(StateTUI.values()).reduce((a, b) -> a.references(state) ? a : b).orElse(null);
-
-            if (stateTUI == null) {
-                throw new IllegalArgumentException("Current View State(" + stateTUI.name() + ") not supported by TUI");
-            }
 
             for (Renderable renderable : renderables) {
                 renderable.setActive(false);
@@ -266,9 +312,8 @@ public class TUI implements ActualView {
             }
 
             updateCommands();
-
-            commandDisplay.render();
         }
+        commandDisplay.render();
     }
 
     @Override
