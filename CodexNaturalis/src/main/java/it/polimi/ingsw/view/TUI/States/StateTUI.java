@@ -80,4 +80,8 @@ public enum StateTUI {
             prompt.trigger();
         }
     }
+
+    public boolean isStartupPrompt(CommandPrompt prompt) {
+        return startupPrompts.stream().anyMatch(p -> p.getCommand().equals(prompt));
+    }
 }
