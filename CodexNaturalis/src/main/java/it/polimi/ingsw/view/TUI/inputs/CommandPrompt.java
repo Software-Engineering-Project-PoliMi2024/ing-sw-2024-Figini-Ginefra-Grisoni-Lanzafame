@@ -138,9 +138,6 @@ public enum CommandPrompt implements Iterator<String>, CommandObserved {
             new Predicate[]{},
             true),
 
-    /** The command to display the secret objective */
-    DISPLAY_SECRET_OBJECTIVE("Display secret objective", true),
-
     /** The command to place a card */
     PLACE_CARD("Place card",
             new String[]{
