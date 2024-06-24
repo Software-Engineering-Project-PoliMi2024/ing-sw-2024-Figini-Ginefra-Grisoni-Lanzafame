@@ -31,12 +31,15 @@ public class LightGame implements Differentiable {
     }
 
     public void addObjective(LightCard objective){
+        System.out.println("Adding public objective");
         for(int i = 0; i<publicObjective.length; i++){
             if(publicObjective[i] == null){
                 publicObjective[i] = objective;
-                return;
+                break;
             }
         }
+        //notify the view about the new public objective
+        decks.forEach((drawableCard, lightDeck) -> lightDeck.notifyObservers());
     }
     public LightCard[] getPublicObjective() {
         return publicObjective;
