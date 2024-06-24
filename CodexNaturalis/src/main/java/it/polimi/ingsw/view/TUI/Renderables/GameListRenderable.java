@@ -1,7 +1,8 @@
-package it.polimi.ingsw.view.TUI.Renderables.CardRelated;
+package it.polimi.ingsw.view.TUI.Renderables;
 
 import it.polimi.ingsw.lightModel.lightTableRelated.LightLobby;
 import it.polimi.ingsw.lightModel.lightTableRelated.LightLobbyList;
+import it.polimi.ingsw.utils.designPatterns.Observed;
 import it.polimi.ingsw.view.ControllerProvider;
 import it.polimi.ingsw.view.TUI.Renderables.Renderable;
 import it.polimi.ingsw.view.TUI.Styles.PromptStyle;
@@ -37,7 +38,6 @@ public class GameListRenderable extends Renderable {
             PromptStyle.printInABox("No lobbies available", 70);
         } else {
             List<String> lobbyNames = lightLobbyList.getLobbies().stream().map(LightLobby::name).toList();
-            System.out.println(lobbyNames);
             PromptStyle.printListInABox("Available lobbies", lobbyNames, 70, 1);
         }
     }
@@ -72,5 +72,10 @@ public class GameListRenderable extends Renderable {
             default:
                 break;
         }
+    }
+
+    @Override
+    public List<Observed> getObservedLightModel(){
+        return List.of(lightLobbyList);
     }
 }

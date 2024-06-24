@@ -1,5 +1,7 @@
 package it.polimi.ingsw.view.TUI.Renderables;
 
+import it.polimi.ingsw.utils.designPatterns.Observed;
+import it.polimi.ingsw.utils.designPatterns.Observer;
 import it.polimi.ingsw.view.ControllerProvider;
 import it.polimi.ingsw.view.TUI.inputs.CommandPrompt;
 import it.polimi.ingsw.view.TUI.inputs.CommandPromptResult;
@@ -7,6 +9,8 @@ import it.polimi.ingsw.view.TUI.observers.CommandObserver;
 import it.polimi.ingsw.view.TUI.observers.InputObserver;
 
 import java.io.Serializable;
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * Abstract class that represents a renderable object that is an object that can be rendered on the screen and can handle inputs
@@ -87,5 +91,14 @@ public abstract class Renderable implements InputObserver, CommandObserver, Seri
      */
     public CommandPrompt[] getRelatedCommands(){
         return relatedCommands;
+    }
+
+    /**
+     * Method that returns the part of the light model that the renderable observes.
+     * This method should be overridden by subclasses that observe the light model
+     * @return the part of the light model that the renderable observes
+     */
+    public List<Observed> getObservedLightModel(){
+        return new ArrayList<Observed>();
     }
 }

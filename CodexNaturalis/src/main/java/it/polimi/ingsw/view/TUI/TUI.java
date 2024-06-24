@@ -7,6 +7,8 @@ import it.polimi.ingsw.lightModel.diffs.ModelDiffs;
 import it.polimi.ingsw.lightModel.lightTableRelated.LightGame;
 import it.polimi.ingsw.lightModel.lightTableRelated.LightLobby;
 import it.polimi.ingsw.lightModel.lightTableRelated.LightLobbyList;
+import it.polimi.ingsw.utils.designPatterns.Observed;
+import it.polimi.ingsw.utils.designPatterns.Observer;
 import it.polimi.ingsw.view.ActualView;
 import it.polimi.ingsw.view.TUI.Printing.Printer;
 import it.polimi.ingsw.view.TUI.Renderables.*;
@@ -26,7 +28,6 @@ import it.polimi.ingsw.view.TUI.cardDrawing.CardMuseumFactory;
 import it.polimi.ingsw.view.TUI.inputs.CommandPrompt;
 import it.polimi.ingsw.view.TUI.inputs.CommandPromptResult;
 import it.polimi.ingsw.view.TUI.inputs.InputHandler;
-import it.polimi.ingsw.view.TUI.inputs.StartUpPrompt;
 import it.polimi.ingsw.view.TUI.observers.CommandObserver;
 import it.polimi.ingsw.view.ViewState;
 
@@ -34,7 +35,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
-public class TUI implements ActualView, CommandObserver {
+public class TUI implements ActualView, CommandObserver, Observer {
     private ControllerInterface controller;
     private ViewState state;
     private final InputHandler inputHandler = new InputHandler();
@@ -274,6 +275,7 @@ public class TUI implements ActualView, CommandObserver {
 
     @Override
     public void transitionTo(ViewState state){
+        System.out.print("\033[H\033[2J");
         StateTUI stateTUI = Arrays.stream(StateTUI.values()).reduce((a, b) -> a.references(state) ? a : b).orElse(null);
 
         if (stateTUI == null) {
@@ -285,10 +287,20 @@ public class TUI implements ActualView, CommandObserver {
 
             for (Renderable renderable : renderables) {
                 renderable.setActive(false);
+
+                List<Observed> observed = renderable.getObservedLightModel();
+                for (Observed observedLightModel : observed) {
+                    observedLightModel.detach(this);
+                }
             }
 
             for (Renderable renderable : stateTUI.getRenderables()) {
                 renderable.setActive(true);
+
+                List<Observed> observed = renderable.getObservedLightModel();
+                for (Observed observedLightModel : observed) {
+                    observedLightModel.attach(this);
+                }
             }
 
             updateCommands();
@@ -389,5 +401,10 @@ public class TUI implements ActualView, CommandObserver {
         if(input.getCommand() == CommandPrompt.REFRESH){
             this.transitionTo(state);
         }
+    }
+
+    @Override
+    public void update() {
+        this.transitionTo(state);
     }
 }

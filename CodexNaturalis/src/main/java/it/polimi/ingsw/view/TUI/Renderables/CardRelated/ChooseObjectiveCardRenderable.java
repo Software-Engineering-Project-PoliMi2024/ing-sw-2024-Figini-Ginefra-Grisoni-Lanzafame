@@ -48,8 +48,7 @@ public class ChooseObjectiveCardRenderable extends CanvasRenderable {
      */
     public void render(){
         Printable option1Label = new Printable("");
-        String firstOptionNumber = new DecoratedString("[1]", StringStyle.BOLD).toString();
-        PromptStyle.printInABox(option1Label, "Option " + firstOptionNumber, CardTextStyle.getCardWidth() * 2 - 4);
+        PromptStyle.printInABox(option1Label, "Option [1]", CardTextStyle.getCardWidth() * 2 - 2);
 
         LightCard[] options = lightGame.getHand().getSecretObjectiveOptions();
 
@@ -60,8 +59,7 @@ public class ChooseObjectiveCardRenderable extends CanvasRenderable {
         }
 
         Printable option2Label = new Printable("");
-        String secondOptionNumber = new DecoratedString("[2]", StringStyle.BOLD).toString();
-        PromptStyle.printInABox(option2Label,"Option " + secondOptionNumber, CardTextStyle.getCardWidth() * 2 - 4);
+        PromptStyle.printInABox(option2Label,"Option [2]", CardTextStyle.getCardWidth() * 2 - 2);
 
         Printer.printStackedHorizontally(List.of(option1Label, option2Label), "  ");
 
