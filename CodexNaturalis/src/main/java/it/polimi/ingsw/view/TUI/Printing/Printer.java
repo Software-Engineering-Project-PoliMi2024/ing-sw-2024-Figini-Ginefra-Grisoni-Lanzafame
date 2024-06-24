@@ -63,8 +63,13 @@ public class Printer {
             for(Printable p : printables){
                 if(i < p.getHeight()) {
                     printable.print(p.getRow(i));
-                    printable.print(separator);
                 }
+                else{
+                    printable.print(" ".repeat(p.getRow(0).length()));
+                }
+
+                printable.print(separator);
+
             }
             printable.println("");
         }
