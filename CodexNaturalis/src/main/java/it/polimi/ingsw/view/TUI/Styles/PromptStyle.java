@@ -111,8 +111,7 @@ public class PromptStyle {
         Printer.print(printable);
     }
 
-    public static void printListInABox(String title, List<String> list, int width, int linesPerItem){
-        Printable printable = new Printable("");
+    public static void printListInABox(Printable printable, String title, List<String> list, int width, int linesPerItem){
         width = Math.max(width, title.length());
         printSeparator(printable, width+2, PromptStyle.HorizontalSeparator, PromptStyle.CornerTopLeftRounded, PromptStyle.CornerTopRightRounded);
         printBetweenSeparators(printable, title, width, PromptStyle.VerticalSeparator);
@@ -128,6 +127,10 @@ public class PromptStyle {
             i++;
         }
         printSeparator(printable, width+2, PromptStyle.HorizontalSeparator, PromptStyle.CornerBottomLeftRounded, PromptStyle.CornerBottomRightRounded);
+    }
+    public static void printListInABox(String title, List<String> list, int width, int linesPerItem){
+        Printable printable = new Printable("");
+        printListInABox(printable, title, list, width, linesPerItem);
         Printer.print(printable);
     }
 
