@@ -33,39 +33,39 @@ public class CommandDisplayRenderable extends Renderable{
      */
     @Override
     public void render() {
-        PromptStyle.printInABoxDouble("Active Commands", 50);
+        PromptStyle.printInABoxDouble("Active Commands", 102);
 
 
         List<String> commands = new ArrayList<>();
 
-        if(!activeLocalPrompts.isEmpty()) {
-            for (int i = 0; i < activeLocalPrompts.size(); i++) {
-                CommandPrompt prompt = getPromptAtIndex(i);
-                String CommandLabel = new DecoratedString(prompt.getCommandName(), StringStyle.UNDERLINE).toString();
+        Printable activeLocalPromtsPrintable = new Printable("");
+        for (int i = 0; i < activeLocalPrompts.size(); i++) {
+            CommandPrompt prompt = getPromptAtIndex(i);
+            String CommandLabel = new DecoratedString(prompt.getCommandName(), StringStyle.UNDERLINE).toString();
 
-                String CommandNumber = new DecoratedString("[" + i + "]", StringStyle.BOLD).toString();
+            String CommandNumber = new DecoratedString("[" + i + "]", StringStyle.BOLD).toString();
 
-                commands.add(CommandNumber);
-                commands.add(CommandLabel);
-            }
-
-            PromptStyle.printListInABox("Active Display Commands", commands, 50, 2);
+            commands.add(CommandNumber);
+            commands.add(CommandLabel);
         }
 
+        PromptStyle.printListInABox(activeLocalPromtsPrintable,"Active Display Commands", commands, 50, 2);
 
-        if(!activeActionPrompts.isEmpty()) {
-            commands.clear();
-            for (int i = 0; i < activeActionPrompts.size(); i++) {
-                CommandPrompt prompt = getPromptAtIndex(i + activeLocalPrompts.size());
-                String CommandLabel = new DecoratedString(prompt.getCommandName(), StringStyle.UNDERLINE).toString();
+        Printable activeActionPromptsPrintable = new Printable("");
+        commands.clear();
+        for (int i = 0; i < activeActionPrompts.size(); i++) {
+            CommandPrompt prompt = getPromptAtIndex(i + activeLocalPrompts.size());
+            String CommandLabel = new DecoratedString(prompt.getCommandName(), StringStyle.UNDERLINE).toString();
 
-                String CommandNumber = new DecoratedString("[" + (i + activeLocalPrompts.size()) + "]", StringStyle.BOLD).toString();
+            String CommandNumber = new DecoratedString("[" + (i + activeLocalPrompts.size()) + "]", StringStyle.BOLD).toString();
 
-                commands.add(CommandNumber);
-                commands.add(CommandLabel);
-            }
-            PromptStyle.printListInABox("Active Action Commands", commands, 50, 2);
+            commands.add(CommandNumber);
+            commands.add(CommandLabel);
         }
+        PromptStyle.printListInABox(activeActionPromptsPrintable,"Active Action Commands", commands, 50, 2);
+
+
+        Printer.printStackedHorizontally(List.of(activeLocalPromtsPrintable, activeActionPromptsPrintable));
 
         Printable printable = new Printable("");
         printable.println("What do you want to do ❔");
