@@ -6,6 +6,7 @@ import it.polimi.ingsw.lightModel.lightTableRelated.LightGame;
 import it.polimi.ingsw.model.playerReleted.ChatMessage;
 import it.polimi.ingsw.model.playerReleted.PawnColors;
 import it.polimi.ingsw.view.ActualView;
+import it.polimi.ingsw.view.TUI.Printing.Printer;
 import it.polimi.ingsw.view.TUI.Styles.CardTextStyle;
 import it.polimi.ingsw.view.TUI.Styles.DecoratedString;
 import it.polimi.ingsw.view.TUI.Styles.PromptStyle;
@@ -59,7 +60,7 @@ public class ChatRenderable extends Renderable {
                     //Show all messages
                     if(chatHistory.isEmpty()){
                         try {
-                            view.logChat("No message received yet");
+                            this.localLogChat("No message received yet");
                         } catch (Exception e) {
                             throw new RuntimeException(e);
                         }
@@ -70,7 +71,7 @@ public class ChatRenderable extends Renderable {
                     chatHistory.removeIf(message -> message.getPrivacy() != ChatMessage.MessagePrivacy.PRIVATE || !message.getReceiver().equals(lightGame.getLightGameParty().getYourName()));
                     if(chatHistory.isEmpty()){
                         try {
-                            view.logChat("No private message received yet");
+                            this.localLogChat("No private message received yet");
                         } catch (Exception e) {
                             throw new RuntimeException(e);
                         }
@@ -81,7 +82,7 @@ public class ChatRenderable extends Renderable {
                     chatHistory.removeIf(message -> !message.getSender().equals(lightGame.getLightGameParty().getYourName()));
                     if(chatHistory.isEmpty()){
                         try {
-                            view.logChat("No message sent yet");
+                            this.localLogChat("No message sent yet");
                         } catch (Exception e) {
                             throw new RuntimeException(e);
                         }
@@ -150,5 +151,16 @@ public class ChatRenderable extends Renderable {
             return StringStyle.RESET;
         }
         return CardTextStyle.convertPawnColor(pawn);
+    }
+
+    /**
+     * LogChat is a method call by the controller that causes a transitionTo and consequentially a re-render of the ActiveCommands
+     * localLogChat is a method that logs a message to the view and does not cause a transition. It is only used for local messages
+     * @param logMsg the message to be logged
+     */
+    private void localLogChat(String logMsg) {
+        Printer.println("");
+        PromptStyle.printInABox(logMsg,50, StringStyle.GOLD_FOREGROUND);
+        Printer.println("");
     }
 }

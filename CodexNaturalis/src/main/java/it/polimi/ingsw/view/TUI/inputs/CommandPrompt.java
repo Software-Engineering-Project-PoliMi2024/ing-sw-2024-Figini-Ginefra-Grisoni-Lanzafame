@@ -223,7 +223,9 @@ public enum CommandPrompt implements Iterator<String>, CommandObserved {
                 "View chat history - View received private messages - View sent messages (0/1/2)",
         }, new Predicate[]{
                 s -> s.equals("0") || s.equals("1") || s.equals("2"),
-        }, true);
+        }, true),
+
+    LEAVE("Leave", false);
 
     /** The questions to ask the user. */
     private final String[] questions;

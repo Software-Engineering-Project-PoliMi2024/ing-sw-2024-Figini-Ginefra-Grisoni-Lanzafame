@@ -38,6 +38,13 @@ public class PostGameStateRenderable extends Renderable {
             case DISPLAY_POSTGAME:
                 this.render();
                 break;
+            case LEAVE:
+                try {
+                    view.getController().leave();
+                } catch (Exception e) {
+                    throw new RuntimeException(e);
+                }
+                break;
             default:
                 break;
         }
