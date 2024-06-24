@@ -72,4 +72,12 @@ public class Printable {
     public void flush(){
         System.out.print(content);
     }
+
+    public int getHeight(){
+        return content.toString().split("\n").length;
+    }
+
+    public String getRow(int height){
+        return content.toString().split("\n")[height];
+    }
 }
