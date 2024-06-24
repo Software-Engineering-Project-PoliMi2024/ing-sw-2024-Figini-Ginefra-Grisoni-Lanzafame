@@ -21,7 +21,7 @@ class ChooseObjectiveCardRenderableTest {
         OSRelated.checkOrCreateDataFolderClient(); //Create the dataFolder if necessary. Normally this is done in the Client class
         CardMuseum museum = new CardMuseumFactory(Configs.CardResourcesFolderPath, OSRelated.cardFolderDataPath).getCardMuseum();
         LightGame lightGame = new LightGame();
-        renderable = new ChooseObjectiveCardRenderable("name", museum, lightGame, new CommandPrompt[]{}, null);
+        renderable = new ChooseObjectiveCardRenderable("name", museum, lightGame, new CommandPrompt[]{}, null, lightGame);
         LightCard objectiveCard1 = new LightCard(87);
         LightCard objectiveCard2 = new LightCard(91);
         GameDiff diff = new HandDiffAddOneSecretObjectiveOption(objectiveCard1);
