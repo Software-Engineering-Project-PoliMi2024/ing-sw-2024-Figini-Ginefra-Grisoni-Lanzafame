@@ -1026,6 +1026,217 @@ public class ResilienceTest {
         assert viewFirst.state.equals(ViewState.IDLE);
     }
 
+    @Test
+    void nextPlayerInTurnLeaves(){
+        ViewTest view1 = new ViewTest();
+        ViewTest view2 = new ViewTest();
+        ViewTest view3 = new ViewTest();
+        ViewTest view4 = new ViewTest();
+        ViewTest view5 = new ViewTest();
+        view1.name = "pippo";
+        view2.name = "pluto";
+        view3.name = "duck";
+        view4.name = "mickey";
+        view5.name = "minnie";
+
+        String lobbyName1 = "leaveAndRejoinActualGameDrawCard1";
+        String lobbyName2 = "leaveAndRejoinActualGameDrawCard2";
+        Controller controller1 = new Controller(realLobbyGameListController, view1);
+        Controller controller2 = new Controller(realLobbyGameListController, view2);
+        Controller controller3 = new Controller(realLobbyGameListController, view3);
+        Controller controller4 = new Controller(realLobbyGameListController, view4);
+        Controller controller5 = new Controller(realLobbyGameListController, view5);
+
+        HashMap<String, Controller> controllerMap = new HashMap<>();
+        controllerMap.put(view1.name, controller1);
+        controllerMap.put(view2.name, controller2);
+        controllerMap.put(view3.name, controller3);
+        controllerMap.put(view4.name, controller4);
+
+        HashMap<String, ViewTest> viewMap = new HashMap<>();
+        viewMap.put(view1.name, view1);
+        viewMap.put(view2.name, view2);
+        viewMap.put(view3.name, view3);
+        viewMap.put(view4.name, view4);
+
+        controller1.login(view1.name);
+        controller2.login(view2.name);
+        controller3.login(view3.name);
+        controller4.login(view4.name);
+        controller5.login(view5.name);
+        controller1.createLobby(lobbyName1, 4);
+        controller2.joinLobby(lobbyName1);
+        controller3.joinLobby(lobbyName1);
+        controller4.joinLobby(lobbyName1);
+        controller5.createLobby(lobbyName2, 2);
+
+        assert !lobbyGameListController.getViewMap().containsKey(view1.name);
+        assert !lobbyGameListController.getViewMap().containsKey(view2.name);
+        assert !lobbyGameListController.getViewMap().containsKey(view3.name);
+        assert !lobbyGameListController.getViewMap().containsKey(view4.name);
+
+        assert !lobbyGameListController.getLobbyMap().containsKey(lobbyName1);
+        assert lobbyGameListController.getGameMap().containsKey(lobbyName1);
+
+        PublicGameController gameController = new PublicGameController(lobbyGameListController.getGameMap().get(lobbyName1));
+        Game game = gameController.getGame();
+        Player player1 = game.getPlayerFromNick(view1.name);
+        Player player2 = game.getPlayerFromNick(view2.name);
+        Player player3 = game.getPlayerFromNick(view3.name);
+        Player player4 = game.getPlayerFromNick(view4.name);
+
+        System.out.println(game.getGameParty().getCurrentPlayerIndex());
+
+        placeStartCard(player1, controller1);
+        placeStartCard(player2, controller2);
+        placeStartCard(player3, controller3);
+        placeStartCard(player4, controller4);
+
+        pawnChoicesSetupCorrectly(gameController, List.of(view1, view2, view3, view4));
+
+        controller1.choosePawn(PawnColors.BLUE);
+        controller2.choosePawn(PawnColors.YELLOW);
+        controller3.choosePawn(PawnColors.RED);
+        controller4.choosePawn(PawnColors.GREEN);
+
+        setupObjChoicesCorrectly(gameController, List.of(view1, view2, view3, view4));
+
+        controller1.chooseSecretObjective(Lightifier.lightifyToCard(player1.getUserHand().getSecretObjectiveChoices().getFirst()));
+        controller2.chooseSecretObjective(Lightifier.lightifyToCard(player2.getUserHand().getSecretObjectiveChoices().getFirst()));
+        controller3.chooseSecretObjective(Lightifier.lightifyToCard(player3.getUserHand().getSecretObjectiveChoices().getFirst()));
+        controller4.chooseSecretObjective(Lightifier.lightifyToCard(player4.getUserHand().getSecretObjectiveChoices().getFirst()));
+
+        setupActualGame(gameController, List.of(view1, view2, view3, view4));
+
+        Player firstPlayer = game.getPlayersList().getFirst();
+        Player secondPlayer = game.getPlayersList().get(1);
+        Player thirdPlayer = game.getPlayersList().get(2);
+        Player lastPlayer = game.getPlayersList().getLast();
+
+        Controller firstController = controllerMap.get(firstPlayer.getNickname());
+        Controller secondController = controllerMap.get(secondPlayer.getNickname());
+        Controller thirdController = controllerMap.get(thirdPlayer.getNickname());
+        Controller lastController = controllerMap.get(lastPlayer.getNickname());
+
+
+        ViewTest viewFirst = viewMap.get(firstPlayer.getNickname());
+        ViewTest viewSecond = viewMap.get(secondPlayer.getNickname());
+        ViewTest viewThird = viewMap.get(thirdPlayer.getNickname());
+        ViewTest viewLast = viewMap.get(lastPlayer.getNickname());
+
+        secondController.leave();
+        firstController.place(new LightPlacement(new Position(1,1), Lightifier.lightifyToCard(firstPlayer.getUserHand().getHand().stream().findFirst().get()), CardFace.BACK));
+        firstController.draw(DrawableCard.RESOURCECARD, 0);
+
+        assert game.getCurrentPlayer().getNickname().equals(thirdPlayer.getNickname());
+    }
+
+    @Test
+    void allPlayerLeavesNextTurn(){
+        ViewTest view1 = new ViewTest();
+        ViewTest view2 = new ViewTest();
+        ViewTest view3 = new ViewTest();
+        ViewTest view4 = new ViewTest();
+        ViewTest view5 = new ViewTest();
+        view1.name = "pippo";
+        view2.name = "pluto";
+        view3.name = "duck";
+        view4.name = "mickey";
+        view5.name = "minnie";
+
+        String lobbyName1 = "leaveAndRejoinActualGameDrawCard1";
+        String lobbyName2 = "leaveAndRejoinActualGameDrawCard2";
+        Controller controller1 = new Controller(realLobbyGameListController, view1);
+        Controller controller2 = new Controller(realLobbyGameListController, view2);
+        Controller controller3 = new Controller(realLobbyGameListController, view3);
+        Controller controller4 = new Controller(realLobbyGameListController, view4);
+        Controller controller5 = new Controller(realLobbyGameListController, view5);
+
+        HashMap<String, Controller> controllerMap = new HashMap<>();
+        controllerMap.put(view1.name, controller1);
+        controllerMap.put(view2.name, controller2);
+        controllerMap.put(view3.name, controller3);
+        controllerMap.put(view4.name, controller4);
+
+        HashMap<String, ViewTest> viewMap = new HashMap<>();
+        viewMap.put(view1.name, view1);
+        viewMap.put(view2.name, view2);
+        viewMap.put(view3.name, view3);
+        viewMap.put(view4.name, view4);
+
+        controller1.login(view1.name);
+        controller2.login(view2.name);
+        controller3.login(view3.name);
+        controller4.login(view4.name);
+        controller5.login(view5.name);
+        controller1.createLobby(lobbyName1, 4);
+        controller2.joinLobby(lobbyName1);
+        controller3.joinLobby(lobbyName1);
+        controller4.joinLobby(lobbyName1);
+        controller5.createLobby(lobbyName2, 2);
+
+        assert !lobbyGameListController.getViewMap().containsKey(view1.name);
+        assert !lobbyGameListController.getViewMap().containsKey(view2.name);
+        assert !lobbyGameListController.getViewMap().containsKey(view3.name);
+        assert !lobbyGameListController.getViewMap().containsKey(view4.name);
+
+        assert !lobbyGameListController.getLobbyMap().containsKey(lobbyName1);
+        assert lobbyGameListController.getGameMap().containsKey(lobbyName1);
+
+        PublicGameController gameController = new PublicGameController(lobbyGameListController.getGameMap().get(lobbyName1));
+        Game game = gameController.getGame();
+        Player player1 = game.getPlayerFromNick(view1.name);
+        Player player2 = game.getPlayerFromNick(view2.name);
+        Player player3 = game.getPlayerFromNick(view3.name);
+        Player player4 = game.getPlayerFromNick(view4.name);
+
+        System.out.println(game.getGameParty().getCurrentPlayerIndex());
+
+        placeStartCard(player1, controller1);
+        placeStartCard(player2, controller2);
+        placeStartCard(player3, controller3);
+        placeStartCard(player4, controller4);
+
+        pawnChoicesSetupCorrectly(gameController, List.of(view1, view2, view3, view4));
+
+        controller1.choosePawn(PawnColors.BLUE);
+        controller2.choosePawn(PawnColors.YELLOW);
+        controller3.choosePawn(PawnColors.RED);
+        controller4.choosePawn(PawnColors.GREEN);
+
+        setupObjChoicesCorrectly(gameController, List.of(view1, view2, view3, view4));
+
+        controller1.chooseSecretObjective(Lightifier.lightifyToCard(player1.getUserHand().getSecretObjectiveChoices().getFirst()));
+        controller2.chooseSecretObjective(Lightifier.lightifyToCard(player2.getUserHand().getSecretObjectiveChoices().getFirst()));
+        controller3.chooseSecretObjective(Lightifier.lightifyToCard(player3.getUserHand().getSecretObjectiveChoices().getFirst()));
+        controller4.chooseSecretObjective(Lightifier.lightifyToCard(player4.getUserHand().getSecretObjectiveChoices().getFirst()));
+
+        setupActualGame(gameController, List.of(view1, view2, view3, view4));
+
+        Player firstPlayer = game.getPlayersList().getFirst();
+        Player secondPlayer = game.getPlayersList().get(1);
+        Player thirdPlayer = game.getPlayersList().get(2);
+        Player lastPlayer = game.getPlayersList().getLast();
+
+        Controller firstController = controllerMap.get(firstPlayer.getNickname());
+        Controller secondController = controllerMap.get(secondPlayer.getNickname());
+        Controller thirdController = controllerMap.get(thirdPlayer.getNickname());
+        Controller lastController = controllerMap.get(lastPlayer.getNickname());
+
+
+        ViewTest viewFirst = viewMap.get(firstPlayer.getNickname());
+        ViewTest viewSecond = viewMap.get(secondPlayer.getNickname());
+        ViewTest viewThird = viewMap.get(thirdPlayer.getNickname());
+        ViewTest viewLast = viewMap.get(lastPlayer.getNickname());
+
+        secondController.leave();
+        thirdController.leave();
+        lastController.leave();
+        firstController.leave();
+
+        assert game.getCurrentPlayer().equals(firstPlayer);
+    }
+
     /*
     leave and rejoin of a player when winning condition are met,
     and the player is the last player in game

@@ -10,6 +10,9 @@ import it.polimi.ingsw.connectionLayer.VirtualLayer.VirtualController;
 import it.polimi.ingsw.connectionLayer.VirtualLayer.VirtualView;
 import it.polimi.ingsw.controller.LogsOnClient;
 import it.polimi.ingsw.controller.LobbyGameListsController;
+import it.polimi.ingsw.utils.logger.LoggerLevel;
+import it.polimi.ingsw.utils.logger.LoggerSources;
+import it.polimi.ingsw.utils.logger.ProjectLogger;
 import it.polimi.ingsw.view.ViewInterface;
 import it.polimi.ingsw.view.ViewState;
 
@@ -24,6 +27,7 @@ public class ConnectionServerRMI implements ConnectionLayerServer {
     private final LobbyGameListsController lobbyGameListController;
     private final ExecutorService serverExecutor = Executors.newSingleThreadExecutor();
     int secondsTimeOut = Configs.secondsTimeOut;
+    private final ProjectLogger logger = new ProjectLogger(LoggerSources.SERVER, "RMI");
 
     /**
      * The constructor of the class
@@ -68,7 +72,7 @@ public class ConnectionServerRMI implements ConnectionLayerServer {
         }catch (InterruptedException ignored){
         } catch (Exception e) {
             e.printStackTrace();
-            System.out.println("Error In Client Connection");
+            logger.log(LoggerLevel.SEVERE, "Error In Client Connection");
         }
 
     }
