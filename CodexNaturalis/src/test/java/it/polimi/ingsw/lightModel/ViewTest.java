@@ -41,7 +41,6 @@ public class ViewTest implements ViewInterface {
     @Override
     public void updateLobbyList(ModelDiffs<LightLobbyList> diff) throws RemoteException {
         diff.apply(this.lightLobbyList);
-        System.out.println("lobbyList updated");
     }
 
     @Override
