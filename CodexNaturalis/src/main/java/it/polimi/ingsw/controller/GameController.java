@@ -385,7 +385,7 @@ public class GameController implements GameControllerInterface {
             }
         }
 
-        if(game.getState().equals(GameState.END_GAME)){
+        if(game.getState().equals(GameState.END_GAME) && playerViewMap.isEmpty()){
             persistenceFactory.delete(game.getName());
             gameList.deleteGame(game.getName());
         }else {
