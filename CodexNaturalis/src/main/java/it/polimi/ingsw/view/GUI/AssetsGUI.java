@@ -27,6 +27,14 @@ public class AssetsGUI {
     public static Image book = new Image(Objects.requireNonNull(GUI.class.getClassLoader().getResourceAsStream("GUI/images/Misc/book.png"), "Book is null"), 100, 100, true, true);
     public static Image flower = new Image(Objects.requireNonNull(GUI.class.getClassLoader().getResourceAsStream("GUI/images/Misc/flower.png"), "Flower is null"), 100, 100, true, true);
     public static Image plateauIcon = new Image(Objects.requireNonNull(GUI.class.getClassLoader().getResourceAsStream("GUI/images/PLATEAU-SCORE-IMP/plateauIcon.png"), "Plateau Icon is null"), 100, 100, true, true);
+    public static Image ruleBookIcon = new Image(Objects.requireNonNull(GUI.class.getClassLoader().getResourceAsStream("GUI/images/Decori/SOLA-MANO-destra.png"), "RuleBook Icon is null"),100, 100, true, true);
+
+    //RuleBook assets
+    public static Image ruleBook(int id){
+        String idString = String.valueOf(id);
+        idString = "00".substring(idString.length()) + idString;
+        return new Image(Objects.requireNonNull(GUI.class.getClassLoader().getResourceAsStream("GUI/images/CODEX_Rulebook_IT/"+idString+".png"), "RuleBook page "+id+" is null"));
+    }
     public static Image loadCardFront(int id){
         String idString = String.valueOf(id);
         idString = "000".substring(idString.length()) + idString;
