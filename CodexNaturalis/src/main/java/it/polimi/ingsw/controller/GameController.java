@@ -87,7 +87,7 @@ public class GameController implements GameControllerInterface {
         if(game.getState().equals(GameState.END_GAME)){
             try {
                 view.logErr(LogsOnClient.GAME_END);
-                view.transitionTo(ViewState.JOIN_LOBBY);
+                view.transitionTo(ViewState.LOGIN_FORM);
             }catch (Exception ignored){}
             return;
         }else{
@@ -559,7 +559,8 @@ public class GameController implements GameControllerInterface {
     private synchronized void resetLastPlayerTimer(){
         if(lastInGameFuture != null){
             lastInGameFuture.cancel(true);
-            logger.log(LoggerLevel.INFO, game.getName() + " stopped last player timer");
+            lastInGameFuture = null;
+            logger.log(LoggerLevel.INFO, "stopped last player timer");
             this.notifyLastInGameTimerStop();
         }
     }
@@ -576,7 +577,7 @@ public class GameController implements GameControllerInterface {
         };
 
         lastInGameFuture = countdownExecutor.schedule(declareLastPlayerWinner, Configs.lastInGameTimerSeconds, TimeUnit.SECONDS);
-        logger.log(LoggerLevel.INFO, game.getName() + " started last player timer");
+        logger.log(LoggerLevel.INFO, "started last player timer");
     }
 
     private synchronized void winsTheLastPlayerInGame(String winner){
