@@ -4,6 +4,7 @@ import it.polimi.ingsw.lightModel.lightPlayerRelated.LightCard;
 import it.polimi.ingsw.lightModel.lightTableRelated.LightDeck;
 import it.polimi.ingsw.lightModel.lightTableRelated.LightGame;
 import it.polimi.ingsw.model.cardReleted.utilityEnums.CardFace;
+import it.polimi.ingsw.utils.designPatterns.Observed;
 import it.polimi.ingsw.view.ControllerProvider;
 import it.polimi.ingsw.view.TUI.Printing.Printable;
 import it.polimi.ingsw.view.TUI.Printing.Printer;
@@ -130,5 +131,10 @@ public class DeckRenderable extends CanvasRenderable {
             default:
                 break;
         }
+    }
+
+    @Override
+    public List<Observed> getObservedLightModel() {
+        return List.of(lightGame.getGoldDeck(), lightGame.getResourceDeck());
     }
 }
