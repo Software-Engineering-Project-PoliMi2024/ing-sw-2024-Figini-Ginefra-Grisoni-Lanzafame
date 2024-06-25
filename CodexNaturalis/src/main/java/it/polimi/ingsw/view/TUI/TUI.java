@@ -275,7 +275,8 @@ public class TUI implements ActualView, CommandObserver, Observer {
 
     @Override
     public void transitionTo(ViewState state){
-        System.out.print("\033[H\033[2J");
+        Configs.clearTerminal();
+
         StateTUI stateTUI = Arrays.stream(StateTUI.values()).reduce((a, b) -> a.references(state) ? a : b).orElse(null);
 
         if (stateTUI == null) {

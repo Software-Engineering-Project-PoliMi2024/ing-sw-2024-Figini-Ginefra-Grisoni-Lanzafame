@@ -8,6 +8,9 @@ import java.util.Scanner;
 public class Client {
     public static void main(String[] args) {
         OSRelated.checkOrCreateDataFolderClient();
+
+        Configs.clearTerminal();
+
         System.out.println("Hi there 👋!");
 
 
