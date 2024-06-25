@@ -1,5 +1,6 @@
 package it.polimi.ingsw.view.TUI.inputs;
 
+import it.polimi.ingsw.model.utilities.Pair;
 import it.polimi.ingsw.view.TUI.Styles.DecoratedString;
 import it.polimi.ingsw.view.TUI.Styles.StringStyle;
 import it.polimi.ingsw.view.TUI.observers.CommandObserved;
@@ -308,11 +309,36 @@ public enum CommandPrompt implements Iterator<String>, CommandObserved {
     }
 
     /**
-     * @return The next question.
+     * Gets the next question to ask and increments the current question.
+     * @return The next question to ask.
      */
     @Override
     public String next() {
         return questions[currentQuestion++];
+    }
+
+    /**
+     * Gets the current question.
+     * @return The current question.
+     */
+    public String current(){
+        return questions[currentQuestion];
+    }
+
+    public boolean hasCurrent(){
+        return currentQuestion < questions.length && currentQuestion >= 0;
+    }
+
+    /**
+     * Gets the last question.
+     * @return the last question.
+     */
+    public String last(){
+        return questions[currentQuestion-1];
+    }
+
+    public boolean hasLast(){
+        return currentQuestion > 0;
     }
 
     /**
@@ -413,5 +439,15 @@ public enum CommandPrompt implements Iterator<String>, CommandObserved {
      */
     public boolean isLocal() {
         return isLocal;
+    }
+
+    public List<Pair<String, String>> getQnASoFar(){
+        List<Pair<String, String>> qna = new ArrayList<>();
+        for(int i = 0; i < currentQuestion; i++){
+            if(currentResult.getAnswer(i) != null){
+                qna.add(new Pair<>(questions[i], currentResult.getAnswer(i)));
+            }
+        }
+    return qna;
     }
 }

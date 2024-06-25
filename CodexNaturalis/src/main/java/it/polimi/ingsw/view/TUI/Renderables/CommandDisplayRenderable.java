@@ -1,6 +1,7 @@
 package it.polimi.ingsw.view.TUI.Renderables;
 
 import it.polimi.ingsw.Configs;
+import it.polimi.ingsw.model.utilities.Pair;
 import it.polimi.ingsw.view.TUI.Printing.Printable;
 import it.polimi.ingsw.view.TUI.Printing.Printer;
 import it.polimi.ingsw.view.TUI.Styles.*;
@@ -17,6 +18,8 @@ public class CommandDisplayRenderable extends Renderable{
 
     /** The active non-local prompts. */
     private final Map<CommandPrompt, Integer> activeActionPrompts;
+
+    private int currentPromptIndex = 0;
     CommandPrompt currentPrompt;
 
     /**
@@ -72,6 +75,8 @@ public class CommandDisplayRenderable extends Renderable{
         printable.println("What do you want to do ❔");
         printable.print("\t");
         Printer.print(printable);
+
+        printCurrentPrompt();
     }
 
     /**
@@ -114,6 +119,9 @@ public class CommandDisplayRenderable extends Renderable{
                 Printer.print(printable);
                 return;
             }
+
+            //Sets the current prompt index
+            this.currentPromptIndex = index;
 
             //Gets the prompt at the given index
             this.currentPrompt = getPromptAtIndex(index);
@@ -162,6 +170,32 @@ public class CommandDisplayRenderable extends Renderable{
                 }
             }
         }
+    }
+
+    private void printCurrentPrompt(){
+        if(currentPrompt == null)
+            return;
+
+        Printer.print(this.currentPromptIndex + "\n");
+
+        PromptStyle.printInABox("You selected " + new DecoratedString(currentPrompt.getCommandName(), StringStyle.UNDERLINE).toString(), 50);
+
+        List<Pair<String, String>> qna = currentPrompt.getQnASoFar();
+
+        Printable qnaPrintable = new Printable("");
+
+        for(Pair<String, String> pair : qna){
+            String question = pair.first();
+            String answer = pair.second();
+
+            qnaPrintable.println(question);
+            qnaPrintable.print("\t");
+            qnaPrintable.println(answer);
+        }
+        Printer.print(qnaPrintable);
+
+        if(currentPrompt.hasLast())
+            Printer.printlnt(currentPrompt.last());
     }
 
     /**
