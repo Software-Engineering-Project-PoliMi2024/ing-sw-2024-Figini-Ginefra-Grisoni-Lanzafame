@@ -41,7 +41,7 @@ import it.polimi.ingsw.model.utilities.Pair;
 import it.polimi.ingsw.utils.CardChecks;
 import it.polimi.ingsw.utils.logger.LoggerLevel;
 import it.polimi.ingsw.utils.logger.LoggerSources;
-import it.polimi.ingsw.utils.logger.ProjectLogger;
+import it.polimi.ingsw.utils.logger.ServerLogger;
 import it.polimi.ingsw.view.ViewInterface;
 import it.polimi.ingsw.view.ViewState;
 
@@ -54,7 +54,7 @@ public class GameController implements GameControllerInterface {
     private final transient GameList gameList;
     private final transient PersistenceFactory persistenceFactory;
     private final transient MalevolentPlayerManager malevolentPlayerManager;
-    private final transient ProjectLogger logger;
+    private final transient ServerLogger logger;
 
     private final Game game;
     private final Map<String, ViewInterface> playerViewMap = new HashMap<>();
@@ -72,7 +72,7 @@ public class GameController implements GameControllerInterface {
         this.persistenceFactory = persistenceFactory;
         this.gameList = gameList;
         this.malevolentPlayerManager = malevolentPlayerManager;
-        this.logger = new ProjectLogger(LoggerSources.GAME_CONTROLLER, game.getName());
+        this.logger = new ServerLogger(LoggerSources.GAME_CONTROLLER, game.getName());
     }
 
     public synchronized Map<String, ViewInterface> getPlayerViewMap() {
@@ -569,10 +569,17 @@ public class GameController implements GameControllerInterface {
         String lastPlayerInGame = playerViewMap.keySet().stream().findFirst().orElse("");
         this.notifyLastInGameTimer();
         Runnable declareLastPlayerWinner = () -> {
-            if (!Thread.currentThread().isInterrupted()) {
-                winsTheLastPlayerInGame(lastPlayerInGame);
-                countdownExecutor.shutdownNow();
-                lastInGameFuture = null;
+            synchronized (this) {
+                if (!Thread.currentThread().isInterrupted()) {
+                    if (!this.playerViewMap.isEmpty()) {
+                        winsTheLastPlayerInGame(lastPlayerInGame);
+                        lastInGameFuture = null;
+                        countdownExecutor.shutdownNow();
+                    } else {
+                        this.save();
+                        lastInGameFuture = null;
+                    }
+                }
             }
         };
 

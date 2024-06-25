@@ -12,7 +12,7 @@ import it.polimi.ingsw.controller.LogsOnClient;
 import it.polimi.ingsw.controller.LobbyGameListsController;
 import it.polimi.ingsw.utils.logger.LoggerLevel;
 import it.polimi.ingsw.utils.logger.LoggerSources;
-import it.polimi.ingsw.utils.logger.ProjectLogger;
+import it.polimi.ingsw.utils.logger.ServerLogger;
 import it.polimi.ingsw.view.ViewInterface;
 import it.polimi.ingsw.view.ViewState;
 
@@ -27,7 +27,7 @@ public class ConnectionServerRMI implements ConnectionLayerServer {
     private final LobbyGameListsController lobbyGameListController;
     private final ExecutorService serverExecutor = Executors.newSingleThreadExecutor();
     int secondsTimeOut = Configs.secondsTimeOut;
-    private final ProjectLogger logger = new ProjectLogger(LoggerSources.SERVER, "RMI");
+    private final ServerLogger logger = new ServerLogger(LoggerSources.SERVER, "RMI");
 
     /**
      * The constructor of the class

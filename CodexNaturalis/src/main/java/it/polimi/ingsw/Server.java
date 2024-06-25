@@ -10,7 +10,7 @@ import it.polimi.ingsw.controller.LogsOnClient;
 import it.polimi.ingsw.controller.LobbyGameListsController;
 import it.polimi.ingsw.utils.logger.LoggerLevel;
 import it.polimi.ingsw.utils.logger.LoggerSources;
-import it.polimi.ingsw.utils.logger.ProjectLogger;
+import it.polimi.ingsw.utils.logger.ServerLogger;
 import it.polimi.ingsw.utils.OSRelated;
 import it.polimi.ingsw.view.ViewState;
 
@@ -29,7 +29,7 @@ import java.rmi.server.UnicastRemoteObject;
 public class Server {
     public static void main(String[] args) {
         OSRelated.checkOrCreateDataFolderServer();
-        ProjectLogger serverLogger = new ProjectLogger(LoggerSources.SERVER, "");
+        ServerLogger serverLogger = new ServerLogger(LoggerSources.SERVER, "");
 
         try (Socket socket = new Socket()) {
             socket.connect(new InetSocketAddress("google.com", 80));

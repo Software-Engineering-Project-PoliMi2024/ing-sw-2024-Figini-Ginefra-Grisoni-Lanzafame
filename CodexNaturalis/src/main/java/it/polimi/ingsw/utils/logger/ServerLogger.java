@@ -2,12 +2,12 @@ package it.polimi.ingsw.utils.logger;
 
 import java.util.concurrent.*;
 
-public class ProjectLogger {
+public class ServerLogger {
     private final LoggerSources source;
     private final String additionalPrefix;
     private final Executor logExecutor = Executors.newSingleThreadExecutor();;
 
-    public ProjectLogger(LoggerSources source, String additionalPrefix){
+    public ServerLogger(LoggerSources source, String additionalPrefix){
         this.source = source;
         this.additionalPrefix = additionalPrefix;
     }
