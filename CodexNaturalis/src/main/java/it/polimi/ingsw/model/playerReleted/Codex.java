@@ -1,5 +1,6 @@
 package it.polimi.ingsw.model.playerReleted;
 
+import it.polimi.ingsw.Configs;
 import it.polimi.ingsw.model.cardReleted.cards.CardWithCorners;
 import it.polimi.ingsw.model.cardReleted.cards.ObjectiveCard;
 import it.polimi.ingsw.model.cardReleted.utilityEnums.*;
@@ -192,7 +193,8 @@ public class Codex implements Serializable {
         if (placement.face() == CardFace.FRONT) {
             pointsLock.lock();
             try {
-                this.points += placement.card().getPoints(this);
+                int calculatedPoints = this.points + placement.card().getPoints(this);
+                this.points = Math.min(Configs.maxPossiblePoints, calculatedPoints);
             } finally {
                 pointsLock.unlock();
             }
@@ -234,7 +236,8 @@ public class Codex implements Serializable {
     public void pointsFromObjective(ObjectiveCard card) {
         pointsLock.lock();
         try{
-            this.points += card.getPoints(this);
+            int calculatedPoints = this.points + card.getPoints(this);
+            this.points = Math.min(Configs.maxPossiblePoints, calculatedPoints);
         } finally {
             pointsLock.unlock();
         }
