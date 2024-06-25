@@ -3,6 +3,7 @@ package it.polimi.ingsw.view.TUI.Renderables.CardRelated;
 import it.polimi.ingsw.lightModel.lightPlayerRelated.LightCard;
 import it.polimi.ingsw.lightModel.lightTableRelated.LightGame;
 import it.polimi.ingsw.model.cardReleted.utilityEnums.CardFace;
+import it.polimi.ingsw.utils.designPatterns.Observed;
 import it.polimi.ingsw.view.ControllerProvider;
 import it.polimi.ingsw.view.TUI.Printing.Printable;
 import it.polimi.ingsw.view.TUI.Printing.Printer;
@@ -17,8 +18,10 @@ import it.polimi.ingsw.view.TUI.cardDrawing.TextCard;
 import it.polimi.ingsw.view.TUI.inputs.CommandPrompt;
 import it.polimi.ingsw.view.TUI.inputs.CommandPromptResult;
 
+import java.util.Arrays;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Objects;
 
 /**
  * This class is a Renderable that can render a card and prompt the player to choose between two objective cards.
@@ -47,10 +50,14 @@ public class ChooseObjectiveCardRenderable extends CanvasRenderable {
      * Renders the two objective cards.
      */
     public void render(){
+        LightCard[] options = lightGame.getHand().getSecretObjectiveOptions();
+
+        if(Arrays.stream(options).anyMatch(Objects::isNull)){
+            return;
+        }
+
         Printable option1Label = new Printable("");
         PromptStyle.printInABox(option1Label, "Option [1]", CardTextStyle.getCardWidth() * 2 - 2);
-
-        LightCard[] options = lightGame.getHand().getSecretObjectiveOptions();
 
         for(int i = 0; i < options.length; i++) {
             LightCard card = options[i];
@@ -88,5 +95,10 @@ public class ChooseObjectiveCardRenderable extends CanvasRenderable {
             default:
                 break;
         }
+    }
+
+    @Override
+    public List<Observed> getObservedLightModel(){
+        return List.of(lightGame.getHand());
     }
 }
