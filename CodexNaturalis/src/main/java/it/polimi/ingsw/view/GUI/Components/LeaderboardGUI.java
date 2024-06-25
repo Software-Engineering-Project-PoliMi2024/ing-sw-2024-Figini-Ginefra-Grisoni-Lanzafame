@@ -30,6 +30,7 @@ public class LeaderboardGUI implements Observer {
     private Map<String, ImageView> pawnImageViewMap = new HashMap<>();
     private final HBox buttonContainer = new HBox();
     private PlateauGUI plateau;
+    private RuleBook ruleBook;
     private List<PawnsGui> availablePawns;
 
     public LeaderboardGUI() {
@@ -47,6 +48,7 @@ public class LeaderboardGUI implements Observer {
     public void addThisTo(AnchorPane parent) {
         this.popUp = new AnchoredPopUp(parent, 0.1f, 0.2f, Pos.CENTER_LEFT, 0.25f);
         this.plateau = new PlateauGUI(parent);
+        this.ruleBook = new RuleBook(parent);
 
         popUp.getContent().getChildren().add(layout);
 
@@ -69,6 +71,14 @@ public class LeaderboardGUI implements Observer {
         plateauButton.setStyle("-fx-background-color: transparent;");
         plateauButton.setOnAction(event -> plateau.show());
 
+        ImageView ruleBookIcon = new ImageView(AssetsGUI.ruleBookIcon);
+        ruleBookIcon.preserveRatioProperty().set(true);
+        ruleBookIcon.fitHeightProperty().bind(chatButton.getChatButton().heightProperty().multiply(0.8));
+        Button ruleBookButton = new Button("", ruleBookIcon);
+        ruleBookButton.setStyle("-fx-background-color: transparent;");
+        ruleBookButton.setOnAction(event -> ruleBook.show());
+
+        buttonContainer.getChildren().add(ruleBookButton);
         buttonContainer.getChildren().add(plateauButton);
         buttonContainer.getChildren().add(chatButton.getChatButton());
 
