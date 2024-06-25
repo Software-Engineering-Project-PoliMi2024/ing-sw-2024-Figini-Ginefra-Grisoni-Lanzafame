@@ -194,7 +194,7 @@ public class Codex implements Serializable {
             pointsLock.lock();
             try {
                 int calculatedPoints = this.points + placement.card().getPoints(this);
-                this.points = Math.min(Configs.maxPossiblePoints, calculatedPoints);
+                this.points = Math.min(Configs.maxPointsPerPlayer, calculatedPoints);
             } finally {
                 pointsLock.unlock();
             }
@@ -237,7 +237,7 @@ public class Codex implements Serializable {
         pointsLock.lock();
         try{
             int calculatedPoints = this.points + card.getPoints(this);
-            this.points = Math.min(Configs.maxPossiblePoints, calculatedPoints);
+            this.points = Math.min(Configs.maxPointsPerPlayer, calculatedPoints);
         } finally {
             pointsLock.unlock();
         }

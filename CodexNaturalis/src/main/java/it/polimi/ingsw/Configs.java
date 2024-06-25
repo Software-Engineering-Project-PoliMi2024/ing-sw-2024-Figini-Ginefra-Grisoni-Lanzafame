@@ -1,8 +1,5 @@
 package it.polimi.ingsw;
 
-import java.util.function.BiFunction;
-import java.util.function.Consumer;
-
 public class Configs {
     public static Boolean debugMode = false;
     public static long gameSaveExpirationTimeMinutes = 30;
@@ -27,7 +24,7 @@ public class Configs {
     public static String dataFolderName = "CodexNaturalis";
     public static String cardDataFolderName = "Cards";
     public static String gameSaveFolderName = "GameSaved";
-    public static int maxPossiblePoints = 29;
+    public static int maxPointsPerPlayer = 29;
 
     public static void clearTerminal(){
         System.out.print("\033[H\033[2J");
