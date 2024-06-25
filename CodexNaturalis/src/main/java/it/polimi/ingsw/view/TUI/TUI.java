@@ -118,6 +118,7 @@ public class TUI implements ActualView, CommandObserver, Observer {
                 new CommandPrompt[]{CommandPrompt.DISPLAY_HAND},
                 this);
         StateTUI.SELECT_OBJECTIVE.attach(handRenderable);
+        StateTUI.WAITING_STATE.attach(handRenderable);
         StateTUI.PLACE_CARD.attach(handRenderable);
         StateTUI.IDLE.attach(handRenderable);
         StateTUI.DRAW_CARD.attach(handRenderable);
@@ -151,6 +152,7 @@ public class TUI implements ActualView, CommandObserver, Observer {
                 new CommandPrompt[]{CommandPrompt.PEEK},
                 this);
         StateTUI.SELECT_OBJECTIVE.attach(handOthersRenderable);
+        StateTUI.WAITING_STATE.attach(handOthersRenderable);
         StateTUI.IDLE.attach(handOthersRenderable);
         StateTUI.DRAW_CARD.attach(handOthersRenderable);
         StateTUI.PLACE_CARD.attach(handOthersRenderable);
@@ -163,6 +165,7 @@ public class TUI implements ActualView, CommandObserver, Observer {
                 cardMuseum,
                 new CommandPrompt[]{CommandPrompt.PEEK});
         StateTUI.SELECT_OBJECTIVE.attach(codexRenderableOthers);
+        StateTUI.WAITING_STATE.attach(handOthersRenderable);
         StateTUI.IDLE.attach(codexRenderableOthers);
         StateTUI.DRAW_CARD.attach(codexRenderableOthers);
         StateTUI.PLACE_CARD.attach(codexRenderableOthers);
@@ -174,7 +177,9 @@ public class TUI implements ActualView, CommandObserver, Observer {
                 lightGame,
                 new CommandPrompt[]{CommandPrompt.DISPLAY_DECKS},
                 this);
+        StateTUI.CHOOSE_START_CARD.attach(deckRenderable);
         StateTUI.SELECT_OBJECTIVE.attach(deckRenderable);
+        StateTUI.WAITING_STATE.attach(handOthersRenderable);
         StateTUI.IDLE.attach(deckRenderable);
         StateTUI.DRAW_CARD.attach(deckRenderable);
         StateTUI.PLACE_CARD.attach(deckRenderable);
@@ -203,6 +208,7 @@ public class TUI implements ActualView, CommandObserver, Observer {
                 this);
         StateTUI.CHOOSE_START_CARD.attach(leaderboardRenderable);
         StateTUI.SELECT_OBJECTIVE.attach(leaderboardRenderable);
+        StateTUI.WAITING_STATE.attach(leaderboardRenderable);
         StateTUI.IDLE.attach(leaderboardRenderable);
         StateTUI.PLACE_CARD.attach(leaderboardRenderable);
         StateTUI.DRAW_CARD.attach(leaderboardRenderable);
@@ -242,13 +248,15 @@ public class TUI implements ActualView, CommandObserver, Observer {
 
         StateTUI.LOBBY.addStartupPrompt(CommandPrompt.DISPLAY_LOBBY);
 
+        StateTUI.CHOOSE_START_CARD.addStartupPrompt(CommandPrompt.DISPLAY_LEADERBOARD);
+        StateTUI.CHOOSE_START_CARD.addStartupPrompt(CommandPrompt.DISPLAY_DECKS);
         StateTUI.CHOOSE_START_CARD.addStartupPrompt(CommandPrompt.DISPLAY_START_FRONT);
         StateTUI.CHOOSE_START_CARD.addStartupPrompt(CommandPrompt.DISPLAY_START_BACK);
 
         StateTUI.CHOOSE_PAWN.addStartupPrompt(CommandPrompt.DISPLAY_PAWN_OPTIONS);
 
         //TODO: understand why it crushes if I add DISPLAY_OBJECTIVE_OPTIONS
-        StateTUI.SELECT_OBJECTIVE.addStartupPrompt(CommandPrompt.DISPLAY_LEADERBOARD);
+        StateTUI.SELECT_OBJECTIVE.addStartupPrompt(CommandPrompt.DISPLAY_OBJECTIVE_OPTIONS);
 
         StateTUI.WAITING_STATE.addStartupPrompt(CommandPrompt.DISPLAY_LEADERBOARD);
 
@@ -258,12 +266,13 @@ public class TUI implements ActualView, CommandObserver, Observer {
         StateTUI.IDLE.addStartupPrompt(CommandPrompt.DISPLAY_HAND);
 
         StateTUI.PLACE_CARD.addStartupPrompt(CommandPrompt.DISPLAY_LEADERBOARD);
+        StateTUI.PLACE_CARD.addStartupPrompt(CommandPrompt.DISPLAY_DECKS);
         StateTUI.PLACE_CARD.addStartupPrompt(CommandPrompt.DISPLAY_CODEX);
         StateTUI.PLACE_CARD.addStartupPrompt(CommandPrompt.DISPLAY_HAND);
 
         StateTUI.DRAW_CARD.addStartupPrompt(CommandPrompt.DISPLAY_LEADERBOARD);
-        StateTUI.DRAW_CARD.addStartupPrompt(CommandPrompt.DISPLAY_HAND);
         StateTUI.DRAW_CARD.addStartupPrompt(CommandPrompt.DISPLAY_CODEX);
+        StateTUI.DRAW_CARD.addStartupPrompt(CommandPrompt.DISPLAY_HAND);
         StateTUI.DRAW_CARD.addStartupPrompt(CommandPrompt.DISPLAY_DECKS);
 
         StateTUI.GAME_ENDING.addStartupPrompt(CommandPrompt.DISPLAY_POSTGAME);
@@ -279,7 +288,7 @@ public class TUI implements ActualView, CommandObserver, Observer {
     }
 
     @Override
-    public void transitionTo(ViewState state){
+    public synchronized void transitionTo(ViewState state){
         Configs.clearTerminal();
 
         StateTUI stateTUI = Arrays.stream(StateTUI.values()).reduce((a, b) -> a.references(state) ? a : b).orElse(null);
