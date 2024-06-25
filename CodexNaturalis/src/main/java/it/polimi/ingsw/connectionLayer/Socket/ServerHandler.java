@@ -102,6 +102,7 @@ public class ServerHandler implements Runnable{
         clientMsg.setIndex(msgIndex);
         msgIndex++;
         try {
+            output.reset();
             output.writeObject(clientMsg);
         } catch (Exception e) {
             System.out.println("could not send message to " + server.getInetAddress());
@@ -147,7 +148,6 @@ public class ServerHandler implements Runnable{
             }else if(serverMsg.getIndex()<expectedIndex){
                 throw new IllegalCallerException("The Client received a message with an index lower than the expected one");
             }else{ //clientMsg.getIndex() == expectingIndex
-                //System.out.println("Received a message with the expected index: " + serverMsg.getIndex());
                 receivedMsg.add(serverMsg);
                 Queue<ServerMsg> toBeProcessMsgs = continueMessagesWindow(receivedMsg, expectedIndex);
                 expectedIndex = toBeProcessMsgs.stream().max(Comparator.comparingInt(ServerMsg::getIndex)).get().getIndex() + 1;

@@ -70,6 +70,7 @@ public class ClientHandler implements Runnable{
         serverMsg.setIndex(msgIndex);
         msgIndex++;
         try{
+            output.reset();
             output.writeObject(serverMsg);
         } catch (IOException e) {
             System.out.println("could not send message to " + client.getInetAddress() + ":" + client.getPort());
