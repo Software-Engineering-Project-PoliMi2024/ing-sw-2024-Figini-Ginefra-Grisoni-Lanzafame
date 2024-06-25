@@ -44,7 +44,7 @@ public class CanvasRenderable extends Renderable {
             for(int j = 0; j < canvas.getWidth(); j++){
                 printable.print(content[i][j]);
             }
-            printable.println();
+            printable.println("");
         }
     }
 }
