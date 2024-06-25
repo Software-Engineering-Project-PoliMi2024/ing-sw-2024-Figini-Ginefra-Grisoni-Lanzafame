@@ -36,6 +36,7 @@ import it.polimi.ingsw.view.ViewState;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.concurrent.atomic.AtomicBoolean;
 
 public class TUI implements ActualView, CommandObserver, Observer {
     private ControllerInterface controller;
@@ -65,6 +66,8 @@ public class TUI implements ActualView, CommandObserver, Observer {
     private final LightGame lightGame = new LightGame();
     private final LightLobby lightLobby = new LightLobby();
     private final LightLobbyList lightLobbyList = new LightLobbyList();
+
+    private AtomicBoolean isTransitioning = new AtomicBoolean(false);
 
     public TUI(){
         super();
@@ -289,8 +292,10 @@ public class TUI implements ActualView, CommandObserver, Observer {
 
     @Override
     public synchronized void transitionTo(ViewState state){
-        Configs.clearTerminal();
+        isTransitioning.set(true);
 
+        Configs.clearTerminal();
+        
         StateTUI stateTUI = Arrays.stream(StateTUI.values()).reduce((a, b) -> a.references(state) ? a : b).orElse(null);
 
         if (stateTUI == null) {
@@ -326,6 +331,8 @@ public class TUI implements ActualView, CommandObserver, Observer {
         logger.render();
         stateTUI.triggerStartupPrompts();
         commandDisplay.render();
+
+        isTransitioning.set(false);
     }
 
     @Override
@@ -336,6 +343,7 @@ public class TUI implements ActualView, CommandObserver, Observer {
     @Override
     public void logOthers(String logMsg){
         logger.addLog(logMsg, StringStyle.PURPLE_FOREGROUND);
+        transitionTo(state);
     }
 
     @Override
@@ -413,6 +421,7 @@ public class TUI implements ActualView, CommandObserver, Observer {
 
     @Override
     public void update() {
-        this.transitionTo(state);
+        if(!isTransitioning.get())
+            this.transitionTo(state);
     }
 }
