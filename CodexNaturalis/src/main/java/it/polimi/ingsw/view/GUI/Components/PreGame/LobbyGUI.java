@@ -31,6 +31,7 @@ public class LobbyGUI implements Observer {
         playerInLobbyCount.setText(numberOfPlayerInLobby + "/" + numberOfMaxPlayers);
         playerInLobbyCount.setPadding(new javafx.geometry.Insets(0, 0, 20, 0));
 
+        userInLobby.getStyleClass().add("lobbyListStyle");
         userInLobby.getStyleClass().add("bordersCodexStyle");
         userInLobby.setPrefHeight(200);
         userInLobby.setMaxHeight(200);
@@ -39,7 +40,7 @@ public class LobbyGUI implements Observer {
 
         lobbyLayout.getChildren().addAll(lobbyNameToJoin, playerInLobbyCount, userInLobby, leaveButton);
 
-        lobbyLayout.setSpacing(10);
+        lobbyLayout.setSpacing(25);
         lobbyLayout.setAlignment(Pos.CENTER);
 
         AnchorPane.setRightAnchor(lobbyLayout, 10.0);

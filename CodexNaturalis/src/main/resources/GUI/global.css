@@ -16,6 +16,11 @@
     -fx-border-style: solid;
 }
 
+.lobbyListStyle {
+    -fx-border-radius: 20;
+    -fx-background-radius: 20;
+    -fx-padding: 10;
+}
 
 .bordersCodexStyle{
     -fx-border-color: rgb(216, 196, 113), rgb(0, 0, 0), rgb(0, 0, 0), rgb(0, 0, 0);
