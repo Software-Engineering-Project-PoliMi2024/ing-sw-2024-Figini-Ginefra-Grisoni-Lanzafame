@@ -443,8 +443,8 @@ public class GameController implements GameControllerInterface {
         }
         if (Objects.equals(lastActivePlayer, nickname) && game.noMoreTurns()) {
             //model update with points
-            moveToEndGame();
             declareWinners();
+            moveToEndGame();
         } else if(!this.playerViewMap.isEmpty()){
             //turn
             int nextPlayerIndex = this.getNextActivePlayerIndex();
