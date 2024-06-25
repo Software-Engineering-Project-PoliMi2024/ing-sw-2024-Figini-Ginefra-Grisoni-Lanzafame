@@ -10,9 +10,9 @@ import java.util.Scanner;
 public class App 
 {
     public static void main( String[] args ) throws IOException {        // Set the console encoding to UTF-8
-// Set the console encoding to UTF-8
+        // Set the console encoding to UTF-8
         System.out.println("To print emoji on Windows, first run: 4" +
-                "");
+                "chcp 65001");
         System.out.println("|🤑|");
         System.out.println("|aa|");
         System.out.println("Hello World!🔥");

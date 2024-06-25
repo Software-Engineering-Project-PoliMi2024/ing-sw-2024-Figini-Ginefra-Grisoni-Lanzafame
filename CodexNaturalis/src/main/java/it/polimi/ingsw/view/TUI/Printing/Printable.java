@@ -47,6 +47,10 @@ public class Printable {
         this.content.append(content.toString());
     }
 
+    public void print(Printable other){
+        this.content.append(other.content);
+    }
+
     /**
      * This method appends a string to the content of the Printable object followed by a newline character.
      * @param content the string to be appended.
@@ -61,6 +65,10 @@ public class Printable {
 
     public void println(PaddedString content){
         this.content.append(content).append("\n");
+    }
+
+    public void println(Printable other){
+        this.content.append(other.content).append("\n");
     }
 
     /**

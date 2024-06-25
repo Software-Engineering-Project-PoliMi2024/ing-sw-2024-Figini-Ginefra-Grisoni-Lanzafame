@@ -10,6 +10,7 @@ import it.polimi.ingsw.lightModel.lightTableRelated.LightLobbyList;
 import it.polimi.ingsw.utils.designPatterns.Observed;
 import it.polimi.ingsw.utils.designPatterns.Observer;
 import it.polimi.ingsw.view.ActualView;
+import it.polimi.ingsw.view.TUI.Printing.Printable;
 import it.polimi.ingsw.view.TUI.Printing.Printer;
 import it.polimi.ingsw.view.TUI.Renderables.*;
 import it.polimi.ingsw.view.TUI.Renderables.CardRelated.*;
@@ -19,6 +20,7 @@ import it.polimi.ingsw.view.TUI.Renderables.Forms.ConnectFormRenderable;
 import it.polimi.ingsw.view.TUI.Renderables.Forms.DrawCardForm;
 import it.polimi.ingsw.view.TUI.Renderables.Forms.LoginFormRenderable;
 import it.polimi.ingsw.view.TUI.Renderables.Forms.PlaceCardForm;
+import it.polimi.ingsw.view.TUI.Renderables.LogRelated.LoggerRenderable;
 import it.polimi.ingsw.view.TUI.Renderables.PawnChoiceRenderable;
 import it.polimi.ingsw.view.TUI.States.StateTUI;
 import it.polimi.ingsw.view.TUI.Styles.PromptStyle;
@@ -59,6 +61,7 @@ public class TUI implements ActualView, CommandObserver, Observer {
     private LeaderboardRenderable leaderboardRenderable;
     private ChatRenderable chatRenderable;
     private PawnChoiceRenderable pawnChoiceRenderable;
+    private LoggerRenderable logger;
     private final LightGame lightGame = new LightGame();
     private final LightLobby lightLobby = new LightLobby();
     private final LightLobbyList lightLobbyList = new LightLobbyList();
@@ -229,6 +232,8 @@ public class TUI implements ActualView, CommandObserver, Observer {
         StateTUI.GAME_ENDING.attach(chatRenderable);
         renderables.add(chatRenderable);
 
+        logger = new LoggerRenderable("Logger");
+
         //==============================================================================================================
         // SETUP STARTUP PROMPTS FOR THE STATES
         //==============================================================================================================
@@ -275,7 +280,8 @@ public class TUI implements ActualView, CommandObserver, Observer {
 
     @Override
     public void transitionTo(ViewState state){
-        System.out.print("\033[H\033[2J");
+        Configs.clearTerminal();
+
         StateTUI stateTUI = Arrays.stream(StateTUI.values()).reduce((a, b) -> a.references(state) ? a : b).orElse(null);
 
         if (stateTUI == null) {
@@ -304,47 +310,40 @@ public class TUI implements ActualView, CommandObserver, Observer {
             }
 
             updateCommands();
+
+            //logger.clearLogs();
         }
 
+        logger.render();
         stateTUI.triggerStartupPrompts();
         commandDisplay.render();
     }
 
     @Override
     public void log(String logMsg) {
-        Printer.println("");
-        PromptStyle.printInABox(logMsg,50, StringStyle.GREEN_FOREGROUND);
-        Printer.println("");
+        logger.addLog(logMsg, StringStyle.GREEN_FOREGROUND);
     }
 
     @Override
     public void logOthers(String logMsg){
-        Printer.println("");
-        PromptStyle.printInABox(logMsg,50, StringStyle.PURPLE_FOREGROUND);
-        Printer.println("");
+        logger.addLog(logMsg, StringStyle.PURPLE_FOREGROUND);
     }
 
     @Override
     public void logGame(String logMsg){
-        Printer.println("");
-        PromptStyle.printInABox(logMsg,50, StringStyle.BLUE_FOREGROUND);
-        Printer.println("");
+        logger.addLog(logMsg, StringStyle.BLUE_FOREGROUND);
     }
 
     @Override
     public void logChat(String logMsg) {
-        Printer.println("");
-        PromptStyle.printInABox(logMsg,50, StringStyle.GOLD_FOREGROUND);
-        Printer.println("");
+        logger.addLog(logMsg, StringStyle.GOLD_FOREGROUND);
         this.transitionTo(state);
     }
 
 
     @Override
     public void logErr(String logMsg) {
-        Printer.println("");
-        PromptStyle.printInABox(logMsg,50, StringStyle.RED_FOREGROUND);
-        Printer.println("");
+        logger.addLog(logMsg, StringStyle.RED_FOREGROUND);
     }
 
     @Override

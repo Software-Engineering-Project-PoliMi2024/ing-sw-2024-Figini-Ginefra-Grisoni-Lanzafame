@@ -104,11 +104,15 @@ public class PromptStyle {
 
     public static void printInABox(String text, int width, StringStyle style){
         Printable printable = new Printable("");
+        printInABox(printable, text, width, style);
+        Printer.print(printable);
+    }
+
+    public static void printInABox(Printable printable, String text, int width, StringStyle style){
         width = Math.max(width, text.length());
         printSeparator(printable, width+2, PromptStyle.HorizontalSeparator, PromptStyle.CornerTopLeftRounded, PromptStyle.CornerTopRightRounded, style);
         printBetweenSeparators(printable, text, width, PromptStyle.VerticalSeparator, style);
         printSeparator(printable, width+2, PromptStyle.HorizontalSeparator, PromptStyle.CornerBottomLeftRounded, PromptStyle.CornerBottomRightRounded, style);
-        Printer.print(printable);
     }
 
     public static void printListInABox(Printable printable, String title, List<String> list, int width, int linesPerItem){
