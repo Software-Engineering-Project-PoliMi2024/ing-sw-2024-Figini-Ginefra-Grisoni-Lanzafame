@@ -325,10 +325,6 @@ public enum CommandPrompt implements Iterator<String>, CommandObserved {
         return questions[currentQuestion];
     }
 
-    public boolean hasCurrent(){
-        return currentQuestion < questions.length && currentQuestion >= 0;
-    }
-
     /**
      * Gets the last question.
      * @return the last question.
@@ -338,7 +334,7 @@ public enum CommandPrompt implements Iterator<String>, CommandObserved {
     }
 
     public boolean hasLast(){
-        return currentQuestion > 0;
+        return currentQuestion > 0 && currentQuestion <= questions.length;
     }
 
     /**

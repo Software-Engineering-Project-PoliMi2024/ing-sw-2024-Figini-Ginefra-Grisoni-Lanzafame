@@ -39,7 +39,6 @@ public class CommandDisplayRenderable extends Renderable{
     public void render() {
         PromptStyle.printInABoxDouble("Active Commands", 102);
 
-
         List<String> commands = new ArrayList<>();
 
         Printable activeLocalPromtsPrintable = new Printable("");
@@ -173,7 +172,7 @@ public class CommandDisplayRenderable extends Renderable{
     }
 
     private void printCurrentPrompt(){
-        if(currentPrompt == null)
+        if(currentPrompt == null || !currentPrompt.hasLast())
             return;
 
         Printer.print(this.currentPromptIndex + "\n");
