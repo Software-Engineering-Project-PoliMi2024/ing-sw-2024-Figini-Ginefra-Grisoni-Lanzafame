@@ -3,6 +3,7 @@ package it.polimi.ingsw.view.GUI.Components.Logs;
 import it.polimi.ingsw.utils.designPatterns.Observer;
 import it.polimi.ingsw.view.GUI.Components.Utils.AnchoredPopUp;
 import it.polimi.ingsw.view.GUI.GUI;
+import it.polimi.ingsw.view.GUI.GUIConfigs;
 import javafx.animation.KeyFrame;
 import javafx.animation.Timeline;
 import javafx.geometry.Insets;
@@ -38,7 +39,7 @@ public class LogsGUI implements Observer {
 
 
         waiting.getKeyFrames().addAll(
-                new KeyFrame(Duration.millis(2000))
+                new KeyFrame(Duration.millis(GUIConfigs.logHoldingDuration))
         );
 
         waiting.setOnFinished(e -> popUp.close());
