@@ -8,6 +8,12 @@ public class OSRelated {
     public static String dataFolderPath = getOSDataFolderPath() + Configs.dataFolderName + File.separator;
     public static String cardFolderDataPath = getOSDataFolderPath() + Configs.dataFolderName + File.separator + Configs.cardDataFolderName + File.separator;
     public static String gameDataFolderPath = getOSDataFolderPath() + Configs.dataFolderName + File.separator + Configs.gameSaveFolderName + File.separator;
+
+    /**
+     * Get the path of the data folder based on the OS (Windows, macOS, Linux)
+     * data folder is the folder where the game data is saved both cards and game saved
+     * @return the path of the data folder depending on the OS
+     */
     private static String getOSDataFolderPath(){
         String OS = (System.getProperty("os.name")).toUpperCase();
         if (OS.contains("WIN")) {
@@ -21,6 +27,10 @@ public class OSRelated {
         }
     }
 
+    /**
+     * Check if the data folder exists on the server, if not create it
+     * data folder is the folder where the game data is saved both cards and game saved
+     */
     @SuppressWarnings("ResultOfMethodCallIgnored")
     public static void checkOrCreateDataFolderServer() {
         File dataFolder = new File(OSRelated.dataFolderPath);
@@ -38,6 +48,11 @@ public class OSRelated {
             gameSavedFolder.mkdirs();
         }
     }
+
+    /**
+     * Check if the data folder exists on the client, if not create it
+     * data folder is the folder where the game data is saved both cards and game saved
+     */
     @SuppressWarnings("ResultOfMethodCallIgnored")
     public static void checkOrCreateDataFolderClient() {
         File dataFolder = new File(OSRelated.dataFolderPath);

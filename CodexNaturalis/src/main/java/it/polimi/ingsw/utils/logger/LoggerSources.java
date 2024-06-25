@@ -9,15 +9,29 @@ public enum LoggerSources {
     private final String sourceName;
     private final String color;
 
+    /**
+     * constructor of the loggerSource enum
+     * it is used to define the source of the log, specifying the name and the color of the source
+     * @param sourceName the name of the source
+     * @param color the color of the source
+     */
     LoggerSources(String sourceName, String color){
         this.color = color;
         this.sourceName = sourceName;
     }
 
+    /**
+     * get the name of the source that is logging
+     * @return the name of the source
+     */
     public String getSourceName() {
         return sourceName;
     }
 
+    /**
+     * get the color of the source that is logging
+     * @return the color of the source
+     */
     public String getColor() {
         return color;
     }
