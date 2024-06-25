@@ -15,14 +15,15 @@ import javafx.scene.text.Text;
 
 public class EndGamePopUp {
 
-    public EndGamePopUp(AnchorPane parent) {
+    public EndGamePopUp(AnchorPane parent, LeaderboardGUI leaderboard) {
         PopUp endGamePopUp = new PopUp(parent, true);
         endGamePopUp.getContent().setStyle("-fx-background-color: transparent");
 
         GUI.getStateProperty().addListener((obs, oldState, newState) -> {
             Platform.runLater(() -> {
-                if(newState == StateGUI.GAME_ENDING) {
+                if(newState == StateGUI.GAME_ENDING){
                     populateScene(endGamePopUp);
+                    leaderboard.open();
                     endGamePopUp.open();
                     endGamePopUp.setLocked(true);
                 }

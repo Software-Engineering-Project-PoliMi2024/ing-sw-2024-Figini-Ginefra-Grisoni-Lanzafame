@@ -10,7 +10,7 @@ public class LogGameMsg extends ServerMsg{
     }
 
     @Override
-    public void processMsg(ServerHandler clientHandler) throws Exception {
-        clientHandler.getView().logGame(logMsg);
+    public void processMsg(ServerHandler serverHandler) throws Exception {
+        serverHandler.getView().logGame(logMsg);
     }
 }

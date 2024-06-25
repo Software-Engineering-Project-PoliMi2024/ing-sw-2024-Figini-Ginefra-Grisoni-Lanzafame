@@ -70,6 +70,7 @@ public class ClientHandler implements Runnable{
         serverMsg.setIndex(msgIndex);
         msgIndex++;
         try{
+            output.reset();
             output.writeObject(serverMsg);
         } catch (IOException e) {
             System.out.println("could not send message to " + client.getInetAddress() + ":" + client.getPort());
@@ -112,10 +113,7 @@ public class ClientHandler implements Runnable{
                 recivedMsgs.add(clientMsg);
                 Queue<ClientMsg> toBeProcessMsgs = continueMessagesWindow(recivedMsgs, expectedIndex);
                 expectedIndex = toBeProcessMsgs.stream().max(Comparator.comparingInt(ClientMsg::getIndex)).get().getIndex() + 1;
-                Thread elaborateMsgThread = new Thread(() -> {
-                    processMsgs(toBeProcessMsgs);
-                });
-                elaborateMsgThread.start();
+                processMsgs(toBeProcessMsgs);
             }
         }
     }

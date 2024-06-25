@@ -102,6 +102,7 @@ public class ServerHandler implements Runnable{
         clientMsg.setIndex(msgIndex);
         msgIndex++;
         try {
+            output.reset();
             output.writeObject(clientMsg);
         } catch (Exception e) {
             System.out.println("could not send message to " + server.getInetAddress());
@@ -142,6 +143,7 @@ public class ServerHandler implements Runnable{
                 return;
             }
             if(serverMsg.getIndex() > expectedIndex){
+                System.out.println("Received a message with an index higher than the expected one");
                 receivedMsg.add(serverMsg);
             }else if(serverMsg.getIndex()<expectedIndex){
                 throw new IllegalCallerException("The Client received a message with an index lower than the expected one");
@@ -149,10 +151,11 @@ public class ServerHandler implements Runnable{
                 receivedMsg.add(serverMsg);
                 Queue<ServerMsg> toBeProcessMsgs = continueMessagesWindow(receivedMsg, expectedIndex);
                 expectedIndex = toBeProcessMsgs.stream().max(Comparator.comparingInt(ServerMsg::getIndex)).get().getIndex() + 1;
-                Thread elaborateMsgThread = new Thread(() -> {
+                processMsg(toBeProcessMsgs);
+                /*Thread elaborateMsgThread = new Thread(() -> {
                     processMsg(toBeProcessMsgs);
                 });
-                elaborateMsgThread.start();
+                elaborateMsgThread.start();*/
             }
         }
     }
@@ -214,9 +217,10 @@ public class ServerHandler implements Runnable{
      */
     private void processMsg(Queue<ServerMsg> queue) {
         while(!queue.isEmpty()){
-            ServerMsg clientMsg = queue.poll();
+            ServerMsg serverMsg = queue.poll();
             try {
-                clientMsg.processMsg(this);
+                serverMsg.processMsg(this);
+                System.out.println("Processed message with index: " + serverMsg.getIndex() + ". Still " + queue.size() + " messages to process");
             }catch (Exception e) {
                 System.out.println("Error during the processing of the message");
                 e.printStackTrace();

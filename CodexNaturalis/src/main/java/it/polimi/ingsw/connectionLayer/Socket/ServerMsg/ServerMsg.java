@@ -1,6 +1,5 @@
 package it.polimi.ingsw.connectionLayer.Socket.ServerMsg;
 
-import it.polimi.ingsw.connectionLayer.Socket.ClientHandler;
 import it.polimi.ingsw.connectionLayer.Socket.NetworkMsg;
 import it.polimi.ingsw.connectionLayer.Socket.ServerHandler;
 
@@ -12,5 +11,5 @@ public abstract class ServerMsg extends NetworkMsg {
     public int getIndex() {
         return index;
     }
-    public abstract void processMsg(ServerHandler clientHandler) throws Exception;
+    public abstract void processMsg(ServerHandler serverHandler) throws Exception;
 }
