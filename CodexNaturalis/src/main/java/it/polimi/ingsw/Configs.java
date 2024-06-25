@@ -28,14 +28,14 @@ public class Configs {
     public static String gameSaveFolderName = "GameSaved";
     public static int maxPointsPerPlayer = 29;
 
-    public static void clearTerminal(){
+    public static int logDurationTUI_millis = 5000;
+
+    public static synchronized void clearTerminal(){
 //        System.out.print("\033[H\033[J");
 //        System.out.flush();
         try {
             new ProcessBuilder("cmd", "/c", "cls").inheritIO().start().waitFor();
-        } catch (IOException e) {
-            throw new RuntimeException(e);
-        } catch (InterruptedException e) {
+        } catch (IOException | InterruptedException e) {
             throw new RuntimeException(e);
         }
     }
