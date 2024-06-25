@@ -1,8 +1,6 @@
 package it.polimi.ingsw.controller;
 
 import it.polimi.ingsw.Configs;
-import it.polimi.ingsw.lightModel.diffs.nuclearDiffs.GadgetGame;
-import it.polimi.ingsw.lightModel.diffs.nuclearDiffs.LittleBoyLobby;
 import it.polimi.ingsw.utils.OSRelated;
 import it.polimi.ingsw.controller.Interfaces.GameControllerReceiver;
 import it.polimi.ingsw.controller.persistence.PersistenceFactory;
@@ -13,7 +11,7 @@ import it.polimi.ingsw.model.tableReleted.Game;
 import it.polimi.ingsw.model.tableReleted.Lobby;
 import it.polimi.ingsw.utils.logger.LoggerLevel;
 import it.polimi.ingsw.utils.logger.LoggerSources;
-import it.polimi.ingsw.utils.logger.ProjectLogger;
+import it.polimi.ingsw.utils.logger.ServerLogger;
 import it.polimi.ingsw.view.ViewInterface;
 import it.polimi.ingsw.view.ViewState;
 
@@ -30,7 +28,7 @@ public class LobbyGameListsController implements it.polimi.ingsw.controller.Inte
     private final Map<String, GameController> gameMap = new HashMap<>();
     private transient final PersistenceFactory persistenceFactory = new PersistenceFactory(OSRelated.gameDataFolderPath);
     private transient final ScheduledExecutorService gamesLoadExecutor = Executors.newScheduledThreadPool(1);
-    private transient final ProjectLogger logger = new ProjectLogger(LoggerSources.LOBBY_GAME_LISTS_CONTROLLER, "");
+    private transient final ServerLogger logger = new ServerLogger(LoggerSources.LOBBY_GAME_LISTS_CONTROLLER, "");
 
     public LobbyGameListsController(){
         gamesLoadExecutor.scheduleAtFixedRate(this::refreshGames, 0, Configs.gameSaveExpirationTimeMinutes, TimeUnit.MINUTES);

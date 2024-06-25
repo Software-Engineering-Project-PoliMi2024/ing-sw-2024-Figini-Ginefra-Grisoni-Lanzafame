@@ -1,18 +1,16 @@
 package it.polimi.ingsw.controller.persistence;
 
 import it.polimi.ingsw.Configs;
-import it.polimi.ingsw.utils.OSRelated;
 import it.polimi.ingsw.model.tableReleted.Game;
 import it.polimi.ingsw.utils.logger.LoggerLevel;
 import it.polimi.ingsw.utils.logger.LoggerSources;
-import it.polimi.ingsw.utils.logger.ProjectLogger;
+import it.polimi.ingsw.utils.logger.ServerLogger;
 
 import java.io.*;
 import java.time.Duration;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.*;
-import java.util.concurrent.Executor;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.Future;
@@ -23,7 +21,7 @@ public class PersistenceFactory {
     private final DateTimeFormatter windowSucks = DateTimeFormatter.ofPattern("yyyy-MM-dd_HH-mm-ss");
     private final String gameDataFolderPath;
     private final ExecutorService fileIOExecutor = Executors.newSingleThreadExecutor();
-    private final ProjectLogger logger = new ProjectLogger(LoggerSources.PERSISTENCE, "");
+    private final ServerLogger logger = new ServerLogger(LoggerSources.PERSISTENCE, "");
 
     public PersistenceFactory(String gameDataFolderPath) {
         this.gameDataFolderPath = gameDataFolderPath;
