@@ -39,4 +39,6 @@ public class GUIConfigs {
 
     public static double logErrWidth = 500;
     public static double logErrHeight = 150;
+
+    public static int logHoldingDuration = 4000;
 }
