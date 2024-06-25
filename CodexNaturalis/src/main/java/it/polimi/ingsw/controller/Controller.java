@@ -2,6 +2,7 @@ package it.polimi.ingsw.controller;
 
 import it.polimi.ingsw.controller.Interfaces.ControllerInterface;
 import it.polimi.ingsw.controller.Interfaces.GameControllerReceiver;
+import it.polimi.ingsw.controller.Interfaces.MalevolentPlayerManager;
 import it.polimi.ingsw.lightModel.diffs.nuclearDiffs.FatManLobbyList;
 import it.polimi.ingsw.lightModel.diffs.nuclearDiffs.GadgetGame;
 import it.polimi.ingsw.lightModel.diffs.nuclearDiffs.LittleBoyLobby;
@@ -18,9 +19,14 @@ import it.polimi.ingsw.view.ViewInterface;
 public class Controller implements ControllerInterface, GameControllerReceiver {
     private String nickname;
     private final LobbyGameListsController lobbyGameListController;
-    private ViewInterface view;
+    private final ViewInterface view;
     private GameController gameController;
 
+    /**
+     * Constructor of the class
+     * @param lobbyGameListController the controller of the lobby and game lists
+     * @param view the view of the client
+     */
     public Controller(LobbyGameListsController lobbyGameListController, ViewInterface view){
         this.lobbyGameListController = lobbyGameListController;
         this.view = view;
@@ -48,35 +54,59 @@ public class Controller implements ControllerInterface, GameControllerReceiver {
         lobbyGameListController.leaveLobby(nickname);
     }
 
+    /**
+     * The method checks if the gameController is not null (i.e. if the player is actually in a game)
+     * @param objectiveCard the secret objective card chosen by the player
+     */
     @Override
     public void chooseSecretObjective(LightCard objectiveCard) {
-        gameController.chooseSecretObjective(nickname, objectiveCard);
+        if(gameController != null)
+            gameController.chooseSecretObjective(nickname, objectiveCard);
+        else {
+            lobbyGameListController.manageMalevolentPlayer(nickname);
+        }
     }
 
     @Override
     public void choosePawn(PawnColors color) {
-        gameController.choosePawn(nickname, color);
+        if(gameController != null)
+            gameController.choosePawn(nickname, color);
+        else {
+            lobbyGameListController.manageMalevolentPlayer(nickname);
+        }
     }
 
     @Override
     public void place(LightPlacement placement) {
-        gameController.place(nickname, placement);
+        if(gameController != null)
+            gameController.place(nickname, placement);
+        else {
+            lobbyGameListController.manageMalevolentPlayer(nickname);
+        }
     }
 
     @Override
     public void draw(DrawableCard deckID, int cardID) {
-        gameController.draw(nickname, deckID, cardID);
+        if(gameController != null)
+            gameController.draw(nickname, deckID, cardID);
+        else {
+            lobbyGameListController.manageMalevolentPlayer(nickname);
+        }
     }
 
     @Override
     public void sendChatMessage(ChatMessage message){
-        gameController.sendChatMessage(message);
+        if(gameController != null)
+            gameController.sendChatMessage(message);
+        else {
+            lobbyGameListController.manageMalevolentPlayer(nickname);
+        }
     }
 
     @Override
     public void leave() {
         lobbyGameListController.leave(nickname);
-        this.eraseLightModel(nickname);
+        this.eraseLightModel();
     }
 
     @Override
@@ -84,7 +114,11 @@ public class Controller implements ControllerInterface, GameControllerReceiver {
         this.gameController = gameController;
     }
 
-    private void eraseLightModel(String nickname){
+    /**
+     * This method is used to erase the light model on the view
+     * when the player leaves and returns to the main menu
+     */
+    private void eraseLightModel(){
         try {
             view.updateLobbyList(new FatManLobbyList());
             view.updateLobby(new LittleBoyLobby());
