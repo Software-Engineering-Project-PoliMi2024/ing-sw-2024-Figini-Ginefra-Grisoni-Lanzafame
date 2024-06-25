@@ -98,6 +98,7 @@ public class PersistenceFactory {
                         saves = dataFolder.listFiles(); //update the list of saves after possible deletion from latestGame
                         if (game != null) {
                             gameList.add(game);
+                            logger.log(LoggerLevel.INFO, "Game: " + game.getName() + " loaded successfully");
                         }
                     }
                 }

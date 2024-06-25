@@ -13,6 +13,7 @@ import javafx.scene.control.Button;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.HBox;
+import javafx.scene.layout.StackPane;
 import javafx.scene.layout.VBox;
 import javafx.scene.text.Text;
 
@@ -28,7 +29,7 @@ public class LeaderboardGUI implements Observer {
 
     private Map<String, Text> labelMap = new HashMap<>();
     private Map<String, ImageView> pawnImageViewMap = new HashMap<>();
-    private final HBox buttonContainer = new HBox();
+    private final VBox buttonContainer = new VBox();
     private PlateauGUI plateau;
     private RuleBook ruleBook;
     private List<PawnsGui> availablePawns;
@@ -52,8 +53,8 @@ public class LeaderboardGUI implements Observer {
 
         leftAnchoredPopUp.getContent().getChildren().add(layout);
 
+        leftAnchoredPopUp.setLocked(true);
         leftAnchoredPopUp.open();
-        leftAnchoredPopUp.setLocked(false);
 
         createLeaderboard(parent);
 
@@ -73,14 +74,14 @@ public class LeaderboardGUI implements Observer {
 
         ImageView ruleBookIcon = new ImageView(AssetsGUI.ruleBookIcon);
         ruleBookIcon.preserveRatioProperty().set(true);
-        ruleBookIcon.fitHeightProperty().bind(chatButton.getChatButton().heightProperty().multiply(0.8));
+        ruleBookIcon.fitHeightProperty().bind(chatButton.getChatButton().heightProperty().multiply(0.6));
         Button ruleBookButton = new Button("", ruleBookIcon);
         ruleBookButton.setStyle("-fx-background-color: transparent;");
         ruleBookButton.setOnAction(event -> ruleBook.show());
 
-        buttonContainer.getChildren().add(ruleBookButton);
         buttonContainer.getChildren().add(plateauButton);
         buttonContainer.getChildren().add(chatButton.getChatButton());
+        buttonContainer.getChildren().add(ruleBookButton);
 
 
 
@@ -108,11 +109,15 @@ public class LeaderboardGUI implements Observer {
 
                     label.scaleXProperty().bindBidirectional(label.scaleYProperty());
 
+                    StackPane pawnContainer = new StackPane();
+                    pawnContainer.setAlignment(Pos.CENTER);
+
                     if (e.getKey().equals(GUI.getLightGame().getLightGameParty().getFirstPlayerName())) {
                         ImageView blackPawnView = new ImageView(AssetsGUI.pawnBlack);
-                        blackPawnView.setFitHeight(30);
-                        blackPawnView.setFitWidth(30);
-                        row.getChildren().add(blackPawnView);
+                        blackPawnView.setFitHeight(35);
+                        blackPawnView.setFitWidth(35);
+
+                        pawnContainer.getChildren().add(blackPawnView);
                     }
 
                     ImageView pawnView = new ImageView();
@@ -121,7 +126,10 @@ public class LeaderboardGUI implements Observer {
                     row.setSpacing(5);
 
                     pawnImageViewMap.put(e.getKey(), pawnView);
-                    row.getChildren().add(pawnView);
+
+                    pawnContainer.getChildren().add(pawnView);
+
+                    row.getChildren().add(pawnContainer);
                     row.getChildren().add(label);
 
                     labelMap.put(e.getKey(), label);
