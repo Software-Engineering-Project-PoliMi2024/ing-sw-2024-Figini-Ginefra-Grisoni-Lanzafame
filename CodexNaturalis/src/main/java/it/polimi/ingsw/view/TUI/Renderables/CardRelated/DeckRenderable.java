@@ -76,6 +76,10 @@ public class DeckRenderable extends CanvasRenderable {
 
         for(int i = 0; i < commonObjectives.length; i++) {
             LightCard card = commonObjectives[i];
+            if(card == null) {
+                continue;
+            }
+
             Drawable drawableCard = museum.get(card.idFront()).get(CardFace.FRONT);
             this.canvas.draw( drawableCard, CardTextStyle.getCardWidth() /2 + 3 * (CardTextStyle.getCardWidth() + 1) + 1, CardTextStyle.getCardHeight() /2 + i * (CardTextStyle.getCardHeight() + 1));
         }
