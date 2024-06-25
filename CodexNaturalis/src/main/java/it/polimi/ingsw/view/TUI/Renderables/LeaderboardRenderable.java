@@ -37,13 +37,15 @@ public class LeaderboardRenderable extends Renderable {
 
             String decoratedNickname = new DecoratedString(nickname, StringStyle.BOLD).toString();
 
+            String pawnString = "  ";
+
             PawnColors nickColor = lightGame.getLightGameParty().getPlayerColor(nickname);
             if(nickColor != null) {
                 StringStyle color = CardTextStyle.convertPawnBgColor(nickColor);
-                decoratedNickname = new DecoratedString(decoratedNickname, color).toString();
+                pawnString = new DecoratedString(pawnString, color).toString();
             }
 
-            String content = decoratedNickname + " - " + scores.get(nickname);
+            String content = decoratedNickname + " - " + scores.get(nickname)  + " " + pawnString;
 
             Boolean isActive = lightGame.getLightGameParty().getPlayerActiveList().get(nickname);
             if(isActive != null && !isActive)
