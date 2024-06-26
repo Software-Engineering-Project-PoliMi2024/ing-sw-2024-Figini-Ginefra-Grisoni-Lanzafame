@@ -3,6 +3,7 @@ package it.polimi.ingsw.utils;
 import it.polimi.ingsw.Configs;
 
 import java.io.File;
+import java.io.IOException;
 
 public class OSRelated {
     public static String dataFolderPath = getOSDataFolderPath() + Configs.dataFolderName + File.separator;
@@ -63,6 +64,20 @@ public class OSRelated {
         File cardsFolder = new File(OSRelated.cardFolderDataPath);
         if (!cardsFolder.exists()) {
             cardsFolder.mkdirs();
+        }
+    }
+
+    public static synchronized void clearTerminal() {
+        String OS = (System.getProperty("os.name")).toUpperCase();
+        if (OS.contains("WIN")) {
+            try {
+                new ProcessBuilder("cmd", "/c", "cls").inheritIO().start().waitFor();
+            } catch (IOException | InterruptedException e) {
+                throw new RuntimeException(e);
+            }
+        } else {
+            System.out.print("\033[H\033[J");
+            System.out.flush();
         }
     }
 }

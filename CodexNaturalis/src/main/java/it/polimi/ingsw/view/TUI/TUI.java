@@ -294,7 +294,7 @@ public class TUI implements ActualView, CommandObserver, Observer {
     public synchronized void transitionTo(ViewState state){
         isTransitioning.set(true);
 
-        Configs.clearTerminal();
+        OSRelated.clearTerminal();
         
         StateTUI stateTUI = Arrays.stream(StateTUI.values()).reduce((a, b) -> a.references(state) ? a : b).orElse(null);
 

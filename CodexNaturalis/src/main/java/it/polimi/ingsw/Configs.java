@@ -30,14 +30,4 @@ public class Configs {
     public static int delayBeforeLoadingGameSaves = 0;
 
     public static int logDurationTUI_millis = 5000;
-
-    public static synchronized void clearTerminal(){
-//        System.out.print("\033[H\033[J");
-//        System.out.flush();
-        try {
-            new ProcessBuilder("cmd", "/c", "cls").inheritIO().start().waitFor();
-        } catch (IOException | InterruptedException e) {
-            throw new RuntimeException(e);
-        }
-    }
 }

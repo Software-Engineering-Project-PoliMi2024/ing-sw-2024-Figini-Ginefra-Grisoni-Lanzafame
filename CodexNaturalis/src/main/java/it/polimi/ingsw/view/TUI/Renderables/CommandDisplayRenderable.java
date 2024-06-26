@@ -2,6 +2,7 @@ package it.polimi.ingsw.view.TUI.Renderables;
 
 import it.polimi.ingsw.Configs;
 import it.polimi.ingsw.model.utilities.Pair;
+import it.polimi.ingsw.utils.OSRelated;
 import it.polimi.ingsw.view.TUI.Printing.Printable;
 import it.polimi.ingsw.view.TUI.Printing.Printer;
 import it.polimi.ingsw.view.TUI.Styles.*;
@@ -135,7 +136,7 @@ public class CommandDisplayRenderable extends Renderable{
             else{
                 //If the prompt has no next, it will notify the observers
                 //This is used for commands that don't require any input
-                Configs.clearTerminal();
+                OSRelated.clearTerminal();
 
                 currentPrompt.notifyObservers();
                 currentPrompt.reset();
@@ -156,7 +157,7 @@ public class CommandDisplayRenderable extends Renderable{
                 }
                 else{
                     //If the prompt has no next, it will notify the observers, reset the prompt and set the current prompt to null
-                    Configs.clearTerminal();
+                    OSRelated.clearTerminal();
 
                     currentPrompt.notifyObservers();
                     currentPrompt.reset();

@@ -9,7 +9,7 @@ public class Client {
     public static void main(String[] args) {
         OSRelated.checkOrCreateDataFolderClient();
 
-        Configs.clearTerminal();
+        OSRelated.clearTerminal();
 
         System.out.println("Hi there 👋!");
 
