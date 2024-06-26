@@ -4,6 +4,8 @@ import it.polimi.ingsw.connectionLayer.VirtualLayer.VirtualController;
 import it.polimi.ingsw.connectionLayer.RMI.VirtualRMI.VirtualControllerRMI;
 import it.polimi.ingsw.connectionLayer.Socket.VirtualSocket.VirtualControllerSocket;
 import it.polimi.ingsw.view.ActualView;
+import it.polimi.ingsw.view.TUI.Printing.Printer;
+import it.polimi.ingsw.view.TUI.Styles.PromptStyle;
 import it.polimi.ingsw.view.TUI.inputs.CommandPrompt;
 import it.polimi.ingsw.view.TUI.inputs.CommandPromptResult;
 
@@ -43,6 +45,13 @@ public class ConnectFormRenderable extends FormRenderable {
         }catch (Exception e) {
             e.printStackTrace();
         }
+    }
 
+    @Override
+    public void setActive(boolean active) {
+        super.setActive(active);
+        if (active) {
+            Printer.println(PromptStyle.Title);
+        }
     }
 }

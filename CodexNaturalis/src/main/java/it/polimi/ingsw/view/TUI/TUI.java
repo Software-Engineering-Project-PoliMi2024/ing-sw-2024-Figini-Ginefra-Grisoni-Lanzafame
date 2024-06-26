@@ -71,7 +71,6 @@ public class TUI implements ActualView, CommandObserver, Observer {
 
     public TUI(){
         super();
-        System.out.println(PromptStyle.Title);
         commandDisplay = new CommandDisplayRenderable("Commands");
 
         inputHandler.attach(commandDisplay);
