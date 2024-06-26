@@ -5,7 +5,7 @@ import it.polimi.ingsw.view.TUI.inputs.CommandPrompt;
 import it.polimi.ingsw.view.TUI.inputs.CommandPromptResult;
 
 /**
- * This class is a Renderable that represents a login form.
+ * This class is a Renderable that represents a login form. It allows the user to login.
  */
 public class LoginFormRenderable extends FormRenderable {
     /**
