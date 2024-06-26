@@ -1,7 +1,6 @@
 package it.polimi.ingsw.view.TUI.Renderables;
 
 import it.polimi.ingsw.utils.designPatterns.Observed;
-import it.polimi.ingsw.utils.designPatterns.Observer;
 import it.polimi.ingsw.view.ControllerProvider;
 import it.polimi.ingsw.view.TUI.inputs.CommandPrompt;
 import it.polimi.ingsw.view.TUI.inputs.CommandPromptResult;
@@ -58,7 +57,7 @@ public abstract class Renderable implements InputObserver, CommandObserver, Seri
      */
     public void updateInput(String input){
         throw new UnsupportedOperationException("Update without input not supported");
-    };
+    }
 
     /**
      * Sets the renderable as active or not
@@ -105,6 +104,6 @@ public abstract class Renderable implements InputObserver, CommandObserver, Seri
      * @return the part of the light model that the renderable observes
      */
     public List<Observed> getObservedLightModel(){
-        return new ArrayList<Observed>();
+        return new ArrayList<>();
     }
 }

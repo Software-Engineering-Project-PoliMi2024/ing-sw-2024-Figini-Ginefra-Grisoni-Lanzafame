@@ -20,6 +20,7 @@ import it.polimi.ingsw.view.TUI.inputs.CommandPromptResult;
 
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Objects;
 
 /**
  * This class is a Renderable that displays two decks with options to draw cards from them as well as the common objectives.
@@ -80,7 +81,7 @@ public class DeckRenderable extends CanvasRenderable {
 
         Printer.print(upperPrintable);
 
-        renderCommonObjectives(resourceLabels);
+        renderCommonObjectives();
 
         // Render the canvas
         super.render();
@@ -89,7 +90,7 @@ public class DeckRenderable extends CanvasRenderable {
         PromptStyle.printInABox("Resource Deck ", CardTextStyle.getCardWidth() * 6 + 4);
     }
 
-    private void renderCommonObjectives(List<Printable> labels){
+    private void renderCommonObjectives(){
         LightCard[] commonObjectives = lightGame.getPublicObjective();
 
         for(int i = 0; i < commonObjectives.length; i++) {
@@ -141,12 +142,8 @@ public class DeckRenderable extends CanvasRenderable {
 
     @Override
     public void updateCommand(CommandPromptResult answer) {
-        switch (answer.getCommand()) {
-            case CommandPrompt.DISPLAY_DECKS:
-                this.render();
-                break;
-            default:
-                break;
+        if (Objects.requireNonNull(answer.getCommand()) == CommandPrompt.DISPLAY_DECKS) {
+            this.render();
         }
     }
 

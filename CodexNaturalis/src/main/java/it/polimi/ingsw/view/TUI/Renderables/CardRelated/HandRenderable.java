@@ -7,19 +7,16 @@ import it.polimi.ingsw.view.ControllerProvider;
 import it.polimi.ingsw.view.TUI.Printing.Printable;
 import it.polimi.ingsw.view.TUI.Printing.Printer;
 import it.polimi.ingsw.view.TUI.Renderables.CodexRelated.CanvasRenderable;
-import it.polimi.ingsw.view.TUI.Renderables.drawables.Drawable;
 import it.polimi.ingsw.view.TUI.Styles.CardTextStyle;
 import it.polimi.ingsw.view.TUI.Styles.DecoratedString;
 import it.polimi.ingsw.view.TUI.Styles.PromptStyle;
 import it.polimi.ingsw.view.TUI.Styles.StringStyle;
 import it.polimi.ingsw.view.TUI.cardDrawing.CardMuseum;
-import it.polimi.ingsw.view.TUI.cardDrawing.TextCard;
 import it.polimi.ingsw.view.TUI.inputs.CommandPrompt;
 import it.polimi.ingsw.view.TUI.inputs.CommandPromptResult;
 
 import java.util.LinkedList;
 import java.util.List;
-import java.util.Objects;
 
 /**
  * This class is a Renderable that can render the hand of the main player.

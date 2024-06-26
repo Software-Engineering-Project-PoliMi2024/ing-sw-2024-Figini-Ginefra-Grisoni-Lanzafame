@@ -1,6 +1,5 @@
 package it.polimi.ingsw.view.TUI.Renderables;
 
-import it.polimi.ingsw.Configs;
 import it.polimi.ingsw.model.utilities.Pair;
 import it.polimi.ingsw.utils.OSRelated;
 import it.polimi.ingsw.view.TUI.Printing.Printable;
@@ -136,7 +135,7 @@ public class CommandDisplayRenderable extends Renderable{
             this.currentPrompt = getPromptAtIndex(index);
 
             //Prints the prompt selection message
-            PromptStyle.printInABox("You selected " + new DecoratedString(currentPrompt.getCommandName(), StringStyle.UNDERLINE).toString(), 50);
+            PromptStyle.printInABox("You selected " + new DecoratedString(currentPrompt.getCommandName(), StringStyle.UNDERLINE), 50);
 
             //Prints the first prompt message
             if(currentPrompt.hasNext()) {
@@ -196,7 +195,7 @@ public class CommandDisplayRenderable extends Renderable{
 
         Printer.print(this.currentPromptIndex + "\n");
 
-        PromptStyle.printInABox("You selected " + new DecoratedString(currentPrompt.getCommandName(), StringStyle.UNDERLINE).toString(), 50);
+        PromptStyle.printInABox("You selected " + new DecoratedString(currentPrompt.getCommandName(), StringStyle.UNDERLINE), 50);
 
         List<Pair<String, String>> qna = currentPrompt.getQnASoFar();
 
@@ -252,17 +251,6 @@ public class CommandDisplayRenderable extends Renderable{
             addCommandPromptTo(activeLocalPrompts, prompt);
         else
             addCommandPromptTo(activeActionPrompts, prompt);
-    }
-
-    /**
-     * Removes a command prompt from the active prompts.
-     * @param prompt The command prompt to remove.
-     */
-    public void removeCommandPrompt(CommandPrompt prompt){
-        if(prompt.isLocal())
-            removeCommandPromptFrom(activeLocalPrompts, prompt);
-        else
-            removeCommandPromptFrom(activeActionPrompts, prompt);
     }
 
     /**

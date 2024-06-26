@@ -24,7 +24,6 @@ public class FormRenderable extends Renderable {
      * Renders the form. In this case it does nothing.
      */
     public void render(){
-        return;
     }
 
 
@@ -33,7 +32,7 @@ public class FormRenderable extends Renderable {
      * @param command The command prompt result.
      */
     public void updateCommand(CommandPromptResult command){
-        return;
+
     }
 
 }

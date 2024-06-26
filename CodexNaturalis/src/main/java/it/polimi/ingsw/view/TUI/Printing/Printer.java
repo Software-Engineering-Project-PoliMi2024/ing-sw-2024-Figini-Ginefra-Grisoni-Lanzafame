@@ -1,7 +1,6 @@
 package it.polimi.ingsw.view.TUI.Printing;
 
 import java.util.List;
-import java.util.Queue;
 
 /**
  * This class is used to print strings to the console in a mutually exclusive fashion.

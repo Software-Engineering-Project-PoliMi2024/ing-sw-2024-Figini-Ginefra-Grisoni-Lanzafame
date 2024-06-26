@@ -8,7 +8,6 @@ import it.polimi.ingsw.view.TUI.Styles.PromptStyle;
 import it.polimi.ingsw.view.TUI.Styles.StringStyle;
 import it.polimi.ingsw.view.TUI.inputs.CommandPrompt;
 
-import java.util.Collections;
 import java.util.LinkedList;
 import java.util.List;
 

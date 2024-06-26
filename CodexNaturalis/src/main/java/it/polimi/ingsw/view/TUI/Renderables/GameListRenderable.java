@@ -4,7 +4,6 @@ import it.polimi.ingsw.lightModel.lightTableRelated.LightLobby;
 import it.polimi.ingsw.lightModel.lightTableRelated.LightLobbyList;
 import it.polimi.ingsw.utils.designPatterns.Observed;
 import it.polimi.ingsw.view.ControllerProvider;
-import it.polimi.ingsw.view.TUI.Renderables.Renderable;
 import it.polimi.ingsw.view.TUI.Styles.PromptStyle;
 import it.polimi.ingsw.view.TUI.inputs.CommandPrompt;
 import it.polimi.ingsw.view.TUI.inputs.CommandPromptResult;

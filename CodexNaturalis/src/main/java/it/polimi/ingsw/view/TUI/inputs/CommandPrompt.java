@@ -317,22 +317,6 @@ public enum CommandPrompt implements Iterator<String>, CommandObserved {
     }
 
     /**
-     * Gets the questions.
-     * @return The questions.
-     */
-    public String[] getQuestions() {
-        return questions;
-    }
-
-    /**
-     * Gets the validators. That is the list of predicates that validate the user input.
-     * @return The validators.
-     */
-    public Predicate<String>[] getValidators() {
-        return validators;
-    }
-
-    /**
      * Gets the command name.
      * @return The command name.
      */

@@ -8,9 +8,6 @@ import it.polimi.ingsw.view.TUI.Styles.PromptStyle;
 import it.polimi.ingsw.view.TUI.cardDrawing.CardMuseum;
 import it.polimi.ingsw.view.TUI.inputs.CommandPrompt;
 import it.polimi.ingsw.view.TUI.inputs.CommandPromptResult;
-
-import java.rmi.RemoteException;
-
 /**
  * This class is a Renderable that can render the codex of players who are not the main player.
  */

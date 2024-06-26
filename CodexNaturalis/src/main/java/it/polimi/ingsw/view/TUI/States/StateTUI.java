@@ -1,6 +1,5 @@
 package it.polimi.ingsw.view.TUI.States;
 
-import it.polimi.ingsw.model.playerReleted.PlayerState;
 import it.polimi.ingsw.view.TUI.Renderables.Renderable;
 import it.polimi.ingsw.view.TUI.inputs.CommandPrompt;
 import it.polimi.ingsw.view.TUI.inputs.StartUpPrompt;

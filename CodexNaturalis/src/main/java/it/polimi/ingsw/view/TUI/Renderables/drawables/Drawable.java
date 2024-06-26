@@ -1,13 +1,6 @@
 package it.polimi.ingsw.view.TUI.Renderables.drawables;
 
-import it.polimi.ingsw.model.playerReleted.Position;
-import it.polimi.ingsw.view.TUI.Renderables.Renderable;
-import it.polimi.ingsw.view.TUI.inputs.CommandPrompt;
-
 import java.io.Serializable;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
 
 /**
  * This class represents a drawable object. That being an object that can be drawn as an array of strings.
