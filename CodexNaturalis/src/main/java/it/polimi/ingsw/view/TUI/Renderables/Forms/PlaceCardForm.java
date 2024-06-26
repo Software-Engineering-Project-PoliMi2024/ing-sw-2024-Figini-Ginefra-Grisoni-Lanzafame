@@ -12,13 +12,29 @@ import it.polimi.ingsw.view.TUI.inputs.CommandPromptResult;
 
 import java.util.List;
 
+/**
+ * This class is a Renderable that represents a form to place a card.
+ */
 public class PlaceCardForm extends FormRenderable{
+    /** The game to interact with. */
     LightGame game;
+
+    /**
+     * Creates a new PlaceCardForm.
+     * @param name The name of the renderable.
+     * @param game The game to interact with.
+     * @param commandPrompts The commands related to this renderable.
+     * @param view The controller provider.
+     */
     public PlaceCardForm(String name, LightGame game, CommandPrompt[] commandPrompts, ControllerProvider view){
         super(name, commandPrompts, view);
         this.game = game;
     }
 
+    /**
+     * Updates the renderable with the answer to the command.
+     * @param answer The answer to the command.
+     */
     public void updateCommand(CommandPromptResult answer){
         if(answer.getCommand() == CommandPrompt.PLACE_CARD){
             try {

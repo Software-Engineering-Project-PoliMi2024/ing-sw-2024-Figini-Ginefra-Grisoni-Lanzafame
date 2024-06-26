@@ -1,7 +1,6 @@
 package it.polimi.ingsw.view.TUI.Renderables;
 
 import it.polimi.ingsw.utils.designPatterns.Observed;
-import it.polimi.ingsw.utils.designPatterns.Observer;
 import it.polimi.ingsw.view.ControllerProvider;
 import it.polimi.ingsw.view.TUI.inputs.CommandPrompt;
 import it.polimi.ingsw.view.TUI.inputs.CommandPromptResult;
@@ -16,10 +15,16 @@ import java.util.List;
  * Abstract class that represents a renderable object that is an object that can be rendered on the screen and can handle inputs
  */
 public abstract class Renderable implements InputObserver, CommandObserver, Serializable {
+    /** Whether the renderable has to rendered/the user can interact with it */
     private boolean active = false;
+
+    /** All the CommandPrompt that are observed by this renderable and whose result are handled by it */
     private final CommandPrompt[] relatedCommands;
 
+    /** The controller provider */
     protected final ControllerProvider view;
+
+    /** The name of the renderable, this can be useful ti differentiate two instances of the same Renderable*/
     private final String name;
 
     /**
@@ -47,12 +52,12 @@ public abstract class Renderable implements InputObserver, CommandObserver, Seri
     public abstract void render();
 
     /**
-     * Method that updates the renderable on terminal input
+     * Method that updates the renderable when a user input is received. This is used only by the CommandDisplayRenderable
      * @param input the input to update
      */
     public void updateInput(String input){
         throw new UnsupportedOperationException("Update without input not supported");
-    };
+    }
 
     /**
      * Sets the renderable as active or not
@@ -99,6 +104,6 @@ public abstract class Renderable implements InputObserver, CommandObserver, Seri
      * @return the part of the light model that the renderable observes
      */
     public List<Observed> getObservedLightModel(){
-        return new ArrayList<Observed>();
+        return new ArrayList<>();
     }
 }

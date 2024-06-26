@@ -13,11 +13,11 @@ import java.util.function.Predicate;
 
 /**
  * This enum represents the possible commands that can be prompted to the user.
+ * Each command has a name, a list of questions to ask the user, a list of validators to validate the user input.
+ * It is also possible to attach observers to the command that are notified when the command prompt is filled out by the user.
+ * The command prompt is also iterable, so it is possible to iterate over the questions to ask the user.
  */
 public enum CommandPrompt implements Iterator<String>, CommandObserved {
-    /** The echo command. */
-    ECHO("echo", new String[]{"What do you want to echo?"}, new Predicate[]{s -> true}, true),
-
     /** The command to connect to the server */
     CONNECT(new DecoratedString("Connect", StringStyle.YELLOW_FOREGROUND).toString(),
             new String[]{
@@ -83,6 +83,7 @@ public enum CommandPrompt implements Iterator<String>, CommandObserved {
     /** The command to leave the lobby */
     LEAVE_LOBBY("Leave lobby", false),
 
+    /** The command to let the player choose the color of its pawn */
     CHOOSE_PAWN("Choose pawn",
             new String[]{
                     "Which pawn do you want to choose? (RED/BLUE/YELLOW/GREEN)"
@@ -95,6 +96,7 @@ public enum CommandPrompt implements Iterator<String>, CommandObserved {
             },
             false),
 
+    /** The command to display the pawn options */
     DISPLAY_PAWN_OPTIONS("Display pawn", true),
 
     /** The command to display the assigned start card front */
@@ -170,6 +172,7 @@ public enum CommandPrompt implements Iterator<String>, CommandObserved {
     /** The command to display the codex */
     DISPLAY_CODEX("Display codex", true),
 
+    /** The command to move the center of the codex */
     MOVE_CODEX("Move Codex",
             new String[]{
                     "Insert a Δx value in number of cards (positive to the right)",
@@ -195,6 +198,7 @@ public enum CommandPrompt implements Iterator<String>, CommandObserved {
             },
             true),
 
+    /** The command to recenter the codex */
     RECENTER_CODEX("Recenter Codex", true),
 
     /** The command to peek at a player */
@@ -207,6 +211,7 @@ public enum CommandPrompt implements Iterator<String>, CommandObserved {
             },
             true),
 
+    /** The command to draw a card */
     DRAW_CARD("Draw card",
             new String[]{
                     "Which deck do you want to draw from? (0/gold - 1/resource)",
@@ -218,12 +223,16 @@ public enum CommandPrompt implements Iterator<String>, CommandObserved {
             },
             false),
 
+    /** The command to display the leaderboard */
     DISPLAY_LEADERBOARD("Display leaderboard", true),
 
+    /** The command to display the decks */
     DISPLAY_DECKS("Display decks", true),
 
+    /** The command to display the winner list after the game has ended */
     DISPLAY_POSTGAME("Display winners", true),
 
+    /** The command to send a public message */
     SEND_PUBLIC_MESSAGE("Send public message",
             new String[]{
                     "What do you want to say?",
@@ -233,6 +242,7 @@ public enum CommandPrompt implements Iterator<String>, CommandObserved {
             },
             false),
 
+    /** The command to send a private message */
     SEND_PRIVATE_MESSAGE("Send private message",
             new String[]{
                     "Who do you want to send the message to?",
@@ -243,6 +253,7 @@ public enum CommandPrompt implements Iterator<String>, CommandObserved {
                     s -> true,
             }, false),
 
+    /** The command to view the chat history */
     VIEW_MESSAGE("View message",
         new String[]{
                 "View chat history - View received private messages - View sent messages (0/1/2)",
@@ -250,8 +261,10 @@ public enum CommandPrompt implements Iterator<String>, CommandObserved {
                 s -> s.equals("0") || s.equals("1") || s.equals("2"),
         }, true),
 
+    /** The command to leave the game */
     LEAVE("Leave", false),
 
+    /** The command to refresh the display */
     REFRESH("Refresh", false);
 
     /** The questions to ask the user. */
@@ -304,22 +317,6 @@ public enum CommandPrompt implements Iterator<String>, CommandObserved {
     }
 
     /**
-     * Gets the questions.
-     * @return The questions.
-     */
-    public String[] getQuestions() {
-        return questions;
-    }
-
-    /**
-     * Gets the validators.
-     * @return The validators.
-     */
-    public Predicate<String>[] getValidators() {
-        return validators;
-    }
-
-    /**
      * Gets the command name.
      * @return The command name.
      */
@@ -328,7 +325,7 @@ public enum CommandPrompt implements Iterator<String>, CommandObserved {
     }
 
     /**
-     * @return Whether there are more questions.
+     * @return Whether there are more questions yet to be asked.
      */
     @Override
     public boolean hasNext() {
@@ -360,6 +357,9 @@ public enum CommandPrompt implements Iterator<String>, CommandObserved {
         return questions[currentQuestion-1];
     }
 
+    /**
+     * @return Whether there is a last question.
+     */
     public boolean hasLast(){
         return currentQuestion > 0 && currentQuestion <= questions.length;
     }
@@ -374,7 +374,7 @@ public enum CommandPrompt implements Iterator<String>, CommandObserved {
     }
 
     /**
-     * Resets the command. The current question is set to 0 and the current result is reset.
+     * Resets the command. The current question is set to 0 and the current result is rested.
      */
     public void reset() {
         currentQuestion = 0;
@@ -382,7 +382,7 @@ public enum CommandPrompt implements Iterator<String>, CommandObserved {
     }
 
     /**
-     * Validates the answer.
+     * Validates the answer. it uses the validator relative to the last question asked.
      * @param answer The answer to validate.
      * @return Whether the answer is valid.
      */
@@ -391,7 +391,7 @@ public enum CommandPrompt implements Iterator<String>, CommandObserved {
     }
 
     /**
-     * Parses the input.
+     * Parses the input by validating it and setting it as the answer to the current question when valid.
      * @param input The input to parse.
      * @return Whether the input was parsed successfully.
      */
@@ -406,20 +406,12 @@ public enum CommandPrompt implements Iterator<String>, CommandObserved {
     }
 
     /**
-     * Retunrs the current question as a string.
+     * Returns the current question as a string.
      * @return The current question as a string.
      */
     @Override
     public String toString() {
         return this.questions[currentQuestion-1];
-    }
-
-    /**
-     * Gets the current result.
-     * @return The current result.
-     */
-    public CommandPromptResult getCurrentResult() {
-        return currentResult;
     }
 
     /**
@@ -464,6 +456,10 @@ public enum CommandPrompt implements Iterator<String>, CommandObserved {
         return isLocal;
     }
 
+    /**
+     * Gets the questions and answers asked/answered so far.
+     * @return The questions and answers so far.
+     */
     public List<Pair<String, String>> getQnASoFar(){
         List<Pair<String, String>> qna = new ArrayList<>();
         for(int i = 0; i < currentQuestion; i++){

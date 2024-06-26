@@ -1,6 +1,5 @@
 package it.polimi.ingsw.view.TUI.States;
 
-import it.polimi.ingsw.model.playerReleted.PlayerState;
 import it.polimi.ingsw.view.TUI.Renderables.Renderable;
 import it.polimi.ingsw.view.TUI.inputs.CommandPrompt;
 import it.polimi.ingsw.view.TUI.inputs.StartUpPrompt;
@@ -11,6 +10,10 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 
+/**
+ * This enum represents the states of the TUI.
+ * Each state has a reference to a ViewState and a list of attached Renderables that will be displayed when the state is active.
+ */
 public enum StateTUI {
     SERVER_CONNECTION(ViewState.SERVER_CONNECTION),
     LOGIN_FORM(ViewState.LOGIN_FORM),
@@ -25,51 +28,65 @@ public enum StateTUI {
     GAME_ENDING(ViewState.GAME_ENDING),
     CHOOSE_PAWN(ViewState.CHOOSE_PAWN);
 
+    /** The ViewState that this state references.*/
     private final ViewState referenceState;
+
+    /** The list of renderables that will be displayed when the state is active. */
     private final List<Renderable> targetRenderables;
 
-    /**
-     * The list of prompts that will be triggered at the start of the state.
-     */
+    /** The list of prompts that will be triggered at the start of the state.*/
     private final List<StartUpPrompt> startupPrompts = new LinkedList<>();
 
+    /**
+     * Creates a new StateTUI.
+     * @param referenceState The ViewState that this state references.
+     */
     StateTUI(ViewState referenceState) {
         this.referenceState = referenceState;
         this.targetRenderables = new ArrayList<>();
     }
 
+    /**
+     * Attaches a renderable to the state.
+     * @param renderable The renderable to attach.
+     */
     public void attach(Renderable renderable) {
         targetRenderables.add(renderable);
     }
 
+    /**
+     * Gets the renderables attached to the state.
+     * @return The renderables attached to the state.
+     */
     public List<Renderable> getRenderables() {
         return targetRenderables;
     }
 
-    public ViewState getReferenceState() {
-        return referenceState;
-    }
-
+    /**
+     * Returns whether the state references the given ViewState.
+     * @param state The ViewState to check.
+     * @return True if the state references the given ViewState, false otherwise.
+     */
     public boolean references(ViewState state) {
         return referenceState == state;
     }
 
+    /**
+     * Adds a startup prompt to the state.
+     * @param prompt The prompt to add.
+     */
     public void addStartupPrompt(StartUpPrompt prompt) {
         if(!prompt.getCommand().isLocal())
             throw new IllegalArgumentException("Only local prompts can be added to the startup prompts of a state. " + prompt.getCommand().getCommandName() + " is not local.");
         startupPrompts.add(prompt);
     }
 
+    /**
+     * Adds a startup prompt to the state. The prompt will be created from the given CommandPrompt and it will not provide any answers. This is meant for the prompts that are not meant to be answered by the user.
+     * @param prompt The prompt to add.
+     */
     public void addStartupPrompt(CommandPrompt prompt) {
         addStartupPrompt(new StartUpPrompt(prompt));
-    }
-
-    public void addAllStartupPrompts(List<StartUpPrompt> prompts) {
-        for(StartUpPrompt prompt : prompts)
-            if(!prompt.getCommand().isLocal())
-                throw new IllegalArgumentException("Only local prompts can be added to the startup prompts of a state. " + prompt.getCommand().getCommandName() + " is not local.");
-
-        startupPrompts.addAll(prompts);
     }
 
     /**
@@ -81,6 +98,11 @@ public enum StateTUI {
         }
     }
 
+    /**
+     * This method checks if the given prompt is a startup prompt of the state.
+     * @param prompt The prompt to check.
+     * @return True if the prompt is a startup prompt of the state, false otherwise.
+     */
     public boolean isStartupPrompt(CommandPrompt prompt) {
         return startupPrompts.stream().anyMatch(p -> p.getCommand().equals(prompt));
     }

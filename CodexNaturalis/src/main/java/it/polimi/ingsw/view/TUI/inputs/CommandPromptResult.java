@@ -21,14 +21,6 @@ public class CommandPromptResult {
     }
 
     /**
-     * Gets the answers to the command prompt.
-     * @return The answers to the command prompt.
-     */
-    public String[] getAnswers(){
-        return answers;
-    }
-
-    /**
      * Gets the answer at the specified index.
      * @param index The index of the answer to get.
      * @return The answer at the specified index.
@@ -44,14 +36,6 @@ public class CommandPromptResult {
      */
     public void setAnswer(int index, String answer){
         answers[index] = answer;
-    }
-
-    /**
-     * Sets the answers to the command prompt.
-     * @param answers The answers to the command prompt.
-     */
-    public void setAnswers(String [] answers){
-        this.answers = answers;
     }
 
     /**

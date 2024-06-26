@@ -3,7 +3,6 @@ package it.polimi.ingsw.view.TUI.Renderables.CodexRelated;
 import it.polimi.ingsw.lightModel.lightPlayerRelated.LightCodex;
 import it.polimi.ingsw.lightModel.lightPlayerRelated.LightPlacement;
 import it.polimi.ingsw.lightModel.lightTableRelated.LightGame;
-import it.polimi.ingsw.model.playerReleted.Placement;
 import it.polimi.ingsw.model.playerReleted.Position;
 import it.polimi.ingsw.view.ControllerProvider;
 import it.polimi.ingsw.view.TUI.Renderables.drawables.Drawable;
@@ -15,14 +14,17 @@ import it.polimi.ingsw.view.TUI.inputs.CommandPrompt;
 import it.polimi.ingsw.view.TUI.inputs.CommandPromptResult;
 
 import java.util.List;
-import java.util.Map;
 
 /**
  * This class is a Renderable that can render the main player's codex.
  */
 public class CodexRenderable extends CanvasRenderable {
+    /** The light game */
     protected final LightGame lightGame;
+    /** The card museum that contains the rendered cards */
     private final CardMuseum cardMuseum;
+
+    /** The center of the codex, that is the coordinate of the centered position in the render. It is expressed in grid Coordinates a.k.a. the same coordinate system as the model */
     protected Position center = new Position(0, 0);
 
     /**
@@ -114,7 +116,7 @@ public class CodexRenderable extends CanvasRenderable {
     }
 
     /**
-     * Renders the codex.
+     * Renders the codex. It first draws the codex to the canvas and then renders it atomically.
      */
     @Override
     public void render() {

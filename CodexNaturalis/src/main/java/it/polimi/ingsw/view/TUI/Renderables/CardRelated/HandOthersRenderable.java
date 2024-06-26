@@ -12,8 +12,11 @@ import it.polimi.ingsw.view.TUI.cardDrawing.CardMuseum;
 import it.polimi.ingsw.view.TUI.inputs.CommandPrompt;
 import it.polimi.ingsw.view.TUI.inputs.CommandPromptResult;
 
+import java.util.Objects;
+
 /**
  * This class is a Renderable that can render the hand of players who are not the main player.
+ * Contrary to the hand renderable, this one only renders the back of the cards.
  */
 public class HandOthersRenderable extends CardRenderable{
     /** The nickname of the player whose hand is being rendered. */
@@ -41,7 +44,7 @@ public class HandOthersRenderable extends CardRenderable{
     }
 
     /**
-     * Renders the hand of the target player.
+     * Renders the hand of the target player fetching the cards from the light model.
      */
     @Override
     public void render(){
@@ -64,20 +67,18 @@ public class HandOthersRenderable extends CardRenderable{
      */
     @Override
     public void updateCommand(CommandPromptResult answer){
-        switch (answer.getCommand()){
-            case CommandPrompt.PEEK:
-                String nickname = answer.getAnswer(0);
-                if(nickname.equals(this.getLightGame().getLightGameParty().getYourName())){
-                    return;
-                }
+        if (Objects.requireNonNull(answer.getCommand()) == CommandPrompt.PEEK) {
+            String nickname = answer.getAnswer(0);
+            if (nickname.equals(this.getLightGame().getLightGameParty().getYourName())) {
+                return;
+            }
 
-                if(!getLightGame().getCodexMap().containsKey(nickname)){
-                    return;
-                }
+            if (!getLightGame().getCodexMap().containsKey(nickname)) {
+                return;
+            }
 
-                this.setTargetPlayer(nickname);
-                this.render();
-                break;
+            this.setTargetPlayer(nickname);
+            this.render();
         }
     }
 

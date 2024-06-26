@@ -10,21 +10,18 @@ import it.polimi.ingsw.view.TUI.Printing.Printer;
 import it.polimi.ingsw.view.TUI.Renderables.CodexRelated.CanvasRenderable;
 import it.polimi.ingsw.view.TUI.Renderables.drawables.Drawable;
 import it.polimi.ingsw.view.TUI.Styles.CardTextStyle;
-import it.polimi.ingsw.view.TUI.Styles.DecoratedString;
 import it.polimi.ingsw.view.TUI.Styles.PromptStyle;
-import it.polimi.ingsw.view.TUI.Styles.StringStyle;
 import it.polimi.ingsw.view.TUI.cardDrawing.CardMuseum;
-import it.polimi.ingsw.view.TUI.cardDrawing.TextCard;
 import it.polimi.ingsw.view.TUI.inputs.CommandPrompt;
 import it.polimi.ingsw.view.TUI.inputs.CommandPromptResult;
 
 import java.util.Arrays;
-import java.util.LinkedList;
 import java.util.List;
 import java.util.Objects;
 
 /**
- * This class is a Renderable that can render a card and prompt the player to choose between two objective cards.
+ * This class is a Renderable that can prompt the player to choose between two objective cards.
+ * In order to render the card stacked horizontally it extends CanvasRenderable.
  */
 public class ChooseObjectiveCardRenderable extends CanvasRenderable {
     private final LightGame lightGame;
@@ -47,7 +44,8 @@ public class ChooseObjectiveCardRenderable extends CanvasRenderable {
     }
 
     /**
-     * Renders the two objective cards.
+     * Renders the two objective cards to choose from, fetching them from the light model.
+     * If there is even one options not available, it does nothing.
      */
     public void render(){
         LightCard[] options = lightGame.getHand().getSecretObjectiveOptions();
@@ -97,6 +95,10 @@ public class ChooseObjectiveCardRenderable extends CanvasRenderable {
         }
     }
 
+    /**
+     * Return the part of the Light Model that are relevant to the rendering of this Renderable.
+     * @return the relevant part of the Light Model.
+     */
     @Override
     public List<Observed> getObservedLightModel(){
         return List.of(lightGame.getHand());
