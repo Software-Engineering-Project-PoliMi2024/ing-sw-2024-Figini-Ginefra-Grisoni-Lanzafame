@@ -57,8 +57,8 @@ public class PlateauGUI {
         popUp.close();
     }
 
-    private Point2D getCoordinates(int score, PawnColors color) {
-        Pair<Integer, Integer> coordinates = PlateauMapping.getPositionCoordinates(score, color);
+    private Point2D getCoordinates(int score, PawnColors color, boolean isConflicting) {
+        Pair<Integer, Integer> coordinates = PlateauMapping.getPositionCoordinates(score, color, isConflicting);
         if (coordinates != null) {
             double x = (coordinates.getKey() - plateauView.getImage().getWidth() / 2) * plateauView.getFitWidth() / plateauView.getImage().getWidth();
             double y = (plateauView.getImage().getHeight() / 2 - coordinates.getValue()) * plateauView.getFitHeight() / plateauView.getImage().getHeight();
@@ -82,12 +82,12 @@ public class PlateauGUI {
             container.getChildren().add(pawnView);
         }
 
-        updatePawnPosition(pawnColor);
+        boolean isConflicting = pawnScores.values().stream().filter(value -> value.equals(score)).count() > 1;
+        updatePawnPosition(pawnColor, score, isConflicting);
     }
 
-    public void updatePawnPosition(PawnColors pawnColor) {
-        int score = pawnScores.get(pawnColor);
-        Point2D coordinates = getCoordinates(score, pawnColor);
+    public void updatePawnPosition(PawnColors pawnColor, int score, boolean isConflicting) {
+        Point2D coordinates = getCoordinates(score, pawnColor, isConflicting);
         if (coordinates != null) {
             ImageView pawnView = pawnViews.get(pawnColor);
             pawnView.setTranslateX(coordinates.getX());
@@ -97,7 +97,9 @@ public class PlateauGUI {
 
     public void updatePawnPosition() {
         for (PawnColors pawnColor : pawnScores.keySet()) {
-            updatePawnPosition(pawnColor);
+            int score = pawnScores.get(pawnColor);
+            boolean isConflicting = pawnScores.values().stream().filter(pawnScore -> pawnScore.equals(score)).count() > 1;
+            updatePawnPosition(pawnColor, score, isConflicting);
         }
     }
 }
