@@ -174,6 +174,7 @@ public class ServerHandler implements Runnable{
                 owner.disconnect();
                 view.logErr(LogsOnClient.CONNECTION_LOST_CLIENT_SIDE);
                 view.transitionTo(ViewState.SERVER_CONNECTION);
+                Configs.printStackTrace(e);
             }else{
                 System.out.println("Stopped listening for messages of " + server.getInetAddress());
             }
