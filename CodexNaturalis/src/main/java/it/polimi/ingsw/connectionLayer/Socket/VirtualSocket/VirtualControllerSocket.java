@@ -101,19 +101,16 @@ public class VirtualControllerSocket implements VirtualController {
     @Override
     public void leave() {
         serverHandler.sendServerMessage(new LeaveMsg());
+        serverHandler.stopListening();
         this.disconnect();
     }
 
     @Override
     public void disconnect(){
         this.eraseLightModel();
-        serverHandler.sendServerMessage(new LeaveMsg());
-        serverHandler.stopListening();
         try {
             view.transitionTo(ViewState.SERVER_CONNECTION);
-        } catch (Exception e) {
-            throw new RuntimeException(e);
-        }
+        } catch (Exception ignored) {}
     }
 
     private void eraseLightModel(){

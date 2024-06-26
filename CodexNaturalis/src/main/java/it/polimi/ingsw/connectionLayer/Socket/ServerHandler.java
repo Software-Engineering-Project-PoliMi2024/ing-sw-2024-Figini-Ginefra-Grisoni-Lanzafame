@@ -156,6 +156,7 @@ public class ServerHandler implements Runnable{
         try{
             this.connectionLayerDisconnection();
             if(isListening){
+                owner.disconnect();
                 view.logErr(LogsOnClient.CONNECTION_LOST_CLIENT_SIDE);
                 view.transitionTo(ViewState.SERVER_CONNECTION);
             }else{
