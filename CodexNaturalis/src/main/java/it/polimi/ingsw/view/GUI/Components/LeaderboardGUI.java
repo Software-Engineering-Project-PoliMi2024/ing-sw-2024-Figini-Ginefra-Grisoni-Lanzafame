@@ -183,6 +183,7 @@ public class LeaderboardGUI implements Observer {
 
                     if(playerColor != null){
                         pawnImageViewMap.get(e.getKey()).setImage(Objects.requireNonNull(PawnsGui.getPawnGui(playerColor)).getImageView().getImage());
+
                         plateau.setScore(playerColor, e.getValue());
                     }
                 });

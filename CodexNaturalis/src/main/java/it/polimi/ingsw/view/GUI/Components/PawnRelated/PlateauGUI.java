@@ -11,18 +11,17 @@ import javafx.scene.layout.StackPane;
 import javafx.util.Pair;
 
 import java.util.HashMap;
-import java.util.HashSet;
 import java.util.Map;
 import java.util.Objects;
-import java.util.Set;
 
 public class PlateauGUI {
     private final ImageView plateauView;
     private final PopUp popUp;
+
     private final StackPane container = new StackPane();
+
     private final Map<PawnColors, Integer> pawnScores = new HashMap<>();
     private final Map<PawnColors, ImageView> pawnViews = new HashMap<>();
-    private final Map<Integer, Set<PawnColors>> scoreToPawnColors = new HashMap<>();
 
     public PlateauGUI(AnchorPane parent) {
         this.plateauView = new ImageView(AssetsGUI.plateau);
@@ -42,11 +41,11 @@ public class PlateauGUI {
 
 
         parent.widthProperty().addListener((obs, oldWidth, newWidth) -> {
-            this.updatePawnPositions();
+            this.updatePawnPosition();
         });
 
         parent.heightProperty().addListener((obs, oldHeight, newHeight) -> {
-            this.updatePawnPositions();
+            this.updatePawnPosition();
         });
     }
 
@@ -58,31 +57,21 @@ public class PlateauGUI {
         popUp.close();
     }
 
-    private Point2D getCoordinates(int score, PawnColors color) {
-        Pair<Integer, Integer> centerCoordinates = PlateauMapping.getCenterCoordinates(score);
-        Pair<Integer, Integer> offset = scoreToPawnColors.get(score).size() > 1 ? PlateauMapping.getColorOffset(color) : new Pair<>(0, 0);
-        if (centerCoordinates != null) {
-            double x = (centerCoordinates.getKey() + offset.getKey() - plateauView.getImage().getWidth() / 2) * plateauView.getFitWidth() / plateauView.getImage().getWidth();
-            double y = (plateauView.getImage().getHeight() / 2 - (centerCoordinates.getValue() + offset.getValue())) * plateauView.getFitHeight() / plateauView.getImage().getHeight();
+    private Point2D getCoordinates(int score, PawnColors color, boolean isConflicting) {
+        Pair<Integer, Integer> coordinates = PlateauMapping.getPositionCoordinates(score, color, isConflicting);
+        if (coordinates != null) {
+            double x = (coordinates.getKey() - plateauView.getImage().getWidth() / 2) * plateauView.getFitWidth() / plateauView.getImage().getWidth();
+            double y = (plateauView.getImage().getHeight() / 2 - coordinates.getValue()) * plateauView.getFitHeight() / plateauView.getImage().getHeight();
             return new Point2D(x, y);
         }
         return null;
     }
 
     public void setScore(PawnColors pawnColor, int score) {
-        if (pawnScores.containsKey(pawnColor)) {
-            int oldScore = pawnScores.get(pawnColor);
-            scoreToPawnColors.get(oldScore).remove(pawnColor);
-            if (scoreToPawnColors.get(oldScore).isEmpty()) {
-                scoreToPawnColors.remove(oldScore);
-            }
-        }
-
         pawnScores.put(pawnColor, score);
-        scoreToPawnColors.computeIfAbsent(score, k -> new HashSet<>()).add(pawnColor);
 
         if (!pawnViews.containsKey(pawnColor)) {
-            ImageView pawnView = Objects.requireNonNull(PawnsGui.getPawnGui(pawnColor)).getImageView();
+            ImageView pawnView = new ImageView(Objects.requireNonNull(PawnsGui.getPawnGui(pawnColor)).getImageView().getImage());
             pawnView.setPreserveRatio(true);
             pawnView.setFitHeight(100);
             pawnView.setFitWidth(100);
@@ -93,12 +82,12 @@ public class PlateauGUI {
             container.getChildren().add(pawnView);
         }
 
-        updatePawnPosition(pawnColor);
+        boolean isConflicting = pawnScores.values().stream().filter(value -> value.equals(score)).count() > 1;
+        updatePawnPosition(pawnColor, score, isConflicting);
     }
 
-    public void updatePawnPosition(PawnColors pawnColor) {
-        int score = pawnScores.get(pawnColor);
-        Point2D coordinates = getCoordinates(score, pawnColor);
+    public void updatePawnPosition(PawnColors pawnColor, int score, boolean isConflicting) {
+        Point2D coordinates = getCoordinates(score, pawnColor, isConflicting);
         if (coordinates != null) {
             ImageView pawnView = pawnViews.get(pawnColor);
             pawnView.setTranslateX(coordinates.getX());
@@ -106,9 +95,11 @@ public class PlateauGUI {
         }
     }
 
-    public void updatePawnPositions() {
+    public void updatePawnPosition() {
         for (PawnColors pawnColor : pawnScores.keySet()) {
-            updatePawnPosition(pawnColor);
+            int score = pawnScores.get(pawnColor);
+            boolean isConflicting = pawnScores.values().stream().filter(pawnScore -> pawnScore.equals(score)).count() > 1;
+            updatePawnPosition(pawnColor, score, isConflicting);
         }
     }
 }
