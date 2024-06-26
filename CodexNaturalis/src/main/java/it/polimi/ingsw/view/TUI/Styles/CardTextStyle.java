@@ -145,6 +145,8 @@ public class CardTextStyle {
     public static StringStyle convertPawnBgColor(PawnColors pawnColor){
         return pawnToBgStyle.get(pawnColor);
     }
+
+    public static int codexMaxWidth = 200;
 }
 
 

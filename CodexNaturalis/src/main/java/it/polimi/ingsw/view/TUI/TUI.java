@@ -139,7 +139,7 @@ public class TUI implements ActualView, CommandObserver, Observer {
                 "Codex",
                 lightGame,
                 cardMuseum,
-                new CommandPrompt[]{CommandPrompt.DISPLAY_CODEX},
+                new CommandPrompt[]{CommandPrompt.DISPLAY_CODEX, CommandPrompt.MOVE_CODEX, CommandPrompt.RECENTER_CODEX},
                 this);
         StateTUI.SELECT_OBJECTIVE.attach(codexRenderable);
         StateTUI.IDLE.attach(codexRenderable);
