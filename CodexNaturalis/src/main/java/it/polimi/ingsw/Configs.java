@@ -45,7 +45,7 @@ public class Configs {
     /** the regex used to validate the lobby name*/
     public static String invalidLobbyNameRegex = "^\\s*$"; // empty string or only spaces
     /** the name of the folder containing the files needed for the project*/
-    public static String dataFolderName = "CodexNaturalis";
+    public static String dataFolderName = "CodexNaturalisPSP49";
     /** the name of the folder containing the bin of the cards */
     public static String cardDataFolderName = "Cards";
     /** the name of the folder to which save the games and from which load the saved games */
