@@ -37,7 +37,7 @@ public class CardRenderable extends LightGameRenderable {
     }
 
     /**
-     * Renders a card.
+     * Renders a card by getting the drawable from the card museum and printing it.
      * @param card The card to render.
      */
     protected void renderCard(LightCard card){
@@ -47,7 +47,7 @@ public class CardRenderable extends LightGameRenderable {
     }
 
     /**
-     * Renders the card.
+     * Renders the card. In this case it does nothing.
      */
     @Override
     public void render() {
