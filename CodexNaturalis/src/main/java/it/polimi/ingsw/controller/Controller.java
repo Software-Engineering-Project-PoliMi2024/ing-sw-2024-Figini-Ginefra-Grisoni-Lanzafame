@@ -56,6 +56,8 @@ public class Controller implements ControllerInterface, GameControllerReceiver {
 
     /**
      * The method checks if the gameController is not null (i.e. if the player is actually in a game)
+     * if it is not null, the method forwards the call to the gameController,
+     * otherwise it sets the player as malevolent
      * @param objectiveCard the secret objective card chosen by the player
      */
     @Override

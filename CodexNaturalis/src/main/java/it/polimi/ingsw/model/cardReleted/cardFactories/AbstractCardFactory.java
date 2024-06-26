@@ -15,7 +15,7 @@ import java.util.Map;
 import java.util.Queue;
 
 /**
- * The interface implemented by all concrete factory
+ * The interface implemented by all concrete factory to load cards from Json
  * @param <Element> is the "type" of Card that will be produced
  */
 public abstract class AbstractCardFactory<Element> {

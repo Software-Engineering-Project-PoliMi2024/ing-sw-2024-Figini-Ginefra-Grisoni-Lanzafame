@@ -60,7 +60,7 @@ public class GameController implements GameControllerInterface {
     private final Map<String, ViewInterface> playerViewMap = new HashMap<>();
 
     private transient ScheduledFuture<?> lastInGameFuture = null;
-    private final transient ScheduledExecutorService countdownExecutor = Executors.newSingleThreadScheduledExecutor();
+    private transient ScheduledExecutorService countdownExecutor = Executors.newSingleThreadScheduledExecutor();
 
     public GameController(Game game, CardTable cardTable, PersistenceFactory persistenceFactory, GameList gameList, MalevolentPlayerManager malevolentPlayerManager) {
         if(game.getState().equals(GameState.END_GAME)) {
@@ -101,7 +101,6 @@ public class GameController implements GameControllerInterface {
         playerViewMap.put(joinerNickname, view);
         this.notifyJoinGame(joinerNickname, reconnected);
 
-        this.loadChat(joinerNickname, view);
 
         if (game.getState().equals(GameState.CHOOSE_START_CARD)) {
             this.updateJoinStartCard(joinerNickname);
@@ -127,6 +126,7 @@ public class GameController implements GameControllerInterface {
             this.takeTurn(joinerNickname);
         }
 
+        this.loadChat(joinerNickname, view);
         if(playerViewMap.size() == 1 && reconnected){
             this.startLastPlayerTimer();
         }
@@ -390,7 +390,7 @@ public class GameController implements GameControllerInterface {
             gameList.deleteGame(game.getName());
         }else {
             this.save();
-            if (playerViewMap.size() == 1) {
+            if (playerViewMap.size() == 1 && !game.getState().equals(GameState.END_GAME)) {
                 this.startLastPlayerTimer();
             }
         }
@@ -559,6 +559,8 @@ public class GameController implements GameControllerInterface {
     private synchronized void resetLastPlayerTimer(){
         if(lastInGameFuture != null){
             lastInGameFuture.cancel(true);
+            countdownExecutor.shutdownNow();
+            countdownExecutor = Executors.newSingleThreadScheduledExecutor();
             lastInGameFuture = null;
             logger.log(LoggerLevel.INFO, "stopped last player timer");
             this.notifyLastInGameTimerStop();

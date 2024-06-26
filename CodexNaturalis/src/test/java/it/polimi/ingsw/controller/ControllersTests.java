@@ -1269,12 +1269,16 @@ class ControllersTests {
         assert !game.getState().equals(GameState.END_GAME);
 
         placeRandom(firstToPlay, firstToPlayController);
+        System.out.println(firstToPlay.getUserCodex().getPoints());
         firstToPlayController.draw(DrawableCard.GOLDCARD, 0);
         placeRandom(secondToPlay, secondToPlayController);
+        System.out.println(secondToPlay.getUserCodex().getPoints());
         secondToPlayController.draw(DrawableCard.GOLDCARD, 0);
 
         assert game.getState().equals(GameState.END_GAME);
         assert firstToPlay.getUserCodex().getPoints() == 29;
+        System.out.println(secondToPlay.getUserCodex().getPoints());
+        assert firstToPlay.getUserCodex().getPoints() > secondToPlay.getUserCodex().getPoints();
 
         assert firstToPlayView.state.equals(ViewState.GAME_ENDING);
         assert secondToPlayView.state.equals(ViewState.GAME_ENDING);

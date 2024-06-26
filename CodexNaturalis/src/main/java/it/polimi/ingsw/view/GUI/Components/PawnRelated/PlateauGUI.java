@@ -71,7 +71,7 @@ public class PlateauGUI {
         pawnScores.put(pawnColor, score);
 
         if (!pawnViews.containsKey(pawnColor)) {
-            ImageView pawnView = Objects.requireNonNull(PawnsGui.getPawnGui(pawnColor)).getImageView();
+            ImageView pawnView = new ImageView(Objects.requireNonNull(PawnsGui.getPawnGui(pawnColor)).getImageView().getImage());
             pawnView.setPreserveRatio(true);
             pawnView.setFitHeight(100);
             pawnView.setFitWidth(100);

@@ -28,6 +28,13 @@ public class PersistenceFactory {
 
     }
 
+    /**
+     * Save a game in the gameDataFolderPath.
+     * If a game with the same name is already saved update the save with the new one
+     * and delete the old save
+     * logs the result of the save operation
+     * @param game the game to save
+     */
     public synchronized void save(Game game) {
         fileIOExecutor.submit(()-> {
             File oldSave = latestGameSave(game);
@@ -73,8 +80,11 @@ public class PersistenceFactory {
     }
 
     /**
-     * Load all the game saves in the gameDataFolderPath. If a gameSave is expired, delete it
-     * @return a HashSet containing all the non-expired games loaded from the gameDataFolderPath
+     * Load all the game saves in the gameDataFolderPath.
+     * If a gameSave is expired, delete it
+     * logs the result of the load operation
+     * @return a Future linking to the result of the parallel execution of the method;
+     * when the method is done, the Future will contain the non-expired loaded games
      */
     public synchronized Future<HashSet<Game>> load() {
         Future<HashSet<Game>> load = fileIOExecutor.submit(()-> {
@@ -108,8 +118,9 @@ public class PersistenceFactory {
     }
 
     /**
-     * Check if the gameSave file is expired. A file is expired if the time difference between the current time and the
-     * timeStamp in the file's name is greater than the expiration time in set in the Configs
+     * Check if the gameSave file is expired. A file is expired if the time
+     * difference between the current time and the timeStamp in the file's name
+     * is greater than the expiration time in set in the Configs
      * @param gameSave the file to check
      * @return true if the file is expired, false otherwise
      */
@@ -123,7 +134,6 @@ public class PersistenceFactory {
 
     /**
      * Load a game from his saveState. Check if the file is a valid file and if the object in the file is a game
-     *
      * @param file the file from which the method gets the game
      * @return the game saved in the file, null if the file is corrupted and subsequently deleted
      */
@@ -161,7 +171,8 @@ public class PersistenceFactory {
 
     /**
      * Return the latest gameSave file of a given game if it exists.
-     * If more gameSaves of the same game are found (e.g., there was a problem during deletion), return the latest one and try to delete the others
+     * If more gameSaves of the same game are found (e.g., there was a problem during deletion),
+     * return the latest one and try to delete the others
      * @param game the game of which the method is looking for the save
      * @return the latest gameSave file of the given game if it exists, null otherwise
      */
@@ -193,7 +204,7 @@ public class PersistenceFactory {
 
     /**
      * Return the latest game from a list of gameSaves of that game
-     * @param gamesSave the list of gameSaves of the gamen that need to be loaded
+     * @param gamesSave the list of gameSaves of the game that need to be loaded
      * @return the game loaded from the latest gameSave file in the list or null if the list is empty
      */
     private Game latestGame(List<File> gamesSave) {
@@ -231,6 +242,11 @@ public class PersistenceFactory {
         return dateTime2.compareTo(dateTime1);
     };
 
+    /**
+     * Delete a gameSave file contained in the gameDataFolderPath
+     * that has the same name as the gameName
+     * @param gameName the name of the game to delete
+     */
     public void delete(String gameName){
         fileIOExecutor.submit(()-> {
             File dataFolder = new File(gameDataFolderPath);
@@ -247,6 +263,10 @@ public class PersistenceFactory {
         });
     }
 
+    /**
+     * Delete a file and log the result of the operation
+     * @param file the file to delete
+     */
     private void delete(File file) {
         if(!file.delete()) {
             logger.log(LoggerLevel.WARNING, "file:" + file.getName() + " could not be deleted");
@@ -255,8 +275,11 @@ public class PersistenceFactory {
         }
     }
 
-    public Future<?> eraseAllSaves() {
-        return fileIOExecutor.submit(()-> {
+    /**
+     * delete all the gameSave files in the gameDataFolderPath
+     */
+    public void eraseAllSaves() {
+        fileIOExecutor.submit(() -> {
             File dataFolder = new File(gameDataFolderPath);
             File[] saves = dataFolder.listFiles();
             if (saves != null) {
@@ -267,6 +290,11 @@ public class PersistenceFactory {
         });
     }
 
+    /**
+     * Get the game name from the file name removing the date and the .ser extension
+     * @param file the file from which the method gets the game name
+     * @return the game name
+     */
     private String getGameNameFromFile(File file) {
         return file.getName().split(dateGameNameSeparator)[1].split(_ser)[0];
     }

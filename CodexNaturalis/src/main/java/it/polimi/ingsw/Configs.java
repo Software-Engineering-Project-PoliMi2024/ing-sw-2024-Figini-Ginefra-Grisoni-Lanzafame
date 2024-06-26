@@ -3,7 +3,7 @@ package it.polimi.ingsw;
 import java.io.IOException;
 
 public class Configs {
-    public static Boolean debugMode = false;
+    public static Boolean debugMode = true;
     public static long gameSaveExpirationTimeMinutes = 30;
     public static String connectionLabelRMI = "connect";
     public static String CardResourcesFolderPath = "Cards/";
@@ -12,7 +12,7 @@ public class Configs {
     public static int socketPort = 12345;
     public static int secondsTimeOut = 30;
     public static int pingPongFrequency = 3;
-    public static int lastInGameTimerSeconds = 5;
+    public static int lastInGameTimerSeconds = 30;
     public static int pointsToStartGameEnding = 20;
     public static int actualDeckPos = 2;
     public static int numberOfEndingTurns = 2;

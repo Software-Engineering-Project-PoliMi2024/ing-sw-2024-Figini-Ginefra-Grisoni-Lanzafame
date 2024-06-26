@@ -7,10 +7,10 @@ import it.polimi.ingsw.controller.Interfaces.ControllerInterface;
 import java.rmi.RemoteException;
 
 public interface VirtualController extends ControllerInterface, ConnectionLayerClient, PingPongInterface {
+        @Override
+    void checkEmpty() throws Exception;
     @Override
-    void checkEmpty() throws RemoteException;
-    @Override
-    void setPingPongStub(PingPongInterface pingPongStub) throws RemoteException;
-    void setControllerStub(ControllerInterface controllerStub) throws RemoteException;
-    void disconnect() throws RemoteException;
+    void setPingPongStub(PingPongInterface pingPongStub) throws Exception;
+    void setControllerStub(ControllerInterface controllerStub) throws Exception;
+    void disconnect() throws Exception;
 }
