@@ -25,6 +25,7 @@ public class Configs {
     public static String cardDataFolderName = "Cards";
     public static String gameSaveFolderName = "GameSaved";
     public static int maxPointsPerPlayer = 29;
+    public static int delayBeforeLoadingGameSaves = 0;
 
     public static void clearTerminal(){
         System.out.print("\033[H\033[2J");

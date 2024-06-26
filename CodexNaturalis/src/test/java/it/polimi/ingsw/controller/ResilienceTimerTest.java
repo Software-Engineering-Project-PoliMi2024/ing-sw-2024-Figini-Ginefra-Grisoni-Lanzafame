@@ -17,6 +17,7 @@ import it.polimi.ingsw.model.tableReleted.GameState;
 import it.polimi.ingsw.view.ViewState;
 import org.junit.jupiter.api.*;
 
+import java.io.File;
 import java.util.HashMap;
 
 public class ResilienceTimerTest {
@@ -25,10 +26,13 @@ public class ResilienceTimerTest {
     private static int shorterTimerDurationSeconds = 1;
     private static int originalTimerDuration;
     private final PersistenceFactory persistenceFactory = new PersistenceFactory(OSRelated.gameDataFolderPath);
+    private static int oldDelay;
 
     @BeforeAll
     public static void setUpAll(){
         OSRelated.checkOrCreateDataFolderServer(); //Create the dataFolder if necessary. Normally this is done in the Server class
+        oldDelay =  Configs.delayBeforeLoadingGameSaves;
+        Configs.delayBeforeLoadingGameSaves = 30;
     }
 
     @BeforeEach
@@ -48,6 +52,18 @@ public class ResilienceTimerTest {
     @AfterAll
     public static void resetDuration(){
         Configs.lastInGameTimerSeconds = originalTimerDuration;
+    }
+
+    @AfterAll
+    public static void resetPersistence(){
+        File dataFolder = new File(Configs.gameSaveFolderName);
+        File[] saves = dataFolder.listFiles();
+        if (saves != null) {
+            for (File gameSave : saves) {
+                gameSave.delete();
+            }
+        }
+        Configs.delayBeforeLoadingGameSaves = oldDelay;
     }
 
     @Test
@@ -266,21 +282,24 @@ public class ResilienceTimerTest {
 
         assert game.getState().equals(GameState.ACTUAL_GAME);
         Player firstPlayer = game.getPlayerFromNick(game.getCurrentPlayer().getNickname());
+        Player secondPlayer = game.getPlayersList().get(1);
+        Player thirdPlayer = game.getPlayersList().get(2);
+
         Controller firstPlayerController = controllerMap.get(firstPlayer.getNickname());
-        firstPlayerController.leave();
-        Player secondPlayer = game.getPlayerFromNick(game.getCurrentPlayer().getNickname());
         Controller secondPlayerController = controllerMap.get(secondPlayer.getNickname());
+        Controller thirdPlayerController = controllerMap.get(thirdPlayer.getNickname());
+        firstPlayerController.leave();
+        assert game.getCurrentPlayer().equals(secondPlayer);
+        assert game.getState().equals(GameState.ACTUAL_GAME);
 
         assert viewMap.get(secondPlayer.getNickname()).state.equals(ViewState.PLACE_CARD);
         secondPlayerController.leave();
 
         assert !game.getState().equals(GameState.END_GAME);
+        assert game.getCurrentPlayer().equals(thirdPlayer);
         try {
             Thread.sleep(Configs.lastInGameTimerSeconds * 1000L + 1000L);
         }catch (Exception ignored){}
-
-        Player thirdPlayer = game.getCurrentPlayer();
-        System.out.println(thirdPlayer);
 
         assert viewMap.get(game.getCurrentPlayer().getNickname()).state.equals(ViewState.GAME_ENDING);
 
@@ -288,7 +307,7 @@ public class ResilienceTimerTest {
         assert lobbyGameListController.getGameMap().containsKey(lobbyName1);
 
         //the save has been deleted
-        controller1.leave();
+        thirdPlayerController.leave();
         assert !lobbyGameListController.getGameMap().containsKey(lobbyName1);
     }
 

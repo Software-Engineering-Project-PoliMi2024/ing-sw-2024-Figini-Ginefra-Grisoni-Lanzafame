@@ -31,7 +31,7 @@ public class LobbyGameListsController implements it.polimi.ingsw.controller.Inte
     private transient final ServerLogger logger = new ServerLogger(LoggerSources.LOBBY_GAME_LISTS_CONTROLLER, "");
 
     public LobbyGameListsController(){
-        gamesLoadExecutor.scheduleAtFixedRate(this::refreshGames, 0, Configs.gameSaveExpirationTimeMinutes, TimeUnit.MINUTES);
+        gamesLoadExecutor.scheduleAtFixedRate(this::refreshGames, Configs.delayBeforeLoadingGameSaves, Configs.gameSaveExpirationTimeMinutes, TimeUnit.MINUTES);
     }
 
     @Override

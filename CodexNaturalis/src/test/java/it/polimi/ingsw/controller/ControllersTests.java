@@ -21,10 +21,7 @@ import it.polimi.ingsw.model.tableReleted.Game;
 import it.polimi.ingsw.model.tableReleted.GameState;
 import it.polimi.ingsw.model.tableReleted.Lobby;
 import it.polimi.ingsw.view.ViewState;
-import org.junit.jupiter.api.Assertions;
-import org.junit.jupiter.api.BeforeAll;
-import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.*;
 
 import java.io.File;
 import java.util.*;
@@ -34,10 +31,13 @@ class ControllersTests {
     private LobbyGameListsController realLobbyGameListController;
     private PublicLobbyGameListController lobbyGameListController;
     private final PersistenceFactory persistenceFactory = new PersistenceFactory(OSRelated.gameDataFolderPath);
+    private static int oldDelay;
 
     @BeforeAll
     public static void setUpAll(){
         OSRelated.checkOrCreateDataFolderServer(); //Create the dataFolder if necessary. Normally this is done in the Server class
+        oldDelay =  Configs.delayBeforeLoadingGameSaves;
+        Configs.delayBeforeLoadingGameSaves = 30;
     }
 
     @BeforeEach
@@ -46,6 +46,18 @@ class ControllersTests {
 
         realLobbyGameListController = new LobbyGameListsController();
         lobbyGameListController = new PublicLobbyGameListController(realLobbyGameListController);
+    }
+
+    @AfterAll
+    public static void resetPersistence(){
+        File dataFolder = new File(Configs.gameSaveFolderName);
+        File[] saves = dataFolder.listFiles();
+        if (saves != null) {
+            for (File gameSave : saves) {
+                gameSave.delete();
+            }
+        }
+        Configs.delayBeforeLoadingGameSaves = oldDelay;
     }
 
     @Test
@@ -1241,7 +1253,7 @@ class ControllersTests {
         firstToPlay.playCard(exodiaPlacement);
         handFirst.addCard(removedCard);
 
-        assert firstToPlay.getUserCodex().getPoints() == 100;
+        assert firstToPlay.getUserCodex().getPoints() == 29;
 
         placeRandom(firstToPlay, firstToPlayController);
         firstToPlayController.draw(DrawableCard.RESOURCECARD, 0);
@@ -1262,7 +1274,7 @@ class ControllersTests {
         secondToPlayController.draw(DrawableCard.GOLDCARD, 0);
 
         assert game.getState().equals(GameState.END_GAME);
-        assert firstToPlay.getUserCodex().getPoints() >= 200;
+        assert firstToPlay.getUserCodex().getPoints() == 29;
 
         assert firstToPlayView.state.equals(ViewState.GAME_ENDING);
         assert secondToPlayView.state.equals(ViewState.GAME_ENDING);
@@ -1364,7 +1376,7 @@ class ControllersTests {
         firstToPlay.playCard(exodiaPlacement);
         handFirst.addCard(removedCard);
 
-        assert firstToPlay.getUserCodex().getPoints() == 100;
+        assert firstToPlay.getUserCodex().getPoints() == 29;
 
 
         placeRandom(firstToPlay, firstToPlayController);
@@ -1380,7 +1392,7 @@ class ControllersTests {
         secondToPlay.playCard(exodiaPlacement);
         handSecond.addCard(removedCard);
 
-        assert secondToPlay.getUserCodex().getPoints() == 100;
+        assert secondToPlay.getUserCodex().getPoints() == 29;
 
         secondToPlayView.state = ViewState.DRAW_CARD;
         placeRandom(secondToPlay, secondToPlayController);
@@ -1424,8 +1436,8 @@ class ControllersTests {
         assert game.getState().equals(GameState.END_GAME);
         System.out.println(firstToPlay.getUserCodex().getPoints());
         System.out.println(secondToPlay.getUserCodex().getPoints());
-        assert firstToPlay.getUserCodex().getPoints() == 200;
-        assert secondToPlay.getUserCodex().getPoints() == 200;
+        assert firstToPlay.getUserCodex().getPoints() == 29;
+        assert secondToPlay.getUserCodex().getPoints() == 29;
 
         assert firstToPlayView.state.equals(ViewState.GAME_ENDING);
         assert secondToPlayView.state.equals(ViewState.GAME_ENDING);
