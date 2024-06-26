@@ -4,6 +4,7 @@ import it.polimi.ingsw.lightModel.lightPlayerRelated.LightCard;
 import it.polimi.ingsw.lightModel.lightTableRelated.LightDeck;
 import it.polimi.ingsw.lightModel.lightTableRelated.LightGame;
 import it.polimi.ingsw.model.cardReleted.utilityEnums.CardFace;
+import it.polimi.ingsw.utils.designPatterns.Observed;
 import it.polimi.ingsw.view.ControllerProvider;
 import it.polimi.ingsw.view.TUI.Printing.Printable;
 import it.polimi.ingsw.view.TUI.Printing.Printer;
@@ -76,6 +77,10 @@ public class DeckRenderable extends CanvasRenderable {
 
         for(int i = 0; i < commonObjectives.length; i++) {
             LightCard card = commonObjectives[i];
+            if(card == null) {
+                continue;
+            }
+
             Drawable drawableCard = museum.get(card.idFront()).get(CardFace.FRONT);
             this.canvas.draw( drawableCard, CardTextStyle.getCardWidth() /2 + 3 * (CardTextStyle.getCardWidth() + 1) + 1, CardTextStyle.getCardHeight() /2 + i * (CardTextStyle.getCardHeight() + 1));
         }
@@ -126,5 +131,10 @@ public class DeckRenderable extends CanvasRenderable {
             default:
                 break;
         }
+    }
+
+    @Override
+    public List<Observed> getObservedLightModel() {
+        return List.of(lightGame.getGoldDeck(), lightGame.getResourceDeck());
     }
 }

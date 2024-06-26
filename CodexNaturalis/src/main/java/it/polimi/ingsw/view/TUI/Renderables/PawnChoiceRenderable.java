@@ -2,6 +2,7 @@ package it.polimi.ingsw.view.TUI.Renderables;
 
 import it.polimi.ingsw.lightModel.lightTableRelated.LightGame;
 import it.polimi.ingsw.model.playerReleted.PawnColors;
+import it.polimi.ingsw.utils.designPatterns.Observed;
 import it.polimi.ingsw.view.ControllerProvider;
 import it.polimi.ingsw.view.TUI.Renderables.Renderable;
 import it.polimi.ingsw.view.TUI.Styles.CardTextStyle;
@@ -43,5 +44,13 @@ public class PawnChoiceRenderable extends Renderable {
         else if (answer.getCommand() == CommandPrompt.DISPLAY_PAWN_OPTIONS) {
             render();
         }
+    }
+
+    @Override
+    public List<Observed> getObservedLightModel(){
+        List<Observed> observed = new ArrayList<>();
+        observed.add(lightGame.getLightGameParty());
+        return observed;
+
     }
 }
