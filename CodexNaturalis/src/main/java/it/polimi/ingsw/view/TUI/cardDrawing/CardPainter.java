@@ -193,10 +193,10 @@ public class CardPainter {
     }
 
     /**
-     * Draws the corners of a card.
+     * Draws the corners of a card. That being the collectables placed in the corners.
      * @param card The card to draw.
      * @param face The face of the card to draw.
-     * @param drawable The drawable where to draw the card.
+     * @param drawable The drawable where to draw the corners.
      */
     private static void drawCorners(CardWithCorners card, CardFace face, Drawable drawable){
         for(CardCorner corner : CardCorner.values()){
@@ -221,10 +221,10 @@ public class CardPainter {
     }
 
     /**
-     * Draws the common elements of a card front.
+     * Draws the common elements of a card front. That being the background, the corners and the points.
      * @param card The card to draw.
      * @param filler The filler to use.
-     * @param drawable The drawable where to draw the card.
+     * @param drawable The drawable where to draw the common elements.
      */
     private static void drawBasicFront(CardWithCorners card, String filler, Drawable drawable){
         //Fill the background
@@ -241,7 +241,7 @@ public class CardPainter {
      * Draws the common elements of a card back.
      * @param card The card to draw.
      * @param filler The filler to use.
-     * @param drawable The drawable where to draw the card.
+     * @param drawable The drawable where to draw the back.
      */
     private static void drawBasicBack(CardWithCorners card, String filler, Drawable drawable){
         //Fill the background
@@ -257,7 +257,7 @@ public class CardPainter {
     /**
      * Draws a resource card.
      * @param card The card to draw.
-     * @return The drawable of the card.
+     * @return The drawable where to draw the resource card.
      */
     public static TextCard drawResourceCard(ResourceCard card){
         //Draw the front
@@ -279,7 +279,7 @@ public class CardPainter {
     /**
      * Draws a gold card.
      * @param card The card to draw.
-     * @return The drawable of the card.
+     * @return The drawable where to draw the gold card.
      */
     public static TextCard drawGoldCard(GoldCard card){
         //Draw the front
@@ -304,7 +304,7 @@ public class CardPainter {
     /**
      * Draws a start card.
      * @param card The card to draw.
-     * @return The drawable of the card.
+     * @return The drawable where to draw the start card.
      */
     public static  TextCard drawStartCard(StartCard card){
         //Draw the front
@@ -325,7 +325,7 @@ public class CardPainter {
     /**
      * Draws a frontier card.
      * @param number The number to draw.
-     * @return The drawable of the card.
+     * @return The drawable where to draw the frontier card.
      */
     public static Drawable drawFrontierCard(int number){
         Drawable drawable = new Drawable(CardTextStyle.getCardWidth(), CardTextStyle.getCardHeight());
@@ -359,7 +359,7 @@ public class CardPainter {
     /**
      * Draws an objective card with a collectable multiplier.
      * @param card The card to draw.
-     * @return The drawable of the card.
+     * @return The drawable where to draw the objective card.
      */
     public static TextCard drawObjectiveCardCollectableMultiplier(ObjectiveCard card, CollectableCardPointMultiplier multiplier){
         Drawable drawable = new Drawable(CardTextStyle.getCardWidth(), CardTextStyle.getCardHeight());
@@ -384,7 +384,7 @@ public class CardPainter {
     /**
      * Draws an objective card with a diagonal multiplier.
      * @param card The card to draw.
-     * @return The drawable of the card.
+     * @return The drawable where to draw the objective card.
      */
     public static TextCard drawObjectiveCardDiagonalMultiplier(ObjectiveCard card, DiagonalCardPointMultiplier multiplier){
         Drawable drawable = new Drawable(CardTextStyle.getCardWidth(), CardTextStyle.getCardHeight());
@@ -409,7 +409,7 @@ public class CardPainter {
     /**
      * Draws an objective card with an L multiplier.
      * @param card The card to draw.
-     * @return The drawable of the card.
+     * @return The drawable where to draw the objective card.
      */
     public static TextCard drawObjectiveCardLMultiplier(ObjectiveCard card, LCardPointMultiplier multiplier){
         Drawable drawable = new Drawable(CardTextStyle.getCardWidth(), CardTextStyle.getCardHeight());
