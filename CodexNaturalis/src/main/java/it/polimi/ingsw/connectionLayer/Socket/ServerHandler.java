@@ -29,7 +29,7 @@ public class ServerHandler implements Runnable{
     private int msgIndex;
     private final Queue<ServerMsg> receivedMsg = new PriorityQueue<>(Comparator.comparingInt(ServerMsg::getIndex));
     private boolean isListening = true;
-
+    private final ExecutorService executorService = Executors.newSingleThreadExecutor();
 
     /**
      * Initializes a new handler using a specific socket that is present on a server.
@@ -121,6 +121,7 @@ public class ServerHandler implements Runnable{
             ServerMsg serverMsg;
             try {
                 serverMsg = (ServerMsg) input.readObject();
+                System.out.println("Received a message with a index of: " + serverMsg.getIndex());
             } catch (ClassNotFoundException e) {
                 //This scenario should not occur if a ClientMsg is being sent, as TCP ensures that every message is always received correctly.
                 System.out.println("Error during the transmission of the message. The message was not a ServerMsg object.");
@@ -130,16 +131,19 @@ public class ServerHandler implements Runnable{
                 this.handleIOException(e);
                 return;
             }
-            if(serverMsg.getIndex() > expectedIndex){
-                System.out.println("Received a message with an index higher than the expected one");
-                receivedMsg.add(serverMsg);
-            }else if(serverMsg.getIndex()<expectedIndex){
-                throw new IllegalCallerException("The Client received a message with an index lower than the expected one");
-            }else{ //clientMsg.getIndex() == expectingIndex
-                receivedMsg.add(serverMsg);
-                Queue<ServerMsg> toBeProcessMsgs = continueMessagesWindow(receivedMsg, expectedIndex);
-                expectedIndex = toBeProcessMsgs.stream().max(Comparator.comparingInt(ServerMsg::getIndex)).get().getIndex() + 1;
-                processMsg(toBeProcessMsgs);
+            synchronized (this){
+                if(serverMsg.getIndex() > expectedIndex){
+                    System.out.println("Received a message with an index higher than the expected one");
+                    receivedMsg.add(serverMsg);
+                }else if(serverMsg.getIndex()<expectedIndex){
+                    throw new IllegalCallerException("The Client received a message with an index lower than the expected one");
+                }else{ //clientMsg.getIndex() == expectingIndex
+                    receivedMsg.add(serverMsg);
+                    Queue<ServerMsg> toBeProcessMsgs = continueMessagesWindow(receivedMsg, expectedIndex);
+                    expectedIndex = toBeProcessMsgs.stream().max(Comparator.comparingInt(ServerMsg::getIndex)).get().getIndex() + 1;
+
+                    executorService.submit(()-> processMsgs(toBeProcessMsgs));
+                }
             }
         }
     }
@@ -225,11 +229,12 @@ public class ServerHandler implements Runnable{
      * Processes the messages in the queue
      * @param queue The queue of messages to be processed
      */
-    private void processMsg(Queue<ServerMsg> queue) {
+    private void processMsgs(Queue<ServerMsg> queue) {
         while(!queue.isEmpty()){
             ServerMsg serverMsg = queue.poll();
             try {
                 serverMsg.processMsg(this);
+                System.out.println("Processed a message with index: " + serverMsg.getIndex());
             }catch (Exception e) {
                 System.out.println("Error during the processing of the message");
                 e.printStackTrace();

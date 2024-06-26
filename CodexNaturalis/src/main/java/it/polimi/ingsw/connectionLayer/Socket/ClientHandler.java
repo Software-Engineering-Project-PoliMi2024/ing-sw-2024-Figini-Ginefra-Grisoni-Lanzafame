@@ -10,6 +10,8 @@ import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.net.Socket;
 import java.util.*;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
 
 public class ClientHandler implements Runnable{
     private final Socket client;
@@ -21,6 +23,8 @@ public class ClientHandler implements Runnable{
     //Create a queue of messages ordered by index, lower index first
     private final Queue<ClientMsg> recivedMsgs = new PriorityQueue<>(Comparator.comparingInt(ClientMsg::getIndex));
     private volatile boolean isListening = true;
+    private final ExecutorService executorService = Executors.newSingleThreadExecutor();
+
 
     private boolean ready = false;
 
@@ -98,15 +102,18 @@ public class ClientHandler implements Runnable{
                 this.handleIOException(e);
                 return;
             }
-            if(clientMsg.getIndex() > expectedIndex){
-                recivedMsgs.add(clientMsg);
-            }else if(clientMsg.getIndex()<expectedIndex){
-                throw new IllegalCallerException("The Server received a message with an index lower than the expected one");
-            }else{ //clientMsg.getIndex() == expectedIndex
-                recivedMsgs.add(clientMsg);
-                Queue<ClientMsg> toBeProcessMsgs = continueMessagesWindow(recivedMsgs, expectedIndex);
-                expectedIndex = toBeProcessMsgs.stream().max(Comparator.comparingInt(ClientMsg::getIndex)).get().getIndex() + 1;
-                processMsgs(toBeProcessMsgs);
+            synchronized (this){
+                if(clientMsg.getIndex() > expectedIndex){
+                    recivedMsgs.add(clientMsg);
+                }else if(clientMsg.getIndex()<expectedIndex){
+                    throw new IllegalCallerException("The Server received a message with an index lower than the expected one");
+                }else{ //clientMsg.getIndex() == expectedIndex
+                    recivedMsgs.add(clientMsg);
+                    Queue<ClientMsg> toBeProcessMsgs = continueMessagesWindow(recivedMsgs, expectedIndex);
+                    expectedIndex = toBeProcessMsgs.stream().max(Comparator.comparingInt(ClientMsg::getIndex)).get().getIndex() + 1;
+
+                    executorService.submit(()-> processMsgs(toBeProcessMsgs));
+                }
             }
         }
     }
