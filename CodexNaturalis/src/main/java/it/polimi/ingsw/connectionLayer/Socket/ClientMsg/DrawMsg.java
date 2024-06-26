@@ -7,12 +7,12 @@ public class DrawMsg extends ClientMsg {
     /**
      * The deck from which the player is drawing
      */
-    private DrawableCard deckID;
+    private final DrawableCard deckID;
 
     /**
      * The id of the card that the player is drawing
      */
-    private int cardID;
+    private final int cardID;
 
     /**
      * Constructor

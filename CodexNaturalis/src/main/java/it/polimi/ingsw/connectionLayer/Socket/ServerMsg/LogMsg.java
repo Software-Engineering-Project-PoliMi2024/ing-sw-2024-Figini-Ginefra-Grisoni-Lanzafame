@@ -7,7 +7,7 @@ import it.polimi.ingsw.connectionLayer.Socket.ServerHandler;
  */
 public class LogMsg extends ServerMsg{
     /** Message to log */
-    private String log;
+    private final String log;
 
     /**
      * Class constructor

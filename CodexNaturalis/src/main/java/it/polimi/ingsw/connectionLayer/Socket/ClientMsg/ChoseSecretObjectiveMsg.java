@@ -10,7 +10,7 @@ public class ChoseSecretObjectiveMsg extends ClientMsg {
     /**
      * The secret objective chosen by the player
      */
-    private LightCard secretObjective;
+    private final LightCard secretObjective;
 
 /**
      * Constructor

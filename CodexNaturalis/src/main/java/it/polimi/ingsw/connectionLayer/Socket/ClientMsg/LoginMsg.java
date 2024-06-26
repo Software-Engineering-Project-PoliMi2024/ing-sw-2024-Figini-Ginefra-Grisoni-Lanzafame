@@ -6,7 +6,7 @@ public class LoginMsg extends ClientMsg{
     /**
      * The username of the player
      */
-    private String username;
+    private final String username;
 
     /**
      * Constructor

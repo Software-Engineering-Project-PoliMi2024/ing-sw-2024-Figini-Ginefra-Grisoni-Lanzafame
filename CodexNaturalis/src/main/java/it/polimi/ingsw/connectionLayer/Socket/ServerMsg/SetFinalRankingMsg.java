@@ -3,7 +3,6 @@ package it.polimi.ingsw.connectionLayer.Socket.ServerMsg;
 import it.polimi.ingsw.connectionLayer.Socket.ServerHandler;
 
 import java.util.List;
-import java.util.Map;
 
 /**
  * Set final ranking message class

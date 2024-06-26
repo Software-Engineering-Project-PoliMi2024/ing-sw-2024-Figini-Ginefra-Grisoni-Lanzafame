@@ -6,7 +6,7 @@ public class JoinLobbyMsg extends ClientMsg{
     /**
      * The name of the lobby that the player wants to join
      */
-    private String lobbyName;
+    private final String lobbyName;
 
     /**
      * Constructor of the class

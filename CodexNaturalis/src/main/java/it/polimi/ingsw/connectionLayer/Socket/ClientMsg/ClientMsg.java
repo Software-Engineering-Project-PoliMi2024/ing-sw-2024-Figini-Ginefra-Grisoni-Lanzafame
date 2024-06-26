@@ -2,7 +2,6 @@ package it.polimi.ingsw.connectionLayer.Socket.ClientMsg;
 
 import it.polimi.ingsw.connectionLayer.Socket.ClientHandler;
 import it.polimi.ingsw.connectionLayer.Socket.NetworkMsg;
-import it.polimi.ingsw.connectionLayer.Socket.ServerHandler;
 
 /**
  * Abstract class that represents a message from the client to the server

@@ -3,7 +3,6 @@ package it.polimi.ingsw.connectionLayer.Socket.ServerMsg;
 import it.polimi.ingsw.connectionLayer.Socket.ServerHandler;
 import it.polimi.ingsw.lightModel.diffs.ModelDiffs;
 import it.polimi.ingsw.lightModel.lightTableRelated.LightLobby;
-import it.polimi.ingsw.lightModel.lightTableRelated.LightLobbyList;
 
 /**
  * Update lobby message class

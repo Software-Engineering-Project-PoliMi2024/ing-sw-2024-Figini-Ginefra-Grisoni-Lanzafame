@@ -7,7 +7,7 @@ public class PlaceMsg extends ClientMsg {
     /**
      * The lightPlacement of the card
      */
-    private LightPlacement placement;
+    private final LightPlacement placement;
 
     /**
      * Constructor
