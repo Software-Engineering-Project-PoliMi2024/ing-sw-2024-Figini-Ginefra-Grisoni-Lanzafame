@@ -94,6 +94,20 @@ public class TUI implements ActualView, CommandObserver, Observer {
         StateTUI.LOBBY.attach(lobbyRenderable);
         renderables.add(lobbyRenderable);
 
+        chatRenderable = new ChatRenderable("Chat Options",
+                new CommandPrompt[]{CommandPrompt.SEND_PUBLIC_MESSAGE, CommandPrompt.SEND_PRIVATE_MESSAGE, CommandPrompt.VIEW_MESSAGE},
+                lightGame,
+                this);
+        StateTUI.CHOOSE_START_CARD.attach(chatRenderable);
+        StateTUI.CHOOSE_PAWN.attach(chatRenderable);
+        StateTUI.SELECT_OBJECTIVE.attach(chatRenderable);
+        StateTUI.IDLE.attach(chatRenderable);
+        StateTUI.WAITING_STATE.attach(chatRenderable);
+        StateTUI.PLACE_CARD.attach(chatRenderable);
+        StateTUI.DRAW_CARD.attach(chatRenderable);
+        StateTUI.GAME_ENDING.attach(chatRenderable);
+        renderables.add(chatRenderable);
+
         chooseStartCardRenderable = new ChooseStartCardRenderable(
                 "Choose Start Card",
                 cardMuseum,
@@ -226,20 +240,6 @@ public class TUI implements ActualView, CommandObserver, Observer {
         StateTUI.GAME_ENDING.attach(postGameStateRenderable);
         renderables.add(postGameStateRenderable);
 
-        chatRenderable = new ChatRenderable("Chat Options",
-                new CommandPrompt[]{CommandPrompt.SEND_PUBLIC_MESSAGE, CommandPrompt.SEND_PRIVATE_MESSAGE, CommandPrompt.VIEW_MESSAGE},
-                lightGame,
-                this);
-        StateTUI.CHOOSE_START_CARD.attach(chatRenderable);
-        StateTUI.CHOOSE_PAWN.attach(chatRenderable);
-        StateTUI.SELECT_OBJECTIVE.attach(chatRenderable);
-        StateTUI.IDLE.attach(chatRenderable);
-        StateTUI.WAITING_STATE.attach(chatRenderable);
-        StateTUI.PLACE_CARD.attach(chatRenderable);
-        StateTUI.DRAW_CARD.attach(chatRenderable);
-        StateTUI.GAME_ENDING.attach(chatRenderable);
-        renderables.add(chatRenderable);
-
         logger = new LoggerRenderable("Logger");
 
         //==============================================================================================================
@@ -358,7 +358,6 @@ public class TUI implements ActualView, CommandObserver, Observer {
     @Override
     public void logErr(String logMsg) {
         logger.addLog(logMsg, StringStyle.RED_FOREGROUND);
-        commandDisplay.clearCurrentPrompt();
     }
 
     @Override
