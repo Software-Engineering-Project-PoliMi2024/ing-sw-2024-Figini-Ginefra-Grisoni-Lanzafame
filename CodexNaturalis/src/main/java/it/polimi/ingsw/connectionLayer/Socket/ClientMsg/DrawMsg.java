@@ -16,7 +16,7 @@ public class DrawMsg extends ClientMsg {
 
     /**
      * Constructor
-     * @param deckID the deck from which the player is drawing
+     * @param deckID the deck from which the player is drawing (Resource or Gold)
      * @param cardID the id of the card that the player is drawing
      */
     public DrawMsg(DrawableCard deckID, int cardID) {

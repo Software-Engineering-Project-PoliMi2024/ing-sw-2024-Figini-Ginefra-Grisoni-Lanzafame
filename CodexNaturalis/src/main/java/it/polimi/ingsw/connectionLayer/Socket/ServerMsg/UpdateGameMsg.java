@@ -8,12 +8,12 @@ import it.polimi.ingsw.lightModel.lightTableRelated.LightGame;
  * Update game message class
  */
 public class UpdateGameMsg extends ServerMsg{
-    /** Game diffs */
+    /** Game diffs containing the changes to apply to the lightGame */
     private final ModelDiffs<LightGame> diff;
 
     /**
      * Class constructor
-     * @param diff Game diffs
+     * @param diff a Game diffs containing the changes to apply to the lightGame
      */
     public UpdateGameMsg(ModelDiffs<LightGame> diff) {
         this.diff = diff;

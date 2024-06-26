@@ -14,7 +14,7 @@ public class ChatMsg extends ClientMsg{
 
     /**
      * Constructor
-     * @param message the chat message
+     * @param message the chat message that need to be sent
      */
     public ChatMsg(ChatMessage message) {
         this.message = message;

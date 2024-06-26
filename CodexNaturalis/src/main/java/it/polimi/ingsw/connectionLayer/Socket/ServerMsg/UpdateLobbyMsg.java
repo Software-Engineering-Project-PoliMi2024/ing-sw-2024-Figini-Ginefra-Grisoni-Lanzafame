@@ -8,12 +8,12 @@ import it.polimi.ingsw.lightModel.lightTableRelated.LightLobby;
  * Update lobby message class
  */
 public class UpdateLobbyMsg extends ServerMsg{
-    /** Lobby diffs */
+    /** a Lobby diffs containing the changes to apply to the lightLobby such as new players or removed players */
     private final ModelDiffs<LightLobby> diff;
 
     /**
      * Class constructor
-     * @param diff Lobby diffs
+     * @param diff a Lobby diffs containing the changes to apply to the lightLobby such as new players or removed players
      */
     public UpdateLobbyMsg(ModelDiffs<LightLobby> diff) {
         this.diff = diff;

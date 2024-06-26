@@ -1,7 +1,7 @@
 package it.polimi.ingsw.connectionLayer.RMI.VirtualRMI;
 
 import it.polimi.ingsw.Configs;
-import it.polimi.ingsw.connectionLayer.PingPongInterface;
+import it.polimi.ingsw.connectionLayer.HeartBeatInterface;
 import it.polimi.ingsw.connectionLayer.VirtualLayer.VirtualView;
 import it.polimi.ingsw.controller.Interfaces.ControllerInterface;
 import it.polimi.ingsw.lightModel.diffs.ModelDiffs;
@@ -16,34 +16,60 @@ import java.rmi.server.UnicastRemoteObject;
 import java.util.List;
 import java.util.concurrent.*;
 
+/**
+ * This class is the RMI implementation of the VirtualView interface.
+ * It is used to send updates to the client.
+ */
 public class VirtualViewRMI implements VirtualView {
+    /** The stub of the view on the client */
     private final ViewInterface viewStub;
-    private PingPongInterface pingPongStub;
+    /** The stub of the heartBeat interface. It contains the method call on the client to check if the connection is still alive*/
+    private HeartBeatInterface heartBeatStub;
+    /** The controller of the game */
     private ControllerInterface controller;
+    /** The executor that manages the sending of client commands. It delegates his work to the virtualViewExecutor*/
     private final ThreadPoolExecutor virtualViewExecutor = new ThreadPoolExecutor(1, 1, 10, TimeUnit.MILLISECONDS, new LinkedBlockingQueue<>());
+    /** The executor that actually manage the sending of client commands */
     private final ExecutorService viewUpdateExecutor = Executors.newSingleThreadExecutor();
-    private final ScheduledExecutorService pingPongExecutor = Executors.newScheduledThreadPool(2);
+    /** The executor that manages the heartBeat mechanism */
+    private final ScheduledExecutorService heartBeatExecutor = Executors.newScheduledThreadPool(2);
+    /** A flag that indicates if the client has already disconnected for avoid reboot*/
     private boolean alreadyDisconnected = false;
-    private Future<?> pong;
+    /** The future of the heartBeat. It is used to check if the connection is still alive every pingPongPeriod second*/
+    private Future<?> heartBeatFuture;
+    
     /**
+     * Constructor of the class
      * @param viewStub the stub of the view on the client
      */
     public VirtualViewRMI(ViewInterface viewStub) {
         this.viewStub = viewStub;
     }
 
+    /**
+     * Empty method call by the server to check if the connection is still alive.
+     */
     @Override
-    public void checkEmpty() throws RemoteException {
+    public void checkEmpty()  {
 
     }
 
+    /**
+     * Set the stub of the heartBeat interface
+     * @param heartBeatStub the stub of the heartBeat interface
+     */
     @Override
-    public void setPingPongStub(PingPongInterface pingPongStub) {
-        this.pingPongStub = pingPongStub;
+    public void setHeartBeatStub(HeartBeatInterface heartBeatStub) {
+        this.heartBeatStub = heartBeatStub;
     }
 
+    /**
+     * Call the transitionTo method on the view
+     * If the client does not respond in Configs.secondsTimeOut seconds, it logs an error on the server console and close the connection
+     * @param state ViewState to which the client must transition to
+     */
     @Override
-    public void transitionTo(ViewState state) throws RemoteException {
+    public void transitionTo(ViewState state) {
         virtualViewExecutor.execute(()-> {
             Future<?> trasitionToFuture = viewUpdateExecutor.submit(() -> {
                 try {
@@ -56,14 +82,19 @@ public class VirtualViewRMI implements VirtualView {
                 trasitionToFuture.get(Configs.secondsTimeOut, TimeUnit.SECONDS);
             } catch (InterruptedException ignored) {
             } catch (Exception e) {
-                e.printStackTrace();
+                Configs.printStackTrace(e);
                 this.disconnect();
             }
         });
     }
 
+    /**
+     * Call the log method on the view
+     * If the client does not respond in Configs.secondsTimeOut seconds, it logs an error on the server console and close the connection
+     * @param logMsg the String to log
+     */
     @Override
-    public void log(String logMsg) throws RemoteException {
+    public void log(String logMsg) {
         virtualViewExecutor.execute(()-> {
             Future<?> logFuture = viewUpdateExecutor.submit(() -> {
                 try {
@@ -76,14 +107,19 @@ public class VirtualViewRMI implements VirtualView {
                 logFuture.get(Configs.secondsTimeOut, TimeUnit.SECONDS);
             } catch (InterruptedException ignored) {
             } catch (Exception e) {
-                e.printStackTrace();
+                Configs.printStackTrace(e);
                 this.disconnect();
             }
         });
     }
 
+    /**
+     * Call the logErr method on the view
+     * If the client does not respond in Configs.secondsTimeOut seconds, it logs an error on the server console and close the connection
+     * @param logMsg the String to log
+     */
     @Override
-    public void logErr(String logMsg) throws RemoteException {
+    public void logErr(String logMsg) {
         virtualViewExecutor.execute(()-> {
             Future<?> logErrFuture = viewUpdateExecutor.submit(() -> {
                 try {
@@ -96,14 +132,19 @@ public class VirtualViewRMI implements VirtualView {
                 logErrFuture.get(Configs.secondsTimeOut, TimeUnit.SECONDS);
             } catch (InterruptedException ignored) {
             } catch (Exception e) {
-                e.printStackTrace();
+                Configs.printStackTrace(e);
                 this.disconnect();
             }
         });
     }
-
+    
+    /**
+     * Call the logOthers method on the view
+     * If the client does not respond in Configs.secondsTimeOut seconds, it logs an error on the server console and close the connection
+     * @param logMsg the String to log
+     */
     @Override
-    public void logOthers(String logMsg) throws RemoteException {
+    public void logOthers(String logMsg) {
         virtualViewExecutor.execute(()-> {
             Future<?> logFuture = viewUpdateExecutor.submit(() -> {
                 try {
@@ -116,14 +157,19 @@ public class VirtualViewRMI implements VirtualView {
                 logFuture.get(Configs.secondsTimeOut, TimeUnit.SECONDS);
             } catch (InterruptedException ignored) {
             } catch (Exception e) {
-                e.printStackTrace();
+                Configs.printStackTrace(e);
                 this.disconnect();
             }
         });
     }
 
+    /**
+     * Call the logGame method on the view
+     * If the client does not respond in Configs.secondsTimeOut seconds, it logs an error on the server console and close the connection
+     * @param logMsg the String to log
+     */
     @Override
-    public void logGame(String logMsg) throws RemoteException {
+    public void logGame(String logMsg) {
         virtualViewExecutor.execute(()-> {
             Future<?> logFuture = viewUpdateExecutor.submit(() -> {
                 try {
@@ -136,14 +182,19 @@ public class VirtualViewRMI implements VirtualView {
                 logFuture.get(Configs.secondsTimeOut, TimeUnit.SECONDS);
             } catch (InterruptedException ignored) {
             } catch (Exception e) {
-                e.printStackTrace();
+                Configs.printStackTrace(e);
                 this.disconnect();
             }
         });
     }
 
+    /**
+     * Call the logChat method on the view
+     * If the client does not respond in Configs.secondsTimeOut seconds, it logs an error on the server console and close the connection
+     * @param logMsg the String to log
+     */
     @Override
-    public void logChat(String logMsg) throws RemoteException {
+    public void logChat(String logMsg) {
         virtualViewExecutor.execute(()-> {
             Future<?> logFuture = viewUpdateExecutor.submit(() -> {
                 try {
@@ -156,13 +207,19 @@ public class VirtualViewRMI implements VirtualView {
                 logFuture.get(Configs.secondsTimeOut, TimeUnit.SECONDS);
             } catch (InterruptedException ignored) {
             } catch (Exception e) {
-                e.printStackTrace();
+                Configs.printStackTrace(e);
                 this.disconnect();
             }
         });
     }
+    
+    /**
+     * Call the updateLobbyList method on the view for updating the lightLobby in the lightModel
+     * If the client does not respond in Configs.secondsTimeOut seconds, it logs an error on the server console and close the connection
+     * @param diff the diff containing an updated version of the lightLobbyList
+     */
     @Override
-    public void updateLobbyList(ModelDiffs<LightLobbyList> diff) throws RemoteException {
+    public void updateLobbyList(ModelDiffs<LightLobbyList> diff) {
         virtualViewExecutor.execute(()-> {
             Future<?> updateFuture = viewUpdateExecutor.submit(() -> {
                 try {
@@ -176,14 +233,19 @@ public class VirtualViewRMI implements VirtualView {
                 updateFuture.get(Configs.secondsTimeOut, TimeUnit.SECONDS);
             } catch (InterruptedException ignored) {
             } catch (Exception e) {
-                e.printStackTrace();
+                Configs.printStackTrace(e);
                 this.disconnect();
             }
         });
     }
 
+    /**
+     * Call the updateLobby method on the view for updating the lightLobby in the lightModel
+     * If the client does not respond in Configs.secondsTimeOut seconds, it logs an error on the server console and close the connection
+     * @param diff the diff containing an updated version of the lightLobby
+     */
     @Override
-    public void updateLobby(ModelDiffs<LightLobby> diff) throws RemoteException {
+    public void updateLobby(ModelDiffs<LightLobby> diff) {
         virtualViewExecutor.execute(()-> {
             Future<?> updateFuture = viewUpdateExecutor.submit(() -> {
                 try{
@@ -196,14 +258,19 @@ public class VirtualViewRMI implements VirtualView {
                 updateFuture.get(Configs.secondsTimeOut, TimeUnit.SECONDS);
             } catch (InterruptedException ignored) {
             } catch (Exception e) {
-                e.printStackTrace();
+                Configs.printStackTrace(e);
                 this.disconnect();
             }
         });
     }
 
+    /**
+     * Call the updateGame method on the view for updating the lightGame in the lightModel
+     * If the client does not respond in Configs.secondsTimeOut seconds, it logs an error on the server console and close the connection
+     * @param diff the diff containing an updated version of the lightGame
+     */
     @Override
-    public void updateGame(ModelDiffs<LightGame> diff) throws RemoteException {
+    public void updateGame(ModelDiffs<LightGame> diff) {
         virtualViewExecutor.execute(()-> {
             Future<?> updateFuture = viewUpdateExecutor.submit(() -> {
                 try {
@@ -216,14 +283,19 @@ public class VirtualViewRMI implements VirtualView {
                 updateFuture.get(Configs.secondsTimeOut, TimeUnit.SECONDS);
             } catch (InterruptedException ignored) {
             } catch (Exception e) {
-                e.printStackTrace();
+                Configs.printStackTrace(e);
                 this.disconnect();
             }
         });
     }
 
+    /**
+     * Call the setFinalRanking method on the view for setting the final ranking of the game
+     * If the client does not respond in Configs.secondsTimeOut seconds, it logs an error on the server console and close the connection
+     * @param ranking the list containing the final ranking for the player in the game
+     */
     @Override
-    public void setFinalRanking(List<String> ranking) throws RemoteException {
+    public void setFinalRanking(List<String> ranking) {
         virtualViewExecutor.execute(()-> {
             Future<?> setFinalRankingFuture = viewUpdateExecutor.submit(() -> {
                 try {
@@ -236,18 +308,22 @@ public class VirtualViewRMI implements VirtualView {
                 setFinalRankingFuture.get(Configs.secondsTimeOut, TimeUnit.SECONDS);
             } catch (InterruptedException ignored) {
             } catch (Exception e) {
-                e.printStackTrace();
+                Configs.printStackTrace(e);
                 this.disconnect();
             }
         });
     }
 
+    /**
+     * Close the connection between the server and the client if alreadyDisconnected is false
+     * Stop the heartBeat mechanism, call the leave method on the controller and shutdown the virtualViewExecutor, the viewUpdateExecutor and the heartBeatExecutor
+     */
     private synchronized void disconnect(){
         try {
             if(!alreadyDisconnected){
                 alreadyDisconnected = true;
-                pong.cancel(true);
-                pingPongExecutor.shutdownNow();
+                heartBeatFuture.cancel(true);
+                heartBeatExecutor.shutdownNow();
                 controller.leave();
                 virtualViewExecutor.shutdownNow();
                 viewUpdateExecutor.shutdownNow();
@@ -255,22 +331,30 @@ public class VirtualViewRMI implements VirtualView {
             UnicastRemoteObject.unexportObject(controller, true);
         }catch (InterruptedException ignored){
         }catch (Exception e){
-            e.printStackTrace();
+            Configs.printStackTrace(e);
         }
     }
 
+    /**
+     * Set the controller of the game
+     * @param controller the controller of the game
+     */
     public void setController(ControllerInterface controller) {
         alreadyDisconnected = false;
         this.controller = controller;
     }
 
+    /**
+     * Call the checkEmpty method on the client to check if the connection is still alive.
+     * If the client does not respond in Configs.secondsTimeOut seconds, it logs an error and close the connection
+     */
     @Override
-    public void pingPong() throws RemoteException {
-        pong = pingPongExecutor.scheduleAtFixedRate(() -> {
+    public void heartBeat() {
+        heartBeatFuture = heartBeatExecutor.scheduleAtFixedRate(() -> {
             try {
-                Future<?> ping = pingPongExecutor.submit(() -> {
+                Future<?> ping = heartBeatExecutor.submit(() -> {
                     try {
-                        pingPongStub.checkEmpty();
+                        heartBeatStub.checkEmpty();
                     } catch (Exception e) {
                         throw new RuntimeException("VirtualViewRMI.pinPong: " + "\n  message: " + e.getMessage() + "\n  cause:\n" + e.getCause());
                     }
@@ -278,10 +362,10 @@ public class VirtualViewRMI implements VirtualView {
                 ping.get(Configs.secondsTimeOut, TimeUnit.SECONDS);
             }catch (InterruptedException ignored){
             } catch (Exception e) {
-                e.printStackTrace();
+                Configs.printStackTrace(e);
                 this.disconnect();
             }
-        }, Configs.pingPongPeriod, Configs.pingPongPeriod, TimeUnit.SECONDS);
+        }, Configs.heartBeatPeriod, Configs.heartBeatPeriod, TimeUnit.SECONDS);
     }
 
 }

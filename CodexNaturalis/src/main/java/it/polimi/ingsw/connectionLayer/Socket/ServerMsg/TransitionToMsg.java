@@ -7,12 +7,12 @@ import it.polimi.ingsw.view.ViewState;
  * Transition to message class
  */
 public class TransitionToMsg extends ServerMsg{
-    /** State to transition to */
+    /** State to which the view have to transition */
     private final ViewState state;
 
     /**
      * Class constructor
-     * @param state State to transition to
+     * @param state State to which the view have to transition
      */
     public TransitionToMsg(ViewState state) {
         this.state = state;

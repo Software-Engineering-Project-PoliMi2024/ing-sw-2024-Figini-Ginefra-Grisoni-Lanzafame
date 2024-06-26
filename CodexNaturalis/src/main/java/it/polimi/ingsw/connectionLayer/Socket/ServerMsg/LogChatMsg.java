@@ -11,7 +11,7 @@ public class LogChatMsg extends ServerMsg{
 
     /**
      * Class constructor
-     * @param logMsg Message to log
+     * @param logMsg the message to log on the view
      */
     public LogChatMsg(String logMsg) {
         this.logMsg = logMsg;

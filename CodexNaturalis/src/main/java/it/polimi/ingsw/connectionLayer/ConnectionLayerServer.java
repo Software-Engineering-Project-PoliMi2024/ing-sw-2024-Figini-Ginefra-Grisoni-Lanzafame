@@ -7,5 +7,5 @@ import java.io.Serializable;
 import java.rmi.Remote;
 
 public interface ConnectionLayerServer extends Remote, Serializable {
-    void connect(PingPongInterface pingPong, ViewInterface view, VirtualController controller) throws Exception;
+    void connect(HeartBeatInterface pingPong, ViewInterface view, VirtualController controller) throws Exception;
 }

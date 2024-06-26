@@ -12,7 +12,7 @@ public class LogErrMsg extends ServerMsg{
 
     /**
      * Class constructor
-     * @param logMsg Message to log
+     * @param logMsg the message to log on the view
      */
     public LogErrMsg(String logMsg) {
         this.logMsg = logMsg;
