@@ -18,6 +18,7 @@ public class CodexRenderableOthers extends CodexRenderable{
     /** The nickname of the player whose codex is being rendered. */
     private String targetPlayer = null;
 
+    /** The view to interact with. */
     private final ActualView view;
 
     /**
@@ -50,7 +51,7 @@ public class CodexRenderableOthers extends CodexRenderable{
     }
 
     /**
-     * Draws the codex.
+     * Draws the codex by calling the rendering of the parent class.
      */
     @Override
     public void render(){

@@ -9,8 +9,10 @@ import it.polimi.ingsw.view.TUI.inputs.CommandPrompt;
 
 /**
  * This class is a Renderable that can render a canvas.
+ * The canvas is a 2D grid of strings.
  */
 public class CanvasRenderable extends Renderable {
+    /** The canvas to render. */
     protected final Canvas canvas;
 
     /**
@@ -28,7 +30,7 @@ public class CanvasRenderable extends Renderable {
 
 
     /**
-     * Renders the canvas.
+     * Renders the canvas atomically.
      */
     @Override
     public void render() {
@@ -37,6 +39,10 @@ public class CanvasRenderable extends Renderable {
         Printer.print(printable);
     }
 
+    /**
+     * Renders the canvas to a printable.
+     * @param printable The printable to render to.
+     */
     public void renderToPrintable(Printable printable){
         String[][] content = canvas.getContent();
 
