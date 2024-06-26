@@ -56,4 +56,10 @@ public class Configs {
     public static int delayBeforeLoadingGameSaves = 0;
     /** the seconds before deleting the logs on the TUI */
     public static int logDurationTUI_millis = 5000;
+
+    public static void printStackTrace(Exception e) {
+        if (debugMode) {
+            e.printStackTrace();
+        }
+    }
 }
