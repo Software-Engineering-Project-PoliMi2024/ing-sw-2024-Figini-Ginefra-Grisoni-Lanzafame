@@ -36,17 +36,6 @@ public class VirtualControllerRMI implements VirtualController {
     private Future<?> pong;
 
     public VirtualControllerRMI() {
-        try (Socket socket = new Socket()) {
-            socket.connect(new InetSocketAddress("google.com", 80));
-            String ip = socket.getLocalAddress().getHostAddress();
-            System.setProperty("java.rmi.server.hostname", ip);
-        } catch (IOException e) {
-            try {
-                view.logErr(LogsOnClient.UNABLE_TO_GET_IP);
-                view.transitionTo(ViewState.SERVER_CONNECTION);
-            }catch (Exception ignored){}
-        }
-
         Runtime.getRuntime().addShutdownHook(new Thread(() -> {
             try {
                 UnicastRemoteObject.unexportObject(this, true);
@@ -311,6 +300,16 @@ public class VirtualControllerRMI implements VirtualController {
     @Override
     public void connect(String ip, int port, ViewInterface view) {
         this.view = view;
+        try (Socket socket = new Socket()) {
+            socket.connect(new InetSocketAddress("google.com", 80));
+            String localIp = socket.getLocalAddress().getHostAddress();
+            System.setProperty("java.rmi.server.hostname", localIp);
+        } catch (IOException e) {
+            try {
+                view.logErr(LogsOnClient.UNABLE_TO_GET_IP);
+                view.transitionTo(ViewState.SERVER_CONNECTION);
+            }catch (Exception ignored){}
+        }
         try {
             UnicastRemoteObject.unexportObject(this, true);
             UnicastRemoteObject.unexportObject(view, true);

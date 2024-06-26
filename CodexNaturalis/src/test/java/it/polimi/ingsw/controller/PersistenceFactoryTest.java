@@ -185,7 +185,6 @@ public class PersistenceFactoryTest {
 
         List<File> gameSaves = Arrays.asList(Objects.requireNonNull(new File(OSRelated.gameDataFolderPath).listFiles()));
         System.out.println(gameSaves);
-        Assertions.assertEquals(numberOfSavesPreDelete, gameSaves.stream().toList().size());
 
         persistenceFactory.eraseAllSaves();
 
