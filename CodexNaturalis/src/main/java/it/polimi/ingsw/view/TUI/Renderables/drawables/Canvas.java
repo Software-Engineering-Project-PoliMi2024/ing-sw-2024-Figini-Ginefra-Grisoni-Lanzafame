@@ -1,7 +1,7 @@
 package it.polimi.ingsw.view.TUI.Renderables.drawables;
 
 /**
- * This class is a drawable that represents a canvas. That is, a drawable that can draw other drawables.
+ * This class is a drawable that represents a canvas. That is, a drawable in which other drawables can be drawn.
  */
 public class Canvas extends Drawable{
     /**
