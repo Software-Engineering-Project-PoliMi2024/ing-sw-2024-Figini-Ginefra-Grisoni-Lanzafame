@@ -19,7 +19,7 @@ import java.util.Map;
  */
 public class CardPainter {
     /**
-     * Draws the requirements of a card.
+     * Draws the requirements of a card. That being the resources needed to place a gold card.
      * @param card The card to draw.
      * @param drawable The drawable where to draw the card.
      */
@@ -49,9 +49,9 @@ public class CardPainter {
     }
 
     /**
-     * Draws the multiplier of a card.
+     * Draws the multiplier of a card. That being what the point of the cards are multiplied by when scoring.
      * @param card The card to draw.
-     * @param drawable The drawable where to draw the card.
+     * @param drawable The drawable where to draw the multiplier.
      */
     private static void drawMultiplier(GoldCard card, Drawable drawable){
         if(card.getGoldCardPointMultiplier() != null){
@@ -66,7 +66,7 @@ public class CardPainter {
     /**
      * Draws the points of a card.
      * @param card The card to draw.
-     * @param drawable The drawable where to draw the card.
+     * @param drawable The drawable where to draw the points.
      */
     private static void drawPoints(CardWithCorners card, Drawable drawable){
         if(card.getPoints() != 0)
@@ -74,9 +74,9 @@ public class CardPainter {
     }
 
     /**
-     * Draws the permanent resources of a card.
+     * Draws the permanent resources of a card. That being the resources that are always on the card.
      * @param card The card to draw.
-     * @param drawable The drawable where to draw the card.
+     * @param drawable The drawable where to draw the permanent resources.
      */
     private static void drawPermanentResources(CardWithCorners card, Drawable drawable){
         if(card.getPermanentResources(CardFace.BACK).isEmpty())
@@ -93,9 +93,9 @@ public class CardPainter {
     }
 
     /**
-     * Draws the collectable multiplier of a gold card.
+     * Draws the collectable multiplier of a gold card. That being which collectable whose number counts as multiplier.
      * @param multiplier The multiplier to draw.
-     * @param drawable The drawable where to draw the card.
+     * @param drawable The drawable where to draw the multiplier.
      */
     private static void drawCollectableMultiplier(CollectableCardPointMultiplier multiplier, Drawable drawable){
         if(multiplier != null){
@@ -115,9 +115,9 @@ public class CardPainter {
     }
 
     /**
-     * Draws the diagonal multiplier of a gold card.
+     * Draws the diagonal multiplier of a gold card. That being a diagonal line of a resource that counts as multiplier.
      * @param multiplier The multiplier to draw.
-     * @param drawable The drawable where to draw the card.
+     * @param drawable The drawable where to draw the multiplier.
      */
     private static void drawDiagonalMultiplier(DiagonalCardPointMultiplier multiplier, Drawable drawable) {
         if (multiplier != null) {
@@ -145,9 +145,9 @@ public class CardPainter {
     }
 
     /**
-     * Draws the L multiplier of a gold card.
+     * Draws the L multiplier of a gold card. That being an L shape of a resource that counts as multiplier.
      * @param multiplier The multiplier to draw.
-     * @param drawable The drawable where to draw the card.
+     * @param drawable The drawable where to draw the multiplier.
      */
     private static void drawLMultiplier(LCardPointMultiplier multiplier, Drawable drawable) {
         if (multiplier != null) {
