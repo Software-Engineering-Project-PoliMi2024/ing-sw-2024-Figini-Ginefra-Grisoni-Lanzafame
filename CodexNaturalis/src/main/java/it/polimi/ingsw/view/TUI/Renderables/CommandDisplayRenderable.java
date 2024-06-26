@@ -20,7 +20,7 @@ public class CommandDisplayRenderable extends Renderable{
     /** The active non-local prompts. */
     private final Map<CommandPrompt, Integer> activeActionPrompts;
 
-    private int currentPromptIndex = 0;
+    private int currentPromptIndex = -1;
     CommandPrompt currentPrompt;
 
     /**
@@ -159,6 +159,8 @@ public class CommandDisplayRenderable extends Renderable{
                     //If the prompt has no next, it will notify the observers, reset the prompt and set the current prompt to null
                     OSRelated.clearTerminal();
 
+                    currentPromptIndex = -1;
+
                     currentPrompt.notifyObservers();
 
                     if(currentPrompt != null) {
@@ -176,7 +178,7 @@ public class CommandDisplayRenderable extends Renderable{
     }
 
     private void printCurrentPrompt(){
-        if(currentPrompt == null || !currentPrompt.hasLast())
+        if(currentPrompt == null || !currentPrompt.hasLast() || currentPromptIndex == -1)
             return;
 
         Printer.print(this.currentPromptIndex + "\n");
@@ -256,10 +258,5 @@ public class CommandDisplayRenderable extends Renderable{
     public void clearCommandPrompts(){
         activeLocalPrompts.clear();
         activeActionPrompts.clear();
-    }
-
-    public void clearCurrentPrompt(){
-        this.currentPrompt.reset();
-        this.currentPrompt = null;
     }
 }
