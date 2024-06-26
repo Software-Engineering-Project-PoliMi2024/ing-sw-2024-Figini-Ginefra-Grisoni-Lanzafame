@@ -27,6 +27,7 @@ public class Configs {
     public static String cardDataFolderName = "Cards";
     public static String gameSaveFolderName = "GameSaved";
     public static int maxPointsPerPlayer = 29;
+    public static int delayBeforeLoadingGameSaves = 0;
 
     public static int logDurationTUI_millis = 5000;
 

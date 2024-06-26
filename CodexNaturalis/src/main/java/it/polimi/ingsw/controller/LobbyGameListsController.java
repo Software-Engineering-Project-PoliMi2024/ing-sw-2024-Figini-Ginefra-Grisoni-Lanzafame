@@ -31,39 +31,49 @@ public class LobbyGameListsController implements it.polimi.ingsw.controller.Inte
     private transient final ServerLogger logger = new ServerLogger(LoggerSources.LOBBY_GAME_LISTS_CONTROLLER, "");
 
     public LobbyGameListsController(){
-        gamesLoadExecutor.scheduleAtFixedRate(this::refreshGames, 0, Configs.gameSaveExpirationTimeMinutes, TimeUnit.MINUTES);
+        gamesLoadExecutor.scheduleAtFixedRate(this::refreshGames, Configs.delayBeforeLoadingGameSaves, Configs.gameSaveExpirationTimeMinutes, TimeUnit.MINUTES);
     }
 
     @Override
     public synchronized boolean login(String nickname, ViewInterface view, GameControllerReceiver controllerReceiver) {
         boolean loggedIn;
-        //check if the nickname is already taken
-        if(allConnectedUsers().containsKey(nickname)) {
-            loggedIn = false;
-            try {
-                view.logErr(LogsOnClient.NAME_TAKEN);
-                view.transitionTo(ViewState.LOGIN_FORM);
-            }catch (Exception ignored){}
-            //check if the nickname is valid
-        }else if(nickname.matches(Configs.invalidNicknameRegex)){
-            loggedIn = false;
-            try {
-                view.logErr(LogsOnClient.NOT_VALID_NICKNAME);
-                view.transitionTo(ViewState.LOGIN_FORM);
-            }catch (Exception ignored){}
-        }else{
-            loggedIn = true;
-            //Client is now logged-In. If he disconnects we have to update the model
-            logger.log(LoggerLevel.INFO, nickname + " has connected");
-            //check if the player was playing a game before disconnecting
-            if(isInGameParty(nickname)){
-                GameController gameToJoin = this.getGameFromUserNick(nickname);
-                controllerReceiver.setGameController(gameToJoin);
-                gameToJoin.join(nickname, view, true);
-            }else{
-                joinLobbyList(nickname, view);
-                try{view.transitionTo(ViewState.JOIN_LOBBY);}catch (Exception ignored){}
+        if(view != null && controllerReceiver != null ) {
+            //check if the nickname is already taken
+            if (allConnectedUsers().containsKey(nickname)) {
+                loggedIn = false;
+                try {
+                    view.logErr(LogsOnClient.NAME_TAKEN);
+                    view.transitionTo(ViewState.LOGIN_FORM);
+                } catch (Exception ignored) {
+                }
+                //check if the nickname is valid
+            } else if (nickname.matches(Configs.invalidNicknameRegex)) {
+                loggedIn = false;
+                try {
+                    view.logErr(LogsOnClient.NOT_VALID_NICKNAME);
+                    view.transitionTo(ViewState.LOGIN_FORM);
+                } catch (Exception ignored) {
+                }
+            } else {
+                loggedIn = true;
+                //Client is now logged-In. If he disconnects we have to update the model
+                logger.log(LoggerLevel.INFO, nickname + " has connected");
+                //check if the player was playing a game before disconnecting
+                if (isInGameParty(nickname)) {
+                    GameController gameToJoin = this.getGameFromUserNick(nickname);
+                    controllerReceiver.setGameController(gameToJoin);
+                    gameToJoin.join(nickname, view, true);
+                } else {
+                    joinLobbyList(nickname, view);
+                    try {
+                        view.transitionTo(ViewState.JOIN_LOBBY);
+                    } catch (Exception ignored) {
+                    }
+                }
             }
+        }else {
+            loggedIn = false;
+            this.manageMalevolentPlayer(nickname);
         }
         return loggedIn;
     }
@@ -73,7 +83,7 @@ public class LobbyGameListsController implements it.polimi.ingsw.controller.Inte
         //check if the lobby name is already taken
         ViewInterface view = viewMap.get(creator);
 
-        if(view != null) {
+        if(creator != null && gameReceiver != null && view != null && !isInGameParty(creator)){
             if (lobbyMap.get(lobbyName) != null || gameMap.get(lobbyName) != null) {
                 try {
                     view.logErr(LogsOnClient.LOBBY_NAME_TAKEN);
@@ -119,7 +129,7 @@ public class LobbyGameListsController implements it.polimi.ingsw.controller.Inte
         LobbyController lobbyToJoin = lobbyMap.get(lobbyName);
         ViewInterface view = viewMap.get(joiner);
 
-        if(view != null) {
+        if(view != null && gameReceiver != null && !isInGameParty(joiner)) {
             if (lobbyToJoin == null) {
                 try {
                     view.logErr(LogsOnClient.LOBBY_NONEXISTENT);
@@ -147,7 +157,6 @@ public class LobbyGameListsController implements it.polimi.ingsw.controller.Inte
             }
         }else {
             this.manageMalevolentPlayer(joiner);
-            return;
         }
     }
 
@@ -203,6 +212,8 @@ public class LobbyGameListsController implements it.polimi.ingsw.controller.Inte
             this.joinLobbyList(leaverNick, leaverView);
 
             try{leaverView.transitionTo(ViewState.JOIN_LOBBY);}catch (Exception ignored){}
+        }else {
+            this.manageMalevolentPlayer(leaverNick);
         }
     }
 

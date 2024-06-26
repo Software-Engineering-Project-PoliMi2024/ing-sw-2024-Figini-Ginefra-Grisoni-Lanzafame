@@ -315,7 +315,7 @@ public class GameController implements GameControllerInterface {
     @Override
     public synchronized void draw(String nickname, DrawableCard deckType, int cardID) {
         Player player = game.getPlayerFromNick(nickname);
-        if(player.getState().equals(PlayerState.DRAW) && cardID >= 0 && cardID <= Configs.actualDeckPos){
+        if(player.getState().equals(PlayerState.DRAW) && deckType != null && CardChecks.validDeckPosition.apply(cardID)){
             logger.log(LoggerLevel.INFO, nickname + " drew card");
             if (!game.areDeckEmpty()) {
                 CardInHand drawnCard;
