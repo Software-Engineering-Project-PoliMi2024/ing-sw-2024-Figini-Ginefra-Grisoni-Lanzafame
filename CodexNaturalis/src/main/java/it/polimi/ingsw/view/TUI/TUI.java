@@ -299,7 +299,7 @@ public class TUI implements ActualView, CommandObserver, Observer {
             throw new IllegalArgumentException("Current View State(" + state.name() + ") not supported by TUI");
         }
 
-        if(this.state != state){
+        if(this.state != state || this.state == ViewState.SERVER_CONNECTION){
             this.state = state;
 
             for (Renderable renderable : renderables) {
@@ -358,6 +358,7 @@ public class TUI implements ActualView, CommandObserver, Observer {
     @Override
     public void logErr(String logMsg) {
         logger.addLog(logMsg, StringStyle.RED_FOREGROUND);
+        commandDisplay.clearCurrentPrompt();
     }
 
     @Override

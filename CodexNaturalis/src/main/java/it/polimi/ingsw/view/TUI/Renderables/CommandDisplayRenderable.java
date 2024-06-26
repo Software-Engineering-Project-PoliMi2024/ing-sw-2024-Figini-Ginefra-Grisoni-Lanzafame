@@ -160,12 +160,15 @@ public class CommandDisplayRenderable extends Renderable{
                     OSRelated.clearTerminal();
 
                     currentPrompt.notifyObservers();
-                    currentPrompt.reset();
 
-                    if(currentPrompt.isLocal())
-                        this.render();
+                    if(currentPrompt != null) {
+                        currentPrompt.reset();
 
-                    currentPrompt = null;
+                        if (currentPrompt.isLocal())
+                            this.render();
+
+                        currentPrompt = null;
+                    }
 
                 }
             }
@@ -253,5 +256,10 @@ public class CommandDisplayRenderable extends Renderable{
     public void clearCommandPrompts(){
         activeLocalPrompts.clear();
         activeActionPrompts.clear();
+    }
+
+    public void clearCurrentPrompt(){
+        this.currentPrompt.reset();
+        this.currentPrompt = null;
     }
 }
