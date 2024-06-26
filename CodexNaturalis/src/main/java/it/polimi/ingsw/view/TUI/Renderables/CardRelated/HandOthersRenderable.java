@@ -14,6 +14,7 @@ import it.polimi.ingsw.view.TUI.inputs.CommandPromptResult;
 
 /**
  * This class is a Renderable that can render the hand of players who are not the main player.
+ * Contrary to the hand renderable, this one only renders the back of the cards.
  */
 public class HandOthersRenderable extends CardRenderable{
     /** The nickname of the player whose hand is being rendered. */
@@ -41,7 +42,7 @@ public class HandOthersRenderable extends CardRenderable{
     }
 
     /**
-     * Renders the hand of the target player.
+     * Renders the hand of the target player fetching the cards from the light model.
      */
     @Override
     public void render(){

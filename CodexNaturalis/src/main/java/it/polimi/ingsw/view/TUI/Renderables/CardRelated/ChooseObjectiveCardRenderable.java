@@ -25,6 +25,7 @@ import java.util.Objects;
 
 /**
  * This class is a Renderable that can prompt the player to choose between two objective cards.
+ * In order to render the card stacked horizontally it extends CanvasRenderable.
  */
 public class ChooseObjectiveCardRenderable extends CanvasRenderable {
     private final LightGame lightGame;

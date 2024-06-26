@@ -19,6 +19,7 @@ import it.polimi.ingsw.view.TUI.inputs.CommandPromptResult;
 
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Objects;
 
 /**
  * This class is a Renderable that can render the hand of the main player.
@@ -41,14 +42,8 @@ public class HandRenderable extends CanvasRenderable {
         this.lightGame = game;
     }
 
-    private void renderCard(LightCard card){
-        TextCard textCard = museum.get(card.idFront());
-        Drawable drawable = textCard.get(CardFace.FRONT);
-        Printer.print(drawable.toString());
-    }
-
     /**
-     * Renders the hand of the main player.
+     * Renders the hand of the main player fetching the cards from the light model.
      */
     @Override
     public void render() {
@@ -97,12 +92,8 @@ public class HandRenderable extends CanvasRenderable {
      * @param answer The command prompt result.
      */
     public void updateCommand(CommandPromptResult answer){
-        switch (answer.getCommand()) {
-            case CommandPrompt.DISPLAY_HAND:
-                this.render();
-                break;
-            default:
-                break;
+        if (answer.getCommand() == CommandPrompt.DISPLAY_HAND) {
+            this.render();
         }
     }
 }

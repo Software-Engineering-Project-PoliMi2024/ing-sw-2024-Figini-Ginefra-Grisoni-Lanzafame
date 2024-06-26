@@ -17,7 +17,7 @@ import java.time.format.TextStyle;
 import java.util.Arrays;
 
 /**
- * This class is a Renderable that can render a card and prompt the player to choose the face of the start card.
+ * This class is a Renderable that can prompt the player to choose the face of the start card.
  */
 public class ChooseStartCardRenderable extends CardRenderable {
     /**
