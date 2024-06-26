@@ -126,10 +126,7 @@ public class GUI extends Application implements ActualView {
 
     @Override
     public void logErr(String logMsg) throws RemoteException {
-        //Allow the transition some time to finish before displaying the error
-        PauseTransition pause = new PauseTransition(Duration.millis(200));
-        pause.setOnFinished(event -> Platform.runLater(() -> LogErr.display(stackRoot, logMsg)));
-        pause.play();
+        Platform.runLater(() -> LogErr.display(stackRoot, logMsg));
     }
 
     @Override

@@ -263,12 +263,10 @@ public class TUI implements ActualView, CommandObserver, Observer {
         StateTUI.WAITING_STATE.addStartupPrompt(CommandPrompt.DISPLAY_LEADERBOARD);
 
         StateTUI.IDLE.addStartupPrompt(CommandPrompt.DISPLAY_LEADERBOARD);
-        StateTUI.IDLE.addStartupPrompt(CommandPrompt.DISPLAY_DECKS);
         StateTUI.IDLE.addStartupPrompt(CommandPrompt.DISPLAY_CODEX);
         StateTUI.IDLE.addStartupPrompt(CommandPrompt.DISPLAY_HAND);
 
         StateTUI.PLACE_CARD.addStartupPrompt(CommandPrompt.DISPLAY_LEADERBOARD);
-        StateTUI.PLACE_CARD.addStartupPrompt(CommandPrompt.DISPLAY_DECKS);
         StateTUI.PLACE_CARD.addStartupPrompt(CommandPrompt.DISPLAY_CODEX);
         StateTUI.PLACE_CARD.addStartupPrompt(CommandPrompt.DISPLAY_HAND);
 
