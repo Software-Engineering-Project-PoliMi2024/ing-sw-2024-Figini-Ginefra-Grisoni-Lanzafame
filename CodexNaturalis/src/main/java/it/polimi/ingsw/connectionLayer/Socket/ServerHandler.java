@@ -121,7 +121,6 @@ public class ServerHandler implements Runnable{
             ServerMsg serverMsg;
             try {
                 serverMsg = (ServerMsg) input.readObject();
-                System.out.println("Received a message with a index of: " + serverMsg.getIndex());
             } catch (ClassNotFoundException e) {
                 //This scenario should not occur if a ClientMsg is being sent, as TCP ensures that every message is always received correctly.
                 System.out.println("Error during the transmission of the message. The message was not a ServerMsg object.");
@@ -157,6 +156,7 @@ public class ServerHandler implements Runnable{
         try{
             this.connectionLayerDisconnection();
             if(isListening){
+                owner.disconnect();
                 view.logErr(LogsOnClient.CONNECTION_LOST_CLIENT_SIDE);
                 view.transitionTo(ViewState.SERVER_CONNECTION);
             }else{
@@ -234,7 +234,6 @@ public class ServerHandler implements Runnable{
             ServerMsg serverMsg = queue.poll();
             try {
                 serverMsg.processMsg(this);
-                System.out.println("Processed a message with index: " + serverMsg.getIndex());
             }catch (Exception e) {
                 System.out.println("Error during the processing of the message");
                 e.printStackTrace();

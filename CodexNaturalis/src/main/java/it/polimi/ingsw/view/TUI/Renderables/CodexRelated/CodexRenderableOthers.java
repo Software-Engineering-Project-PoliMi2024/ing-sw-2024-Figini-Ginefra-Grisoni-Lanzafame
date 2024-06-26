@@ -2,6 +2,7 @@ package it.polimi.ingsw.view.TUI.Renderables.CodexRelated;
 
 import it.polimi.ingsw.lightModel.lightPlayerRelated.LightCodex;
 import it.polimi.ingsw.lightModel.lightTableRelated.LightGame;
+import it.polimi.ingsw.model.playerReleted.Position;
 import it.polimi.ingsw.view.ActualView;
 import it.polimi.ingsw.view.TUI.Styles.PromptStyle;
 import it.polimi.ingsw.view.TUI.cardDrawing.CardMuseum;
@@ -85,9 +86,21 @@ public class CodexRenderableOthers extends CodexRenderable{
                 }
 
                 this.setTargetPlayer(nickname);
-                drawCodex();
+                this.render();
+                break;
+            case CommandPrompt.MOVE_CODEX:
+                int dx = Integer.parseInt(answer.getAnswer(0));
+                int dy = Integer.parseInt(answer.getAnswer(1));
+
+                Position offset = new Position(dx, dy);
+                center = center.add(offset);
+                this.render();
+                break;
+            case CommandPrompt.RECENTER_CODEX:
+                center = new Position(0, 0);
                 this.render();
                 break;
         }
+
     }
 }

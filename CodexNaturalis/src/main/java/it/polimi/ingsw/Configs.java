@@ -3,7 +3,7 @@ package it.polimi.ingsw;
 import java.io.IOException;
 
 public class Configs {
-    public static Boolean debugMode = false;
+    public static Boolean debugMode = true;
     public static long gameSaveExpirationTimeMinutes = 30;
     public static String connectionLabelRMI = "connect";
     public static String CardResourcesFolderPath = "Cards/";

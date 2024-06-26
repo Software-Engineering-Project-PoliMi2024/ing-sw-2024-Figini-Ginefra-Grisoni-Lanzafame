@@ -41,7 +41,6 @@ public class GUI extends Application implements ActualView {
     private final AnchorPane stackRoot = new AnchorPane();
     private logoSwapAnimation transitionAnimation;
     private static final EnumProperty<StateGUI> stateProperty = new EnumProperty<>();
-    private LeaderboardGUI leaderboardGUI;
 
     public void run() {
         launch();
@@ -78,11 +77,6 @@ public class GUI extends Application implements ActualView {
         });
 
             primaryStage.show();
-
-        // Initialize leaderboard
-        leaderboardGUI = new LeaderboardGUI();
-        leaderboardGUI.attach();
-        //leaderboardGUI.addThisTo(stackRoot);
 
         // set stackRoot background and style
         // stackRoot.setStyle("-fx-background-color: #1e1f22;");

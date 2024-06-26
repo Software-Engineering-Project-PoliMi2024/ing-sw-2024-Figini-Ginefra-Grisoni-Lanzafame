@@ -23,6 +23,7 @@ import java.util.Map;
 public class CodexRenderable extends CanvasRenderable {
     protected final LightGame lightGame;
     private final CardMuseum cardMuseum;
+    protected Position center = new Position(0, 0);
 
     /**
      * Creates a new CodexRenderable.
@@ -44,7 +45,7 @@ public class CodexRenderable extends CanvasRenderable {
      * @return The canvas position.
      */
     private Position gridToCanvas(Position p){
-        return new Position(p.getX() * (CardTextStyle.getCardWidth() - 2) + canvas.getWidth() / 2, -p.getY() * (CardTextStyle.getCardHeight() - 2) + canvas.getHeight() / 2);
+        return new Position((p.getX() - center.getX()) * (CardTextStyle.getCardWidth() - 2) + canvas.getWidth() / 2, -(p.getY() - center.getY()) * (CardTextStyle.getCardHeight() - 2) + canvas.getHeight() / 2);
     }
 
     /**
@@ -88,6 +89,8 @@ public class CodexRenderable extends CanvasRenderable {
         }
 
         int width = (Math.max(-LL_corner.getX(), UR_corner.getX()) + 3) * (CardTextStyle.getCardWidth() - 2) * 2;
+        width = Math.min(width, CardTextStyle.codexMaxWidth);
+
         int height = (Math.max(-LL_corner.getY(), UR_corner.getY()) + 3) * (CardTextStyle.getCardHeight() - 2) * 2;
 
         //update the canvas
@@ -115,6 +118,7 @@ public class CodexRenderable extends CanvasRenderable {
      */
     @Override
     public void render() {
+        drawCodex();
         super.render();
     }
 
@@ -126,9 +130,21 @@ public class CodexRenderable extends CanvasRenderable {
     public void updateCommand(CommandPromptResult answer) {
         switch (answer.getCommand()){
             case CommandPrompt.DISPLAY_CODEX:
-                drawCodex();
                 this.render();
                 break;
+            case CommandPrompt.MOVE_CODEX:
+                int dx = Integer.parseInt(answer.getAnswer(0));
+                int dy = Integer.parseInt(answer.getAnswer(1));
+
+                Position offset = new Position(dx, dy);
+                center = center.add(offset);
+                this.render();
+                break;
+            case CommandPrompt.RECENTER_CODEX:
+                center = new Position(0, 0);
+                this.render();
+                break;
+
         }
     }
 

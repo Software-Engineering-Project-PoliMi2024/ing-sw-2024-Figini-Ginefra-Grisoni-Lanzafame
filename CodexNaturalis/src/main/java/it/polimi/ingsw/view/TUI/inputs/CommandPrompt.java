@@ -170,6 +170,33 @@ public enum CommandPrompt implements Iterator<String>, CommandObserved {
     /** The command to display the codex */
     DISPLAY_CODEX("Display codex", true),
 
+    MOVE_CODEX("Move Codex",
+            new String[]{
+                    "Insert a Δx value in number of cards (positive to the right)",
+                    "Insert a Δy value in number of cards (positive upwards)",
+            },
+            new Predicate[]{
+                    s -> {
+                        try {
+                            int i = Integer.parseInt(s.toString());
+                            return true;
+                        } catch (NumberFormatException e) {
+                            return false;
+                        }
+                    },
+                    s -> {
+                        try {
+                            int i = Integer.parseInt(s.toString());
+                            return true;
+                        } catch (NumberFormatException e) {
+                            return false;
+                        }
+                    },
+            },
+            true),
+
+    RECENTER_CODEX("Recenter Codex", true),
+
     /** The command to peek at a player */
     PEEK("Peek",
             new String[]{
