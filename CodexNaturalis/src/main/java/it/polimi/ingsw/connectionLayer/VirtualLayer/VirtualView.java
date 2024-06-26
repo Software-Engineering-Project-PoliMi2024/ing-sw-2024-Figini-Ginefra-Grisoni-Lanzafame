@@ -38,7 +38,4 @@ public interface VirtualView extends ViewInterface, PingPongInterface {
 
     @Override
     public void updateGame(ModelDiffs<LightGame> diff) throws RemoteException;
-
-    @Override
-    public void setFinalRanking(List<String> ranking) throws RemoteException;
 }

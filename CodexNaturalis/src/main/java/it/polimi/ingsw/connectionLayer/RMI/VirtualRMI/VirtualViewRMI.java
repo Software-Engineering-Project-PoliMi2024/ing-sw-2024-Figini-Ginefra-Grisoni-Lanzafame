@@ -222,26 +222,6 @@ public class VirtualViewRMI implements VirtualView {
         });
     }
 
-    @Override
-    public void setFinalRanking(List<String> ranking) throws RemoteException {
-        virtualViewExecutor.execute(()-> {
-            Future<?> setFinalRankingFuture = viewUpdateExecutor.submit(() -> {
-                try {
-                    viewStub.setFinalRanking(ranking);
-                } catch (Exception e) {
-                    throw new RuntimeException("VirtualViewRMI.setFinalRanking: " + "\n  message: " + e.getMessage() + "\n  cause:\n" + e.getCause());
-                }
-            });
-            try {
-                setFinalRankingFuture.get(Configs.secondsTimeOut, TimeUnit.SECONDS);
-            } catch (InterruptedException ignored) {
-            } catch (Exception e) {
-                e.printStackTrace();
-                this.disconnect();
-            }
-        });
-    }
-
     private synchronized void disconnect(){
         try {
             if(!alreadyDisconnected){

@@ -54,11 +54,6 @@ public class ViewTest implements ViewInterface {
     }
 
     @Override
-    public void setFinalRanking(List<String> ranking) throws RemoteException {
-
-    }
-
-    @Override
     public void logOthers(String logMsg) throws RemoteException {
 
     }

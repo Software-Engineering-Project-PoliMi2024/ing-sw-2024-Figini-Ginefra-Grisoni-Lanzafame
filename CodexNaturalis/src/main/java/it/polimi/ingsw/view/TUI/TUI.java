@@ -375,12 +375,6 @@ public class TUI implements ActualView, CommandObserver, Observer {
         diff.apply(lightGame);
     }
 
-    @Override
-    public void setFinalRanking(List<String> ranking) {
-
-    }
-
-
     private void updateCommands(){
         StateTUI stateTUI = Arrays.stream(StateTUI.values()).reduce((a, b) -> a.references(state) ? a : b).orElse(null);
         assert stateTUI != null;

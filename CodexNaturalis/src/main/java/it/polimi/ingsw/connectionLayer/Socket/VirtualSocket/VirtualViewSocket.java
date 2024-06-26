@@ -134,15 +134,6 @@ public class VirtualViewSocket implements VirtualView {
         clientHandler.sendServerMessage(new UpdateGameMsg(diff));
     }
 
-    /**
-     * Send a setFinalRanking List to the client
-     * @param ranking list of the final ranking
-     */
-    @Override
-    public void setFinalRanking(List<String> ranking) throws RemoteException {
-        clientHandler.sendServerMessage(new SetFinalRankingMsg(ranking));
-    }
-
     public ControllerInterface getController() {
         return controller;
     }
