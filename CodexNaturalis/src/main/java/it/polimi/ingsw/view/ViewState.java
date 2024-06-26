@@ -6,6 +6,10 @@ import it.polimi.ingsw.view.TUI.States.StateTUI;
 import java.io.Serializable;
 import java.util.Map;
 
+/**
+ * All the states that the view can be in.
+
+ */
 public enum ViewState implements Serializable {
     SERVER_CONNECTION, //the state that asks for the server ip and port
     LOGIN_FORM, //the state that asks for the nickname
