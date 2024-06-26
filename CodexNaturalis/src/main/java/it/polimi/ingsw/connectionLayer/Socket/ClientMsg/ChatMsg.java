@@ -4,7 +4,7 @@ import it.polimi.ingsw.connectionLayer.Socket.ClientHandler;
 import it.polimi.ingsw.model.playerReleted.ChatMessage;
 
 /**
- * Message that contains a chat message
+ * Message that contains a chat message that need to be sent to the controller
  */
 public class ChatMsg extends ClientMsg{
     /**

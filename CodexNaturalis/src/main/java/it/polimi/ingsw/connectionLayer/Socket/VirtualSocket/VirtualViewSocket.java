@@ -142,8 +142,4 @@ public class VirtualViewSocket implements VirtualView {
     public void setFinalRanking(List<String> ranking) throws RemoteException {
         clientHandler.sendServerMessage(new SetFinalRankingMsg(ranking));
     }
-
-    public ControllerInterface getController() {
-        return controller;
-    }
 }

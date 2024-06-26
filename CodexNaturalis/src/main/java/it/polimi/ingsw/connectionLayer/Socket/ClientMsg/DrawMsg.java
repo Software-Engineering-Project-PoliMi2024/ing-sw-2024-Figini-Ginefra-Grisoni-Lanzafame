@@ -3,6 +3,9 @@ package it.polimi.ingsw.connectionLayer.Socket.ClientMsg;
 import it.polimi.ingsw.model.cardReleted.utilityEnums.DrawableCard;
 import it.polimi.ingsw.connectionLayer.Socket.ClientHandler;
 
+/**
+ * DrawMsg class contain the call to the controller for drawing a card and the parameters of the draw
+ */
 public class DrawMsg extends ClientMsg {
     /**
      * The deck from which the player is drawing

@@ -2,6 +2,9 @@ package it.polimi.ingsw.connectionLayer.Socket.ClientMsg;
 
 import it.polimi.ingsw.connectionLayer.Socket.ClientHandler;
 
+/**
+ * Message that contains the name of the lobby that the player wants to join and calls the controller for joining a lobby
+ */
 public class JoinLobbyMsg extends ClientMsg{
     /**
      * The name of the lobby that the player wants to join

@@ -2,6 +2,9 @@ package it.polimi.ingsw.connectionLayer.Socket.ClientMsg;
 
 import it.polimi.ingsw.connectionLayer.Socket.ClientHandler;
 
+/**
+ * LoginMsg is a message sent from the client that contains the call to the controller for login and the user nick
+ */
 public class LoginMsg extends ClientMsg{
     /**
      * The username of the player

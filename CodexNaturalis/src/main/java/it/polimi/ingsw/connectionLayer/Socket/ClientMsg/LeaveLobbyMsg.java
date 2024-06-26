@@ -2,6 +2,9 @@ package it.polimi.ingsw.connectionLayer.Socket.ClientMsg;
 
 import it.polimi.ingsw.connectionLayer.Socket.ClientHandler;
 
+/**
+ * Message for leaving the lobby
+ */
 public class LeaveLobbyMsg extends ClientMsg{
     /**
      * Call the controller for leaving the lobby

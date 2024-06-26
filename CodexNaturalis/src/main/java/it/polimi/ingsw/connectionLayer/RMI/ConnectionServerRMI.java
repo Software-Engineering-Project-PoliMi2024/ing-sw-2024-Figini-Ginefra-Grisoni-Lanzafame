@@ -23,6 +23,9 @@ import java.util.concurrent.Executors;
 import java.util.concurrent.Future;
 import java.util.concurrent.TimeUnit;
 
+/**
+ * The class that handles the connection with the client using RMI protocol
+ */
 public class ConnectionServerRMI implements ConnectionLayerServer {
     /** The controller in the server that handle the creation, joining and leaving of lobby and games*/
     private final LobbyGameListsController lobbyGameListController;

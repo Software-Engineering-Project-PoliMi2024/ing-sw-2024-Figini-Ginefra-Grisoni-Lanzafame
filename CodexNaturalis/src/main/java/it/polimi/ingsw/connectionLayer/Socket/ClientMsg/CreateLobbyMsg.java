@@ -2,6 +2,10 @@ package it.polimi.ingsw.connectionLayer.Socket.ClientMsg;
 
 import it.polimi.ingsw.controller.Interfaces.ControllerInterface;
 import it.polimi.ingsw.connectionLayer.Socket.ClientHandler;
+
+/**
+ * Message containing the call of the controller for creating a new lobby and the parameters needed
+ */
 public class CreateLobbyMsg extends ClientMsg {
     /**
      * The name of new the game

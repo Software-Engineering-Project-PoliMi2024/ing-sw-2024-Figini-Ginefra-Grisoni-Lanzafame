@@ -3,6 +3,9 @@ package it.polimi.ingsw.connectionLayer.Socket.ClientMsg;
 import it.polimi.ingsw.connectionLayer.Socket.ClientHandler;
 import it.polimi.ingsw.model.playerReleted.PawnColors;
 
+/**
+ * Message that contains the color of the pawn chosen by the player
+ */
 public class ChosePawnMsg extends ClientMsg{
     /**
      * The color of the pawn

@@ -2,6 +2,9 @@ package it.polimi.ingsw.connectionLayer.Socket.ClientMsg;
 
 import it.polimi.ingsw.connectionLayer.Socket.ClientHandler;
 
+/**
+ * Message that conatins the request to leave the game
+ */
 public class LeaveMsg extends ClientMsg {
     /**
      * Call the controller for leaving the game
