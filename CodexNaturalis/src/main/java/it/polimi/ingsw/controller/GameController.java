@@ -49,19 +49,40 @@ import java.util.*;
 import java.util.concurrent.*;
 import java.util.function.Predicate;
 
+/**
+ * This class is the controller of the game, it manages the game state and the players' actions
+ * It is responsible for the game turns logic and the communication between the model and players,
+ * and the communication between the model and the persistence layer
+ */
 public class GameController implements GameControllerInterface {
+    /** the class used to map the cards' ids to the corresponding cards objects*/
     private final transient CardTable cardTable;
+    /** the class responsible for managing the game list, used to remove the game if it ends*/
     private final transient GameList gameList;
+    /** the class responsible for managing the persistence property, used to save periodically the game*/
     private final transient PersistenceFactory persistenceFactory;
+    /** the class responsible for managing the malevolent players, used to handle the players who try to perform unauthorized actions*/
     private final transient MalevolentPlayerManager malevolentPlayerManager;
+    /** the class responsible for logging the game events to the server log*/
     private final transient ServerLogger logger;
 
+    /** the game object managed by this class containing the game state and the players' data*/
     private final Game game;
+    /** the map containing the active players' nicknames and the corresponding view objects*/
     private final Map<String, ViewInterface> playerViewMap = new HashMap<>();
-
+    /** the future object used to manage the last player in game timer*/
     private transient ScheduledFuture<?> lastInGameFuture = null;
+    /** the executor used to manage the last player in game timer*/
     private transient ScheduledExecutorService countdownExecutor = Executors.newSingleThreadScheduledExecutor();
 
+    /**
+     * The constructor of the class GameController creates a new GameController object
+     * @param game the game object managed by this class containing the game state and the players' data
+     * @param cardTable the cardTable object used to map the cards' ids to the corresponding cards objects
+     * @param persistenceFactory the class responsible for managing the persistence property, used to save periodically the game
+     * @param gameList the class that manages the game list, used to remove the game if it ends
+     * @param malevolentPlayerManager the class that manage the consequences of the malevolent players
+     */
     public GameController(Game game, CardTable cardTable, PersistenceFactory persistenceFactory, GameList gameList, MalevolentPlayerManager malevolentPlayerManager) {
         if(game.getState().equals(GameState.END_GAME)) {
             persistenceFactory.delete(game.getName());
@@ -75,60 +96,69 @@ public class GameController implements GameControllerInterface {
         this.logger = new ServerLogger(LoggerSources.GAME_CONTROLLER, game.getName());
     }
 
+    /**
+     * Method used to get the active players map containing
+     * their nicknames and the corresponding view objects
+     * @return the active players map
+     */
     public synchronized Map<String, ViewInterface> getPlayerViewMap() {
         return new HashMap<>(playerViewMap);
     }
 
+    /**
+     * Method used to get the list of nicknames of the players that are part of the game,
+     * i.e. the players that can join the game
+     * @return the list of nicknames of the players that are part of the game
+     */
     public synchronized List<String> getGamePlayers() {
         return game.getPlayersList().stream().map(Player::getNickname).toList();
     }
 
     public synchronized void join(String joinerNickname, ViewInterface view, boolean reconnected){
-        if(game.getState().equals(GameState.END_GAME)){
+        if(getGamePlayers().contains(joinerNickname) && !game.getState().equals(GameState.END_GAME)) {
+            this.save();
+            logger.log(LoggerLevel.INFO, joinerNickname + " joined the game");
+
+            this.resetLastPlayerTimer();
+
+            playerViewMap.put(joinerNickname, view);
+            this.notifyJoinGame(joinerNickname, reconnected);
+
+
+            if (game.getState().equals(GameState.CHOOSE_START_CARD)) {
+                this.updateJoinStartCard(joinerNickname);
+                startCardStateTransition(joinerNickname);
+            } else if (game.getState().equals(GameState.CHOOSE_SECRET_OBJECTIVE)) {
+                this.updateJoinSecretObjective(joinerNickname, game);
+                this.objectiveChoiceStateTransition(joinerNickname);
+            } else if (game.getState().equals(GameState.CHOOSE_PAWN)) {
+                this.updateJoinPawnChoice(joinerNickname);
+                this.pawnChoiceStateTransition(joinerNickname);
+            } else {
+                if (playerViewMap.size() == 2) {
+                    String otherPlayerNick = playerViewMap.keySet().stream().filter(n -> !n.equals(joinerNickname)).toList().getFirst();
+                    if (game.getPlayerFromNick(otherPlayerNick).getState().equals(PlayerState.WAIT)) {
+                        //set as current player the joining player
+                        game.setCurrentPlayerIndex(game.getPlayersList().indexOf(game.getPlayerFromNick(joinerNickname)));
+                        this.notifyTurnChange(joinerNickname);
+                        game.getPlayerFromNick(otherPlayerNick).setState(PlayerState.IDLE);
+                        this.takeTurn(otherPlayerNick);
+                    }
+                }
+                this.updateJoinActualGame(joinerNickname, game);
+                this.takeTurn(joinerNickname);
+            }
+
+            this.loadChat(joinerNickname, view);
+            if (playerViewMap.size() == 1 && reconnected) {
+                this.startLastPlayerTimer();
+            }
+
+        }else{
             try {
                 view.logErr(LogsOnClient.GAME_END);
                 view.transitionTo(ViewState.LOGIN_FORM);
-            }catch (Exception ignored){}
-            return;
-        }else{
-            this.save();
-        }
-
-        logger.log(LoggerLevel.INFO, joinerNickname + " joined the game");
-
-        this.resetLastPlayerTimer();
-
-        playerViewMap.put(joinerNickname, view);
-        this.notifyJoinGame(joinerNickname, reconnected);
-
-
-        if (game.getState().equals(GameState.CHOOSE_START_CARD)) {
-            this.updateJoinStartCard(joinerNickname);
-            startCardStateTransition(joinerNickname);
-        } else if (game.getState().equals(GameState.CHOOSE_SECRET_OBJECTIVE)) {
-            this.updateJoinSecretObjective(joinerNickname, game);
-            this.objectiveChoiceStateTransition(joinerNickname);
-        } else if (game.getState().equals(GameState.CHOOSE_PAWN)) {
-            this.updateJoinPawnChoice(joinerNickname);
-            this.pawnChoiceStateTransition(joinerNickname);
-        } else {
-            if (playerViewMap.size() == 2) {
-                String otherPlayerNick = playerViewMap.keySet().stream().filter(n -> !n.equals(joinerNickname)).toList().getFirst();
-                if(game.getPlayerFromNick(otherPlayerNick).getState().equals(PlayerState.WAIT)) {
-                    //set as current player the joining player
-                    game.setCurrentPlayerIndex(game.getPlayersList().indexOf(game.getPlayerFromNick(joinerNickname)));
-                    this.notifyTurnChange(joinerNickname);
-                    game.getPlayerFromNick(otherPlayerNick).setState(PlayerState.IDLE);
-                    this.takeTurn(otherPlayerNick);
-                }
-            }
-            this.updateJoinActualGame(joinerNickname, game);
-            this.takeTurn(joinerNickname);
-        }
-
-        this.loadChat(joinerNickname, view);
-        if(playerViewMap.size() == 1 && reconnected){
-            this.startLastPlayerTimer();
+            } catch (Exception ignored) {}
         }
     }
 
@@ -177,7 +207,6 @@ public class GameController implements GameControllerInterface {
             }
         }else{
             this.malevolentPlayer(nickname);
-            return;
         }
     }
 
@@ -210,7 +239,6 @@ public class GameController implements GameControllerInterface {
             }
         }else{
             this.malevolentPlayer(nickname);
-            return;
         }
     }
     @Override
@@ -236,7 +264,6 @@ public class GameController implements GameControllerInterface {
             }
         } catch (Exception e) {
             this.malevolentPlayer(nickname);
-            return;
         }
     }
 
@@ -260,7 +287,6 @@ public class GameController implements GameControllerInterface {
             }
         }else {
             this.malevolentPlayer(nickname);
-            return;
         }
     }
 
@@ -308,7 +334,6 @@ public class GameController implements GameControllerInterface {
             }
         }else {
             this.malevolentPlayer(nickname);
-            return;
         }
     }
 
@@ -335,7 +360,6 @@ public class GameController implements GameControllerInterface {
             this.save();
         }else {
             this.malevolentPlayer(nickname);
-            return;
         }
     }
 

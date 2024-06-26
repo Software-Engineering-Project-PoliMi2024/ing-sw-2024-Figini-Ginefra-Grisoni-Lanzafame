@@ -1,5 +1,6 @@
 package it.polimi.ingsw.connectionLayer.Socket;
 
+import it.polimi.ingsw.Configs;
 import it.polimi.ingsw.connectionLayer.Socket.ClientMsg.ClientMsg;
 import it.polimi.ingsw.connectionLayer.Socket.ServerMsg.ServerMsg;
 import it.polimi.ingsw.connectionLayer.VirtualLayer.VirtualView;
@@ -13,19 +14,31 @@ import java.util.*;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
+/**
+ * This class is responsible for handling the connection to the client.
+ * It is responsible for sending, receiving and processing messages from the client.
+ * Ensure that the messages are processed in order even if they are received out of order.
+ */
 public class ClientHandler implements Runnable{
+    /** The socket of the client */
     private final Socket client;
+    /** The VirtualView. It is the owner because every message request is sent by it */
     private VirtualView owner;
+    /** The output stream to the client */
     private ObjectOutputStream output;
+    /** The input stream from the client */
     private ObjectInputStream input;
+    /** The controller interface used to handle messages */
     private ControllerInterface controller;
+    /** The next msgIndex expected by the clientHandler */
     private int msgIndex;
-    //Create a queue of messages ordered by index, lower index first
-    private final Queue<ClientMsg> recivedMsgs = new PriorityQueue<>(Comparator.comparingInt(ClientMsg::getIndex));
+    /** The queue of messages received from the client but not already processed, ordered by index */
+    private final Queue<ClientMsg> receivedMsgs = new PriorityQueue<>(Comparator.comparingInt(ClientMsg::getIndex));
+    /** The boolean that indicates if the clientHandler is listening for messages */
     private volatile boolean isListening = true;
+    /** The executor service used to process the messages */
     private final ExecutorService executorService = Executors.newSingleThreadExecutor();
-
-
+    /** The readiness of the client handler. It is true only when the setupPhase (run) end*/
     private boolean ready = false;
 
     /**
@@ -58,7 +71,7 @@ public class ClientHandler implements Runnable{
             try {
                 Thread.sleep(10);
             } catch (InterruptedException e) {
-                e.printStackTrace();
+                Configs.printStackTrace(e);
             }
         }
         Thread listeningThread = new Thread(this::handleMsg, "Listening Thread");
@@ -78,7 +91,7 @@ public class ClientHandler implements Runnable{
             output.writeObject(serverMsg);
         } catch (IOException e) {
             System.out.println("could not send message to " + client.getInetAddress() + ":" + client.getPort());
-            e.printStackTrace();
+            Configs.printStackTrace(e);
         }
     }
 
@@ -96,7 +109,7 @@ public class ClientHandler implements Runnable{
             } catch (ClassNotFoundException e) {
                 //This scenario should not occur if a ClientMsg is being sent, as TCP ensures that every message is always received correctly.
                 System.out.println("Error during the transmission of the message. The message was not a ClientMsg object.");
-                e.printStackTrace();
+                Configs.printStackTrace(e);
                 return;
             }catch (IOException e) { //This will catch a SocketException("Connection reset") when the client DISCONNECTS
                 this.handleIOException(e);
@@ -104,12 +117,12 @@ public class ClientHandler implements Runnable{
             }
             synchronized (this){
                 if(clientMsg.getIndex() > expectedIndex){
-                    recivedMsgs.add(clientMsg);
+                    receivedMsgs.add(clientMsg);
                 }else if(clientMsg.getIndex()<expectedIndex){
                     throw new IllegalCallerException("The Server received a message with an index lower than the expected one");
                 }else{ //clientMsg.getIndex() == expectedIndex
-                    recivedMsgs.add(clientMsg);
-                    Queue<ClientMsg> toBeProcessMsgs = continueMessagesWindow(recivedMsgs, expectedIndex);
+                    receivedMsgs.add(clientMsg);
+                    Queue<ClientMsg> toBeProcessMsgs = continueMessagesWindow(receivedMsgs, expectedIndex);
                     expectedIndex = toBeProcessMsgs.stream().max(Comparator.comparingInt(ClientMsg::getIndex)).get().getIndex() + 1;
 
                     executorService.submit(()-> processMsgs(toBeProcessMsgs));
@@ -119,7 +132,7 @@ public class ClientHandler implements Runnable{
     }
 
     /**
-     *  handle the IOException thrown when the connection to the client is close.
+     * handle the IOException thrown when the connection to the client is close.
      * @param e
      */
     private void handleIOException(IOException e) {
@@ -129,7 +142,7 @@ public class ClientHandler implements Runnable{
             this.controller.leave();
         }catch (Exception ex){
             System.out.println("Error during the disconnection of the client");
-            ex.printStackTrace();
+            Configs.printStackTrace(ex);
         }
     }
 
@@ -151,7 +164,7 @@ public class ClientHandler implements Runnable{
             this.isListening = false;
         } catch (IOException e) {
             System.out.println("Error while closing the connection");
-            e.printStackTrace();
+            Configs.printStackTrace(e);
         }
     }
 
@@ -190,23 +203,37 @@ public class ClientHandler implements Runnable{
                 clientMsg.processMsg(this);
             }catch (Exception e) {
                 System.out.println("Error during the processing of the message");
-                e.printStackTrace();
+                Configs.printStackTrace(e);
             }
         }
     }
 
+    /**
+     * Sets the owner of the clientHandler
+     * @param owner The VirtualView that is the owner of the clientHandler
+     */
     public void setOwner(VirtualView owner) {
         this.owner = owner;
     }
 
+    /**
+     * Sets the controller of the clientHandler
+     * @param controller The controller that is the owner of the clientHandler
+     */
     public void setController(ControllerInterface controller){
         this.controller = controller;
     }
 
+    /**
+     * @return The VirtualView that is the owner of the clientHandler
+     */
     public ControllerInterface getController(){
         return controller;
     }
 
+    /**
+     * @return true if the clientHandler completed the setup phaser
+     */
     public boolean isReady() {
         return ready;
     }

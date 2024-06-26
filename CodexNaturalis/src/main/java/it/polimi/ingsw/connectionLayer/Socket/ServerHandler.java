@@ -19,16 +19,31 @@ import java.util.Queue;
 import java.util.concurrent.*;
 import java.util.concurrent.TimeUnit;
 
+/**
+ * This class is responsible for handling the connection to the server.
+ * It is responsible for sending receiving and processing messages from the server.
+ * Ensure that the messages are processed in order even if they are received out of order.
+ */
 public class ServerHandler implements Runnable{
+    /** The socket of the server*/
     private final Socket server;
+    /** The output stream to the server*/
     private ObjectOutputStream output;
+    /** The input stream from the server*/
     private ObjectInputStream input;
+    /**The VirtualController. It is the owner because every message request is sent by it*/
     private VirtualController owner;
+    /**The view to which each message is applied*/
     private ViewInterface view;
+    /** The readiness of the server handler. It is true only when the setupPhase (run) end*/
     private boolean ready = false;
+    /** The next msgIndex expected by the serverHandler*/
     private int msgIndex;
-    private final Queue<ServerMsg> receivedMsg = new PriorityQueue<>(Comparator.comparingInt(ServerMsg::getIndex));
+    /** The queue of messages received from the server but not already processed order by index*/
+    private final Queue<ServerMsg> receivedMsgs = new PriorityQueue<>(Comparator.comparingInt(ServerMsg::getIndex));
+    /** The boolean that indicates if the serverHandler is listening for messages*/
     private boolean isListening = true;
+    /** The executor service used to process the messages*/
     private final ExecutorService executorService = Executors.newSingleThreadExecutor();
 
     /**
@@ -80,7 +95,7 @@ public class ServerHandler implements Runnable{
                 throw new RuntimeException(ex);
             }
         }catch (InterruptedException | ExecutionException e){
-            e.printStackTrace();
+            Configs.printStackTrace(e);
             //wait for the view to be set so that the error can be logged
             this.waitForOwnerAndView();
             try {
@@ -106,7 +121,7 @@ public class ServerHandler implements Runnable{
             output.writeObject(clientMsg);
         } catch (Exception e) {
             System.out.println("could not send message to " + server.getInetAddress());
-            e.printStackTrace();
+            Configs.printStackTrace(e);
         }
     }
 
@@ -124,7 +139,7 @@ public class ServerHandler implements Runnable{
             } catch (ClassNotFoundException e) {
                 //This scenario should not occur if a ClientMsg is being sent, as TCP ensures that every message is always received correctly.
                 System.out.println("Error during the transmission of the message. The message was not a ServerMsg object.");
-                e.printStackTrace();
+                Configs.printStackTrace(e);
                 return;
             }catch (IOException e){ //This will catch a SocketException("Connection reset") when something happens in the connection
                 this.handleIOException(e);
@@ -133,12 +148,12 @@ public class ServerHandler implements Runnable{
             synchronized (this){
                 if(serverMsg.getIndex() > expectedIndex){
                     System.out.println("Received a message with an index higher than the expected one");
-                    receivedMsg.add(serverMsg);
+                    receivedMsgs.add(serverMsg);
                 }else if(serverMsg.getIndex()<expectedIndex){
                     throw new IllegalCallerException("The Client received a message with an index lower than the expected one");
                 }else{ //clientMsg.getIndex() == expectingIndex
-                    receivedMsg.add(serverMsg);
-                    Queue<ServerMsg> toBeProcessMsgs = continueMessagesWindow(receivedMsg, expectedIndex);
+                    receivedMsgs.add(serverMsg);
+                    Queue<ServerMsg> toBeProcessMsgs = continueMessagesWindow(receivedMsgs, expectedIndex);
                     expectedIndex = toBeProcessMsgs.stream().max(Comparator.comparingInt(ServerMsg::getIndex)).get().getIndex() + 1;
 
                     executorService.submit(()-> processMsgs(toBeProcessMsgs));
@@ -150,7 +165,7 @@ public class ServerHandler implements Runnable{
     /**
      * handle the IOException thrown when the connection to the server is close.
      * if isListening is true when the exception is thrown, then the disconnection was not initiated by the user
-     * @param e
+     * @param e the IoException
      */
     private void handleIOException(IOException e) {
         try{
@@ -159,12 +174,13 @@ public class ServerHandler implements Runnable{
                 owner.disconnect();
                 view.logErr(LogsOnClient.CONNECTION_LOST_CLIENT_SIDE);
                 view.transitionTo(ViewState.SERVER_CONNECTION);
+                Configs.printStackTrace(e);
             }else{
                 System.out.println("Stopped listening for messages of " + server.getInetAddress());
             }
         }catch (Exception ex){
             System.out.println("Error while printing the error message or transitioning to the SERVER_CONNECTION state");
-            ex.printStackTrace();
+            Configs.printStackTrace(ex);
         }
     }
 
@@ -184,7 +200,7 @@ public class ServerHandler implements Runnable{
             }
         } catch (IOException e) {
             System.out.println("Error while closing the connection");
-            e.printStackTrace();
+            Configs.printStackTrace(e);
         }
     }
 
@@ -197,7 +213,7 @@ public class ServerHandler implements Runnable{
         try {
             server.close();
         } catch (IOException e) {
-            e.printStackTrace();
+            Configs.printStackTrace(e);
         }
     }
 
@@ -236,7 +252,7 @@ public class ServerHandler implements Runnable{
                 serverMsg.processMsg(this);
             }catch (Exception e) {
                 System.out.println("Error during the processing of the message");
-                e.printStackTrace();
+                Configs.printStackTrace(e);
             }
         }
     }
@@ -250,28 +266,38 @@ public class ServerHandler implements Runnable{
             try {
                 Thread.sleep(10);
             } catch (InterruptedException e) {
-                e.printStackTrace();
+                Configs.printStackTrace(e);
             }
         }
     }
 
+    /**
+     * Set the virtualController as the owner of the Handler
+     * @param owner the VirtualController that will be the owner of the handler
+     */
     public void setOwner(VirtualController owner) {
         this.owner = owner;
     }
 
+    /**
+     * @return true if the serverHandler completed the setup phase
+     */
     public boolean isReady() {
         return ready;
     }
 
+    /**
+     * Set the view that runs the serverHandler
+     * @param view the view that will be used to communicate with the user
+     */
     public void setView(ViewInterface view) {
         this.view = view;
     }
 
+    /**
+     * Return the view that runs the serverHandler
+     */
     public ViewInterface getView() {
         return view;
-    }
-
-    public Queue<ServerMsg> getReceivedMsg() {
-        return receivedMsg;
     }
 }
