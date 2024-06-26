@@ -1231,7 +1231,7 @@ class ControllersTests {
 
         //change public objective card
         CollectableCardPointMultiplier objMultiplier = new CollectableCardPointMultiplier(Map.of(Resource.PLANT, 3));
-        ObjectiveCard plantX3 = new ObjectiveCard(96, 87, 100,objMultiplier);
+        ObjectiveCard plantX3 = new ObjectiveCard(96, 87, 0,objMultiplier);
 
         publicGame.setPublicObj(plantX3);
 
@@ -1254,6 +1254,7 @@ class ControllersTests {
         handFirst.addCard(removedCard);
 
         assert firstToPlay.getUserCodex().getPoints() == 29;
+        assert !(secondToPlay.getUserCodex().getPoints() == 29);
 
         placeRandom(firstToPlay, firstToPlayController);
         firstToPlayController.draw(DrawableCard.RESOURCECARD, 0);
@@ -1262,6 +1263,7 @@ class ControllersTests {
 
         //play last turns placing the first card in hand and drawing from goldCardDeck
         placeRandom(secondToPlay, secondToPlayController);
+        assert !(secondToPlay.getUserCodex().getPoints() == 29);
         secondToPlayController.draw(DrawableCard.RESOURCECARD, 0);
 
         assert game.duringEndingTurns();
@@ -1272,6 +1274,7 @@ class ControllersTests {
         System.out.println(firstToPlay.getUserCodex().getPoints());
         firstToPlayController.draw(DrawableCard.GOLDCARD, 0);
         placeRandom(secondToPlay, secondToPlayController);
+        assert !(secondToPlay.getUserCodex().getPoints() == 29);
         System.out.println(secondToPlay.getUserCodex().getPoints());
         secondToPlayController.draw(DrawableCard.GOLDCARD, 0);
 
