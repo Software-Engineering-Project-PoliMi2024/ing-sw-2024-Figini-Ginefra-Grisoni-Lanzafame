@@ -10,7 +10,7 @@ public class Configs {
     public static String CardJSONFileName = "cards.json";
     public static int rmiPort = 1234;
     public static int socketPort = 12345;
-    public static int secondsTimeOut = 30;
+    public static int secondsTimeOut = 3;
     public static int pingPongFrequency = 3;
     public static int lastInGameTimerSeconds = 30;
     public static int pointsToStartGameEnding = 20;
