@@ -12,9 +12,7 @@ public enum Root {
     LOGIN_FORM("/GUI/LoginForm.fxml"),
     LOBBY_LIST("/GUI/LobbyList.fxml"),
     LOBBY("/GUI/Lobby.fxml"),
-    GAME("/GUI/Game.fxml"),
-    POST_GAME("/GUI/PostGameScene.fxml");
-
+    GAME("/GUI/Game.fxml");
 
     private final Parent root;
 
