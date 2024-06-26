@@ -259,7 +259,7 @@ public class VirtualControllerRMI implements VirtualController {
                 this.disconnect();
                 notifyLostServerConnection();
             }
-        }, Configs.pingPongFrequency, Configs.pingPongFrequency, TimeUnit.SECONDS);
+        }, Configs.pingPongPeriod, Configs.pingPongPeriod, TimeUnit.SECONDS);
     }
 
     @Override

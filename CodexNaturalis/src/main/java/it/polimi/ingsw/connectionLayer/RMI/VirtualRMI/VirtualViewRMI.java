@@ -281,7 +281,7 @@ public class VirtualViewRMI implements VirtualView {
                 e.printStackTrace();
                 this.disconnect();
             }
-        }, Configs.pingPongFrequency, Configs.pingPongFrequency, TimeUnit.SECONDS);
+        }, Configs.pingPongPeriod, Configs.pingPongPeriod, TimeUnit.SECONDS);
     }
 
 }
