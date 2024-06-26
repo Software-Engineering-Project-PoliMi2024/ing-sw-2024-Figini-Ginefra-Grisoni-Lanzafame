@@ -14,13 +14,27 @@ import it.polimi.ingsw.view.TUI.inputs.CommandPromptResult;
 import java.time.format.TextStyle;
 import java.util.*;
 
+/**
+ * This class is a Renderable that represents the choice of a pawn.
+ */
 public class PawnChoiceRenderable extends Renderable {
+    /** The light game of the player. */
     private final LightGame lightGame;
+    /**
+     * Creates a new PawnChoiceRenderable.
+     * @param name The name of the renderable.
+     * @param commandPrompts The commands related to this renderable.
+     * @param view The controller provider.
+     * @param lightGame The light game of the player.
+     */
     public PawnChoiceRenderable(String name, CommandPrompt[] commandPrompts, ControllerProvider view, LightGame lightGame) {
         super(name, commandPrompts, view);
         this.lightGame = lightGame;
     }
 
+    /**
+     * Renders the pawn options.
+     */
     @Override
     public void render() {
         List<String> pawnOptions = new ArrayList<>();
@@ -30,6 +44,10 @@ public class PawnChoiceRenderable extends Renderable {
         PromptStyle.printListInABox("Pawn options", pawnOptions, 50, 1);
     }
 
+    /**
+     * Updates the renderable based on the command prompt result.
+     * @param answer The command prompt result.
+     */
     @Override
     public void updateCommand(CommandPromptResult answer) {
         if (answer.getCommand() == CommandPrompt.CHOOSE_PAWN) {
@@ -46,6 +64,10 @@ public class PawnChoiceRenderable extends Renderable {
         }
     }
 
+    /**
+     * Gets the part of the light model observed by this renderable.
+     * @return The observed light model.
+     */
     @Override
     public List<Observed> getObservedLightModel(){
         List<Observed> observed = new ArrayList<>();

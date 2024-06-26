@@ -12,6 +12,9 @@ import java.util.*;
 
 /**
  * This class is the renderable that displays the active commands.
+ * It is also responsible to handle the user input for the commands.
+ * It stores the active local and non-local commands and displays them.
+ * When a prompt is selected by the user, it becomes the current prompt and it gradually asks the user for the required input.
  */
 public class CommandDisplayRenderable extends Renderable{
     /** The active local prompts. */
@@ -20,7 +23,13 @@ public class CommandDisplayRenderable extends Renderable{
     /** The active non-local prompts. */
     private final Map<CommandPrompt, Integer> activeActionPrompts;
 
+    /**
+     * The current prompt index.
+     * -1 if there is no current prompt.
+     */
     private int currentPromptIndex = -1;
+
+    /** The current prompt. */
     CommandPrompt currentPrompt;
 
     /**
@@ -177,6 +186,10 @@ public class CommandDisplayRenderable extends Renderable{
         }
     }
 
+    /**
+     * Prints the current prompt.
+     * IT prints the current selection and the questions and answers asked/answered so far.
+     */
     private void printCurrentPrompt(){
         if(currentPrompt == null || !currentPrompt.hasLast() || currentPromptIndex == -1)
             return;

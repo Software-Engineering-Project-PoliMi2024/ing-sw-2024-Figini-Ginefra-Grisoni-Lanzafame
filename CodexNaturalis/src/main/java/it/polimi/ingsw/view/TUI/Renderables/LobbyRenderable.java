@@ -70,6 +70,10 @@ public class LobbyRenderable extends Renderable {
         }
     }
 
+    /**
+     * Get the part of the light model that holds some information relevant to the renderable.
+     * @return The observed light model.
+     */
     @Override
     public List<Observed> getObservedLightModel(){
         return List.of(lightLobby);

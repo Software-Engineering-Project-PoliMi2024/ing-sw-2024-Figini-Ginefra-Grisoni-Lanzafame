@@ -15,6 +15,7 @@ import java.util.List;
  * This class is a Renderable that represents a list of games.
  */
 public class GameListRenderable extends Renderable {
+    /** The lightLobbyList to render. */
     private final LightLobbyList lightLobbyList;
 
     /**
@@ -74,6 +75,10 @@ public class GameListRenderable extends Renderable {
         }
     }
 
+    /**
+     * Get the part of the light model which holds information relevant to the renderable.
+     * @return The observed light model.
+     */
     @Override
     public List<Observed> getObservedLightModel(){
         return List.of(lightLobbyList);
