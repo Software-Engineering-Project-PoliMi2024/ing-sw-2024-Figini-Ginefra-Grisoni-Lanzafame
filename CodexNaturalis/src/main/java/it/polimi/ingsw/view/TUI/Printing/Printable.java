@@ -4,9 +4,11 @@ import it.polimi.ingsw.view.TUI.Styles.DecoratedString;
 import it.polimi.ingsw.view.TUI.Styles.PaddedString;
 
 /**
- * This class is used to store strings and print them to the console.
+ * This class is a container for strings that are atomically printed to the console.
+ * That is, the content of the Printable object is printed all at once and cannot be interrupted by other print statements.
  */
 public class Printable {
+    /** The content of the Printable object. */
     private final StringBuilder content;
 
     /**
@@ -16,11 +18,6 @@ public class Printable {
     public Printable(String content){
         this.content = new StringBuilder();
         this.print(content);
-    }
-
-    public Printable(String character, int times){
-        this.content = new StringBuilder();
-        this.content.append(String.valueOf(character).repeat(Math.max(0, times)));
     }
 
     /**
@@ -47,6 +44,10 @@ public class Printable {
         this.content.append(content.toString());
     }
 
+    /**
+     * This method appends the content of another Printable object to the content of the Printable object.
+     * @param other the Printable object whose content is to be appended.
+     */
     public void print(Printable other){
         this.content.append(other.content);
     }
@@ -59,14 +60,26 @@ public class Printable {
         this.content.append(content).append("\n");
     }
 
+    /**
+     * This method appends a DecoratedString to the content of the Printable object followed by a newline character.
+     * @param content the DecoratedString to be appended.
+     */
     public void println(DecoratedString content){
         this.content.append(content).append("\n");
     }
 
+    /**
+     * This method appends a PaddedString to the content of the Printable object followed by a newline character.
+     * @param content the PaddedString to be appended.
+     */
     public void println(PaddedString content){
         this.content.append(content).append("\n");
     }
 
+    /**
+     * This method appends the content of another Printable object to the content of the Printable object followed by a newline character.
+     * @param other the Printable object whose content is to be appended.
+     */
     public void println(Printable other){
         this.content.append(other.content).append("\n");
     }
@@ -86,11 +99,20 @@ public class Printable {
         System.out.print(content);
     }
 
+    /**
+     * This method returns the height of the Printable object. That is, the number of lines in the content of the Printable object.
+     * @return the height of the Printable object.
+     */
     public int getHeight(){
         return content.toString().split("\n").length;
     }
 
-    public String getRow(int height){
-        return content.toString().split("\n")[height];
+    /**
+     * The i-th line of the Printable object.
+     * @param i the number of the line to get.
+     * @return the content of the Printable object.
+     */
+    public String getRow(int i){
+        return content.toString().split("\n")[i];
     }
 }
