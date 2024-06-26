@@ -24,7 +24,7 @@ import java.util.List;
 import java.util.Objects;
 
 /**
- * This class is a Renderable that can render a card and prompt the player to choose between two objective cards.
+ * This class is a Renderable that can prompt the player to choose between two objective cards.
  */
 public class ChooseObjectiveCardRenderable extends CanvasRenderable {
     private final LightGame lightGame;
@@ -47,7 +47,8 @@ public class ChooseObjectiveCardRenderable extends CanvasRenderable {
     }
 
     /**
-     * Renders the two objective cards.
+     * Renders the two objective cards to choose from, fetching them from the light model.
+     * If there is even one options not available, it does nothing.
      */
     public void render(){
         LightCard[] options = lightGame.getHand().getSecretObjectiveOptions();
@@ -97,6 +98,10 @@ public class ChooseObjectiveCardRenderable extends CanvasRenderable {
         }
     }
 
+    /**
+     * Return the part of the Light Model that are relevant to the rendering of this Renderable.
+     * @return the relevant part of the Light Model.
+     */
     @Override
     public List<Observed> getObservedLightModel(){
         return List.of(lightGame.getHand());
