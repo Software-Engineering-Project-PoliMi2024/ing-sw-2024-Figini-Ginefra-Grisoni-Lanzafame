@@ -1,6 +1,8 @@
 package it.polimi.ingsw.view.TUI.Renderables.CodexRelated;
 
 import it.polimi.ingsw.view.ControllerProvider;
+import it.polimi.ingsw.view.TUI.Printing.Printable;
+import it.polimi.ingsw.view.TUI.Printing.Printer;
 import it.polimi.ingsw.view.TUI.Renderables.Renderable;
 import it.polimi.ingsw.view.TUI.Renderables.drawables.Canvas;
 import it.polimi.ingsw.view.TUI.inputs.CommandPrompt;
@@ -30,13 +32,19 @@ public class CanvasRenderable extends Renderable {
      */
     @Override
     public void render() {
+        Printable printable = new Printable("");
+        renderToPrintable(printable);
+        Printer.print(printable);
+    }
+
+    public void renderToPrintable(Printable printable){
         String[][] content = canvas.getContent();
 
         for(int i = 0; i < canvas.getHeight(); i++){
             for(int j = 0; j < canvas.getWidth(); j++){
-                System.out.print(content[i][j]);
+                printable.print(content[i][j]);
             }
-            System.out.println();
+            printable.println("");
         }
     }
 }

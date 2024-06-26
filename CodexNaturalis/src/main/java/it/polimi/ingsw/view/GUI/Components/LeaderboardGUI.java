@@ -25,7 +25,7 @@ import java.util.stream.Collectors;
 public class LeaderboardGUI implements Observer {
     private VBox layout;
 
-    private AnchoredPopUp popUp;
+    private AnchoredPopUp leftAnchoredPopUp;
 
     private Map<String, Text> labelMap = new HashMap<>();
     private Map<String, ImageView> pawnImageViewMap = new HashMap<>();
@@ -47,14 +47,14 @@ public class LeaderboardGUI implements Observer {
     }
 
     public void addThisTo(AnchorPane parent) {
-        this.popUp = new AnchoredPopUp(parent, 0.1f, 0.2f, Pos.CENTER_LEFT, 0.25f);
+        this.leftAnchoredPopUp = new AnchoredPopUp(parent, 0.1f, 0.2f, Pos.CENTER_LEFT, 0.25f);
         this.plateau = new PlateauGUI(parent);
         this.ruleBook = new RuleBook(parent);
 
-        popUp.getContent().getChildren().add(layout);
+        leftAnchoredPopUp.getContent().getChildren().add(layout);
 
-        popUp.setLocked(true);
-        popUp.open();
+        leftAnchoredPopUp.setLocked(true);
+        leftAnchoredPopUp.open();
 
         createLeaderboard(parent);
 
@@ -70,7 +70,7 @@ public class LeaderboardGUI implements Observer {
         plateauIcon.fitHeightProperty().bind(chatButton.getChatButton().heightProperty().multiply(0.8));
         Button plateauButton = new Button("", plateauIcon);
         plateauButton.setStyle("-fx-background-color: transparent;");
-        plateauButton.setOnAction(event -> plateau.show());
+        plateauButton.setOnAction(event -> plateau.open());
 
         ImageView ruleBookIcon = new ImageView(AssetsGUI.ruleBookIcon);
         ruleBookIcon.preserveRatioProperty().set(true);
@@ -85,8 +85,8 @@ public class LeaderboardGUI implements Observer {
 
 
 
-        layout.prefHeightProperty().bind(popUp.getContent().prefHeightProperty());
-        layout.prefWidthProperty().bind(popUp.getContent().prefWidthProperty());
+        layout.prefHeightProperty().bind(leftAnchoredPopUp.getContent().prefHeightProperty());
+        layout.prefWidthProperty().bind(leftAnchoredPopUp.getContent().prefWidthProperty());
     }
 
     private Map<String, Integer> getScores() {
@@ -205,6 +205,10 @@ public class LeaderboardGUI implements Observer {
                 label.setStyle(label.getStyle().replace("-fx-strikethrough: true;", ""));
             }
         });
+    }
+
+    public void open() {
+        leftAnchoredPopUp.open();
     }
 
     @Override

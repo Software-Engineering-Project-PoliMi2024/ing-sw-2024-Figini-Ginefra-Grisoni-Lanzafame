@@ -10,7 +10,7 @@ public class LogOthersMsg extends ServerMsg{
     }
 
     @Override
-    public void processMsg(ServerHandler clientHandler) throws Exception {
-        clientHandler.getView().logOthers(logMsg);
+    public void processMsg(ServerHandler serverHandler) throws Exception {
+        serverHandler.getView().logOthers(logMsg);
     }
 }

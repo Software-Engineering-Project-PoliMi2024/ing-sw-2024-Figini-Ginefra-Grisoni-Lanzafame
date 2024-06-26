@@ -70,6 +70,7 @@ public class ClientHandler implements Runnable{
         serverMsg.setIndex(msgIndex);
         msgIndex++;
         try{
+            output.reset();
             output.writeObject(serverMsg);
         } catch (IOException e) {
             System.out.println("could not send message to " + client.getInetAddress() + ":" + client.getPort());
@@ -94,14 +95,7 @@ public class ClientHandler implements Runnable{
                 e.printStackTrace();
                 return;
             }catch (IOException e) { //This will catch a SocketException("Connection reset") when the client DISCONNECTS
-                try{
-                    System.out.println("Client " + client.getInetAddress() + ":" + client.getPort() + " disconnected");
-                    this.connectionLayerDisconnection();
-                    this.controller.leave();
-                }catch (Exception ex){
-                    System.out.println("Error during the disconnection of the client");
-                    ex.printStackTrace();
-                }
+                this.handleIOException(e);
                 return;
             }
             if(clientMsg.getIndex() > expectedIndex){
@@ -112,14 +106,30 @@ public class ClientHandler implements Runnable{
                 recivedMsgs.add(clientMsg);
                 Queue<ClientMsg> toBeProcessMsgs = continueMessagesWindow(recivedMsgs, expectedIndex);
                 expectedIndex = toBeProcessMsgs.stream().max(Comparator.comparingInt(ClientMsg::getIndex)).get().getIndex() + 1;
-                Thread elaborateMsgThread = new Thread(() -> {
-                    processMsgs(toBeProcessMsgs);
-                });
-                elaborateMsgThread.start();
+                processMsgs(toBeProcessMsgs);
             }
         }
     }
 
+    /**
+     *  handle the IOException thrown when the connection to the client is close.
+     * @param e
+     */
+    private void handleIOException(IOException e) {
+        try{
+            System.out.println("Client " + client.getInetAddress() + ":" + client.getPort() + " disconnected");
+            this.connectionLayerDisconnection();
+            this.controller.leave();
+        }catch (Exception ex){
+            System.out.println("Error during the disconnection of the client");
+            ex.printStackTrace();
+        }
+    }
+
+    /**
+     * Close the input and output stream and the socket to the client.
+     * Stop the listening thread by setting isListening to false
+     */
     private void connectionLayerDisconnection() {
         try {
             if (input != null){
@@ -177,12 +187,9 @@ public class ClientHandler implements Runnable{
             }
         }
     }
+
     public void setOwner(VirtualView owner) {
         this.owner = owner;
-    }
-
-    public VirtualView getOwner() {
-        return owner;
     }
 
     public void setController(ControllerInterface controller){
@@ -195,9 +202,5 @@ public class ClientHandler implements Runnable{
 
     public boolean isReady() {
         return ready;
-    }
-
-    public Queue<ClientMsg> getReceivedMsg() {
-        return recivedMsgs;
     }
 }

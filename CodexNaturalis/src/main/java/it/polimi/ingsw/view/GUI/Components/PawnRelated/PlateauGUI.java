@@ -49,7 +49,7 @@ public class PlateauGUI {
         });
     }
 
-    public void show() {
+    public void open() {
         popUp.open();
     }
 

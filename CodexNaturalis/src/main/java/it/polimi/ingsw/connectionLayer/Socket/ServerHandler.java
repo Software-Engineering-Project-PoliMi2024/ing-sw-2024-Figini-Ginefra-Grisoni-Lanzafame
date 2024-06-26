@@ -102,6 +102,7 @@ public class ServerHandler implements Runnable{
         clientMsg.setIndex(msgIndex);
         msgIndex++;
         try {
+            output.reset();
             output.writeObject(clientMsg);
         } catch (Exception e) {
             System.out.println("could not send message to " + server.getInetAddress());
@@ -125,23 +126,12 @@ public class ServerHandler implements Runnable{
                 System.out.println("Error during the transmission of the message. The message was not a ServerMsg object.");
                 e.printStackTrace();
                 return;
-            }catch (IOException e){ //This will catch a SocketException("Connection reset") when something happen in the connection
-                try{
-                    this.connectionLayerDisconnection();
-                    if(isListening){
-                        //If the client is still listening, the disconnection was not intentional. Server CRASHED
-                        view.logErr(LogsOnClient.CONNECTION_LOST_CLIENT_SIDE);
-                        view.transitionTo(ViewState.SERVER_CONNECTION);
-                    }else{
-                        System.out.println("Stopped listening for messages of " + server.getInetAddress());
-                    }
-                }catch (Exception ex){
-                    System.out.println("Error while printing the error message or transitioning to the SERVER_CONNECTION state");
-                    ex.printStackTrace();
-                }
+            }catch (IOException e){ //This will catch a SocketException("Connection reset") when something happens in the connection
+                this.handleIOException(e);
                 return;
             }
             if(serverMsg.getIndex() > expectedIndex){
+                System.out.println("Received a message with an index higher than the expected one");
                 receivedMsg.add(serverMsg);
             }else if(serverMsg.getIndex()<expectedIndex){
                 throw new IllegalCallerException("The Client received a message with an index lower than the expected one");
@@ -149,14 +139,34 @@ public class ServerHandler implements Runnable{
                 receivedMsg.add(serverMsg);
                 Queue<ServerMsg> toBeProcessMsgs = continueMessagesWindow(receivedMsg, expectedIndex);
                 expectedIndex = toBeProcessMsgs.stream().max(Comparator.comparingInt(ServerMsg::getIndex)).get().getIndex() + 1;
-                Thread elaborateMsgThread = new Thread(() -> {
-                    processMsg(toBeProcessMsgs);
-                });
-                elaborateMsgThread.start();
+                processMsg(toBeProcessMsgs);
             }
         }
     }
 
+    /**
+     * handle the IOException thrown when the connection to the server is close.
+     * if isListening is true when the exception is thrown, then the disconnection was not initiated by the user
+     * @param e
+     */
+    private void handleIOException(IOException e) {
+        try{
+            this.connectionLayerDisconnection();
+            if(isListening){
+                view.logErr(LogsOnClient.CONNECTION_LOST_CLIENT_SIDE);
+                view.transitionTo(ViewState.SERVER_CONNECTION);
+            }else{
+                System.out.println("Stopped listening for messages of " + server.getInetAddress());
+            }
+        }catch (Exception ex){
+            System.out.println("Error while printing the error message or transitioning to the SERVER_CONNECTION state");
+            ex.printStackTrace();
+        }
+    }
+
+    /**
+     * Close the input and output stream and socket to the server
+     */
     private void connectionLayerDisconnection() {
         try {
             if (input != null){
@@ -174,10 +184,13 @@ public class ServerHandler implements Runnable{
         }
     }
 
+    /**
+     * allow for a "soft disconnection" from the server.
+     * stop the listeningThread by setting isListening to false and close the server socket
+     */
     public void stopListening() {
         this.isListening = false;
         try {
-            //Close the communications with the server. This will cause an IOException in the handleMsg method
             server.close();
         } catch (IOException e) {
             e.printStackTrace();
@@ -214,9 +227,9 @@ public class ServerHandler implements Runnable{
      */
     private void processMsg(Queue<ServerMsg> queue) {
         while(!queue.isEmpty()){
-            ServerMsg clientMsg = queue.poll();
+            ServerMsg serverMsg = queue.poll();
             try {
-                clientMsg.processMsg(this);
+                serverMsg.processMsg(this);
             }catch (Exception e) {
                 System.out.println("Error during the processing of the message");
                 e.printStackTrace();
@@ -244,10 +257,6 @@ public class ServerHandler implements Runnable{
 
     public boolean isReady() {
         return ready;
-    }
-
-    public VirtualController getOwner() {
-        return owner;
     }
 
     public void setView(ViewInterface view) {

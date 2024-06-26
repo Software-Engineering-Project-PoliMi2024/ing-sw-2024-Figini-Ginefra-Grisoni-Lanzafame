@@ -1,5 +1,7 @@
 package it.polimi.ingsw;
 
+import java.io.IOException;
+
 public class Configs {
     public static Boolean debugMode = false;
     public static long gameSaveExpirationTimeMinutes = 30;
@@ -27,8 +29,15 @@ public class Configs {
     public static int maxPointsPerPlayer = 29;
     public static int delayBeforeLoadingGameSaves = 0;
 
-    public static void clearTerminal(){
-        System.out.print("\033[H\033[2J");
-        System.out.flush();
+    public static int logDurationTUI_millis = 5000;
+
+    public static synchronized void clearTerminal(){
+//        System.out.print("\033[H\033[J");
+//        System.out.flush();
+        try {
+            new ProcessBuilder("cmd", "/c", "cls").inheritIO().start().waitFor();
+        } catch (IOException | InterruptedException e) {
+            throw new RuntimeException(e);
+        }
     }
 }
