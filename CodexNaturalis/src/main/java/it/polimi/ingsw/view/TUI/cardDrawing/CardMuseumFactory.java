@@ -30,13 +30,14 @@ public class CardMuseumFactory {
 
     /** The folder path where the json file is stored. */
     private final String inFolderResourcePath;
-    private final String outFolderPath;
     /** The name of the binary file. */
+    private final String outFolderPath;
+    /** the name of the bin file containing the TUI render of the card using emojis*/
     public static final String fileName = Configs.CardMuseumFileName;
 
     /**
      * Creates a new CardMuseumFactory.
-     * @param inFolderResourcePath The folder path where the binary file is stored in the resources folder.
+     * @param inFolderResourcePath The folder path where the binary file is stored in the resources' folder.
      * @param outFolderPath The folder path where the binary file will be saved.
      */
     public CardMuseumFactory(String inFolderResourcePath, String outFolderPath) {
@@ -46,7 +47,7 @@ public class CardMuseumFactory {
     }
 
     /**
-     * Creates a new CardMuseumFactory.
+     * Creates a new CardMuseumFactory with the possibility to force the reloading.
      * @param inFolderResourcePath The folder path where the binary file is stored.
      * @param outFolderPath The folder path where the binary file will be saved.
      * @param forceReload True if the CardMuseum must be reloaded from the json file.
