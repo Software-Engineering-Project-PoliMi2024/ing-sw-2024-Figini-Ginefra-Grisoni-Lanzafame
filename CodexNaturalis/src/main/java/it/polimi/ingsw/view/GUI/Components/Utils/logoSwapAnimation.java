@@ -103,8 +103,11 @@ public class logoSwapAnimation {
     }
 
     public void playTransitionAnimation(AnchorPane mainRoot, Node oldRoot, Node newRoot){
-        // Add the old root to the main root
-        mainRoot.getChildren().add(newRoot);
+        // Add the new root to the main root
+        if(mainRoot.getChildren().size() >= 2) {
+            mainRoot.getChildren().add(1, newRoot);
+        } else
+            mainRoot.getChildren().add(newRoot);
 
         // Add the logo to the main root
         mainRoot.getChildren().add(logoStack);
