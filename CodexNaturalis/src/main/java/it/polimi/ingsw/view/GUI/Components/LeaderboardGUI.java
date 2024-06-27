@@ -22,18 +22,30 @@ import java.util.Map;
 import java.util.*;
 import java.util.stream.Collectors;
 
+/**
+ * The LeaderboardGUI class is responsible for displaying the leaderboard in the GUI.
+ * It implements the Observer interface to update the leaderboard dynamically based on changes in game state.
+ */
 public class LeaderboardGUI implements Observer {
     private VBox layout;
 
+    /** The popup for displaying the leaderboard */
     private AnchoredPopUp leftAnchoredPopUp;
 
     private Map<String, Text> labelMap = new HashMap<>();
     private Map<String, ImageView> pawnImageViewMap = new HashMap<>();
     private final VBox buttonContainer = new VBox();
+
+    /** The PlateauGUI object to display the plateau */
     private PlateauGUI plateau;
+
+    /** The RuleBook object to display the rule book */
     private RuleBook ruleBook;
     private List<PawnsGui> availablePawns;
 
+    /**
+     * Constructs a LeaderboardGUI object and initializes its layout and available pawns.
+     */
     public LeaderboardGUI() {
         this.layout = new VBox(10);
         this.layout.setStyle("-fx-padding: 20; -fx-alignment: center; -fx-font-size: 16pt;");
@@ -41,11 +53,18 @@ public class LeaderboardGUI implements Observer {
         this.availablePawns = new ArrayList<>(Arrays.asList(PawnsGui.values()));
     }
 
+    /**
+     * Attaches the observer to the necessary game components.
+     */
     public void attach() {
         GUI.getLightGame().getCodexMap().values().forEach(codex -> codex.attach(this));
         GUI.getLightGame().getLightGameParty().attach(this);
     }
 
+    /**
+     * Adds this leaderboard to the specified parent layout.
+     * @param parent the parent layout to which the leaderboard is added.
+     */
     public void addThisTo(AnchorPane parent) {
         this.leftAnchoredPopUp = new AnchoredPopUp(parent, 0.1f, 0.2f, Pos.CENTER_LEFT, 0.25f);
         this.plateau = new PlateauGUI(parent);
@@ -83,17 +102,23 @@ public class LeaderboardGUI implements Observer {
         buttonContainer.getChildren().add(chatButton.getChatButton());
         buttonContainer.getChildren().add(ruleBookButton);
 
-
-
         layout.prefHeightProperty().bind(leftAnchoredPopUp.getContent().prefHeightProperty());
         layout.prefWidthProperty().bind(leftAnchoredPopUp.getContent().prefWidthProperty());
     }
 
+    /**
+     * Retrieves the scores of players from the game's codex map.
+     * @return a map of player names to their scores.
+     */
     private Map<String, Integer> getScores() {
         return GUI.getLightGame().getCodexMap().entrySet().stream()
                 .collect(Collectors.toMap(Map.Entry::getKey, e -> e.getValue().getPoints()));
     }
 
+    /**
+     * Creates the leaderboard and adds it to the specified parent layout.
+     * @param parent the parent layout to which the leaderboard is added.
+     */
     private void createLeaderboard(AnchorPane parent) {
         Map<String, Integer> scores = this.getScores();
 
@@ -168,6 +193,9 @@ public class LeaderboardGUI implements Observer {
                 });
     }
 
+    /**
+     * Updates the leaderboard by refreshing the scores and player information.
+     */
     private void updateLeaderboard() {
         Map<String, Integer> scores = this.getScores();
 
@@ -183,7 +211,6 @@ public class LeaderboardGUI implements Observer {
 
                     if(playerColor != null){
                         pawnImageViewMap.get(e.getKey()).setImage(Objects.requireNonNull(PawnsGui.getPawnGui(playerColor)).getImageView().getImage());
-
                         plateau.setScore(playerColor, e.getValue());
                     }
                 });
@@ -208,10 +235,14 @@ public class LeaderboardGUI implements Observer {
         });
     }
 
+    /**
+     * Opens the leaderboard popup.
+     */
     public void open() {
         leftAnchoredPopUp.open();
     }
-
+ /** Updates the leaderboard when the observed game state changes.
+     */
     @Override
     public void update() {
         updateLeaderboard();

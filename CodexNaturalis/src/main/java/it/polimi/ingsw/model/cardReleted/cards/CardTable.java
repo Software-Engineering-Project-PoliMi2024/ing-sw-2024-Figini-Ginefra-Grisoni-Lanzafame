@@ -1,10 +1,10 @@
 package it.polimi.ingsw.model.cardReleted.cards;
 
 import it.polimi.ingsw.Configs;
-import it.polimi.ingsw.model.cardReleted.cardFactories.GoldCardFactory;
-import it.polimi.ingsw.model.cardReleted.cardFactories.ObjectiveCardFactory;
-import it.polimi.ingsw.model.cardReleted.cardFactories.ResourceCardFactory;
-import it.polimi.ingsw.model.cardReleted.cardFactories.StartCardFactory;
+import it.polimi.ingsw.utils.cardFactories.GoldCardFactory;
+import it.polimi.ingsw.utils.cardFactories.ObjectiveCardFactory;
+import it.polimi.ingsw.utils.cardFactories.ResourceCardFactory;
+import it.polimi.ingsw.utils.cardFactories.StartCardFactory;
 
 /**
  * This class is used to retrieve any type of card from the corresponding CardLookUp

@@ -17,14 +17,26 @@ import javafx.scene.text.TextAlignment;
 
 import java.util.*;
 
+/**
+ * This class represents the GUI component for choosing a pawn color.
+ */
 public class PawnChoice implements Observer {
+    /** The main container for the pawn choice components */
     private final VBox container = new VBox();
+    /** The label prompting the user to choose a pawn */
     private final Text label = new Text("Choose your pawn");
+    /** The container for displaying available pawn choices */
     private final HBox choiceBox = new HBox();
+    /** The parent container to which this component belongs */
     private final AnchorPane parent;
-
+    /** The pop-up component for displaying the pawn choice */
     private final PopUp popUp;
 
+    /**
+     * Constructs a PawnChoice instance and initializes the necessary components.
+     *
+     * @param parent the parent AnchorPane to which this GUI component belongs.
+     */
     public PawnChoice(AnchorPane parent) {
         this.parent = parent;
 
@@ -43,7 +55,6 @@ public class PawnChoice implements Observer {
 
         container.getChildren().addAll(label, choiceBox);
         container.setAlignment(Pos.CENTER);
-        //container.getStyleClass().add("bordersCodexStyle");
 
         container.setMaxWidth(300);
 
@@ -68,17 +79,11 @@ public class PawnChoice implements Observer {
         else{
             popUp.close();
         }
-
-        // Automatically assign black pawn to the first player
-        if (GUI.getLightGame().getLightGameParty().getFirstPlayerName().equals(GUI.getLightGame().getLightGameParty().getYourName())) {
-            try {
-                //GUI.getControllerStatic().choosePawn(PawnColors.BLACK);
-            } catch (Exception e) {
-                Configs.printStackTrace(e);
-            }
-        }
     }
 
+    /**
+     * Checks the available pawns and updates the choice box with the available options.
+     */
     private void checkAndShow() {
         choiceBox.getChildren().clear();
 
@@ -96,6 +101,12 @@ public class PawnChoice implements Observer {
         });
     }
 
+    /**
+     * Returns the ImageView of the pawn based on its color.
+     *
+     * @param color the color of the pawn.
+     * @return the ImageView of the pawn.
+     */
     private ImageView getPawnImageView(PawnColors color) {
         switch (color) {
             case BLUE:
@@ -110,6 +121,11 @@ public class PawnChoice implements Observer {
         return null;
     }
 
+    /**
+     * Handles the pawn choice selection by the user.
+     *
+     * @param color the color of the chosen pawn.
+     */
     private void choosePawn(PawnColors color) {
         try {
             GUI.getControllerStatic().choosePawn(color);
@@ -118,6 +134,9 @@ public class PawnChoice implements Observer {
         }
     }
 
+    /**
+     * Updates the GUI component when notified by the observer pattern.
+     */
     @Override
     public synchronized void update() {
         checkAndShow();

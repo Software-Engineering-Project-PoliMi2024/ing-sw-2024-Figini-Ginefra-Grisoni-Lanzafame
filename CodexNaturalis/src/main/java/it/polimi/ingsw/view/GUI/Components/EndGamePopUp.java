@@ -13,8 +13,15 @@ import javafx.scene.layout.VBox;
 import javafx.scene.paint.Color;
 import javafx.scene.text.Text;
 
+/**
+ * This class represents the GUI component responsible for housing the end game popup.
+ */
 public class EndGamePopUp {
-
+    /**
+     * Creates a new EndGamePopUp.
+     * @param parent the parent of the popup
+     * @param leaderboard the leaderboard to display
+     */
     public EndGamePopUp(AnchorPane parent, LeaderboardGUI leaderboard) {
         PopUp endGamePopUp = new PopUp(parent, true);
         endGamePopUp.getContent().setStyle("-fx-background-color: transparent");
@@ -36,6 +43,10 @@ public class EndGamePopUp {
 
     }
 
+    /**
+     * Populates the scene of the popup.
+     * @param endGamePopUp the popup to populate
+     */
     private void populateScene(PopUp endGamePopUp) {
         VBox filler = new VBox();
         filler.setStyle("-fx-background-color: transparent");
@@ -58,6 +69,10 @@ public class EndGamePopUp {
         endGamePopUp.getContent().getChildren().add(filler);
     }
 
+    /**
+     * Initializes the text of the popup.
+     * @return the text of the popup
+     */
     private VBox initializeText() {
         Text title = new Text("Game Over!");
         title.setStyle("-fx-font-size: 30px;" +
@@ -73,12 +88,15 @@ public class EndGamePopUp {
         return vbox;
     }
 
+    /**
+     * Initializes the winners of the popup.
+     * @return the winners of the popup
+     */
     private VBox initializeWinners() {
         VBox winners = new VBox();
         winners.setAlignment(Pos.CENTER);
         winners.setSpacing(20);
         GUI.getLightGame().getWinners().forEach(winner -> {
-            System.out.println(winner + " has won the game!");
             Text winnerText = new Text(winner);
             winnerText.setStyle("-fx-font-size: 24px; " +
                     "-fx-font-weight: bold; ");
@@ -90,6 +108,10 @@ public class EndGamePopUp {
         return winners;
     }
 
+    /**
+     * Initializes the button of the popup.
+     * @return the button of the popup
+     */
     private Button initializeButton() {
         Button disconnectButton = new Button("Disconnect");
         disconnectButton.getStyleClass().add("accent");
@@ -97,6 +119,10 @@ public class EndGamePopUp {
         return disconnectButton;
     }
 
+    /**
+     * Goes to the menu.
+
+     */
     private void goToMenu() {
         try {
             GUI.getControllerStatic().leave();

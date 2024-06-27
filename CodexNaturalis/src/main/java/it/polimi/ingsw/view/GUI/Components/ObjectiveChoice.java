@@ -14,24 +14,26 @@ import javafx.scene.text.TextAlignment;
 
 import java.util.*;
 
+/**
+ * This class represents the GUI component responsible for housing the objective choice.
+ */
 public class ObjectiveChoice implements Observer {
+    /** The objective cards */
     private FlippableCardGUI[] objectiveCards = new FlippableCardGUI[2];
 
+    /** The container of the popup */
     private final VBox container = new VBox();
 
-    private final Text label = new Text("Choose your secret objective");
+    /** The choice box */
     private final HBox choiceBox = new HBox();
+
+    /** The parent of the popup */
     private final AnchorPane parent;
 
-    private double pastX = 0;
-    private double pastY = 0;
-
+    /** Creates a new ObjectiveChoice.
+     * @param parent the parent of the popup
+     */
     public ObjectiveChoice(AnchorPane parent) {
-//        HandDiff diff = new HandDiffAddOneSecretObjectiveOption(new LightCard(1, 1));
-//        diff.apply(GUI.getLightGame());
-//        diff = new HandDiffAddOneSecretObjectiveOption(new LightCard(2, 11));
-//        diff.apply(GUI.getLightGame());
-
         this.parent = parent;
 
         AnchorPane.setBottomAnchor(container, 20.0);
@@ -40,6 +42,7 @@ public class ObjectiveChoice implements Observer {
         AnchorPane.setTopAnchor(container, 20.0);
 
         //Make it bold and centered
+        Text label = new Text("Choose your secret objective");
         label.setStyle("-fx-font-size: 40; -fx-font-weight: bold; -fx-text-fill: white;");
         label.getStyleClass().add("customFont");
         label.setTextAlignment(TextAlignment.CENTER);
@@ -64,6 +67,9 @@ public class ObjectiveChoice implements Observer {
 
     }
 
+    /**
+     * Checks if the objectives are ready to be shown and shows them.
+     */
     private void checkAndShow(){
         LightCard[] objectives = GUI.getLightGame().getHand().getSecretObjectiveOptions();
         int nonNull = (int) Arrays.stream(objectives).filter(Objects::nonNull).count();
@@ -76,6 +82,10 @@ public class ObjectiveChoice implements Observer {
         }
     }
 
+    /**
+     * Sets the flippable card.
+     * @param objectives the objectives to set
+     */
     private void setFlippableCard(LightCard[] objectives){
         List<FlippableCardGUI> objectivesList = new ArrayList<>();
 
@@ -96,6 +106,9 @@ public class ObjectiveChoice implements Observer {
         objectiveCards = objectivesList.toArray(new FlippableCardGUI[0]);
     }
 
+    /**
+     * Updates the objective choice.
+     */
     @Override
     public synchronized void update() {
         checkAndShow();

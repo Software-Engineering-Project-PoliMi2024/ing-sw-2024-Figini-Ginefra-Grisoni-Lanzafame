@@ -7,9 +7,15 @@ import javafx.util.Pair;
 import java.util.HashMap;
 import java.util.Map;
 
+/**
+ * The PlateauMapping class is responsible for managing the mapping of pawn positions on the plateau.
+ * It provides the coordinates for pawns based on their positions and colors and handles conflicts by applying offsets.
+ */
 public class PlateauMapping {
+    /** A map that holds the center coordinates for each position on the plateau. */
     private static final Map<Integer, Pair<Integer, Integer>> positionCoordinates = new HashMap<>();
 
+    /** A map that defines the offset for each pawn color to avoid conflicts. */
     private static final Map<PawnColors, Position> colorOffset = Map.of(
         PawnColors.RED, new Position(50, 50),
         PawnColors.BLUE, new Position(50, -50),
@@ -21,7 +27,9 @@ public class PlateauMapping {
         initPositionCoordinates();
     }
 
-    //center
+    /**
+     * Initializes the center coordinates for each position on the plateau.
+     */
     private static void initPositionCoordinates() {
         positionCoordinates.put(0, new Pair<>(421, 219));
         positionCoordinates.put(1, new Pair<>(791, 219));
@@ -55,7 +63,16 @@ public class PlateauMapping {
         positionCoordinates.put(29, new Pair<>(788, 2517));
     }
 
-    public static Pair<Integer, Integer> getPositionCoordinates(int position, PawnColors color , boolean isConflicting) {
+    /**
+     * Returns the coordinates for the given position and pawn color. If there is a conflict,
+     * applies an offset based on the pawn color to avoid overlap.
+     *
+     * @param position the position on the plateau.
+     * @param color the color of the pawn.
+     * @param isConflicting whether there is a conflict with another pawn.
+     * @return the coordinates for the pawn on the plateau.
+     */
+    public static Pair<Integer, Integer> getPositionCoordinates(int position, PawnColors color, boolean isConflicting) {
         Pair<Integer, Integer> coordinates = positionCoordinates.get(position);
 
         if(isConflicting) {

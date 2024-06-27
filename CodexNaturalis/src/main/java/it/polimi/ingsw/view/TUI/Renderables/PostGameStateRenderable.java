@@ -10,14 +10,30 @@ import it.polimi.ingsw.view.TUI.inputs.CommandPromptResult;
 
 import java.util.List;
 
+/**
+ * This class represents the Renderable that displays the winners of the game and handles post-game commands.
+ */
 public class PostGameStateRenderable extends Renderable {
+    /** The LightGame object representing the game's state */
     private final LightGame lightGame;
 
+    /**
+     * Constructs a PostGameStateRenderable object.
+     *
+     * @param name The name of the Renderable.
+     * @param lightGame The LightGame object representing the game's state.
+     * @param relatedCommands The commands related to this Renderable.
+     * @param view The ControllerProvider object for controller access.
+     */
     public PostGameStateRenderable(String name, LightGame lightGame, CommandPrompt[] relatedCommands, ControllerProvider view) {
         super(name, relatedCommands, view);
         this.lightGame = lightGame;
     }
 
+    /**
+     * Renders the post-game state.
+     * Displays the winners of the game.
+     */
     @Override
     public void render() {
         List<String> winnersList = lightGame.getWinners();
@@ -32,6 +48,11 @@ public class PostGameStateRenderable extends Renderable {
         PromptStyle.printInABox(winners, 70);
     }
 
+    /**
+     * Updates the command based on the CommandPromptResult.
+     *
+     * @param answer The CommandPromptResult containing the user's command and input.
+     */
     @Override
     public void updateCommand(CommandPromptResult answer) {
         switch (answer.getCommand()) {

@@ -20,13 +20,24 @@ import javafx.scene.text.TextFlow;
 
 import java.util.List;
 
-public class ChatDisplay {
-    private final PopUp chatPopUp;
-    private final ListView<ChatMessage> messages = new ListView<>();
+/**
+ * This class represents the GUI component responsible for housing the chat.
 
+ */
+public class ChatDisplay {
+    /** The popup that contains the chat */
+    private final PopUp chatPopUp;
+    /** The list of messages */
+    private final ListView<ChatMessage> messages = new ListView<>();
+    /** The choice box to select the receiver of the message */
     private ChoiceBox<String> receiverChoice;
+    /** The text field to write the message */
     private TextField sendMessageField;
 
+    /**
+     * Creates a new ChatDisplay.
+     * @param parent The parent of the chat
+     */
     public ChatDisplay(AnchorPane parent) {
         chatPopUp = new PopUp(parent);
         messages.setCellFactory(param -> listViewChatMessageCellFactory());
@@ -63,6 +74,10 @@ public class ChatDisplay {
         messages.getItems().add(new ChatMessage("Game", "Welcome to the chat!"));
     }
 
+    /**
+     * Creates a new ListCell for the chat messages.
+     * @return The ListCell
+     */
     public ListCell<ChatMessage> listViewChatMessageCellFactory() {
         ListCell<ChatMessage> cellFactory = new ListCell<>() {
             @Override
@@ -88,6 +103,11 @@ public class ChatDisplay {
         return cellFactory;
     }
 
+    /**
+     * Decorates the label with the message.
+     * @param message The message to decorate
+     * @return The decorated label
+     */
     private Label labelDecorator(ChatMessage message){
         Label labelMessage = new Label();
         labelStyleDecorator(message, labelMessage);
@@ -101,6 +121,11 @@ public class ChatDisplay {
         return labelMessage;
     }
 
+    /**
+     * Decorates the sender of the message.
+     * @param sender The sender of the message
+     * @return The decorated sender
+     */
     private Text senderDecorator(String sender){
         Text senderText = new Text();
         if(sender.equals("Game")){
@@ -116,6 +141,11 @@ public class ChatDisplay {
         return senderText;
     }
 
+    /**
+     * Decorates the receiver of the message.
+     * @param receiver The receiver of the message
+     * @return The decorated receiver
+     */
     private Text receiverDecorator(String receiver){
         Text receiverText = new Text();
         playerTextDecorator(receiver, receiverText);
@@ -127,12 +157,22 @@ public class ChatDisplay {
         return receiverText;
     }
 
+    /**
+     * Decorates the label with the message.
+     * @param message The message to decorate
+     * @param labelToEdit The label to edit
+     */
     private void labelStyleDecorator(ChatMessage message, Label labelToEdit){
         if(message.getPrivacy() == ChatMessage.MessagePrivacy.PRIVATE){
             labelToEdit.setStyle("-fx-font-style: italic");
         }
     }
 
+    /**
+     * Decorates the player text.
+     * @param player The player to decorate
+     * @param text The text to decorate
+     */
     private void playerTextDecorator(String player, Text text){
         if(!GUI.getLightGame().getLightGameParty().getPlayerActiveMap().containsKey(player)){
             text.setFill(Color.GRAY);
@@ -156,15 +196,25 @@ public class ChatDisplay {
         }
     }
 
+    /**
+     * Updates the messages.
+     * @param updatedMessages The updated messages
+     */
     public void updatedMessages(List<ChatMessage> updatedMessages) {
         this.messages.getItems().removeAll(messages.getItems());
         this.messages.getItems().addAll(updatedMessages);
     }
 
+    /**
+     * Opens the chat.
+     */
     public void open() {
         chatPopUp.open();
     }
 
+    /**
+     * Closes the chat.
+     */
     private void sendMessage(){
         String sender = GUI.getLightGame().getLightGameParty().getYourName();
         String receiver = receiverChoice.getValue();
@@ -184,6 +234,10 @@ public class ChatDisplay {
         sendMessageField.clear();
     }
 
+    /**
+     * Links the message to the chat.
+     * @return The listener
+     */
     public ChangeListener<ChatMessage> linkMessage(){
         return new ChangeListener<>() {
             @Override
@@ -201,6 +255,10 @@ public class ChatDisplay {
         };
     }
 
+    /**
+     * Links the choice box to the chat.
+     * @return The listener
+     */
     public ChangeListener<String> linkChoice(){
         return new ChangeListener<>() {
             @Override
@@ -210,6 +268,10 @@ public class ChatDisplay {
         };
     }
 
+    /**
+     * Initializes the receiver choice.
+     * @return The choice box
+     */
     private ChoiceBox<String> initializeReceiverChoice(){
         receiverChoice = new ChoiceBox<>();
         receiverChoice.getItems().add(publicMsg.EVERYONE.toString());
@@ -224,6 +286,10 @@ public class ChatDisplay {
         return receiverChoice;
     }
 
+    /**
+     * Initializes the send button.
+     * @return The send button
+     */
     private Button initializeSendButton(){
         Button sendButton = new Button("Send");
         sendButton.setOnAction(e -> sendMessage());
@@ -231,6 +297,10 @@ public class ChatDisplay {
         return sendButton;
     }
 
+    /**
+     * Initializes the send message field.
+     * @return The send message field
+     */
     private TextField initializeSendMessageField(){
         sendMessageField = new TextField();
         sendMessageField.setPromptText("Write a message to: " + receiverChoice.getValue());
@@ -245,6 +315,11 @@ public class ChatDisplay {
         return sendMessageField;
     }
 
+    /**
+     * Initializes the sending option container.
+     * @param sendingOptionContainer The container to initialize
+     * @return The initialized container
+     */
     private HBox initializeSendingOptionContainer(HBox sendingOptionContainer){
         sendingOptionContainer.setSpacing(10.0);
         sendingOptionContainer.setAlignment(Pos.CENTER);
@@ -252,6 +327,11 @@ public class ChatDisplay {
         return sendingOptionContainer;
     }
 
+    /**
+     * Gets the color of the user.
+     * @param user The user
+     * @return The color of the user
+     */
     private Color getUserColor(String user){
         PawnColors pawnColor = GUI.getLightGame().getLightGameParty().getPlayerColor(user);
         if(pawnColor == null){
@@ -261,20 +341,34 @@ public class ChatDisplay {
         }
     }
 
+    /**
+     * Adds a receiver to the chat.
+     * @param player The player to add
+     */
     public void addReceiver(String player) {
         if(!receiverChoice.getItems().contains(player) && !player.equals(GUI.getLightGame().getLightGameParty().getYourName())){
             receiverChoice.getItems().add(player);
         }
     }
 
+    /**
+     * Removes a receiver from the chat.
+     * @param player The player to remove
+     */
     public void removeReceiver(String player) {
         receiverChoice.getItems().remove(player);
     }
 
+    /**
+     * @return true if the chat is open, false otherwise
+     */
     public boolean isOpen() {
         return chatPopUp.isOpen();
     }
 
+    /**
+     * Closes the chat.
+     */
     private enum publicMsg {
         EVERYONE;
 

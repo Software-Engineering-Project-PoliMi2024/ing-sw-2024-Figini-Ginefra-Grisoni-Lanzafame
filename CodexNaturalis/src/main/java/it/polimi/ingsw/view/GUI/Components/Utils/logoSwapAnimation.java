@@ -15,11 +15,20 @@ import javafx.util.Duration;
 
 import java.util.List;
 
+/**
+ * This class represents the GUI component that handles the transition animation between different screens.
+ * It does so by animating the logo to make it appear and disappear.
+ */
 public class logoSwapAnimation {
+    /** The logo center image */
     private final ImageView logoCenter = new ImageView(AssetsGUI.logoCenter);
+    /** The logo circle image */
     private final ImageView logoCircle = new ImageView(AssetsGUI.logoCircle);
+    /** The logo background image */
     private final ImageView logoBackground = new ImageView(AssetsGUI.logoBackground);
+    /** The stack pane that contains the logo */
     private final StackPane logoStack = new StackPane(logoBackground, logoCircle, logoCenter);
+    /** The timeline used to animate the logo */
     private final Timeline timeline = new Timeline();
 
     /**
@@ -32,6 +41,12 @@ public class logoSwapAnimation {
         return new KeyValue(target.scaleXProperty(), value, Interpolator.EASE_BOTH);
     }
 
+    /**
+     * Creates a KeyValue for the opacity of the target
+     * @param target Node to change opacity
+     * @param value value to change opacity to
+     * @return KeyValue for the opacity of the target
+     */
     private static KeyValue createOpacityeKeyValue(Node target, double value) {
         return new KeyValue(target.opacityProperty(), value, Interpolator.EASE_BOTH);
     }
@@ -55,6 +70,14 @@ public class logoSwapAnimation {
         );
     }
 
+    /**
+     * Creates a switch of opacity for the target. It will switch from valueStart to valueEnd when switchTime seconds pass
+     * @param target Node to change opacity
+     * @param valueStart starting value
+     * @param valueEnd ending value
+     * @param switchTime time to switch the opacity
+     * @return List of KeyFrames for the opacity switch
+     */
     private static List<KeyFrame> opacitySwitch(Node target, double valueStart, double valueEnd, double switchTime) {
         return List.of(
                 new KeyFrame(Duration.millis(switchTime), createOpacityeKeyValue(target, valueStart)),
@@ -63,6 +86,10 @@ public class logoSwapAnimation {
         );
     }
 
+    /**
+     * Creates a new logoSwapAnimation
+     * @param primaryStage stage to add the logo to
+     */
     public logoSwapAnimation(Stage primaryStage) {
         // Make the stack always fill the screen
         AnchorPane.setTopAnchor(logoStack, 0.0);
@@ -102,6 +129,12 @@ public class logoSwapAnimation {
         timeline.getKeyFrames().addAll(scaleCycle(logoBackground, 0, 1, 2 * GUIConfigs.swapAnimationDelay, GUIConfigs.swapAnimationDuration, GUIConfigs.swapAnimationPause));
     }
 
+    /**
+     * Plays the transition animation between the oldRoot and the newRoot
+     * @param mainRoot the root of the scene
+     * @param oldRoot the root to remove
+     * @param newRoot the root to add
+     */
     public void playTransitionAnimation(AnchorPane mainRoot, Node oldRoot, Node newRoot){
         // Add the new root to the main root
         if(mainRoot.getChildren().size() >= 2) {

@@ -7,6 +7,10 @@ import javafx.scene.image.Image;
 
 import java.util.Objects;
 
+/**
+ * This class contains all the assets used in the GUI
+ * All the assets are loaded at the start of the program and are stored in static fields
+ */
 public class AssetsGUI {
     //Animation assets
     public static Image logoCenter = new Image(Objects.requireNonNull(GUI.class.getClassLoader().getResourceAsStream("GUI/images/Logo/Center.png"), "Logo Center is null"));

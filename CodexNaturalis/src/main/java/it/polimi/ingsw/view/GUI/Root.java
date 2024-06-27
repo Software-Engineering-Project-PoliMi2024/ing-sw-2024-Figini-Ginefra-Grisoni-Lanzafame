@@ -7,6 +7,9 @@ import javafx.scene.layout.AnchorPane;
 import java.io.IOException;
 import java.util.Objects;
 
+/**
+ * The root of each Scene Builder Scene
+ */
 public enum Root {
     SERVER_CONNECTION_FORM("/GUI/ServerConnection.fxml"),
     LOGIN_FORM("/GUI/LoginForm.fxml"),
@@ -14,8 +17,13 @@ public enum Root {
     LOBBY("/GUI/Lobby.fxml"),
     GAME("/GUI/Game.fxml");
 
+    /** The root of the scene */
     private final Parent root;
 
+    /**
+     * Create a new root by loading the fxml file
+     * @param fxmlPath the path of the fxml file
+     */
     Root(String fxmlPath) {
         try {
             this.root = FXMLLoader.load(Objects.requireNonNull(getClass().getResource(fxmlPath)));
@@ -30,6 +38,10 @@ public enum Root {
         }
     }
 
+    /**
+     * Getter of the root
+     * @return the root of the scene
+     */
     public Parent getRoot() {
         return root;
     }

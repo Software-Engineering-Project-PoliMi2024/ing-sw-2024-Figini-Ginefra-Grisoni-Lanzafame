@@ -9,21 +9,23 @@ import it.polimi.ingsw.view.GUI.Components.Logs.LogsGUI;
 import it.polimi.ingsw.view.GUI.Components.PawnRelated.PawnChoice;
 import it.polimi.ingsw.view.GUI.Root;
 
+/**
+ * The scene that contains the game board and all the other elements of the game
+
+ */
 public class GameScene extends SceneGUI{
-    private DeckAreaGUI deck;
-    private HandGUI hand;
-    private CodexGUI codex;
-    private CollectedCollectablesGUI collectedCollectables;
-    private LeaderboardGUI leaderboard;
+    /**
+     * Creates the game scene
+     */
     public GameScene() {
         super();
 
         content.getChildren().add(Root.GAME.getRoot());
 
-        codex = new CodexGUI();
+        CodexGUI codex = new CodexGUI();
         codex.attachToCodex();
 
-        hand = new HandGUI();
+        HandGUI hand = new HandGUI();
         hand.setCodex(codex);
 
         this.add(codex.getCodex());
@@ -34,14 +36,14 @@ public class GameScene extends SceneGUI{
 
         LogsGUI logs = new LogsGUI(getContent());
 
-        collectedCollectables = new CollectedCollectablesGUI();
+        CollectedCollectablesGUI collectedCollectables = new CollectedCollectablesGUI();
         collectedCollectables.attachToCodex();
         collectedCollectables.addThisTo(getContent());
 
-        deck = new DeckAreaGUI();
+        DeckAreaGUI deck = new DeckAreaGUI();
         deck.addThisTo(getContent());
 
-        leaderboard = new LeaderboardGUI();
+        LeaderboardGUI leaderboard = new LeaderboardGUI();
         leaderboard.addThisTo(getContent());
         leaderboard.attach();
 

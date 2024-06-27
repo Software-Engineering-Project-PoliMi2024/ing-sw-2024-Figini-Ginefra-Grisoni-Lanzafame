@@ -30,22 +30,50 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.Objects;
 
+/**
+ * The main class of the GUI. It manages the transitions between the different scenes and holds the controller.
+ * It also manages the logs and the updates of the lobby, the game and the lobby list.
+
+ */
 public class GUI extends Application implements ActualView {
+    /** The controller */
     static private ControllerInterface controller;
+
+    //==================================================================================================================
+    // LIGHT MODEL
+    //==================================================================================================================
+    /** The lobby list */
     private static final LightLobbyList lobbyList = new LightLobbyList();
+    /** The lobby */
     private static final LightLobby lobby = new LightLobby();
+    /** The game */
     private static final LightGame lightGame = new LightGame();
-    private static LogMemory logMemory = new LogMemory();
+    //==================================================================================================================
+
+    /**The holder of the logs*/
+    private static final LogMemory logMemory = new LogMemory();
+
+    /** The one and only stage */
     private Stage primaryStage;
+
+    /** The current root containing the current scene */
     private Node currentRoot;
+
+    /** The stack root containing all the scenes. This is useful for the transition animations */
     private final AnchorPane stackRoot = new AnchorPane();
+
+    /** The transition animation */
     private logoSwapAnimation transitionAnimation;
+
+    /** The state of the GUI */
     private static final EnumProperty<StateGUI> stateProperty = new EnumProperty<>();
 
+    /** The method that runs the GUI */
     public void run() {
         launch();
     }
 
+    /** The method that starts the GUI */
     @Override
     public void start(Stage primaryStage) {
         Application.setUserAgentStylesheet(Objects.requireNonNull(getClass().getResource("/GUI/Styles/themes/cupertino-light.css")).toExternalForm());
@@ -78,16 +106,10 @@ public class GUI extends Application implements ActualView {
 
             primaryStage.show();
 
-        // set stackRoot background and style
-        // stackRoot.setStyle("-fx-background-color: #1e1f22;");
         transitionTo(StateGUI.SERVER_CONNECTION);
-        // transitionTo(StateGUI.CHOOSE_PAWN);
-        // transitionTo(StateGUI.SELECT_OBJECTIVE);
-        // transitionTo(StateGUI.JOIN_LOBBY);
-        // transitionTo(StateGUI.LOBBY);
-        // transitionTo(StateGUI.PLACE_CARD);
     }
 
+    /** The method that sets the root of the scene. This triggers the transition animation */
     private void setRoot(Node root){
         if(currentRoot == null){
             stackRoot.getChildren().add(root);
@@ -101,6 +123,7 @@ public class GUI extends Application implements ActualView {
 
     }
 
+    /** The method that transitions to a new state of the GUI by setting the respective root */
     public void transitionTo(StateGUI state) {
         if(!state.equals(stateProperty.get())) {
             Platform.runLater(() -> {
@@ -110,7 +133,7 @@ public class GUI extends Application implements ActualView {
         stateProperty.set(state);
     }
 
-
+    /** The method that transitions to a new state */
     @Override
     public void transitionTo(ViewState state) throws RemoteException {
         StateGUI newState = Arrays.stream(StateGUI.values())
@@ -120,81 +143,133 @@ public class GUI extends Application implements ActualView {
         transitionTo(newState);
     }
 
+    /** The method that logs a message */
     @Override
     public void log(String logMsg) throws RemoteException {
     }
 
+    /** The method that logs an error */
     @Override
     public void logErr(String logMsg) throws RemoteException {
         Platform.runLater(() -> LogErr.display(stackRoot, logMsg));
     }
 
+    /*+ The method that logs a message that is not a log or an error*/
     @Override
     public void logOthers(String logMsg) throws RemoteException {
         Platform.runLater(()->logMemory.addLog(logMsg));
     }
 
+    /** The method that logs a game message */
     @Override
     public void logGame(String logMsg) throws RemoteException {
     }
 
+    /** The method that logs a chat message */
     @Override
     public void logChat(String logMsg) throws RemoteException {
     }
 
+    /** The method that applies the given diff to the lobby list
+     * @param diff the diff to apply
+     */
     @Override
     public void updateLobbyList(ModelDiffs<LightLobbyList> diff) throws RemoteException {
         Platform.runLater(() -> diff.apply(lobbyList));
     }
 
+    /** The method that applies the given diff to the lobby
+     * @param diff the diff to apply
+     */
     @Override
     public void updateLobby(ModelDiffs<LightLobby> diff) throws RemoteException {
         Platform.runLater(() -> diff.apply(lobby));
     }
 
+    /** The method that applies the given diff to the game
+     * @param diff the diff to apply
+     */
     @Override
     public void updateGame(ModelDiffs<LightGame> diff) throws RemoteException {
         Platform.runLater(() -> diff.apply(lightGame));
     }
 
+    /** Sets the controller
+     * @param controller the controller to set
+     */
     @Override
     public void setController(ControllerInterface controller) {
         GUI.controller = controller;
     }
 
+    /**
+     * Getter of the controller
+     * @return the controller
+     */
     @Override
     public ControllerInterface getController() {
         return controller;
     }
 
+    /**
+     * Getter of the controller
+     * @return the controller
+     */
     public static ControllerInterface getControllerStatic() {
         return controller;
     }
 
+    /** Sets the controller
+     * @param controller the controller to set
+     */
     public static void setControllerStatic(VirtualController controller) {
         GUI.controller = controller;
     }
 
+    /**
+     * Gets the light game
+     * @return the light game
+     */
     public static LightGame getLightGame(){
         return lightGame;
     }
 
+    /**
+     * Gets the light lobby
+     * @return the light lobby
+     */
     public static LightLobby getLobby(){
         return lobby;
     }
 
+    /**
+     * Gets the light lobby list
+     * @return the light lobby list
+     */
     public static LightLobbyList getLobbyList(){
         return lobbyList;
     }
 
+    /**
+     * Gets the log memory
+     * @return the log memory
+     */
     public static LogMemory getLogMemory() {
         return logMemory;
     }
 
+    /**
+     * Gets the property that contains the current state of the GUI
+     * @return the property that contains the current state of the GUI
+     */
     public static EnumProperty<StateGUI> getStateProperty() {
         return stateProperty;
     }
 
+    /**
+     * The main method. It launches the GUI
+     * @param args the arguments
+     */
     public static void main(String[] args) {
         launch(args);
     }

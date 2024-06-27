@@ -10,17 +10,27 @@ import javafx.scene.control.ListView;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.VBox;
 
+/**
+ * This class represents the GUI component responsible for housing the lobby.
+
+ */
 public class LobbyGUI implements Observer {
+    /** The list of users in the lobby */
     private final ListView<String> userInLobby = new ListView<>();
+    /** The label that shows the number of players in the lobby */
     private final Label playerInLobbyCount = new Label();
-    private final Label lobbyNameToJoin = new Label();
-    private final Button leaveButton = new Button();
+    /** The container that contains all the components */
     private final VBox lobbyLayout = new VBox();
 
+    /**
+     * Creates a new LobbyGUI.
+     */
     public LobbyGUI(){
         GUI.getLobby().attach(this);
 
+        Label lobbyNameToJoin = new Label();
         lobbyNameToJoin.setText(GUI.getLobby().name());
+        Button leaveButton = new Button();
         leaveButton.setText("leave lobby");
         leaveButton.getStyleClass().add("danger");
 
@@ -49,6 +59,10 @@ public class LobbyGUI implements Observer {
         AnchorPane.setTopAnchor(lobbyLayout, 10.0);
     }
 
+    /**
+     * Updates the component when called by the observed.
+     * It clears all the users in the lobby and then adds them again to match the light model
+     */
     @Override
     public void update() {
         userInLobby.getItems().clear();
@@ -56,6 +70,9 @@ public class LobbyGUI implements Observer {
         playerInLobbyCount.setText(GUI.getLobby().nicknames().size() + "/" + GUI.getLobby().numberMaxPlayer());
     }
 
+    /**
+     * Leaves the lobby.
+     */
     public void leaveLobby() {
         try {
             GUI.getControllerStatic().leaveLobby();
@@ -64,6 +81,10 @@ public class LobbyGUI implements Observer {
         }
     }
 
+    /**
+     * Returns the lobby display.
+     * @return the lobby display.
+     */
     public Node getLobbyDisplay() {
         return lobbyLayout;
     }
