@@ -1,4 +1,4 @@
-package it.polimi.ingsw.model.cardReleted.cardFactories;
+package it.polimi.ingsw.utils.cardFactories;
 
 import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;

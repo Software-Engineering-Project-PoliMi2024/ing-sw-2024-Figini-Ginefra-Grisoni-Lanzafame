@@ -4,6 +4,8 @@ import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
 import it.polimi.ingsw.Configs;
 import it.polimi.ingsw.model.cardReleted.cards.GoldCard;
+import it.polimi.ingsw.utils.cardFactories.AbstractCardFactory;
+import it.polimi.ingsw.utils.cardFactories.GoldCardFactory;
 import org.junit.Test;
 import static org.junit.Assert.*;
 
