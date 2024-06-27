@@ -10,8 +10,13 @@ import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Map;
 
+/**
+ * This class represents the Start Card, the card that is given to each player at the beginning of the game.
+ */
 public class StartCard extends CardWithCorners {
+    /** The map containing which collectable is in which corner */
     final private Map<CardCorner, Collectable> backCorners;
+    /** The permanent resources given by the start card */
     final private HashSet<Resource> permanentResources;
 
     /** @param backCorners the map containing which collectable is in which corner
@@ -60,7 +65,7 @@ public class StartCard extends CardWithCorners {
         else
             return new HashSet<>();
     }
-
+    /** @return the map containing which collectable is in which back corner */
     public Map<CardCorner, Collectable> getBackCorners() {
         return new HashMap<>(backCorners);
     }

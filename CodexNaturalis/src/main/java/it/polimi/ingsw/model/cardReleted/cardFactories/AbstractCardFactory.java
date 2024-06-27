@@ -19,13 +19,12 @@ import java.util.Queue;
  * @param <Element> is the "type" of Card that will be produced
  */
 public abstract class AbstractCardFactory<Element> {
-    public abstract Queue<Element> getCards(String binFileName);
+    /** file from which the cards are loaded */
+     private final String inFileFromResources;
+     /** directory where the .bin file will be saved */
+     protected final String outDirPath;
 
-    public abstract Queue<Element> getCardsFromJson();
-    private final String inFileFromResources;
-    protected final String outDirPath;
-
-    /**
+     /**
      * The constructor of the class
      * @param inFileFromResources the path of the card.json file in the resources folder
      * @param outDirPath the path of the directory where the .bin file will be saved
@@ -34,6 +33,15 @@ public abstract class AbstractCardFactory<Element> {
         this.inFileFromResources = inFileFromResources;
         this.outDirPath = outDirPath;
     }
+
+    /**
+     * Get the cards from the .bin file
+     * @param binFileName the name of the .bin file
+     * @return the queue of card
+     */
+    public abstract Queue<Element> getCards(String binFileName);
+    /** @return a Queue of card from the Json file */
+    public abstract Queue<Element> getCardsFromJson();
 
     /**
      * Read from the Json File the Card Array

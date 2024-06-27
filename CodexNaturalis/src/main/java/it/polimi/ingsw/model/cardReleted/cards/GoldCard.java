@@ -10,8 +10,13 @@ import it.polimi.ingsw.model.playerReleted.Codex;
 import java.util.HashMap;
 import java.util.Map;
 
+/**
+ * This class is the representation of the GoldCard in the game
+ */
 public class GoldCard extends CardInHand {
+    /** The requirements that the player needs to satisfy to place the card */
     final private Map<Resource, Integer> requirements;
+    /** The multiplier of the card defining how many times the points are multiplied given the codex */
     final private GoldCardPointMultiplier multiplier;
 
     /**
@@ -43,10 +48,10 @@ public class GoldCard extends CardInHand {
         return new HashMap<>(requirements);
     }
 
-    @Override
-    /*
+    /**
      * @return the amount of point given to the player by the card
      */
+    @Override
     public int getPoints(Codex codex) {
         if(multiplier == null)
             return this.getPoints();
@@ -68,6 +73,9 @@ public class GoldCard extends CardInHand {
         return new GoldCard(this);
     }
 
+    /**
+     * @return true if the requirements are satisfied and so the card can be placed, false otherwise
+     */
     @Override
     public boolean canBePlaced(Codex codex) {
         Map<Collectable, Integer> earned =  codex.getEarnedCollectables();
