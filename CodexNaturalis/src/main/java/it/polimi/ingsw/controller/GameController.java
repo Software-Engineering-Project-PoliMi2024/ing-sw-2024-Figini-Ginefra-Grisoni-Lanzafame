@@ -441,11 +441,17 @@ public class GameController implements GameControllerInterface {
 
                     this.notifyDraw(nickname, deckType, cardID, Lightifier.lightifyToCard(drawnCard),
                             drawnCard.canBePlaced(player.getUserCodex()));
+
+                    moveOnWithTurnsAndCheckForWinners(nickname, getLastActivePlayer());
                 }else {
+                    try {
+                        playerViewMap.get(nickname).transitionTo(ViewState.DRAW_CARD);
+                    }catch (Exception ignored) {}
                     notifyEmptyDeckPosition(nickname);
                 }
+            }else{
+                moveOnWithTurnsAndCheckForWinners(nickname, getLastActivePlayer());
             }
-            moveOnWithTurnsAndCheckForWinners(nickname, getLastActivePlayer());
         }else {
             this.malevolentPlayer(nickname);
         }

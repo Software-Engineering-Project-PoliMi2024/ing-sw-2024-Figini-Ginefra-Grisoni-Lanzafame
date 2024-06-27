@@ -1629,10 +1629,13 @@ class ControllersTests {
             LightPlacement placement2 = new LightPlacement(position2, cardPlaced2, CardFace.BACK);
 
             secondPlayerController.controller.place(placement2);
-            secondPlayerController.controller.draw(DrawableCard.RESOURCECARD, 0);
+            if(i == ((totalCardsInDeck - resourceCardsInHandAtStart * numberOfPlayers) / numberOfPlayers) -1 )
+                secondPlayerController.controller.draw(DrawableCard.RESOURCECARD, 1);
+            else
+                secondPlayerController.controller.draw(DrawableCard.RESOURCECARD, 0);
+
         }
 
-        assert game.getResourceCardDeck().isEmpty();
 
         //empty goldDeck
         for (int i = 0; i < (totalCardsInDeck - goldCardsInHandAtStart * numberOfPlayers) / numberOfPlayers; i++) {
@@ -1648,8 +1651,24 @@ class ControllersTests {
             LightPlacement placement2 = new LightPlacement(position2, cardPlaced2, CardFace.BACK);
 
             secondPlayerController.controller.place(placement2);
-            secondPlayerController.controller.draw(DrawableCard.GOLDCARD, 0);
+            if(i == ((totalCardsInDeck - goldCardsInHandAtStart * numberOfPlayers) / numberOfPlayers) -1 )
+                secondPlayerController.controller.draw(DrawableCard.GOLDCARD, 1);
+            else
+                secondPlayerController.controller.draw(DrawableCard.GOLDCARD, 0);
+
         }
+
+        assert game.areDeckEmpty();
+        assert game.getResourceCardDeck().isEmpty();
+        assert view1.lightGame.getDecks().get(DrawableCard.RESOURCECARD).getDeckBack() == null;
+        assert Arrays.stream(view1.lightGame.getDecks().get(DrawableCard.RESOURCECARD).getCardBuffer()).allMatch(Objects::isNull);
+        assert view1.lightGame.getDecks().get(DrawableCard.GOLDCARD).getDeckBack() == null;
+        assert Arrays.stream(view1.lightGame.getDecks().get(DrawableCard.GOLDCARD).getCardBuffer()).allMatch(Objects::isNull);
+        assert view2.lightGame.getDecks().get(DrawableCard.RESOURCECARD).getDeckBack() == null;
+        assert Arrays.stream(view2.lightGame.getDecks().get(DrawableCard.RESOURCECARD).getCardBuffer()).allMatch(Objects::isNull);
+        assert view2.lightGame.getDecks().get(DrawableCard.GOLDCARD).getDeckBack() == null;
+        assert Arrays.stream(view2.lightGame.getDecks().get(DrawableCard.GOLDCARD).getCardBuffer()).allMatch(Objects::isNull);
+
 
         assert game.getGoldCardDeck().isEmpty();
 
@@ -1671,7 +1690,6 @@ class ControllersTests {
         LightPlacement placement2 = new LightPlacement(position2, cardPlaced2, CardFace.BACK);
 
         secondPlayerController.controller.place(placement2);
-
 
         assert game.getState().equals(GameState.END_GAME);
     }

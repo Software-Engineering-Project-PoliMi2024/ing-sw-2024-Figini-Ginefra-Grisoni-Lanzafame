@@ -1609,7 +1609,10 @@ public class ResilienceTest {
             LightPlacement placement2 = new LightPlacement(position2, cardPlaced2, CardFace.BACK);
 
             secondPlayerController.controller.place(placement2);
-            secondPlayerController.controller.draw(DrawableCard.RESOURCECARD, 0);
+            if(i == ((totalCardsInDeck - resourceCardsInHandAtStart * numberOfPlayers) / numberOfPlayers) -1 )
+                secondPlayerController.controller.draw(DrawableCard.RESOURCECARD, 1);
+            else
+                secondPlayerController.controller.draw(DrawableCard.RESOURCECARD, 0);
         }
 
         assert game.getResourceCardDeck().isEmpty();
@@ -1628,7 +1631,10 @@ public class ResilienceTest {
             LightPlacement placement2 = new LightPlacement(position2, cardPlaced2, CardFace.BACK);
 
             secondPlayerController.controller.place(placement2);
-            secondPlayerController.controller.draw(DrawableCard.GOLDCARD, 0);
+            if(i == ((totalCardsInDeck - goldCardsInHandAtStart * numberOfPlayers) / numberOfPlayers) -1 )
+                secondPlayerController.controller.draw(DrawableCard.GOLDCARD, 1);
+            else
+                secondPlayerController.controller.draw(DrawableCard.GOLDCARD, 0);
         }
 
         assert game.getGoldCardDeck().isEmpty();
@@ -1708,7 +1714,10 @@ public class ResilienceTest {
             LightPlacement placement2 = new LightPlacement(position2, cardPlaced2, CardFace.BACK);
 
             secondPlayerController.controller.place(placement2);
-            secondPlayerController.controller.draw(DrawableCard.RESOURCECARD, 0);
+            if(i == ((totalCardsInDeck - resourceCardsInHandAtStart * numberOfPlayers) / numberOfPlayers) -1 )
+                secondPlayerController.controller.draw(DrawableCard.RESOURCECARD, 1);
+            else
+                secondPlayerController.controller.draw(DrawableCard.RESOURCECARD, 0);
         }
 
         assert game.getResourceCardDeck().isEmpty();
@@ -1727,10 +1736,7 @@ public class ResilienceTest {
             LightPlacement placement2 = new LightPlacement(position2, cardPlaced2, CardFace.BACK);
 
             secondPlayerController.controller.place(placement2);
-
-            if (i < (totalCardsInDeck - goldCardsInHandAtStart * numberOfPlayers) / numberOfPlayers - 1) {
-                secondPlayerController.controller.draw(DrawableCard.GOLDCARD, 0);
-            }
+            secondPlayerController.controller.draw(DrawableCard.GOLDCARD, 0);
         }
 
         assert game.getGoldCardDeck().getBuffer().stream().filter(Objects::nonNull).toList().size() == 1;
