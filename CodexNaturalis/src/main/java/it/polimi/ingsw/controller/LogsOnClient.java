@@ -12,7 +12,6 @@ public class LogsOnClient {
     //login related
     public static String NAME_TAKEN = "The chosen nickname is already in use.";
     public static String SERVER_JOINED = "Joined the server.";
-    public static String SERVER_LEFT = "Left the server.";
     public static String NOT_VALID_NICKNAME = "The chosen nickname is not valid.";
 
     //lobbyList related
@@ -36,7 +35,7 @@ public class LogsOnClient {
     public static String GAME_CREATED = "Lobby is full, the game is starting.";
     public static String GAME_JOINED = "Joined game.";
 
-    //gameSetup related  = startCard face and SecretObjective option selection)
+    //gameSetup related  = startCard face and SecretObjective option selection
     public static String YOU_PLACE_STARTCARD = "Successfully placed your Start Card.";
     public static String YOU_CHOSE_PAWN = "Successfully chose your Pawn.";
     public static String PLAYER_CHOSE_PAWN = " chose their Pawn.";
@@ -49,7 +48,7 @@ public class LogsOnClient {
     public static String WAIT_SECRET_OBJECTIVE = "Waiting for other players to choose their Secret Objectives.";
     public static String EVERYONE_CHOSE_OBJ = "All players have chosen their Secret Objectives.";
 
-    //gameCards related  = card place or draw)
+    //gameCards related  = card place or draw
     public static String CARD_NOT_PLACEABLE = "Card cannot be placed.";
 
     public static String PLAYER_PLACED = " placed a card.";
