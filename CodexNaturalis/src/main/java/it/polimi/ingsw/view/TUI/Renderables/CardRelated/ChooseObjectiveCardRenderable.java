@@ -1,5 +1,6 @@
 package it.polimi.ingsw.view.TUI.Renderables.CardRelated;
 
+import it.polimi.ingsw.Configs;
 import it.polimi.ingsw.lightModel.lightPlayerRelated.LightCard;
 import it.polimi.ingsw.lightModel.lightTableRelated.LightGame;
 import it.polimi.ingsw.model.cardReleted.utilityEnums.CardFace;
@@ -84,7 +85,7 @@ public class ChooseObjectiveCardRenderable extends CanvasRenderable {
                     view.getController().chooseSecretObjective(lightGame.getHand().getSecretObjectiveOptions()[cardIndex]);
                 }
                 catch (Exception e) {
-                    e.printStackTrace();
+                    Configs.printStackTrace(e);
                 }
                 break;
             case CommandPrompt.DISPLAY_OBJECTIVE_OPTIONS:

@@ -1,5 +1,6 @@
 package it.polimi.ingsw.view.GUI.Components.PawnRelated;
 
+import it.polimi.ingsw.Configs;
 import it.polimi.ingsw.utils.designPatterns.Observer;
 import it.polimi.ingsw.model.playerReleted.PawnColors;
 import it.polimi.ingsw.view.GUI.AssetsGUI;
@@ -73,7 +74,7 @@ public class PawnChoice implements Observer {
             try {
                 //GUI.getControllerStatic().choosePawn(PawnColors.BLACK);
             } catch (Exception e) {
-                e.printStackTrace();
+                Configs.printStackTrace(e);
             }
         }
     }
@@ -113,7 +114,7 @@ public class PawnChoice implements Observer {
         try {
             GUI.getControllerStatic().choosePawn(color);
         } catch (Exception e) {
-            e.printStackTrace();
+            Configs.printStackTrace(e);
         }
     }
 

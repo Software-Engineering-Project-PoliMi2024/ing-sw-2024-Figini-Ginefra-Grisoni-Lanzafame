@@ -1,5 +1,6 @@
 package it.polimi.ingsw.view.TUI.Renderables.Forms;
 
+import it.polimi.ingsw.Configs;
 import it.polimi.ingsw.connectionLayer.VirtualLayer.VirtualController;
 import it.polimi.ingsw.connectionLayer.RMI.VirtualRMI.VirtualControllerRMI;
 import it.polimi.ingsw.connectionLayer.Socket.VirtualSocket.VirtualControllerSocket;
@@ -44,7 +45,7 @@ public class ConnectFormRenderable extends FormRenderable {
         try {
             controller.connect(ip, port, view);
         }catch (Exception e) {
-            e.printStackTrace();
+            Configs.printStackTrace(e);
         }
     }
 
