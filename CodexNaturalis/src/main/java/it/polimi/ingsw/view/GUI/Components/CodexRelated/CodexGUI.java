@@ -261,22 +261,28 @@ public class CodexGUI implements Observer {
     public synchronized void update(){
         int n = this.getLightCodex().getPlacementHistory().size();
 
+        //Checks if the codex has to be updated
         if(n > this.cards.size()){
+            //Adds all the new cards
             for(int i = this.cards.size(); i < n; i++){
                 LightPlacement target = this.getLightCodex().getPlacementHistory().get(i);
                 this.addCard(new CardGUI(target.card(), target.face()), target.position());
             }
         }
 
-
+        // The set of the positions that are still in the frontier
         Set<Position> staySet = new HashSet<>();
+
         List<Position> newFrontier = this.getLightCodex().getFrontier().frontier();
+
         Set<Position> currentFrontier = new HashSet<>(this.frontier.stream().map(FrontierCardGUI::getGridPosition).toList());
 
         //Add the new Elements
         for(Position newElement : newFrontier){
             staySet.add(newElement);
+            //If the element is not in the current frontier add it
             if(!currentFrontier.contains(newElement)){
+                //Add the new element
                 Point2D cardPos = this.getCardPosition(newElement);
                 FrontierCardGUI fc = new FrontierCardGUI(newElement, cardPos.getX(), cardPos.getY());
                 this.addToCodex(fc.getCard());
@@ -286,7 +292,7 @@ public class CodexGUI implements Observer {
             }
         }
 
-        //Remove the old elements
+        //Remove the old elements, the elements that are not in the new frontier
         for(int i = frontier.size() - 1; i >= 0; i--){
             FrontierCardGUI fc = frontier.get(i);
             if(!staySet.contains(fc.getGridPosition())){
@@ -295,10 +301,12 @@ public class CodexGUI implements Observer {
             }
         }
 
+        //Update the position of the pawn
         String myNickname = this.getTargetPlayer();
         PawnColors myColor = GUI.getLightGame().getLightGameParty().getPlayerColor(myNickname);
+
+        //If the pawn is not yet set and the color is not null set the pawn
         if(pawn.getImage()==null && myColor != null){
-            System.out.println("Setting pawn image");
             pawn.setImage(Objects.requireNonNull(PawnsGui.getPawnGui(myColor)).getImageView().getImage());
             pawn.setFitHeight(50);
             pawn.setFitWidth(50);

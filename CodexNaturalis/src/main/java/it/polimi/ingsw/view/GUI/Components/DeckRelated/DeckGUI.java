@@ -15,15 +15,26 @@ import javafx.scene.layout.VBox;
 
 import java.util.Arrays;
 
+/**
+ * This class represents the GUI component responsible for housing a deck.
+ */
 public class DeckGUI implements Observer {
+    /** The content of the component */
     private final VBox content = new VBox();
+    /** The drawable card associated of the deck */
     private final CardGUI drawableCard;
+    /** The buffer of the deck */
     private final FlippableCardGUI[] buffer = new FlippableCardGUI[2];
-
+    /** The target of the deck */
     private final DrawableCard cardTarget;
-
+    /** The parent of the component */
     private final HBox parent;
 
+    /**
+     * Creates a new DeckGUI.
+     * @param cardTarget the target of the deck.
+     * @param parent the parent of the component.
+     */
     public DeckGUI(DrawableCard cardTarget, HBox parent){
         this.parent = parent;
         this.cardTarget = cardTarget;
@@ -68,10 +79,17 @@ public class DeckGUI implements Observer {
         parent.getChildren().add(content);
     }
 
+    /**
+     * Sets the size bindings of the given card.
+     * @param card the card to set the size bindings of.
+     */
     private void setSizeBindings(CardGUI card){
         card.getImageView().fitWidthProperty().bind(parent.maxHeightProperty().subtract(buffer.length * GUIConfigs.vCardGapInDeck).divide(buffer.length + 1).multiply(GUIConfigs.cardWidth / GUIConfigs.cardHeight));
     }
 
+    /**
+     * Updates the component to reflect the current state of the light model. This method is called by the observer pattern.
+     */
     public void update(){
         LightDeck deck = GUI.getLightGame().getDecks().get(cardTarget);
 
@@ -88,6 +106,10 @@ public class DeckGUI implements Observer {
         }
     }
 
+    /**
+     * Returns the content of the component.
+     * @return the content of the component.
+     */
     public VBox getContent(){
         return content;
     }
