@@ -14,15 +14,24 @@ import javafx.scene.control.ListView;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.VBox;
 
+/**
+ * This class represents the GUI component responsible for housing the lobby list.
+ */
 public class LobbyListJoinGUI implements Observer {
+    /** The list of lobbies */
     private final ListView<LightLobby> lobbyListDisplay = new ListView<>();
-    private final Label lobbyNameToJoin = new Label();
+    /** The button to join a lobby */
     private final Button joinButton = new Button();
+    /** The container that contains all the components */
     private final VBox joinLobbyLayout = new VBox();
 
+    /**
+     * Creates a new LobbyListJoinGUI.
+     */
     public LobbyListJoinGUI(){
         GUI.getLobbyList().attach(this);
 
+        Label lobbyNameToJoin = new Label();
         lobbyNameToJoin.setText("Select a lobby to join");
         joinButton.setText("Join");
 
@@ -48,6 +57,10 @@ public class LobbyListJoinGUI implements Observer {
         AnchorPane.setTopAnchor(joinLobbyLayout, 10.0);
     }
 
+    /**
+     * Updates the component based on the current state of the model. This method is called by the observer.
+     * It updates the list of lobbies by adding the new ones and removing the ones that are not present in the model.
+     */
     @Override
     public void update() {
         for(LightLobby lobby : GUI.getLobbyList().getLobbies()){
@@ -58,6 +71,11 @@ public class LobbyListJoinGUI implements Observer {
         lobbyListDisplay.getItems().removeIf(lobby -> !GUI.getLobbyList().getLobbies().contains(lobby));
     }
 
+    /**
+     * Returns a cell factory for the list view of lobbies.
+     * Each cell will display the name of the lobby.
+     * @return a cell factory for the list view of lobbies
+     */
     public ListCell<LightLobby> listViewLobbyCellFactory() {
         ListCell<LightLobby> cellFactory =  new ListCell<LightLobby>(){
             @Override
@@ -76,6 +94,10 @@ public class LobbyListJoinGUI implements Observer {
         return cellFactory;
     }
 
+    /**
+     * Returns a change listener that links the label to the selection of the list view.
+     * @return a change listener that links the label to the selection of the list view
+     */
     public ChangeListener<LightLobby> linkLabelToSelection(){
         return new ChangeListener<LightLobby>() {
             @Override
@@ -89,6 +111,9 @@ public class LobbyListJoinGUI implements Observer {
         };
     }
 
+    /**
+     * Joins the selected lobby.
+     */
     public void joinLobby(){
         LightLobby selectedLobby = lobbyListDisplay.getSelectionModel().getSelectedItem();
         if(selectedLobby != null){
@@ -100,6 +125,10 @@ public class LobbyListJoinGUI implements Observer {
         }
     }
 
+    /**
+     * Returns the lobby list display.
+     * @return the lobby list display
+     */
     public Node getLobbyListDisplay() {
         return joinLobbyLayout;
     }
