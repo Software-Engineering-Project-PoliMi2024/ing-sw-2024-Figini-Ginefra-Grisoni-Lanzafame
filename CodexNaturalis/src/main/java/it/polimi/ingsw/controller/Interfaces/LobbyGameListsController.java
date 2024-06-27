@@ -5,9 +5,13 @@ import it.polimi.ingsw.view.ViewInterface;
 import java.io.Serializable;
 import java.rmi.Remote;
 
+/**
+ * Interface that defines the methods of the controller of the lobby list and of the game list
+ * and manage the players interaction with the server
+ */
 public interface LobbyGameListsController extends GameList, MalevolentPlayerManager, Serializable, Remote {
     /**
-     * logs a player in the Lobby and Game List
+     * Logs a player in the Lobby and Game List
      * If the nickname is already in use, the player is prompted to choose another one
      * If the nickname is already in a game, the player is reconnected to the game
      * If the nickname is not in a game, the player is reconnected to the lobby List
