@@ -22,6 +22,5 @@ public enum ViewState implements Serializable {
     IDLE,
     DRAW_CARD,
     PLACE_CARD,
-    GAME_WAITING,
     GAME_ENDING;
 }

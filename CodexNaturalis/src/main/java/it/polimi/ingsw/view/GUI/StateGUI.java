@@ -24,9 +24,6 @@ public enum StateGUI {
     DRAW_CARD(ViewState.DRAW_CARD, GameScene.class),
 
     PLACE_CARD(ViewState.PLACE_CARD, GameScene.class),
-
-    GAME_WAITING(ViewState.GAME_WAITING, GameScene.class),
-
     GAME_ENDING(ViewState.GAME_ENDING, GameScene.class),;
 
     /** The state that this enum represents */
