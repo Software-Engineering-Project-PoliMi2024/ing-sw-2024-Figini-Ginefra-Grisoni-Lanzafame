@@ -40,6 +40,9 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 
+/**
+ * This class is used to generate the diffs that are sent to the client to update the lightModel
+ */
 public class DiffGenerator {
     /**
      * Generates a diff that adds a lobby to the lobbyList
@@ -125,11 +128,25 @@ public class DiffGenerator {
         return diff;
     }
 
+    /**
+     * Generates a diff that updates the deck with a new card after one is place
+     * @param placer the nickname of the player that placed the card
+     * @param placement the light placement of the card
+     * @param codex the codex of the player that placed the card
+     * @return a CodexDiffPlacement containing all the updated info for the player that placed the card
+     */
     public static CodexDiffPlacement placeCodexDiff(String placer, LightPlacement placement, Codex codex){
         return new CodexDiffPlacement(placer, codex.getPoints(),
                 codex.getEarnedCollectables(), List.of(placement), codex.getFrontier().getFrontier());
     }
 
+    /**
+     * Generate a diff for a player who is joining during the "Start Card" phase
+     * @param game the game to which the player is joining
+     * @param activePlayers the list of players that are active in that game
+     * @param nickname the nickname of the player that is joining
+     * @return a GameDiffJoin containing all the diffs needed to update the lightModel of the player that is joining
+     */
     public static GameDiffJoin updateJoinStartCard(Game game, List<String> activePlayers, String nickname){
         GameDiffJoin joinDiff = new GameDiffJoin(getInitialization(game, nickname));
         ArrayList<String> allPlayers = new ArrayList<>(game.getGameParty().getPlayersList().stream().map(Player::getNickname).toList());
@@ -143,6 +160,13 @@ public class DiffGenerator {
         return joinDiff;
     }
 
+    /**
+     * Generate a diff for a player who is joining during the "Chose Pawn" phase
+     * @param game the game to which the player is joining
+     * @param activePlayers the list of players that are active in that game
+     * @param nickname the nickname of the player that is joining
+     * @return a GameDiffJoin containing all the diffs needed to update the lightModel of the player that is joining
+     */
     public static GameDiffJoin updateChosePawn(Game game, List<String> activePlayers, String nickname){
         GameDiffJoin joinDiff = updateJoinStartCard(game, activePlayers, nickname);
         joinDiff.put(new ArrayList<>(getHandOtherCurrentState(game, nickname)));
@@ -151,12 +175,26 @@ public class DiffGenerator {
         return joinDiff;
     }
 
+    /**
+     * Generate a diff for a player who is joining during the "Select Secret Objective" phase
+     * @param game the game to which the player is joining
+     * @param activePlayers the list of players that are active in that game
+     * @param nickname the nickname of the player that is joining
+     * @return a GameDiffJoin containing all the diffs needed to update the lightModel of the player that is joining
+     */
     public static GameDiffJoin updateJoinSecretObj(Game game, List<String> activePlayers, String nickname){
         GameDiffJoin joinDiff = updateChosePawn(game, activePlayers, nickname);
 
         return joinDiff;
     }
 
+    /**
+     * Generate a diff for a player who is joining during the "Actual Game" phase
+     * @param game the game to which the player is joining
+     * @param activePlayers the list of players that are active in that game
+     * @param nickname the nickname of the player that is joining
+     * @return a GameDiffJoin containing all the diffs needed to update the lightModel of the player that is joining
+     */
     public static GameDiffJoin updateJoinActualGame(Game game, List<String> activePlayers, String nickname){
         GameDiffJoin joinDiff = updateJoinSecretObj(game, activePlayers, nickname);
         joinDiff.put(getPublicObjectiveCurrentState(game));
@@ -164,6 +202,11 @@ public class DiffGenerator {
         return joinDiff;
     }
 
+    /**
+     * Generate a diff for updating the pawn in the lightModel. If no pawn is chosen, the diff will be created with the default constructor
+     * @param game the game from which the pawn state is taken
+     * @return a list of GameDiff containing the diffs of the pawn. Each diff will either be empty or contain the pawn chosen by a player
+     */
     public static List<GameDiff> getPawnCurrentState(Game game){
         List<GameDiff> pawnsDiff = new ArrayList<>();
         List<PawnColors> pawnChoices = game.getPawnChoices();
@@ -178,6 +221,12 @@ public class DiffGenerator {
         return pawnsDiff;
     }
 
+    /**
+     * Generate a gameDiffInitialization
+     * @param game the game from which the initialization is taken
+     * @param nickname the nickname of the player that is joining
+     * @return a GameDiffInitialization containing the initialization of the game
+     */
     private static GameDiffInitialization getInitialization(Game game, String nickname){
         return new GameDiffInitialization(
                 game.getPlayersList().stream().map(Player::getNickname).toList(),
@@ -188,6 +237,11 @@ public class DiffGenerator {
         );
     }
 
+    /**
+     * Generate a list of diffs containing the current state of the deck in the game for updating the lightModel
+     * @param game the game from which the deck state is taken from
+     * @return a list of DeckDiff containing the current state of the deck
+     */
     private static List<DeckDiff> getDeckCurrentState(Game game){
         List<DeckDiff> deckDiff = new ArrayList<>();
         Deck<ResourceCard> resourceCardDeck = game.getResourceCardDeck();
