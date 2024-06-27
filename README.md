@@ -40,7 +40,7 @@
 
 ### 1. Run the server
 
-You can find the server jar here: [`Server`]()
+You can find the server jar here: [`Server`](/deliverable/final/jar/CodexNaturalisPSP49_Server.jar)
 Once you have downloaded the jar, you can run it with the following command:
 
 ```bash
@@ -54,7 +54,7 @@ When the server is running you will see the `ip address` of the server, you will
 
 ### 2. Run the client
 
-You can find the client jar here: [`Client`]()
+You can find the client jar here: [`Client`](/deliverable/final/jar/CodexNaturalisPSP49_Client.jar)
 Once you have downloaded the jar, you can run it with the following command:
 
 ```bash
