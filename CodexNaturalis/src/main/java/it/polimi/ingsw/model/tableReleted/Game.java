@@ -229,7 +229,7 @@ public class Game implements Serializable {
      * pair containing the card drawn and the card that took its place in the decks
      * @param deckType the deckType (resource or gold)
      * @param cardID the position from which the user draws buffer pos or deck
-     * @return the pair <drawnCard, newCard> where the drawn card is
+     * @return the pair _drawnCard, newCard_ where the drawn card is
      * the card drawn and new card is the card replacing it
      */
     public Pair<CardInHand, CardInHand> drawAndGetReplacement(DrawableCard deckType, int cardID){

@@ -16,10 +16,12 @@ public abstract class CardInHand extends CardWithCorners {
     private final Resource permanentResource;
 
     /**
-     * this is the constructor of the class
+     * Constructor of the class
+     * @param idFront the id of the front of the card
+     * @param idBack the id of the back of the card
      * @param permanentResource the permanent resource of the card
      * @param points the points of the card
-     * @param frontCorners the corners of the front of the card
+     * @param frontCorners the collectables of the card
      */
     public CardInHand(int idFront, int idBack, Resource permanentResource, int points,  Map<CardCorner, Collectable> frontCorners){
         super(idFront, idBack, points, frontCorners);
@@ -79,6 +81,7 @@ public abstract class CardInHand extends CardWithCorners {
 
     /**
      * checks if the card can be placed
+     * @param codex the codex of the player
      * @return true if the card can be placed, false otherwise
      */
     public boolean canBePlaced(Codex codex){
