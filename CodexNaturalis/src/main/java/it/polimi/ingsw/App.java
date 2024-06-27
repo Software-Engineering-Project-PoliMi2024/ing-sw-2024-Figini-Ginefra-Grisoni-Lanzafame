@@ -46,7 +46,7 @@ public class App
             try {
                 Thread.sleep(1000);
             } catch (InterruptedException e) {
-                e.printStackTrace();
+                Configs.printStackTrace(e);
             }
         }
     }
@@ -76,7 +76,7 @@ public class App
                 try {
                     Thread.sleep(50); // Briefly wait for more data
                 } catch (InterruptedException e) {
-                    e.printStackTrace();
+                    Configs.printStackTrace(e);
                 }
             }
         }

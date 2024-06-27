@@ -294,7 +294,7 @@ public class DiffGenerator {
         LightHand subscriberHand = Lightifier.lightifyYour(player.getUserHand(), player.getUserCodex());
         for (LightCard card : subscriberHand.getCards()) {
             if (card != null)
-                handDiffAdd.add(new HandDiffAdd(card, subscriberHand.isPlayble(card)));
+                handDiffAdd.add(new HandDiffAdd(card, subscriberHand.isPlayable(card)));
         }
 
         if (subscriberHand.getSecretObjective() != null)

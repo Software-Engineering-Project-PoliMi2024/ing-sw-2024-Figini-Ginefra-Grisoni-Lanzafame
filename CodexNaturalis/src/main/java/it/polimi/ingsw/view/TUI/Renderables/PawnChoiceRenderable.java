@@ -1,5 +1,6 @@
 package it.polimi.ingsw.view.TUI.Renderables;
 
+import it.polimi.ingsw.Configs;
 import it.polimi.ingsw.lightModel.lightTableRelated.LightGame;
 import it.polimi.ingsw.model.playerReleted.PawnColors;
 import it.polimi.ingsw.utils.designPatterns.Observed;
@@ -54,7 +55,7 @@ public class PawnChoiceRenderable extends Renderable {
                 PawnColors chosenColor = PawnColors.valueOf(chosenPawn);
                 view.getController().choosePawn(chosenColor);
             } catch (Exception e) {
-                e.printStackTrace();
+                Configs.printStackTrace(e);
             }
         }
         else if (answer.getCommand() == CommandPrompt.DISPLAY_PAWN_OPTIONS) {

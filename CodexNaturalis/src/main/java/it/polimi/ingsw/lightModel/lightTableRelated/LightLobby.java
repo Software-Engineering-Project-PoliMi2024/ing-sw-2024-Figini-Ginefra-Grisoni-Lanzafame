@@ -10,13 +10,19 @@ import java.util.LinkedList;
 import java.util.List;
 
 /**
- * This class is a container for the list of lobbies.
+ * This class represents the lobby in the View.
+ * It holds the list of nicknames of the players in the lobby, the name of the lobby and the number of players needed to start the game.
  */
 public class LightLobby implements Differentiable, Observed {
+    /** The list of observers */
     private final List<Observer> observers = new LinkedList<>();
+    /** The number of players in the lobby needed to start a game*/
     private int numberMaxPlayer = LightModelConfig.defaultNumberMaxPlayer;
+    /** The list of nicknames of the players in the lobby */
     private List<String> nicknames = new ArrayList<>();
+    /** The name of the lobby that will become the name of the game*/
     private String name = LightModelConfig.defaultLobbyName;
+
     /**
      * Creates a LightLobby object.
      */
@@ -24,7 +30,8 @@ public class LightLobby implements Differentiable, Observed {
     }
 
     /**
-     *
+     * Create a lightLobby object as a copy of another lightLobby object
+     * by copying the name, the number of max players and all of the nicknames
      * @param lobby the LightLobby to copy
      */
     public LightLobby(LightLobby lobby){
@@ -32,6 +39,13 @@ public class LightLobby implements Differentiable, Observed {
         this.name = lobby.name;
         this.numberMaxPlayer = lobby.numberMaxPlayer;
     }
+
+    /**
+     * Createa a new lightLobby object with the given parameters
+     * @param nicknames the list of nicknames in the lobby
+     * @param name name of the lobby and later of the game
+     * @param numberMaxPlayer the number of players needed to start the game
+     */
     public LightLobby(List<String> nicknames, String name, int numberMaxPlayer){
         this.nicknames = nicknames;
         this.name = name;
@@ -49,9 +63,12 @@ public class LightLobby implements Differentiable, Observed {
     public String name() {
         return name;
     }
+
     /**
-     * @param rmv the nicknames to remove
-     * @param add the nicknames to add
+     * Edit the list of nicknames in the lobby
+     * notify the observers after the update
+     * @param rmv the list of nicknames to remove
+     * @param add the list of nicknames to add
      */
     public void nickDiff(List<String> add, List<String> rmv){
         nicknames.removeAll(rmv);
@@ -60,6 +77,8 @@ public class LightLobby implements Differentiable, Observed {
     }
 
     /**
+     * Set the name of the lobby
+     * Notify the player after the update
      * @param name of the Lobby
      */
     public void setName(String name) {
@@ -67,6 +86,11 @@ public class LightLobby implements Differentiable, Observed {
         notifyObservers();
     }
 
+    /**
+     * Define that two lobby are equals if they have the same name
+     * @param obj the object to compare
+     * @return true if the object is a LightLobby and has the same name
+     */
     @Override
     public boolean equals(Object obj) {
         if(obj instanceof LightLobby lightLobby){
@@ -74,14 +98,29 @@ public class LightLobby implements Differentiable, Observed {
         }
         return false;
     }
+
+    /**
+     * Set the number of the players in the lobby needed to start the game
+     * Notify the observers after the update
+     * @param numberMaxPlayer the number of players needed to start the game
+     */
     public void setNumberMaxPlayer(int numberMaxPlayer) {
         this.numberMaxPlayer = numberMaxPlayer;
         notifyObservers();
     }
 
+    /**
+     * @return the number of players in the lobby needed to start the game
+     */
     public int numberMaxPlayer(){
         return this.numberMaxPlayer;
     }
+
+    /**
+     * Reset the lobby to the default values
+     * Remove all the nicknames and set the name to the default name
+     * Notify the observers after the update
+     */
     public void reset(){
         this.setName(LightModelConfig.defaultLobbyName);
         this.nicknames = new ArrayList<>();

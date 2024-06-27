@@ -25,7 +25,6 @@ import org.junit.jupiter.api.*;
 
 import java.io.File;
 import java.util.*;
-import java.util.concurrent.Future;
 
 class ControllersTests {
     private LobbyGameListsController realLobbyGameListController;
@@ -204,9 +203,9 @@ class ControllersTests {
         assert view1.lightLobby.name().isEmpty();
         //gameParty correctly set
         assert view1.lightGame.getLightGameParty().getGameName().equals(lobbyName1);
-        assert view1.lightGame.getLightGameParty().getPlayerActiveList().get(view1.name) != null;
-        assert view1.lightGame.getLightGameParty().getPlayerActiveList().get(view2.name) != null;
-        assert view1.lightGame.getLightGameParty().getPlayerActiveList().size() == 2;
+        assert view1.lightGame.getLightGameParty().getPlayerActiveMap().get(view1.name) != null;
+        assert view1.lightGame.getLightGameParty().getPlayerActiveMap().get(view2.name) != null;
+        assert view1.lightGame.getLightGameParty().getPlayerActiveMap().size() == 2;
         assert view1.lightGame.getLightGameParty().getYourName().equals(view1.name);
         assert view1.lightGame.getLightGameParty().getCurrentPlayer() != null;
         assert view1.lightGame.getLightGameParty().getCurrentPlayer().equals(game.getGameParty().getCurrentPlayer().getNickname());
@@ -267,9 +266,9 @@ class ControllersTests {
         assert view2.lightLobby.name().isEmpty();
         //gameParty correctly set
         assert view2.lightGame.getLightGameParty().getGameName().equals(lobbyName1);
-        assert view2.lightGame.getLightGameParty().getPlayerActiveList().get(view1.name) != null;
-        assert view2.lightGame.getLightGameParty().getPlayerActiveList().get(view2.name) != null;
-        assert view2.lightGame.getLightGameParty().getPlayerActiveList().size() == 2;
+        assert view2.lightGame.getLightGameParty().getPlayerActiveMap().get(view1.name) != null;
+        assert view2.lightGame.getLightGameParty().getPlayerActiveMap().get(view2.name) != null;
+        assert view2.lightGame.getLightGameParty().getPlayerActiveMap().size() == 2;
         assert view2.lightGame.getLightGameParty().getYourName().equals(view2.name);
         assert view2.lightGame.getLightGameParty().getCurrentPlayer() != null;
         assert view2.lightGame.getLightGameParty().getCurrentPlayer().equals(game.getGameParty().getCurrentPlayer().getNickname());

@@ -9,15 +9,27 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 
+/**
+ * This class is a light version of the Hand class in the model of the user who own the view.
+ * It contains all the data the user can see about his hand such as the LightCard he has, the playability of each card ù
+ * and his own secret objective.
+ */
 public class LightHand implements Differentiable, Observed {
+    /** The list of observers of the class */
     private final List<Observer> observers = new LinkedList<>();
+    /**The secretObjective chosen by the player. If a secretObjective is not chosen yet the attribute is null */
     private LightCard secretObjective;
+    /**A map that contains the playability of each card that the player has in his hand */
     private final Map<LightCard, Boolean> cardPlayability;
+    /**The cards that the player has in his hand */
     private final LightCard[] cards;
+    /**The secretObjective options that the player has received from the server.
+     * If the player has not received any secretObjective options or has already chosen one, each element of the array is null */
     private final LightCard[] secretObjectiveOptions = new LightCard[2];
 
     /**
      * The constructor of the class
+     * It initializes an empty cardPlayability map and an empty cards array
      */
     public LightHand(){
         this.cardPlayability = new HashMap<>();
@@ -25,21 +37,18 @@ public class LightHand implements Differentiable, Observed {
     }
 
     /**
-     * @param obj the secret objective of the player
-     * @param cards the cards of the player and their playability
+     * The constructor of the class
+     * It initializes and populate the cardPlayability map and the card array
+     * with the given cards passed as parameter
+     * @param cards a map that contains the playability of each lightCard that the player has in his hand
      */
-    public LightHand(LightCard obj, Map<LightCard, Boolean> cards){
-        this.secretObjective = obj;
-        this.cardPlayability = cards;
-        this.cards = cards.keySet().toArray(new LightCard[2]);
-
-    }
     public LightHand(Map<LightCard, Boolean> cards){
         this.cardPlayability = cards;
         this.cards = cards.keySet().toArray(new LightCard[2]);
     }
     /**
-     * Set the secret objective of the player
+     * Set the secret objective of the player and set each element of the secretObjectiveOptions array to null
+     * At the end of the update the observers are notified
      * @param secretObjective the secret objective of the player
      */
     public void setSecretObjective(LightCard secretObjective) {
@@ -55,34 +64,41 @@ public class LightHand implements Differentiable, Observed {
         return secretObjective;
     }
     /**
-     * @return the cards of the player
+     * @return the lightCard in the hand of the player has a map where each card is associated with his playability
      */
     public Map<LightCard, Boolean> getCardPlayability() {
         return cardPlayability;
     }
     /**
-     * @return the cards of the player
+     * @return an array of LightCard that contains the cards that the player has in his hand
      */
     public LightCard[] getCards() {
         return cards;
     }
     /**
-     * @param card to check
-     * @return if the card is playable
+     * @param card the lightCard that need to be checked if it is playable
+     * @return true if the card is playable, false otherwise
      */
-    public Boolean isPlayble(LightCard card){
+    public Boolean isPlayable(LightCard card){
         return cardPlayability.get(card);
     }
 
+    /**
+     * Update the playability of a given LightCard
+     * At the end of the update the observers are notified
+     * @param card the lightCard that need to have his playability updated
+     * @param playability the new playability of the card
+     */
     public void updatePlayability(LightCard card, Boolean playability){
         cardPlayability.put(card, playability);
         this.notifyObservers();
     }
     /**
-     * Add a card to the cards array and the cardPlayability Map
+     * Add a lightCard to the card array and the cardPlayability Map
+     * At the end of the update the observers are notified
      * @param card that need to be added
-     * @param playability is a boolean that specified if the card is playable
-     * @throws IllegalCallerException if the player has already enough card
+     * @param playability is a boolean that specified if the card is playable (true) or not (false)
+     * @throws IllegalCallerException if the player already has three lightCards in hand
      */
     public void addCard(LightCard card, Boolean playability){
         if(length(cards) == 3){
@@ -99,6 +115,11 @@ public class LightHand implements Differentiable, Observed {
         this.notifyObservers();
 
     }
+    /**
+     * Return how many not null lightCard are present the given array
+     * @param arr an array of LightCard
+     * @return the number of not null elements in the card array
+     */
     private int length(LightCard[] arr){
         int i=0;
         for(LightCard r: arr){
@@ -109,8 +130,10 @@ public class LightHand implements Differentiable, Observed {
         return i;
     }
     /**
-     * Remove a lightCard from the cards array and the cardPlayability map
+     * Remove a lightCard from the card array and the cardPlayability map
+     * At the end of the update the observers are notified
      * @param card that need to be removed
+     * @throws IllegalArgumentException if the card is not present in the card array
      */
     public void removeCard(LightCard card){
         boolean found = false;
@@ -128,9 +151,10 @@ public class LightHand implements Differentiable, Observed {
     }
 
     /**
-     * Add a card to the secret objective options
+     * Add a lightCard as a secret objective options
+     * At the end of the update the observers are notified
      * @param card that need to be added
-     * @throws IllegalCallerException if the secret objective options are already full
+     * @throws IllegalCallerException if the secret objective options are already two
      */
     public void addSecretObjectiveOption(LightCard card){
         if(secretObjectiveOptions[0]==null){
@@ -141,7 +165,6 @@ public class LightHand implements Differentiable, Observed {
             throw new IllegalCallerException("The secret objective options are already full");
         }
         this.notifyObservers();
-
     }
 
     /**

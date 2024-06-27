@@ -24,7 +24,7 @@ import java.util.concurrent.Future;
 import java.util.concurrent.TimeUnit;
 
 /**
- * The class that handles the connection with the client using RMI protocol
+ * The class that handles the connection with the client using RMI protocol.
  */
 public class ConnectionServerRMI implements ConnectionLayerServer {
     /** The controller in the server that handle the creation, joining and leaving of lobby and games*/
@@ -46,7 +46,9 @@ public class ConnectionServerRMI implements ConnectionLayerServer {
 
     /**
      * Establishes a connection with a client by initializing the necessary components on the server side.
-     * Exposes the controller to the client and starts the heartBeat mechanism between the server and the client.
+     * Exposes the controller to the virtualView and starts the heartBeat mechanism between the server and the client.
+     * This allows only for the ControllerInterface to be expose and binded to the Virtual view, keeping al the data
+     * offline in the server.
      * If the connection is successful, the client is transitioned to the login form.
      * If Configs.secondsTimeOut seconds pass without a successful connection, the connection is considered failed.
      * @param view the view of the client which is trying to connect
@@ -78,7 +80,7 @@ public class ConnectionServerRMI implements ConnectionLayerServer {
             connect.get(Configs.secondsTimeOut, TimeUnit.SECONDS);
         }catch (InterruptedException ignored){
         } catch (Exception e) {
-            e.printStackTrace();
+            Configs.printStackTrace(e);
             logger.log(LoggerLevel.SEVERE, "Error In Client Connection");
         }
 

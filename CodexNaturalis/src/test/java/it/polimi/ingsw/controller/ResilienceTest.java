@@ -23,7 +23,6 @@ import org.junit.jupiter.api.*;
 import java.io.File;
 import java.util.*;
 import java.util.concurrent.ExecutionException;
-import java.util.concurrent.Future;
 
 public class ResilienceTest {
     private LobbyGameListsController realLobbyGameListController;
@@ -181,19 +180,19 @@ public class ResilienceTest {
         assert game.getPlayersList().stream().map(Player::getNickname).toList().contains(view2.name);
 
         assert view2.lightGame.getCodexMap().isEmpty();
-        assert view2.lightGame.getLightGameParty().getPlayerActiveList().isEmpty();
+        assert view2.lightGame.getLightGameParty().getPlayerActiveMap().isEmpty();
         Assertions.assertNull(view2.lightGame.getLightGameParty().getCurrentPlayer());
         assert view2.lightLobbyList.getLobbies().isEmpty();
 
-        assert !view1.lightGame.getLightGameParty().getPlayerActiveList().get(view2.name);
-        assert !view3.lightGame.getLightGameParty().getPlayerActiveList().get(view2.name);
+        assert !view1.lightGame.getLightGameParty().getPlayerActiveMap().get(view2.name);
+        assert !view3.lightGame.getLightGameParty().getPlayerActiveMap().get(view2.name);
 
         view2.state = null;
         controller2.login(view2.name);
         assert view2.state.equals(ViewState.CHOOSE_START_CARD);
 
-        assert view1.lightGame.getLightGameParty().getPlayerActiveList().get(view2.name);
-        assert view3.lightGame.getLightGameParty().getPlayerActiveList().get(view2.name);
+        assert view1.lightGame.getLightGameParty().getPlayerActiveMap().get(view2.name);
+        assert view3.lightGame.getLightGameParty().getPlayerActiveMap().get(view2.name);
 
         assert view2.lightGame.getLightGameParty().getGameName().equals(lobbyName1);
 
@@ -239,9 +238,9 @@ public class ResilienceTest {
         assert view2.state.equals(ViewState.JOIN_LOBBY);
         assert view4.state.equals(ViewState.CHOOSE_PAWN);
 
-        assert !view1.lightGame.getLightGameParty().getPlayerActiveList().containsKey(view2.name);
-        assert !view3.lightGame.getLightGameParty().getPlayerActiveList().containsKey(view2.name);
-        assert !view4.lightGame.getLightGameParty().getPlayerActiveList().containsKey(view2.name);
+        assert !view1.lightGame.getLightGameParty().getPlayerActiveMap().containsKey(view2.name);
+        assert !view3.lightGame.getLightGameParty().getPlayerActiveMap().containsKey(view2.name);
+        assert !view4.lightGame.getLightGameParty().getPlayerActiveMap().containsKey(view2.name);
     }
 
     @Test
@@ -330,9 +329,9 @@ public class ResilienceTest {
         assert view3.state.equals(ViewState.JOIN_LOBBY);
         assert view4.state.equals(ViewState.CHOOSE_PAWN);
 
-        assert !view1.lightGame.getLightGameParty().getPlayerActiveList().containsKey(view2.name);
-        assert !view3.lightGame.getLightGameParty().getPlayerActiveList().containsKey(view2.name);
-        assert !view4.lightGame.getLightGameParty().getPlayerActiveList().containsKey(view2.name);
+        assert !view1.lightGame.getLightGameParty().getPlayerActiveMap().containsKey(view2.name);
+        assert !view3.lightGame.getLightGameParty().getPlayerActiveMap().containsKey(view2.name);
+        assert !view4.lightGame.getLightGameParty().getPlayerActiveMap().containsKey(view2.name);
     }
 
     @Test
@@ -793,7 +792,7 @@ public class ResilienceTest {
         checkInitialization(viewleaveed, gameController);
         checkGame(viewleaveed, gameController);
         for(ViewTest view : viewMap.values()){
-            Assertions.assertTrue(view.lightGame.getLightGameParty().getPlayerActiveList().get(viewleaveed.name));
+            Assertions.assertTrue(view.lightGame.getLightGameParty().getPlayerActiveMap().get(viewleaveed.name));
         }
 
         controllerleaveed.leave();
@@ -803,7 +802,7 @@ public class ResilienceTest {
         checkInitialization(viewleaveed, gameController);
         checkGame(viewleaveed, gameController);
         for(ViewTest view : viewMap.values()){
-            Assertions.assertTrue(view.lightGame.getLightGameParty().getPlayerActiveList().get(viewleaveed.name));
+            Assertions.assertTrue(view.lightGame.getLightGameParty().getPlayerActiveMap().get(viewleaveed.name));
         }
     }
 
@@ -1767,7 +1766,7 @@ public class ResilienceTest {
         assert view.lightGame.getLightGameParty().getGameName().equals(game.getName());
 
         List<String> playerNick = game.getGameParty().getPlayersList().stream().map(Player::getNickname).toList();
-        List<String> playerNicksOnView = view.lightGame.getLightGameParty().getPlayerActiveList().keySet().stream().toList();
+        List<String> playerNicksOnView = view.lightGame.getLightGameParty().getPlayerActiveMap().keySet().stream().toList();
         System.out.println(playerNick);
         System.out.println(playerNicksOnView);
         assert playerNicksOnView.containsAll(playerNick);
@@ -1776,8 +1775,8 @@ public class ResilienceTest {
 
     private void checkGame(ViewTest view, PublicGameController gameController){
         Game game = gameController.getGame();
-        assert view.lightGame.getLightGameParty().getPlayerActiveList().keySet().containsAll(game.getPlayersList().stream().map(Player::getNickname).toList());
-        for(Map.Entry<String, Boolean> playerActivity : view.lightGame.getLightGameParty().getPlayerActiveList().entrySet()){
+        assert view.lightGame.getLightGameParty().getPlayerActiveMap().keySet().containsAll(game.getPlayersList().stream().map(Player::getNickname).toList());
+        for(Map.Entry<String, Boolean> playerActivity : view.lightGame.getLightGameParty().getPlayerActiveMap().entrySet()){
             assert gameController.getViewMap().containsKey(playerActivity.getKey()) == playerActivity.getValue();
         }
         for(Map.Entry<String, LightCodex> codexPlayer : view.lightGame.getCodexMap().entrySet()){

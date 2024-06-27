@@ -1,5 +1,6 @@
 package it.polimi.ingsw.view.TUI.Renderables.Forms;
 
+import it.polimi.ingsw.Configs;
 import it.polimi.ingsw.lightModel.lightPlayerRelated.LightCard;
 import it.polimi.ingsw.lightModel.lightPlayerRelated.LightFrontier;
 import it.polimi.ingsw.lightModel.lightPlayerRelated.LightPlacement;
@@ -47,12 +48,12 @@ public class PlaceCardForm extends FormRenderable{
                 LightFrontier frontier = game.getMyCodex().getFrontier();
                 List<Position> positions = frontier.frontier();
 
-                if(frontierIndex < frontier.size() && (game.getHand().isPlayble(card) || face == CardFace.BACK)){
+                if(frontierIndex < frontier.size() && (game.getHand().isPlayable(card) || face == CardFace.BACK)){
                     LightPlacement placement = new LightPlacement(positions.get(frontierIndex), card, face);
                     view.getController().place(placement);
                 }
             } catch (Exception e) {
-                e.printStackTrace();
+                Configs.printStackTrace(e);
             }
         }
     }

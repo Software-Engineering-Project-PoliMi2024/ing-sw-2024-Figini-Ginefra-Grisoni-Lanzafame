@@ -1,5 +1,6 @@
 package it.polimi.ingsw.view.TUI.Renderables.CardRelated;
 
+import it.polimi.ingsw.Configs;
 import it.polimi.ingsw.lightModel.lightPlayerRelated.LightCard;
 import it.polimi.ingsw.lightModel.lightPlayerRelated.LightPlacement;
 import it.polimi.ingsw.lightModel.lightTableRelated.LightGame;
@@ -67,7 +68,7 @@ public class ChooseStartCardRenderable extends CardRenderable {
                     view.getController().place(new LightPlacement(new Position(0,0), startCard, face));
                 }
                 catch (Exception e) {
-                    e.printStackTrace();
+                    Configs.printStackTrace(e);
                 }
                 break;
 
