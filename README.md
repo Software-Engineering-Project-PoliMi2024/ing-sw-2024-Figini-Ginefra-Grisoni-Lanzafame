@@ -16,7 +16,7 @@
   <a href="https://github.com/dedepivot" target="_blank"style="color: #227701">Samuele Grisoni</a> <br><br>
   <a href="https://github.com/teo-lan" target="_blank"style="color: #c72921">Teo Lanzafame</a></h4>
 
-# <img src="https://d2nvlc4hwtwbz3.cloudfront.net/media/cache/41/aa/41aaf136be88fc7b9c2289b916903a15.jpg" align="left" alt="Start Card render" width="200" style = "border-radius: 20px; float:left; padding: 5px"> <center>Our features</center>
+# <img src="https://d2nvlc4hwtwbz3.cloudfront.net/media/cache/41/aa/41aaf136be88fc7b9c2289b916903a15.jpg" align="right" alt="Start Card render" width="200" style = "border-radius: 20px; float:right; padding: 5px"> <center>Our features</center>
 
 <center>
 
@@ -71,3 +71,19 @@ By running the client you will be asked to choose the type of interface you want
 > The `TUI` makes an extensive use of emojis, for the best experience we suggest to use a `Windows` terminal, just remember to enable `UTF-8` encodings by running `chcp 65001`.
 
 When the client is running you will be asked to insert the `ip address` of the server, you can find it in the server logs.
+
+# <img src="https://m.media-amazon.com/images/I/814qEh0JKdS._AC_UF1000,1000_QL80_.jpg" align="right" alt="Start Card render" width="200" style = "border-radius: 20px; float:right; padding: 5px"> <center>Diagrams</center>
+
+If you are interested in the inner workings of our application you can find the following diagrams:
+
+- UML Class Diagram:
+
+  - [Base]()
+  - [Advanced]()
+
+- UML Sequence Diagram:
+  - [Base]()
+  - [Advanced]()
+- UML State Machine Diagram:
+  - [Base]()
+  - [Advanced]()
