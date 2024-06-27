@@ -14,15 +14,26 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.Objects;
 
+/**
+ * This class represents the GUI component for displaying the game plateau and managing pawn positions based on players scores.
+ */
 public class PlateauGUI {
+    /** The ImageView for the plateau */
     private final ImageView plateauView;
+    /** The PopUp component for displaying the plateau */
     private final PopUp popUp;
-
+    /** The container for the plateau and pawns */
     private final StackPane container = new StackPane();
-
+    /** The map storing the scores of the pawns */
     private final Map<PawnColors, Integer> pawnScores = new HashMap<>();
+    /** The map storing the ImageView of the pawns */
     private final Map<PawnColors, ImageView> pawnViews = new HashMap<>();
 
+    /**
+     * Constructs a PlateauGUI instance and initializes the plateau view.
+     *
+     * @param parent the parent AnchorPane to which this GUI component belongs.
+     */
     public PlateauGUI(AnchorPane parent) {
         this.plateauView = new ImageView(AssetsGUI.plateau);
 
@@ -49,14 +60,28 @@ public class PlateauGUI {
         });
     }
 
+    /**
+     * Opens the plateau view.
+     */
     public void open() {
         popUp.open();
     }
 
+    /**
+     * Closes the plateau view.
+     */
     public void hide() {
         popUp.close();
     }
 
+    /**
+     * Calculates the coordinates for a pawn based on its score and color, taking into account conflicts.
+     *
+     * @param score         the score of the pawn.
+     * @param color         the color of the pawn.
+     * @param isConflicting whether the pawn is conflicting with another pawn.
+     * @return the coordinates of the pawn as a Point2D object.
+     */
     private Point2D getCoordinates(int score, PawnColors color, boolean isConflicting) {
         Pair<Integer, Integer> coordinates = PlateauMapping.getPositionCoordinates(score, color, isConflicting);
         if (coordinates != null) {
@@ -67,6 +92,12 @@ public class PlateauGUI {
         return null;
     }
 
+    /**
+     * Sets the score for a specified pawn color and updates its position.
+     *
+     * @param pawnColor the color of the pawn.
+     * @param score     the score of the pawn.
+     */
     public void setScore(PawnColors pawnColor, int score) {
         pawnScores.put(pawnColor, score);
 
@@ -86,6 +117,13 @@ public class PlateauGUI {
         updatePawnPosition(pawnColor, score, isConflicting);
     }
 
+    /**
+     * Updates the position of a specified pawn based on its score and whether it is conflicting with another pawn.
+     *
+     * @param pawnColor    the color of the pawn.
+     * @param score        the score of the pawn.
+     * @param isConflicting whether the pawn is conflicting with another pawn.
+     */
     public void updatePawnPosition(PawnColors pawnColor, int score, boolean isConflicting) {
         Point2D coordinates = getCoordinates(score, pawnColor, isConflicting);
         if (coordinates != null) {
@@ -95,6 +133,9 @@ public class PlateauGUI {
         }
     }
 
+    /**
+     * Updates the positions of all pawns based on their scores and whether they are conflicting with other pawns.
+     */
     public void updatePawnPosition() {
         for (PawnColors pawnColor : pawnScores.keySet()) {
             int score = pawnScores.get(pawnColor);
