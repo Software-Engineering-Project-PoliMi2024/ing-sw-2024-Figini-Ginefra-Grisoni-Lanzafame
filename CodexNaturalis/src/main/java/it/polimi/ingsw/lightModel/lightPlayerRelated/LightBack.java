@@ -6,7 +6,7 @@ import java.util.Objects;
 /**
  * This class represents the back of a card in the light model. It contains the id back of such card.
  * Different lightCard (different ID) can have the same idBack
- * @param idBack
+ * @param idBack the id of the back card
  */
 public record LightBack(int idBack) implements Serializable {
 
