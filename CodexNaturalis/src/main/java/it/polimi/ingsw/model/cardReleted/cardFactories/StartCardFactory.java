@@ -40,6 +40,12 @@ public class StartCardFactory extends AbstractCardFactory<StartCard>{
         return deserializeQueue(fileSerialized);
     }
 
+    /**
+     * Deserialize the StartCards from the .bin file. If the file is corrupted or not up-to-date, it will be deleted
+     * and the getCards() method will be called to create a new one
+     * @param binFile the file that contains the serialized StartCard
+     * @return the Queue of StartCard
+     */
     @SuppressWarnings("unchecked")
     public Queue<StartCard> deserializeQueue(File binFile){
         FileInputStream fileInputStream;

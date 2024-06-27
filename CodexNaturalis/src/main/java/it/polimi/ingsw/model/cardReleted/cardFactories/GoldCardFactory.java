@@ -49,6 +49,12 @@ public class GoldCardFactory extends AbstractCardFactory<GoldCard>{
         return deserializeQueue(fileSerialized);
     }
 
+    /**
+     * Deserialize the GoldCards from the .bin file. If the file is corrupted or not up-to-date, it will be deleted
+     * and the getCards() method will be called to create a new one
+     * @param binFile the file that contains the serialized GoldCard
+     * @return the Queue of GoldCard
+     */
     @SuppressWarnings("unchecked")
     public Queue<GoldCard> deserializeQueue(File binFile){
         FileInputStream fileInputStream;

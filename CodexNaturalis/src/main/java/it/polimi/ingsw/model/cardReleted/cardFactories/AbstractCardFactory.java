@@ -80,10 +80,20 @@ public abstract class AbstractCardFactory<Element> {
         return frontCornerMap;
     }
 
+    /**
+     * Get the frontID of the card
+     * @param card that is being build
+     * @return the frontID of the card
+     */
     protected int getIdFront(JsonObject card){
         return card.get("frontID").getAsInt();
     }
 
+    /**
+     * Get the backID of the card
+     * @param card that is being build
+     * @return the backID of the card
+     */
     protected int getIdBack(JsonObject card){
         return card.get("backID").getAsInt();
     }
@@ -117,6 +127,11 @@ public abstract class AbstractCardFactory<Element> {
         }
     }
 
+    /**
+     * Get the Queue of card from the serialized file
+     * @param filename the name of the file to be deserialized containing the queue of cards
+     * @return the queue of card
+     */
     public abstract Queue<Element> deserializeQueue(File filename);
 }
 

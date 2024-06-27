@@ -54,6 +54,12 @@ public class ResourceCardFactory extends AbstractCardFactory<ResourceCard>{
         return deserializeQueue(fileSerialized);
     }
 
+    /**
+     * Deserialize the ResourceCards from the .bin file. If the file is corrupted or not up-to-date, it will be deleted
+     * and the getCards() method will be called to create a new one
+     * @param binFile the file that contains the serialized ResourceCard
+     * @return the Queue of ResourceCard
+     */
     @SuppressWarnings("unchecked")
     public Queue<ResourceCard> deserializeQueue(File binFile){
         FileInputStream fileInputStream;
