@@ -18,7 +18,6 @@ import javafx.scene.paint.Color;
 import javafx.scene.text.Text;
 import javafx.scene.text.TextFlow;
 
-import java.util.ArrayList;
 import java.util.List;
 
 public class ChatDisplay {
@@ -135,7 +134,7 @@ public class ChatDisplay {
     }
 
     private void playerTextDecorator(String player, Text text){
-        if(!GUI.getLightGame().getLightGameParty().getPlayerActiveList().containsKey(player)){
+        if(!GUI.getLightGame().getLightGameParty().getPlayerActiveMap().containsKey(player)){
             text.setFill(Color.GRAY);
         } else { // Only if the player is still in the game, the text will be bold
             text.setFill(getUserColor(player));
@@ -147,7 +146,7 @@ public class ChatDisplay {
                 style.append("-fx-underline: false;");
             }
 
-            if(GUI.getLightGame().getLightGameParty().getPlayerActiveList().get(player)) {
+            if(GUI.getLightGame().getLightGameParty().getPlayerActiveMap().get(player)) {
                 style.append("-fx-strikethrough: false;");
             } else {
                 style.append("-fx-strikethrough: true;");
@@ -215,7 +214,7 @@ public class ChatDisplay {
         receiverChoice = new ChoiceBox<>();
         receiverChoice.getItems().add(publicMsg.EVERYONE.toString());
         //todo you need to load all Player not only the active ones
-        for(String player : GUI.getLightGame().getLightGameParty().getPlayerActiveList().keySet()){
+        for(String player : GUI.getLightGame().getLightGameParty().getPlayerActiveMap().keySet()){
             if(!player.equals(GUI.getLightGame().getLightGameParty().getYourName())){
                 receiverChoice.getItems().add(player);
             }
