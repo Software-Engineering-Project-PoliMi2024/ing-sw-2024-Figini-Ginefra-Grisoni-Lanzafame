@@ -95,7 +95,7 @@ public class VirtualControllerSocket implements VirtualController {
      */
     @Override
     public void login(String nickname){
-        serverHandler.sendServerMessage(new LoginMsg(nickname));
+        serverHandler.sendClientMessage(new LoginMsg(nickname));
     }
 
     /**
@@ -105,7 +105,7 @@ public class VirtualControllerSocket implements VirtualController {
      */
     @Override
     public void createLobby(String gameName, int maxPlayerCount){
-        serverHandler.sendServerMessage(new CreateLobbyMsg(gameName, maxPlayerCount));
+        serverHandler.sendClientMessage(new CreateLobbyMsg(gameName, maxPlayerCount));
     }
 
     /**
@@ -114,7 +114,7 @@ public class VirtualControllerSocket implements VirtualController {
      */
     @Override
     public void joinLobby(String lobbyName){
-        serverHandler.sendServerMessage(new JoinLobbyMsg(lobbyName));
+        serverHandler.sendClientMessage(new JoinLobbyMsg(lobbyName));
     }
 
     /**
@@ -122,7 +122,7 @@ public class VirtualControllerSocket implements VirtualController {
      */
     @Override
     public void leave() {
-        serverHandler.sendServerMessage(new LeaveMsg());
+        serverHandler.sendClientMessage(new LeaveMsg());
         serverHandler.stopListening();
         this.disconnect();
     }
@@ -155,7 +155,7 @@ public class VirtualControllerSocket implements VirtualController {
      */
     @Override
     public void leaveLobby(){
-        serverHandler.sendServerMessage(new LeaveLobbyMsg());
+        serverHandler.sendClientMessage(new LeaveLobbyMsg());
     }
 
     /**
@@ -164,7 +164,7 @@ public class VirtualControllerSocket implements VirtualController {
      */
     @Override
     public void chooseSecretObjective(LightCard objectiveCard){
-        serverHandler.sendServerMessage(new ChoseSecretObjectiveMsg(objectiveCard));
+        serverHandler.sendClientMessage(new ChoseSecretObjectiveMsg(objectiveCard));
     }
 
     /**
@@ -173,7 +173,7 @@ public class VirtualControllerSocket implements VirtualController {
      */
     @Override
     public void choosePawn(PawnColors color) {
-        serverHandler.sendServerMessage(new ChosePawnMsg(color));
+        serverHandler.sendClientMessage(new ChosePawnMsg(color));
     }
 
     /**
@@ -182,7 +182,7 @@ public class VirtualControllerSocket implements VirtualController {
      */
     @Override
     public void place(LightPlacement placement){
-        serverHandler.sendServerMessage(new PlaceMsg(placement));
+        serverHandler.sendClientMessage(new PlaceMsg(placement));
     }
 
     /**
@@ -192,7 +192,7 @@ public class VirtualControllerSocket implements VirtualController {
      */
     @Override
     public void draw(DrawableCard deckID, int cardID){
-        serverHandler.sendServerMessage(new DrawMsg(deckID, cardID));
+        serverHandler.sendClientMessage(new DrawMsg(deckID, cardID));
     }
 
     /**
@@ -201,6 +201,6 @@ public class VirtualControllerSocket implements VirtualController {
      */
     @Override
     public void sendChatMessage(ChatMessage message){
-        serverHandler.sendServerMessage(new ChatMsg(message));
+        serverHandler.sendClientMessage(new ChatMsg(message));
     }
 }
