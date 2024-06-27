@@ -56,3 +56,11 @@ stateDiagram-v2
     GAME_ENDING --> SERVER_CONNECTION : The player leaves the game
     GAME_ENDING --> SERVER_CONNECTION : The server diconnects
 ```
+
+This state machine diagram illustrates the various states and transitions involved in the lifecycle of a game view. The process begins with attempting to establish a server connection. Upon a successful connection, the user is directed to the login form, where they must enter a valid nickname to proceed to the lobby. If any server disconnection occurs during these steps, the user is redirected back to the server connection state.
+
+Once in the lobby, users can create or join a valid lobby. After all necessary users have joined, the state transitions to choosing a start card. Each subsequent phase (choosing a start card, choosing a pawn, and selecting a secret objective) involves all active players making their choices, interspersed with waiting states to ensure synchronization.
+
+The game enters an idle state when all players have chosen their objectives. During a player's turn, they can place a card, leading to either the drawing of a new card, continuation in the idle state, or the transition to the game-ending state if it is the last turn or the decks are empty.
+
+Throughout the game, any server disconnection redirects the user to the server connection state. The game concludes with the game-ending state, which also redirects to the server connection state upon completion or disconnection.
