@@ -4,10 +4,11 @@ import it.polimi.ingsw.lightModel.lightPlayerRelated.LightCard;
 import it.polimi.ingsw.lightModel.lightTableRelated.LightGame;
 
 /**
- * This diff is a diff that adds a secret objective option to the hand of a player.
+ * This diff is an update that adds a secret objective option to the hand of a player.
  */
 public class HandDiffAddOneSecretObjectiveOption extends HandDiff{
     /**
+     * Constructor
      * Creates a new HandDiffAddOneSecretObjectiveOption
      * @param secretObjectiveOption the secret objective option to add
      */
@@ -16,7 +17,7 @@ public class HandDiffAddOneSecretObjectiveOption extends HandDiff{
     }
 
     /**
-     * Applies the diff to the game
+     * Add the secret objective option to the hand of the user
      * @param game the game to which apply the diff
      */
     @Override

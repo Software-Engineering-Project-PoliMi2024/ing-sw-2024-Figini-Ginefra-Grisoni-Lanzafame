@@ -10,13 +10,22 @@ import it.polimi.ingsw.model.playerReleted.Position;
 import java.util.List;
 import java.util.Map;
 
+/**
+ * This class represent an update for the codex of a player
+ */
 public class CodexDiffPlacement extends GameDiff {
+    /** The owner of the updated codex */
     private final String owner;
+    /** The new points of the codex after the update*/
     private final int setPoints;
+    /** The new value of each collectable of the codex after the update*/
     private final Map<Collectable, Integer> collectables;
+    /** The new placement for the updated codex*/
     private final List<LightPlacement> addPlacements;
+    /** The new frontier position the updatedCodex created*/
     private final List<Position> frontier;
     /**
+     * Constructor
      * This class represents the differences between two codexes
      * @param owner the owner of the codex
      * @param points the new points do to the placement
@@ -34,6 +43,7 @@ public class CodexDiffPlacement extends GameDiff {
     }
 
     /**
+     * This method update apply the new values to the codex. The new points, the new collectable values, the placement added and the new frontier positions
      * @param lightGame the game from which get the codex to which apply the differences
      */
     @Override
