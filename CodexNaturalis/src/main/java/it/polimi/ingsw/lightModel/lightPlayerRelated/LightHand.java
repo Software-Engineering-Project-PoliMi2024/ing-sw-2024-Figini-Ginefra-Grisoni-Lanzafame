@@ -138,7 +138,7 @@ public class LightHand implements Differentiable, Observed {
     public void removeCard(LightCard card){
         boolean found = false;
         for(int i=0; i<cards.length && !found; i++){
-            if(cards[i].equals(card)){
+            if(cards[i] != null && cards[i].equals(card)){
                 cards[i] = null;
                 cardPlayability.remove(card);
                 found=true;

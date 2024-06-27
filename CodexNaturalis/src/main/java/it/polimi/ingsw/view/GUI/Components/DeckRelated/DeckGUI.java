@@ -1,5 +1,6 @@
 package it.polimi.ingsw.view.GUI.Components.DeckRelated;
 
+import it.polimi.ingsw.lightModel.lightPlayerRelated.LightCard;
 import it.polimi.ingsw.utils.designPatterns.Observer;
 import it.polimi.ingsw.lightModel.lightTableRelated.LightDeck;
 import it.polimi.ingsw.model.cardReleted.utilityEnums.CardFace;
@@ -93,11 +94,18 @@ public class DeckGUI implements Observer {
     public void update(){
         LightDeck deck = GUI.getLightGame().getDecks().get(cardTarget);
 
-        if(drawableCard.getTarget() == null ||drawableCard.getTarget().idBack() != deck.getDeckBack().idBack()) {
+        if(deck.getDeckBack() == null){
+            drawableCard.setTarget((LightCard) null);
+        }
+        else if(drawableCard.getTarget() == null ||drawableCard.getTarget().idBack() != deck.getDeckBack().idBack()) {
             drawableCard.runBetweenRemovingAndAddingAnimation(() -> drawableCard.setTarget(deck.getDeckBack()));
         }
+
         for(int i = 0; i < buffer.length; i++){
-            if(buffer[i].getTarget() == null || !buffer[i].getTarget().equals(deck.getCardBuffer()[i])) {
+            if(deck.getCardBuffer()[i] == null){
+                buffer[i].setTarget((LightCard) null);
+            }
+            else if(buffer[i].getTarget() == null || !buffer[i].getTarget().equals(deck.getCardBuffer()[i])) {
                 final int finalI = i;
                 buffer[i].runBetweenRemovingAndAddingAnimation(() -> buffer[finalI].setTarget(deck.getCardBuffer()[finalI]));
                 buffer[i].setFace(CardFace.FRONT);
