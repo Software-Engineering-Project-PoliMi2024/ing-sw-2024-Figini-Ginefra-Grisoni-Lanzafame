@@ -11,10 +11,10 @@
 </h1>
 
 <h4 align="center">A digital version of the board game <a href="https://www.craniocreations.it/prodotto/codex-naturalis">Codex in Naturalis</a> made in Java by: <br><br>
-  <a href="https://github.com/figinii" target="_blank" style="color: #c1a015">Matteo Figini</a><br><br>
-  <a href="https://github.com/PaoloGinefra" target="_blank" style="color: #0f6c97">Paolo Ginefra</a><br><br>
-  <a href="https://github.com/dedepivot" target="_blank"style="color: #227701">Samuele Grisoni</a> <br><br>
-  <a href="https://github.com/teo-lan" target="_blank"style="color: #c72921">Teo Lanzafame</a></h4>
+  <a href="https://github.com/figinii" target="_blank" style="color: #c1a015">🟨Matteo Figini🟨</a><br><br>
+  <a href="https://github.com/PaoloGinefra" target="_blank" style="color: #0f6c97">🟦Paolo Ginefra🟦</a><br><br>
+  <a href="https://github.com/dedepivot" target="_blank"style="color: #227701">🟥Samuele Grisoni🟥</a> <br><br>
+  <a href="https://github.com/teo-lan" target="_blank"style="color: #c72921">🟩Teo Lanzafame🟩</a></h4>
 
 # <img src="https://d2nvlc4hwtwbz3.cloudfront.net/media/cache/41/aa/41aaf136be88fc7b9c2289b916903a15.jpg" align="right" alt="Start Card render" width="200" style = "border-radius: 20px; float:right; padding: 5px"> <center>Our features</center>
 
