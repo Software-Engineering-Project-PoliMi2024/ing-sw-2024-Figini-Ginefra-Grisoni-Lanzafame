@@ -9,11 +9,17 @@ import java.io.Serializable;
 import java.util.*;
 import java.util.concurrent.locks.ReentrantLock;
 
+/** Class that represents the codex of a player, the board to which the player can add cards */
 public class Codex implements Serializable {
+    /** points obtained by the player */
     private int points;
+    /** collectables obtained by the player */
     private final Map<Collectable, Integer> collectables;
+    /** the history of the placements added to the codex */
     private final Map<Position, Placement> placementHistory;
+    /** the frontier of the codex to which is possible to add cards */
     private final Frontier frontier;
+    /** lock for race conditions on points */
     private final ReentrantLock pointsLock = new ReentrantLock();
 
     /**
@@ -37,6 +43,10 @@ public class Codex implements Serializable {
         this.placementHistory = new LinkedHashMap<>();
     }
 
+    /**
+     * Copy constructor of the Codex class
+     * @param other the codex to copy
+     */
     public Codex(Codex other) {
         this.points = other.points;
         this.collectables = new HashMap<>(other.collectables);
@@ -89,6 +99,7 @@ public class Codex implements Serializable {
         }
     }
 
+    /** @return the frontier of the codex */
     public Frontier getFrontier() {
         synchronized (frontier) {
             return new Frontier(frontier);
@@ -233,6 +244,10 @@ public class Codex implements Serializable {
         updateCodexConsequences(placement);
     }
 
+    /**
+     * method that calculates and adds the points that the codex has to add given an objective card
+     * @param card the objective card to calculate the points
+     */
     public void pointsFromObjective(ObjectiveCard card) {
         pointsLock.lock();
         try{

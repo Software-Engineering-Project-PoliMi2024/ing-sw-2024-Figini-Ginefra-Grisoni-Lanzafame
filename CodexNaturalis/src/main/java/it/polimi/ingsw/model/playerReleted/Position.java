@@ -61,10 +61,21 @@ public record Position(int x, int y) implements Serializable {
         return new Position(this.x * scalar, this.y * scalar);
     }
 
+    /** @param x the x coordinate to set
+     *  @return a new position with the x coordinate set to x
+     *          and the y coordinate unchanged
+     */
+
     public Position setX(int x) {
         return new Position(x, this.y);
     }
 
+    /**
+     * Set the y coordinate of the position
+     * @param y the y coordinate to set
+     * @return a new position with the y coordinate set to y
+     *         and the x coordinate unchanged
+     */
     public Position setY(int y) {
         return new Position(this.x, y);
     }
