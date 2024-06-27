@@ -1,5 +1,6 @@
 package it.polimi.ingsw.view.TUI.Renderables.Forms;
 
+import it.polimi.ingsw.Configs;
 import it.polimi.ingsw.lightModel.lightPlayerRelated.LightCard;
 import it.polimi.ingsw.lightModel.lightPlayerRelated.LightFrontier;
 import it.polimi.ingsw.lightModel.lightPlayerRelated.LightPlacement;
@@ -52,7 +53,7 @@ public class PlaceCardForm extends FormRenderable{
                     view.getController().place(placement);
                 }
             } catch (Exception e) {
-                e.printStackTrace();
+                Configs.printStackTrace(e);
             }
         }
     }

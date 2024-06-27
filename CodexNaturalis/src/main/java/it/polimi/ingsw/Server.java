@@ -65,7 +65,7 @@ public class Server {
             serverLogger.log(LoggerLevel.SEVERE, "Server exception: can't open registry " +
                     "or error while binding the object");
             System.exit(1);
-            //e.printStackTrace();
+            Configs.printStackTrace(e);
         }
 
         ServerSocket server;
@@ -91,7 +91,7 @@ public class Server {
                         try {
                             Thread.sleep(10);
                         } catch (InterruptedException e) {
-                            e.printStackTrace();
+                            Configs.printStackTrace(e);
                         }
                     }
                     clientHandler.setOwner(virtualView);
@@ -100,18 +100,11 @@ public class Server {
                     virtualView.transitionTo(ViewState.LOGIN_FORM);
                 } catch (IOException e) {
                     serverLogger.log(LoggerLevel.SEVERE, "Connection dropped");
-                    e.printStackTrace();
+                    Configs.printStackTrace(e);
                 }
             }
         }, "Socket Server Listening Thread");
         serverSocketThread.start();
-
-//        SocketServer socketServer = new SocketServer(multiGame);
-//        ServerRMI serverRMI = new ServerRMI(multiGame);
-//        Thread serverSocketThread = new Thread(socketServer, "Socket Server Listening Thread");
-//        Thread serverRMIThread = new Thread(serverRMI, "RMI Server Listening Thread");
-//        serverSocketThread.start();
-//        serverRMIThread.start();
     }
 
 }

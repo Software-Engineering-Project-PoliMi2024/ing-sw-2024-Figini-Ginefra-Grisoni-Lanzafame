@@ -1,5 +1,6 @@
 package it.polimi.ingsw.view.TUI.Renderables;
 
+import it.polimi.ingsw.Configs;
 import it.polimi.ingsw.lightModel.lightTableRelated.LightLobby;
 import it.polimi.ingsw.utils.designPatterns.Observed;
 import it.polimi.ingsw.view.ControllerProvider;
@@ -60,7 +61,7 @@ public class LobbyRenderable extends Renderable {
                     view.getController().leaveLobby();
                 }
                 catch (Exception e) {
-                    e.printStackTrace();
+                    Configs.printStackTrace(e);
                 }
                 break;
             default:

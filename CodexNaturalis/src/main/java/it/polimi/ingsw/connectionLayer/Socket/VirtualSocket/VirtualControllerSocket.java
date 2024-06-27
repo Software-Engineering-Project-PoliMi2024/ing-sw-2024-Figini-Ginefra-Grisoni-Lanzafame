@@ -1,5 +1,6 @@
 package it.polimi.ingsw.connectionLayer.Socket.VirtualSocket;
 
+import it.polimi.ingsw.Configs;
 import it.polimi.ingsw.connectionLayer.HeartBeatInterface;
 import it.polimi.ingsw.connectionLayer.Socket.ClientMsg.*;
 import it.polimi.ingsw.connectionLayer.Socket.ServerHandler;
@@ -62,7 +63,7 @@ public class VirtualControllerSocket implements VirtualController {
             try {
                 Thread.sleep(10);
             } catch (InterruptedException e) {
-                e.printStackTrace();
+                Configs.printStackTrace(e);
             }
         }
         serverHandler.setOwner(this); //set the owner only when the serverHandler is ready to receive and send messages
