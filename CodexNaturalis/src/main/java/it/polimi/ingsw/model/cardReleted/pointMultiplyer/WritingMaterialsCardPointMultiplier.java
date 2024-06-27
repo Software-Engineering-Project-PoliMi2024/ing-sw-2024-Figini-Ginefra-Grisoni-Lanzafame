@@ -5,7 +5,12 @@ import it.polimi.ingsw.model.cardReleted.pointMultiplyer.GoldCardPointMultiplier
 import it.polimi.ingsw.model.cardReleted.utilityEnums.WritingMaterial;
 import it.polimi.ingsw.model.playerReleted.Codex;
 
+/**
+ * This class is a multiplier for the points given by a gold card
+ * that gives points for the number of a specific writing material collected
+ */
 public class WritingMaterialsCardPointMultiplier implements GoldCardPointMultiplier {
+    /** the writing material that the card gives points for*/
     private final WritingMaterial target;
 
     /** constructor of the writingMaterialsCardPointMultiplier
@@ -14,6 +19,8 @@ public class WritingMaterialsCardPointMultiplier implements GoldCardPointMultipl
         this.target = target;
     }
 
+    /** copy constructor of the writingMaterialsCardPointMultiplier
+     * @param other the multiplier to copy*/
     public WritingMaterialsCardPointMultiplier(WritingMaterialsCardPointMultiplier other){
         this(other.target);
     }
@@ -32,6 +39,7 @@ public class WritingMaterialsCardPointMultiplier implements GoldCardPointMultipl
         return target;
     }
 
+    /** @return a copy of the multiplier*/
     public GoldCardPointMultiplier getCopy(){
         return new WritingMaterialsCardPointMultiplier(this);
     }

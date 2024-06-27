@@ -7,12 +7,18 @@ import it.polimi.ingsw.model.playerReleted.Codex;
 import it.polimi.ingsw.model.playerReleted.Placement;
 import it.polimi.ingsw.model.playerReleted.Position;
 
-import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.Set;
 
+/**
+ * This class is a ObjectiveCardPointMultiplier given by an ObjectiveCard
+ * that multiplies the points of a ObjectiveCard based on the number of cards of a certain color
+ * disposed in a diagonal line
+ */
 public class DiagonalCardPointMultiplier implements ObjectiveCardPointMultiplier {
+    /** define the orientation of the diagonal */
     final private boolean upwards;
+    /** define the color of the cards to count */
     final private Resource color;
 
     /**@param upwards if is upward == True,
@@ -63,13 +69,16 @@ public class DiagonalCardPointMultiplier implements ObjectiveCardPointMultiplier
         return multiplier;
     }
 
+    /** @return the resource of the cards the diagonal is made of*/
     public Resource getColor() {
         return color;
     }
+    /** @return true if the diagonal is upwards, false if it is downwards*/
     public boolean isUpwards() {
         return upwards;
     }
 
+    /** @return a copy of the object*/
     public ObjectiveCardPointMultiplier getCopy(){
         return new DiagonalCardPointMultiplier(this);
     }
