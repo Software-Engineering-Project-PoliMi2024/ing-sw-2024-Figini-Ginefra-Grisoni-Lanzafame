@@ -80,7 +80,7 @@ public class LightHandOthers implements Differentiable, Observed {
         }
         boolean found = false;
         for(int i=0; i<cards.length && !found; i++){
-            if(cards[i].equals(card)){
+            if(cards[i] != null && cards[i].equals(card)){
                 cards[i] = null;
                 found=true;
             }
