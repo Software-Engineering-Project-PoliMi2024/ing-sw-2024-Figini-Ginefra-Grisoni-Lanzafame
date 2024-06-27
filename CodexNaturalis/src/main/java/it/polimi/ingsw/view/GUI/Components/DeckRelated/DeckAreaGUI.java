@@ -18,22 +18,31 @@ import java.util.Arrays;
 import java.util.LinkedHashMap;
 import java.util.Map;
 
+/**
+ * This class represents the GUI component responsible for housing the decks and the common objectives.
+ */
 public class DeckAreaGUI implements Observer {
+    /** The pop up that contains the decks. */
     private AnchoredPopUp popUp;
+    /** The container of the decks */
     private final HBox decksContainer = new HBox();
-    private final HBox commonObjectivesContainer = new HBox();
-
+    /** The content of the component */
     private final VBox content = new VBox();
-
+    /** The map that associates each drawable card to its deck */
     private final Map<DrawableCard, DeckGUI> decksMap = new LinkedHashMap<>();
+    /** The common objectives */
     private final FlippableCardGUI[] commonObjectives = new FlippableCardGUI[2];
 
+    /**
+     * Creates a new DeckAreaGUI.
+     */
     public DeckAreaGUI(){
         Arrays.stream(DrawableCard.values()).forEach(card -> {
             DeckGUI deck = new DeckGUI(card, decksContainer);
             decksMap.put(card, deck);
         });
 
+        HBox commonObjectivesContainer = new HBox();
         for (int i = 0; i < 2; i++) {
             commonObjectives[i] = new FlippableCardGUI(null);
             commonObjectivesContainer.getChildren().add(commonObjectives[i].getImageView());
@@ -73,6 +82,10 @@ public class DeckAreaGUI implements Observer {
         GUI.getLightGame().getDecks().forEach((drawableCard, lightDeck) -> lightDeck.attach(this));
     }
 
+    /**
+     * Adds this to the given parent.
+     * @param parent the parent to add this to.
+     */
     public void addThisTo(AnchorPane parent){
         popUp = new AnchoredPopUp(parent, 0.3f, 0.5f, Pos.CENTER_RIGHT, 0.25f);
 
@@ -89,6 +102,9 @@ public class DeckAreaGUI implements Observer {
         popUp.getContent().getChildren().add(content);
     }
 
+    /**
+     * Updates the component to reflect the current state of the light game. This method is called by the observer pattern.
+     */
     public void update(){
         LightCard[] publicObjectives = GUI.getLightGame().getPublicObjective();
         for(int i = 0; i < publicObjectives.length; i++){
