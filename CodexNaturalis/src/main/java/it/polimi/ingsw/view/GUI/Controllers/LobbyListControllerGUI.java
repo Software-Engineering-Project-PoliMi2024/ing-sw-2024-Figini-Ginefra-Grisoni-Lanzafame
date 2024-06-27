@@ -16,16 +16,28 @@ import java.net.URL;
 import java.util.Arrays;
 import java.util.ResourceBundle;
 
+/**
+ * This class is the controller for the lobby list SceneBuilder scene.
+
+ */
 public class LobbyListControllerGUI implements Initializable {
+    /** The container of the lobby list.*/
     @FXML
     AnchorPane joinLobby;
+    /** The text field where the user can insert the name of the lobby to create.*/
     @FXML
     private TextField lobbyToCreateName;
+    /** The button to create the lobby.*/
     @FXML
     private HBox characterContainer;
+    /** The number of players in the lobby to create.*/
     private int nPlayers = 2;
+    /** The lobby list display.*/
     private final LobbyListJoinGUI joinLobbyDisplay = new LobbyListJoinGUI();
 
+    /**
+     * Creates a new LobbyListControllerGUI and attaches the lobby list display to the controller.
+     */
     public void createLobby() {
         String lobbyName = lobbyToCreateName.getText();
         if(!lobbyName.isEmpty())
@@ -36,6 +48,13 @@ public class LobbyListControllerGUI implements Initializable {
             }
     }
 
+    /**
+     * This method is called when the controller is initialized.
+     * It adds the lobby list display to the container.
+     * It also adds the character selection to the container.
+     * @param url the url
+     * @param resourceBundle the resource bundle
+     */
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle) {
         joinLobby.getChildren().addAll(joinLobbyDisplay.getLobbyListDisplay());

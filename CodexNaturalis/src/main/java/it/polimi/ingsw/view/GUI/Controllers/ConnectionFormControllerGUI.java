@@ -15,8 +15,11 @@ import javafx.scene.image.ImageView;
 import java.net.URL;
 import java.util.ResourceBundle;
 
+/**
+ * This class is the controller for the connection form SceneBuilder scene.
+ */
 public class ConnectionFormControllerGUI implements Initializable {
-
+    /** The view */
     public static ViewInterface view;
 
     @FXML
@@ -31,6 +34,12 @@ public class ConnectionFormControllerGUI implements Initializable {
     @FXML
     private ImageView image;
 
+    /**
+     * This method is called when the connect button is pressed.
+     * It creates the correct controller based on the protocol selected.
+     * Then it fetches the ip and port from the text fields and connects to the server using the correct protocol.
+     * @param actionEvent the event
+     */
     public void connect(ActionEvent actionEvent) {
         VirtualController controller = protocolChoice.getValue().equals("Socket") ? new VirtualControllerSocket() : new VirtualControllerRMI();
         GUI.setControllerStatic(controller);
@@ -45,6 +54,12 @@ public class ConnectionFormControllerGUI implements Initializable {
         }
     }
 
+    /**
+     * This method is called when the controller is initialized.
+     * It adds the two possible protocols to the choice box and sets the default value to RMI.
+     * @param url the url
+     * @param resourceBundle the resource bundle
+     */
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle) {
         protocolChoice.getItems().add("Socket");
