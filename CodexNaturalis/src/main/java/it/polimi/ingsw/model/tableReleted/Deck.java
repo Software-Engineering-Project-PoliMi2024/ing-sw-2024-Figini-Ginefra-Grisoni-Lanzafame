@@ -7,9 +7,16 @@ import java.io.Serializable;
 import java.lang.reflect.Array;
 import java.util.*;
 
+/**
+ * This class represents a deck of elements (cards)
+ * @param <Element> the type of the elements in the deck
+ */
 public class Deck<Element> implements Serializable {
+    /** the buffer size */
     private final int bufferSize;
+    /** the buffer */
     private final List<Element> buffer;
+    /** the actual deck */
     private final Queue<Element> actualDeck;
 
     /**
@@ -113,9 +120,16 @@ public class Deck<Element> implements Serializable {
             return null;
     }
 
+    /** @return true if both the actual deck and the buffer are empty */
     public boolean isEmpty(){
         return actualDeck.isEmpty() && buffer.isEmpty();
     }
+
+    /**
+     * Peek the element in the deck or in the buffer
+     * @param cardID the id of the element to peek
+     * @return the element peeked
+     */
     public Element peekCardInDecks(int cardID){
         Element card;
         if (cardID == Configs.actualDeckPos) {
