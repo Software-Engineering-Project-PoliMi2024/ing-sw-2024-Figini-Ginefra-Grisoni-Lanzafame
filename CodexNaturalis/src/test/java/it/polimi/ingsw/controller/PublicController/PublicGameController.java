@@ -1,5 +1,6 @@
 package it.polimi.ingsw.controller.PublicController;
 
+import it.polimi.ingsw.Configs;
 import it.polimi.ingsw.controller.GameController;
 import it.polimi.ingsw.model.cardReleted.cards.CardTable;
 import it.polimi.ingsw.model.tableReleted.Game;
@@ -21,7 +22,7 @@ public class PublicGameController {
             cardTableField.setAccessible(true);
             return (CardTable) cardTableField.get(gameController);
         } catch (Exception e) {
-            e.printStackTrace();
+            Configs.printStackTrace(e);
             return null;
         }
     }

@@ -1,5 +1,6 @@
 package it.polimi.ingsw.controller.PublicController;
 
+import it.polimi.ingsw.Configs;
 import it.polimi.ingsw.controller.Interfaces.GameControllerReceiver;
 import it.polimi.ingsw.controller.LobbyController;
 import it.polimi.ingsw.model.tableReleted.Lobby;
@@ -21,7 +22,7 @@ public class PublicLobbyController {
             lobbyField.setAccessible(true);
             return (Lobby) lobbyField.get(lobbyController);
         } catch (Exception e) {
-            e.printStackTrace();
+            Configs.printStackTrace(e);
             return null;
         }
     }

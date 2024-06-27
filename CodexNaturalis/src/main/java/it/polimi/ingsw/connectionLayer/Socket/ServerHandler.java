@@ -113,7 +113,7 @@ public class ServerHandler implements Runnable{
      * Sends a message to the server
      * @param clientMsg The message to be sent
      */
-    public void sendServerMessage(ClientMsg clientMsg) {
+    public void sendClientMessage(ClientMsg clientMsg) {
         clientMsg.setIndex(msgIndex);
         msgIndex++;
         try {
