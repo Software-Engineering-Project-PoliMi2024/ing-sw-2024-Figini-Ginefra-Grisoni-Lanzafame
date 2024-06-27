@@ -14,15 +14,29 @@ import javafx.scene.text.Text;
 import javafx.scene.text.TextAlignment;
 import javafx.util.Duration;
 
+/**
+ * This class represents the GUI component to display the logs of the game.
+ * It does so by opening a pop up anchored to the top of the screen.
+ * The log lasts for a certain amount of time and then the pop up closes.
+
+ */
 public class LogsGUI implements Observer {
-    private final Pane parent;
+    /** The pop up that contains the logs. */
     private final AnchoredPopUp popUp;
+
+    /** The log to display. */
     private final Text lastLog = new Text();
+
+    /** The timeline used to wait before closing the pop up. */
     private final Timeline waiting = new Timeline();
 
+
+    /**
+     * Creates a new LogsGUI.
+     * @param parent the parent of the pop up.
+     */
     public LogsGUI(Pane parent){
         GUI.getLogMemory().attach(this);
-        this.parent = parent;
         this.popUp = new AnchoredPopUp((AnchorPane)parent, 0.2f, 0.16f, Pos.TOP_CENTER, 0.25f);
         popUp.setLocked(true);
         this.popUp.getContent().getChildren().add(lastLog);
