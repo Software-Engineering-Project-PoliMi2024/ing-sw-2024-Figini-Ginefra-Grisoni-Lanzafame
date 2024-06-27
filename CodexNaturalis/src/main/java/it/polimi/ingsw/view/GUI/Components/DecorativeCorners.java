@@ -11,7 +11,14 @@ import javafx.scene.image.ImageView;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.Pane;
 
+/**
+ * This class is used to create the decorative corners of the cards.
+ */
 public class DecorativeCorners {
+    /**
+     * Creates the decorative corners of the cards.
+     * @param parent the parent of the corners
+     */
     public DecorativeCorners(Pane parent){
         for(CardCorner corner : CardCorner.values()){
             Image targetImage = AssetsGUI.loadCorner(corner);

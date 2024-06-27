@@ -15,18 +15,27 @@ import javafx.util.Duration;
 import java.util.HashMap;
 import java.util.Map;
 
-
+/**
+ * This class represents the GUI component that handles the chat button.
+ */
 public class ChatButton implements Observer {
-
+    /** The button that opens the chat */
     private final Button chatButton = new Button();
+    /** The book icon */
     private final ImageView book = new ImageView(AssetsGUI.book);
+    /** The flower icon */
     private final ImageView flower = new ImageView(AssetsGUI.flower);
+    /** The animation used to show unread messages */
     private FadeTransition unreadAnimation;
+    /** The chat display */
     private ChatDisplay chatDisplay;
 
+    /** The map of chat members */
     private final Map<String, Pair<PawnColors, Boolean>> chatMembers = new HashMap<>();
+    /** The current player */
     private String currentPlayer = "";
 
+    /** Creates a new ChatButton */
     public ChatButton() {
         book.maxHeight(16);
         book.maxWidth(16);
@@ -43,7 +52,10 @@ public class ChatButton implements Observer {
 
         createAnimation();
     }
-
+    /**
+     * Adds the chat button to the parent.
+     * @param parent the parent to add the chat button to.
+     */
     public void addThisTo(AnchorPane parent) {
         chatDisplay = new ChatDisplay(parent);
 
@@ -61,38 +73,46 @@ public class ChatButton implements Observer {
         chatButton.setOnAction(event -> showChat());
     }
 
+    /**
+     * Gets the chat button.
+     * @return the chat button.
+     */
     public Button getChatButton() {
         return chatButton;
     }
 
+    /**
+     * Shows the chat by opening the chat display.
+     */
     private void showChat() {
         stopUnreadAnimation();
         chatDisplay.open();
     }
 
+    /**
+     * Updates the chat display based on the current state of the light model. This method is called by the observed.
+     */
     @Override
     public void update() {
         if(isUpdatePlayerColor()){
-            System.out.println("updatePlayerColor");
             updatePlayerColor();
         }else if(isUpdateRemovePlayer()) {
-            System.out.println("removePlayer");
             removePlayer();
         }else if(isUpdateActivePlayer()){
-                System.out.println("activePlayer");
-                activePlayer();
+            activePlayer();
         }else if(isUpdateInactivePlayer()) {
-            System.out.println("inactivePlayer");
             inactivePlayer();
         }else if(isUpdateCurrentPlayer()){
-            System.out.println( "currentPlayer");
             currentPlayer();
         }else{
-            System.out.println("updateMessages");
             updateMessages();
         }
     }
 
+    /**
+     * Checks if the player color has changed.
+     * @return true if the player color has changed.
+     */
     private boolean isUpdatePlayerColor(){
         boolean changed = false;
         for(String player : chatMembers.keySet()){
@@ -104,6 +124,9 @@ public class ChatButton implements Observer {
         return changed;
     }
 
+    /**
+     * Updates the player color.
+     */
     private void updatePlayerColor(){
         for(String player : chatMembers.keySet()){
             chatMembers.put(player, new Pair<>(GUI.getLightGame().getLightGameParty().getPlayerColor(player), chatMembers.get(player).second()));
@@ -111,6 +134,10 @@ public class ChatButton implements Observer {
         reloadMessages();
     }
 
+    /**
+     * Checks if a player has been removed.
+     * @return true if a player has been removed.
+     */
     private boolean isUpdateRemovePlayer(){
         boolean removed = false;
         for(String player : chatMembers.keySet()){
@@ -122,6 +149,9 @@ public class ChatButton implements Observer {
         return removed;
     }
 
+    /**
+     * Removes a player.
+     */
     private void removePlayer(){
         for(String player : chatMembers.keySet()){
             if(!GUI.getLightGame().getLightGameParty().getPlayerActiveList().containsKey(player)){
@@ -133,6 +163,10 @@ public class ChatButton implements Observer {
         reloadMessages();
     }
 
+    /**
+     * Checks if an inactive player has been updated.
+     * @return true if an inactive player has been updated.
+     */
     private boolean isUpdateInactivePlayer(){
         boolean inactive = false;
         for(String player : chatMembers.keySet()){
@@ -144,6 +178,9 @@ public class ChatButton implements Observer {
         return inactive;
     }
 
+    /**
+     * Inactivates the offline players by setting their label to strike-through.
+     */
     private void inactivePlayer(){
         for(String player : chatMembers.keySet()){
             if(!GUI.getLightGame().getLightGameParty().getPlayerActiveList().get(player) && chatMembers.get(player).second()){
@@ -154,6 +191,10 @@ public class ChatButton implements Observer {
         reloadMessages();
     }
 
+    /**
+     * Checks if the active player has been updated.
+     * @return true if the active player has been updated.
+     */
     private boolean isUpdateActivePlayer(){
         boolean active = false;
         for(String player : GUI.getLightGame().getLightGameParty().getPlayerActiveList().keySet()){
@@ -165,11 +206,13 @@ public class ChatButton implements Observer {
         return active;
     }
 
+    /**
+     * Activates the active players by removing the strike-through from their label.
+     */
     private void activePlayer(){
         for(String player : GUI.getLightGame().getLightGameParty().getPlayerActiveList().keySet()){
             if(player.equals(GUI.getLightGame().getLightGameParty().getYourName())){
                 if(!chatMembers.containsKey(GUI.getLightGame().getLightGameParty().getYourName())){
-                    System.out.println("I'm the joiner");
                     chatMembers.put(GUI.getLightGame().getLightGameParty().getYourName(), new Pair<>(GUI.getLightGame().getLightGameParty().getPlayerColor(GUI.getLightGame().getLightGameParty().getYourName()), true));
                     chatDisplay.addReceiver(player);
                     unreadAnimation.play();
@@ -178,7 +221,6 @@ public class ChatButton implements Observer {
                     }
                 }
             }else{
-                System.out.println(player + " is the joiner");
                 chatDisplay.addReceiver(player);
                 chatMembers.put(player, new Pair<>(GUI.getLightGame().getLightGameParty().getPlayerColor(player), true));
                 this.reloadMessages();
@@ -186,15 +228,25 @@ public class ChatButton implements Observer {
         }
     }
 
+    /**
+     * Checks if the current player has been updated.
+     * @return true if the current player has been updated.
+     */
     private boolean isUpdateCurrentPlayer(){
         return !currentPlayer.equals(GUI.getLightGame().getLightGameParty().getCurrentPlayer());
     }
 
+    /**
+     * Updates the current player.
+     */
     private void currentPlayer(){
         currentPlayer = GUI.getLightGame().getCurrentPlayer();
         reloadMessages();
     }
 
+    /**
+     * Updates the chat display with the current messages.
+     */
     private void updateMessages(){
         if(unreadMessage() && !chatDisplay.isOpen()){
             unreadAnimation.play();
@@ -202,6 +254,9 @@ public class ChatButton implements Observer {
         chatDisplay.updatedMessages(GUI.getLightGame().getLightGameParty().getLightChat().getChatHistory());
     }
 
+    /**
+     * Adds a player to the chat members.
+     */
     public void reloadMessages(){
         if(!GUI.getLightGame().getLightGameParty().getLightChat().getChatHistory().isEmpty()){
             chatDisplay.updatedMessages(GUI.getLightGame().getLightGameParty().getLightChat().getChatHistory());
@@ -215,6 +270,9 @@ public class ChatButton implements Observer {
                 GUI.getLightGame().getLightGameParty().getYourName());
     }
 
+    /**
+     * Creates the animation used to show unread messages.
+     */
     private void createAnimation(){
         unreadAnimation = new FadeTransition(Duration.millis(GUIConfigs.flowerAnimationDuration), flower);
         unreadAnimation.setFromValue(1.0);
@@ -223,11 +281,18 @@ public class ChatButton implements Observer {
         unreadAnimation.setAutoReverse(true);
     }
 
+    /**
+     * Stops the animation used to show unread messages.
+     */
     public void stopUnreadAnimation(){
         unreadAnimation.stop();
         flower.setOpacity(0.0);
     }
 
+    /**
+     * Attaches the chat button to the chat display and the light game party.
+
+     */
     public void attach(){
         GUI.getLightGame().getLightGameParty().getLightChat().attach(this);
         GUI.getLightGame().getLightGameParty().attach(this);

@@ -23,22 +23,20 @@ import java.util.*;
 import java.util.stream.Collectors;
 
 public class LeaderboardGUI implements Observer {
-    private VBox layout;
+    private final VBox layout;
 
     private AnchoredPopUp leftAnchoredPopUp;
 
-    private Map<String, Text> labelMap = new HashMap<>();
-    private Map<String, ImageView> pawnImageViewMap = new HashMap<>();
+    private final Map<String, Text> labelMap = new HashMap<>();
+    private final Map<String, ImageView> pawnImageViewMap = new HashMap<>();
     private final VBox buttonContainer = new VBox();
     private PlateauGUI plateau;
     private RuleBook ruleBook;
-    private List<PawnsGui> availablePawns;
 
     public LeaderboardGUI() {
         this.layout = new VBox(10);
         this.layout.setStyle("-fx-padding: 20; -fx-alignment: center; -fx-font-size: 16pt;");
         this.layout.setAlignment(Pos.CENTER_LEFT);
-        this.availablePawns = new ArrayList<>(Arrays.asList(PawnsGui.values()));
     }
 
     public void attach() {
