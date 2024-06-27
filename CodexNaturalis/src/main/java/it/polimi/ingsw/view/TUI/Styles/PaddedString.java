@@ -1,6 +1,14 @@
 package it.polimi.ingsw.view.TUI.Styles;
 
+/**
+ * This class represents a string with a text alignment.
+ * The string is padded to the specified width with spaces.
+ */
 public record PaddedString(String content, int width, TextAlign align) {
+    /**
+     * Returns the content with the specified alignment and padding.
+     * @return The content with the specified alignment and padding.
+     */
     public String toString() {
         switch (align) {
             case LEFT -> {

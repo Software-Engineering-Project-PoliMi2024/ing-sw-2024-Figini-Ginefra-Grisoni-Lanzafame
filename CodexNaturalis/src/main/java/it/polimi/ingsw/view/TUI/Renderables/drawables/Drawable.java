@@ -1,20 +1,16 @@
 package it.polimi.ingsw.view.TUI.Renderables.drawables;
 
-import it.polimi.ingsw.model.playerReleted.Position;
-import it.polimi.ingsw.view.TUI.Renderables.Renderable;
-import it.polimi.ingsw.view.TUI.inputs.CommandPrompt;
-
 import java.io.Serializable;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
 
 /**
- * This class represents a drawable object. that being an object that can be drawn as an array of strings.
+ * This class represents a drawable object. That being an object that can be drawn as an array of strings.
  */
 public class Drawable implements Serializable {
+    /** The width of the drawable. */
     private int width;
+    /** The height of the drawable. */
     private int height;
+    /** The content of the drawable as 2d matrix of Strings. */
     private String[][] content;
 
     /**
@@ -26,13 +22,6 @@ public class Drawable implements Serializable {
         this.width = width;
         this.height = height;
         this.content = new String[height][width];
-    }
-
-    /**
-     * Clears the content of the drawable filling everything with null.
-     */
-    public void clearContent(){
-        this.fillContent(null);
     }
 
     /**
@@ -115,16 +104,6 @@ public class Drawable implements Serializable {
     }
 
     /**
-     * Gets the content at the given coordinates.
-     * @param x The x coordinate.
-     * @param y The y coordinate.
-     * @return The content at the given coordinates.
-     */
-    public String getCharAt(int x, int y){
-        return this.content[y][x];
-    }
-
-    /**
      * Sets the content of the drawable.
      * @param content The new content.
      */
@@ -133,9 +112,7 @@ public class Drawable implements Serializable {
             throw new IllegalArgumentException("The content must have the same dimensions as the drawable");
 
         for(int i = 0; i < this.height; i++){
-            for(int j = 0; j < this.width; j++){
-                this.content[i][j] = content[i][j];
-            }
+            System.arraycopy(content[i], 0, this.content[i], 0, this.width);
         }
     }
 

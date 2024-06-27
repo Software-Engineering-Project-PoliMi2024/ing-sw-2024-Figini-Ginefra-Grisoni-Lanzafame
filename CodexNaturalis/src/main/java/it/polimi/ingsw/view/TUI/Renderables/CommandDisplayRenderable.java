@@ -1,6 +1,5 @@
 package it.polimi.ingsw.view.TUI.Renderables;
 
-import it.polimi.ingsw.Configs;
 import it.polimi.ingsw.model.utilities.Pair;
 import it.polimi.ingsw.utils.OSRelated;
 import it.polimi.ingsw.view.TUI.Printing.Printable;
@@ -12,6 +11,9 @@ import java.util.*;
 
 /**
  * This class is the renderable that displays the active commands.
+ * It is also responsible to handle the user input for the commands.
+ * It stores the active local and non-local commands and displays them.
+ * When a prompt is selected by the user, it becomes the current prompt and it gradually asks the user for the required input.
  */
 public class CommandDisplayRenderable extends Renderable{
     /** The active local prompts. */
@@ -20,7 +22,13 @@ public class CommandDisplayRenderable extends Renderable{
     /** The active non-local prompts. */
     private final Map<CommandPrompt, Integer> activeActionPrompts;
 
+    /**
+     * The current prompt index.
+     * -1 if there is no current prompt.
+     */
     private int currentPromptIndex = -1;
+
+    /** The current prompt. */
     CommandPrompt currentPrompt;
 
     /**
@@ -127,7 +135,7 @@ public class CommandDisplayRenderable extends Renderable{
             this.currentPrompt = getPromptAtIndex(index);
 
             //Prints the prompt selection message
-            PromptStyle.printInABox("You selected " + new DecoratedString(currentPrompt.getCommandName(), StringStyle.UNDERLINE).toString(), 50);
+            PromptStyle.printInABox("You selected " + new DecoratedString(currentPrompt.getCommandName(), StringStyle.UNDERLINE), 50);
 
             //Prints the first prompt message
             if(currentPrompt.hasNext()) {
@@ -177,13 +185,17 @@ public class CommandDisplayRenderable extends Renderable{
         }
     }
 
+    /**
+     * Prints the current prompt.
+     * IT prints the current selection and the questions and answers asked/answered so far.
+     */
     private void printCurrentPrompt(){
         if(currentPrompt == null || !currentPrompt.hasLast() || currentPromptIndex == -1)
             return;
 
         Printer.print(this.currentPromptIndex + "\n");
 
-        PromptStyle.printInABox("You selected " + new DecoratedString(currentPrompt.getCommandName(), StringStyle.UNDERLINE).toString(), 50);
+        PromptStyle.printInABox("You selected " + new DecoratedString(currentPrompt.getCommandName(), StringStyle.UNDERLINE), 50);
 
         List<Pair<String, String>> qna = currentPrompt.getQnASoFar();
 
@@ -239,17 +251,6 @@ public class CommandDisplayRenderable extends Renderable{
             addCommandPromptTo(activeLocalPrompts, prompt);
         else
             addCommandPromptTo(activeActionPrompts, prompt);
-    }
-
-    /**
-     * Removes a command prompt from the active prompts.
-     * @param prompt The command prompt to remove.
-     */
-    public void removeCommandPrompt(CommandPrompt prompt){
-        if(prompt.isLocal())
-            removeCommandPromptFrom(activeLocalPrompts, prompt);
-        else
-            removeCommandPromptFrom(activeActionPrompts, prompt);
     }
 
     /**

@@ -6,26 +6,29 @@ import it.polimi.ingsw.utils.designPatterns.Observer;
 import java.util.LinkedList;
 import java.util.List;
 
+/**
+ * This class is used to store all the logs that are sent to the client
+ */
 public class LogMemory implements Observed {
+    /** a list of Observer that are observing this class */
     private final List<Observer> observers = new LinkedList<>();
+    /**A list of all logs sent to the client*/
     private final LinkedList<String> logMemory = new LinkedList<>();
 
+    /**
+     * Add a log to the logMemory and notify all the observers
+     * @param log the log to add
+     */
     public void addLog(String log){
         logMemory.add(log);
         notifyObservers();
     }
 
-    public LinkedList<String> getLogs() {
-        return new LinkedList<>(logMemory);
-    }
-
+    /**
+     * @return the last log added to the logMemory
+     */
     public String getLastLog(){
         return logMemory.getLast();
-    }
-
-    public void clear(){
-        logMemory.clear();
-        notifyObservers();
     }
 
     @Override

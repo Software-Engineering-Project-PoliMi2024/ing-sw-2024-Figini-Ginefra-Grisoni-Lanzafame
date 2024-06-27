@@ -20,16 +20,30 @@ import it.polimi.ingsw.view.TUI.inputs.CommandPromptResult;
 
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Objects;
 
 /**
- * This class is a Renderable that displays two decks with options to draw cards from them.
+ * This class is a Renderable that displays two decks with options to draw cards from them as well as the common objectives.
+ * In order to render the card stacked horizontally it extends CanvasRenderable.
  */
 public class DeckRenderable extends CanvasRenderable {
+    /** The deck of gold card. */
     private final LightDeck goldDeck;
+    /** The deck of resource cards. */
     private final LightDeck resourceDeck;
+    /** The card museum containing the rendered cards*/
     private final CardMuseum museum;
+    /** The light game */
     private final LightGame lightGame;
 
+    /**
+     * Creates a new DeckRenderable.
+     * @param name The name of the renderable.
+     * @param museum The card museum to use.
+     * @param game The lightGame to render.
+     * @param relatedCommands The commands related to this renderable.
+     * @param view The controller provider.
+     */
     public DeckRenderable(String name, CardMuseum museum, LightGame game, CommandPrompt[] relatedCommands, ControllerProvider view) {
         super(name, CardTextStyle.getCardWidth() * 4 + 4, CardTextStyle.getCardHeight() * 2 + 1, relatedCommands, view);
         this.goldDeck = game.getGoldDeck();
@@ -41,6 +55,10 @@ public class DeckRenderable extends CanvasRenderable {
         this.canvas.fillContent(CardTextStyle.getBackgroundEmoji());
     }
 
+    /**
+     * Renders the two decks composed of the buffer and the back of the next card to draw as well as the common objectives.
+     * All are fetched from the light model.
+     */
     @Override
     public void render() {
         Printable upperPrintable = new Printable("");
@@ -63,7 +81,7 @@ public class DeckRenderable extends CanvasRenderable {
 
         Printer.print(upperPrintable);
 
-        renderCommonObjectives(resourceLabels);
+        renderCommonObjectives();
 
         // Render the canvas
         super.render();
@@ -72,7 +90,7 @@ public class DeckRenderable extends CanvasRenderable {
         PromptStyle.printInABox("Resource Deck ", CardTextStyle.getCardWidth() * 6 + 4);
     }
 
-    private void renderCommonObjectives(List<Printable> labels){
+    private void renderCommonObjectives(){
         LightCard[] commonObjectives = lightGame.getPublicObjective();
 
         for(int i = 0; i < commonObjectives.length; i++) {
@@ -124,12 +142,8 @@ public class DeckRenderable extends CanvasRenderable {
 
     @Override
     public void updateCommand(CommandPromptResult answer) {
-        switch (answer.getCommand()) {
-            case CommandPrompt.DISPLAY_DECKS:
-                this.render();
-                break;
-            default:
-                break;
+        if (Objects.requireNonNull(answer.getCommand()) == CommandPrompt.DISPLAY_DECKS) {
+            this.render();
         }
     }
 

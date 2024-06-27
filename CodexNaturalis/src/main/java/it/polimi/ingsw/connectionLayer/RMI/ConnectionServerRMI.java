@@ -2,7 +2,7 @@ package it.polimi.ingsw.connectionLayer.RMI;
 
 import it.polimi.ingsw.Configs;
 import it.polimi.ingsw.connectionLayer.ConnectionLayerServer;
-import it.polimi.ingsw.connectionLayer.PingPongInterface;
+import it.polimi.ingsw.connectionLayer.HeartBeatInterface;
 import it.polimi.ingsw.connectionLayer.RMI.VirtualRMI.VirtualViewRMI;
 import it.polimi.ingsw.controller.Controller;
 import it.polimi.ingsw.controller.Interfaces.ControllerInterface;
@@ -23,10 +23,16 @@ import java.util.concurrent.Executors;
 import java.util.concurrent.Future;
 import java.util.concurrent.TimeUnit;
 
+/**
+ * The class that handles the connection with the client using RMI protocol
+ */
 public class ConnectionServerRMI implements ConnectionLayerServer {
+    /** The controller in the server that handle the creation, joining and leaving of lobby and games*/
     private final LobbyGameListsController lobbyGameListController;
+
+    /**The executor service that will handle the connection with the client*/
     private final ExecutorService serverExecutor = Executors.newSingleThreadExecutor();
-    int secondsTimeOut = Configs.secondsTimeOut;
+    /**The logger used to log the connection with the client if it fails*/
     private final ServerLogger logger = new ServerLogger(LoggerSources.SERVER, "RMI");
 
     /**
@@ -40,12 +46,13 @@ public class ConnectionServerRMI implements ConnectionLayerServer {
 
     /**
      * Establishes a connection with a client by initializing the necessary components on the server side.
-     *
+     * Exposes the controller to the client and starts the heartBeat mechanism between the server and the client.
+     * If the connection is successful, the client is transitioned to the login form.
+     * If Configs.secondsTimeOut seconds pass without a successful connection, the connection is considered failed.
      * @param view the view of the client which is trying to connect
      * @throws RemoteException if a communication-related exception occurs during the execution of this method.
      */
-    public void connect(PingPongInterface pingPong, ViewInterface view, VirtualController controller) throws RemoteException {
-        //Create a ServerModelController for the new client
+    public void connect(HeartBeatInterface pingPong, ViewInterface view, VirtualController controller) throws RemoteException {
 
         //expose the controller to the client
         Future<?> connect = serverExecutor.submit(() -> {
@@ -54,12 +61,12 @@ public class ConnectionServerRMI implements ConnectionLayerServer {
                 ControllerInterface controllerOnServer = new Controller(lobbyGameListController, virtualView);
                 virtualView.setController(controllerOnServer);
                 ControllerInterface controllerOnServerStub = (ControllerInterface) UnicastRemoteObject.exportObject(controllerOnServer, 0);
-                PingPongInterface virtualViewStub = (PingPongInterface) UnicastRemoteObject.exportObject(virtualView, 0);
-                virtualView.setPingPongStub(pingPong);
-                pingPong.setPingPongStub(virtualViewStub);
+                HeartBeatInterface virtualViewStub = (HeartBeatInterface) UnicastRemoteObject.exportObject(virtualView, 0);
+                virtualView.setHeartBeatStub(pingPong);
+                pingPong.setHeartBeatStub(virtualViewStub);
                 controller.setControllerStub(controllerOnServerStub);
-                pingPong.pingPong();
-                virtualView.pingPong();
+                pingPong.heartBeat();
+                virtualView.heartBeat();
                 virtualView.log(LogsOnClient.CONNECTION_SUCCESS);
                 virtualView.transitionTo(ViewState.LOGIN_FORM);
             }catch (Exception e){
@@ -68,7 +75,7 @@ public class ConnectionServerRMI implements ConnectionLayerServer {
         });
 
         try {
-            connect.get(secondsTimeOut, TimeUnit.SECONDS);
+            connect.get(Configs.secondsTimeOut, TimeUnit.SECONDS);
         }catch (InterruptedException ignored){
         } catch (Exception e) {
             e.printStackTrace();

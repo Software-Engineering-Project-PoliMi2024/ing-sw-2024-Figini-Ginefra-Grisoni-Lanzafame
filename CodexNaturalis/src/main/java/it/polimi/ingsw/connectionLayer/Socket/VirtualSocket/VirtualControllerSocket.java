@@ -1,6 +1,6 @@
 package it.polimi.ingsw.connectionLayer.Socket.VirtualSocket;
 
-import it.polimi.ingsw.connectionLayer.PingPongInterface;
+import it.polimi.ingsw.connectionLayer.HeartBeatInterface;
 import it.polimi.ingsw.connectionLayer.Socket.ClientMsg.*;
 import it.polimi.ingsw.connectionLayer.Socket.ServerHandler;
 import it.polimi.ingsw.connectionLayer.VirtualLayer.VirtualController;
@@ -20,7 +20,6 @@ import it.polimi.ingsw.view.ViewState;
 
 import java.io.IOException;
 import java.net.Socket;
-import java.rmi.RemoteException;
 
 /**
  * This class runs on the client, and it represents the controller on the Client.
@@ -71,7 +70,7 @@ public class VirtualControllerSocket implements VirtualController {
     }
 
     @Override
-    public void pingPong(){
+    public void heartBeat(){
 
     }
 
@@ -81,7 +80,7 @@ public class VirtualControllerSocket implements VirtualController {
     }
 
     @Override
-    public void setPingPongStub(PingPongInterface pingPongStub){
+    public void setHeartBeatStub(HeartBeatInterface heartBeatStub){
 
     }
 

@@ -20,31 +20,54 @@ import javafx.util.Duration;
 
 import java.util.function.Consumer;
 
+/**
+ * This class represents the GUI version of a card.
+ */
 public class CardGUI {
+    /** The target card */
     private LightCard target;
+
+    /** The face of the card */
     protected CardFace face;
+
+    /** The image view of the card */
     private final ImageView imageView = new ImageView();
 
+    /** The consumer of the tap event */
     private Consumer<MouseEvent> onTap = null;
+
+    /** The consumer triggered when the hold is detected */
     private Consumer<MouseEvent> onHold = null;
 
+    /** The consumer triggered when the hold is released */
     private Consumer<MouseEvent> onHoldRelease = null;
 
+    /** The hold timer */
     private Timeline holdTimer = null;
 
+    /** The hold detected flag */
     private boolean holdDetected = false;
 
+    /** The last event. Useful to detect the hold */
     private MouseEvent lastEvent = null;
 
+    /** The animation played between the mouse click and the hold detection */
     private final Timeline holdingAnimation = new Timeline();
 
+    /** The animation placed when the card is added to a container */
     protected final Timeline addingAnimation = new Timeline();
 
+    /** The animation placed when the card is removed from a container */
     protected final Timeline removingAnimation = new Timeline();
 
+    /** The scale of the card */
     private double scale = 1;
 
-
+    /**
+     * Creates a new CardGUI. It setups the image view, the clip, the hold timer, the functions to interact with the user, the holding animation, the adding animation and the removing animation.
+     * @param target the target card
+     * @param face the face of the card
+     */
     public CardGUI(LightCard target, CardFace face) {
         Rectangle clip = new Rectangle(GUIConfigs.cardWidth, GUIConfigs.cardHeight);
         clip.setArcWidth(GUIConfigs.cardBorderRadius); // Set the horizontal radius of the arc
@@ -130,14 +153,26 @@ public class CardGUI {
 
     }
 
+    /**
+     * Creates a new CardGUI by copying another CardGUI.
+     * @param other the other CardGUI
+     */
     public CardGUI(CardGUI other){
         this(other.target, other.face);
+        scale = other.scale;
     }
 
+    /**
+     * Creates a new CardGUI by only setting the back of the card.
+     * @param back the back of the card
+     */
     public CardGUI(LightBack back){
         this(new LightCard(0, back.idBack()), CardFace.BACK);
     }
 
+    /**
+     * Updates the image view of the card based on the target and the face.
+     */
     public void update(){
         if(target == null) {
             imageView.setImage(null);
@@ -153,6 +188,9 @@ public class CardGUI {
 
     }
 
+    /**
+     * Plays the adding animation.
+     */
     public void playAddingAnimation(){
         addingAnimation.getKeyFrames().set(2,
                 new KeyFrame(Duration.millis(GUIConfigs.cardAddRemAnimationDuration), AnimationStuff.createScaleXKeyValue(imageView, this.scale)));
@@ -161,26 +199,28 @@ public class CardGUI {
         addingAnimation.play();
     }
 
+    /**
+     * Sets the target of the card and updates the image view accordingly.
+     * @param target the target card
+     */
     public void setTarget(LightCard target) {
         this.target = target;
         this.update();
     }
 
+    /**
+     * Sets the target of the card by only setting the back of the card.
+     * @param back the back of the card
+     */
     public void setTarget(LightBack back) {
         this.target = new LightCard(0, back.idBack());
         this.update();
     }
 
-    public void runWithAddingAnimation(Runnable runnable){
-        this.playAddingAnimation();
-        runnable.run();
-    }
-
-    public void runWithRemovingAnimation(Runnable runnable){
-        removingAnimation.play();
-        removingAnimation.setOnFinished(e -> runnable.run());
-    }
-
+    /**
+     * Runs the given runnable after the removing animation is played and then plays the adding animation.
+     * @param runnable the runnable to run
+     */
     public void runBetweenRemovingAndAddingAnimation(Runnable runnable){
         removingAnimation.play();
         removingAnimation.setOnFinished(e -> {
@@ -189,24 +229,36 @@ public class CardGUI {
         });
     }
 
-    public void setPosition(double x, double y) {
-        imageView.setX(x);
-        imageView.setY(y);
-    }
-
+    /**
+     * Sets the translation of the card.
+     * @param x the x translation
+     * @param y the y translation
+     */
     public void setTranslation(double x, double y) {
         this.imageView.setTranslateX(x);
         this.imageView.setTranslateY(y);
     }
 
+    /**
+     * Gets the image view of the card.
+     * @return the image view of the card
+     */
     public ImageView getImageView() {
         return imageView;
     }
 
+    /**
+     * Gets the target of the card.
+     * @return the target of the card
+     */
     public LightCard getTarget() {
         return target;
     }
 
+    /**
+     * Sets the scale of the card. It also updates the scale of the image view and the adding animation accordingly.
+     * @param scale the scale of the card
+     */
     public void setScale(double scale){
         this.scale = scale;
         imageView.setScaleX(scale);
@@ -219,6 +271,9 @@ public class CardGUI {
                 new KeyFrame(Duration.millis(GUIConfigs.cardAddRemAnimationDuration), AnimationStuff.createScaleYKeyValue(imageView, this.scale)));
     }
 
+    /**
+     * Updates the scale of the image view and the adding animation according to the current scale.
+     */
     public void setScale(){
         imageView.setScaleX(this.scale);
         imageView.setScaleY(this.scale);
@@ -230,9 +285,19 @@ public class CardGUI {
                 new KeyFrame(Duration.millis(GUIConfigs.cardAddRemAnimationDuration), AnimationStuff.createScaleYKeyValue(imageView, this.scale)));
     }
 
+    /**
+     * Gets the face of the card.
+     * @return the face of the card
+     */
     public CardFace getFace() {
         return face;
     }
+
+    /**
+     * Sets the scale of the card and updates the translation of the card accordingly.
+     * @param scale the scale
+     * @param center the center of the scaling
+     */
     public void setScaleAndUpdateTranslation(double scale, Point2D center){
         imageView.setTranslateX((imageView.getTranslateX() - center.getX()) * scale / imageView.getScaleX() + center.getX());
         imageView.setTranslateY((imageView.getTranslateY() - center.getY()) * scale / imageView.getScaleY() + center.getY());
@@ -240,18 +305,33 @@ public class CardGUI {
         this.setScale(scale);
     }
 
+    /**
+     * Set the consumer triggered when the tap is detected.
+     * @param onTap the consumer of the tap event
+     */
     public void setOnTap(Consumer<MouseEvent> onTap) {
         this.onTap = onTap;
     }
 
+    /**
+     * Set the consumer triggered when the hold is detected.
+     * @param onHold the consumer of the hold event
+     */
     public void setOnHold(Consumer<MouseEvent> onHold) {
         this.onHold = onHold;
     }
 
+    /**
+     * Set the consumer triggered when the hold is released.
+     * @param onHoldRelease the consumer of the hold release event
+     */
     public void setOnHoldRelease(Consumer<MouseEvent> onHoldRelease) {
         this.onHoldRelease = onHoldRelease;
     }
 
+    /**
+     * Disables the card. The card is not clickable and its opacity is set to 0.5.
+     */
     public void disable(){
         imageView.setDisable(true);
 
@@ -259,6 +339,9 @@ public class CardGUI {
         imageView.setOpacity(0.8);
     }
 
+    /**
+     * Enables the card. The card is clickable and its opacity is set to 1.
+     */
     public void enable(){
         imageView.setDisable(false);
 
@@ -266,42 +349,30 @@ public class CardGUI {
         imageView.setOpacity(1);
     }
 
+    /**
+     * Adds the card to the given parent and plays the adding animation.
+     * @param parent the parent to add the card to
+     */
     public void addThisTo(Pane parent){
         parent.getChildren().add(imageView);
         this.playAddingAnimation();
     }
 
+    /**
+     * Adds the card to the given parent at the given index and plays the adding animation.
+     * @param parent the parent to add the card to
+     * @param index the index to add the card at
+     */
     public void addThisTo(Pane parent, int index){
         parent.getChildren().add(index, imageView);
         this.playAddingAnimation();
     }
 
-    public void addThisBy(Consumer<CardGUI> parentAdder){
-        parentAdder.accept(this);
-        this.playAddingAnimation();
-    }
-
-    public void removeThisFrom(Pane parent){
-        this.removingAnimation.play();
-        this.removingAnimation.setOnFinished(e -> {
-            parent.getChildren().remove(imageView);
-        });
-    }
-
-    public void removeThisFrom(Pane parent, int index){
-        this.removingAnimation.play();
-        this.removingAnimation.setOnFinished(e -> {
-            parent.getChildren().remove(index);
-        });
-    }
-
-    public void removeThisBy(Consumer<CardGUI> parentRemover){
-        this.removingAnimation.play();
-        this.removingAnimation.setOnFinished(e -> {
-            parentRemover.accept(this);
-        });
-    }
-
+    /**
+     * Returns whether the card is equal to another card by comparing the target.
+     * @param other the other card
+     * @return whether the card is equal to the other card
+     */
     public boolean equals(CardGUI other){
         if (other == null)
             return false;

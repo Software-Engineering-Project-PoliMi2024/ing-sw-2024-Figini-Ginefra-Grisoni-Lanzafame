@@ -8,9 +8,6 @@ import it.polimi.ingsw.view.TUI.Styles.PromptStyle;
 import it.polimi.ingsw.view.TUI.cardDrawing.CardMuseum;
 import it.polimi.ingsw.view.TUI.inputs.CommandPrompt;
 import it.polimi.ingsw.view.TUI.inputs.CommandPromptResult;
-
-import java.rmi.RemoteException;
-
 /**
  * This class is a Renderable that can render the codex of players who are not the main player.
  */
@@ -18,6 +15,7 @@ public class CodexRenderableOthers extends CodexRenderable{
     /** The nickname of the player whose codex is being rendered. */
     private String targetPlayer = null;
 
+    /** The view to interact with. */
     private final ActualView view;
 
     /**
@@ -50,7 +48,7 @@ public class CodexRenderableOthers extends CodexRenderable{
     }
 
     /**
-     * Draws the codex.
+     * Draws the codex by calling the rendering of the parent class.
      */
     @Override
     public void render(){

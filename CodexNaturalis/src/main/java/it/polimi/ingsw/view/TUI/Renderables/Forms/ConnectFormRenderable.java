@@ -13,6 +13,7 @@ import it.polimi.ingsw.view.TUI.inputs.CommandPromptResult;
  * This class is a Renderable that represents a connect form.
  */
 public class ConnectFormRenderable extends FormRenderable {
+    /** The view reference that will be sent to the model. */
     private final ActualView view;
 
     /**
@@ -47,6 +48,9 @@ public class ConnectFormRenderable extends FormRenderable {
         }
     }
 
+    /**
+     * Set the renderable as active. In this case it also prints the title.
+     */
     @Override
     public void setActive(boolean active) {
         super.setActive(active);

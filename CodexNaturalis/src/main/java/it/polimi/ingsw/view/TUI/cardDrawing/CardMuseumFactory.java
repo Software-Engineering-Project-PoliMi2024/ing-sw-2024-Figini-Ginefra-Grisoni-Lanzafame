@@ -30,13 +30,14 @@ public class CardMuseumFactory {
 
     /** The folder path where the json file is stored. */
     private final String inFolderResourcePath;
-    private final String outFolderPath;
     /** The name of the binary file. */
+    private final String outFolderPath;
+    /** the name of the bin file containing the TUI render of the card using emojis*/
     public static final String fileName = Configs.CardMuseumFileName;
 
     /**
      * Creates a new CardMuseumFactory.
-     * @param inFolderResourcePath The folder path where the binary file is stored in the resources folder.
+     * @param inFolderResourcePath The folder path where the binary file is stored in the resources' folder.
      * @param outFolderPath The folder path where the binary file will be saved.
      */
     public CardMuseumFactory(String inFolderResourcePath, String outFolderPath) {
@@ -46,7 +47,7 @@ public class CardMuseumFactory {
     }
 
     /**
-     * Creates a new CardMuseumFactory.
+     * Creates a new CardMuseumFactory with the possibility to force the reloading.
      * @param inFolderResourcePath The folder path where the binary file is stored.
      * @param outFolderPath The folder path where the binary file will be saved.
      * @param forceReload True if the CardMuseum must be reloaded from the json file.
@@ -87,7 +88,8 @@ public class CardMuseumFactory {
         if(museum == null)
             throw new IOException("CardMuseum is null");
 
-        System.out.println("CardMuseum loaded of length: " + museum.getSize());
+        if(Configs.debugMode)
+            System.out.println("CardMuseum loaded of length: " + museum.getSize());
         return museum;
     }
 
@@ -106,7 +108,8 @@ public class CardMuseumFactory {
             return loadMuseum();
 
         } catch (IOException | ClassNotFoundException e) {
-            System.out.println("CardMuseum not found, creating a new one...");
+            if(Configs.debugMode)
+                System.out.println("CardMuseum not found, creating a new one...");
             // If the CardMuseum cannot be loaded, create a new CardMuseum
 
             String sourceFileName = Configs.CardJSONFileName;
@@ -116,34 +119,41 @@ public class CardMuseumFactory {
             Queue<ResourceCard> resourceCards = new ResourceCardFactory(inFolderResourcePath + sourceFileName, outFolderPath).getCards(Configs.resourceCardBinFileName);
             resourceCards.forEach(card -> cardMuseum.set(card.getIdFront(), CardPainter.drawResourceCard(card)));
 
-            System.out.println("Resource cards loaded: " + resourceCards.size());
+            if(Configs.debugMode)
+                System.out.println("Resource cards loaded: " + resourceCards.size());
 
             Queue<GoldCard> goldCards = new GoldCardFactory(inFolderResourcePath +sourceFileName, outFolderPath).getCards(Configs.goldCardBinFileName);
             goldCards.forEach(card -> cardMuseum.set(card.getIdFront(), CardPainter.drawGoldCard(card)));
 
-            System.out.println("Gold cards loaded: " + goldCards.size());
+            if(Configs.debugMode)
+                System.out.println("Gold cards loaded: " + goldCards.size());
 
             Queue<StartCard> startCards = new StartCardFactory(inFolderResourcePath +sourceFileName, outFolderPath).getCards(Configs.startCardBinFileName);
             startCards.forEach(card -> cardMuseum.set(card.getIdFront(), CardPainter.drawStartCard(card)));
 
-            System.out.println("Start cards loaded: " + startCards.size());
+            if(Configs.debugMode)
+                System.out.println("Start cards loaded: " + startCards.size());
 
             ObjectiveCardFactory objectiveCardFactory = new ObjectiveCardFactory(inFolderResourcePath +sourceFileName, outFolderPath);
 
             Queue<Pair<ObjectiveCard, CollectableCardPointMultiplier>> objectiveCardsWithCollectableMultiplier = objectiveCardFactory.getCardsWithCollectableMultiplier();
             objectiveCardsWithCollectableMultiplier.forEach(pair -> cardMuseum.set(pair.first().getIdFront(), CardPainter.drawObjectiveCardCollectableMultiplier(pair.first(), pair.second())));
-            System.out.println("Objective cards with collectable multiplier loaded: " + objectiveCardsWithCollectableMultiplier.size());
+            if(Configs.debugMode)
+                System.out.println("Objective cards with collectable multiplier loaded: " + objectiveCardsWithCollectableMultiplier.size());
 
             Queue<Pair<ObjectiveCard, LCardPointMultiplier>> objectiveCardsWithLMultiplier = objectiveCardFactory.getCardsWithLMultiplier();
             objectiveCardsWithLMultiplier.forEach(pair -> cardMuseum.set(pair.first().getIdFront(), CardPainter.drawObjectiveCardLMultiplier(pair.first(), pair.second())));
-            System.out.println("Objective cards with L multiplier loaded: " + objectiveCardsWithLMultiplier.size());
+            if(Configs.debugMode)
+                System.out.println("Objective cards with L multiplier loaded: " + objectiveCardsWithLMultiplier.size());
 
             Queue<Pair<ObjectiveCard, DiagonalCardPointMultiplier>> objectiveCardsWithDiagonalMultiplier = objectiveCardFactory.getCardsWithDiagonalMultiplier();
             objectiveCardsWithDiagonalMultiplier.forEach(pair -> cardMuseum.set(pair.first().getIdFront(), CardPainter.drawObjectiveCardDiagonalMultiplier(pair.first(), pair.second())));
-            System.out.println("Objective cards with diagonal multiplier loaded: " + objectiveCardsWithDiagonalMultiplier.size());
+            if(Configs.debugMode)
+                System.out.println("Objective cards with diagonal multiplier loaded: " + objectiveCardsWithDiagonalMultiplier.size());
 
 
-            System.out.println("CardMuseumFactory created of length: " + cardMuseum.getSize());
+            if(Configs.debugMode)
+                System.out.println("CardMuseumFactory created of length: " + cardMuseum.getSize());
 
             Set<Integer> backsIds = new HashSet<>();
             for(ResourceCard card : resourceCards){

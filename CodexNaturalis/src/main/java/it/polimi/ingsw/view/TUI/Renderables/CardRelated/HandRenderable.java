@@ -7,13 +7,11 @@ import it.polimi.ingsw.view.ControllerProvider;
 import it.polimi.ingsw.view.TUI.Printing.Printable;
 import it.polimi.ingsw.view.TUI.Printing.Printer;
 import it.polimi.ingsw.view.TUI.Renderables.CodexRelated.CanvasRenderable;
-import it.polimi.ingsw.view.TUI.Renderables.drawables.Drawable;
 import it.polimi.ingsw.view.TUI.Styles.CardTextStyle;
 import it.polimi.ingsw.view.TUI.Styles.DecoratedString;
 import it.polimi.ingsw.view.TUI.Styles.PromptStyle;
 import it.polimi.ingsw.view.TUI.Styles.StringStyle;
 import it.polimi.ingsw.view.TUI.cardDrawing.CardMuseum;
-import it.polimi.ingsw.view.TUI.cardDrawing.TextCard;
 import it.polimi.ingsw.view.TUI.inputs.CommandPrompt;
 import it.polimi.ingsw.view.TUI.inputs.CommandPromptResult;
 
@@ -41,14 +39,8 @@ public class HandRenderable extends CanvasRenderable {
         this.lightGame = game;
     }
 
-    private void renderCard(LightCard card){
-        TextCard textCard = museum.get(card.idFront());
-        Drawable drawable = textCard.get(CardFace.FRONT);
-        Printer.print(drawable.toString());
-    }
-
     /**
-     * Renders the hand of the main player.
+     * Renders the hand of the main player fetching the cards from the light model.
      */
     @Override
     public void render() {
@@ -97,12 +89,8 @@ public class HandRenderable extends CanvasRenderable {
      * @param answer The command prompt result.
      */
     public void updateCommand(CommandPromptResult answer){
-        switch (answer.getCommand()) {
-            case CommandPrompt.DISPLAY_HAND:
-                this.render();
-                break;
-            default:
-                break;
+        if (answer.getCommand() == CommandPrompt.DISPLAY_HAND) {
+            this.render();
         }
     }
 }

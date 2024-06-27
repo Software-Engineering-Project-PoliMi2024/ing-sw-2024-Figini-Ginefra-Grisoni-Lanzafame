@@ -1,6 +1,5 @@
 package it.polimi.ingsw.view.TUI.Renderables;
 
-import it.polimi.ingsw.lightModel.LightModelConfig;
 import it.polimi.ingsw.lightModel.lightPlayerRelated.LightChat;
 import it.polimi.ingsw.lightModel.lightTableRelated.LightGame;
 import it.polimi.ingsw.model.playerReleted.ChatMessage;
@@ -15,10 +14,17 @@ import it.polimi.ingsw.view.TUI.inputs.CommandPrompt;
 import it.polimi.ingsw.view.TUI.inputs.CommandPromptResult;
 import java.util.List;
 
+/**
+ * This class is a Renderable that renders the chat.
+ */
 public class ChatRenderable extends Renderable {
+    /** The chat history that is the list of exchanged messages. */
     private List<ChatMessage> chatHistory;
+    /** The light game of the player. */
     private final LightGame lightGame;
+    /** The light chat of the player. */
     private final LightChat lightChat;
+    /** The view to interact with. */
     private final ActualView view;
 
     /**
@@ -145,6 +151,11 @@ public class ChatRenderable extends Renderable {
         }
     }
 
+    /**
+     * Return the color of the user based on the pawn color
+     * @param user the user to get the color of
+     * @return the color of the user
+     */
     private StringStyle getUserColor(String user){
         PawnColors pawn = lightGame.getLightGameParty().getPlayerColor(user);
         if(pawn == null){

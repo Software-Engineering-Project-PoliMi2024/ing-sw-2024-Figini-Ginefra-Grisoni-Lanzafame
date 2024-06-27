@@ -6,7 +6,7 @@ import it.polimi.ingsw.view.TUI.inputs.CommandPrompt;
 import it.polimi.ingsw.view.TUI.inputs.CommandPromptResult;
 
 /**
- * This class is a Renderable that represents a form. That is, a renderable that has nothing to render, it is just an holder for the right commands.
+ * This class is a Renderable that represents a form. That is, a renderable that has nothing to render. It is just a holder for the right commands.
  */
 public class FormRenderable extends Renderable {
     /**
@@ -24,7 +24,6 @@ public class FormRenderable extends Renderable {
      * Renders the form. In this case it does nothing.
      */
     public void render(){
-        return;
     }
 
 
@@ -33,7 +32,7 @@ public class FormRenderable extends Renderable {
      * @param command The command prompt result.
      */
     public void updateCommand(CommandPromptResult command){
-        return;
+
     }
 
 }

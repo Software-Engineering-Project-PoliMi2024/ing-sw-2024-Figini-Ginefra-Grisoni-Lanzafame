@@ -8,6 +8,7 @@ import it.polimi.ingsw.view.TUI.inputs.CommandPrompt;
  * This class is the abstract class for all the renderables that are related to the game.
  */
 public abstract class LightGameRenderable extends Renderable{
+    /** The lightGame to render. */
     private final LightGame lightGame;
 
     /**
