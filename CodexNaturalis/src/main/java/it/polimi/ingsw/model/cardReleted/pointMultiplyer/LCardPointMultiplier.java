@@ -10,9 +10,15 @@ import it.polimi.ingsw.model.playerReleted.Position;
 import java.util.HashSet;
 import java.util.Set;
 
+/**
+ * This class is a multiplier for the points of the cards that are placed in an L shape.
+ */
 public class LCardPointMultiplier implements ObjectiveCardPointMultiplier {
+    /** the orientation of the L determined by the position of the corner*/
     final private CardCorner corner;
+    /** the color of the single card*/
     final private Resource singleResource;
+    /*+ the color of the two cards*/
     final private Resource doubleResource;
 
     /**@param corner the corner of the L
@@ -61,18 +67,22 @@ public class LCardPointMultiplier implements ObjectiveCardPointMultiplier {
         return multiplier;
     }
 
+    /** @return the position of corner of the L*/
     public CardCorner corner() {
         return corner;
     }
+
+    /** @return the color of the single card*/
     public Resource singleResource() {
         return singleResource;
     }
 
+    /** @return the color of the two cards*/
     public  Resource doubleResource(){
         return doubleResource;
     }
 
-
+    /** @return a copy of the multiplier*/
     public ObjectiveCardPointMultiplier getCopy(){
         return new LCardPointMultiplier(this);
     }

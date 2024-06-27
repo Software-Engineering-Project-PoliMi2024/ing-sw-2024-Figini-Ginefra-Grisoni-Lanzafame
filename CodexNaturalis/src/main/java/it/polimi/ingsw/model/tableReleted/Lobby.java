@@ -1,13 +1,18 @@
 package it.polimi.ingsw.model.tableReleted;
 
-import it.polimi.ingsw.view.ViewInterface;
-
 import java.io.Serializable;
 import java.util.*;
 
+/**
+ * This class is used to represent a lobby in the game.
+ * A lobby is a group of players that are waiting to start a game.
+ */
 public class Lobby implements Serializable {
+    /** the name of the lobby */
     private final String lobbyName;
+    /** the list of players in the lobby */
     final private List<String> lobbyPlayerList;
+    /** the number of max player that can join the lobby, when is reached the game can start */
     private final int numberOfMaxPlayer;
 
     /**
@@ -23,6 +28,10 @@ public class Lobby implements Serializable {
         this.lobbyName = lobbyName;
     }
 
+    /**
+     * Copy constructor
+     * @param other the lobby to copy
+     */
     public Lobby(Lobby other){
         this.numberOfMaxPlayer = other.numberOfMaxPlayer;
         this.lobbyPlayerList = new ArrayList<>(other.lobbyPlayerList);

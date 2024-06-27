@@ -1,4 +1,4 @@
-package it.polimi.ingsw.model.cardReleted.cardFactories;
+package it.polimi.ingsw.utils.cardFactories;
 
 import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;
@@ -153,6 +153,11 @@ public class ObjectiveCardFactory extends AbstractCardFactory<ObjectiveCard>{
         return deckBuilder;
     }
 
+    /**
+     * Retrieves the CollectableCardPointMultiplier from the card
+     * @param card that is being build
+     * @return the CollectableCardPointMultiplier of the card
+     */
     private CollectableCardPointMultiplier getCollectableMultiplier(JsonObject card){
         if(!card.has("multiplierCollectable")){
             return null;

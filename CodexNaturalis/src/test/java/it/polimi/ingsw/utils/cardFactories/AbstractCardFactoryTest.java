@@ -1,10 +1,17 @@
-package it.polimi.ingsw.model.cardReleted.cardFactories;
+package it.polimi.ingsw.utils.cardFactories;
 
+import com.google.gson.Gson;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
 import it.polimi.ingsw.Configs;
 import it.polimi.ingsw.model.cardReleted.cards.GoldCard;
+import it.polimi.ingsw.utils.cardFactories.AbstractCardFactory;
+import it.polimi.ingsw.utils.cardFactories.GoldCardFactory;
 import org.junit.Test;
+
+import java.io.FileNotFoundException;
+import java.io.InputStream;
+
 import static org.junit.Assert.*;
 
 public class AbstractCardFactoryTest {

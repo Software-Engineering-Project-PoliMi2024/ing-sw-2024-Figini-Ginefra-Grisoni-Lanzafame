@@ -10,7 +10,6 @@ import it.polimi.ingsw.view.TUI.Styles.StringStyle;
 import it.polimi.ingsw.view.TUI.inputs.CommandPrompt;
 import it.polimi.ingsw.view.TUI.inputs.CommandPromptResult;
 
-import java.time.format.TextStyle;
 import java.util.Map;
 import java.util.stream.Collectors;
 
@@ -47,7 +46,7 @@ public class LeaderboardRenderable extends Renderable {
 
             String content = decoratedNickname + " - " + scores.get(nickname)  + " " + pawnString;
 
-            Boolean isActive = lightGame.getLightGameParty().getPlayerActiveList().get(nickname);
+            Boolean isActive = lightGame.getLightGameParty().getPlayerActiveMap().get(nickname);
             if(isActive != null && !isActive)
                 content = new DecoratedString(content, StringStyle.STRIKETHROUGH).toString();
 

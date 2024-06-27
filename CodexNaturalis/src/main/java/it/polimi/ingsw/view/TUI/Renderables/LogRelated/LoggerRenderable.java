@@ -54,7 +54,7 @@ public class LoggerRenderable extends Renderable {
                 Thread.sleep(Configs.logDurationTUI_millis);
                 this.removeLog(log);
             } catch (InterruptedException e) {
-                e.printStackTrace();
+                Configs.printStackTrace(e);
             }
         });
         timer.start();

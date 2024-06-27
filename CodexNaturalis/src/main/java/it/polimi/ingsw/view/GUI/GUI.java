@@ -158,11 +158,6 @@ public class GUI extends Application implements ActualView {
     }
 
     @Override
-    public void setFinalRanking(List<String> ranking) throws RemoteException {
-            Platform.runLater(() -> transitionTo(StateGUI.GAME_ENDING));
-    }
-
-    @Override
     public void setController(ControllerInterface controller) {
         GUI.controller = controller;
     }

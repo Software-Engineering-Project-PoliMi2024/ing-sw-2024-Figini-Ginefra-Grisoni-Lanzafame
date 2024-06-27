@@ -51,7 +51,7 @@ public class PersistenceFactory {
                 fileOut.close();
                 logger.log(LoggerLevel.INFO, "Game: " + game.getName() + " saved successfully");
             } catch (IOException e) {
-                e.printStackTrace();
+                Configs.printStackTrace(e);
                 //I can't delete the new save if the stream is not closed
                 if (outStream != null) {
                     try {
@@ -87,7 +87,7 @@ public class PersistenceFactory {
      * when the method is done, the Future will contain the non-expired loaded games
      */
     public synchronized Future<HashSet<Game>> load() {
-        Future<HashSet<Game>> load = fileIOExecutor.submit(()-> {
+        return fileIOExecutor.submit(()-> {
             HashSet<Game> gameList = new HashSet<>();
             File dataFolder = new File(gameDataFolderPath);
 
@@ -113,8 +113,6 @@ public class PersistenceFactory {
             }
             return gameList;
         });
-
-        return load;
     }
 
     /**

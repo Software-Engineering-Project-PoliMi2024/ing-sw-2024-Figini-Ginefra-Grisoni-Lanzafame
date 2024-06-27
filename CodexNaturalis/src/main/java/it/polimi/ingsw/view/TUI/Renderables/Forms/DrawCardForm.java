@@ -1,5 +1,6 @@
 package it.polimi.ingsw.view.TUI.Renderables.Forms;
 
+import it.polimi.ingsw.Configs;
 import it.polimi.ingsw.model.cardReleted.utilityEnums.DrawableCard;
 import it.polimi.ingsw.view.ControllerProvider;
 import it.polimi.ingsw.view.TUI.inputs.CommandPrompt;
@@ -31,7 +32,7 @@ public class DrawCardForm extends FormRenderable{
                 int cardId = Integer.parseInt(answer.getAnswer(1));
                 view.getController().draw(deckId == 0 ? DrawableCard.GOLDCARD : DrawableCard.RESOURCECARD, cardId);
             }catch (Exception e){
-                e.printStackTrace();
+                Configs.printStackTrace(e);
             }
         }
     }

@@ -5,10 +5,16 @@ import it.polimi.ingsw.model.playerReleted.Position;
 
 import java.util.List;
 
+/**
+ * This class represents the frontier in the light model.
+ * The lightFrontier is a list of positions in which the player can place a card.
+ * @param frontier
+ */
 public record LightFrontier(List<Position> frontier) implements Differentiable {
     /**
-     * @param add the positions to add
-     * @param rmv the positions to remove
+     * Add and remove positions from the light frontier
+     * @param add a list of positions to add
+     * @param rmv a list of positions to remove
      */
     public void difFrontier(List<Position> add, List<Position> rmv) {
         this.frontier.removeAll(rmv);
@@ -16,6 +22,8 @@ public record LightFrontier(List<Position> frontier) implements Differentiable {
     }
 
     /**
+     * A constructor for the class.
+     * Create a new frontier copying the list of positions from the frontier passed as parameter
      * @param other the frontier to copy
      */
     public LightFrontier(LightFrontier other) {
@@ -23,20 +31,11 @@ public record LightFrontier(List<Position> frontier) implements Differentiable {
     }
 
     /**
-     * @return the frontier
+     * @return the frontier as a list of positions
      */
     @Override
     public List<Position> frontier() {
         return this.frontier;
-    }
-
-    /**
-     * Checks if a position is in the frontier
-     * @param position position to check
-     * @return true if the position is in the frontier, false otherwise
-     */
-    public boolean isInFrontier(Position position) {
-        return frontier.contains(position);
     }
 
     /**

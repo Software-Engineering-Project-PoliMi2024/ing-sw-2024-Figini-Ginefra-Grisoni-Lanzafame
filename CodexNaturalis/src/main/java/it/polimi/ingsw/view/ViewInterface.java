@@ -52,12 +52,4 @@ public interface ViewInterface extends Serializable, Remote {
      * @throws RemoteException if the connection between the server and the client fails
      */
     void updateGame(ModelDiffs<LightGame> diff) throws Exception;
-
-    /**
-     * Set the final ranking of the game
-     * @param ranking the ordered list of the final raking in decreasing order
-     *                depending on player points
-     * @throws RemoteException if the connection between the server and the client fails
-     */
-    void setFinalRanking(List<String> ranking) throws Exception;
 }

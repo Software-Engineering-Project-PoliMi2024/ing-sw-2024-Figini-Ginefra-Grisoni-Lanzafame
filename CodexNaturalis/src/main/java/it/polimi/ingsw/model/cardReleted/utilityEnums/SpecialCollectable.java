@@ -1,7 +1,6 @@
 package it.polimi.ingsw.model.cardReleted.utilityEnums;
 
-import it.polimi.ingsw.model.cardReleted.utilityEnums.Collectable;
-
+/** collectable to represent the empty corner in the carda */
 public enum SpecialCollectable implements Collectable {
     EMPTY
 }

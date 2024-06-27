@@ -14,7 +14,7 @@ public interface Observed {
     void detach(Observer observer);
 
     /**
-     * notify all the observers attached to the observed class
+     * notify all the observers attached to the observed class of a change
      */
     void notifyObservers();
 }

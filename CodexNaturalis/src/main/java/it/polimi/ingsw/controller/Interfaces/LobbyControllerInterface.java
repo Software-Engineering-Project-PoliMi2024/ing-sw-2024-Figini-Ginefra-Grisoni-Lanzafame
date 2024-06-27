@@ -5,6 +5,10 @@ import it.polimi.ingsw.controller.persistence.PersistenceFactory;
 import it.polimi.ingsw.model.cardReleted.cards.CardTable;
 import it.polimi.ingsw.view.ViewInterface;
 
+/**
+ * Interface that defines the methods that a lobby controller should implement
+ * in order to manage the addition and removal players in the lobby and start the game
+ */
 public interface LobbyControllerInterface {
     /**
      * Add a player to the lobby

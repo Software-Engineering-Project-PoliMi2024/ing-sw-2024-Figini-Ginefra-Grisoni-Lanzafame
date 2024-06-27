@@ -1,5 +1,9 @@
 package it.polimi.ingsw.controller.Interfaces;
 
+/**
+ * MalevolentPlayerManager is an interface that defines the method to manage a malevolent player
+ * when it is detected to perform some not allowed actions
+ */
 public interface MalevolentPlayerManager {
     /**
      * This method is used to manage a malevolent player when it is

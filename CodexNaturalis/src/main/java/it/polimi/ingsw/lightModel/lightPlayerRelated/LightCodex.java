@@ -11,13 +11,22 @@ import it.polimi.ingsw.model.playerReleted.Position;
 
 import java.util.*;
 
-//a
+/**
+ * This class represents the codex in the light model.
+ * It contains the points, the collectables, the frontier and the placement history of the player who owns it.
+ */
 public class LightCodex implements Differentiable, Observed{
+    /** The list of all the observers of the codex */
     private final List<Observer> observers = new LinkedList<>();
+    /** The number of points "placed" in the codex via the goldCard or resources card. */
     private int points;
+    /** The collectables that the player has placed */
     private Map<Collectable, Integer> collectables;
+    /** The history of each placement on this codex. Each placement is associated with a position. */
     private final Map<Position, LightPlacement> placementHistory;
+    /** The frontier of the codex */
     private LightFrontier frontier;
+
     /** Constructor of the light codex class
      * initializes the points to 0
      * initializes the collectables to 0 for each collectable
@@ -71,6 +80,8 @@ public class LightCodex implements Differentiable, Observed{
         return new ArrayList<>(this.placementHistory.values());
     }
     /**
+     * For each LightPlacement in placementDiff, add it to the placement history
+     * At the end of the update, notify the observers
      * @param placementDiff the placements to be added to the placement history
      */
     public void addPlacement(List<LightPlacement> placementDiff){
@@ -82,36 +93,28 @@ public class LightCodex implements Differentiable, Observed{
     }
 
     /**
-     * @param addFrontier the frontier changes to be added to the related codex
-     * @param rmvFrontier the frontier changes to be removed from the related codex
+     * Set the new points of the codex and notify the observers
+     * @param points the new value of the points
      */
-    public void difFrontier(List<Position> addFrontier, List<Position> rmvFrontier){
-        new FrontierDiff(addFrontier, rmvFrontier).apply(this.frontier);
+    public void setPoints(int points) {
+        this.points = points;
+        this.notifyObservers();
     }
 
     /**
-     * @param addCollectables the change in collectables to be added to the related codex
-     * @param removeCollectables the change in collectables to be removed from the related codex
+     * Set the new frontier of the codex and notify the observers
+     * @param frontier the new frontier to be added
      */
-    public void difCollectables(Map<Collectable,Integer> addCollectables, Map<Collectable,Integer> removeCollectables) {
-        for (Collectable c : addCollectables.keySet())
-            this.collectables.put(c, this.collectables.get(c) + addCollectables.get(c));
-        for (Collectable c : removeCollectables.keySet())
-            this.collectables.put(c, this.collectables.get(c) - removeCollectables.get(c));
-    }
-
-    public void setPoints(int points) {
-
-        this.points = points;
-        this.notifyObservers();
-
-    }
-
     public void setFrontier(LightFrontier frontier) {
         this.frontier = new LightFrontier(frontier);
         this.notifyObservers();
     }
 
+    /**
+     * Update the collectable map with the new value for each collectable.
+     * At the end of the update, notify the observers
+     * @param collectables the map containing the updated value for the collectables
+     */
     public void setCollectables(Map<Collectable, Integer> collectables) {
         this.collectables = new HashMap<>(collectables);
         this.notifyObservers();

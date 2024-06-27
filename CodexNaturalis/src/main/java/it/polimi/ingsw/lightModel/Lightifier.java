@@ -11,10 +11,14 @@ import it.polimi.ingsw.model.tableReleted.Lobby;
 import java.io.Serializable;
 import java.util.*;
 
+/**
+ * This class is used to convert Object present in the Model to the corresponding LightObject present in the LightModel
+ * so that a client can only have the information it needs to display the game
+ */
 public class Lightifier implements Serializable {
     /**
      * @param lobby which will be lightened
-     * @return a LightLobby containing the PlayerList and the name of the lobby
+     * @return a LightLobby containing the PlayerList, the name and the max number of player
      */
     public static LightLobby lightify(Lobby lobby) {
         return new LightLobby(lobby.getLobbyPlayerList(), lobby.getLobbyName(), lobby.getNumberOfMaxPlayer());
@@ -35,7 +39,7 @@ public class Lightifier implements Serializable {
 
     /**
      * @param codex which will be lightened
-     * @return a LightCodex containing points, collectable, a lightFrontier and a list of LightPlacement,
+     * @return a LightCodex containing points, collectable, a lightFrontier and a map of LightPlacement,
      */
     public static LightCodex lightify(Codex codex){
         Map<Position, LightPlacement> lightPlacementMap = new HashMap<>();
@@ -47,7 +51,7 @@ public class Lightifier implements Serializable {
 
     /**
      * @param frontier which will be lightened
-     * @return a LighFrontier
+     * @return a LightFrontier containing only the frontier without all the other methods
      */
     public static LightFrontier lightify(Frontier frontier){
         return new LightFrontier(frontier.getFrontier());
@@ -55,7 +59,7 @@ public class Lightifier implements Serializable {
 
     /**
      * @param placement which will be lightened
-     * @return a LighPlacement
+     * @return a LighPlacement containing only the placement position, and a lightCard
      */
     public static LightPlacement lightify(Placement placement){
         return new LightPlacement(placement.position(), lightifyToCard(placement.card()), placement.face());
@@ -72,7 +76,7 @@ public class Lightifier implements Serializable {
     /**
      * @param codex from which get the playability
      * @param hand the hand which will be lightened
-     * @return a LighHand containing all the (light)CardInHand, the lightSecretObjective and each card playbility
+     * @return a LightHand containing all the (light)CardInHand, the lightSecretObjective and each card playability
      */
     public static LightHand lightifyYour(Hand hand, Codex codex){
         HashMap<LightCard, Boolean> cardPlayability = new HashMap<>();
@@ -105,6 +109,11 @@ public class Lightifier implements Serializable {
        return handOthers;
     }
 
+    /**
+     * Given a card, it returns a LightBack containing the idBack of that card
+     * @param card the card to be lightened
+     * @return a LightBack containing the idBack of the card
+     */
     public static LightBack lightifyToBack(Card card){
         return new LightBack(card.getIdBack());
     }

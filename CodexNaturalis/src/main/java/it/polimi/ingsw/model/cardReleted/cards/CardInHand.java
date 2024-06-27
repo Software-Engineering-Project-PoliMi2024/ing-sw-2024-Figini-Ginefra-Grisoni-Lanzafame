@@ -8,7 +8,11 @@ import java.util.Map;
 import java.util.Objects;
 import java.util.Set;
 
+/**
+ * This class is the abstract class for the cards that are in the hand of the player
+ */
 public abstract class CardInHand extends CardWithCorners {
+    /** the permanent resource of the card */
     private final Resource permanentResource;
 
     /**
@@ -81,6 +85,9 @@ public abstract class CardInHand extends CardWithCorners {
         return true;
     }
 
+    /**
+     * @return a copy of the card
+     */
     public abstract CardInHand copy();
 
     @Override

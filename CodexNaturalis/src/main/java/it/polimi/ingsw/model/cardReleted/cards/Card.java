@@ -4,13 +4,22 @@ import it.polimi.ingsw.model.playerReleted.Codex;
 
 import java.io.Serializable;
 
-
+/**
+ * this is the abstract class of all the cards
+ */
 public abstract class Card implements Serializable {
+    /** points given by the card */
     final private int points;
+    /** front id of the card */
     private final int idFront;
+    /** back id of the card */
     private final int idBack;
 
-    /** @param  points given by the card*/
+    /**
+     * @param  points given by the card
+     * @param  idFront front id of the card
+     * @param  idBack back id of the card
+     */
     public Card(int idFront, int idBack, int points){
         this.idFront = idFront;
         this.idBack = idBack;
@@ -36,6 +45,7 @@ public abstract class Card implements Serializable {
         return points;
     }
 
+    /** @return true if the object given is equals to this card */
     @Override
     public boolean equals(Object obj) {
         if (obj == null) return false;

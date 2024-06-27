@@ -1,7 +1,6 @@
 package it.polimi.ingsw.model.cardReleted.utilityEnums;
 
-import it.polimi.ingsw.model.cardReleted.utilityEnums.Collectable;
-
+/** type of resources of the cards */
 public enum Resource implements Collectable {
     PLANT,
     ANIMAL,

@@ -141,7 +141,7 @@ public class ChatButton implements Observer {
     private boolean isUpdateRemovePlayer(){
         boolean removed = false;
         for(String player : chatMembers.keySet()){
-            if(!GUI.getLightGame().getLightGameParty().getPlayerActiveList().containsKey(player)){
+            if(!GUI.getLightGame().getLightGameParty().getPlayerActiveMap().containsKey(player)){
                 removed = true;
                 break;
             }
@@ -154,7 +154,7 @@ public class ChatButton implements Observer {
      */
     private void removePlayer(){
         for(String player : chatMembers.keySet()){
-            if(!GUI.getLightGame().getLightGameParty().getPlayerActiveList().containsKey(player)){
+            if(!GUI.getLightGame().getLightGameParty().getPlayerActiveMap().containsKey(player)){
                 chatMembers.remove(player);
                 chatDisplay.removeReceiver(player);
                 break;
@@ -170,7 +170,7 @@ public class ChatButton implements Observer {
     private boolean isUpdateInactivePlayer(){
         boolean inactive = false;
         for(String player : chatMembers.keySet()){
-            if(!GUI.getLightGame().getLightGameParty().getPlayerActiveList().get(player) && chatMembers.get(player).second()){
+            if(!GUI.getLightGame().getLightGameParty().getPlayerActiveMap().get(player) && chatMembers.get(player).second()){
                 inactive = true;
                 break;
             }
@@ -183,7 +183,7 @@ public class ChatButton implements Observer {
      */
     private void inactivePlayer(){
         for(String player : chatMembers.keySet()){
-            if(!GUI.getLightGame().getLightGameParty().getPlayerActiveList().get(player) && chatMembers.get(player).second()){
+            if(!GUI.getLightGame().getLightGameParty().getPlayerActiveMap().get(player) && chatMembers.get(player).second()){
                 chatMembers.put(player, new Pair<>(GUI.getLightGame().getLightGameParty().getPlayerColor(player), false));
                 break;
             }
@@ -197,8 +197,8 @@ public class ChatButton implements Observer {
      */
     private boolean isUpdateActivePlayer(){
         boolean active = false;
-        for(String player : GUI.getLightGame().getLightGameParty().getPlayerActiveList().keySet()){
-            if(!chatMembers.containsKey(player) || GUI.getLightGame().getLightGameParty().getPlayerActiveList().get(player) && !chatMembers.get(player).second()){
+        for(String player : GUI.getLightGame().getLightGameParty().getPlayerActiveMap().keySet()){
+            if(!chatMembers.containsKey(player) || GUI.getLightGame().getLightGameParty().getPlayerActiveMap().get(player) && !chatMembers.get(player).second()){
                 active = true;
                 break;
             }
@@ -210,7 +210,7 @@ public class ChatButton implements Observer {
      * Activates the active players by removing the strike-through from their label.
      */
     private void activePlayer(){
-        for(String player : GUI.getLightGame().getLightGameParty().getPlayerActiveList().keySet()){
+        for(String player : GUI.getLightGame().getLightGameParty().getPlayerActiveMap().keySet()){
             if(player.equals(GUI.getLightGame().getLightGameParty().getYourName())){
                 if(!chatMembers.containsKey(GUI.getLightGame().getLightGameParty().getYourName())){
                     chatMembers.put(GUI.getLightGame().getLightGameParty().getYourName(), new Pair<>(GUI.getLightGame().getLightGameParty().getPlayerColor(GUI.getLightGame().getLightGameParty().getYourName()), true));

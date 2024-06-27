@@ -8,12 +8,20 @@ import java.util.*;
 import java.util.concurrent.locks.ReentrantLock;
 import java.util.stream.Collectors;
 
+/**
+ * This class is used to manage the players in the game
+ */
 public class GameParty implements Serializable {
+    /** the list of the players in the game */
     final private List<Player> playerList; //the player that were in the lobby pre game
+    /** the index of the current player */
     private int currentPlayerIndex;
+    /** the chat manager of the game */
     final private ChatManager chatManager;
+    /** the list of the pawn colors that are still available */
     private final List<PawnColors> pawnChoices;
 
+    /** the lock used to manage the currentPlayerIndex race conditions*/
     private final ReentrantLock currentPlayerLock = new ReentrantLock();
 
     /**
@@ -44,12 +52,14 @@ public class GameParty implements Serializable {
         }
     }
 
+    /** @return the list of the pawn colors that are still available */
     public List<PawnColors> getPawnChoices() {
         synchronized (pawnChoices) {
             return pawnChoices;
         }
     }
 
+    /** @param color the color of the pawn to remove from the list of available pawn colors */
     public void removeChoice(PawnColors color){
         synchronized (pawnChoices) {
             if (pawnChoices.contains(color)) {
@@ -60,6 +70,7 @@ public class GameParty implements Serializable {
         }
     }
 
+    /** @return a map containing the nickname of the players and their points */
     public Map<String, Integer> getPointPerPlayerMap(){
         Map<String, Integer> userPointsMap = new HashMap<>();
         synchronized (playerList) {
@@ -116,18 +127,21 @@ public class GameParty implements Serializable {
         }
     }
 
+    /** @return the index of the current player */
     public int getCurrentPlayerIndex() {
         synchronized (currentPlayerLock){
             return currentPlayerIndex;
         }
     }
 
+    /** @param currentPlayerIndex the index of the current player to set */
     public void setCurrentPlayerIndex(int currentPlayerIndex) {
         synchronized (currentPlayerLock){
             this.currentPlayerIndex = currentPlayerIndex;
         }
     }
 
+    /** @return the chat manager of the game */
     public ChatManager getChatManager() {
         return chatManager;
     }

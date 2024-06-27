@@ -12,6 +12,13 @@ import java.util.Set;
 public abstract class CardWithCorners extends Card {
     protected final Map<CardCorner, Collectable> frontCorners;
 
+    /**
+     * Constructor of the class
+     * @param idFront the id of the front of the card
+     * @param idBack the id of the back of the card
+     * @param points the points given by the card
+     * @param frontCorners what contains the front corners of the card
+     */
     public CardWithCorners(int idFront, int idBack, int points, Map<CardCorner, Collectable> frontCorners){
         super(idFront, idBack, points);
         this.frontCorners = frontCorners;
@@ -44,6 +51,7 @@ public abstract class CardWithCorners extends Card {
         return null;
     }
 
+    /** @return a copy of the frontCorners what contains the corners of the card*/
     public Map<CardCorner, Collectable> getFrontCorners(){
         return new HashMap<>(this.frontCorners);
     }

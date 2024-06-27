@@ -1,6 +1,6 @@
 package it.polimi.ingsw.connectionLayer.VirtualLayer;
 
-import it.polimi.ingsw.connectionLayer.PingPongInterface;
+import it.polimi.ingsw.connectionLayer.HeartBeatInterface;
 import it.polimi.ingsw.controller.Interfaces.ControllerInterface;
 import it.polimi.ingsw.lightModel.diffs.ModelDiffs;
 import it.polimi.ingsw.lightModel.lightTableRelated.LightGame;
@@ -12,14 +12,14 @@ import it.polimi.ingsw.view.ViewState;
 import java.rmi.RemoteException;
 import java.util.List;
 
-public interface VirtualView extends ViewInterface, PingPongInterface {
+public interface VirtualView extends ViewInterface, HeartBeatInterface {
     @Override
     void checkEmpty() throws RemoteException;
     @Override
-    void setPingPongStub(PingPongInterface pingPongStub) throws RemoteException;
+    void setHeartBeatStub(HeartBeatInterface heartBeatStub) throws RemoteException;
     void setController(ControllerInterface controller) throws RemoteException;
     @Override
-    public void pingPong() throws RemoteException;
+    public void heartBeat() throws RemoteException;
 
     @Override
     public void transitionTo(ViewState state) throws RemoteException;
@@ -38,7 +38,4 @@ public interface VirtualView extends ViewInterface, PingPongInterface {
 
     @Override
     public void updateGame(ModelDiffs<LightGame> diff) throws RemoteException;
-
-    @Override
-    public void setFinalRanking(List<String> ranking) throws RemoteException;
 }

@@ -10,14 +10,24 @@ import java.util.concurrent.locks.ReentrantLock;
 
 /**The class constructor*/
 public class Hand implements Serializable {
+    /** the secret objective chosen by the player*/
     private ObjectiveCard secretObjective;
+    /** the start card before placing it in the codex*/
     private StartCard startCard;
+    /** the secret objective options that the player can choose from*/
     private List<ObjectiveCard> secretObjectiveChoices;
+    /** actual hand of the player, the cards that the player can place in the codex*/
     final private Set<CardInHand> playableHand;
+    /** the lock for the start card*/
     final private ReentrantLock startCardLock = new ReentrantLock();
+    /** the lock for the secret objective choices*/
     final private ReentrantLock secretObjectiveChoicesLock = new ReentrantLock();
+    /** the lock for the secret objective*/
     final private ReentrantLock secretObjectiveLock = new ReentrantLock();
 
+    /**
+     * The constructor of the class, initialize the hand of the player to an empty set
+     */
     public Hand(){
         this.playableHand = new HashSet<>();
     }
@@ -82,6 +92,10 @@ public class Hand implements Serializable {
                 '}';
     }
 
+    /**
+     * Set the start card of the player
+     * @param startCard the start card that need to be set
+     */
     public void setStartCard(StartCard startCard) {
         startCardLock.lock();
         try{
@@ -91,6 +105,9 @@ public class Hand implements Serializable {
         }
     }
 
+    /**
+     * @return the start card of the player
+     */
     public StartCard getStartCard() {
         startCardLock.lock();
         try{
@@ -100,6 +117,10 @@ public class Hand implements Serializable {
         }
     }
 
+    /**
+     * Set the secret objective choices
+     * @param secretObjectiveChoices the secret objective choices that need to be set
+     */
     public void setSecretObjectiveChoice(List<ObjectiveCard> secretObjectiveChoices) {
         secretObjectiveChoicesLock.lock();
         try{
@@ -109,6 +130,9 @@ public class Hand implements Serializable {
         }
     }
 
+    /**
+     * @return the secret objective choices
+     */
     public List<ObjectiveCard> getSecretObjectiveChoices() {
         secretObjectiveChoicesLock.lock();
         try{
@@ -118,18 +142,9 @@ public class Hand implements Serializable {
         }
     }
 
-    public void addSecretObjectiveChoice(ObjectiveCard objectiveCard){
-        secretObjectiveChoicesLock.lock();
-        try{
-            if (secretObjectiveChoices == null) {
-                secretObjectiveChoices = new LinkedList<>();
-            }
-            secretObjectiveChoices.add(objectiveCard);
-        } finally {
-            secretObjectiveChoicesLock.unlock();
-        }
-    }
-
+    /**
+     * @return the number of cards in the hand
+     */
     public int getHandSize(){
         return playableHand.size();
     }

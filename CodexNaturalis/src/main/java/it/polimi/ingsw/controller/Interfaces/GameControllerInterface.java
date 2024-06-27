@@ -7,6 +7,10 @@ import it.polimi.ingsw.model.playerReleted.PawnColors;
 
 import java.io.Serializable;
 
+/**
+ * This interface is used to define the methods of the game controller used by the user
+ * to interact with and modify the game state
+ */
 public interface GameControllerInterface extends Serializable {
     /**
      * This method is used to choose the secret objective card by the player

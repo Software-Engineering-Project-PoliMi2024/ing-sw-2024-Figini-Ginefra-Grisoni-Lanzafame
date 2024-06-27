@@ -1,6 +1,6 @@
 package it.polimi.ingsw.connectionLayer.Socket.VirtualSocket;
 
-import it.polimi.ingsw.connectionLayer.PingPongInterface;
+import it.polimi.ingsw.connectionLayer.HeartBeatInterface;
 import it.polimi.ingsw.connectionLayer.Socket.ClientHandler;
 import it.polimi.ingsw.connectionLayer.Socket.ServerMsg.*;
 import it.polimi.ingsw.connectionLayer.VirtualLayer.VirtualView;
@@ -36,7 +36,7 @@ public class VirtualViewSocket implements VirtualView {
     }
 
     @Override
-    public void setPingPongStub(PingPongInterface pingPongStub) throws RemoteException {
+    public void setHeartBeatStub(HeartBeatInterface heartBeatStub) throws RemoteException {
 
     }
 
@@ -49,7 +49,7 @@ public class VirtualViewSocket implements VirtualView {
     }
 
     @Override
-    public void pingPong() throws RemoteException {
+    public void heartBeat() throws RemoteException {
 
     }
 
@@ -132,15 +132,6 @@ public class VirtualViewSocket implements VirtualView {
     @Override
     public void updateGame(ModelDiffs<LightGame> diff) throws RemoteException {
         clientHandler.sendServerMessage(new UpdateGameMsg(diff));
-    }
-
-    /**
-     * Send a setFinalRanking List to the client
-     * @param ranking list of the final ranking
-     */
-    @Override
-    public void setFinalRanking(List<String> ranking) throws RemoteException {
-        clientHandler.sendServerMessage(new SetFinalRankingMsg(ranking));
     }
 
     public ControllerInterface getController() {

@@ -3,7 +3,9 @@ package it.polimi.ingsw.model.cardReleted.cards;
 import it.polimi.ingsw.model.cardReleted.pointMultiplyer.ObjectiveCardPointMultiplier;
 import it.polimi.ingsw.model.playerReleted.Codex;
 
+/** this class represents an objective card */
 public class ObjectiveCard extends Card {
+    /** the multiplier of the points, how many times the points are multiplied depending on the codex */
     private final ObjectiveCardPointMultiplier multiplier;
 
     /** @param points given by the card

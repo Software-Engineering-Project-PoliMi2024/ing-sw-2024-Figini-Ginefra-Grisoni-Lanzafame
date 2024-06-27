@@ -9,6 +9,11 @@ import it.polimi.ingsw.model.playerReleted.PawnColors;
 import java.io.Serializable;
 import java.rmi.Remote;
 
+/**
+ * This interface is used to define the methods that the player can call
+ * to interact with the server and the game
+ * It extends the Remote and Serializable interface to be used in the RMI protocol
+ */
 public interface ControllerInterface extends Remote, Serializable {
     /**
      * This method is used to log In the player

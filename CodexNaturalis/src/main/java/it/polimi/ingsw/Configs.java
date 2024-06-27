@@ -20,8 +20,8 @@ public class Configs {
     public static int socketPort = 12345;
     /** seconds after which the connection is considered lost */
     public static int secondsTimeOut = 3;
-    /** the period between pingPong messages */
-    public static int pingPongPeriod = 3;
+    /** the period between heartBeat messages */
+    public static int heartBeatPeriod = 3;
     /** the period after which a winner is declared if there's only one player left */
     public static int lastInGameTimerSeconds = 30;
     /** the points needed to trigger the end game phase */
