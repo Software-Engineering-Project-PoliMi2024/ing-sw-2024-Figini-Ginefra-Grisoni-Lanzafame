@@ -44,8 +44,8 @@ You can find the server jar here: [`Server`](/deliverable/final/jar/CodexNatural
 Once you have downloaded the jar, you can run it with the following command:
 
 ```bash
-cd path/to/server.jar
-java -jar server.jar
+cd path/to/CodexNaturalisPSP49_Server.jar
+java -jar CodexNaturalisPSP49_Server.jar
 ```
 
 When the server is running you will see the `ip address` of the server, you will need it to connect the client.
@@ -58,8 +58,8 @@ You can find the client jar here: [`Client`](/deliverable/final/jar/CodexNatural
 Once you have downloaded the jar, you can run it with the following command:
 
 ```bash
-cd path/to/client.jar
-java -jar client.jar
+cd path/to/CodexNaturalisPSP49_Client.jar
+java -jar CodexNaturalisPSP49_Client.jar
 ```
 
 By running the client you will be asked to choose the type of interface you want to use, you can choose between `TUI` and `GUI`.
