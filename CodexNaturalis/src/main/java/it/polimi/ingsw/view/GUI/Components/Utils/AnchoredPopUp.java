@@ -1,31 +1,31 @@
 package it.polimi.ingsw.view.GUI.Components.Utils;
 
-import it.polimi.ingsw.view.GUI.Components.Utils.AnimationStuff;
 import javafx.animation.KeyFrame;
 import javafx.animation.KeyValue;
 import javafx.animation.Timeline;
 import javafx.beans.binding.Bindings;
-import javafx.beans.binding.DoubleBinding;
-import javafx.collections.ListChangeListener;
 import javafx.geometry.Pos;
-import javafx.scene.Node;
 import javafx.scene.layout.AnchorPane;
 import javafx.util.Duration;
 
+/**
+ * This class represents a popup that is anchored to a side of the parent.
+ * The popup will open and close with a slide animation when the mouse enters and exits the content.
+ */
 public class AnchoredPopUp {
+    /** The content of the popup */
     private final AnchorPane content = new AnchorPane();
+    /** The slide animation used to open the Popup */
     private final Timeline openAnimation = new Timeline();
+    /** The slide animation used to close the Popup */
     private final Timeline closeAnimation = new Timeline();
+    /** Whether the popup is open */
     private boolean isOpen = false;
+    /** Whether the popup is locked, meaning that it will not close when the mouse exits the content nor open when it enters */
     private boolean isLocked = false;
 
+    /** The duration of the animation */
     private final int animationDuration = 200;
-    private final Pos alignment;
-    private final AnchorPane parent;
-
-    private final float closedPercentage;
-
-    private final float widthPercentage;
 
     /**
      * Creates a new anchored popup
@@ -37,10 +37,6 @@ public class AnchoredPopUp {
      * @param closedPercentage the percentage of the respective side that the popup will be once closed
      */
     public AnchoredPopUp(AnchorPane parent, float widthPercentage, float heightPercentage, Pos alignment, float closedPercentage) {
-        this.parent = parent;
-        this.alignment = alignment;
-        this.closedPercentage = closedPercentage;
-        this.widthPercentage = widthPercentage;
 
         //align the content using the alignment parameter
         switch (alignment) {

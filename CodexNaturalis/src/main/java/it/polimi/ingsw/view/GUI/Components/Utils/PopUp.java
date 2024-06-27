@@ -12,24 +12,39 @@ import javafx.scene.layout.StackPane;
 import javafx.scene.shape.Rectangle;
 import javafx.util.Duration;
 
-public class PopUp {
-    private final StackPane container = new StackPane();
-    private final AnchorPane content = new AnchorPane();
-    private final Timeline openingAnimation = new Timeline();
-    private final Timeline closingAnimation = new Timeline();
-    private final AnchorPane parent;
-    private boolean isOpen = false;
+/**
+ * This class represents a popup that can be used to display content on top of the parent.
+ * The popup will animate its opening and closing.
+ * The opening can be triggered by calling the open() method, while the closing can be triggered by calling the close() method or by clicking on the background.
 
+ */
+public class PopUp {
+    /** The container of the popup */
+    private final StackPane container = new StackPane();
+    /** The content of the popup */
+    private final AnchorPane content = new AnchorPane();
+    /** The timeline used to animate the opening of the popup */
+    private final Timeline openingAnimation = new Timeline();
+    /** The timeline used to animate the closing of the popup */
+    private final Timeline closingAnimation = new Timeline();
+    /** The parent of the popup */
+    private final AnchorPane parent;
+    /** Whether the popup is open */
+    private boolean isOpen = false;
+    /** Whether the popup is locked, meaning that it will not close when the mouse clicks on the background*/
     private boolean isLocked = false;
 
+    /** The duration of the animation */
     private static KeyValue createOpacityKeyValue(Node target, double value) {
         return new KeyValue(target.opacityProperty(), value, Interpolator.EASE_BOTH);
     }
 
+    /** The duration of the animation */
     private static KeyValue createScaleKeyValue(Node target, double value) {
         return new KeyValue(target.scaleXProperty(), value, Interpolator.EASE_BOTH);
     }
 
+    /** The duration of the animation */
     private void setUpOpeningAnimation() {
         openingAnimation.getKeyFrames().addAll(
                 new KeyFrame(Duration.millis(0), createScaleKeyValue(content, 0.0)),
@@ -40,6 +55,7 @@ public class PopUp {
         );
     }
 
+    /** The duration of the animation */
     private void setUpClosingAnimation() {
         closingAnimation.getKeyFrames().addAll(
                 new KeyFrame(Duration.millis(0), createScaleKeyValue(content, 1.0)),
@@ -120,25 +136,42 @@ public class PopUp {
         this(parent, false);
     }
 
+    /**
+     * Opens the popup
+     */
     public void open() {
         isOpen = true;
         parent.getChildren().add(container);
         openingAnimation.play();
     }
 
+    /**
+     * Closes the popup
+     */
     public void close() {
         isOpen = false;
         closingAnimation.play();
     }
 
+    /**
+     * Gets the content of the popup
+     * @return the content of the popup
+     */
     public AnchorPane getContent() {
         return content;
     }
 
+    /**
+     * Locks the popup, meaning that it will not close when the mouse clicks on the background
+     * @param isLocked true to lock the popup, false to unlock it
+     */
     public void setLocked(boolean isLocked){
         this.isLocked = isLocked;
     }
 
+    /**
+     * @return true if the popup is open, false otherwise
+     */
     public boolean isOpen() {
         return isOpen;
     }
