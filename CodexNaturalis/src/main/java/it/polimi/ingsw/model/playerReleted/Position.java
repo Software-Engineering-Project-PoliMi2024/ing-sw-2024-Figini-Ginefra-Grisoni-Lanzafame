@@ -4,7 +4,8 @@ import java.io.Serializable;
 
 /**
  * Class representing a position in a 2D space
- * @author Paolo
+ * @param x x coordinate of the position
+ * @param y y coordinate of the position
  */
 public record Position(int x, int y) implements Serializable {
     /**
@@ -18,7 +19,6 @@ public record Position(int x, int y) implements Serializable {
 
     /**
      * Returns a new position with the sum of the coordinates
-     *
      * @throws IllegalArgumentException if position is null
      * @param position position to add
      * @return a new position with the sum of the coordinates

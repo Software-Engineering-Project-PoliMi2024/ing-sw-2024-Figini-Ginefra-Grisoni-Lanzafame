@@ -8,6 +8,8 @@ import java.util.List;
 
 /**
  * This class represent the list of new Position to add and the list of Position to remove from the frontier after a placement
+ * @param add the list of new Position to add
+ * @param remove the list of Position to remove
  */
 public record FrontierDiff(List<Position> add, List<Position> remove) implements ModelDiffs<LightFrontier> {
     /**

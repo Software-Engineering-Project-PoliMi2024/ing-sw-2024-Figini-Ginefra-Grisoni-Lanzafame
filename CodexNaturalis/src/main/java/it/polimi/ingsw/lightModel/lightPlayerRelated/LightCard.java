@@ -5,8 +5,8 @@ import java.util.Objects;
 
 /**
  * This class represents the front of a card in the light model. It contains the unique id of such card and the id of the back card.
- * @param idFront
- * @param idBack
+ * @param idFront the unique id of the card
+ * @param idBack the id of the card that identifies is back
  */
 public record LightCard(int idFront, int idBack) implements Serializable {
     /**

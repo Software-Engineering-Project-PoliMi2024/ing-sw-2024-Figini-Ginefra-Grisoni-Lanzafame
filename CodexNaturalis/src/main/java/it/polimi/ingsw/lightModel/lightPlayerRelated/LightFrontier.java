@@ -8,7 +8,7 @@ import java.util.List;
 /**
  * This class represents the frontier in the light model.
  * The lightFrontier is a list of positions in which the player can place a card.
- * @param frontier
+ * @param frontier the list of positions in the frontier
  */
 public record LightFrontier(List<Position> frontier) implements Differentiable {
     /**
