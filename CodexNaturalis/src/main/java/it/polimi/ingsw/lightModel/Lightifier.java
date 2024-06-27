@@ -70,7 +70,10 @@ public class Lightifier implements Serializable {
      * @return a LighCard containing only the CardID
      */
     public static LightCard lightifyToCard(Card card){
-        return new LightCard(card.getIdFront(), card.getIdBack());
+        if(card == null)
+            return null;
+        else
+            return new LightCard(card.getIdFront(), card.getIdBack());
     }
 
     /**
@@ -115,6 +118,11 @@ public class Lightifier implements Serializable {
      * @return a LightBack containing the idBack of the card
      */
     public static LightBack lightifyToBack(Card card){
-        return new LightBack(card.getIdBack());
+        if(card == null)
+            return null;
+        else{
+            return new LightBack(card.getIdBack());
+        }
+
     }
 }

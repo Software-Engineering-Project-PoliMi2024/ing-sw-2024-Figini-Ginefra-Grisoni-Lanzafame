@@ -22,4 +22,5 @@ class DeckTest {
         }
         System.out.println(deck.getActualDeck().size());
     }
+
 }

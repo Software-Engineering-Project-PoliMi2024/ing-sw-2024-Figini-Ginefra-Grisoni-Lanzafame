@@ -86,14 +86,10 @@ public class Deck<Element> implements Serializable {
         Element element = buffer.get(indexElement);
         if(element!=null){
             Element newElement = this.drawFromDeck();
-            if(newElement != null){
-                buffer.set(indexElement, newElement);
-            }else{
-                buffer.remove(indexElement);
-            }
+            buffer.set(indexElement, newElement);
             return element;
         }
-        throw new IllegalArgumentException("Element not in buffer");
+        return null;
     }
 
     /**
@@ -122,7 +118,7 @@ public class Deck<Element> implements Serializable {
 
     /** @return true if both the actual deck and the buffer are empty */
     public boolean isEmpty(){
-        return actualDeck.isEmpty() && buffer.isEmpty();
+        return actualDeck.isEmpty() && buffer.stream().allMatch(Objects::isNull);
     }
 
     /**
