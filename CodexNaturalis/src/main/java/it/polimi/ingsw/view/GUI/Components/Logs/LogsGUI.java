@@ -67,7 +67,6 @@ public class LogsGUI implements Observer {
     @Override
     public void update() {
         String lastLogString = GUI.getLogMemory().getLastLog();
-        System.out.println("Logging: " + lastLog);
         lastLog.setText(lastLogString);
         popUp.open();
 

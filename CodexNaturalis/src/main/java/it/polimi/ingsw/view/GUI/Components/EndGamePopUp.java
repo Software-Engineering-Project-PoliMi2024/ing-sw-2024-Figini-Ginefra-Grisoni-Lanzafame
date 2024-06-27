@@ -97,7 +97,6 @@ public class EndGamePopUp {
         winners.setAlignment(Pos.CENTER);
         winners.setSpacing(20);
         GUI.getLightGame().getWinners().forEach(winner -> {
-            System.out.println(winner + " has won the game!");
             Text winnerText = new Text(winner);
             winnerText.setStyle("-fx-font-size: 24px; " +
                     "-fx-font-weight: bold; ");

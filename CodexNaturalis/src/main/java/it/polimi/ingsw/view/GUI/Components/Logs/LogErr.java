@@ -30,9 +30,6 @@ public class LogErr {
         AnchorPane.setRightAnchor(filler, 0.0);
         filler.getChildren().add(label);
 
-        System.out.println(label.getHeight());
-        System.out.println(label.getWidth());
-
         //This magic numbers are because javaFx does not calculate the width and height of the label until it is displayed
         filler.setMaxWidth(GUIConfigs.logErrWidth);
         filler.setMaxHeight(GUIConfigs.logErrHeight);

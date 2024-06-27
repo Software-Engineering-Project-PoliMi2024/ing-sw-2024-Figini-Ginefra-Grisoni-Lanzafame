@@ -197,7 +197,6 @@ public class LeaderboardGUI implements Observer {
 
             Boolean isActive = GUI.getLightGame().getLightGameParty().getPlayerActiveList().get(name);
             if(isActive != null && !isActive){
-                System.out.println("strikethrough");
                 label.setStyle(label.getStyle() + "-fx-strikethrough: true;");
             }
             else{
