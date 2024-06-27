@@ -13,14 +13,30 @@ import it.polimi.ingsw.view.TUI.inputs.CommandPromptResult;
 import java.util.Map;
 import java.util.stream.Collectors;
 
+/**
+ * This class represents the Renderable that displays the leaderboard of players based on their scores.
+ */
 public class LeaderboardRenderable extends Renderable {
+    /** The LightGame object representing the game's state */
     private final LightGame lightGame;
 
+    /**
+     * Constructs a LeaderboardRenderable object.
+     *
+     * @param name The name of the Renderable.
+     * @param lightGame The LightGame object representing the game's state.
+     * @param relatedCommands The commands related to this Renderable.
+     * @param view The ControllerProvider object for controller access.
+     */
     public LeaderboardRenderable(String name, LightGame lightGame, CommandPrompt[] relatedCommands, ControllerProvider view) {
         super(name, relatedCommands, view);
         this.lightGame = lightGame;
     }
 
+    /**
+     * Renders the leaderboard.
+     * Displays player names, scores, and additional styling based on their state.
+     */
     @Override
     public void render() {
         Map<String, Integer> scores = lightGame.getCodexMap().entrySet().stream()
@@ -58,7 +74,11 @@ public class LeaderboardRenderable extends Renderable {
         }).toList(), 70, 1);
     }
 
-
+    /**
+     * Updates the command based on the CommandPromptResult.
+     *
+     * @param answer The CommandPromptResult containing the user's command and input.
+     */
     @Override
     public void updateCommand(CommandPromptResult answer) {
         switch (answer.getCommand()) {
