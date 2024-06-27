@@ -8,6 +8,10 @@ import javafx.scene.input.MouseButton;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.StackPane;
 
+/**
+ * This class represents the Rulebook.
+ * scsd  w su qdw jb  qdbs  wd
+ */
 public class RuleBook {
     private final ImageView rulebookView;
     private final PopUp popUp;
