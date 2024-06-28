@@ -78,7 +78,7 @@ If you are interested in the inner workings of our application you can find the 
 
 - UML Class Diagram:
 
-  - [Model](deliverables/final/uml/Class\diagram/Server/model_UML.png)
+  - [Model](deliverables/final/uml/Class%20diagram/Server/model_UML.png)
   - [Controller](deliverables/final/uml/Class\diagram/Server/Controllers_UML.png)
   - [Server Related](deliverables/final/uml/Class\diagram/Server)
   - [Client Related](deliverables/final/uml/Class\diagram/Client)
