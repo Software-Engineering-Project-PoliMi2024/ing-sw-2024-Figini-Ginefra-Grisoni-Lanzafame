@@ -61,6 +61,9 @@ public class DeckRenderable extends CanvasRenderable {
      */
     @Override
     public void render() {
+        //Clears the canvas
+        this.canvas.fillContent(CardTextStyle.getBackgroundEmoji());
+
         Printable upperPrintable = new Printable("");
 
         PromptStyle.printInABox(upperPrintable, "Gold Deck ", CardTextStyle.getCardWidth() * 6 + 2);
@@ -107,16 +110,17 @@ public class DeckRenderable extends CanvasRenderable {
 
     private void renderDeck(List<Printable> labels, LightDeck deck, int row) {
         for (int i = 0; i < 2; i++) {  //  first two cards  visible
-            LightCard card = deck.getCardBuffer()[i];
-            if (card == null) {
-                continue;
-            }
             String cardNumber = new DecoratedString("[" + i + "]", StringStyle.BOLD).toString();
             String text = "Card " + cardNumber;
 
             Printable resourceLabel = new Printable("");
             PromptStyle.printInABox(resourceLabel, text, CardTextStyle.getCardWidth() * 2 - 2);
             labels.add(resourceLabel);
+
+            LightCard card = deck.getCardBuffer()[i];
+            if (card == null) {
+                continue;
+            }
 
             Drawable drawableCard = museum.get(card.idFront()).get(CardFace.FRONT);
             this.canvas.draw(drawableCard,
@@ -126,12 +130,11 @@ public class DeckRenderable extends CanvasRenderable {
         }
 
         // Render the top invisible card resource only, showing resource back
+        Printable resourceLabel = new Printable("");
+        PromptStyle.printInABox(resourceLabel, "Next Draw" , CardTextStyle.getCardWidth() * 2 - 2);
+        labels.add(resourceLabel);
+
         if (deck.getDeckBack() != null) {
-
-            Printable resourceLabel = new Printable("");
-            PromptStyle.printInABox(resourceLabel, "Next Draw" , CardTextStyle.getCardWidth() * 2 - 2);
-            labels.add(resourceLabel);
-
             Drawable resourceBack = museum.getBackFromId(deck.getDeckBack().idBack());
             this.canvas.draw(resourceBack,
                     CardTextStyle.getCardWidth() / 2 + 2 * (CardTextStyle.getCardWidth() + 1),
