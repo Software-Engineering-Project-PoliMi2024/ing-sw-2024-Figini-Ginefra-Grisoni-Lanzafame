@@ -78,12 +78,15 @@ If you are interested in the inner workings of our application you can find the 
 
 - UML Class Diagram:
 
-  - [Base]()
-  - [Advanced]()
+  - [Model](deliverables/final/uml/Class diagram/Server/model_UML.png)
+  - [Controller](deliverables/final/uml/Class diagram/Server/Controllers_UML.png)
+  - [Server Related](deliverables/final/uml/Class diagram/Server)
+  - [Client Related](deliverables/final/uml/Class diagram/Client)
 
 - UML Sequence Diagram:
-  - [Base]()
-  - [Advanced]()
+  - [Game Access](deliverables/final/uml/Sequence diagram/Final diagrams/AccessoAlGiocoSocketFinale.png)
+  - [Draw Card](deliverables/final/uml/Sequence diagram/Final diagrams/DrawACardFinalSocket.png)
+  - [Place Card](deliverables/final/uml/Sequence diagram/Final diagrams/PlaceACardFinalSocket.png)
 - UML State Machine Diagram:
-  - [Base]()
-  - [Advanced]()
+  - [Game State Machine](deliverables/final/uml/StateMachines/Final_GameStateMachine.png)
+  - [View State Machine](deliverables/final/uml/StateMachines/Final_ViewStateMachine.png)
