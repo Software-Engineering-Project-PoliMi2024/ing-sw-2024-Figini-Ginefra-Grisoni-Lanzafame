@@ -275,7 +275,6 @@ public class TUI implements ActualView, CommandObserver, Observer {
 
         StateTUI.CHOOSE_PAWN.addStartupPrompt(CommandPrompt.DISPLAY_PAWN_OPTIONS);
 
-        //TODO: understand why it crushes if I add DISPLAY_OBJECTIVE_OPTIONS
         StateTUI.SELECT_OBJECTIVE.addStartupPrompt(CommandPrompt.DISPLAY_OBJECTIVE_OPTIONS);
 
         StateTUI.WAITING_STATE.addStartupPrompt(CommandPrompt.DISPLAY_LEADERBOARD);
@@ -320,14 +319,14 @@ public class TUI implements ActualView, CommandObserver, Observer {
         isTransitioning.set(true);
 
         OSRelated.clearTerminal();
-        
+
         StateTUI stateTUI = Arrays.stream(StateTUI.values()).reduce((a, b) -> a.references(state) ? a : b).orElse(null);
 
         if (stateTUI == null) {
             throw new IllegalArgumentException("Current View State(" + state.name() + ") not supported by TUI");
         }
 
-        if(this.state != state || this.state == ViewState.SERVER_CONNECTION){
+        if(this.state != state){
             this.state = state;
 
             for (Renderable renderable : renderables) {
@@ -353,11 +352,13 @@ public class TUI implements ActualView, CommandObserver, Observer {
             //logger.clearLogs();
         }
 
+
         logger.render();
         stateTUI.triggerStartupPrompts();
         commandDisplay.render();
 
         isTransitioning.set(false);
+
     }
 
     /**
