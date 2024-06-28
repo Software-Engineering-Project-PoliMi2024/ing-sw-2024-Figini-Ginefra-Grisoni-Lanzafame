@@ -328,7 +328,7 @@ public class VirtualControllerRMI implements VirtualController {
                 try {
                     controllerStub.leave();
                 } catch (Exception e) {
-                    throw new RuntimeException("VirtualControllerRMI.draw: " + "\n  message: " + e.getMessage() + "\n  cause:\n" + e.getCause());
+                    throw new RuntimeException("VirtualControllerRMI.leave: " + "\n  message: " + e.getMessage() + "\n  cause:\n" + e.getCause());
                 }
             });
             try {
@@ -336,7 +336,6 @@ public class VirtualControllerRMI implements VirtualController {
             } catch (InterruptedException ignored) {
             } catch (Exception e) {
                 Configs.printStackTrace(e);
-                this.disconnect();
             }finally {
                 this.disconnect();
             }
