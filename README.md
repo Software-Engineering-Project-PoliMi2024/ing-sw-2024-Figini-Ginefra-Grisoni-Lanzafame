@@ -68,7 +68,7 @@ By running the client you will be asked to choose the type of interface you want
 > The `GUI` has been tested with machines with an `x86` architecture and an Os between `Windows 10/11`, `Debian 12`, `MacOS 14`.
 
 > **❗Warning❗**
-> The `TUI` makes an extensive use of emojis, for the best experience we suggest to use a `Windows` command prompt(CMD), just remember to enable `UTF-8` encodings by running `chcp 65001`.
+> The `TUI` makes an extensive use of emojis, for the best experience we suggest to use a `Windows` command prompt (CMD), just remember to enable `UTF-8` encodings by running `chcp 65001`.
 
 When the client is running you will be asked to insert the `ip address` of the server, you can find it in the server logs.
 
