@@ -87,7 +87,7 @@ If you are interested in the inner workings of our application you can find the 
   - [Game Access](deliverables/final/uml/Sequence%20diagram/Final%20diagrams/Game%20Access.png)
   - [Draw Card](deliverables/final/uml/Sequence%20diagram/Final%20diagrams/DrawACardFinalSocket.png)
   - [Place Card](deliverables/final/uml/Sequence%20diagram/Final%20diagrams/PlaceACardSocketFinal.png)
-- UML State Machine Diagram:
+- Game and View State Machine Diagram:
   - [Game State Machine](deliverables/final/uml/StateMachines/Final_GameStateMachine.png)
   - [View State Machine](deliverables/final/uml/StateMachines/Final_ViewStateMachine.png)
 - [Complete JDoc](deliverables/Jdoc)
