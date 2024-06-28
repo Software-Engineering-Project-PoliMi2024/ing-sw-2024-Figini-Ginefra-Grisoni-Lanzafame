@@ -138,7 +138,7 @@
               <goal>shade</goal>
             </goals>
             <configuration>
-              <finalName>CodexNaturalis_Server</finalName>
+              <finalName>CodexNaturalisPSP49_Server</finalName>
               <transformers>
                 <transformer implementation="org.apache.maven.plugins.shade.resource.ManifestResourceTransformer">
                   <mainClass>it.polimi.ingsw.Server</mainClass>
@@ -153,7 +153,7 @@
               <goal>shade</goal>
             </goals>
             <configuration>
-              <finalName>CodexNaturalis_Client</finalName>
+              <finalName>CodexNaturalisPSP49_Client</finalName>
               <transformers>
                 <transformer implementation="org.apache.maven.plugins.shade.resource.ManifestResourceTransformer">
                   <mainClass>it.polimi.ingsw.Client</mainClass>
