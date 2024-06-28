@@ -348,11 +348,11 @@ public class VirtualControllerRMI implements VirtualController {
      */
     @Override
     public synchronized void disconnect(){
-        this.closeConnection();
         this.eraseLightModel();
         try {
             view.transitionTo(ViewState.SERVER_CONNECTION);
         }catch (Exception ignored){}
+        this.closeConnection();
     }
 
     /**
