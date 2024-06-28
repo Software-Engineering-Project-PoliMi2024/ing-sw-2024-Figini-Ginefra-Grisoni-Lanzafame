@@ -73,7 +73,7 @@ public class OSRelated {
             try {
                 new ProcessBuilder("cmd", "/c", "cls").inheritIO().start().waitFor();
             } catch (IOException | InterruptedException e) {
-                throw new RuntimeException(e);
+                if(Configs.debugMode) e.printStackTrace();
             }
         } else {
             System.out.print("\033[H\033[J");
