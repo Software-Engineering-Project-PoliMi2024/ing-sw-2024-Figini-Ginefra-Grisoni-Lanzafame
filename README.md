@@ -84,7 +84,7 @@ If you are interested in the inner workings of our application you can find the 
   - [Client Related](deliverables/final/uml/Class%20diagram/Client)
 
 - UML Sequence Diagram:
-  - [Game Access](deliverables/final/uml/Sequence%20diagram/Final$20diagrams/AccessoAlGiocoSocketFinale.png)
+  - [Game Access](deliverables/final/uml/Sequence%20diagram/Final%20diagrams/Game%20Access.png)
   - [Draw Card](deliverables/final/uml/Sequence%20diagram/Final%20diagrams/DrawACardFinalSocket.png)
   - [Place Card](deliverables/final/uml/Sequence%20diagram/Final%20diagrams/PlaceACardSocketFinal.png)
 - UML State Machine Diagram:
