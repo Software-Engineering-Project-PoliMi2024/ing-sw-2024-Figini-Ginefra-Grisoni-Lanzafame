@@ -90,6 +90,7 @@ public class ServerHandler implements Runnable{
                 System.out.println("Error while connecting to the server, the server exists but did not expect this protocol");
                 view.logErr(LogsOnClient.CONNECTION_ERROR);
                 view.transitionTo(ViewState.SERVER_CONNECTION);
+                server.close();
             } catch (Exception ex) {
                 //This is socket, RemoteException should not be thrown
                 throw new RuntimeException(ex);
