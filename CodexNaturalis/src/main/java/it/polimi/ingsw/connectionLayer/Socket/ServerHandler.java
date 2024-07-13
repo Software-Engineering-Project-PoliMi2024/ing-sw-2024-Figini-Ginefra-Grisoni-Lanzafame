@@ -74,8 +74,6 @@ public class ServerHandler implements Runnable{
                     this.waitForOwnerAndView();
                     try {
                         System.out.println("Error while creating the input and output streams");
-                        view.logErr(LogsOnClient.CONNECTION_ERROR);
-                        view.transitionTo(ViewState.SERVER_CONNECTION);
                     } catch (Exception ex) {
                         //This is socket, RemoteException should not be thrown
                         throw new RuntimeException(ex);

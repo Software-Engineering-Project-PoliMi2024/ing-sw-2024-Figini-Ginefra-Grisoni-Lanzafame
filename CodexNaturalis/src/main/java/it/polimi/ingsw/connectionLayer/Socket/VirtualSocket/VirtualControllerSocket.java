@@ -53,10 +53,7 @@ public class VirtualControllerSocket implements VirtualController {
             this.view.transitionTo(ViewState.SERVER_CONNECTION);
             return;
         }
-        //If the connection goes well
-        if(serverHandler==null){
-            this.serverHandler = new ServerHandler(server);
-        }
+        serverHandler = new ServerHandler(server);
         Thread serverHandlerThread = new Thread(serverHandler, "serverHandler of " + server.getInetAddress().getHostAddress());
         serverHandlerThread.start();
         while (!serverHandler.isReady()) {

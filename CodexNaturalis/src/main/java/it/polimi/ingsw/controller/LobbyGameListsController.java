@@ -253,16 +253,18 @@ public class LobbyGameListsController implements it.polimi.ingsw.controller.Inte
      */
     @Override
     public synchronized void leave(String nickname) {
-        if(this.isInGameParty(nickname)) {
-            GameController gameToLeaveController = this.getGameFromUserNick(nickname);
-            gameToLeaveController.leave(nickname);
-        }else if(this.isActiveInLobby(nickname)){
-            this.leaveLobby(nickname);
-            this.leaveLobbyList(nickname);
-        }else {
-            this.leaveLobbyList(nickname);
+        if(allConnectedUsers().containsKey(nickname)) {
+            if (this.isInGameParty(nickname)) {
+                GameController gameToLeaveController = this.getGameFromUserNick(nickname);
+                gameToLeaveController.leave(nickname);
+            } else if (this.isActiveInLobby(nickname)) {
+                this.leaveLobby(nickname);
+                this.leaveLobbyList(nickname);
+            } else {
+                this.leaveLobbyList(nickname);
+            }
+            logger.log(LoggerLevel.INFO, nickname + " disconnected");
         }
-        logger.log(LoggerLevel.INFO, nickname + " disconnected");
     }
 
     /**

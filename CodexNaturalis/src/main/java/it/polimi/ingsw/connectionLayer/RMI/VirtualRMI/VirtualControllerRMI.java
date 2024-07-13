@@ -360,7 +360,7 @@ public class VirtualControllerRMI implements VirtualController {
      */
     private synchronized void closeConnection(){
         heartBeatFuture.cancel(true);
-        heartBeatExecutor.shutdown();
+        heartBeatExecutor.shutdownNow();
         heartBeatExecutor = Executors.newSingleThreadScheduledExecutor();
         try {
             UnicastRemoteObject.unexportObject(this, true);
@@ -400,7 +400,7 @@ public class VirtualControllerRMI implements VirtualController {
      * @param view the view of the client
      */
     @Override
-    public void connect(String ip, int port, ViewInterface view) {
+    public synchronized void connect(String ip, int port, ViewInterface view) {
         this.view = view;
         try (Socket socket = new Socket()) {
             socket.connect(new InetSocketAddress("google.com", 80));

@@ -28,9 +28,9 @@ import java.util.Objects;
  */
 public class DeckRenderable extends CanvasRenderable {
     /** The deck of gold card. */
-    private final LightDeck goldDeck;
+    private LightDeck goldDeck;
     /** The deck of resource cards. */
-    private final LightDeck resourceDeck;
+    private LightDeck resourceDeck;
     /** The card museum containing the rendered cards*/
     private final CardMuseum museum;
     /** The light game */
@@ -46,8 +46,6 @@ public class DeckRenderable extends CanvasRenderable {
      */
     public DeckRenderable(String name, CardMuseum museum, LightGame game, CommandPrompt[] relatedCommands, ControllerProvider view) {
         super(name, CardTextStyle.getCardWidth() * 4 + 4, CardTextStyle.getCardHeight() * 2 + 1, relatedCommands, view);
-        this.goldDeck = game.getGoldDeck();
-        this.resourceDeck = game.getResourceDeck();
 
         this.museum = museum;
         this.lightGame = game;
@@ -63,6 +61,9 @@ public class DeckRenderable extends CanvasRenderable {
     public void render() {
         //Clears the canvas
         this.canvas.fillContent(CardTextStyle.getBackgroundEmoji());
+
+        this.goldDeck = lightGame.getGoldDeck();
+        this.resourceDeck = lightGame.getResourceDeck();
 
         Printable upperPrintable = new Printable("");
 
