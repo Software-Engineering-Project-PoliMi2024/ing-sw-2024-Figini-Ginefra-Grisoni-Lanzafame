@@ -15,7 +15,7 @@
   <a href="https://github.com/PaoloGinefra" target="_blank" style="color: #0f6c97">🟦Paolo Ginefra🟦</a><br><br>
   <a href="https://github.com/dedepivot" target="_blank"style="color: #227701">🟥Samuele Grisoni🟥</a> <br><br>
   <a href="https://github.com/teo-lan" target="_blank"style="color: #c72921">🟩Teo Lanzafame🟩</a> <br><br>
-  <a href="https://www.figma.com/design/O9M4rWMjr35Ly80NHqQfc8/CodexPresentation?node-id=1-121&t=WlK0pJtP2KXYhF9K-1" target="_blank"style="color: #c72921">🖼️PROJECT PRESENTATION🖼️</a></h4>
+  <a href="https://www.figma.com/proto/O9M4rWMjr35Ly80NHqQfc8/CodexPresentation?node-id=1-2&t=Lcm8VcUr3kI14bMi-1&scaling=contain&content-scaling=fixed&page-id=0%3A1" target="_blank"style="color: #c72921">🖼️PROJECT PRESENTATION🖼️</a></h4>
 
 # <img src="https://d2nvlc4hwtwbz3.cloudfront.net/media/cache/41/aa/41aaf136be88fc7b9c2289b916903a15.jpg" align="right" alt="Start Card render" width="200" style = "border-radius: 20px; float:right; padding: 5px"> <center>Our features</center>
 
