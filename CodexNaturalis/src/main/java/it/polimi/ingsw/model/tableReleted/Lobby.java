@@ -15,17 +15,22 @@ public class Lobby implements Serializable {
     /** the number of max player that can join the lobby, when is reached the game can start */
     private final int numberOfMaxPlayer;
 
+    /** the number of agents in the lobby */
+    private final int numberOfAgents;
+
     /**
      * @param numberOfMaxPlayer the number of player that can join the lobby
      * @param lobbyName the name of the lobby
      */
-    public Lobby(int numberOfMaxPlayer, String lobbyName) {
-        if(numberOfMaxPlayer < 2 || numberOfMaxPlayer > 4){
+    public Lobby(int numberOfMaxPlayer, String lobbyName, int numberOfAgents) {
+        if(numberOfAgents + numberOfMaxPlayer < 2 || numberOfAgents + numberOfMaxPlayer > 4){
             throw new IllegalArgumentException("The number of player must be at least 1 and at most 4");
         }
         this.numberOfMaxPlayer = numberOfMaxPlayer;
-        lobbyPlayerList = new ArrayList<>();
         this.lobbyName = lobbyName;
+        this.numberOfAgents = numberOfAgents;
+
+        lobbyPlayerList = new ArrayList<>();
     }
 
     /**
@@ -36,6 +41,7 @@ public class Lobby implements Serializable {
         this.numberOfMaxPlayer = other.numberOfMaxPlayer;
         this.lobbyPlayerList = new ArrayList<>(other.lobbyPlayerList);
         this.lobbyName = other.lobbyName;
+        this.numberOfAgents = other.numberOfAgents;
     }
     /**
      * Handles the adding of a user to the current lobby.

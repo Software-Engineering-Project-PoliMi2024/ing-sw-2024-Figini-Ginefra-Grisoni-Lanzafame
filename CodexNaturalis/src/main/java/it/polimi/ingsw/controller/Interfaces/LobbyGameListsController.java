@@ -33,7 +33,7 @@ public interface LobbyGameListsController extends GameList, MalevolentPlayerMana
      * @param maxPlayerCount the maximum number of players that can join the lobby
      * @param gameReceiver the game controller receiver of the player
      */
-    void createLobby(String nickname, String gameName, int maxPlayerCount, GameControllerReceiver gameReceiver);
+    void createLobby(String nickname, String gameName, int maxPlayerCount, int numberOfAgents, GameControllerReceiver gameReceiver);
 
     /**
      * This method is used to join a lobby in the lobby list

@@ -33,7 +33,7 @@ public interface ControllerInterface extends Remote, Serializable {
      * @param maxPlayerCount the maximum number of players that can join the lobby
      * @throws Exception required by the RMI protocol
      */
-    void createLobby(String gameName, int maxPlayerCount) throws Exception;
+    void createLobby(String gameName, int maxPlayerCount, int numberOfAgents) throws Exception;
 
     /**
      * This method is used to join an existent lobby

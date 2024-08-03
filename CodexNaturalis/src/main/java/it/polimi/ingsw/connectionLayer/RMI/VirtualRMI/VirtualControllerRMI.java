@@ -96,11 +96,11 @@ public class VirtualControllerRMI implements VirtualController {
      * @param maxPlayerCount the maximum number of players that can join the lobby
      */
     @Override
-    public void createLobby(String gameName, int maxPlayerCount) {
+    public void createLobby(String gameName, int maxPlayerCount, int numberOfAgents) {
         controllerExecutor.execute(()->{
             Future<?> createLobbyFuture = controllerCommandsExecutor.submit(()->{
                 try {
-                    controllerStub.createLobby(gameName, maxPlayerCount);
+                    controllerStub.createLobby(gameName, maxPlayerCount, numberOfAgents);
                 } catch (Exception e) {
                     throw new RuntimeException("VirtualControllerRMI.createLobby: " + "\n  message: " + e.getMessage() + "\n  cause:\n" + e.getCause());
                 }

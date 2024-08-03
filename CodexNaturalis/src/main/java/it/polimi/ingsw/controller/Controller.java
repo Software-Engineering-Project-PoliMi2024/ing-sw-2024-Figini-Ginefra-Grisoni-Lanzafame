@@ -54,8 +54,8 @@ public class Controller implements ControllerInterface, GameControllerReceiver {
      * @param maxPlayerCount the maximum number of players that can join the lobby
      */
     @Override
-    public void createLobby(String gameName, int maxPlayerCount) {
-        lobbyGameListController.createLobby(nickname, gameName, maxPlayerCount, this);
+    public void createLobby(String gameName, int maxPlayerCount, int numberOfAgents) {
+        lobbyGameListController.createLobby(nickname, gameName, maxPlayerCount, numberOfAgents, this);
     }
 
     /**

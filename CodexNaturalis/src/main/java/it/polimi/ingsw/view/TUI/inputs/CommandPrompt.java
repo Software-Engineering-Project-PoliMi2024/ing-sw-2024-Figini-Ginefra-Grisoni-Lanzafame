@@ -52,6 +52,7 @@ public enum CommandPrompt implements Iterator<String>, CommandObserved {
             new String[]{
                     "What's the name of the game?",
                     "How many players will be playing? (2-4)",
+                    "How many agents will be playing? (0-3)",
             },
             new Predicate[]{
                     s -> true,
@@ -59,6 +60,14 @@ public enum CommandPrompt implements Iterator<String>, CommandObserved {
                         try {
                             int i = Integer.parseInt(s.toString());
                             return i > 1 && i < 5;
+                        } catch (NumberFormatException e) {
+                            return false;
+                        }
+                    },
+                    s -> {
+                        try {
+                            int i = Integer.parseInt(s.toString());
+                            return i >= 0 && i < 4;
                         } catch (NumberFormatException e) {
                             return false;
                         }

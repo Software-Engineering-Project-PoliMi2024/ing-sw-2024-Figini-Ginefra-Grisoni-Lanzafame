@@ -79,7 +79,7 @@ public class ResilienceTimerTest {
 
         controller1.login(view1.name);
         controller2.login(view2.name);
-        controller1.createLobby(lobbyName1, 2);
+        controller1.createLobby(lobbyName1, 2, 0);
         controller2.joinLobby(lobbyName1);
 
         LightCard startCard1 = view1.lightGame.getHand().getCards()[0];
@@ -112,7 +112,7 @@ public class ResilienceTimerTest {
 
         controller1.login(view1.name);
         controller2.login(view2.name);
-        controller1.createLobby(lobbyName1, 2);
+        controller1.createLobby(lobbyName1, 2, 0);
         controller2.joinLobby(lobbyName1);
 
         PublicGameController gameController = new PublicGameController(lobbyGameListController.getGameMap().get(lobbyName1));
@@ -147,7 +147,7 @@ public class ResilienceTimerTest {
 
         controller1.login(view1.name);
         controller2.login(view2.name);
-        controller1.createLobby(lobbyName1, 2);
+        controller1.createLobby(lobbyName1, 2, 0);
         controller2.joinLobby(lobbyName1);
 
         PublicGameController gameController = new PublicGameController(lobbyGameListController.getGameMap().get(lobbyName1));
@@ -187,7 +187,7 @@ public class ResilienceTimerTest {
 
         controller1.login(view1.name);
         controller2.login(view2.name);
-        controller1.createLobby(lobbyName1, 2);
+        controller1.createLobby(lobbyName1, 2, 0);
         controller2.joinLobby(lobbyName1);
 
         PublicGameController gameController = new PublicGameController(lobbyGameListController.getGameMap().get(lobbyName1));
@@ -239,7 +239,7 @@ public class ResilienceTimerTest {
         controller1.login(view1.name);
         controller2.login(view2.name);
         controller3.login(view3.name);
-        controller1.createLobby(lobbyName1, 3);
+        controller1.createLobby(lobbyName1, 3, 0);
         controller2.joinLobby(lobbyName1);
         controller3.joinLobby(lobbyName1);
 
@@ -324,7 +324,7 @@ public class ResilienceTimerTest {
 
         controller1.login(view1.name);
         controller2.login(view2.name);
-        controller1.createLobby(lobbyName1, 2);
+        controller1.createLobby(lobbyName1, 2, 0);
         controller2.joinLobby(lobbyName1);
 
         PublicGameController gameController = new PublicGameController(lobbyGameListController.getGameMap().get(lobbyName1));
@@ -366,7 +366,7 @@ public class ResilienceTimerTest {
 
         controller1.login(view1.name);
         controller2.login(view2.name);
-        controller1.createLobby(lobbyName1, 2);
+        controller1.createLobby(lobbyName1, 2, 0);
         controller2.joinLobby(lobbyName1);
 
         PublicGameController gameController = new PublicGameController(lobbyGameListController.getGameMap().get(lobbyName1));

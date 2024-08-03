@@ -30,22 +30,33 @@ public class LobbyListControllerGUI implements Initializable {
     /** The button to create the lobby.*/
     @FXML
     private HBox characterContainer;
+    @FXML
+    private HBox agentsContainer;
     /** The number of players in the lobby to create.*/
     private int nPlayers = 2;
+    private int nAgents = 0;
     /** The lobby list display.*/
     private final LobbyListJoinGUI joinLobbyDisplay = new LobbyListJoinGUI();
+    private final Spinner<Integer> nAgenstsSpinner = new Spinner<>(0, 3, 0);
 
     /**
      * Creates a new LobbyListControllerGUI and attaches the lobby list display to the controller.
      */
     public void createLobby() {
         String lobbyName = lobbyToCreateName.getText();
-        if(!lobbyName.isEmpty())
+        if(!lobbyName.isEmpty() && nPlayers + nAgents >= 2 && nPlayers + nAgents <= 4)
             try {
-                GUI.getControllerStatic().createLobby(lobbyName, nPlayers);
+                GUI.getControllerStatic().createLobby(lobbyName, nPlayers, nAgents);
             } catch (Exception e) {
                 throw new RuntimeException(e);
             }
+    }
+
+    private void adjustNAgents() {
+        if(this.nAgents + this.nPlayers >= 5) {
+            this.nAgents = 4 - this.nPlayers;
+            nAgenstsSpinner.getValueFactory().setValue(this.nAgents);
+        }
     }
 
     /**
@@ -68,11 +79,12 @@ public class LobbyListControllerGUI implements Initializable {
             if(i >= 2)
                 character.setOpacity(0.5);
 
-            final int target = (i>=2) ? i : 1;
+            final int target = i;
 
             character.setOnMouseClicked(e -> {
                 try {
                     this.nPlayers = target + 1;
+                    adjustNAgents();
                     for (int j = 0; j < characterContainer.getChildren().size(); j++) {
                         ImageView characterView = (ImageView) characterContainer.getChildren().get(j);
                         if (j <= target) {
@@ -88,5 +100,12 @@ public class LobbyListControllerGUI implements Initializable {
 
             characterContainer.getChildren().add(character);
         };
+
+        nAgenstsSpinner.setEditable(true);
+        nAgenstsSpinner.valueProperty().addListener((obs, oldValue, newValue) -> {
+            this.nAgents = newValue;
+            adjustNAgents();
+        });
+        agentsContainer.getChildren().add(nAgenstsSpinner);
     }
 }

@@ -63,7 +63,8 @@ public class GameListRenderable extends Renderable {
                 try {
                     String lobbyName = answer.getAnswer(0);
                     int maxPlayers = Integer.parseInt(answer.getAnswer(1));
-                    view.getController().createLobby(lobbyName, maxPlayers);
+                    int numberOfAgents = Integer.parseInt(answer.getAnswer(2));
+                    view.getController().createLobby(lobbyName, maxPlayers, numberOfAgents);
                 }
                 catch (Exception e) {
                     System.out.println("Error while creating the game.");

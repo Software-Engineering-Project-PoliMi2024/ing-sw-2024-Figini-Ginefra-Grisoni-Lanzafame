@@ -72,8 +72,8 @@ class ControllersTests {
         controller1.login(view1.name);
         System.out.println(view1.state);
         //add lobby
-        Lobby lobby = new Lobby(2, "loginJoiningLobbyList");
-        controller1.createLobby(lobby.getLobbyName(), lobby.getNumberOfMaxPlayer());
+        Lobby lobby = new Lobby(2, "loginJoiningLobbyList", 0);
+        controller1.createLobby(lobby.getLobbyName(), lobby.getNumberOfMaxPlayer(), 0);
         System.out.println(view1.state);
         //view joins after adding lobbies
         controller2.login(view2.name);
@@ -106,10 +106,10 @@ class ControllersTests {
         String lobbyName2 = "createLobby2";
 
         controller1.login(view1.name);
-        controller1.createLobby(lobbyName1, 2);
+        controller1.createLobby(lobbyName1, 2, 0);
         controller2.login(view2.name);
         controller3.login(view3.name);
-        controller2.createLobby(lobbyName2, 2);
+        controller2.createLobby(lobbyName2, 2, 0);
 
         assert lobbyGameListController.getLobbyMap().containsKey(lobbyName1);
         assert lobbyGameListController.getLobbyMap().containsKey(lobbyName2);
@@ -130,7 +130,7 @@ class ControllersTests {
         view2.name = "pluto";
         String lobbyName1 = "joinLobby";
         controller1.login(view1.name);
-        controller1.createLobby(lobbyName1, 3);
+        controller1.createLobby(lobbyName1, 3, 0);
         controller2.login(view2.name);
         controller2.joinLobby(lobbyName1);
 
@@ -168,7 +168,7 @@ class ControllersTests {
 
         controller3.login(view3.name);
         controller1.login(view1.name);
-        controller1.createLobby(lobbyName1, 2);
+        controller1.createLobby(lobbyName1, 2, 0);
         controller2.login(view2.name);
         controller2.joinLobby(lobbyName1);
 
@@ -340,14 +340,14 @@ class ControllersTests {
         Controller controller4 = new Controller(realLobbyGameListController, view4);
 
         controller1.login(view1.name);
-        controller1.createLobby(lobbyName1, 3);
+        controller1.createLobby(lobbyName1, 3, 0);
         controller2.login(view2.name);
         controller2.joinLobby(lobbyName1);
         controller2.leaveLobby();
         controller3.login(view3.name);
         controller3.joinLobby(lobbyName1);
         controller4.login(view4.name);
-        controller4.createLobby(lobbyName2, 2);
+        controller4.createLobby(lobbyName2, 2, 0);
         controller4.leaveLobby();
 
         assert view1.lightLobbyList.getLobbies().isEmpty();
@@ -398,7 +398,7 @@ class ControllersTests {
         Controller controller2 = new Controller(realLobbyGameListController, view2);
 
         controller1.login(view1.name);
-        controller1.createLobby(lobbyName1, 2);
+        controller1.createLobby(lobbyName1, 2, 0);
         controller2.login(view2.name);
         controller2.joinLobby(lobbyName1);
         //game started
@@ -447,7 +447,7 @@ class ControllersTests {
         Controller controller2 = new Controller(realLobbyGameListController, view2);
 
         controller1.login(view1.name);
-        controller1.createLobby(lobbyName1, 2);
+        controller1.createLobby(lobbyName1, 2, 0);
         controller2.login(view2.name);
         controller2.joinLobby(lobbyName1);
         //game started
@@ -536,7 +536,7 @@ class ControllersTests {
         Controller controller2 = new Controller(realLobbyGameListController, view2);
 
         controller1.login(view1.name);
-        controller1.createLobby(lobbyName1, 2);
+        controller1.createLobby(lobbyName1, 2, 0);
         controller2.login(view2.name);
         controller2.joinLobby(lobbyName1);
         //game started
@@ -596,7 +596,7 @@ class ControllersTests {
         Controller controller2 = new Controller(realLobbyGameListController, view2);
 
         controller1.login(view1.name);
-        controller1.createLobby(lobbyName1, 2);
+        controller1.createLobby(lobbyName1, 2, 0);
         controller2.login(view2.name);
         controller2.joinLobby(lobbyName1);
         //game started
@@ -654,7 +654,7 @@ class ControllersTests {
         Controller controller2 = new Controller(realLobbyGameListController, view2);
 
         controller1.login(view1.name);
-        controller1.createLobby(lobbyName1, 2);
+        controller1.createLobby(lobbyName1, 2, 0);
         controller2.login(view2.name);
         controller2.joinLobby(lobbyName1);
         //choose StartCard
@@ -713,7 +713,7 @@ class ControllersTests {
 
 
         controller1.login(view1.name);
-        controller1.createLobby(lobbyName1, 2);
+        controller1.createLobby(lobbyName1, 2, 0);
         controller2.login(view2.name);
         controller2.joinLobby(lobbyName1);
         //choose StartCard
@@ -781,7 +781,7 @@ class ControllersTests {
         Controller controller2 = new Controller(realLobbyGameListController, view2);
 
         controller1.login(view1.name);
-        controller1.createLobby(lobbyName1, 2);
+        controller1.createLobby(lobbyName1, 2, 0);
         controller2.login(view2.name);
         controller2.joinLobby(lobbyName1);
         //choose StartCard
@@ -853,7 +853,7 @@ class ControllersTests {
         Controller controller2 = new Controller(realLobbyGameListController, view2);
 
         controller1.login(view1.name);
-        controller1.createLobby(lobbyName1, 2);
+        controller1.createLobby(lobbyName1, 2, 0);
         controller2.login(view2.name);
         controller2.joinLobby(lobbyName1);
         //choose StartCard
@@ -924,7 +924,7 @@ class ControllersTests {
         Controller controller2 = new Controller(realLobbyGameListController, view2);
 
         controller1.login(view1.name);
-        controller1.createLobby(lobbyName1, 2);
+        controller1.createLobby(lobbyName1, 2, 0);
         controller2.login(view2.name);
         controller2.joinLobby(lobbyName1);
         //choose StartCard
@@ -998,7 +998,7 @@ class ControllersTests {
 
         controller1.login(view1.name);
         controller2.login(view2.name);
-        controller1.createLobby(lobbyName1, 2);
+        controller1.createLobby(lobbyName1, 2, 0);
         controller2.joinLobby(lobbyName1);
 
         LightCard startCard1 = view1.lightGame.getHand().getCards()[0];
@@ -1047,7 +1047,7 @@ class ControllersTests {
 
         controller1.login(view1.name);
         controller2.login(view2.name);
-        controller1.createLobby(lobbyName1, 2);
+        controller1.createLobby(lobbyName1, 2, 0);
         controller2.joinLobby(lobbyName1);
 
         PublicGameController gameController = new PublicGameController(lobbyGameListController.getGameMap().get(lobbyName1));
@@ -1112,7 +1112,7 @@ class ControllersTests {
 
         controller1.login(view1.name);
         controller2.login(view2.name);
-        controller1.createLobby(lobbyName1, 2);
+        controller1.createLobby(lobbyName1, 2, 0);
         controller2.joinLobby(lobbyName1);
 
         GameController gameController = lobbyGameListController.getGameMap().get(lobbyName1);
@@ -1188,7 +1188,7 @@ class ControllersTests {
 
         controller1.login(view1.name);
         controller2.login(view2.name);
-        controller1.createLobby(lobbyName1, 2);
+        controller1.createLobby(lobbyName1, 2, 0);
         controller2.joinLobby(lobbyName1);
 
         LightCard startCard1 = view1.lightGame.getHand().getCards()[0];
@@ -1310,7 +1310,7 @@ class ControllersTests {
 
         controller1.login(view1.name);
         controller2.login(view2.name);
-        controller1.createLobby(lobbyName1, 2);
+        controller1.createLobby(lobbyName1, 2, 0);
         assert lobbyGameListController.getLobbyMap().containsKey(lobbyName1);
         controller2.joinLobby(lobbyName1);
 
@@ -1520,27 +1520,27 @@ class ControllersTests {
         invalidLobbyCreatorController.login(invalidLobbyCreator.name);
 
         //start a game and a lobby
-        gameCreatorController.createLobby(gameName, 2);
+        gameCreatorController.createLobby(gameName, 2, 0);
         gameJoinerController.joinLobby(gameName);
-        lobbyCreatorController.createLobby(lobbyName, 2);
+        lobbyCreatorController.createLobby(lobbyName, 2, 0);
         assert gameCreator.state.equals(ViewState.CHOOSE_START_CARD);
         assert gameJoiner.state.equals(ViewState.CHOOSE_START_CARD);
         assert lobbyCreator.state.equals(ViewState.LOBBY);
 
         //check not possible create lobby with same name as the lobby already present
-        invalidLobbyCreatorController.createLobby(lobbyName, 2);
+        invalidLobbyCreatorController.createLobby(lobbyName, 2, 0);
         assert invalidLobbyCreator.state.equals(ViewState.JOIN_LOBBY);
 
         //check not possible create lobby with same name as the game already present
-        invalidLobbyCreatorController.createLobby(gameName, 2);
+        invalidLobbyCreatorController.createLobby(gameName, 2, 0);
         assert invalidLobbyCreator.state.equals(ViewState.JOIN_LOBBY);
 
         //check not possible create lobby with empty name
-        invalidLobbyCreatorController.createLobby("", 2);
+        invalidLobbyCreatorController.createLobby("", 2, 0);
         assert invalidLobbyCreator.state.equals(ViewState.JOIN_LOBBY);
 
         //check not possible create lobby with name of only spaces
-        invalidLobbyCreatorController.createLobby("         ", 2);
+        invalidLobbyCreatorController.createLobby("         ", 2, 0);
         assert invalidLobbyCreator.state.equals(ViewState.JOIN_LOBBY);
 
     }
@@ -1562,7 +1562,7 @@ class ControllersTests {
         invalidLobbyCreatorJoiner.login(invalidLobbyJoiner.name);
 
         //start the game
-        lobbyCreatorController.createLobby(lobbyName, 2);
+        lobbyCreatorController.createLobby(lobbyName, 2, 0);
         assert lobbyCreator.state.equals(ViewState.LOBBY);
 
         invalidLobbyCreatorJoiner.joinLobby(nonExistentLobbyName);
@@ -1587,7 +1587,7 @@ class ControllersTests {
 
         controller1.login(view1.name);
         controller2.login(view2.name);
-        controller1.createLobby(lobbyName1, 2);
+        controller1.createLobby(lobbyName1, 2, 0);
         controller2.joinLobby(lobbyName1);
 
         LightCard startCard1 = view1.lightGame.getHand().getCards()[0];
@@ -1713,7 +1713,7 @@ class ControllersTests {
         plutoController.login(views[1].name);
         paperinoController.login(views[2].name);
 
-        pippoController.createLobby(lobbyName1, 3);
+        pippoController.createLobby(lobbyName1, 3, 0);
         plutoController.joinLobby(lobbyName1);
         paperinoController.joinLobby(lobbyName1);
 
@@ -1787,7 +1787,7 @@ class ControllersTests {
         plutoController.login(views[1].name);
         paperinoController.login(views[2].name);
 
-        pippoController.createLobby(lobbyName1, 3);
+        pippoController.createLobby(lobbyName1, 3, 0);
         plutoController.joinLobby(lobbyName1);
         paperinoController.joinLobby(lobbyName1);
 

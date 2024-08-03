@@ -115,7 +115,7 @@ public class LobbyGameListsController implements it.polimi.ingsw.controller.Inte
      * @param gameReceiver the game controller receiver of the player
      */
     @Override
-    public synchronized void createLobby(String creator, String lobbyName, int maxPlayerCount, GameControllerReceiver gameReceiver) {
+    public synchronized void createLobby(String creator, String lobbyName, int maxPlayerCount, int numberOfAgents, GameControllerReceiver gameReceiver) {
         //check if the lobby name is already taken
         ViewInterface view = viewMap.get(creator);
 
@@ -141,7 +141,7 @@ public class LobbyGameListsController implements it.polimi.ingsw.controller.Inte
                 }
             } else { //create the lobby
                 logger.log(LoggerLevel.INFO, creator + " created " + lobbyName + " lobby");
-                Lobby lobbyCreated = new Lobby(maxPlayerCount, lobbyName);
+                Lobby lobbyCreated = new Lobby(maxPlayerCount, lobbyName, numberOfAgents);
 
                 leaveLobbyList(creator);
                 //add the lobby to the model

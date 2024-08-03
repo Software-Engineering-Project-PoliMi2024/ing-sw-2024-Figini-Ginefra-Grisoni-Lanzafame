@@ -17,14 +17,17 @@ public class CreateLobbyMsg extends ClientMsg {
      */
     private final int maxPlayerCount;
 
+    private final int numberOfAgents;
+
     /**
      * Constructor
      * @param gameName the name of the new game
      * @param maxPlayerCount the number of players needed to start the game
      */
-    public CreateLobbyMsg(String gameName, int maxPlayerCount) {
+    public CreateLobbyMsg(String gameName, int maxPlayerCount, int numberOfAgents) {
         this.gameName = gameName;
         this.maxPlayerCount = maxPlayerCount;
+        this.numberOfAgents = numberOfAgents;
     }
 
     /**
@@ -35,6 +38,6 @@ public class CreateLobbyMsg extends ClientMsg {
     @Override
     public void processMsg(ClientHandler clientHandler) throws Exception {
         ControllerInterface controller = clientHandler.getController();
-        controller.createLobby(gameName, maxPlayerCount);
+        controller.createLobby(gameName, maxPlayerCount, numberOfAgents);
     }
 }

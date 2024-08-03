@@ -65,7 +65,7 @@ public class PersistenceFactoryTest {
         Deck<ResourceCard> resourceCardDeck = new Deck<>(2, cardTable.getCardLookUpResourceCard().getQueue());
         Deck<GoldCard> goldCardDeck = new Deck<>(2, cardTable.getCardLookUpGoldCard().getQueue());
         Deck<StartCard> startingCardDeck = new Deck<>(0, cardTable.getCardLookUpStartCard().getQueue());
-        Lobby lobby = new Lobby(3, name);
+        Lobby lobby = new Lobby(3, name, 0);
 
         return new Game(lobby, objectiveCardDeck, resourceCardDeck, goldCardDeck, startingCardDeck);
     }

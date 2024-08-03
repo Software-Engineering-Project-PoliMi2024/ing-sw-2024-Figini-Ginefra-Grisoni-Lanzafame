@@ -69,7 +69,7 @@ public class ResilienceTest {
 
         controller1.login(view1.name);
         controller2.login(view2.name);
-        controller1.createLobby(lobbyName1, 2);
+        controller1.createLobby(lobbyName1, 2, 0);
 
         assert lobbyGameListController.getViewMap().containsKey(view2.name);
         assert view2.lightLobbyList.getLobbies().stream().map(LightLobby::name).toList().contains(lobbyName1);
@@ -93,7 +93,7 @@ public class ResilienceTest {
 
         controller1.login(view1.name);
         controller2.login(view2.name);
-        controller1.createLobby(lobbyName1, 3);
+        controller1.createLobby(lobbyName1, 3, 0);
         controller2.joinLobby(lobbyName1);
 
         assert !lobbyGameListController.getViewMap().containsKey(view2.name);
@@ -141,11 +141,11 @@ public class ResilienceTest {
         controller3.login(view3.name);
         controller4.login(view4.name);
         controller5.login(view5.name);
-        controller1.createLobby(lobbyName1, 4);
+        controller1.createLobby(lobbyName1, 4, 0);
         controller2.joinLobby(lobbyName1);
         controller3.joinLobby(lobbyName1);
         controller4.joinLobby(lobbyName1);
-        controller5.createLobby(lobbyName2, 2);
+        controller5.createLobby(lobbyName2, 2, 0);
 
         assert !lobbyGameListController.getViewMap().containsKey(view1.name);
         assert !lobbyGameListController.getViewMap().containsKey(view2.name);
@@ -269,11 +269,11 @@ public class ResilienceTest {
         controller3.login(view3.name);
         controller4.login(view4.name);
         controller5.login(view5.name);
-        controller1.createLobby(lobbyName1, 4);
+        controller1.createLobby(lobbyName1, 4, 0);
         controller2.joinLobby(lobbyName1);
         controller3.joinLobby(lobbyName1);
         controller4.joinLobby(lobbyName1);
-        controller5.createLobby(lobbyName2, 2);
+        controller5.createLobby(lobbyName2, 2, 0);
 
         assert !lobbyGameListController.getViewMap().containsKey(view1.name);
         assert !lobbyGameListController.getViewMap().containsKey(view2.name);
@@ -360,11 +360,11 @@ public class ResilienceTest {
         controller3.login(view3.name);
         controller4.login(view4.name);
         controller5.login(view5.name);
-        controller1.createLobby(lobbyName1, 4);
+        controller1.createLobby(lobbyName1, 4, 0);
         controller2.joinLobby(lobbyName1);
         controller3.joinLobby(lobbyName1);
         controller4.joinLobby(lobbyName1);
-        controller5.createLobby(lobbyName2, 2);
+        controller5.createLobby(lobbyName2, 2, 0);
 
         assert !lobbyGameListController.getViewMap().containsKey(view1.name);
         assert !lobbyGameListController.getViewMap().containsKey(view2.name);
@@ -454,11 +454,11 @@ public class ResilienceTest {
         controller3.login(view3.name);
         controller4.login(view4.name);
         controller5.login(view5.name);
-        controller1.createLobby(lobbyName1, 4);
+        controller1.createLobby(lobbyName1, 4, 0);
         controller2.joinLobby(lobbyName1);
         controller3.joinLobby(lobbyName1);
         controller4.joinLobby(lobbyName1);
-        controller5.createLobby(lobbyName2, 2);
+        controller5.createLobby(lobbyName2, 2, 0);
 
         assert !lobbyGameListController.getViewMap().containsKey(view1.name);
         assert !lobbyGameListController.getViewMap().containsKey(view2.name);
@@ -539,11 +539,11 @@ public class ResilienceTest {
         controller3.login(view3.name);
         controller4.login(view4.name);
         controller5.login(view5.name);
-        controller1.createLobby(lobbyName1, 4);
+        controller1.createLobby(lobbyName1, 4, 0);
         controller2.joinLobby(lobbyName1);
         controller3.joinLobby(lobbyName1);
         controller4.joinLobby(lobbyName1);
-        controller5.createLobby(lobbyName2, 2);
+        controller5.createLobby(lobbyName2, 2, 0);
 
         assert !lobbyGameListController.getViewMap().containsKey(view1.name);
         assert !lobbyGameListController.getViewMap().containsKey(view2.name);
@@ -641,11 +641,11 @@ public class ResilienceTest {
         controller3.login(view3.name);
         controller4.login(view4.name);
         controller5.login(view5.name);
-        controller1.createLobby(lobbyName1, 4);
+        controller1.createLobby(lobbyName1, 4, 0);
         controller2.joinLobby(lobbyName1);
         controller3.joinLobby(lobbyName1);
         controller4.joinLobby(lobbyName1);
-        controller5.createLobby(lobbyName2, 2);
+        controller5.createLobby(lobbyName2, 2, 0);
 
         assert !lobbyGameListController.getViewMap().containsKey(view1.name);
         assert !lobbyGameListController.getViewMap().containsKey(view2.name);
@@ -731,11 +731,11 @@ public class ResilienceTest {
         controller3.login(view3.name);
         controller4.login(view4.name);
         controller5.login(view5.name);
-        controller1.createLobby(lobbyName1, 4);
+        controller1.createLobby(lobbyName1, 4, 0);
         controller2.joinLobby(lobbyName1);
         controller3.joinLobby(lobbyName1);
         controller4.joinLobby(lobbyName1);
-        controller5.createLobby(lobbyName2, 2);
+        controller5.createLobby(lobbyName2, 2, 0);
 
         assert !lobbyGameListController.getViewMap().containsKey(view1.name);
         assert !lobbyGameListController.getViewMap().containsKey(view2.name);
@@ -844,11 +844,11 @@ public class ResilienceTest {
         controller3.login(view3.name);
         controller4.login(view4.name);
         controller5.login(view5.name);
-        controller1.createLobby(lobbyName1, 4);
+        controller1.createLobby(lobbyName1, 4, 0);
         controller2.joinLobby(lobbyName1);
         controller3.joinLobby(lobbyName1);
         controller4.joinLobby(lobbyName1);
-        controller5.createLobby(lobbyName2, 2);
+        controller5.createLobby(lobbyName2, 2, 0);
 
         assert !lobbyGameListController.getViewMap().containsKey(view1.name);
         assert !lobbyGameListController.getViewMap().containsKey(view2.name);
@@ -955,11 +955,11 @@ public class ResilienceTest {
         controller3.login(view3.name);
         controller4.login(view4.name);
         controller5.login(view5.name);
-        controller1.createLobby(lobbyName1, 4);
+        controller1.createLobby(lobbyName1, 4, 0);
         controller2.joinLobby(lobbyName1);
         controller3.joinLobby(lobbyName1);
         controller4.joinLobby(lobbyName1);
-        controller5.createLobby(lobbyName2, 2);
+        controller5.createLobby(lobbyName2, 2, 0);
 
         assert !lobbyGameListController.getViewMap().containsKey(view1.name);
         assert !lobbyGameListController.getViewMap().containsKey(view2.name);
@@ -1075,11 +1075,11 @@ public class ResilienceTest {
         controller3.login(view3.name);
         controller4.login(view4.name);
         controller5.login(view5.name);
-        controller1.createLobby(lobbyName1, 4);
+        controller1.createLobby(lobbyName1, 4, 0);
         controller2.joinLobby(lobbyName1);
         controller3.joinLobby(lobbyName1);
         controller4.joinLobby(lobbyName1);
-        controller5.createLobby(lobbyName2, 2);
+        controller5.createLobby(lobbyName2, 2, 0);
 
         assert !lobbyGameListController.getViewMap().containsKey(view1.name);
         assert !lobbyGameListController.getViewMap().containsKey(view2.name);
@@ -1180,11 +1180,11 @@ public class ResilienceTest {
         controller3.login(view3.name);
         controller4.login(view4.name);
         controller5.login(view5.name);
-        controller1.createLobby(lobbyName1, 4);
+        controller1.createLobby(lobbyName1, 4, 0);
         controller2.joinLobby(lobbyName1);
         controller3.joinLobby(lobbyName1);
         controller4.joinLobby(lobbyName1);
-        controller5.createLobby(lobbyName2, 2);
+        controller5.createLobby(lobbyName2, 2, 0);
 
         assert !lobbyGameListController.getViewMap().containsKey(view1.name);
         assert !lobbyGameListController.getViewMap().containsKey(view2.name);
@@ -1290,11 +1290,11 @@ public class ResilienceTest {
         controller3.login(view3.name);
         controller4.login(view4.name);
         controller5.login(view5.name);
-        controller1.createLobby(lobbyName1, 4);
+        controller1.createLobby(lobbyName1, 4, 0);
         controller2.joinLobby(lobbyName1);
         controller3.joinLobby(lobbyName1);
         controller4.joinLobby(lobbyName1);
-        controller5.createLobby(lobbyName2, 2);
+        controller5.createLobby(lobbyName2, 2, 0);
 
         assert !lobbyGameListController.getViewMap().containsKey(view1.name);
         assert !lobbyGameListController.getViewMap().containsKey(view2.name);
@@ -1440,11 +1440,11 @@ public class ResilienceTest {
         controller3.login(view3.name);
         controller4.login(view4.name);
         controller5.login(view5.name);
-        controller1.createLobby(lobbyName1, 4);
+        controller1.createLobby(lobbyName1, 4, 0);
         controller2.joinLobby(lobbyName1);
         controller3.joinLobby(lobbyName1);
         controller4.joinLobby(lobbyName1);
-        controller5.createLobby(lobbyName2, 2);
+        controller5.createLobby(lobbyName2, 2, 0);
 
         assert !lobbyGameListController.getViewMap().containsKey(view1.name);
         assert !lobbyGameListController.getViewMap().containsKey(view2.name);
@@ -1567,7 +1567,7 @@ public class ResilienceTest {
 
         controller1.login(view1.name);
         controller2.login(view2.name);
-        controller1.createLobby(lobbyName1, 2);
+        controller1.createLobby(lobbyName1, 2, 0);
         controller2.joinLobby(lobbyName1);
 
         LightCard startCard1 = view1.lightGame.getHand().getCards()[0];
@@ -1672,7 +1672,7 @@ public class ResilienceTest {
 
         controller1.login(view1.name);
         controller2.login(view2.name);
-        controller1.createLobby(lobbyName1, 2);
+        controller1.createLobby(lobbyName1, 2, 0);
         controller2.joinLobby(lobbyName1);
 
         LightCard startCard1 = view1.lightGame.getHand().getCards()[0];

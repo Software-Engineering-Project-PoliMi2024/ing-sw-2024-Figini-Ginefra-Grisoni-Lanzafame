@@ -101,8 +101,8 @@ public class VirtualControllerSocket implements VirtualController {
      * @param maxPlayerCount the maximum number of players that can join the lobby
      */
     @Override
-    public void createLobby(String gameName, int maxPlayerCount){
-        serverHandler.sendClientMessage(new CreateLobbyMsg(gameName, maxPlayerCount));
+    public void createLobby(String gameName, int maxPlayerCount, int numberOfAgents){
+        serverHandler.sendClientMessage(new CreateLobbyMsg(gameName, maxPlayerCount, numberOfAgents));
     }
 
     /**
