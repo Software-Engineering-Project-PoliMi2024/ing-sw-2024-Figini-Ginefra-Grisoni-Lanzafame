@@ -4,7 +4,8 @@ public enum LoggerSources {
     SERVER("server:","\u001B[37m"), //white
     PERSISTENCE("persistence:", "\u001B[32m"), //green
     LOBBY_GAME_LISTS_CONTROLLER("lobbyGameListColor:","\u001B[36m"), //cyan
-    GAME_CONTROLLER("gameController:","\u001B[35m"); //purple
+    GAME_CONTROLLER("gameController:","\u001B[35m"), //purple
+    AI("ai:","\u001B[33m"); //yellow
 
     private final String sourceName;
     private final String color;
