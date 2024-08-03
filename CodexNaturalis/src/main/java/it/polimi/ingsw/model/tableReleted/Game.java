@@ -53,7 +53,7 @@ public class Game implements Serializable {
     public Game(Lobby lobby, Deck<ObjectiveCard> objectiveCardDeck, Deck<ResourceCard> resourceCardDeck,
                 Deck<GoldCard> goldCardDeck, Deck<StartCard> startingCardDeck) {
         this.name = lobby.getLobbyName();
-        this.gameParty = new GameParty(lobby.getLobbyPlayerList());
+        this.gameParty = new GameParty(lobby.getLobbyPlayerList(), lobby.getNumberOfAgents(), this);
         this.objectiveCardDeck = objectiveCardDeck;
         this.resourceCardDeck = resourceCardDeck;
         this.startingCardDeck = startingCardDeck;
@@ -338,5 +338,13 @@ public class Game implements Serializable {
                 player.getUserHand().setStartCard(startCard);
             }
         });
+    }
+
+    public boolean isAnAgent(String nickname){
+        return this.gameParty.getAgentNicknames().contains(nickname);
+    }
+
+    public void startAgents(){
+        gameParty.startAgents();
     }
 }

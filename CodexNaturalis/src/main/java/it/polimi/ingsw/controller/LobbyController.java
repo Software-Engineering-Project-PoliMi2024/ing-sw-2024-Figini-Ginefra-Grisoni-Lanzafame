@@ -98,11 +98,13 @@ public class LobbyController implements LobbyControllerInterface {
     public synchronized GameController startGame(CardTable cardTable, PersistenceFactory persistenceFactory, GameList gameList, MalevolentPlayerManager malevolentPlayerManager){
         Game createdGame = getGame(cardTable);
         GameController gameController = new GameController(createdGame, cardTable, persistenceFactory, gameList, malevolentPlayerManager);
+        createdGame.getGameParty().setAgentsController(gameController);
 
         notifyGameStart();
         gameReceiverMap.forEach((nick, receiver)->receiver.setGameController(gameController));
         viewMap.forEach((nick, view) -> gameController.join(nick, view, false));
-
+        createdGame.getGameParty().getAgentNicknames().forEach(agentNick -> gameController.join(agentNick, null, true));
+        createdGame.startAgents();
         return gameController;
     }
 

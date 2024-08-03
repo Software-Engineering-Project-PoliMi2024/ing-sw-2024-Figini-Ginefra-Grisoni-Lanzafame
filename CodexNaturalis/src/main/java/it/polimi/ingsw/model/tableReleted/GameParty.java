@@ -1,7 +1,11 @@
 package it.polimi.ingsw.model.tableReleted;
 
+import it.polimi.ingsw.controller.GameController;
+import it.polimi.ingsw.model.playerReleted.AgentRelated.Agent;
+import it.polimi.ingsw.model.playerReleted.AgentRelated.AgentNames;
 import it.polimi.ingsw.model.playerReleted.PawnColors;
 import it.polimi.ingsw.model.playerReleted.Player;
+import it.polimi.ingsw.model.playerReleted.PlayerState;
 
 import java.io.Serializable;
 import java.util.*;
@@ -14,6 +18,9 @@ import java.util.stream.Collectors;
 public class GameParty implements Serializable {
     /** the list of the players in the game */
     final private List<Player> playerList; //the player that were in the lobby pre game
+
+    final private List<String> agentNicknames = new ArrayList<>();
+
     /** the index of the current player */
     private int currentPlayerIndex;
     /** the chat manager of the game */
@@ -30,13 +37,27 @@ public class GameParty implements Serializable {
      * all players are considered inactive at the creation of the gameParty
      * @param playerNames list of all players nicks' who can join this game
      */
-    public GameParty(List<String> playerNames) {
+    public GameParty(List<String> playerNames, int numberOfAgents, Game game) {
+        for(int i = 0; i < numberOfAgents; i++){
+            agentNicknames.add(AgentNames.getRandomName());
+        }
+
         ArrayList<String> players = new ArrayList<>(playerNames);
+        players.addAll(agentNicknames);
+
         Collections.shuffle(players);
+
         this.pawnChoices = new ArrayList<>(Arrays.stream(PawnColors.values()).toList());
-        playerList = players.stream().map(Player::new).collect(Collectors.toList());
+
+        playerList = players.stream().map(nickname -> agentNicknames.contains(nickname) ? new Agent(nickname, game) : new Player(nickname)).collect(Collectors.toList());
         currentPlayerIndex = 0;
         chatManager = new ChatManager(playerNames);
+    }
+
+    public void setAgentsController(GameController gameController){
+        synchronized (playerList) {
+            playerList.stream().filter(p -> agentNicknames.contains(p.getNickname())).forEach(p -> ((Agent) p).setGameController(gameController));
+        }
     }
 
     /**
@@ -144,5 +165,15 @@ public class GameParty implements Serializable {
     /** @return the chat manager of the game */
     public ChatManager getChatManager() {
         return chatManager;
+    }
+
+    public List<String> getAgentNicknames() {
+        return agentNicknames;
+    }
+
+    public void startAgents(){
+        synchronized (playerList) {
+            playerList.stream().filter(p -> agentNicknames.contains(p.getNickname())).forEach(p -> p.setState(PlayerState.CHOOSE_START_CARD));
+        }
     }
 }

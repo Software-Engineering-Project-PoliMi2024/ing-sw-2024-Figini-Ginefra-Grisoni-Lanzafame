@@ -133,7 +133,7 @@ public class LobbyGameListsController implements it.polimi.ingsw.controller.Inte
                     view.transitionTo(ViewState.JOIN_LOBBY);
                 } catch (Exception ignored) {
                 }
-            } else if (maxPlayerCount < 2 || maxPlayerCount > 4) {
+            } else if (maxPlayerCount + numberOfAgents < 2 || maxPlayerCount + numberOfAgents > 4 || maxPlayerCount < 1) {
                 try {
                     view.logErr(LogsOnClient.INVALID_MAX_PLAYER_COUNT);
                     view.transitionTo(ViewState.JOIN_LOBBY);
@@ -143,17 +143,11 @@ public class LobbyGameListsController implements it.polimi.ingsw.controller.Inte
                 logger.log(LoggerLevel.INFO, creator + " created " + lobbyName + " lobby");
                 Lobby lobbyCreated = new Lobby(maxPlayerCount, lobbyName, numberOfAgents);
 
-                leaveLobbyList(creator);
                 //add the lobby to the model
                 lobbyMap.put(lobbyName, new LobbyController(lobbyCreated));
                 this.notifyNewLobby(creator, view, lobbyCreated); //notify the lobbyList mediator of the new lobby creation
 
-                lobbyMap.get(lobbyName).addPlayer(creator, view, gameReceiver);
-
-                try {
-                    view.transitionTo(ViewState.LOBBY);
-                } catch (Exception ignored) {
-                }
+                this.joinLobby(creator, lobbyName, gameReceiver);
             }
         }else {
             this.manageMalevolentPlayer(creator);

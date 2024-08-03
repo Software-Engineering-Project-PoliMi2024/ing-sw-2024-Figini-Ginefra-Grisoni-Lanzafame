@@ -1274,8 +1274,8 @@ public class GameController implements GameControllerInterface {
     private synchronized void moveToSecretObjectivePhase() {
         game.setState(GameState.CHOOSE_SECRET_OBJECTIVE);
         for (Player player : game.getPlayersList()) {
-            player.setState(PlayerState.CHOOSE_SECRET_OBJECTIVE);
             this.drawObjectiveCard(player);
+            player.setState(PlayerState.CHOOSE_SECRET_OBJECTIVE);
         }
         this.notifySecretObjectiveSetup();
     }
@@ -1346,7 +1346,7 @@ public class GameController implements GameControllerInterface {
         List<String> activePlayer = playerViewMap.keySet().stream().toList();
         List<String> playersToRemove = new ArrayList<>();
         for (Player player : game.getPlayersList()) {
-            if (!activePlayer.contains(player.getNickname()) && !checkProperInactive.test(player)) {
+            if (!activePlayer.contains(player.getNickname()) && !checkProperInactive.test(player) && !game.isAnAgent(player.getNickname())) {
                 playersToRemove.add(player.getNickname());
             }
         }

@@ -5,7 +5,7 @@ package it.polimi.ingsw;
  */
 public class Configs {
     /** flag for enabling debug mode. */
-    public static Boolean debugMode = false;
+    public static Boolean debugMode = true;
     /** Minutes after which the gameSave is considered expired. */
     public static long gameSaveExpirationTimeMinutes = 30;
     /** label to look Up the object used to connect to the server in the RMI registry */

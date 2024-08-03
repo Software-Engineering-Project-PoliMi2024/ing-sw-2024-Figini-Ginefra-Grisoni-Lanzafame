@@ -77,6 +77,10 @@ public class Lobby implements Serializable {
         return numberOfMaxPlayer;
     }
 
+    public int getNumberOfAgents() {
+        return numberOfAgents;
+    }
+
     /**
      * @return a list containing all the players' nick in the lobby
      */
