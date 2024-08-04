@@ -448,8 +448,8 @@ public class LobbyGameListsController implements it.polimi.ingsw.controller.Inte
      */
     public synchronized void manageMalevolentPlayer(String player) {
         try {
-            viewMap.get(player).logErr(LogsOnClient.MALEVOLENT);
             logger.log(LoggerLevel.WARNING, player + " is malevolent");
+            viewMap.get(player).logErr(LogsOnClient.MALEVOLENT);
         }catch (Exception ignored){}
     }
 }

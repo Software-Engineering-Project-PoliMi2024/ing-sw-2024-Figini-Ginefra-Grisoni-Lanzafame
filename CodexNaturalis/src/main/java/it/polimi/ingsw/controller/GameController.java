@@ -106,13 +106,6 @@ public class GameController implements GameControllerInterface {
     }
 
     /**
-     * Method used to add all the agents' nicknames to the active players map
-     */
-    public synchronized void addAgentsToViewMap(){
-        game.getGameParty().getAgentNicknames().forEach(agent -> playerViewMap.put(agent, null));
-    }
-
-    /**
      * Method used to get the list of nicknames of the players that are part of the game,
      * i.e. the players that can join the game
      * @return the list of nicknames of the players that are part of the game
@@ -157,9 +150,11 @@ public class GameController implements GameControllerInterface {
             } else {
                 if (playerViewMap.size() == 2) {
                     String otherPlayerNick = playerViewMap.keySet().stream().filter(n -> !n.equals(joinerNickname)).toList().getFirst();
+
                     if (game.getPlayerFromNick(otherPlayerNick).getState().equals(PlayerState.WAIT)) {
                         //set as current player the joining player
                         game.setCurrentPlayerIndex(game.getPlayersList().indexOf(game.getPlayerFromNick(joinerNickname)));
+                        game.getPlayerFromNick(joinerNickname).setState(PlayerState.PLACE);
                         this.notifyTurnChange(joinerNickname);
                         game.getPlayerFromNick(otherPlayerNick).setState(PlayerState.IDLE);
                         this.takeTurn(otherPlayerNick);
