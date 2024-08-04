@@ -5,7 +5,7 @@ import java.util.concurrent.*;
 public class ServerLogger {
     private final LoggerSources source;
     private final String additionalPrefix;
-    private final Executor logExecutor = Executors.newSingleThreadExecutor();;
+    private static final Executor logExecutor = Executors.newSingleThreadExecutor();;
 
     /**
      * constructor of the logger used to log messages on the server
