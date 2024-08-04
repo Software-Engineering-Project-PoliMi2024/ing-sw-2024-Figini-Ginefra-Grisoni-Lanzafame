@@ -1,9 +1,7 @@
 package it.polimi.ingsw.model.playerReleted.AgentRelated;
 
-import it.polimi.ingsw.controller.Controller;
 import it.polimi.ingsw.controller.GameController;
 import it.polimi.ingsw.lightModel.Lightifier;
-import it.polimi.ingsw.model.cardReleted.cards.Card;
 import it.polimi.ingsw.model.cardReleted.cards.CardWithCorners;
 import it.polimi.ingsw.model.cardReleted.cards.ObjectiveCard;
 import it.polimi.ingsw.model.cardReleted.cards.StartCard;
@@ -15,7 +13,8 @@ import it.polimi.ingsw.utils.logger.LoggerLevel;
 import it.polimi.ingsw.utils.logger.LoggerSources;
 import it.polimi.ingsw.utils.logger.ServerLogger;
 
-import java.util.Arrays;
+import java.util.concurrent.Executor;
+import java.util.concurrent.Executors;
 
 /**
  * This class represents an AI player in the game.
@@ -29,6 +28,8 @@ import java.util.Arrays;
 public class Agent extends Player {
     private transient GameController gameController;
     private final Game game;
+
+    private final Executor executor = Executors.newSingleThreadExecutor();
 
     /**
      * This constructor creates a player with the given nickname
@@ -47,8 +48,7 @@ public class Agent extends Player {
     @Override
     public void setState(PlayerState playerState) {
         super.setState(playerState);
-        Thread playThread = new Thread(() -> play(playerState));
-        playThread.start();
+        executor.execute(() -> play(playerState));
     }
 
     private void play(PlayerState playerState) {
