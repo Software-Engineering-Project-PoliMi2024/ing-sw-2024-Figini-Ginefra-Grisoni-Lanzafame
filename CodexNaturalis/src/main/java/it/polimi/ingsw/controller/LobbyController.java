@@ -103,7 +103,7 @@ public class LobbyController implements LobbyControllerInterface {
         notifyGameStart();
         gameReceiverMap.forEach((nick, receiver)->receiver.setGameController(gameController));
         viewMap.forEach((nick, view) -> gameController.join(nick, view, false));
-        createdGame.getGameParty().getAgentNicknames().forEach(agentNick -> gameController.join(agentNick, null, true));
+        createdGame.getGameParty().getAgentNicknames().forEach(agentNick -> gameController.join(agentNick, null, false));
         createdGame.startAgents();
         return gameController;
     }

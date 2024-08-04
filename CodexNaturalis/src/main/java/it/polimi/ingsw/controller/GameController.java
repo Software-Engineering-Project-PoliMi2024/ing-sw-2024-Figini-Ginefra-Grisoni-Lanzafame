@@ -106,6 +106,13 @@ public class GameController implements GameControllerInterface {
     }
 
     /**
+     * Method used to add all the agents' nicknames to the active players map
+     */
+    public synchronized void addAgentsToViewMap(){
+        game.getGameParty().getAgentNicknames().forEach(agent -> playerViewMap.put(agent, null));
+    }
+
+    /**
      * Method used to get the list of nicknames of the players that are part of the game,
      * i.e. the players that can join the game
      * @return the list of nicknames of the players that are part of the game
@@ -165,7 +172,8 @@ public class GameController implements GameControllerInterface {
             this.loadChat(joinerNickname, view);
             int numberOfAgents = game.getGameParty().getAgentNicknames().size();
             int numberOfActivePlayers = playerViewMap.size() - numberOfAgents;
-
+            logger.log(LoggerLevel.INFO, "Number of agents: " + numberOfAgents);
+            logger.log(LoggerLevel.INFO, "Number of active players: " + numberOfActivePlayers);
             if ((numberOfAgents == 0 && numberOfActivePlayers == 1 || numberOfActivePlayers == 0) && reconnected) {
                 this.startLastPlayerTimer();
             }

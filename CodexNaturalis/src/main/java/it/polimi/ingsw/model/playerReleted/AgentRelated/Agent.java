@@ -103,6 +103,12 @@ public class Agent extends Player {
                 int randomCardIndex = (int) (Math.random() * 3);
                 gameController.draw(this.getNickname(), randomCardType, randomCardIndex);
                 break;
+            case WAIT:
+                logger.log(LoggerLevel.INFO, "Waiting");
+                break;
+            case IDLE:
+                logger.log(LoggerLevel.INFO, "Idle");
+                break;
         }
     }
 }
