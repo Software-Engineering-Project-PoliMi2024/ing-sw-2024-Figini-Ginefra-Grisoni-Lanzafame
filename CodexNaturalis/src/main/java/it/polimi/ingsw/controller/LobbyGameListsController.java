@@ -417,6 +417,7 @@ public class LobbyGameListsController implements it.polimi.ingsw.controller.Inte
             if(gameMap.get(game.getName()) == null){
                 GameController gameController = new GameController(game, cardTable, persistenceFactory, this, this);
                 gameMap.put(game.getName(), gameController);
+                game.getGameParty().setAgentsController(gameController);
             }
         }
 

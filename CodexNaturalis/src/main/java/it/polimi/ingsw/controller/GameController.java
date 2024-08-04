@@ -163,7 +163,10 @@ public class GameController implements GameControllerInterface {
             }
 
             this.loadChat(joinerNickname, view);
-            if (playerViewMap.size() == 1 && reconnected) {
+            int numberOfAgents = game.getGameParty().getAgentNicknames().size();
+            int numberOfActivePlayers = playerViewMap.size() - numberOfAgents;
+
+            if ((numberOfAgents == 0 && numberOfActivePlayers == 1 || numberOfActivePlayers == 0) && reconnected) {
                 this.startLastPlayerTimer();
             }
 
@@ -517,12 +520,15 @@ public class GameController implements GameControllerInterface {
             }
         }
 
-        if(game.getState().equals(GameState.END_GAME) && playerViewMap.isEmpty()){
+        int numberOfAgents = game.getGameParty().getAgentNicknames().size();
+        int numberOfActivePlayers = playerViewMap.size() - numberOfAgents;
+
+        if(game.getState().equals(GameState.END_GAME) && numberOfActivePlayers == 0){
             persistenceFactory.delete(game.getName());
             gameList.deleteGame(game.getName());
         }else {
             this.save();
-            if (playerViewMap.size() == 1 && !game.getState().equals(GameState.END_GAME)) {
+            if ((numberOfAgents == 0 && numberOfActivePlayers == 1 || numberOfActivePlayers == 0) && !game.getState().equals(GameState.END_GAME)) {
                 this.startLastPlayerTimer();
             }
         }
@@ -854,6 +860,14 @@ public class GameController implements GameControllerInterface {
             } catch (Exception ignored) {
             }
         });
+
+        int numberOfAgents = game.getGameParty().getAgentNicknames().size();
+        int numberOfActivePlayers = playerViewMap.size() - numberOfAgents;
+
+        if(numberOfActivePlayers == 0){
+            persistenceFactory.delete(game.getName());
+            gameList.deleteGame(game.getName());
+        }
     }
 
     /**
