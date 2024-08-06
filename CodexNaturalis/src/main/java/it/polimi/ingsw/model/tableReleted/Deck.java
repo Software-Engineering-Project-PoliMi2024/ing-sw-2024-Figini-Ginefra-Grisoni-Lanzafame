@@ -17,7 +17,10 @@ public class Deck<Element> implements Serializable {
     /** the buffer */
     private final List<Element> buffer;
     /** the actual deck */
-    private final Queue<Element> actualDeck;
+    private final List<Element> actualDeck;
+
+    /** the next Element to be drawn */
+    private Element nextDraw;
 
     /**
      * Constructor for the deck
@@ -26,7 +29,7 @@ public class Deck<Element> implements Serializable {
      */
     public Deck(int bufferSize, Queue<Element> elements) {
         this.bufferSize = bufferSize;
-        this.actualDeck = elements;
+        this.actualDeck = new LinkedList<>(elements);
         this.buffer = new ArrayList<>();
         this.shuffle();
         this.populateBuffer();
@@ -40,16 +43,30 @@ public class Deck<Element> implements Serializable {
         this.bufferSize = other.bufferSize;
         this.actualDeck = new LinkedList<>(other.actualDeck);
         this.buffer = other.buffer.stream().toList();
+        this.nextDraw = other.nextDraw;
     }
 
     /**
      * Shuffle the deck
      */
     private void shuffle(){
+        if(nextDraw != null)
+            actualDeck.add(nextDraw);
         List<Element> deck = new ArrayList<>(actualDeck);
         Collections.shuffle(deck);
         actualDeck.clear();
         actualDeck.addAll(deck);
+        nextDraw = actualDeckPoll();
+    }
+
+    /**
+     * Gets the first element of the actual deck and removes it
+     * @return the first element of the actual deck
+     */
+    private Element actualDeckPoll(){
+        Element next = actualDeck.getFirst();
+        actualDeck.removeFirst();
+        return next;
     }
 
     /**
@@ -97,14 +114,16 @@ public class Deck<Element> implements Serializable {
      * @return the element drawn
      */
     public Element drawFromDeck(){
-        return actualDeck.poll();
+        Element drawn = nextDraw;
+        nextDraw = actualDeckPoll();
+        return drawn;
     }
 
     /**
      * @return the top Card of the Deck don't remove it
      */
     public Element showTopCardOfDeck(){
-        return actualDeck.peek();
+        return nextDraw;
     }
     /**
      * @return the bufferID card from the buffer but do not remove it
@@ -118,7 +137,7 @@ public class Deck<Element> implements Serializable {
 
     /** @return true if both the actual deck and the buffer are empty */
     public boolean isEmpty(){
-        return actualDeck.isEmpty() && buffer.stream().allMatch(Objects::isNull);
+        return buffer.stream().allMatch(Objects::isNull) && nextDraw == null;
     }
 
     /**
@@ -134,5 +153,33 @@ public class Deck<Element> implements Serializable {
             card = showCardFromBuffer(cardID);
         }
         return card;
+    }
+
+    /**
+     * @return the number of cards in the buffer of the deck
+     */
+    public int getBufferSize() {
+        return bufferSize;
+    }
+
+    /**
+     * @return the number of cards left in the deck
+     */
+    public int numberOfCardsLeftInDeck(){
+        return isEmpty() ? 0 : actualDeck.size() + 1;
+    }
+
+    /**
+     * @return the number of cards left in the buffer
+     */
+    public int numberOfCardsLeftInBuffer() {
+        return (int) buffer.stream().filter(Objects::nonNull).count();
+    }
+
+    /**
+     * @return the number of cards left in the deck and in the buffer
+     */
+    public int numberOfDrawsLeft(){
+        return numberOfCardsLeftInDeck() + numberOfCardsLeftInBuffer();
     }
 }
