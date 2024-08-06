@@ -32,6 +32,17 @@ public class Hand implements Serializable {
         this.playableHand = new HashSet<>();
     }
 
+    /**
+     * Copy constructor
+     * @param other the hand to copy
+     */
+    public Hand(Hand other){
+        this.playableHand = new HashSet<>(other.playableHand);
+        this.secretObjective = other.secretObjective == null ? null : new ObjectiveCard(other.secretObjective);
+        this.startCard = other.startCard == null ? null : new StartCard(other.startCard);
+        this.secretObjectiveChoices = other.secretObjectiveChoices == null ? null : new LinkedList<>(other.secretObjectiveChoices);
+    }
+
 
     /**
      * Add a card to the player hand
