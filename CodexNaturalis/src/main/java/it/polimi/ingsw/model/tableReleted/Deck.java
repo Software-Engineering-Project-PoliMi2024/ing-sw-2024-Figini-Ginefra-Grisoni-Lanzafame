@@ -19,9 +19,6 @@ public class Deck<Element> implements Serializable {
     /** the actual deck */
     private final List<Element> actualDeck;
 
-    /** the next Element to be drawn */
-    private Element nextDraw;
-
     /**
      * Constructor for the deck
      * @param bufferSize the size of the buffer
@@ -43,20 +40,16 @@ public class Deck<Element> implements Serializable {
         this.bufferSize = other.bufferSize;
         this.actualDeck = new LinkedList<>(other.actualDeck);
         this.buffer = other.buffer.stream().toList();
-        this.nextDraw = other.nextDraw;
     }
 
     /**
      * Shuffle the deck
      */
     private void shuffle(){
-        if(nextDraw != null)
-            actualDeck.add(nextDraw);
         List<Element> deck = new ArrayList<>(actualDeck);
         Collections.shuffle(deck);
         actualDeck.clear();
         actualDeck.addAll(deck);
-        nextDraw = actualDeckPoll();
     }
 
     /**
@@ -64,6 +57,9 @@ public class Deck<Element> implements Serializable {
      * @return the first element of the actual deck
      */
     private Element actualDeckPoll(){
+        if(actualDeck.isEmpty()){
+            return null;
+        }
         Element next = actualDeck.getFirst();
         actualDeck.removeFirst();
         return next;
@@ -114,16 +110,17 @@ public class Deck<Element> implements Serializable {
      * @return the element drawn
      */
     public Element drawFromDeck(){
-        Element drawn = nextDraw;
-        nextDraw = actualDeckPoll();
-        return drawn;
+        return actualDeckPoll();
     }
 
     /**
      * @return the top Card of the Deck don't remove it
      */
     public Element showTopCardOfDeck(){
-        return nextDraw;
+        if(actualDeck.isEmpty()){
+            return null;
+        }
+        return actualDeck.getFirst();
     }
     /**
      * @return the bufferID card from the buffer but do not remove it
@@ -137,7 +134,7 @@ public class Deck<Element> implements Serializable {
 
     /** @return true if both the actual deck and the buffer are empty */
     public boolean isEmpty(){
-        return buffer.stream().allMatch(Objects::isNull) && nextDraw == null;
+        return buffer.stream().allMatch(Objects::isNull);
     }
 
     /**
@@ -166,7 +163,7 @@ public class Deck<Element> implements Serializable {
      * @return the number of cards left in the deck
      */
     public int numberOfCardsLeftInDeck(){
-        return isEmpty() ? 0 : actualDeck.size() + 1;
+        return actualDeck.size();
     }
 
     /**
