@@ -19,6 +19,12 @@ public class DeckBelief<Element> {
         this.drawsLeft = drawsLeft;
     }
 
+    public DeckBelief(DeckBelief<Element> other){
+        this.cardsLeft = new HashSet<>(other.cardsLeft);
+        this.Buffer = new LinkedList<>(other.Buffer);
+        this.drawsLeft = other.drawsLeft;
+    }
+
     /**
      * Gets a random element from the distribution
      * @return the element
@@ -53,6 +59,20 @@ public class DeckBelief<Element> {
         Element newBufferElement = drawFromDeck();
         Buffer.remove(index);
         Buffer.add(index, newBufferElement);
+        return drawn;
+    }
+
+    /**
+     * Draws a card from the buffer at the given index and does not replace it
+     * @param index the index of the buffer position to draw from
+     * @return the drawn card
+     */
+    public Element drawFromBufferNoReplace(int index){
+        if(index < 0 || index >= Buffer.size())
+            throw new IllegalArgumentException("Index out of bounds");
+
+        Element drawn = Buffer.get(index);
+        Buffer.remove(index);
         return drawn;
     }
 
