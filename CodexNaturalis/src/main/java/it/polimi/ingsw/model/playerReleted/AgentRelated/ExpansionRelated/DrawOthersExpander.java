@@ -1,37 +1,28 @@
 package it.polimi.ingsw.model.playerReleted.AgentRelated.ExpansionRelated;
 
 import it.polimi.ingsw.model.cardReleted.utilityEnums.DrawableCard;
-import it.polimi.ingsw.model.playerReleted.AgentRelated.ActionRelated.DrawAction;
+import it.polimi.ingsw.model.playerReleted.AgentRelated.ActionRelated.DeckExtractionOthersAction;
+import it.polimi.ingsw.model.playerReleted.AgentRelated.ActionRelated.DrawOthersAction;
 import it.polimi.ingsw.model.playerReleted.AgentRelated.Node;
 import it.polimi.ingsw.model.playerReleted.AgentRelated.StateRelated.State;
 
-public class DrawExpander implements Expander{
-    protected int deckOptionIndex = 0;
-    protected int positionIndex = 0;
-    protected final int deckOptionSize;
-    protected final int positionSize;
-
-    public DrawExpander(State state){
-        deckOptionSize = 2;
-        positionSize = 3;
-    }
-
-    protected void tick(){
-        positionIndex++;
-        deckOptionIndex += positionIndex / positionSize;
-        positionIndex %= positionSize;
+public class DrawOthersExpander extends DrawExpander{
+    final int othersConsidered;
+    public DrawOthersExpander(State state, int othersConsidered){
+        super(state);
+        this.othersConsidered = othersConsidered;
     }
 
     @Override
     public Node expand(Node node, State state) {
         Node child = new Node(
                 node,
-                new DrawAction(
+                new DrawOthersAction(
                         DrawableCard.values()[deckOptionIndex],
                         positionIndex
                 ),
                 node.getDepth() + 1,
-                new DeckExtractionExpander(state, DrawableCard.values()[deckOptionIndex])
+                new DeckExtractionOthersExpander(state, DrawableCard.values()[deckOptionIndex], othersConsidered)
         );
         tick();
         if(deckOptionIndex == deckOptionSize){

@@ -1,6 +1,7 @@
 package it.polimi.ingsw.model.playerReleted.AgentRelated;
 
 import it.polimi.ingsw.model.playerReleted.AgentRelated.ActionRelated.Action;
+import it.polimi.ingsw.model.playerReleted.AgentRelated.ExpansionRelated.Expander;
 import it.polimi.ingsw.model.playerReleted.AgentRelated.ExpansionRelated.PlaceExpander;
 import it.polimi.ingsw.model.playerReleted.AgentRelated.StateRelated.DeckBeliefBuilder;
 import it.polimi.ingsw.model.playerReleted.AgentRelated.StateRelated.State;
@@ -18,9 +19,12 @@ public class MCTSearcher {
                 game.getGameParty().getPlayerFromNick(perspectivePlayer),
                 DeckBeliefBuilder.buildDeckBeliefResourceCard(game, game.getResourceCardDeck(), perspectivePlayer),
                 DeckBeliefBuilder.buildDeckBeliefGoldCard(game, game.getGoldCardDeck(), perspectivePlayer),
-                game.getCommonObjective()
+                game.getCommonObjective(),
+                game.getGameParty().getNumberOfMaxPlayer()
                 );
-        this.root = new Node(null, null, 0, new PlaceExpander(initialState));
+        PlaceExpander expander = new PlaceExpander(initialState);
+        this.root = new Node(null, null, 0, expander);
+        expander.setExpandable(root);
     }
 
     public Action searchBestAction(int iterations){
@@ -28,6 +32,7 @@ public class MCTSearcher {
             State state = new State(initialState);
             Node selectedNode = selection(root, state);
             Node childNode = selectedNode.expand(state);
+            selectedNode.addChild(childNode);
             int reward = childNode.getAction().simulate(state);
             childNode.backPropagate(reward);
         }
@@ -42,20 +47,20 @@ public class MCTSearcher {
      */
     private Node bestChild(Node node){
         return node.getChildren().stream().max((n1, n2) -> {
-            double n1Value = (double) n1.getNumberOfVisits();
-            double n2Value = (double) n2.getNumberOfVisits();
+            double n1Value = n1.getNumberOfVisits();
+            double n2Value = n2.getNumberOfVisits();
             return Double.compare(n1Value, n2Value);
         }).orElseThrow();
     }
 
     private Node selection(Node node, State state){
-        if(node.getChildren().isEmpty())
+        if(node.isExpandable())
             return node;
 
-        int bestScore = Integer.MIN_VALUE;
+        float bestScore = Integer.MIN_VALUE;
         List<Node> bestChildren = new LinkedList<>();
         for(Node child : node.getChildren()){
-            int score = child.getSelectionScore();
+            float score = child.getSelectionScore();
             if(score > bestScore){
                 bestScore = score;
                 bestChildren.clear();
@@ -64,6 +69,7 @@ public class MCTSearcher {
                 bestChildren.add(child);
             }
         }
+        System.out.println("Selected node with score: " + bestScore + " and a number of candidates: " + bestChildren.size());
         Node bestChild = bestChildren.get((int) (Math.random() * bestChildren.size()));
         bestChild.getAction().actOnState(state);
         return selection(bestChild, state);

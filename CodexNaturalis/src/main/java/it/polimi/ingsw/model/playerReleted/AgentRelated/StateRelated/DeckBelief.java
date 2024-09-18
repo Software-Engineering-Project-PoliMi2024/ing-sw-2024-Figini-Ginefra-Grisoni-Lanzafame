@@ -1,7 +1,5 @@
 package it.polimi.ingsw.model.playerReleted.AgentRelated.StateRelated;
 
-import it.polimi.ingsw.model.tableReleted.Game;
-
 import java.util.*;
 
 /**
@@ -10,18 +8,18 @@ import java.util.*;
  */
 public class DeckBelief<Element> {
     private final HashSet<Element> cardsLeft;
-    private final List<Element> Buffer;
+    private final List<Element> buffer;
     private int drawsLeft;
 
     public DeckBelief(Queue<Element> cardsLeft, Set<Element> Buffer, int drawsLeft) {
         this.cardsLeft = new HashSet<>(cardsLeft);
-        this.Buffer = new LinkedList<>(Buffer);
+        this.buffer = new LinkedList<>(Buffer);
         this.drawsLeft = drawsLeft;
     }
 
     public DeckBelief(DeckBelief<Element> other){
         this.cardsLeft = new HashSet<>(other.cardsLeft);
-        this.Buffer = new LinkedList<>(other.Buffer);
+        this.buffer = new LinkedList<>(other.buffer);
         this.drawsLeft = other.drawsLeft;
     }
 
@@ -52,13 +50,13 @@ public class DeckBelief<Element> {
      * @return the drawn card
      */
     public Element drawFromBufferAt(int index){
-        if(index < 0 || index >= Buffer.size())
+        if(index < 0 || index >= buffer.size())
             throw new IllegalArgumentException("Index out of bounds");
 
-        Element drawn = Buffer.get(index);
+        Element drawn = buffer.get(index);
         Element newBufferElement = drawFromDeck();
-        Buffer.remove(index);
-        Buffer.add(index, newBufferElement);
+        buffer.remove(index);
+        buffer.add(index, newBufferElement);
         return drawn;
     }
 
@@ -68,11 +66,11 @@ public class DeckBelief<Element> {
      * @return the drawn card
      */
     public Element drawFromBufferNoReplace(int index){
-        if(index < 0 || index >= Buffer.size())
+        if(index < 0 || index >= buffer.size())
             throw new IllegalArgumentException("Index out of bounds");
 
-        Element drawn = Buffer.get(index);
-        Buffer.remove(index);
+        Element drawn = buffer.get(index);
+        buffer.remove(index);
         return drawn;
     }
 
@@ -81,5 +79,31 @@ public class DeckBelief<Element> {
      */
     public boolean canDraw(){
         return drawsLeft > 0;
+    }
+
+    public int bufferSize(){
+        //Count non null elements
+        return (int) buffer.stream().filter(Objects::nonNull).count();
+    }
+
+    public void addToBufferInEmptySlot(Element element){
+        for(int i = 0; i < buffer.size(); i++){
+            if(buffer.get(i) == null){
+                buffer.set(i, element);
+                return;
+            }
+        }
+        throw new IllegalStateException("Buffer is full");
+    }
+
+    public int numCardsLeft(){
+        return cardsLeft.size();
+    }
+
+    public Element getCardLeftAt(int index){
+        if(index < 0 || index >= cardsLeft.size())
+            throw new IllegalArgumentException("Index out of bounds");
+
+        return cardsLeft.stream().skip(index).findFirst().orElse(null);
     }
 }

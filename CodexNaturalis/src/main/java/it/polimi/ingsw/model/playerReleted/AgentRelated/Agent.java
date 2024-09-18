@@ -8,6 +8,7 @@ import it.polimi.ingsw.model.cardReleted.cards.StartCard;
 import it.polimi.ingsw.model.cardReleted.utilityEnums.CardFace;
 import it.polimi.ingsw.model.cardReleted.utilityEnums.DrawableCard;
 import it.polimi.ingsw.model.playerReleted.*;
+import it.polimi.ingsw.model.playerReleted.AgentRelated.ActionRelated.Action;
 import it.polimi.ingsw.model.tableReleted.Game;
 import it.polimi.ingsw.utils.logger.LoggerLevel;
 import it.polimi.ingsw.utils.logger.LoggerSources;
@@ -81,21 +82,26 @@ public class Agent extends Player {
                 break;
             case PLACE:
                 logger.log(LoggerLevel.INFO, "Placing card");
-                Position randomPosition = this.getUserCodex().getFrontier().getFrontier().stream().findAny().orElse(null);
-                CardFace randomFace = Math.random() < 0.5 ? CardFace.FRONT : CardFace.BACK;
 
-                CardWithCorners randomCard = null;
-                if(randomFace == CardFace.FRONT)
-                    randomCard = this.getUserHand().getHand().stream().filter(c -> c.canBePlaced(this.getUserCodex())).findAny().orElse(null);
+//                Position randomPosition = this.getUserCodex().getFrontier().getFrontier().stream().findAny().orElse(null);
+//                CardFace randomFace = Math.random() < 0.5 ? CardFace.FRONT : CardFace.BACK;
+//
+//                CardWithCorners randomCard = null;
+//                if(randomFace == CardFace.FRONT)
+//                    randomCard = this.getUserHand().getHand().stream().filter(c -> c.canBePlaced(this.getUserCodex())).findAny().orElse(null);
+//
+//                if(randomCard == null) {
+//                    randomFace = CardFace.BACK;
+//                    randomCard = this.getUserHand().getHand().stream().findAny().orElse(null);
+//                }
+//
+//                logger.log(LoggerLevel.INFO, "Placing card " + randomCard + " at position " + randomPosition + " with face " + randomFace);
+//                Placement randomPlacement = new Placement(randomPosition, randomCard, randomFace);
+//                gameController.place(this.getNickname(), Lightifier.lightify(randomPlacement));
 
-                if(randomCard == null) {
-                    randomFace = CardFace.BACK;
-                    randomCard = this.getUserHand().getHand().stream().findAny().orElse(null);
-                }
-
-                logger.log(LoggerLevel.INFO, "Placing card " + randomCard + " at position " + randomPosition + " with face " + randomFace);
-                Placement randomPlacement = new Placement(randomPosition, randomCard, randomFace);
-                gameController.place(this.getNickname(), Lightifier.lightify(randomPlacement));
+                MCTSearcher searcher = new MCTSearcher(game, this.getNickname());
+                Action bestAction = searcher.searchBestAction(1000);
+                bestAction.actOnGame(gameController, this.getNickname());
                 break;
             case DRAW:
                 logger.log(LoggerLevel.INFO, "Drawing card");

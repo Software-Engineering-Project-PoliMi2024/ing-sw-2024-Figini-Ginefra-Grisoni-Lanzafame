@@ -2,8 +2,6 @@ package it.polimi.ingsw.model.playerReleted.AgentRelated.ActionRelated;
 
 import it.polimi.ingsw.Configs;
 import it.polimi.ingsw.controller.GameController;
-import it.polimi.ingsw.model.cardReleted.cards.CardInHand;
-import it.polimi.ingsw.model.cardReleted.cards.CardWithCorners;
 import it.polimi.ingsw.model.cardReleted.cards.GoldCard;
 import it.polimi.ingsw.model.cardReleted.cards.ResourceCard;
 import it.polimi.ingsw.model.cardReleted.utilityEnums.DrawableCard;
@@ -21,9 +19,10 @@ public class DrawAction implements Action{
 
     @Override
     public void actOnState(State state) {
-        if(targetPosition == Configs.actualDeckPos){
+        state.setDrawnFrom(targetDeck);
+
+        if(targetPosition == Configs.actualDeckPos)
             return;
-        }
 
         switch(targetDeck){
             case DrawableCard.RESOURCECARD:
@@ -43,8 +42,8 @@ public class DrawAction implements Action{
     }
 
     @Override
-    public int getSelectionScore(Node node) {
-        return 0;
+    public float getSelectionScore(Node node) {
+        return UCB1.score(node);
     }
 
     @Override

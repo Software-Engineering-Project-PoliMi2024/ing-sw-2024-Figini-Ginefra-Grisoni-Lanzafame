@@ -15,7 +15,7 @@ public class Node {
     private final Expander expander;
     private int totalReward;
     private int numberOfVisits;
-    private boolean isExpandable = false;
+    private boolean isExpandable = true;
 
     public Node(Node parent, Action action, int depth, Expander expander) {
         this.parent = parent;
@@ -47,7 +47,7 @@ public class Node {
         return numberOfVisits;
     }
 
-    public int getSelectionScore(){
+    public float getSelectionScore(){
         return action.getSelectionScore(this);
     }
 
@@ -72,5 +72,13 @@ public class Node {
         numberOfVisits++;
         if(parent != null)
             parent.backPropagate(reward);
+    }
+
+    public Node getParent() {
+        return parent;
+    }
+
+    public void addChild(Node child){
+        children.add(child);
     }
 }
